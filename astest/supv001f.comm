@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,52 +19,53 @@
 
 # person_in_charge: mathieu.courtois at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 import numpy as NP
 
-ma = LIRE_MAILLAGE(FORMAT="ASTER",)
+ma = LIRE_MAILLAGE(FORMAT="ASTER")
 
-np_str = NP.array(['N3', 'N7'])
+np_str = NP.array(["N3", "N7"])
 list_str = [i for i in np_str]
 
 ma = DEFI_GROUP(
     reuse=ma,
     MAILLAGE=ma,
     CREA_GROUP_NO=(
-        _F(NOM='NEW1',
-           # test que (no, max='**') accepte un numpy.array de numpy.str_
-           NOEUD=np_str,),
-        _F(# test que (TXM, max=1) accepte un numpy.str_
-           NOM=np_str[0],
-           # test que (no, max='**') accepte une list de numpy.str_
-           NOEUD=list_str,),
+        _F(
+            NOM="NEW1",
+            # test que (no, max='**') accepte un numpy.array de numpy.str_
+            NOEUD=np_str,
+        ),
+        _F(  # test que (TXM, max=1) accepte un numpy.str_
+            NOM=np_str[0],
+            # test que (no, max='**') accepte une list de numpy.str_
+            NOEUD=list_str,
+        ),
     ),
 )
 
-tab = CREA_TABLE(LISTE=(
-    _F(PARA='INT',
-       LISTE_I=list(range(5)),),
-    _F(PARA='STR',
-       LISTE_K=[str(i) for i in range(5)],),
-    _F(PARA='NPSTR',
-       # test que (TXM, max='**') accepte un numpy.array de numpy.str_
-       LISTE_K=np_str,),
-),)
+tab = CREA_TABLE(
+    LISTE=(
+        _F(PARA="INT", LISTE_I=list(range(5))),
+        _F(PARA="STR", LISTE_K=[str(i) for i in range(5)]),
+        _F(
+            PARA="NPSTR",
+            # test que (TXM, max='**') accepte un numpy.array de numpy.str_
+            LISTE_K=np_str,
+        ),
+    )
+)
 
 IMPR_TABLE(TABLE=tab, UNITE=6)
 
 TEST_TABLE(
     TABLE=tab,
-    NOM_PARA='INT',
-    REFERENCE='ANALYTIQUE',
+    NOM_PARA="INT",
+    REFERENCE="ANALYTIQUE",
     VALE_REFE_I=1,
     VALE_CALC_I=1,
-    FILTRE=_F(
-        NOM_PARA='NPSTR',
-        VALE_K='N7',
-    ),
+    FILTRE=_F(NOM_PARA="NPSTR", VALE_K="N7"),
 )
 
 FIN()

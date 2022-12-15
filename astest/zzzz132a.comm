@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,47 +23,42 @@
 #                          RECALAGE
 # BOULE SOUMISE A UN CHOC THERMIQUE
 #
-#********************************************************************
+# ********************************************************************
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 #
 # -------------------------------------------------------------------
 #    LECTURE DES DONNEES MED (MAILLAGE ET CHAMPS)
 #    PUIS CREATION DE L'EVOL_THER THERDEP
 # -------------------------------------------------------------------
 #
-MA=LIRE_MAILLAGE(
-                   UNITE    = 21,
-                   FORMAT   = 'MED',
-                   INFO_MED = 2
-                 )
+MA = LIRE_MAILLAGE(UNITE=21, FORMAT="MED", INFO_MED=2)
 #
-THERDEP=LIRE_RESU(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   TOUT_ORDRE= 'OUI',
-                   UNITE     = 21,
-                   FORMAT_MED=_F(  NOM_CHAM   = 'TEMP',
-                                   NOM_CHAM_MED   = 'THERDEP_TEMP',
-                                   NOM_CMP   = ('TEMP',),
-                                   NOM_CMP_MED=('TEMP', ),),
-                   INFO      = 2,
-                   TYPE_RESU = 'EVOL_THER' )
+THERDEP = LIRE_RESU(
+    MAILLAGE=MA,
+    FORMAT="MED",
+    TOUT_ORDRE="OUI",
+    UNITE=21,
+    FORMAT_MED=_F(
+        NOM_CHAM="TEMP", NOM_CHAM_MED="THERDEP_TEMP", NOM_CMP=("TEMP",), NOM_CMP_MED=("TEMP",)
+    ),
+    INFO=2,
+    TYPE_RESU="EVOL_THER",
+)
 
-MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
-                      CREA_GROUP_MA= (
-                                        _F( NOM = 'M16', MAILLE = 'M16'),
-                                     ),
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N1', NOEUD = 'N1'),
-                                        _F( NOM = 'N685', NOEUD = 'N685'),
-                                        _F( NOM = 'N1240', NOEUD = 'N1240'),
-                                        _F( NOM = 'N16', NOEUD = 'N16'),
-                                        _F( NOM = 'N96', NOEUD = 'N96'),
-                                        _F( NOM = 'N377', NOEUD = 'N377'),
-                                     ),
-         )
-
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(_F(NOM="M16", MAILLE="M16"),),
+    CREA_GROUP_NO=(
+        _F(NOM="N1", NOEUD="N1"),
+        _F(NOM="N685", NOEUD="N685"),
+        _F(NOM="N1240", NOEUD="N1240"),
+        _F(NOM="N16", NOEUD="N16"),
+        _F(NOM="N96", NOEUD="N96"),
+        _F(NOM="N377", NOEUD="N377"),
+    ),
+)
 
 
 #
@@ -71,144 +66,147 @@ MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
 #    CALCUL THERMOMECANIQUE
 # -------------------------------------------------------------------
 #
-MODEMECA=AFFE_MODELE(  MAILLAGE=MA,
-                       AFFE=_F( TOUT = 'OUI',
-                             PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'AXIS')
-                      )
+MODEMECA = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
 #
 # -------------------------------------------------------------------
 #
 
-EDET=DEFI_FONCTION(   NOM_PARA='TEMP',
-                         NOM_RESU='E',
-                             VALE=(0.0,  1.95120E+11,
-                                   1.0,  1.95120E+11,),
-                          PROL_DROITE='CONSTANT',
-                         PROL_GAUCHE='CONSTANT'
-                                                    )
+EDET = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    NOM_RESU="E",
+    VALE=(0.0, 1.95120e11, 1.0, 1.95120e11),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
 
-NUDET=DEFI_FONCTION(     NOM_PARA='TEMP',
-                            NOM_RESU='NU',
-                                VALE=( 0.0, 0.3,
-                                       1.0, 0.3, ),
-                          PROL_DROITE='CONSTANT',
-                         PROL_GAUCHE='CONSTANT'
-                                                    )
+NUDET = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    NOM_RESU="NU",
+    VALE=(0.0, 0.3, 1.0, 0.3),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
 
-ALDET=DEFI_FONCTION(   NOM_PARA='TEMP',
-                         NOM_RESU='ALPHA',
-                             VALE=(0.0,    16.40E-06,
-                                   1.0,    16.40E-06,  ),
-                          PROL_DROITE='CONSTANT',
-                         PROL_GAUCHE='CONSTANT'
-                                                    )
-
-#
-
-RHOF=DEFI_CONSTANTE(VALE = 7850.0,)
-ACIER=DEFI_MATERIAU(   ELAS_FO=_F( E = EDET,
-                                 NU = NUDET,
-                                RHO = RHOF,
-                              ALPHA = ALDET,TEMP_DEF_ALPHA=20.0,)
-                       )
-
-MATMECA=AFFE_MATERIAU(  MAILLAGE=MA,
-                       AFFE=_F( TOUT = 'OUI', MATER = ACIER,),
-                       AFFE_VARC=
-_F(TOUT='OUI',EVOL=THERDEP,NOM_VARC='TEMP',PROL_GAUCHE='CONSTANT',
-                                     NOM_CHAM='TEMP',VALE_REF=20.0,),)
+ALDET = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    NOM_RESU="ALPHA",
+    VALE=(0.0, 16.40e-06, 1.0, 16.40e-06),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
 
 #
 
-MECATERM=AFFE_CHAR_MECA(    MODELE=MODEMECA,
-                      DDL_IMPO=(
-                      _F( GROUP_NO = 'GNP1',  DX = 0.0),
-                      _F( GROUP_NO = 'N1',    DY = 0.0))
-                         )
+RHOF = DEFI_CONSTANTE(VALE=7850.0)
+ACIER = DEFI_MATERIAU(ELAS_FO=_F(E=EDET, NU=NUDET, RHO=RHOF, ALPHA=ALDET, TEMP_DEF_ALPHA=20.0))
 
-L_INST=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
-                           _F( JUSQU_A = 10.,     NOMBRE = 1),
-                           _F( JUSQU_A = 100.,    NOMBRE = 2),
-                           _F( JUSQU_A = 200.,    NOMBRE = 2),
-                           _F( JUSQU_A = 1000.,   NOMBRE = 8),
-                           _F( JUSQU_A = 1200.,   NOMBRE = 1),
-                           _F( JUSQU_A = 1400.,   NOMBRE = 1),
-                           _F( JUSQU_A = 2000.,   NOMBRE = 1),
-                           _F( JUSQU_A = 10000.,  NOMBRE = 4))
-                        )
+MATMECA = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=ACIER),
+    AFFE_VARC=_F(
+        TOUT="OUI",
+        EVOL=THERDEP,
+        NOM_VARC="TEMP",
+        PROL_GAUCHE="CONSTANT",
+        NOM_CHAM="TEMP",
+        VALE_REF=20.0,
+    ),
+)
 
 #
-#-------------------------------------------------------------------
+
+MECATERM = AFFE_CHAR_MECA(
+    MODELE=MODEMECA, DDL_IMPO=(_F(GROUP_NO="GNP1", DX=0.0), _F(GROUP_NO="N1", DY=0.0))
+)
+
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=10.0, NOMBRE=1),
+        _F(JUSQU_A=100.0, NOMBRE=2),
+        _F(JUSQU_A=200.0, NOMBRE=2),
+        _F(JUSQU_A=1000.0, NOMBRE=8),
+        _F(JUSQU_A=1200.0, NOMBRE=1),
+        _F(JUSQU_A=1400.0, NOMBRE=1),
+        _F(JUSQU_A=2000.0, NOMBRE=1),
+        _F(JUSQU_A=10000.0, NOMBRE=4),
+    ),
+)
+
+#
+# -------------------------------------------------------------------
 #
 
-MECATER=MECA_STATIQUE(        MODELE=MODEMECA,
-                             CHAM_MATER=MATMECA,
-                            EXCIT=_F(  CHARGE = MECATERM),
-                             LIST_INST=L_INST,
-                            )
+MECATER = MECA_STATIQUE(
+    MODELE=MODEMECA, CHAM_MATER=MATMECA, EXCIT=_F(CHARGE=MECATERM), LIST_INST=L_INST
+)
 
-CALC_CHAMP(reuse=MECATER,RESULTAT=MECATER,LIST_INST=L_INST,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
+CALC_CHAMP(
+    reuse=MECATER,
+    RESULTAT=MECATER,
+    LIST_INST=L_INST,
+    CONTRAINTE=("SIGM_ELNO"),
+    DEFORMATION=("EPSI_ELNO"),
+)
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=MECATER,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N96',
-                   NOM_CMP='DX',
-                   VALE_CALC=-1.2492318842756E-4,),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=MECATER,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N96',
-                   NOM_CMP='DY',
-                   VALE_CALC=4.2661610881366E-05,),
-                _F(NUME_ORDRE=21,
-                   RESULTAT=MECATER,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N377',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=2.5622778110179E5,
-                   GROUP_MA='M16',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=MECATER,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N96",
+            NOM_CMP="DX",
+            VALE_CALC=-1.2492318842756e-4,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=MECATER,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N96",
+            NOM_CMP="DY",
+            VALE_CALC=4.2661610881366e-05,
+        ),
+        _F(
+            NUME_ORDRE=21,
+            RESULTAT=MECATER,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N377",
+            NOM_CMP="SIYY",
+            VALE_CALC=2.5622778110179e5,
+            GROUP_MA="M16",
+        ),
+    )
+)
 
-#----------------------------------------------------------
+# ----------------------------------------------------------
 # TEST DE IMPR_RESU
-#----------------------------------------------------------
+# ----------------------------------------------------------
 #
 
-IMPR_RESU(  FORMAT = 'MED', UNITE = 38,
-            RESU=(_F( MAILLAGE = MA       ),
-                  _F( INST = 1000., RESULTAT = THERDEP  ))
-         )
+IMPR_RESU(FORMAT="MED", UNITE=38, RESU=(_F(MAILLAGE=MA), _F(INST=1000.0, RESULTAT=THERDEP)))
 
-THER_1=LIRE_CHAMP( MAILLAGE=MA,
-                   UNITE=38,
-                   NOM_MED='THERDEP_'+'TEMP',
-                   NOM_CMP_MED=('TEMP',),
-                   NOM_CMP=('TEMP',),
-                   NUME_ORDRE = 10,
-                   NUME_PT = 10,
-                   TYPE_CHAM='NOEU_TEMP_R'
-                   )
+THER_1 = LIRE_CHAMP(
+    MAILLAGE=MA,
+    UNITE=38,
+    NOM_MED="THERDEP_" + "TEMP",
+    NOM_CMP_MED=("TEMP",),
+    NOM_CMP=("TEMP",),
+    NUME_ORDRE=10,
+    NUME_PT=10,
+    TYPE_CHAM="NOEU_TEMP_R",
+)
 
 
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='N1240',
-                      NOM_CMP='TEMP',
-                      CHAM_GD=THER_1,
-                      VALE_CALC=1.0,),
-                   _F(GROUP_NO='N685',
-                      NOM_CMP='TEMP',
-                      CHAM_GD=THER_1,
-                      VALE_CALC=1.0,),
-                   _F(GROUP_NO='N16',
-                      NOM_CMP='TEMP',
-                      CHAM_GD=THER_1,
-                      VALE_CALC=1.0,),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(GROUP_NO="N1240", NOM_CMP="TEMP", CHAM_GD=THER_1, VALE_CALC=1.0),
+        _F(GROUP_NO="N685", NOM_CMP="TEMP", CHAM_GD=THER_1, VALE_CALC=1.0),
+        _F(GROUP_NO="N16", NOM_CMP="TEMP", CHAM_GD=THER_1, VALE_CALC=1.0),
+    )
+)
 
 #
 FIN()

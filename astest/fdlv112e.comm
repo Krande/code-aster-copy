@@ -17,199 +17,164 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #
 
-mail0=LIRE_MAILLAGE(FORMAT='MED',
-                    VERI_MAIL=_F(VERIF='OUI',),)
+mail0 = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
 # placer les impedances sous la fondation du barrages.
 
-mail=CREA_MAILLAGE(MAILLAGE=mail0,
-                   CREA_POI1=(_F(NOM_GROUP_MA='PBASE',
-                                 GROUP_NO='N316',),
-                              _F(NOM_GROUP_MA='PFONDAT',
-                                 GROUP_MA='SURFBAS2',),
-                              _F(NOM_GROUP_MA='PC',
-                                 GROUP_NO=('PC1','PC2','PC3',),),),)
+mail = CREA_MAILLAGE(
+    MAILLAGE=mail0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA="PBASE", GROUP_NO="N316"),
+        _F(NOM_GROUP_MA="PFONDAT", GROUP_MA="SURFBAS2"),
+        _F(NOM_GROUP_MA="PC", GROUP_NO=("PC1", "PC2", "PC3")),
+    ),
+)
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
 # placer les impedances sous la fondation du barrages.
 
-mail=DEFI_GROUP(reuse =mail,
-                MAILLAGE=mail,
-                CREA_GROUP_NO=_F(GROUP_MA='SURFBAS2',
-                                 NOM='ISOLSTR',),)
+mail = DEFI_GROUP(reuse=mail, MAILLAGE=mail, CREA_GROUP_NO=_F(GROUP_MA="SURFBAS2", NOM="ISOLSTR"))
 
 #
 # Orientation des elements d interface.
 
-mail=MODI_MAILLAGE(reuse =mail,
-                   MAILLAGE=mail,
-                   ORIE_NORM_COQUE=(_F(GROUP_MA='IFLUSOL2',
-                                       VECT_NORM=(0.,0.,1.,),
-                                       GROUP_NO='N963',),
-                                    _F(GROUP_MA='IFLUSTR2',
-                                       VECT_NORM=(1.,0.,0.,),
-                                       GROUP_NO='N221',),
-                                    _F(GROUP_MA='SURFBAS2',
-                                       VECT_NORM=(0.,0.,-1.,),
-                                       GROUP_NO='N316',),
-                                    _F(GROUP_MA='SLIBREM2',
-                                       VECT_NORM=(0.,0.,1.,),
-                                       GROUP_NO='N1043',),),)
+mail = MODI_MAILLAGE(
+    reuse=mail,
+    MAILLAGE=mail,
+    ORIE_NORM_COQUE=(
+        _F(GROUP_MA="IFLUSOL2", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="N963"),
+        _F(GROUP_MA="IFLUSTR2", VECT_NORM=(1.0, 0.0, 0.0), GROUP_NO="N221"),
+        _F(GROUP_MA="SURFBAS2", VECT_NORM=(0.0, 0.0, -1.0), GROUP_NO="N316"),
+        _F(GROUP_MA="SLIBREM2", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="N1043"),
+    ),
+)
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=mail,))
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=mail,))
 
-modele=AFFE_MODELE(MAILLAGE=mail,
-                   AFFE=(_F(GROUP_MA='STRVOU2',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),
-                         _F(GROUP_MA='PBASE',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),
-                         _F(GROUP_MA='PC',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),)
+modele = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="STRVOU2", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="PBASE", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA="PC", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+)
 
 #
 
-mat1=DEFI_MATERIAU(ELAS=_F(E=3.6E+10,
-                           NU=0.2,
-                           RHO=2400.,),)
+mat1 = DEFI_MATERIAU(ELAS=_F(E=3.6e10, NU=0.2, RHO=2400.0))
 
 #
 
-champmat=AFFE_MATERIAU(MAILLAGE=mail,
-                       AFFE=_F(GROUP_MA='STRVOU2',
-                               MATER=mat1,),)
+champmat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(GROUP_MA="STRVOU2", MATER=mat1))
 
-cara_ele=AFFE_CARA_ELEM(MODELE=modele,
-                        DISCRET=(_F(REPERE='GLOBAL',
-                                    CARA='M_TR_D_N',
-                                    GROUP_MA='PBASE',
-                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
-                                 _F(REPERE='GLOBAL',
-                                    CARA='K_TR_D_N',
-                                    GROUP_MA='PBASE',
-                                    VALE=(0.,0.,0.,0.,0.,0.,),),
-                                 _F(CARA='M_T_D_N',
-                                    GROUP_MA='PC',
-                                    VALE=0.,),
-                                 _F(CARA='K_T_D_N',
-                                    GROUP_MA='PC',
-                                    VALE=(0.,0.,0.,),),),)
+cara_ele = AFFE_CARA_ELEM(
+    MODELE=modele,
+    DISCRET=(
+        _F(
+            REPERE="GLOBAL",
+            CARA="M_TR_D_N",
+            GROUP_MA="PBASE",
+            VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(REPERE="GLOBAL", CARA="K_TR_D_N", GROUP_MA="PBASE", VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="M_T_D_N", GROUP_MA="PC", VALE=0.0),
+        _F(CARA="K_T_D_N", GROUP_MA="PC", VALE=(0.0, 0.0, 0.0)),
+    ),
+)
 
 #
-#========================================
+# ========================================
 # ETAPE 1: Calul des impedances de sols
 # --------
-#========================================
+# ========================================
 #
 #
 # La structure est encastree a l interface
-#-----------------------------------------
+# -----------------------------------------
 
-cond_lim=AFFE_CHAR_MECA(MODELE=modele,
-                        DDL_IMPO=(_F(GROUP_NO='N316',
-                                     DX=0.,
-                                     DY=0.,
-                                     DZ=0.,
-                                     DRX=0.,
-                                     DRY=0.,
-                                     DRZ=0.,),
-                                  _F(GROUP_NO=('PC1','PC2','PC3',),
-                                     DX=0.,
-                                     DY=0.,
-                                     DZ=0.,),),
-                        LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),)
+cond_lim = AFFE_CHAR_MECA(
+    MODELE=modele,
+    DDL_IMPO=(
+        _F(GROUP_NO="N316", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO=("PC1", "PC2", "PC3"), DX=0.0, DY=0.0, DZ=0.0),
+    ),
+    LIAISON_SOLIDE=_F(GROUP_NO="ISOLSTR"),
+)
 
 #
 #
 # Calcul des matrices et vecteurs elementaires
-#----------------------------------------------
+# ----------------------------------------------
 
-rigi_ele=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=modele,
-                        CHAM_MATER=champmat,
-                        CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,)
+rigi_ele = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", MODELE=modele, CHAM_MATER=champmat, CARA_ELEM=cara_ele, CHARGE=cond_lim
+)
 
 #
 
-mass_ele=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                        MODELE=modele,
-                        CHAM_MATER=champmat,
-                        CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,)
+mass_ele = CALC_MATR_ELEM(
+    OPTION="MASS_MECA", MODELE=modele, CHAM_MATER=champmat, CARA_ELEM=cara_ele, CHARGE=cond_lim
+)
 
 #
 
-nume_ddl=NUME_DDL(MATR_RIGI=rigi_ele,)
+nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
 
 #
 # Assemblage des matrices et vecteurs
-#-------------------------------------
+# -------------------------------------
 
-MATRIGI=ASSE_MATRICE(MATR_ELEM=rigi_ele,
-                     NUME_DDL=nume_ddl,)
+MATRIGI = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
 
-MATMASS=ASSE_MATRICE(MATR_ELEM=mass_ele,
-                     NUME_DDL=nume_ddl,)
+MATMASS = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
 
 #
 # Calcul de la masse du barrage voute
-#-------------------------------------
+# -------------------------------------
 
-mass_bar=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
-                   MODELE=modele,
-                   CHAM_MATER=champmat,
-                   CARA_ELEM=cara_ele,
-                   INFO=1,)
+mass_bar = POST_ELEM(
+    MASS_INER=_F(TOUT="OUI"), MODELE=modele, CHAM_MATER=champmat, CARA_ELEM=cara_ele, INFO=1
+)
 
 #
 # calcul des modes
-#------------------
+# ------------------
 #
 #
 
-mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
-                    VERI_MODE=_F(STOP_ERREUR='NON',
-                                 ),
-                    NORM_MODE=_F(INFO=1,
-                                 NORME='TRAN_ROTA',),
-                    OPTION='BANDE',
-                    CALC_FREQ=_F(FREQ=(0.1,10.,20.,30.,40.,),
-                                 ),
-                    FILTRE_MODE=_F(SEUIL=0.0003,
-                                   ),
-                    MATR_MASS=MATMASS,
-                    )
+mode_rig = CALC_MODES(
+    MATR_RIGI=MATRIGI,
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+    NORM_MODE=_F(INFO=1, NORME="TRAN_ROTA"),
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(0.1, 10.0, 20.0, 30.0, 40.0)),
+    FILTRE_MODE=_F(SEUIL=0.0003),
+    MATR_MASS=MATMASS,
+)
 
 #
-#Calcul  du macro-element Dynamique
-#-----------------------------------
+# Calcul  du macro-element Dynamique
+# -----------------------------------
 
-interdy=DEFI_INTERF_DYNA(NUME_DDL=nume_ddl,
-                         INTERFACE=_F(NOM='SOLBAR',
-                                      TYPE='CRAIGB',
-                                      GROUP_NO='N316',),)
+interdy = DEFI_INTERF_DYNA(
+    NUME_DDL=nume_ddl, INTERFACE=_F(NOM="SOLBAR", TYPE="CRAIGB", GROUP_NO="N316")
+)
 
 #
 
-bamo=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=interdy,
-                                   MODE_MECA=mode_rig,
-                                   NMAX_MODE=999,),)
+bamo = DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=interdy, MODE_MECA=mode_rig, NMAX_MODE=999))
 
 #
 
-mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,)
+mael = MACR_ELEM_DYNA(BASE_MODALE=bamo)
 
 # Table de sol en manuel pour reference :
 # TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
@@ -292,172 +257,163 @@ mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,)
 #                                 NUME_MATE=2,),),
 #                      TITRE='SOL HOMOGENE',)
 
-TABSOL=DEFI_SOL_MISS(MATERIAU=(_F(E=3.0e11,
-                                  NU=0.16,
-                                  RHO=2000.,
-                                  AMOR_HYST=0.10,),),
-                     COUCHE_AUTO=_F(SURF='NON',HOMOGENE='OUI',
-                                    EPAIS_PHYS=115.,
-                                    GROUP_MA='SURFBAS2',
-                                    NOMBRE_RECEPTEUR=2,
-                                    GROUP_MA_INTERF='SURFBAS2',
-                                    MAILLAGE=mail,
-                                    GROUP_MA_CONTROL='PC',
-                                     ),
-                     TITRE='SOL HOMOGENE',INFO=2,)
+TABSOL = DEFI_SOL_MISS(
+    MATERIAU=(_F(E=3.0e11, NU=0.16, RHO=2000.0, AMOR_HYST=0.10),),
+    COUCHE_AUTO=_F(
+        SURF="NON",
+        HOMOGENE="OUI",
+        EPAIS_PHYS=115.0,
+        GROUP_MA="SURFBAS2",
+        NOMBRE_RECEPTEUR=2,
+        GROUP_MA_INTERF="SURFBAS2",
+        MAILLAGE=mail,
+        GROUP_MA_CONTROL="PC",
+    ),
+    TITRE="SOL HOMOGENE",
+    INFO=2,
+)
 
 tfin = 0.2
 df = 1.0 / tfin
-fmax = 10.0, #50.0
-pas1 = 1.0E-2
+fmax = (10.0,)  # 50.0
+pas1 = 1.0e-2
 omega = 31.416
 
-ltps=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=tfin,
-                                  PAS=pas1,),)
+ltps = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, PAS=pas1))
 
-fonsin = FORMULE(VALE='sin(omega*INST) ',
-                 omega=omega,
-                 NOM_PARA='INST',)
+fonsin = FORMULE(VALE="sin(omega*INST) ", omega=omega, NOM_PARA="INST")
 
-accsin=CALC_FONC_INTERP(FONCTION=fonsin,
-                        NOM_PARA='INST',
-                        NOM_RESU='EVOL',
-                        LIST_PARA=ltps)
+accsin = CALC_FONC_INTERP(FONCTION=fonsin, NOM_PARA="INST", NOM_RESU="EVOL", LIST_PARA=ltps)
 
-tabctr=CALC_MISS(TYPE_RESU='TABLE_CONTROL',
-                 PROJET='FDLV112E',
-                 VERSION='V6.6',
-                 TABLE_SOL=TABSOL,
-                 MATER_FLUIDE=_F(RHO=1000.,
-                                 CELE=1500.,
-                                 AMOR_BETA=0.),
-                 MACR_ELEM_DYNA=mael,
-                 #UNITE_RESU_IMPE=25,
-                 #UNITE_RESU_FORC=28,
-                 GROUP_MA_INTERF='SURFBAS2',
-                 GROUP_MA_FLU_STR='IFLUSTR2',
-                 GROUP_MA_FLU_SOL='IFLUSOL2',
-                 GROUP_MA_SOL_SOL='SLIBREM2',
-                 GROUP_MA_CONTROL='PC',
-                 PARAMETRE=_F(FREQ_MIN=df, #0.1,
-                              FREQ_MAX=fmax, #3.0,
-                              FREQ_PAS=df, #2.9,
-                              Z0=5.0,
-                              SURF='NON',
-                              ISSF='OUI',
-                              ALGO='REGU',
-                              OFFSET_MAX=1000,
-                              OFFSET_NB=5000,),
-                 ACCE_Z=accsin,
-                 INST_FIN=tfin,
-                 PAS_INST=pas1,
-                 NORME=9.81,
-                 AMOR_SPEC_OSCI=(0.02, 0.05, 0.07),
-                 INFO=2)
+tabctr = CALC_MISS(
+    TYPE_RESU="TABLE_CONTROL",
+    PROJET="FDLV112E",
+    VERSION="V6.6",
+    TABLE_SOL=TABSOL,
+    MATER_FLUIDE=_F(RHO=1000.0, CELE=1500.0, AMOR_BETA=0.0),
+    MACR_ELEM_DYNA=mael,
+    # UNITE_RESU_IMPE=25,
+    # UNITE_RESU_FORC=28,
+    GROUP_MA_INTERF="SURFBAS2",
+    GROUP_MA_FLU_STR="IFLUSTR2",
+    GROUP_MA_FLU_SOL="IFLUSOL2",
+    GROUP_MA_SOL_SOL="SLIBREM2",
+    GROUP_MA_CONTROL="PC",
+    PARAMETRE=_F(
+        FREQ_MIN=df,  # 0.1,
+        FREQ_MAX=fmax,  # 3.0,
+        FREQ_PAS=df,  # 2.9,
+        Z0=5.0,
+        SURF="NON",
+        ISSF="OUI",
+        ALGO="REGU",
+        OFFSET_MAX=1000,
+        OFFSET_NB=5000,
+    ),
+    ACCE_Z=accsin,
+    INST_FIN=tfin,
+    PAS_INST=pas1,
+    NORME=9.81,
+    AMOR_SPEC_OSCI=(0.02, 0.05, 0.07),
+    INFO=2,
+)
 
-ftx1 = EXTR_TABLE(TABLE     = tabctr,
-                  TYPE_RESU = 'FONCTION_C',
-                  NOM_PARA  = 'FONC_X',
-                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                               VALE_K   = 'PC1'),
-                            _F(NOM_PARA = 'NOM_CHAM',
-                               VALE_K   = 'TRANSFERT'),
-                            _F(NOM_PARA = 'NOM_PARA',
-                               VALE_K   = 'FREQ'),),)
+ftx1 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_C",
+    NOM_PARA="FONC_X",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC1"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="TRANSFERT"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="FREQ"),
+    ),
+)
 
-ftz1 = EXTR_TABLE(TABLE     = tabctr,
-                  TYPE_RESU = 'FONCTION_C',
-                  NOM_PARA  = 'FONC_Z',
-                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                               VALE_K   = 'PC1'),
-                            _F(NOM_PARA = 'NOM_CHAM',
-                               VALE_K   = 'TRANSFERT'),
-                            _F(NOM_PARA = 'NOM_PARA',
-                               VALE_K   = 'FREQ'),),)
+ftz1 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_C",
+    NOM_PARA="FONC_Z",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC1"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="TRANSFERT"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="FREQ"),
+    ),
+)
 
-ftz2 = EXTR_TABLE(TABLE     = tabctr,
-                  TYPE_RESU = 'FONCTION_C',
-                  NOM_PARA  = 'FONC_Z',
-                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                               VALE_K   = 'PC2'),
-                            _F(NOM_PARA = 'NOM_CHAM',
-                               VALE_K   = 'TRANSFERT'),
-                            _F(NOM_PARA = 'NOM_PARA',
-                               VALE_K   = 'FREQ'),),)
+ftz2 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_C",
+    NOM_PARA="FONC_Z",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC2"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="TRANSFERT"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="FREQ"),
+    ),
+)
 
-ftz3 = EXTR_TABLE(TABLE     = tabctr,
-                  TYPE_RESU = 'FONCTION_C',
-                  NOM_PARA  = 'FONC_Z',
-                  FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                               VALE_K   = 'PC3'),
-                            _F(NOM_PARA = 'NOM_CHAM',
-                               VALE_K   = 'TRANSFERT'),
-                            _F(NOM_PARA = 'NOM_PARA',
-                               VALE_K   = 'FREQ'),),)
+ftz3 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_C",
+    NOM_PARA="FONC_Z",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC3"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="TRANSFERT"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="FREQ"),
+    ),
+)
 
-TEST_FONCTION(VALEUR=_F(
-    FONCTION=ftz1,
-    NOM_PARA='FREQ',
-    VALE_PARA=5.0,
-    VALE_CALC_C=9.84140E-01+4.96964E-03j,
-))
+TEST_FONCTION(
+    VALEUR=_F(FONCTION=ftz1, NOM_PARA="FREQ", VALE_PARA=5.0, VALE_CALC_C=9.84140e-01 + 4.96964e-03j)
+)
 
-TEST_FONCTION(VALEUR=_F(
-    FONCTION=ftz2,
-    NOM_PARA='FREQ',
-    VALE_PARA=5.0,
-    VALE_CALC_C=9.61780E-01+2.61026E-02j,
-))
+TEST_FONCTION(
+    VALEUR=_F(FONCTION=ftz2, NOM_PARA="FREQ", VALE_PARA=5.0, VALE_CALC_C=9.61780e-01 + 2.61026e-02j)
+)
 
-TEST_FONCTION(VALEUR=_F(
-    FONCTION=ftz3,
-    NOM_PARA='FREQ',
-    VALE_PARA=5.0,
-    VALE_CALC_C=9.51352E-01+2.63920E-02j,
-))
+TEST_FONCTION(
+    VALEUR=_F(FONCTION=ftz3, NOM_PARA="FREQ", VALE_PARA=5.0, VALE_CALC_C=9.51352e-01 + 2.63920e-02j)
+)
 
-acce_z1 = EXTR_TABLE(TABLE     = tabctr,
-                     TYPE_RESU = 'FONCTION_SDASTER',
-                     NOM_PARA  = 'FONC_Z',
-                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                                  VALE_K   = 'PC1'),
-                             _F(NOM_PARA   = 'NOM_CHAM',
-                                  VALE_K   = 'ACCE'),
-                             _F(NOM_PARA   = 'NOM_PARA',
-                                  VALE_K   = 'INST'),),)
+acce_z1 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_SDASTER",
+    NOM_PARA="FONC_Z",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC1"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="ACCE"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="INST"),
+    ),
+)
 
-acce_z2 = EXTR_TABLE(TABLE     = tabctr,
-                     TYPE_RESU = 'FONCTION_SDASTER',
-                     NOM_PARA  = 'FONC_Z',
-                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                                  VALE_K   = 'PC2'),
-                             _F(NOM_PARA   = 'NOM_CHAM',
-                                  VALE_K   = 'ACCE'),
-                             _F(NOM_PARA   = 'NOM_PARA',
-                                  VALE_K   = 'INST'),),)
+acce_z2 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_SDASTER",
+    NOM_PARA="FONC_Z",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC2"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="ACCE"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="INST"),
+    ),
+)
 
-acce_z3 = EXTR_TABLE(TABLE     = tabctr,
-                     TYPE_RESU = 'FONCTION_SDASTER',
-                     NOM_PARA  = 'FONC_Z',
-                     FILTRE = (_F(NOM_PARA = 'GROUP_NO',
-                                  VALE_K   = 'PC3'),
-                             _F(NOM_PARA   = 'NOM_CHAM',
-                                  VALE_K   = 'ACCE'),
-                             _F(NOM_PARA   = 'NOM_PARA',
-                                  VALE_K   = 'INST'),),)
+acce_z3 = EXTR_TABLE(
+    TABLE=tabctr,
+    TYPE_RESU="FONCTION_SDASTER",
+    NOM_PARA="FONC_Z",
+    FILTRE=(
+        _F(NOM_PARA="GROUP_NO", VALE_K="PC3"),
+        _F(NOM_PARA="NOM_CHAM", VALE_K="ACCE"),
+        _F(NOM_PARA="NOM_PARA", VALE_K="INST"),
+    ),
+)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.98413993987259,
-                         VALE_PARA=0.05,
-                         FONCTION=acce_z1,),
-                      _F(VALE_CALC=0.96178015146713,
-                         VALE_PARA=0.05,
-                         FONCTION=acce_z2,),
-                      _F(VALE_CALC=0.95135209480272,
-                         VALE_PARA=0.05,
-                         FONCTION=acce_z3,),
-                      ),
-              )
+TEST_FONCTION(
+    VALEUR=(
+        _F(VALE_CALC=0.98413993987259, VALE_PARA=0.05, FONCTION=acce_z1),
+        _F(VALE_CALC=0.96178015146713, VALE_PARA=0.05, FONCTION=acce_z2),
+        _F(VALE_CALC=0.95135209480272, VALE_PARA=0.05, FONCTION=acce_z3),
+    )
+)
 
 # IMPR_FONCTION(COURBE=(_F(FONCTION=ftz1),
 #                       _F(FONCTION=ftz2),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,11 @@ import numpy
 # Il NE faudrait utiliser cette fonction QUE sur des tableaux hétérogènes.
 # Pour les tableaux homogènes (int, float, string), utiliser numpy.transpose.
 
+
 def transpose(liste):
-    """Transposition de double liste
-    """
+    """Transposition de double liste"""
     if isinstance(liste, numpy.ndarray):
-        warn('prefer use of numpy.transpose instead',
-             DeprecationWarning, stacklevel=2)
+        warn("prefer use of numpy.transpose instead", DeprecationWarning, stacklevel=2)
 
     n = list(range(len(liste[0])))
     m = list(range(len(liste)))

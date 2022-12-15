@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,12 @@ from .sd_titre import sd_titre
 
 
 class sd_interspectre(sd_titre):
-#------------------------------------
+    # ------------------------------------
     nomj = SDNom(fin=8)
 
-    REFE = AsVK16(lonmax=3,)
+    REFE = AsVK16(lonmax=3)
     DISC = AsVR()
-    VALE = AsColl(
-        acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='R',)
+    VALE = AsColl(acces="NU", stockage="DISPERSE", modelong="VARIABLE", type="R")
 
     NUMI = Facultatif(AsVI())
     NUMJ = Facultatif(AsVI())
@@ -40,7 +39,7 @@ class sd_interspectre(sd_titre):
     CMPJ = Facultatif(AsVK8())
 
     def check_NUME(self, checker):
-    #-------------------------------
+        # -------------------------------
         if self.NUMI.exists:
             numi = self.NUMI.get()
             assert self.NUMJ.exists

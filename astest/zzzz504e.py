@@ -28,47 +28,44 @@ code_aster.init("--test")
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("zzzz504c/%d.med"%rank, True)
+pMesh2.readMedFile("zzzz504c/%d.med" % rank, True)
 
-model = AFFE_MODELE(MAILLAGE = pMesh2,
-                    AFFE = _F(MODELISATION = "D_PLAN",
-                              PHENOMENE = "MECANIQUE",
-                              TOUT = "OUI",),)
+model = AFFE_MODELE(
+    MAILLAGE=pMesh2, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
+)
 
-char_cin = AFFE_CHAR_CINE(MODELE=model,
-                          MECA_IMPO=(_F(GROUP_NO="N2",
-                                        DX=0.,DY=0.,DZ=0.,),
-                                     _F(GROUP_NO="N4",
-                                        DX=0.,DY=0.,DZ=0.,),),)
+char_cin = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(
+        _F(GROUP_NO="N2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N4", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
 
-char_meca = AFFE_CHAR_MECA(MODELE=model,
-                           LIAISON_UNIF=_F(GROUP_NO=("N1", "N3"),
-                                           DDL="DX"),
-                           DDL_IMPO=_F(GROUP_NO="N1",DX=1.0)
-                           )
-char_meca.debugPrint(10+rank)
+char_meca = AFFE_CHAR_MECA(
+    MODELE=model,
+    LIAISON_UNIF=_F(GROUP_NO=("N1", "N3"), DDL="DX"),
+    DDL_IMPO=_F(GROUP_NO="N1", DX=1.0),
+)
+char_meca.debugPrint(10 + rank)
 
-MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                               NU=0.3,),)
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
 
-AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=MATER1,),)
+AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=MATER1))
 
-resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
-                     MODELE=model,
-                     EXCIT=(_F(CHARGE=char_cin,),
-                            _F(CHARGE=char_meca,),),
-                     SOLVEUR=_F(METHODE='PETSC',
-                                PRE_COND='SANS',
-                                RESI_RELA=1.E-10,),)
-resu.debugPrint(10+rank)
+resu = MECA_STATIQUE(
+    CHAM_MATER=AFFMAT,
+    MODELE=model,
+    EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=char_meca)),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="SANS", RESI_RELA=1.0e-10),
+)
+resu.debugPrint(10 + rank)
 
-resu.printMedFile("test"+str(rank)+".med")
+resu.printMedFile("test" + str(rank) + ".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
-sfon.debugPrint(10+rank)
+sfon.debugPrint(10 + rank)
 sfon.build()
 
 if rank == 0:

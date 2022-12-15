@@ -17,36 +17,28 @@
 # --------------------------------------------------------------------
 #
 import numpy as np
-import math  as mt
+import math as mt
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-Maillage=LIRE_MAILLAGE(FORMAT="ASTER",)
+Maillage = LIRE_MAILLAGE(FORMAT="ASTER")
 
-Model01=AFFE_MODELE(MAILLAGE=Maillage,
-    AFFE=_F(GROUP_MA=('GMS01','GMS02','GMS03',), PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+Model01 = AFFE_MODELE(
+    MAILLAGE=Maillage,
+    AFFE=_F(GROUP_MA=("GMS01", "GMS02", "GMS03"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
 )
 
-MatBidon=DEFI_MATERIAU(ELAS=_F(E=1.0,NU=0.25, ),)
+MatBidon = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.25))
 
-ChMat=AFFE_MATERIAU(MAILLAGE=Maillage,
-    AFFE=(
-        _F(GROUP_MA=('GMS01','GMS02','GMS03',), MATER=MatBidon),
-    ),
+ChMat = AFFE_MATERIAU(
+    MAILLAGE=Maillage, AFFE=(_F(GROUP_MA=("GMS01", "GMS02", "GMS03"), MATER=MatBidon),)
 )
 
 FctMult = DEFI_FONCTION(
-    NOM_PARA='INST',
-    VALE=(  0.0 ,0.0 ,
-            1.0 ,1.0 ,),
-    PROL_DROITE='CONSTANT',
-    PROL_GAUCHE='CONSTANT',
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT"
 )
 
-l_isnt=DEFI_LIST_REEL(
-    DEBUT=0.0,
-    INTERVALLE=_F(JUSQU_A=1.00, NOMBRE=2,),
-)
+l_isnt = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.00, NOMBRE=2))
 
 """
     Discrets  Termes  Noeud  Composantes Dim matrice
@@ -64,112 +56,151 @@ l_isnt=DEFI_LIST_REEL(
 
 # Matrice de Raideur des Discrets
 dime = 6
-KK_T_L= np.array( np.empty( (dime,dime) ) )
+KK_T_L = np.array(np.empty((dime, dime)))
 for ii in range(dime):
     for jj in range(dime):
-        KK_T_L[ii,jj] = (ii+1)*1000.0 + (jj+1)*50.0
+        KK_T_L[ii, jj] = (ii + 1) * 1000.0 + (jj + 1) * 50.0
 
 # Les colonnes puis les lignes
-Kij_T_L = [ KK_T_L[ii,jj] for jj in range(dime) for ii in range(dime) ]
+Kij_T_L = [KK_T_L[ii, jj] for jj in range(dime) for ii in range(dime)]
 
 # ==================================================================================================
 #
 #   Matrices de raideur dans le repère GLOBAL
 #
-Cara01=AFFE_CARA_ELEM(
-   MODELE=Model01, INFO=2,
-   DISCRET=(
-        _F(CARA='K_T_L', REPERE='GLOBAL', SYME='NON',
-           GROUP_MA=('GMS01', 'GMS02', 'GMS03',),
-           VALE=( Kij_T_L ), ),
-   ),
+Cara01 = AFFE_CARA_ELEM(
+    MODELE=Model01,
+    INFO=2,
+    DISCRET=(
+        _F(
+            CARA="K_T_L",
+            REPERE="GLOBAL",
+            SYME="NON",
+            GROUP_MA=("GMS01", "GMS02", "GMS03"),
+            VALE=(Kij_T_L),
+        ),
+    ),
 )
 
-CharMeca01=AFFE_CHAR_MECA(
-   MODELE=Model01,
-   DDL_IMPO=(
-      _F( GROUP_NO='GNP0', DX=-1.0 , DY=-1.0 , DZ=-1.0),
-      _F( GROUP_NO='GNP1', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-      _F( GROUP_NO='GNP2', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-      _F( GROUP_NO='GNP3', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-   ),
+CharMeca01 = AFFE_CHAR_MECA(
+    MODELE=Model01,
+    DDL_IMPO=(
+        _F(GROUP_NO="GNP0", DX=-1.0, DY=-1.0, DZ=-1.0),
+        _F(GROUP_NO="GNP1", DX=1.0, DY=2.0, DZ=3.0),
+        _F(GROUP_NO="GNP2", DX=1.0, DY=2.0, DZ=3.0),
+        _F(GROUP_NO="GNP3", DX=1.0, DY=2.0, DZ=3.0),
+    ),
 )
 
 # Déplacement dans le repère GLOBAL
-DeplGlob = np.array( [-1.0, -1.0, -1.0, 1.0, 2.0, 3.0 ] ).reshape( (6,1) )
+DeplGlob = np.array([-1.0, -1.0, -1.0, 1.0, 2.0, 3.0]).reshape((6, 1))
 
-stnl01= STAT_NON_LINE(
+stnl01 = STAT_NON_LINE(
     MODELE=Model01,
     CHAM_MATER=ChMat,
     CARA_ELEM=Cara01,
-    EXCIT=(_F(CHARGE=CharMeca01,FONC_MULT= FctMult),),
-    COMPORTEMENT=_F(RELATION='ELAS', TOUT='OUI',),
+    EXCIT=(_F(CHARGE=CharMeca01, FONC_MULT=FctMult),),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
     INCREMENT=_F(LIST_INST=l_isnt),
 )
 
-stnl01=CALC_CHAMP(reuse=stnl01,
-    RESULTAT=stnl01, FORCE=('REAC_NODA'),
-)
+stnl01 = CALC_CHAMP(reuse=stnl01, RESULTAT=stnl01, FORCE=("REAC_NODA"))
 
-#IMPR_RESU(FORMAT='RESULTAT', UNITE=8, RESU=_F(RESULTAT=stnl01),)
+# IMPR_RESU(FORMAT='RESULTAT', UNITE=8, RESU=_F(RESULTAT=stnl01),)
 
 # Résultats théoriques dans le repère GLOBAL
 SiefGlob = KK_T_L @ DeplGlob
 # Les axes pour les efforts internes
-Fint= {
-  'GMS01':[ ('N', 1) , ('VY', 2) , ('VZ', 3) ],
-  'GMS02':[ ('N', 2) , ('VY',-1) , ('VZ', 3) ],
-  'GMS03':[ ('N', 3) , ('VY', 2) , ('VZ',-1) ],
+Fint = {
+    "GMS01": [("N", 1), ("VY", 2), ("VZ", 3)],
+    "GMS02": [("N", 2), ("VY", -1), ("VZ", 3)],
+    "GMS03": [("N", 3), ("VY", 2), ("VZ", -1)],
 }
 
 # Les FORCES INTERNES
-mtclfs = {'RESU':[]}
-for gma,force in Fint.items():
-    for compo,indx in force:
+mtclfs = {"RESU": []}
+for gma, force in Fint.items():
+    for compo, indx in force:
         # noeud 1 & noeud 2
-        if ( indx > 0 ):
-            F1 =  SiefGlob[  indx-1,   0 ]
-            F2 =  SiefGlob[  indx-1+3, 0 ]
-        if ( indx < 0 ):
-            F1 = -SiefGlob[ -indx-1,   0 ]
-            F2 = -SiefGlob[ -indx-1+3, 0 ]
+        if indx > 0:
+            F1 = SiefGlob[indx - 1, 0]
+            F2 = SiefGlob[indx - 1 + 3, 0]
+        if indx < 0:
+            F1 = -SiefGlob[-indx - 1, 0]
+            F2 = -SiefGlob[-indx - 1 + 3, 0]
         #
-        mtclfs['RESU'].append(
-            _F(RESULTAT=stnl01,  INST=1.0, NOM_CHAM='SIEF_ELGA', NOM_CMP=compo,
-               GROUP_MA=gma, REFERENCE='ANALYTIQUE',
-               POINT=1, VALE_CALC= -F1, VALE_REFE= -F1,) )
-        mtclfs['RESU'].append(
-            _F(RESULTAT=stnl01,  INST=1.0, NOM_CHAM='SIEF_ELGA', NOM_CMP=compo,
-               GROUP_MA=gma, REFERENCE='ANALYTIQUE',
-               POINT=2, VALE_CALC= F2, VALE_REFE= F2,) )
+        mtclfs["RESU"].append(
+            _F(
+                RESULTAT=stnl01,
+                INST=1.0,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP=compo,
+                GROUP_MA=gma,
+                REFERENCE="ANALYTIQUE",
+                POINT=1,
+                VALE_CALC=-F1,
+                VALE_REFE=-F1,
+            )
+        )
+        mtclfs["RESU"].append(
+            _F(
+                RESULTAT=stnl01,
+                INST=1.0,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP=compo,
+                GROUP_MA=gma,
+                REFERENCE="ANALYTIQUE",
+                POINT=2,
+                VALE_CALC=F2,
+                VALE_REFE=F2,
+            )
+        )
 TEST_RESU(**mtclfs)
 
 
 # REAC_NODA au noeud GNP0 : somme des composantes au noeud GNP0 sur les axes X, Y, Z
-ReacNoda = [ 0.0 , 0.0, 0.0 ]
-for gma,force in Fint.items():
-    for compo,indx in force:
-        if ( indx > 0 ):
-            ReacNoda[abs(indx) -1 ] += SiefGlob[  indx-1, 0 ]
-        if ( indx < 0 ):
-            ReacNoda[abs(indx) -1 ] += SiefGlob[ -indx-1, 0 ]
+ReacNoda = [0.0, 0.0, 0.0]
+for gma, force in Fint.items():
+    for compo, indx in force:
+        if indx > 0:
+            ReacNoda[abs(indx) - 1] += SiefGlob[indx - 1, 0]
+        if indx < 0:
+            ReacNoda[abs(indx) - 1] += SiefGlob[-indx - 1, 0]
 
 TEST_RESU(
     RESU=(
         # Les REAC_NODA
-        _F( RESULTAT=stnl01, INST=1.0, NOM_CHAM='REAC_NODA', NOM_CMP='DX',
-            GROUP_NO='GNP0', REFERENCE='ANALYTIQUE',
-            VALE_CALC= ReacNoda[0],
-            VALE_REFE= ReacNoda[0], ),
-        _F( RESULTAT=stnl01, INST=1.0, NOM_CHAM='REAC_NODA', NOM_CMP='DY',
-            GROUP_NO='GNP0', REFERENCE='ANALYTIQUE',
-            VALE_CALC= ReacNoda[1],
-            VALE_REFE= ReacNoda[1], ),
-        _F( RESULTAT=stnl01, INST=1.0, NOM_CHAM='REAC_NODA', NOM_CMP='DZ',
-            GROUP_NO='GNP0', REFERENCE='ANALYTIQUE',
-            VALE_CALC= ReacNoda[2],
-            VALE_REFE= ReacNoda[2], ),
-    ),
+        _F(
+            RESULTAT=stnl01,
+            INST=1.0,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            GROUP_NO="GNP0",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=ReacNoda[0],
+            VALE_REFE=ReacNoda[0],
+        ),
+        _F(
+            RESULTAT=stnl01,
+            INST=1.0,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            GROUP_NO="GNP0",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=ReacNoda[1],
+            VALE_REFE=ReacNoda[1],
+        ),
+        _F(
+            RESULTAT=stnl01,
+            INST=1.0,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            GROUP_NO="GNP0",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=ReacNoda[2],
+            VALE_REFE=ReacNoda[2],
+        ),
+    )
 )
 
 
@@ -177,73 +208,85 @@ TEST_RESU(
 #
 #   Matrices de raideur dans le repère LOCAL
 #
-Model02=AFFE_MODELE(MAILLAGE=Maillage,
-    AFFE=_F(GROUP_MA=('GMS01','GMS02','GMS03','GMS04',), PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+Model02 = AFFE_MODELE(
+    MAILLAGE=Maillage,
+    AFFE=_F(
+        GROUP_MA=("GMS01", "GMS02", "GMS03", "GMS04"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"
+    ),
 )
 
 # Discret 4 : Il est sur (1, 1, 1) avec un angle de vrille
-ax=0;ay=1;az=2
-Vect   = [ 1, 1, 1]
+ax = 0
+ay = 1
+az = 2
+Vect = [1, 1, 1]
 Vrille = 60.0
-Alpha  =  mt.atan2( Vect[ay], Vect[ax])
-Beta   = -mt.atan2( Vect[az], ( Vect[ax]**2 + Vect[ay]**2 )**0.5 )
+Alpha = mt.atan2(Vect[ay], Vect[ax])
+Beta = -mt.atan2(Vect[az], (Vect[ax] ** 2 + Vect[ay] ** 2) ** 0.5)
 #
 # Matrice de passage Global vers Local  UL = PGL*UG
 cosa = mt.cos(Alpha)
 sina = mt.sin(Alpha)
 cosb = mt.cos(Beta)
 sinb = mt.sin(Beta)
-cosg = mt.cos(Vrille*mt.pi/180.0)
-sing = mt.sin(Vrille*mt.pi/180.0)
-PGL  = np.array([ [ cosb*cosa ,                  cosb*sina ,                  -sinb      ],
-                  [ sing*sinb*cosa - cosg*sina , cosg*cosa + sing*sinb*sina ,  sing*cosb ],
-                  [ sing*sina + cosg*sinb*cosa , cosg*sinb*sina - cosa*sing ,  cosg*cosb ] ])
-
-Cara02=AFFE_CARA_ELEM(
-   MODELE=Model02, INFO=2,
-   DISCRET=(
-        _F(CARA='K_T_L', REPERE='LOCAL', SYME='NON',
-           GROUP_MA=('GMS01', 'GMS02', 'GMS03', 'GMS04',),
-           VALE=( Kij_T_L ), ),
-   ),
-   ORIENTATION=_F(GROUP_MA='GMS04', CARA='ANGL_VRIL', VALE=Vrille),
+cosg = mt.cos(Vrille * mt.pi / 180.0)
+sing = mt.sin(Vrille * mt.pi / 180.0)
+PGL = np.array(
+    [
+        [cosb * cosa, cosb * sina, -sinb],
+        [sing * sinb * cosa - cosg * sina, cosg * cosa + sing * sinb * sina, sing * cosb],
+        [sing * sina + cosg * sinb * cosa, cosg * sinb * sina - cosa * sing, cosg * cosb],
+    ]
 )
 
-CharMeca02=AFFE_CHAR_MECA(
-   MODELE=Model02,
-   DDL_IMPO=(
-      _F( GROUP_NO='GNP0', DX=-1.0 , DY=-1.0 , DZ=-1.0),
-      _F( GROUP_NO='GNP1', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-      _F( GROUP_NO='GNP2', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-      _F( GROUP_NO='GNP3', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-      _F( GROUP_NO='GNP4', DX= 1.0 , DY= 2.0 , DZ= 3.0),
-   ),
+Cara02 = AFFE_CARA_ELEM(
+    MODELE=Model02,
+    INFO=2,
+    DISCRET=(
+        _F(
+            CARA="K_T_L",
+            REPERE="LOCAL",
+            SYME="NON",
+            GROUP_MA=("GMS01", "GMS02", "GMS03", "GMS04"),
+            VALE=(Kij_T_L),
+        ),
+    ),
+    ORIENTATION=_F(GROUP_MA="GMS04", CARA="ANGL_VRIL", VALE=Vrille),
+)
+
+CharMeca02 = AFFE_CHAR_MECA(
+    MODELE=Model02,
+    DDL_IMPO=(
+        _F(GROUP_NO="GNP0", DX=-1.0, DY=-1.0, DZ=-1.0),
+        _F(GROUP_NO="GNP1", DX=1.0, DY=2.0, DZ=3.0),
+        _F(GROUP_NO="GNP2", DX=1.0, DY=2.0, DZ=3.0),
+        _F(GROUP_NO="GNP3", DX=1.0, DY=2.0, DZ=3.0),
+        _F(GROUP_NO="GNP4", DX=1.0, DY=2.0, DZ=3.0),
+    ),
 )
 # Déplacement dans le repère local de chaque DISCRET
 #  1, 2, 3 : Ils sont sur les axes
-DeplLoc01 = np.array( [-1.0, -1.0, -1.0,  1.0,  2.0,  3.0 ] ).reshape( (6,1) )
-DeplLoc02 = np.array( [-1.0,  1.0, -1.0,  2.0, -1.0,  3.0 ] ).reshape( (6,1) )
-DeplLoc03 = np.array( [-1.0, -1.0,  1.0,  3.0,  2.0, -1.0 ] ).reshape( (6,1) )
+DeplLoc01 = np.array([-1.0, -1.0, -1.0, 1.0, 2.0, 3.0]).reshape((6, 1))
+DeplLoc02 = np.array([-1.0, 1.0, -1.0, 2.0, -1.0, 3.0]).reshape((6, 1))
+DeplLoc03 = np.array([-1.0, -1.0, 1.0, 3.0, 2.0, -1.0]).reshape((6, 1))
 #  4 : Il est sur (1, 1, 1) avec un angle de vrille
-Uloc0 = PGL @ np.array([ [-1.0],[-1.0],[-1.0] ])
-Uloc4 = PGL @ np.array([ [ 1.0],[ 2.0],[ 3.0] ])
-DeplLoc04 = np.array( [ Uloc0[0,0], Uloc0[1,0], Uloc0[2,0], Uloc4[0,0], Uloc4[1,0], Uloc4[2,0]] )
-DeplLoc04 = DeplLoc04.reshape( (6,1) )
+Uloc0 = PGL @ np.array([[-1.0], [-1.0], [-1.0]])
+Uloc4 = PGL @ np.array([[1.0], [2.0], [3.0]])
+DeplLoc04 = np.array([Uloc0[0, 0], Uloc0[1, 0], Uloc0[2, 0], Uloc4[0, 0], Uloc4[1, 0], Uloc4[2, 0]])
+DeplLoc04 = DeplLoc04.reshape((6, 1))
 
-stnl02= STAT_NON_LINE(
+stnl02 = STAT_NON_LINE(
     MODELE=Model02,
     CHAM_MATER=ChMat,
     CARA_ELEM=Cara02,
-    EXCIT=(_F(CHARGE=CharMeca02,FONC_MULT= FctMult),),
-    COMPORTEMENT=_F(RELATION='ELAS', TOUT='OUI',),
+    EXCIT=(_F(CHARGE=CharMeca02, FONC_MULT=FctMult),),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
     INCREMENT=_F(LIST_INST=l_isnt),
 )
 
-stnl02=CALC_CHAMP(reuse=stnl02,
-    RESULTAT=stnl02, FORCE=('REAC_NODA'),
-)
+stnl02 = CALC_CHAMP(reuse=stnl02, RESULTAT=stnl02, FORCE=("REAC_NODA"))
 
-#IMPR_RESU(FORMAT='RESULTAT', UNITE=8, RESU=_F(RESULTAT=stnl02),)
+# IMPR_RESU(FORMAT='RESULTAT', UNITE=8, RESU=_F(RESULTAT=stnl02),)
 
 # Résultats théoriques dans le repère LOCAL de chaque éléments
 Sief01 = KK_T_L @ DeplLoc01
@@ -251,38 +294,74 @@ Sief02 = KK_T_L @ DeplLoc02
 Sief03 = KK_T_L @ DeplLoc03
 Sief04 = KK_T_L @ DeplLoc04
 
-mtclfs = {'RESU':[]}
-for gma,sief in [ ('GMS01',Sief01), ('GMS02',Sief02), ('GMS03',Sief03), ('GMS04',Sief04),]:
-    for compo,indx in [ ('N',0), ('VY',1), ('VZ',2) ]:
-        mtclfs['RESU'].append(
-            _F(RESULTAT=stnl02,  INST=1.0, NOM_CHAM='SIEF_ELGA', NOM_CMP=compo,
-               GROUP_MA=gma, REFERENCE='ANALYTIQUE',
-               POINT=1, VALE_CALC= -sief[indx,0], VALE_REFE= -sief[indx,0],) )
-        mtclfs['RESU'].append(
-            _F(RESULTAT=stnl02,  INST=1.0, NOM_CHAM='SIEF_ELGA', NOM_CMP=compo,
-               GROUP_MA=gma, REFERENCE='ANALYTIQUE',
-               POINT=2, VALE_CALC= sief[indx+3,0], VALE_REFE= sief[indx+3,0],) )
+mtclfs = {"RESU": []}
+for gma, sief in [("GMS01", Sief01), ("GMS02", Sief02), ("GMS03", Sief03), ("GMS04", Sief04)]:
+    for compo, indx in [("N", 0), ("VY", 1), ("VZ", 2)]:
+        mtclfs["RESU"].append(
+            _F(
+                RESULTAT=stnl02,
+                INST=1.0,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP=compo,
+                GROUP_MA=gma,
+                REFERENCE="ANALYTIQUE",
+                POINT=1,
+                VALE_CALC=-sief[indx, 0],
+                VALE_REFE=-sief[indx, 0],
+            )
+        )
+        mtclfs["RESU"].append(
+            _F(
+                RESULTAT=stnl02,
+                INST=1.0,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP=compo,
+                GROUP_MA=gma,
+                REFERENCE="ANALYTIQUE",
+                POINT=2,
+                VALE_CALC=sief[indx + 3, 0],
+                VALE_REFE=sief[indx + 3, 0],
+            )
+        )
 
 TEST_RESU(**mtclfs)
 
 # REAC_NODA sur GNP4 (2nd noeud de Sief04)
-Fnoda = PGL.T  @ np.array( [ [ Sief04[3,0] ], [ Sief04[4,0] ] , [ Sief04[5,0] ] ] )
+Fnoda = PGL.T @ np.array([[Sief04[3, 0]], [Sief04[4, 0]], [Sief04[5, 0]]])
 TEST_RESU(
     RESU=(
         # Les REAC_NODA
-        _F( RESULTAT=stnl02, INST=1.0, NOM_CHAM='REAC_NODA', NOM_CMP='DX',
-            GROUP_NO='GNP4', REFERENCE='ANALYTIQUE',
-            VALE_CALC= Fnoda[0,0],
-            VALE_REFE= Fnoda[0,0], ),
-        _F( RESULTAT=stnl02, INST=1.0, NOM_CHAM='REAC_NODA', NOM_CMP='DY',
-            GROUP_NO='GNP4', REFERENCE='ANALYTIQUE',
-            VALE_CALC= Fnoda[1,0],
-            VALE_REFE= Fnoda[1,0],),
-        _F( RESULTAT=stnl02, INST=1.0, NOM_CHAM='REAC_NODA', NOM_CMP='DZ',
-            GROUP_NO='GNP4', REFERENCE='ANALYTIQUE',
-            VALE_CALC= Fnoda[2,0],
-            VALE_REFE= Fnoda[2,0], ),
-    ),
+        _F(
+            RESULTAT=stnl02,
+            INST=1.0,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DX",
+            GROUP_NO="GNP4",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=Fnoda[0, 0],
+            VALE_REFE=Fnoda[0, 0],
+        ),
+        _F(
+            RESULTAT=stnl02,
+            INST=1.0,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DY",
+            GROUP_NO="GNP4",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=Fnoda[1, 0],
+            VALE_REFE=Fnoda[1, 0],
+        ),
+        _F(
+            RESULTAT=stnl02,
+            INST=1.0,
+            NOM_CHAM="REAC_NODA",
+            NOM_CMP="DZ",
+            GROUP_NO="GNP4",
+            REFERENCE="ANALYTIQUE",
+            VALE_CALC=Fnoda[2, 0],
+            VALE_REFE=Fnoda[2, 0],
+        ),
+    )
 )
 
 FIN()

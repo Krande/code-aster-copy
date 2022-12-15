@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -31,13 +31,13 @@
 extern "C" {
 #endif
 
-#define CALL_GMARDM(a,b,c) CALLSSP(GMARDM,gmardm,a,b,c)
-extern void DEFSSP(GMARDM, gmardm, const char *,STRING_SIZE,
-                       const char *,STRING_SIZE, ASTERINTEGER *);
+#define CALL_GMARDM( a, b, c ) CALLSSP( GMARDM, gmardm, a, b, c )
+extern void DEFSSP( GMARDM, gmardm, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    ASTERINTEGER * );
 
-#define CALL_POSTKUTIL(a,b,c,d,e) CALLPSSSS(POSTKUTIL,postkutil,a,b,c,d,e)
-extern void DEFPSSSS(POSTKUTIL,postkutil, ASTERINTEGER *,char *,STRING_SIZE,
-                     char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE);
+#define CALL_POSTKUTIL( a, b, c, d, e ) CALLPSSSS( POSTKUTIL, postkutil, a, b, c, d, e )
+extern void DEFPSSSS( POSTKUTIL, postkutil, ASTERINTEGER *, char *, STRING_SIZE, char *,
+                      STRING_SIZE, char *, STRING_SIZE, char *, STRING_SIZE );
 
 #ifdef __cplusplus
 }

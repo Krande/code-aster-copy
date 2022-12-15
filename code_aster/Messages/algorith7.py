@@ -20,72 +20,81 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-    10 : _("""
+    10: _(
+        """
  COMP1D et SIMO_MIEHE incompatibles
-"""),
-
-    63 : _("""
+"""
+    ),
+    63: _(
+        """
  pas existence de solution pour le saut
-"""),
-
-    64 : _("""
+"""
+    ),
+    64: _(
+        """
  existence d'un élément à discontinuité trop grand
  non unicité du saut
-"""),
-
-    65 : _("""
+"""
+    ),
+    65: _(
+        """
  non convergence du NEWTON pour le calcul du saut numéro 1
-"""),
-
-    66 : _("""
+"""
+    ),
+    66: _(
+        """
  non convergence du NEWTON pour le calcul du saut numéro 2
-"""),
-
-    67 : _("""
+"""
+    ),
+    67: _(
+        """
  non convergence du NEWTON pour le calcul du saut numéro 3
-"""),
-
-    68 : _("""
+"""
+    ),
+    68: _(
+        """
  erreur dans le calcul du saut
-"""),
-
-    69 : _("""
+"""
+    ),
+    69: _(
+        """
  loi %(k1)s  non implantée pour les éléments discrets
-"""),
-
-
-
-
-
-    74 : _("""
+"""
+    ),
+    74: _(
+        """
   valeur de D_SIGM_EPSI non trouvée
-"""),
-
-    75 : _("""
+"""
+    ),
+    75: _(
+        """
   valeur de SY non trouvée
-"""),
-
-    76 : _("""
+"""
+    ),
+    76: _(
+        """
  développement non implanté
-"""),
-
-    80 : _("""
+"""
+    ),
+    80: _(
+        """
  loi de comportement avec irradiation, le paramètre PHI_ZERO doit être supérieur à 0
-"""),
-
-    81 : _("""
+"""
+    ),
+    81: _(
+        """
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit être supérieur ou égal à 0
-"""),
-
-    82 : _("""
+"""
+    ),
+    82: _(
+        """
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
-"""),
-
-    98 : _("""
+"""
+    ),
+    98: _(
+        """
  il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation
  intrinsèque avec SECH comme paramètre
-"""),
-
+"""
+    ),
 }

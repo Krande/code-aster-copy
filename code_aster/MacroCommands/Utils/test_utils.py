@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,8 @@ def compress64(uncompressed):
     return base64.encodestring(zlib.compress(uncompressed))
 
 
-def difftxt(old, new, fromfile='old', tofile='new'):
+def difftxt(old, new, fromfile="old", tofile="new"):
     """diff of string"""
-    return ''.join(difflib.unified_diff(old.splitlines(1), new.splitlines(1),
-                                        fromfile=fromfile, tofile=tofile))
+    return "".join(
+        difflib.unified_diff(old.splitlines(1), new.splitlines(1), fromfile=fromfile, tofile=tofile)
+    )

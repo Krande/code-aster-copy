@@ -39,20 +39,28 @@ def compat_syntax(keywords):
         deprecate("FIN/FORMAT_HDF", case=2)
 
 
-FIN = FIN_PROC(nom="FIN",
-               op=9999,
-               repetable='n',
-               fr=tr("Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE"),
-               compat_syntax=compat_syntax,
-        # FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
-        # ConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
-        # En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
-        RETASSAGE=SIMP(
-            fr=tr("retassage de la base GLOBALE"),
-            statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
-        INFO_RESU=SIMP(
-            fr=tr("impression des informations sur les structures de données résultats"),
-            statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
-
-        PROC0=SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
+FIN = FIN_PROC(
+    nom="FIN",
+    op=9999,
+    repetable="n",
+    fr=tr("Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE"),
+    compat_syntax=compat_syntax,
+    # FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
+    # ConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
+    # En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
+    RETASSAGE=SIMP(
+        fr=tr("retassage de la base GLOBALE"),
+        statut="f",
+        typ="TXM",
+        defaut="NON",
+        into=("OUI", "NON"),
+    ),
+    INFO_RESU=SIMP(
+        fr=tr("impression des informations sur les structures de données résultats"),
+        statut="f",
+        typ="TXM",
+        defaut="NON",
+        into=("OUI", "NON"),
+    ),
+    PROC0=SIMP(statut="f", typ="TXM", into=("OUI", "NON")),
 )

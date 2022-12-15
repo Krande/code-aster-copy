@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class XFEMCrackDefinition(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.XfemCrack`."""
+
     command_name = "DEFI_FISS_XFEM"
 
     def create_result(self, keywords):
@@ -37,6 +38,6 @@ class XFEMCrackDefinition(ExecuteCommand):
 
     def post_exec(self, keywords):
         self._result.update()
-    
+
 
 DEFI_FISS_XFEM = XFEMCrackDefinition.run

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ from cataelem.Tools.modifier import ChangeComponentsVisitor
 class BaseCataEntity(object):
 
     """Abstract class for all elements of the catalog"""
+
     _currentId = -1
     idLength = 8
 
@@ -77,6 +78,7 @@ class BaseCataEntity(object):
     def __getIndex(self):
         """Return the object index"""
         return self._idx
+
     idx = property(__getIndex)
 
     def __getName(self):
@@ -85,8 +87,9 @@ class BaseCataEntity(object):
 
     def setName(self, name):
         """Define the object name"""
-        assert not self._name or name == self._name, ("already named: '{0}' "
-                                                      "(old: '{1}')".format(name, self._name))
+        assert not self._name or name == self._name, "already named: '{0}' " "(old: '{1}')".format(
+            name, self._name
+        )
         verif_identificateur(name, self.idLength)
         self._name = name
 
@@ -109,12 +112,13 @@ class BaseCataEntity(object):
 class MeshType(BaseCataEntity):
 
     """Define a type of mesh"""
+
     _currentId = -1
 
     def __init__(self, nbno, dim, code):
         """Initialisation"""
         super(MeshType, self).__init__()
-        a_creer_seulement_dans(self, ['mesh_types'])
+        a_creer_seulement_dans(self, ["mesh_types"])
         assert type(nbno) is int and 0 < nbno <= 54, nbno
         self._nbno = nbno
         assert type(dim) is int and dim in (0, 1, 2, 3), dim
@@ -127,16 +131,19 @@ class MeshType(BaseCataEntity):
     def __getNbNode(self):
         """Return the number of nodes"""
         return self._nbno
+
     nbNodes = property(__getNbNode)
 
     def __getDimension(self):
         """Return the dimension"""
         return self._dim
+
     dim = property(__getDimension)
 
     def __getCode(self):
         """Return the code string"""
         return self._code
+
     code = property(__getCode)
 
     def getElrefe(self):
@@ -156,21 +163,21 @@ class MeshType(BaseCataEntity):
             if type(key) is int:
                 del self._elrefe[key]
                 elname = elrefe.name
-                assert elname, ("Elrefe must be named before MeshType: "
-                                "{0}".format(elrefe))
+                assert elname, "Elrefe must be named before MeshType: " "{0}".format(elrefe)
                 self._elrefe[elname] = elrefe
 
 
 class PhysicalQuantity(BaseCataEntity):
 
     """Definition of a physical quantity"""
+
     _currentId = -1
 
     def __init__(self, type, components, comment=None):
         """Initialisation"""
         super(PhysicalQuantity, self).__init__()
-        a_creer_seulement_dans(self, ['physical_quantities'])
-        assert type in ('R', 'I', 'C', 'K8', 'K16', 'K24'), type
+        a_creer_seulement_dans(self, ["physical_quantities"])
+        assert type in ("R", "I", "C", "K8", "K16", "K24"), type
         lcmp2 = expandComponents(components)
         assert noduplicates(lcmp2), "PhysicalQuantity: duplicated components: {0}".format(lcmp2)
         for cmp in lcmp2:
@@ -182,11 +189,13 @@ class PhysicalQuantity(BaseCataEntity):
     def __getComponents(self):
         """Return the list of components"""
         return self._components
+
     components = property(__getComponents)
 
     def __getType(self):
         """Return the type of the physical quantity"""
         return self._type
+
     type = property(__getType)
 
     def hasComponent(self, cmp):
@@ -201,6 +210,7 @@ class PhysicalQuantity(BaseCataEntity):
 class ArrayOfQuantities(BaseCataEntity):
 
     """Definition of a elementary quantity, based on a physical quantity"""
+
     _currentId = -1
 
     def __init__(self, elem, phys, comment=None):
@@ -209,7 +219,7 @@ class ArrayOfQuantities(BaseCataEntity):
         phys: physical quantity which this quantity is based on
         """
         super(ArrayOfQuantities, self).__init__()
-        a_creer_seulement_dans(self, ['physical_quantities'])
+        a_creer_seulement_dans(self, ["physical_quantities"])
         check_type([phys], PhysicalQuantity)
         self._elem = elem
         self._phys = phys
@@ -218,11 +228,13 @@ class ArrayOfQuantities(BaseCataEntity):
     def __getPhys(self):
         """Return the physical quantity of the elementary quantity"""
         return self._phys
+
     physicalQuantity = property(__getPhys)
 
     def __getDim(self):
         """Return the dimension of the elementary quantity"""
         return self._elem
+
     dim = property(__getDim)
 
     def accept(self, visitor):
@@ -233,13 +245,14 @@ class ArrayOfQuantities(BaseCataEntity):
 class Attribute(BaseCataEntity):
 
     """Definition of an attribute"""
+
     _currentId = -1
     idLength = 16
 
     def __init__(self, value, comment=None, auto=False):
         """Initialisation"""
         super(Attribute, self).__init__()
-        a_creer_seulement_dans(self, ['attributes'])
+        a_creer_seulement_dans(self, ["attributes"])
         self.comment = comment
         self._value = check_type(force_tuple(value), str)
         # values can't be checked because automatically computed
@@ -248,6 +261,7 @@ class Attribute(BaseCataEntity):
     def __getValue(self):
         """Return the list of authorized values"""
         return self._value
+
     value = property(__getValue)
 
     def isValid(self, value):
@@ -258,6 +272,7 @@ class Attribute(BaseCataEntity):
 class SetOfNodes(BaseCataEntity):
 
     """Definition of a set of nodes"""
+
     _currentId = -1
 
     def __init__(self, nom, nodes):
@@ -272,29 +287,33 @@ class SetOfNodes(BaseCataEntity):
     def __getNodes(self):
         """Return the list of nodes"""
         return self._nodes
+
     nodes = property(__getNodes)
 
 
 class LocatedComponents(BaseCataEntity):
 
     """Definition of a local mode"""
+
     _currentId = -1
 
     def __init__(self, phys, type, components, diff=False, location=None):
         """Initialisation"""
         super(LocatedComponents, self).__init__()
-        a_creer_seulement_dans(self, ['located_components', 'Elements'])
+        a_creer_seulement_dans(self, ["located_components", "Elements"])
         check_type([phys], PhysicalQuantity)
-        assert type in ('ELEM', 'ELNO', 'ELGA')
-        if type != 'ELNO':
+        assert type in ("ELEM", "ELNO", "ELGA")
+        if type != "ELNO":
             assert diff is False
-        if type == 'ELGA':
+        if type == "ELGA":
             assert location is not None, location
         else:
             assert location is None, location
         if not diff:
             lcmp2 = expandComponents(components)
-            assert noduplicates(lcmp2), "LocatedComponents: duplicated components: {0}".format(lcmp2)
+            assert noduplicates(lcmp2), "LocatedComponents: duplicated components: {0}".format(
+                lcmp2
+            )
             for cmp in lcmp2:
                 verif_identificateur(cmp, 8)
                 assert phys.hasComponent(cmp), (phys.name, cmp)
@@ -304,7 +323,9 @@ class LocatedComponents(BaseCataEntity):
             for setNodes, cmps in components:
                 check_type([setNodes], str)
                 lcmp2 = list(expandComponents(cmps))
-                assert noduplicates(lcmp2), "LocatedComponents: duplicated components: {0}".format(lcmp2)
+                assert noduplicates(lcmp2), "LocatedComponents: duplicated components: {0}".format(
+                    lcmp2
+                )
                 for cmp in lcmp2:
                     verif_identificateur(cmp, 8)
                     assert phys.hasComponent(cmp), (phys.name, cmp)
@@ -312,8 +333,7 @@ class LocatedComponents(BaseCataEntity):
                 self._components.append(tuple(lcmp2))
             # checkings
             setNodesNames = self.getSetOfNodesNames()
-            assert noduplicates(setNodesNames), \
-                "LocatedComponents: duplicated SetOfNodes names"
+            assert noduplicates(setNodesNames), "LocatedComponents: duplicated SetOfNodes names"
         self._phys = phys
         self._type = type
         self._diff = diff
@@ -322,26 +342,31 @@ class LocatedComponents(BaseCataEntity):
     def __getPhys(self):
         """Return the physical quantity of the local mode"""
         return self._phys
+
     physicalQuantity = property(__getPhys)
 
     def __getComponents(self):
         """Return the list of components"""
         return self._components
+
     components = property(__getComponents)
 
     def __getType(self):
         """Return the type of field"""
         return self._type
+
     type = property(__getType)
 
     def __getDiff(self):
         """Tell if all nodes have the same components"""
         return self._diff
+
     diff = property(__getDiff)
 
     def __getLocation(self):
         """Return the location of integration for this mode"""
         return self._location
+
     location = property(__getLocation)
 
     def getSetOfNodesNames(self):
@@ -351,9 +376,9 @@ class LocatedComponents(BaseCataEntity):
     def copy(self, components=None):
         """Return a new LocatedComponents object, allow to change the list of
         components"""
-        new = LocatedComponents(self._phys, self._type,
-                                components or self._components[:],
-                                self._diff, self._location)
+        new = LocatedComponents(
+            self._phys, self._type, components or self._components[:], self._diff, self._location
+        )
         new.setName(self.name)
         return new
 
@@ -365,41 +390,44 @@ class LocatedComponents(BaseCataEntity):
 class ArrayOfComponents(BaseCataEntity):
 
     """Definition of a elementary mode, vector or matrix based on a local mode"""
+
     _currentId = -1
 
     def __init__(self, phys, locatedComponents):
         """Initialisation"""
         super(ArrayOfComponents, self).__init__()
-        a_creer_seulement_dans(self, ['located_components', 'Elements'])
+        a_creer_seulement_dans(self, ["located_components", "Elements"])
         check_type([phys], ArrayOfQuantities)
         self._phys = phys
         check_type([locatedComponents], LocatedComponents)
         self._locCmp = locatedComponents
-        if phys.dim == 'V':
-            self._type = 'VEC'
+        if phys.dim == "V":
+            self._type = "VEC"
         else:
-            self._type = 'MAT'
+            self._type = "MAT"
 
     def __getPhys(self):
         """Return the physical quantity of the elementary quantity"""
         return self._phys
+
     physicalQuantity = property(__getPhys)
 
     def __getLocatedComponents(self):
         """Return the underlying located components"""
         return self._locCmp
+
     locatedComponents = property(__getLocatedComponents)
 
     def __getType(self):
         """Return the type of the physical quantity"""
         return self._type
+
     type = property(__getType)
 
     def copy(self, locatedComponents=None):
         """Return a new ArrayOfComponents object, allow to change
         the located components"""
-        new = ArrayOfComponents(self._phys,
-                                locatedComponents or self._locCmp[:])
+        new = ArrayOfComponents(self._phys, locatedComponents or self._locCmp[:])
         new.setName(self.name)
         return new
 
@@ -411,12 +439,13 @@ class ArrayOfComponents(BaseCataEntity):
 class InputParameter(BaseCataEntity):
 
     """Definition of an input parameter of an option"""
+
     _currentId = -1
 
     def __init__(self, phys, comment=None, container=None):
         """Initialisation"""
         super(InputParameter, self).__init__()
-        a_creer_seulement_dans(self, ['parameters', 'Options'])
+        a_creer_seulement_dans(self, ["parameters", "Options"])
         check_type([phys], (PhysicalQuantity, ArrayOfQuantities))
         check_type([container], [type(None), str])
         self._phys = phys
@@ -426,11 +455,13 @@ class InputParameter(BaseCataEntity):
     def __getPhys(self):
         """Return the physical quantity of the elementary quantity"""
         return self._phys
+
     physicalQuantity = property(__getPhys)
 
     def __getLocalisation(self):
-        """Tell """
+        """Tell"""
         return self._container
+
     container = property(__getLocalisation)
 
     def accept(self, visitor):
@@ -441,15 +472,16 @@ class InputParameter(BaseCataEntity):
 class OutputParameter(BaseCataEntity):
 
     """Definition of an output parameter of an option"""
+
     _currentId = -1
 
     def __init__(self, phys, type, comment=None):
         """Initialisation"""
         super(OutputParameter, self).__init__()
-        a_creer_seulement_dans(self, ['parameters', 'Options'])
+        a_creer_seulement_dans(self, ["parameters", "Options"])
         check_type([phys], (PhysicalQuantity, ArrayOfQuantities))
         check_type([type], str)
-        assert type in ('RESL', 'ELEM', 'ELGA', 'ELNO')
+        assert type in ("RESL", "ELEM", "ELGA", "ELNO")
         self._phys = phys
         self._type = type
         self.comment = comment
@@ -457,11 +489,13 @@ class OutputParameter(BaseCataEntity):
     def __getPhys(self):
         """Return the physical quantity of the elementary quantity"""
         return self._phys
+
     physicalQuantity = property(__getPhys)
 
     def __getType(self):
         """Return the type of the output"""
         return self._type
+
     type = property(__getType)
 
     def accept(self, visitor):
@@ -472,13 +506,14 @@ class OutputParameter(BaseCataEntity):
 class Option(BaseCataEntity):
 
     """Definition of an calculation option"""
+
     _currentId = -1
     idLength = 16
 
     def __init__(self, condition, para_in=None, para_out=None, comment=None):
         """Initialisation"""
         super(Option, self).__init__()
-        a_creer_seulement_dans(self, ['Options'])
+        a_creer_seulement_dans(self, ["Options"])
         if para_in:
             check_type(force_tuple(para_in), InputParameter)
         if para_out:
@@ -493,26 +528,32 @@ class Option(BaseCataEntity):
     def _fillParaDict(self):
         """Create a dict to acces parameters by name"""
         for para in self._para_in + self._para_out:
-            assert para.name, ("Option '{0}' {1}: parameters must be named "
-                               "before accessing them".format(self.name, self))
-            assert self._cacheParaDict.get(para.name) is None, (
-                "Option '{0}' {1}: parameter '{2}' already used"
-                .format(self.name, self, para.name))
+            assert (
+                para.name
+            ), "Option '{0}' {1}: parameters must be named " "before accessing them".format(
+                self.name, self
+            )
+            assert (
+                self._cacheParaDict.get(para.name) is None
+            ), "Option '{0}' {1}: parameter '{2}' already used".format(self.name, self, para.name)
             self._cacheParaDict[para.name] = para
 
     def __getParaIn(self):
         """Return the list of input parameters"""
         return self._para_in
+
     para_in = property(__getParaIn)
 
     def __getParaOut(self):
         """Return the list of output parameters"""
         return self._para_out
+
     para_out = property(__getParaOut)
 
     def __getCondition(self):
         """Return the list of conditions"""
         return self._condition
+
     condition = property(__getCondition)
 
     def __getattr__(self, attr):
@@ -533,13 +574,14 @@ class Option(BaseCataEntity):
 class CondCalcul(object):
 
     """Definition of the set of elements that must (or not) compute an option"""
+
     _currentId = -1
 
     def __init__(self, sign, lcond):
         """Initialisation"""
-        a_creer_seulement_dans(self, ['Options'])
-        assert sign in '+-', sign
-        self._add = sign == '+'
+        a_creer_seulement_dans(self, ["Options"])
+        assert sign in "+-", sign
+        self._add = sign == "+"
         assign = []
         for attr, val in lcond:
             attr = checkAttr(attr, val)
@@ -549,6 +591,7 @@ class CondCalcul(object):
     def __getCondition(self):
         """Return the list of conditions"""
         return self._condition
+
     conditions = property(__getCondition)
 
     def addCondition(self):
@@ -559,12 +602,13 @@ class CondCalcul(object):
 class Elrefe(BaseCataEntity):
 
     """Define a reference element"""
+
     _currentId = -1
 
     def __init__(self):
         """Initialisation"""
         super(Elrefe, self).__init__()
-        a_creer_seulement_dans(self, ['mesh_types', ])
+        a_creer_seulement_dans(self, ["mesh_types"])
         self._locations = OrderedDict()
 
     def addLocation(self, location, nbpg):
@@ -576,12 +620,14 @@ class Elrefe(BaseCataEntity):
     def __getLocations(self):
         """Return all locations"""
         return self._locations
+
     locations = property(__getLocations)
 
 
 class ElrefeLoc(object):
 
     """Definition of a "local" reference element"""
+
     _currentId = -1
 
     def __init__(self, elrefe, gauss=None, mater=None):
@@ -592,37 +638,41 @@ class ElrefeLoc(object):
         self._mater = []
         if gauss:
             for gauss1 in gauss:
-                loca, globa = gauss1.split('=')
-                assert globa in elrefe.locations, ("In Elrefe '{0}': "
-                                                   "unknown location '{1}'".format(elrefe.name, globa))
+                loca, globa = gauss1.split("=")
+                assert (
+                    globa in elrefe.locations
+                ), "In Elrefe '{0}': " "unknown location '{1}'".format(elrefe.name, globa)
                 self._gauss[loca] = globa
         if mater:
             assert gauss, "'gauss' is necessary before using 'mater'!"
             check_type(mater, str)
             for loca in mater:
-                assert self._gauss.get(loca), ("unknown location: "
-                                               "'{0}'".format(loca))
+                assert self._gauss.get(loca), "unknown location: " "'{0}'".format(loca)
                 self._mater.append(loca)
 
     def __getGauss(self):
         """Return the Gauss locations"""
         return self._gauss
+
     gauss = property(__getGauss)
 
     def __getMater(self):
         """Return the Material locations"""
         return self._mater
+
     mater = property(__getMater)
 
     def __getElrefe(self):
         """Return all the underlying Elrefe"""
         return self._elrefe
+
     elrefe = property(__getElrefe)
 
 
 class Calcul(object):
 
     """Definition of an elementary calculation"""
+
     _currentId = -1
 
     def __init__(self, option, te, para_in=None, para_out=None):
@@ -648,21 +698,25 @@ class Calcul(object):
     def __getOption(self):
         """Return the computed Option"""
         return self._option
+
     option = property(__getOption)
 
     def __getTe(self):
         """Return the TE number"""
         return self._te
+
     te = property(__getTe)
 
     def __getParaIn(self):
         """Return the list of the couples input parameters, components"""
         return list(self._para_in)
+
     para_in = property(__getParaIn)
 
     def __getParaOut(self):
         """Return the list of the couples output parameters, components"""
         return list(self._para_out)
+
     para_out = property(__getParaOut)
 
     def setParaIn(self, para):
@@ -710,7 +764,9 @@ class Element(BaseCataEntity):
             self.nodes = force_tuple(self.nodes)
             check_type(self.nodes, SetOfNodes)
             setNames = [setNodes.name for setNodes in self.nodes]
-            assert noduplicates(setNames), "Element: duplicated SetOfNodes names: {0}".format(setNames)
+            assert noduplicates(setNames), "Element: duplicated SetOfNodes names: {0}".format(
+                setNames
+            )
             ids = []
             for setNodes in self.nodes:
                 ids.extend(setNodes.nodes)
@@ -719,7 +775,9 @@ class Element(BaseCataEntity):
             notUsed = allNodes.difference(ids)
             assert not notUsed, "Element: nodes not in a SetOfNodes: {0}".format(tuple(notUsed))
             tooMuch = set(ids).difference(allNodes)
-            assert not tooMuch, "Element: nodes do not belong to the Element: {0}".format(tuple(tooMuch))
+            assert not tooMuch, "Element: nodes do not belong to the Element: {0}".format(
+                tuple(tooMuch)
+            )
         check_type(self.elrefe, ElrefeLoc)
         # check attributes
         assign = []
@@ -758,8 +816,9 @@ class Element(BaseCataEntity):
     def addCalcul(self, calc):
         """Define a calculation on this element"""
         optname = calc.option.name
-        assert optname, ("Element '{0}' {1}: options must be named "
-                         "before accessing them".format(self.name, self))
+        assert optname, "Element '{0}' {1}: options must be named " "before accessing them".format(
+            self.name, self
+        )
         assert not self._calculs.get(optname), optname
         # assert calc.te > 0, calc.te
         self._calculs[optname] = calc
@@ -780,11 +839,11 @@ class Element(BaseCataEntity):
             para_out = calc.para_out
             if not calc.para_out:
                 para_out = orig.para_out
-            self._calculs[optname] = Calcul(calc.option, calc.te,
-                                            para_in, para_out)
+            self._calculs[optname] = Calcul(calc.option, calc.te, para_in, para_out)
 
     def checkSetOfNodes(self):
         """Check the set of nodes usage in the LocatedComponents"""
+
         def _getNodes(name):
             """Return the nodes belonging to the set 'name'"""
             for setN in self.nodes:
@@ -792,6 +851,7 @@ class Element(BaseCataEntity):
                     return setN.nodes
             # assert False, "set {0!r} not defined in this element".format(name)
             return []
+
         allNodes = set(range(1, self.meshType.nbNodes + 1))
         for locCmp in self.usedLocatedComponents():
             if type(locCmp) is ArrayOfComponents or not locCmp.diff:
@@ -800,8 +860,10 @@ class Element(BaseCataEntity):
             for name in locCmp.getSetOfNodesNames():
                 defNodes.extend(_getNodes(name))
             notUsed = tuple(allNodes.difference(defNodes))
-            assert len(notUsed) == 0, "Element: components not defined on these nodes " \
+            assert len(notUsed) == 0, (
+                "Element: components not defined on these nodes "
                 "(located components! {1}): {0}".format(notUsed, locCmp.name)
+            )
 
     def usedLocatedComponents(self):
         """Return the LocatedComponents used by this element"""
@@ -817,7 +879,7 @@ class Element(BaseCataEntity):
     def changeComponents(self, locCmpName, components):
         """Modify the components of a LocatedComponents used in the element.
         A new LocatedComponents object is created and replaces the existing one."""
-        self.accept( ChangeComponentsVisitor(locCmpName, components) )
+        self.accept(ChangeComponentsVisitor(locCmpName, components))
 
     def accept(self, visitor):
         """Implements the visitor pattern"""
@@ -827,6 +889,7 @@ class Element(BaseCataEntity):
 class Modelisation(object):
 
     """Definition of the properties of a modelisation"""
+
     _currentId = -1
 
     def __init__(self, dim, code, attrs=None, elements=None):
@@ -853,21 +916,25 @@ class Modelisation(object):
     def __getCode(self):
         """Return the code string"""
         return self._code
+
     code = property(__getCode)
 
     def __getAttrs(self):
         """Return the attributes"""
         return self._attrs
+
     attrs = property(__getAttrs)
 
     def __getDim(self):
         """Return the dimension"""
         return self._dim
+
     dim = property(__getDim)
 
     def __getElements(self):
         """Return the couples (MeshType, Element)"""
         return self._elements
+
     elements = property(__getElements)
 
     def accept(self, visitor):
@@ -878,6 +945,7 @@ class Modelisation(object):
 class Phenomenon(BaseCataEntity):
 
     """Definition of the modelisations of a phenomenon"""
+
     _currentId = -1
     idLength = 16
 
@@ -893,18 +961,19 @@ class Phenomenon(BaseCataEntity):
         """Add a modelisation"""
         check_type([name], str)
         check_type([modelisation], Modelisation)
-        assert self._modeli.get(
-            name) is None, "'{0}' already exists".format(name)
+        assert self._modeli.get(name) is None, "'{0}' already exists".format(name)
         self._modeli[name] = modelisation
 
     def __getCode(self):
         """Return the code string"""
         return self._code
+
     code = property(__getCode)
 
     def __getModelisations(self):
         """Return the list of Modelisation objects"""
         return self._modeli
+
     modelisations = property(__getModelisations)
 
 
@@ -912,7 +981,8 @@ class Phenomenon(BaseCataEntity):
 class AbstractEntityStore(object):
 
     """Helper class to give access to entities by name"""
-    __slots__ = ('_entities', 'entityType', 'subTypes')
+
+    __slots__ = ("_entities", "entityType", "subTypes")
 
     def __init__(self, package, ignore_names=[], only_mods=[]):
         """Initialisation: import all entities (of type `entityType`) available
@@ -921,18 +991,20 @@ class AbstractEntityStore(object):
         assert self.entityType, "must be subclassed!"
         self.entityType = force_tuple(self.entityType)
         cataelemdir = osp.dirname(osp.dirname(__file__))
-        l_mod = [osp.splitext(osp.basename(modname))[0]
-                 for modname in glob(osp.join(cataelemdir, package, '*.py'))]
-        l_mod = [modname for modname in l_mod \
-                 if modname not in ('__init__', 'options', 'elements')]
+        l_mod = [
+            osp.splitext(osp.basename(modname))[0]
+            for modname in glob(osp.join(cataelemdir, package, "*.py"))
+        ]
+        l_mod = [modname for modname in l_mod if modname not in ("__init__", "options", "elements")]
         l_mod.sort()
         self._entities = OrderedDict()
         for modname in l_mod:
             if only_mods and modname not in only_mods:
                 continue
             try:
-                mod = __import__('cataelem.%s.%s' %
-                                 (package, modname), globals(), locals(), [modname])
+                mod = __import__(
+                    "cataelem.%s.%s" % (package, modname), globals(), locals(), [modname]
+                )
             except:
                 error("ERROR during import of {0}".format(modname))
                 raise
@@ -947,8 +1019,7 @@ class AbstractEntityStore(object):
         """Register the object if its type is supported"""
         if type(obj) in self.entityType:
             self._entities[name] = obj
-        elif (type(obj) is type and obj not in self.entityType
-              and issubclass(obj, self.entityType)):
+        elif type(obj) is type and obj not in self.entityType and issubclass(obj, self.entityType):
             try:
                 self._entities[name] = obj()
             except AssertionError as exc:
@@ -957,7 +1028,7 @@ class AbstractEntityStore(object):
         elif type(obj) in self.subTypes:
             obj.setName(name)
         elif type(obj) is dict:
-            if name == '__builtins__':
+            if name == "__builtins__":
                 return
             for key, val in list(obj.items()):
                 self._register(key, val)
@@ -973,15 +1044,20 @@ class AbstractEntityStore(object):
 
 def objects_from_context(dict_objects, filter_type, ignore_names=[]):
     """Build the list of all objects of the given type"""
-    objects = dict([(name, obj) for name, obj in list(dict_objects.items())
-                    if isinstance(obj, filter_type) and not name in ignore_names])
+    objects = dict(
+        [
+            (name, obj)
+            for name, obj in list(dict_objects.items())
+            if isinstance(obj, filter_type) and not name in ignore_names
+        ]
+    )
     return objects
 
 
 def force_tuple(obj):
     """Return `obj` as a tuple."""
     if type(obj) not in (list, tuple):
-        obj = [obj, ]
+        obj = [obj]
     return tuple(obj)
 
 
@@ -991,40 +1067,42 @@ def check_type(sequence, types):
     types = force_tuple(types)
     for value in sequence:
         if not isinstance(value, types):
-            accepted = ' or '.join([t.__name__ for t in types])
+            accepted = " or ".join([t.__name__ for t in types])
             have = type(value).__name__
             raise TypeError("expected {0}, got {1}".format(accepted, have))
     return sequence
+
 
 def checkAttr(attr, value):
     """Check the value of an attribute"""
     assert type(attr) is Attribute, type(attr)
     assert type(value) is str, type(value)
-    assert attr.isValid(value), ("Attr {0}: unexpected value {1}"
-                                 .format(attr.name, value))
+    assert attr.isValid(value), "Attr {0}: unexpected value {1}".format(attr.name, value)
     return attr
+
 
 def error(message):
     """Print on stderr"""
     sys.stderr.write(message)
     sys.stderr.write(os.linesep)
 
-#===============================================================================================
+
+# ===============================================================================================
 # utilitaires:
-#-------------
+# -------------
 
 
 def verif_identificateur(chaine, long):
-#    -- verifie que:
-#      * la chaine a une longueur <= long
-#      * la chaine est en majuscules
+    #    -- verifie que:
+    #      * la chaine a une longueur <= long
+    #      * la chaine est en majuscules
     assert isinstance(chaine, str), chaine
     assert len(chaine) >= 1 and len(chaine) <= long, chaine
     for c in chaine:
-        assert c in string.ascii_uppercase + string.digits + '_'
+        assert c in string.ascii_uppercase + string.digits + "_"
 
 
-RECMP_DECL = re.compile('(.*?)\[([0-9]+)\]')
+RECMP_DECL = re.compile("(.*?)\[([0-9]+)\]")
 
 
 def expandComponents(lcmp):
@@ -1048,9 +1126,9 @@ def noduplicates(values):
 
 
 def a_creer_seulement_dans(obj, l_autorises):
-#    -- Verifie que l'on cree l'objet obj dans 1 (ou plusieurs) "type" de fichier:
-#       Les chaines autorisees dans l_autorises sont:
-#         'physical_quantities', 'mesh_types', 'parameters', 'located_components', 'Options', 'Elements'
+    #    -- Verifie que l'on cree l'objet obj dans 1 (ou plusieurs) "type" de fichier:
+    #       Les chaines autorisees dans l_autorises sont:
+    #         'physical_quantities', 'mesh_types', 'parameters', 'located_components', 'Options', 'Elements'
 
     # on provoque une erreur pour recuperer un objet de type Traceback:
     try:
@@ -1068,31 +1146,31 @@ def a_creer_seulement_dans(obj, l_autorises):
         if l1[-2] in ("cataelem", "Tools"):
             OK = True
             break
-        if autor == 'physical_quantities':
+        if autor == "physical_quantities":
             if l1[-1] == "physical_quantities.py":
                 OK = True
                 break
-        elif autor == 'attributes':
+        elif autor == "attributes":
             if l1[-1] == "attributes.py":
                 OK = True
                 break
-        elif autor == 'mesh_types':
+        elif autor == "mesh_types":
             if l1[-1] == "mesh_types.py":
                 OK = True
                 break
-        elif autor == 'parameters':
+        elif autor == "parameters":
             if l1[-1] == "parameters.py":
                 OK = True
                 break
-        elif autor == 'located_components':
+        elif autor == "located_components":
             if l1[-1] == "located_components.py":
                 OK = True
                 break
-        elif autor == 'Options':
+        elif autor == "Options":
             if l1[-2] == "Options":
                 OK = True
                 break
-        elif autor == 'Elements':
+        elif autor == "Elements":
             if l1[-2] == "Elements":
                 OK = True
                 break
@@ -1102,5 +1180,4 @@ def a_creer_seulement_dans(obj, l_autorises):
     if not OK:
         print("l_autorises=", l_autorises)
         print("l1=", l1)
-        assert 0, ("l'objet ", obj, "doit etre cree dans les fichiers de type:",
-                   l_autorises)
+        assert 0, ("l'objet ", obj, "doit etre cree dans les fichiers de type:", l_autorises)

@@ -21,60 +21,70 @@
 # POST-TRAITEMENT D'UN CALCUL AVEC CALC_FATIGUE / FATIGUE_VIBR :
 # CALCUL DE L'AMPLITUDE MAXIMALE ADMISSIBLE EN UN NOEUD DONNE
 
-POURSUITE(CODE='OUI',)
+POURSUITE(CODE="OUI")
 
-fact_partici = [1., 0.5]
-nume_mode = [1,2]
-num_noeud = 'N150'
+fact_partici = [1.0, 0.5]
+nume_mode = [1, 2]
+num_noeud = "N150"
 
 # EXTRACTION DES DEPLACEMENTS DE LA TABLE
-TDEP = POST_RELEVE_T(ACTION=_F(     GROUP_NO='N194',
-                                    INTITULE='Depl. modal',
-                                    RESULTAT=MODE,
-                                    NOM_CHAM='DEPL',
-                                    TOUT_CMP='OUI',
-                                    OPERATION='EXTRACTION',) ,)
+TDEP = POST_RELEVE_T(
+    ACTION=_F(
+        GROUP_NO="N194",
+        INTITULE="Depl. modal",
+        RESULTAT=MODE,
+        NOM_CHAM="DEPL",
+        TOUT_CMP="OUI",
+        OPERATION="EXTRACTION",
+    )
+)
 
 IMPR_TABLE(TABLE=TDEP)
 
 
 nbmode = len(nume_mode)
-DX = [None]*nbmode
-DY = [None]*nbmode
-DZ = [None]*nbmode
+DX = [None] * nbmode
+DY = [None] * nbmode
+DZ = [None] * nbmode
 tdepl = TDEP.EXTR_TABLE()
-for i in range(nbmode) :
-  dmod = tdepl.NUME_MODE==nume_mode[i]
-  DX[i] = dmod['DX'].values()['DX']
-  DY[i] = dmod['DY'].values()['DY']
-  DZ[i] = dmod['DZ'].values()['DZ']
+for i in range(nbmode):
+    dmod = tdepl.NUME_MODE == nume_mode[i]
+    DX[i] = dmod["DX"].values()["DX"]
+    DY[i] = dmod["DY"].values()["DY"]
+    DZ[i] = dmod["DZ"].values()["DZ"]
 
 # EXTRACTION DU COEFFICIENT AMIN
 AMIN = TDMG12.EXTR_TABLE()
-AMIN = AMIN.EXTREMA=='MIN'
-AMIN = AMIN['VALE'].values()['VALE']
+AMIN = AMIN.EXTREMA == "MIN"
+AMIN = AMIN["VALE"].values()["VALE"]
 
 # CALCUL DU DEPLACEMENT MAXIMAL ADMISSIBLE
-DXmax = 0.
-DYmax = 0.
-DZmax = 0.
-for i in range(nbmode) :
-  DXmax = DXmax + AMIN[0] * fact_partici[i] * abs(DX[i][0])
-  DYmax = DYmax + AMIN[0] * fact_partici[i] * abs(DY[i][0])
-  DZmax = DZmax + AMIN[0] * fact_partici[i] * abs(DZ[i][0])
-Dtot = sqrt(DXmax*DXmax + DYmax*DYmax +DZmax*DZmax )
+DXmax = 0.0
+DYmax = 0.0
+DZmax = 0.0
+for i in range(nbmode):
+    DXmax = DXmax + AMIN[0] * fact_partici[i] * abs(DX[i][0])
+    DYmax = DYmax + AMIN[0] * fact_partici[i] * abs(DY[i][0])
+    DZmax = DZmax + AMIN[0] * fact_partici[i] * abs(DZ[i][0])
+Dtot = sqrt(DXmax * DXmax + DYmax * DYmax + DZmax * DZmax)
 
-TDMAX = CREA_TABLE(LISTE=( _F(LISTE_K=num_noeud, PARA='NOEUD'),
-                           _F(LISTE_R=DXmax, PARA='DX_MAX'),
-                           _F(LISTE_R=DYmax, PARA='DY_MAX'),
-                           _F(LISTE_R=DZmax, PARA='DZ_MAX'),
-                           _F(LISTE_R=Dtot, PARA='DMAX'),),)
+TDMAX = CREA_TABLE(
+    LISTE=(
+        _F(LISTE_K=num_noeud, PARA="NOEUD"),
+        _F(LISTE_R=DXmax, PARA="DX_MAX"),
+        _F(LISTE_R=DYmax, PARA="DY_MAX"),
+        _F(LISTE_R=DZmax, PARA="DZ_MAX"),
+        _F(LISTE_R=Dtot, PARA="DMAX"),
+    )
+)
 IMPR_TABLE(TABLE=TDMAX)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=8.9294218217163,
-           VALE_REFE=8.92942,
-           NOM_PARA='DMAX',
-           TABLE=TDMAX,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=8.9294218217163,
+    VALE_REFE=8.92942,
+    NOM_PARA="DMAX",
+    TABLE=TDMAX,
+)
 
 FIN()

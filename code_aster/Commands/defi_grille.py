@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class GridDefinition(ExecuteCommand):
     """Execute legacy operator DEFI_GRILLE."""
+
     command_name = "DEFI_GRILLE"
 
     def create_result(self, keywords):
@@ -42,5 +43,6 @@ class GridDefinition(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.build()
+
 
 DEFI_GRILLE = GridDefinition.run

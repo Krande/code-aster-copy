@@ -17,196 +17,174 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
-                          NU=0.,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=1e9, NU=0.0))
 
-L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),)
+L_TPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),)
+L_ARCH = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 # MODELISATION AXIS
 
-MO0=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),)
+MO0 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
-MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),)
+MOMAT0 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-AX=0.0
-AY=0.0
-BX=0.0
-BY=0.0
-CX=0.0
-CY=1.E-4
-DX=0.0
-DY=1.E-4
+AX = 0.0
+AY = 0.0
+BX = 0.0
+BY = 0.0
+CX = 0.0
+CY = 1.0e-4
+DX = 0.0
+DY = 1.0e-4
 
-BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
-                       DDL_IMPO=(_F(GROUP_NO='A',
-                                    DX=AX,
-                                    DY=AY,),
-                                 _F(GROUP_NO='B',
-                                    DX=BX,
-                                    DY=BY,),
-                                 _F(GROUP_NO='C',
-                                    DX=CX,
-                                    DY=CY,),
-                                 _F(GROUP_NO='D',
-                                    DX=DX,
-                                    DY=DY,),),)
+BLOC0 = AFFE_CHAR_MECA(
+    MODELE=MO0,
+    DDL_IMPO=(
+        _F(GROUP_NO="A", DX=AX, DY=AY),
+        _F(GROUP_NO="B", DX=BX, DY=BY),
+        _F(GROUP_NO="C", DX=CX, DY=CY),
+        _F(GROUP_NO="D", DX=DX, DY=DY),
+    ),
+)
 
-U0=STAT_NON_LINE(MODELE=MO0,
-                CHAM_MATER=MOMAT0,
-                EXCIT=_F(CHARGE=BLOC0,),NEWTON=_F(REAC_ITER=0),
-                COMPORTEMENT=_F(RELATION='ELAS',),
-                INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
+U0 = STAT_NON_LINE(
+    MODELE=MO0,
+    CHAM_MATER=MOMAT0,
+    EXCIT=_F(CHARGE=BLOC0),
+    NEWTON=_F(REAC_ITER=0),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_TPS),
+    ARCHIVAGE=_F(LIST_INST=L_ARCH),
+)
 
-U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, )
+U0 = CALC_CHAMP(reuse=U0, ENERGIE="ENEL_ELEM", RESULTAT=U0)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=U0,
-                  NOM_CHAM='ENEL_ELEM',
-                  NOM_CMP='TOTALE',
-                  VALE_REFE=7.5,
-                  VALE_CALC=7.5,
-                  GROUP_MA='M5',),)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=U0,
+        NOM_CHAM="ENEL_ELEM",
+        NOM_CMP="TOTALE",
+        VALE_REFE=7.5,
+        VALE_CALC=7.5,
+        GROUP_MA="M5",
+    )
+)
 
 # MODELISATION AXIS_SI
 
-NS1X=(AX+BX)/2.E0
-NS1Y=(AY+BY)/2.E0
-NS2X=(BX+CX)/2.E0
-NS2Y=(BY+CY)/2.E0
-NS3X=(CX+DX)/2.E0
-NS3Y=(CY+DY)/2.E0
-NS4X=(DX+AX)/2.E0
-NS4Y=(DY+AY)/2.E0
+NS1X = (AX + BX) / 2.0e0
+NS1Y = (AY + BY) / 2.0e0
+NS2X = (BX + CX) / 2.0e0
+NS2Y = (BY + CY) / 2.0e0
+NS3X = (CX + DX) / 2.0e0
+NS3Y = (CY + DY) / 2.0e0
+NS4X = (DX + AX) / 2.0e0
+NS4Y = (DY + AY) / 2.0e0
 
-MA1 = CREA_MAILLAGE(MAILLAGE = MA,
-                    LINE_QUAD = _F(TOUT = 'OUI'),)
+MA1 = CREA_MAILLAGE(MAILLAGE=MA, LINE_QUAD=_F(TOUT="OUI"))
 
-MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'NS4', NOEUD = 'NS4'),
-                                        _F( NOM = 'NS3', NOEUD = 'NS3'),
-                                        _F( NOM = 'NS2', NOEUD = 'NS2'),
-                                        _F( NOM = 'NS1', NOEUD = 'NS1'),
-                                     ),
-         )
+MA1 = DEFI_GROUP(
+    reuse=MA1,
+    MAILLAGE=MA1,
+    CREA_GROUP_NO=(
+        _F(NOM="NS4", NOEUD="NS4"),
+        _F(NOM="NS3", NOEUD="NS3"),
+        _F(NOM="NS2", NOEUD="NS2"),
+        _F(NOM="NS1", NOEUD="NS1"),
+    ),
+)
 
-MO1=AFFE_MODELE(MAILLAGE=MA1,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS_SI',),)
+MO1 = AFFE_MODELE(MAILLAGE=MA1, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_SI"))
 
-MOMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),)
+MOMAT1 = AFFE_MATERIAU(MAILLAGE=MA1, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
-                       DDL_IMPO=(_F(GROUP_NO='A',
-                                    DX=AX,
-                                    DY=AY,),
-                                 _F(GROUP_NO='B',
-                                    DX=BX,
-                                    DY=BY,),
-                                 _F(GROUP_NO='C',
-                                    DX=CX,
-                                    DY=CY,),
-                                 _F(GROUP_NO='D',
-                                    DX=DX,
-                                    DY=DY,),
-                                 _F(GROUP_NO='NS1',
-                                    DX=NS1X,
-                                    DY=NS1Y,),
-                                 _F(GROUP_NO='NS2',
-                                    DX=NS2X,
-                                    DY=NS2Y,),
-                                 _F(GROUP_NO='NS3',
-                                    DX=NS3X,
-                                    DY=NS3Y,),
-                                 _F(GROUP_NO='NS4',
-                                    DX=NS4X,
-                                    DY=NS4Y,),),)
+BLOC1 = AFFE_CHAR_MECA(
+    MODELE=MO1,
+    DDL_IMPO=(
+        _F(GROUP_NO="A", DX=AX, DY=AY),
+        _F(GROUP_NO="B", DX=BX, DY=BY),
+        _F(GROUP_NO="C", DX=CX, DY=CY),
+        _F(GROUP_NO="D", DX=DX, DY=DY),
+        _F(GROUP_NO="NS1", DX=NS1X, DY=NS1Y),
+        _F(GROUP_NO="NS2", DX=NS2X, DY=NS2Y),
+        _F(GROUP_NO="NS3", DX=NS3X, DY=NS3Y),
+        _F(GROUP_NO="NS4", DX=NS4X, DY=NS4Y),
+    ),
+)
 
-U1=STAT_NON_LINE(MODELE=MO1,
-                CHAM_MATER=MOMAT1,
-                EXCIT=_F(CHARGE=BLOC1,),NEWTON=_F(REAC_ITER=0),
-                COMPORTEMENT=_F(RELATION='ELAS',),
-                INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
+U1 = STAT_NON_LINE(
+    MODELE=MO1,
+    CHAM_MATER=MOMAT1,
+    EXCIT=_F(CHARGE=BLOC1),
+    NEWTON=_F(REAC_ITER=0),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_TPS),
+    ARCHIVAGE=_F(LIST_INST=L_ARCH),
+)
 
-U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, )
+U1 = CALC_CHAMP(reuse=U1, ENERGIE="ENEL_ELEM", RESULTAT=U1)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=U1,
-                  NOM_CHAM='ENEL_ELEM',
-                  NOM_CMP='TOTALE',
-                  VALE_REFE=7.5,
-                  VALE_CALC=7.5,
-                  GROUP_MA='M5',),)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=U1,
+        NOM_CHAM="ENEL_ELEM",
+        NOM_CMP="TOTALE",
+        VALE_REFE=7.5,
+        VALE_CALC=7.5,
+        GROUP_MA="M5",
+    )
+)
 
 # MODELISATION AXIS_ELDI
 
-MO2=AFFE_MODELE(MAILLAGE=MA,
-                AFFE=_F(TOUT='OUI',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS_ELDI',),)
+MO2 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_ELDI"))
 
-MAT2=DEFI_MATERIAU(
-                ELAS=_F(E = 1.E9,
-                        NU = 0.),
-                RUPT_FRAG = _F(SIGM_C = 1.E20,
-                               GC     = 100,),)
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=1.0e9, NU=0.0), RUPT_FRAG=_F(SIGM_C=1.0e20, GC=100))
 
-MOMAT2=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MAT2,),)
+MOMAT2 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT2))
 
-BLOC2=AFFE_CHAR_MECA(MODELE=MO2,
-                       DDL_IMPO=(_F(GROUP_NO='A',
-                                    DX=AX,
-                                    DY=AY,),
-                                 _F(GROUP_NO='B',
-                                    DX=BX,
-                                    DY=BY,),
-                                 _F(GROUP_NO='C',
-                                    DX=CX,
-                                    DY=CY,),
-                                 _F(GROUP_NO='D',
-                                    DX=DX,
-                                    DY=DY,),),)
+BLOC2 = AFFE_CHAR_MECA(
+    MODELE=MO2,
+    DDL_IMPO=(
+        _F(GROUP_NO="A", DX=AX, DY=AY),
+        _F(GROUP_NO="B", DX=BX, DY=BY),
+        _F(GROUP_NO="C", DX=CX, DY=CY),
+        _F(GROUP_NO="D", DX=DX, DY=DY),
+    ),
+)
 
-U2=STAT_NON_LINE(MODELE=MO2,
-                CHAM_MATER=MOMAT2,
-                EXCIT=_F(CHARGE=BLOC2,),NEWTON=_F(REAC_ITER=0),
-                COMPORTEMENT=_F(RELATION='CZM_EXP',),
-                INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
+U2 = STAT_NON_LINE(
+    MODELE=MO2,
+    CHAM_MATER=MOMAT2,
+    EXCIT=_F(CHARGE=BLOC2),
+    NEWTON=_F(REAC_ITER=0),
+    COMPORTEMENT=_F(RELATION="CZM_EXP"),
+    INCREMENT=_F(LIST_INST=L_TPS),
+    ARCHIVAGE=_F(LIST_INST=L_ARCH),
+)
 
-U2=CALC_CHAMP(reuse = U2, ENERGIE='ENEL_ELEM', RESULTAT=U2, )
+U2 = CALC_CHAMP(reuse=U2, ENERGIE="ENEL_ELEM", RESULTAT=U2)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=U2,
-                  NOM_CHAM='ENEL_ELEM',
-                  NOM_CMP='TOTALE',
-                  VALE_REFE=7.5,
-                  VALE_CALC=7.5,
-                  GROUP_MA='M5',),)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=U2,
+        NOM_CHAM="ENEL_ELEM",
+        NOM_CMP="TOTALE",
+        VALE_REFE=7.5,
+        VALE_CALC=7.5,
+        GROUP_MA="M5",
+    )
+)
 
 FIN()

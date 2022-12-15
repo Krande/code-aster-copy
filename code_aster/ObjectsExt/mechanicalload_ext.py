@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@
 *******************************************************************
 """
 
-from libaster import (MechanicalLoadComplex, MechanicalLoadFunction,
-                      MechanicalLoadReal)
+from libaster import MechanicalLoadComplex, MechanicalLoadFunction, MechanicalLoadReal
 
 from ..Utilities import injector
 
@@ -39,6 +38,7 @@ class ExtendedMechanicalLoadReal(object):
         """
         return (self.getName(), self.getModel())
 
+
 @injector(MechanicalLoadFunction)
 class ExtendedMechanicalLoadFunction(object):
     cata_sdj = "SD.sd_char_meca.sd_char_meca"
@@ -48,6 +48,7 @@ class ExtendedMechanicalLoadFunction(object):
         object during unpickling.
         """
         return (self.getName(), self.getModel())
+
 
 @injector(MechanicalLoadComplex)
 class ExtendedMechanicalLoadComplex(object):

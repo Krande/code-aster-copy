@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class RestCondTran(ExecuteCommand):
-    """Command REST_COND_TRAN
-    """
+    """Command REST_COND_TRAN"""
+
     command_name = "REST_COND_TRAN"
 
     def create_result(self, keywords):
@@ -54,14 +54,15 @@ class RestCondTran(ExecuteCommand):
         else:
             modeMeca = keywords["MACR_ELEM_DYNA"].getMechanicalMode()
         dofNum = modeMeca.getDOFNumbering()
-        fnds=[]
+        fnds = []
         if dofNum:
             if keywords["TYPE_RESU"] == "DYNA_TRANS":
                 self._result.setDOFNumbering(dofNum)
             else:
                 self._result.setModel(dofNum.getModel())
                 fnds.append(dofNum.getDescription())
-            
+
         self._result.build(fnds=fnds)
+
 
 REST_COND_TRAN = RestCondTran.run

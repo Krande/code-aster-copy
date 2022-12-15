@@ -18,58 +18,55 @@
 # --------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # Coarse mesh: unit 25
 # Python dump of geometry from salome: unit 26
 mesh = LIRE_MAILLAGE(UNITE=20)
 
-mesh1 = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=('Extrusion_1', ),
-                                      GROUP_MA_SURF=('Sext', )),
-                      MAILLAGE=mesh)
+mesh1 = CREA_MAILLAGE(
+    COQUE_SOLIDE=_F(GROUP_MA=("Extrusion_1",), GROUP_MA_SURF=("Sext",)), MAILLAGE=mesh
+)
 
-model = AFFE_MODELE(AFFE=_F(MODELISATION='COQUE_SOLIDE',
-                            PHENOMENE='MECANIQUE',
-                            TOUT='OUI'),
-                    MAILLAGE=mesh1)
+model = AFFE_MODELE(
+    AFFE=_F(MODELISATION="COQUE_SOLIDE", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=mesh1
+)
 
-mater = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0,
-                              E=10500000.0,
-                              NU=0.3125))
+mater = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0, E=10500000.0, NU=0.3125))
 
-fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
-                                 TOUT='OUI'),
-                         MAILLAGE=mesh1)
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh1)
 
-kine = AFFE_CHAR_CINE(MECA_IMPO=(_F(DX=0.0,
-                                     GROUP_MA=('Syz', )),
-                                  _F(DY=0.0,
-                                     GROUP_MA=('Sxz', )),
-                                  _F(DZ=0.0,
-                                     GROUP_MA=('Scyl', ))),
-                       MODELE=model)
+kine = AFFE_CHAR_CINE(
+    MECA_IMPO=(
+        _F(DX=0.0, GROUP_MA=("Syz",)),
+        _F(DY=0.0, GROUP_MA=("Sxz",)),
+        _F(DZ=0.0, GROUP_MA=("Scyl",)),
+    ),
+    MODELE=model,
+)
 
-poncForc = AFFE_CHAR_MECA(FORCE_NODALE=_F(FX=-12.5,
-                                          GROUP_NO=('Ae', 'Ai')),
-                          MODELE=model)
+poncForc = AFFE_CHAR_MECA(FORCE_NODALE=_F(FX=-12.5, GROUP_NO=("Ae", "Ai")), MODELE=model)
 
-reslin = MECA_STATIQUE(CHAM_MATER=fieldmat,
-                       EXCIT=(_F(CHARGE=kine,),
-                              _F(CHARGE=poncForc,)),
-                       MODELE=model)
+reslin = MECA_STATIQUE(
+    CHAM_MATER=fieldmat, EXCIT=(_F(CHARGE=kine), _F(CHARGE=poncForc)), MODELE=model
+)
 
 deplRefe = -0.1139
 deplCalc = -0.11347309123579576
-deplTole = 0.38 * 1.E-2
+deplTole = 0.38 * 1.0e-2
 
-TEST_RESU(RESU=_F(GROUP_NO=('Ae', ),
-                  INST=0.0,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  PRECISION=deplTole,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=reslin,
-                  VALE_CALC=(deplCalc, ),
-                  VALE_REFE=(deplRefe, )))
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO=("Ae",),
+        INST=0.0,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        PRECISION=deplTole,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=reslin,
+        VALE_CALC=(deplCalc,),
+        VALE_REFE=(deplRefe,),
+    )
+)
 
 FIN()

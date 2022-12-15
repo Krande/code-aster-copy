@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,71 +22,82 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
 Le modèle mesuré doit être un concept de type DYNA_HARMO ou MODE_MECA.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
 L'utilisation de modification structurale de CALC_ESSAI n'est plus supportée.
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 Calcul de MAC impossible : bases incompatibles.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 Problème inverse impossible : problème de cohérence entre les données.
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 Problème de NUME_DDL dans MACRO_EXPANS : il est possible de le préciser
 a l'appel de la macro-commande. Conséquence : erreur fatale possible dans les
 opérations ultérieures (notamment l'opérateur MAC_MODE)
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 Si vous n'avez pas sélectionné de NUME_ORDRE ou de NUME_MODE dans %(k1)s.
 Il ne faut pas déclarer de concept en sortie de type %(k2)s.
 Cela risque de causer une erreur fatale par la suite.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 Erreur dans MACRO_EXPANS
-"""),
-
-    8: _("""
+"""
+    ),
+    8: _(
+        """
 Impossible de trouver le modèle associe a la base de modes %(k1)s.
 Cela peut empêcher certains calculs de se dérouler normalement.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
 Les mots-clés MATR_RIGI et MATR_MASS n'ont pas été renseignés dans OBSERVATION.
 Sans ces matrices, certains calculs (par exemple : calcul d'expansion, de MAC, etc.)
 ne seront pas possibles.
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
 Le modèle associé aux matrices MATR_RIGI et MATR_MASS doit être le même que MODELE_2.
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
 Dans le mot-clé VIS_A_VIS de la commande OBSERVATION, il faut pour chaque occurrence
 que GROUP_MA_1 == GROUP_MA_2.
-"""),
-
-    13: _("""
+"""
+    ),
+    13: _(
+        """
 Le résultat expérimental est un DYNA_HARMO : il n'est pas possible d'en extraire
 des numéros d'ordre avec MACRO_EXPANS. Le mots-clés NUME_MODE et NUME_ORDRE
 sont ignorés.
-"""),
-
-    14: _("""
+"""
+    ),
+    14: _(
+        """
 Erreur dans le calcul de MAC : le NUME_DDL associé à la base %(k1)s
 n'existe pas. Si cette base a été créée avec PROJ_CHAMP, ne pas oublier
 de mentionner explicitement le NUME_DDL de la structure de données résultat
 avec le mot-clé NUME_DDL.
-"""),
-
-
+"""
+    ),
 }

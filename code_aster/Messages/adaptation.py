@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,45 +22,55 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
   Adaptation du pas de temps.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
     Pour la méthode d'adaptation de type <%(k1)s>, le pas de temps calculé vaut <%(r1)19.12e>.
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
     Pour la méthode d'adaptation de type <%(k1)s>, le critère n'est pas vérifié. Le pas de temps n'est pas adapté.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
     Aucun critère d'adaptation n'est vérifié. On garde le pas de temps <%(r1)19.12e>.
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
     Sur tous les critères d'adaptation, le plus petit pas de temps vaut <%(r1)19.12e>.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
     Après ajustement sur les points de passage obligatoires, le plus petit pas de temps vaut <%(r1)19.12e>.
-"""),
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
     On maintient la découpe du pas de temps à <%(r1)19.12e>.
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
     La valeur du pas de temps retenu <%(r1)19.12e> est inférieure à PAS_MINI.
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
     La valeur du pas de temps <%(r1)19.12e> est supérieure à PAS_MAXI <%(r2)19.12e>.
     On limite le pas de temps à PAS_MAXI <%(r2)19.12e>.
-"""),
-
-    13 : _("""
+"""
+    ),
+    13: _(
+        """
  On a dépassé le nombre maximal de pas de temps autorisé.
-"""),
+"""
+    ),
 }

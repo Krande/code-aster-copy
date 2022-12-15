@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,80 +20,94 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-    1: _("""
+    1: _(
+        """
   Recherche des modes rigides de la matrice %(k1)s.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
   Matrice symétrique
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 La matrice %(k1)s n'est pas symétrique.
 Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
 pour une matrice non symétrique.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
   Matrice à valeurs réelles.
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 La matrice %(k1)s est à valeurs complexes.
 Pour l'instant, la recherche des modes de corps rigide n'a pas été développée
 pour une matrice à valeurs complexes.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 Pivot nul détecté à la ligne %(i1)d.
 Le degré de liberté correspondant est le suivant:
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 %(i1)d modes de corps rigide ont été détectés.
-"""),
-
-    8: _("""
+"""
+    ),
+    8: _(
+        """
 Attention : plus de six modes de corps rigide ont été détectés.
 
 --> Conseil :
 Si vous pensez avoir une seule structure dans le modèle, cela peut provenir de noeud(s) orphelin(s). Dans ce cas, vérifiez le maillage.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
   Factorisation de la matrice %(k1)s avec la méthode %(k2)s.
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
   Matrice non-symétrique
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
   Matrice à valeurs complexes.
-"""),
-
-    12: _("""
+"""
+    ),
+    12: _(
+        """
   Résultats de la factorisation de la matrice %(k1)s.
-"""),
-
-    13: _("""
+"""
+    ),
+    13: _(
+        """
   La matrice n'est pas définie positive et comporte %(i1)d zéros sur la diagonale.
-"""),
-
-    14: _("""
+"""
+    ),
+    14: _(
+        """
     Nombre maximum de décimales à perdre : %(i1)d
     Nombre de décimales perdues          : %(i2)d
     Numéro de la pire équation           : %(i3)d
     Nombre de pivots négatifs            : %(i4)d
     Code arrêt                           : %(i5)d
     Code retour                          : %(i6)d
-"""),
-
-    15: _("""
+"""
+    ),
+    15: _(
+        """
 Problème lors de la factorisation de la matrice:
     Le pivot devient très grand à la ligne %(i1)d qui correspond au degré de liberté donné ci-dessus.
     On a perdu %(i2)d décimales.
-"""),
+"""
+    ),
 }

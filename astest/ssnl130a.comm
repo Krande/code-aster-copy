@@ -19,88 +19,69 @@
 
 # CAS_TEST__:SSNL130A
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 from ssnl130a import *
 
-mail=LIRE_MAILLAGE(FORMAT='MED',)
+mail = LIRE_MAILLAGE(FORMAT="MED")
 
-model=AFFE_MODELE(
-   MAILLAGE=mail,
-   AFFE=(
-      _F(GROUP_MA='DALLE',   PHENOMENE='MECANIQUE', MODELISATION='DKT',),
-      _F(GROUP_MA='RESSORT', PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
-   ),
+model = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="DALLE", PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA="RESSORT", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
 )
 
-acier=DEFI_MATERIAU(
-   ELAS=_F(E=200000000000.0, NU=0.3,),
-)
-resso=DEFI_MATERIAU(
-   ELAS=_F(E=200000000000.0, NU=0.3,),
-   DIS_CONTACT= _F(DIST_1= 0.100),
-)
+acier = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3))
+resso = DEFI_MATERIAU(ELAS=_F(E=200000000000.0, NU=0.3), DIS_CONTACT=_F(DIST_1=0.100))
 
-mater=AFFE_MATERIAU(
-   MAILLAGE=mail,
-   AFFE=(
-      _F(GROUP_MA='DALLE',   MATER=acier,),
-      _F(GROUP_MA='RESSORT', MATER=resso,),
-   ),
+mater = AFFE_MATERIAU(
+    MAILLAGE=mail, AFFE=(_F(GROUP_MA="DALLE", MATER=acier), _F(GROUP_MA="RESSORT", MATER=resso))
 )
 
-carelem=AFFE_CARA_ELEM(INFO=1,
-   MODELE=model,
-   COQUE=_F(GROUP_MA='DALLE', EPAIS=0.3, COQUE_NCOU=1,),
-   ORIENTATION=(
-      _F(GROUP_MA='RESSORT', CARA='ANGL_VRIL', VALE=(0.0,),),
-   ),
-   RIGI_PARASOL=_F(GROUP_MA='DALLE',
-                  GROUP_MA_SEG2='RESSORT',
-                  COEF_GROUP=1.0,
-                  REPERE='GLOBAL',
-                  CARA='K_T_D_L',
-                  VALE=(10000.0,10000.0,10000.0,),
-                  GROUP_NO_CENTRE='PCDG',),
+carelem = AFFE_CARA_ELEM(
+    INFO=1,
+    MODELE=model,
+    COQUE=_F(GROUP_MA="DALLE", EPAIS=0.3, COQUE_NCOU=1),
+    ORIENTATION=(_F(GROUP_MA="RESSORT", CARA="ANGL_VRIL", VALE=(0.0,)),),
+    RIGI_PARASOL=_F(
+        GROUP_MA="DALLE",
+        GROUP_MA_SEG2="RESSORT",
+        COEF_GROUP=1.0,
+        REPERE="GLOBAL",
+        CARA="K_T_D_L",
+        VALE=(10000.0, 10000.0, 10000.0),
+        GROUP_NO_CENTRE="PCDG",
+    ),
 )
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-ll=DEFI_LIST_REEL(DEBUT=0.0,
-   INTERVALLE=(
-      _F(JUSQU_A=1.0, PAS=1.000,),
-      _F(JUSQU_A=2.0, PAS=0.500,),
-   ),
+ll = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, PAS=1.000), _F(JUSQU_A=2.0, PAS=0.500)))
+
+PRESS = FORMULE(VALE="Pression(INST,X,Y,Z)", Pression=Pression, NOM_PARA=["INST", "X", "Y", "Z"])
+DEPLA = FORMULE(VALE="Deplacer(INST,X,Y,Z)", Deplacer=Deplacer, NOM_PARA=["INST", "X", "Y", "Z"])
+
+CHARGE = AFFE_CHAR_MECA_F(
+    MODELE=model,
+    FORCE_COQUE=_F(GROUP_MA="DALLE", PRES=PRESS),
+    DDL_IMPO=_F(GROUP_MA="PTRESS", DX=ZERO, DY=ZERO, DZ=DEPLA),
 )
 
-PRESS = FORMULE(VALE='Pression(INST,X,Y,Z)',
-                Pression=Pression,
-                NOM_PARA=['INST', 'X', 'Y', 'Z'],)
-DEPLA = FORMULE(VALE='Deplacer(INST,X,Y,Z)',
-                Deplacer=Deplacer,
-                NOM_PARA=['INST', 'X', 'Y', 'Z'],)
-
-CHARGE=AFFE_CHAR_MECA_F(
-   MODELE=model,
-   FORCE_COQUE=_F(GROUP_MA='DALLE', PRES=PRESS,),
-   DDL_IMPO = _F(GROUP_MA='PTRESS',DX=ZERO,DY=ZERO,DZ=DEPLA),
-)
-
-resu=STAT_NON_LINE(
-   MODELE=model,
-   CHAM_MATER=mater,
-   CARA_ELEM=carelem,SOLVEUR=_F(NPREC=9),
-   EXCIT=_F(CHARGE=CHARGE,),
-   COMPORTEMENT=(
-      _F(RELATION='ELAS',     DEFORMATION='PETIT', TOUT='OUI'),
-      _F(RELATION='DIS_CHOC', DEFORMATION='PETIT', GROUP_MA='RESSORT'),
-   ),
-   NEWTON=(_F(
-              PREDICTION = 'ELASTIQUE',
-              MATRICE='ELASTIQUE',
-              ),),
-   CONVERGENCE= _F(ITER_GLOB_MAXI=60,),
-   INCREMENT=_F(LIST_INST=ll, INST_FIN=2.0,),
+resu = STAT_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=mater,
+    CARA_ELEM=carelem,
+    SOLVEUR=_F(NPREC=9),
+    EXCIT=_F(CHARGE=CHARGE),
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
+        _F(RELATION="DIS_CHOC", DEFORMATION="PETIT", GROUP_MA="RESSORT"),
+    ),
+    NEWTON=(_F(PREDICTION="ELASTIQUE", MATRICE="ELASTIQUE"),),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=60),
+    INCREMENT=_F(LIST_INST=ll, INST_FIN=2.0),
 )
 
 """
@@ -110,95 +91,105 @@ IMPR_RESU(FORMAT='RESULTAT',UNITE=6,
 """
 
 
-TEST_RESU(RESU=(_F(GROUP_NO='PT01',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-3.53343954E-03,
-                   VALE_REFE=-3.5329087050000002E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=4.0000000000000002E-4,
-                   ),
-                _F(GROUP_NO='PT02',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-3.53343954E-03,
-                   VALE_REFE=-3.5329087050000002E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=4.0000000000000002E-4,
-                   ),
-                _F(GROUP_NO='PT03',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 1.14204623E-03,
-                   VALE_REFE=1.1497631879999999E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,
-                   ),
-                _F(GROUP_NO='PT04',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 1.14204623E-03,
-                   VALE_REFE=1.1497631879999999E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,
-                   ),
-                _F(GROUP_NO='PT01',
-                   INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 1.46656046E-03,
-                   VALE_REFE=1.4670912949999999E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=4.0000000000000002E-4,
-                   ),
-                _F(GROUP_NO='PT02',
-                   INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 1.46656046E-03,
-                   VALE_REFE=1.4670912949999999E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=4.0000000000000002E-4,
-                   ),
-                _F(GROUP_NO='PT03',
-                   INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 6.14204623E-03,
-                   VALE_REFE=6.149763188E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,
-                   ),
-                _F(GROUP_NO='PT04',
-                   INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=resu,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 6.14204623E-03,
-                   VALE_REFE=6.149763188E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PT01",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-3.53343954e-03,
+            VALE_REFE=-3.5329087050000002e-3,
+            CRITERE="RELATIF",
+            PRECISION=4.0000000000000002e-4,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-3.53343954e-03,
+            VALE_REFE=-3.5329087050000002e-3,
+            CRITERE="RELATIF",
+            PRECISION=4.0000000000000002e-4,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=1.14204623e-03,
+            VALE_REFE=1.1497631879999999e-3,
+            CRITERE="RELATIF",
+            PRECISION=7.0000000000000001e-3,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=1.14204623e-03,
+            VALE_REFE=1.1497631879999999e-3,
+            CRITERE="RELATIF",
+            PRECISION=7.0000000000000001e-3,
+        ),
+        _F(
+            GROUP_NO="PT01",
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=1.46656046e-03,
+            VALE_REFE=1.4670912949999999e-3,
+            CRITERE="RELATIF",
+            PRECISION=4.0000000000000002e-4,
+        ),
+        _F(
+            GROUP_NO="PT02",
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=1.46656046e-03,
+            VALE_REFE=1.4670912949999999e-3,
+            CRITERE="RELATIF",
+            PRECISION=4.0000000000000002e-4,
+        ),
+        _F(
+            GROUP_NO="PT03",
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=6.14204623e-03,
+            VALE_REFE=6.149763188e-3,
+            CRITERE="RELATIF",
+            PRECISION=7.0000000000000001e-3,
+        ),
+        _F(
+            GROUP_NO="PT04",
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=resu,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=6.14204623e-03,
+            VALE_REFE=6.149763188e-3,
+            CRITERE="RELATIF",
+            PRECISION=7.0000000000000001e-3,
+        ),
+    )
+)
 
 FIN()

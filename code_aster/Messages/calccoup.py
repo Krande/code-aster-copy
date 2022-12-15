@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (C) 2018 Aether Engineering Solutions - www.aethereng.com
 # Copyright (C) 2018 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,9 @@
 from ..Utilities import _
 
 cata_msg = {
-1 : _("""
+    1: _(
+        """
 Le numéro d'un mode dans MODE_SIGNE n'est pas dans la liste des NUME_ORDRE du résultat
-"""),
+"""
+    )
 }

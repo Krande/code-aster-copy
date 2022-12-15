@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,116 +19,117 @@
 
 # person_in_charge: philippe.de-bonnieres at edf.fr
 
-POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'))
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 from ssnl121b_mater import *
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
-           AFFE=  _F(  GROUP_MA = 'MA1', MATER = MAT2),
-           AFFE_VARC=(_F(NOM_VARC='IRRA', EVOL =FLUENC1, PROL_DROITE='CONSTANT',),
-                     _F(NOM_VARC='TEMP', EVOL =CHTH, PROL_DROITE='CONSTANT',VALE_REF=299.85,),),
-                        )
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA="MA1", MATER=MAT2),
+    AFFE_VARC=(
+        _F(NOM_VARC="IRRA", EVOL=FLUENC1, PROL_DROITE="CONSTANT"),
+        _F(NOM_VARC="TEMP", EVOL=CHTH, PROL_DROITE="CONSTANT", VALE_REF=299.85),
+    ),
+)
 
-CHART=AFFE_CHAR_MECA(  MODELE=MO,
-              DDL_IMPO=(_F(  GROUP_NO = 'NO3',DX = 0., DY = 0., DZ = 0.),
-                        _F( GROUP_NO = 'NO1',DX = 0.,DZ = 0.),
-                        _F(GROUP_NO = ('NO5','NO7',),DX = 0.)),
-                     FORCE_NODALE=_F(GROUP_NO = ('NO2','NO4','NO6','NO8',),
-                                     FX = 25.)
-                       )
+CHART = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="NO3", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="NO1", DX=0.0, DZ=0.0),
+        _F(GROUP_NO=("NO5", "NO7"), DX=0.0),
+    ),
+    FORCE_NODALE=_F(GROUP_NO=("NO2", "NO4", "NO6", "NO8"), FX=25.0),
+)
 
-FONCT=DEFI_FONCTION(   NOM_PARA='INST',
-                           VALE=( 0.,     0.,
-                                  1.,     1.,
-                                  32.E6,  1.,
-                                  ) )
+FONCT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0, 32.0e6, 1.0))
 
-LINST=DEFI_LIST_REEL( DEBUT=0.,INTERVALLE=(
-                        _F( JUSQU_A = 1.,    NOMBRE = 1),
-                        _F( JUSQU_A = 8640.9, NOMBRE = 50))
-                       # CE QU'IL FAUDRAIT POUR AVOIR LA SOLUTION
-                       # INTERVALLE:(JUSQU_A:86400. NOMBRE: 8640)
-                       )
-CARA1=AFFE_CARA_ELEM(    MODELE=MO,MASSIF=(
-                           _F(
-       GROUP_MA = 'TOUT',
+LINST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1), _F(JUSQU_A=8640.9, NOMBRE=50))
+    # CE QU'IL FAUDRAIT POUR AVOIR LA SOLUTION
+    # INTERVALLE:(JUSQU_A:86400. NOMBRE: 8640)
+)
+CARA1 = AFFE_CARA_ELEM(MODELE=MO, MASSIF=(_F(GROUP_MA="TOUT", ANGL_REP=(0.0, 0.0, 0.0))))
 
-                                    ANGL_REP = (0.,0.,0.,))
-                                    ) )
+REST = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA1,
+    EXCIT=_F(CHARGE=CHART, FONC_MULT=FONCT),
+    COMPORTEMENT=_F(PARM_THETA=0.5, RELATION="LEMAITRE_IRRA", ITER_INTE_MAXI=150),
+    INCREMENT=_F(LIST_INST=LINST),
+    NEWTON=_F(MATRICE="ELASTIQUE"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=500, ARRET="OUI"),
+)
 
-REST=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                        CARA_ELEM = CARA1,
-                         EXCIT=_F(CHARGE = CHART,FONC_MULT = FONCT),
-                         COMPORTEMENT=_F( PARM_THETA = 0.5,
-                RELATION = 'LEMAITRE_IRRA',
-                ITER_INTE_MAXI = 150),
-                         INCREMENT=_F(
-                LIST_INST = LINST),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 500,
-                ARRET = 'OUI')
-              )
-
-REST=CALC_CHAMP(reuse=REST,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=REST)
+REST = CALC_CHAMP(reuse=REST, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=REST)
 
 
 # MATERIAU LEMAITRE
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=16,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=REST,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V1',
-                   VALE_CALC=0.00796840969733,
-                   VALE_REFE=7.9909999999999998E-3,
-                   PRECISION=5.0000000000000001E-3,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=16,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=REST,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.0100762706739,
-                   VALE_REFE=0.010099,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=21,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=REST,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V1',
-                   VALE_CALC=0.00967947978721,
-                   VALE_REFE=9.7000000000000003E-3,
-                   PRECISION=5.0000000000000001E-3,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=21,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=REST,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.0119209738961,
-                   VALE_REFE=0.011941,
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=21,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=REST,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=99.9999629134,
-                   VALE_REFE=100.0,
-                   PRECISION=1.E-4,
-                   GROUP_MA='MA1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=16,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=REST,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V1",
+            VALE_CALC=0.00796840969733,
+            VALE_REFE=7.9909999999999998e-3,
+            PRECISION=5.0000000000000001e-3,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=16,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=REST,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO2",
+            NOM_CMP="DX",
+            VALE_CALC=0.0100762706739,
+            VALE_REFE=0.010099,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NUME_ORDRE=21,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=REST,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V1",
+            VALE_CALC=0.00967947978721,
+            VALE_REFE=9.7000000000000003e-3,
+            PRECISION=5.0000000000000001e-3,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=21,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=REST,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO2",
+            NOM_CMP="DX",
+            VALE_CALC=0.0119209738961,
+            VALE_REFE=0.011941,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NUME_ORDRE=21,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=REST,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=99.9999629134,
+            VALE_REFE=100.0,
+            PRECISION=1.0e-4,
+            GROUP_MA="MA1",
+        ),
+    )
+)
 
 FIN()
 #
@@ -140,8 +141,8 @@ FIN()
 #      REAL*8 NMCRI1
 #      EXTERNAL NMCRI1
 #      COMMON /RCONM1/ EPSV,SIG,X,X1,X2,DX,DX1,DX2,SIGN,DT,E
-#C
-#C---- INITIALISATION DES VARIABLES
+# C
+# C---- INITIALISATION DES VARIABLES
 #      T    = 0.D0
 #      EPSV = 0.D0
 #      SIG  = 0.D0
@@ -150,9 +151,9 @@ FIN()
 #      X2   = 0.D0
 #      E    = 100000.
 #      SIG  = 100.
-#C-----
+# C-----
 #      SIGN = SIG/ABS(SIG)
-#C
+# C
 #      DO I = 1,101
 #         IF(I.EQ.1)THEN
 #           DT   = 1.D0
@@ -180,81 +181,81 @@ FIN()
 #      ENDDO
 #      STOP
 #      END
-#C-------------------------
+# C-------------------------
 #      FUNCTION NMCRI1(DEPSV)
 #      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 #      REAL*8 NMCRI1
 #      COMMON /RCONM1/ EPSV,SIG,X,X1,X2,DX,DX1,DX2,SIGN,DT,E
-#C
-#C
+# C
+# C
 #      P    = 11900.D0
 #      P1   = 1656.D0
 #      P2   = 325.5D0
-#C      EPSVO= 2.02D-08
+# C      EPSVO= 2.02D-08
 #      EPSVO= 2.02D-09
 #      XN   = 1.D0/1.44D0
 #      XM   = 22.3
-#C      XMO  = 3.23D0
-#C      XM1  = 20.8D0
-#C      XO   = 10.
-#C      RMO  = 4.04D-08
-#C      RM1  = 2.1D-35
+# C      XMO  = 3.23D0
+# C      XM1  = 20.8D0
+# C      XO   = 10.
+# C      RMO  = 4.04D-08
+# C      RM1  = 2.1D-35
 #      XMO  = 3.57D0
 #      XO   = 331.69
 #      RMO  = 0.354E-2
-#C
+# C
 #      B    = 3.D0
 #      YO   = 99.5
 #      YSAT = 110.
-#C
+# C
 #      YY   = YSAT + (YO-YSAT)*EXP(-B*(EPSV+DEPSV))
 #      DX2  = P2*( YY*SIGN - X2)*DEPSV/(1. + P2*DEPSV)
 #      DX1  = P1*( YY*SIGN - ( X1 - X2 - DX2))*DEPSV/(1. + P1*DEPSV)
 #      Y    = (DEPSV/(EPSVO*DT))**XN
 #      F1   = SIG - XM*SIGN*LOG(Y+SQRT(1.+Y**2)) - X
-#C      F2   = P*( YY*SIGN - ( X + F1 - ( X1 + DX1)))*DEPSV
-#C     &     - RMO*DT*((X+F1)/ABS(X+F1))*(ABS(X+F1)/XO)**XMO
-#C     &     - RM1*DT*((X+F1)/ABS(X+F1))*(ABS(X+F1)/XO)**XM1
-#C      F2   = P*( SIGSIG*YY - ( X + F1 - ( X1 + DX1)))*DEPSV
-#C     &     - DELTAT * RM0*((X+F1)/ABS(X+F1))*SINH((ABS(X+F1)/X0)**XM0)
+# C      F2   = P*( YY*SIGN - ( X + F1 - ( X1 + DX1)))*DEPSV
+# C     &     - RMO*DT*((X+F1)/ABS(X+F1))*(ABS(X+F1)/XO)**XMO
+# C     &     - RM1*DT*((X+F1)/ABS(X+F1))*(ABS(X+F1)/XO)**XM1
+# C      F2   = P*( SIGSIG*YY - ( X + F1 - ( X1 + DX1)))*DEPSV
+# C     &     - DELTAT * RM0*((X+F1)/ABS(X+F1))*SINH((ABS(X+F1)/X0)**XM0)
 #      F2   = P*( YY*SIGN - ( X + F1 - ( X1 + DX1)))*DEPSV
 #     &     - RMO*DT*((X+F1)/ABS(X+F1))*SINH((ABS(X+F1)/XO)**XMO)
-#C
+# C
 #      DX   = F1
 #      NMCRI1    = SIGN*(F2 - F1)
-#C
+# C
 #      END
-#C--------------------------------------------------------------
+# C--------------------------------------------------------------
 #      SUBROUTINE ZEROFO(F,F0,XAP,EPSI,NITMAX,SOLU)
 #      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-#C
-#C     ARGUMENTS:
-#C     ----------
+# C
+# C     ARGUMENTS:
+# C     ----------
 #      REAL*8 F,F0,XAP,EPSI,SOLU
 #      INTEGER NITMAX
-#C ----------------------------------------------------------------------
-#C     BUT:
-#C         TROUVER UNE RACINE DE L'EQUATION F(X)=0
-#C         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(0)<0
-#C
-#C     IN:
-#C         F  : FONCTION DONT ON CHERCHE LE ZERO
-#C         F0 : VALEUR DE F AU POINT 0 (CETTE VALEUR EST DONNEE ET NON
-#C              CALCULEE PAR LE PROGRAMME PAR ECONOMIE).
-#C         XAP: APPROXIMATION DE LA SOLUTION.
-#C        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(F(SOLU))<EPSI
-#C      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
-#C
-#C     OUT:
-#C         SOLU: VALEUR DE LA RACINE CHERCHEE.
-#C
-#C ----------------------------------------------------------------------
+# C ----------------------------------------------------------------------
+# C     BUT:
+# C         TROUVER UNE RACINE DE L'EQUATION F(X)=0
+# C         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(0)<0
+# C
+# C     IN:
+# C         F  : FONCTION DONT ON CHERCHE LE ZERO
+# C         F0 : VALEUR DE F AU POINT 0 (CETTE VALEUR EST DONNEE ET NON
+# C              CALCULEE PAR LE PROGRAMME PAR ECONOMIE).
+# C         XAP: APPROXIMATION DE LA SOLUTION.
+# C        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(F(SOLU))<EPSI
+# C      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
+# C
+# C     OUT:
+# C         SOLU: VALEUR DE LA RACINE CHERCHEE.
+# C
+# C ----------------------------------------------------------------------
 #      REAL*8 FY,FZ,X,Y,Z,A,B
 #      INTEGER N
-#C DEB-------------------------------------------------------------------
-#C
-#C     INITIALISATIONS
-#C
+# C DEB-------------------------------------------------------------------
+# C
+# C     INITIALISATIONS
+# C
 #      INDIC = 0
 #      N = 1
 #      X = 0.D0
@@ -265,20 +266,20 @@ FIN()
 #      ENDIF
 #      Y = XAP
 #      FY = F(Y)
-#C
-#C     DEBUT DES ITERATIONS
-#C
+# C
+# C     DEBUT DES ITERATIONS
+# C
 #   10 CONTINUE
 #      IF (FY.GT.0.D0) THEN
 #        A = X
 #        B = Y
 #   20   CONTINUE
 #        Z = Y - (Y-X)*FY/(FY-FX)
-#C        WRITE(6,*)'FY-FX',FY-FX
+# C        WRITE(6,*)'FY-FX',FY-FX
 #        IF (((Z-A)*(Z-B)).GT.0.D0) THEN
 #          Z = (A+B)/2.D0
 #        ENDIF
-#C
+# C
 #        N = N + 1
 #        FZ = F(Z)
 #        IF (ABS(FZ).LT.EPSI) GO TO 90
@@ -302,24 +303,24 @@ FIN()
 #        FX = FY
 #        Y = Z
 #        FY = F(Z)
-#C
+# C
 #        IF (ABS(FY).LT.EPSI) GO TO 90
 #        IF (N.GT.NITMAX) GO TO 98
 #      ENDIF
 #      GO TO 10
-#C
+# C
 #   90 CONTINUE
 #      SOLU=Z
 #      GO TO 9999
-#C
+# C
 #   98 CONTINUE
 #      WRITE(6,*)'NOMBRE MAXI ITERATIONS ATTEINT'
 #      INDIC = 1
-#C
+# C
 #   99 CONTINUE
 #      WRITE(6,*)'ECHEC DE LA RECHERCHE DE ZERO'
 #      INDIC = 1
-#C
+# C
 # 9999 CONTINUE
 #      IF(INDIC.EQ.1) THEN
 #      STOP

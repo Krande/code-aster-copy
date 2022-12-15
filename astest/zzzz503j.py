@@ -38,36 +38,28 @@ test = code_aster.TestCase()
 
 mesh0 = code_aster.Mesh.buildSquare(refine=3)
 
-mesh = CREA_MAILLAGE(MAILLAGE=mesh0,
-                     MODI_HHO=_F(TOUT='OUI',),)
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
 
 # define model
-model = AFFE_MODELE(MAILLAGE=mesh,
-                    AFFE=_F(TOUT='OUI',
-                            MODELISATION='PLAN_HHO',
-                            FORMULATION='LINEAIRE',
-                            PHENOMENE='THERMIQUE')
-                    )
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=_F(TOUT="OUI", MODELISATION="PLAN_HHO", FORMULATION="LINEAIRE", PHENOMENE="THERMIQUE"),
+)
 
 # define material
 H = 2.0
 A = 4.0
 
-coeff = DEFI_MATERIAU(THER=_F(LAMBDA=1.0,  RHO_CP=1.0))
+coeff = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0))
 
-mater = AFFE_MATERIAU(MAILLAGE=mesh,
-                      AFFE=_F(TOUT='OUI',  MATER=coeff)
-                      )
+mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
 
 # define BC
-f = 100.
-bc = AFFE_CHAR_CINE(MODELE=model,
-                    THER_IMPO=_F(GROUP_MA=('RIGHT', 'LEFT',
-                                 'TOP', 'BOTTOM',),  TEMP=0.0),
-                    )
-load = AFFE_CHAR_THER(MODELE=model,
-                      SOURCE=_F(GROUP_MA='SURFACE',  SOUR=H*f),
-                      )
+f = 100.0
+bc = AFFE_CHAR_CINE(
+    MODELE=model, THER_IMPO=_F(GROUP_MA=("RIGHT", "LEFT", "TOP", "BOTTOM"), TEMP=0.0)
+)
+load = AFFE_CHAR_THER(MODELE=model, SOURCE=_F(GROUP_MA="SURFACE", SOUR=H * f))
 
 # define discrete object
 phys_pb = code_aster.PhysicalProblem(model, mater)
@@ -94,7 +86,7 @@ matM.addElementaryMatrix(matEM)
 matM.assemble()
 
 # compute ( H * f, v_T)_T
-form = FORMULE(VALE='X-X+Y-Y+100', NOM_PARA=['X', 'Y'],)
+form = FORMULE(VALE="X-X+Y-Y+100", NOM_PARA=["X", "Y"])
 f_hho = hho.projectOnHHOSpace(form)
 rhs2 = H * matM * f_hho
 rhs = disc_comp.getNeumannForces()
@@ -113,12 +105,14 @@ mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
 test.assertAlmostEqual(
-    (solution.norm("NORM_2") - 28.677774021490347)/28.677774021490347, 0.0, delta=5e-5)
+    (solution.norm("NORM_2") - 28.677774021490347) / 28.677774021490347, 0.0, delta=5e-5
+)
 
 # project HHO solution
 hho_field = hho.projectOnLagrangeSpace(solution)
 test.assertAlmostEqual(
-    (hho_field.norm("NORM_2") - 32.19785504937473)/32.19785504937473, 0.0, delta=1e-6)
+    (hho_field.norm("NORM_2") - 32.19785504937473) / 32.19785504937473, 0.0, delta=1e-6
+)
 
 # save result
 hho_field.printMedFile("hhoField.med")
@@ -129,8 +123,8 @@ u_hho = hho.projectOnHHOSpace(0.0)
 print("Newton solver:")
 for i in range(100):
     max_u = u_hho.norm("NORM_INFINITY")
-    Au = A * (1.1+max_u)
-    Hu = H * (1+max_u)
+    Au = A * (1.1 + max_u)
+    Hu = H * (1 + max_u)
     Resi = Au * matK * u_hho + Hu * matM * (u_hho - f_hho)
     Jaco = Au * matK + Hu * matM
 
@@ -143,7 +137,8 @@ for i in range(100):
     u_hho += du_hho
 
 test.assertAlmostEqual(
-    (u_hho.norm("NORM_2") - 28.062005519735614)/28.062005519735614, 0.0, delta=5e-5)
+    (u_hho.norm("NORM_2") - 28.062005519735614) / 28.062005519735614, 0.0, delta=5e-5
+)
 
 test.printSummary()
 

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,15 +19,13 @@
 
 # person_in_charge: natacha.bereux@edf.fr
 
-from ..Objects import (GeneralizedModeResult,
-                       HarmoGeneralizedResult,
-                       TransientGeneralizedResult)
+from ..Objects import GeneralizedModeResult, HarmoGeneralizedResult, TransientGeneralizedResult
 from ..Supervis import ExecuteCommand
 
 
 class ProjMesuModal(ExecuteCommand):
-    """Command PROJ_MESU_MODAL
-    """
+    """Command PROJ_MESU_MODAL"""
+
     command_name = "PROJ_MESU_MODAL"
 
     def create_result(self, keywords):
@@ -55,11 +53,13 @@ class ProjMesuModal(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         base = keywords["MODELE_CALCUL"]["BASE"]
-        if isinstance(self._result, TransientGeneralizedResult) or \
-           isinstance(self._result, HarmoGeneralizedResult):
+        if isinstance(self._result, TransientGeneralizedResult) or isinstance(
+            self._result, HarmoGeneralizedResult
+        ):
             self._result.setDOFNumbering(base.getDOFNumbering())
         else:
             self._result.setDOFNumbering(base.getDOFNumbering())
             self._result.setMesh(base.getMesh())
+
 
 PROJ_MESU_MODAL = ProjMesuModal.run

@@ -25,7 +25,7 @@ from ..Language.Syntax import *
 
 
 def compat_syntax(keywords):
-    """ Update keywords for compatibility """
+    """Update keywords for compatibility"""
 
     # reuse
     if "reuse" in keywords and "RESULTAT" not in keywords:
@@ -51,86 +51,80 @@ def compat_syntax(keywords):
             keywords["ETAT_INIT"] = {"STAT": "OUI"}
 
 
-THER_LINEAIRE = MACRO(nom="THER_LINEAIRE",
-                      op=OPS(
-                          "code_aster.MacroCommands.ther_lineaire_ops.ther_lineaire_ops"),
-                      sd_prod=evol_ther,
-                      compat_syntax=compat_syntax,
-                      reentrant='f:RESULTAT',
-                      fr=tr(
-                          "Résoudre un problème thermique linéaire stationnaire ou transitoire"),
-                      reuse=SIMP(statut='c', typ=CO),
-                      # -------------------------------------------------------------------
-                      RESULTAT=SIMP(statut='f', typ=evol_ther,
-                                    fr=tr("Objet qui sera enrichi des nouveaux instants calculés")),
-                      # -------------------------------------------------------------------
-
-                      MODELE=SIMP(statut='o', typ=modele_sdaster),
-                      # -------------------------------------------------------------------
-
-                      CHAM_MATER=SIMP(statut='o', typ=cham_mater),
-                      # -------------------------------------------------------------------
-
-                      CARA_ELEM=SIMP(statut='f', typ=cara_elem),
-                      # -------------------------------------------------------------------
-
-                      EXCIT=FACT(statut='o', max='**',
-                                 CHARGE=SIMP(statut='o', typ=(
-                                     char_ther, char_cine_ther)),
-                                 FONC_MULT=SIMP(statut='f', typ=(
-                                     fonction_sdaster, nappe_sdaster, formule)),
-                                 TYPE_CHARGE=SIMP(statut='f', typ='TXM', defaut="FIXE_CSTE",
-                                                  into=("FIXE_CSTE",)),
-                                 ),
-                      # -------------------------------------------------------------------
-
-                      TYPE_CALCUL=SIMP(statut='f', typ='TXM', into=(
-                          "STAT", "TRAN"), defaut="TRAN"),
-                      # -------------------------------------------------------------------
-                      b_trans=BLOC(condition="""(equal_to("TYPE_CALCUL", 'TRAN'))""",
-                                   ETAT_INIT=FACT(statut='o', max=1,
-                                                  regles=(
-                                                      UN_PARMI('STAT', 'EVOL_THER', 'CHAM_NO', 'VALE'),),
-                                                  STAT=SIMP(
-                                                      statut='f', typ='TXM', into=("OUI",)),
-                                                  EVOL_THER=SIMP(
-                                                      statut='f', typ=evol_ther),
-                                                  CHAM_NO=SIMP(
-                                                      statut='f', typ=cham_no_sdaster),
-                                                  VALE=SIMP(
-                                                      statut='f', typ='R'),
-
-                                                  b_evol=BLOC(condition="""exists("EVOL_THER")""",
-                                                              NUME_ORDRE=SIMP(
-                                                                  statut='f', typ='I'),
-                                                              INST=SIMP(
-                                                                  statut='f', typ='R'),
-                                                              b_inst=BLOC(condition="""exists("INST")""",
-                                                                          CRITERE=SIMP(statut='f', typ='TXM', defaut="RELATIF", into=(
-                                                                              "RELATIF", "ABSOLU")),
-                                                                          b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                                                                                           PRECISION=SIMP(statut='f', typ='R', defaut=1.E-6,),),
-                                                                          b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                                                                                           PRECISION=SIMP(statut='o', typ='R',),),
-                                                                          ),),),
-                                   # ---------------------------------------------------------------
-                                   PARM_THETA=SIMP(statut='f', typ='R',
-                                                   defaut=0.57, val_min=0., val_max=1.),
-                                   # ---------------------------------------------------------------
-                                   INCREMENT=C_INCREMENT('THERMIQUE', True),
-                                   ),
-                      # -------------------------------------------------------------------
-                      b_stat=BLOC(condition="""(equal_to("TYPE_CALCUL", 'STAT'))""",
-                                  INCREMENT=C_INCREMENT('THERMIQUE', False),
-                                  ),
-                      # -------------------------------------------------------------------
-                      SOLVEUR=C_SOLVEUR('THER_LINEAIRE'),
-                      # -------------------------------------------------------------------
-                      ARCHIVAGE=C_ARCHIVAGE(),
-                      # -------------------------------------------------------------------
-                      TITRE=SIMP(statut='f', typ='TXM'),
-                      INFO=SIMP(statut='f', typ='I', into=(1, 2)),
-                      translation={
-                          "THER_LINEAIRE": "Linear thermal analysis",
-                      }
-                      )
+THER_LINEAIRE = MACRO(
+    nom="THER_LINEAIRE",
+    op=OPS("code_aster.MacroCommands.ther_lineaire_ops.ther_lineaire_ops"),
+    sd_prod=evol_ther,
+    compat_syntax=compat_syntax,
+    reentrant="f:RESULTAT",
+    fr=tr("Résoudre un problème thermique linéaire stationnaire ou transitoire"),
+    reuse=SIMP(statut="c", typ=CO),
+    # -------------------------------------------------------------------
+    RESULTAT=SIMP(
+        statut="f", typ=evol_ther, fr=tr("Objet qui sera enrichi des nouveaux instants calculés")
+    ),
+    # -------------------------------------------------------------------
+    MODELE=SIMP(statut="o", typ=modele_sdaster),
+    # -------------------------------------------------------------------
+    CHAM_MATER=SIMP(statut="o", typ=cham_mater),
+    # -------------------------------------------------------------------
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+    # -------------------------------------------------------------------
+    EXCIT=FACT(
+        statut="o",
+        max="**",
+        CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
+        FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+    ),
+    # -------------------------------------------------------------------
+    TYPE_CALCUL=SIMP(statut="f", typ="TXM", into=("STAT", "TRAN"), defaut="TRAN"),
+    # -------------------------------------------------------------------
+    b_trans=BLOC(
+        condition="""(equal_to("TYPE_CALCUL", 'TRAN'))""",
+        ETAT_INIT=FACT(
+            statut="o",
+            max=1,
+            regles=(UN_PARMI("STAT", "EVOL_THER", "CHAM_NO", "VALE"),),
+            STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+            EVOL_THER=SIMP(statut="f", typ=evol_ther),
+            CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
+            VALE=SIMP(statut="f", typ="R"),
+            b_evol=BLOC(
+                condition="""exists("EVOL_THER")""",
+                NUME_ORDRE=SIMP(statut="f", typ="I"),
+                INST=SIMP(statut="f", typ="R"),
+                b_inst=BLOC(
+                    condition="""exists("INST")""",
+                    CRITERE=SIMP(
+                        statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")
+                    ),
+                    b_prec_rela=BLOC(
+                        condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                    ),
+                    b_prec_abso=BLOC(
+                        condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                        PRECISION=SIMP(statut="o", typ="R"),
+                    ),
+                ),
+            ),
+        ),
+        # ---------------------------------------------------------------
+        PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
+        # ---------------------------------------------------------------
+        INCREMENT=C_INCREMENT("THERMIQUE", True),
+    ),
+    # -------------------------------------------------------------------
+    b_stat=BLOC(
+        condition="""(equal_to("TYPE_CALCUL", 'STAT'))""", INCREMENT=C_INCREMENT("THERMIQUE", False)
+    ),
+    # -------------------------------------------------------------------
+    SOLVEUR=C_SOLVEUR("THER_LINEAIRE"),
+    # -------------------------------------------------------------------
+    ARCHIVAGE=C_ARCHIVAGE(),
+    # -------------------------------------------------------------------
+    TITRE=SIMP(statut="f", typ="TXM"),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+    translation={"THER_LINEAIRE": "Linear thermal analysis"},
+)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,16 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-LIRE_TABLE=MACRO(nom="LIRE_TABLE",
-                 op=OPS('code_aster.MacroCommands.lire_table_ops.lire_table_ops'),
-                 sd_prod=table_sdaster,
-                 fr=tr("Lecture d'un fichier contenant une table"),
-         UNITE           = SIMP(statut='o', typ=UnitType(), inout='in'),
-         FORMAT          = SIMP(statut='f', typ='TXM', into=("ASTER", "LIBRE", "TABLEAU"), defaut="TABLEAU"),
-         NUME_TABLE      = SIMP(statut='f', typ='I', defaut=1),
-         SEPARATEUR      = SIMP(statut='f', typ='TXM', defaut=' '),
-         RENOMME_PARA    = SIMP(statut='f', typ='TXM', into=("UNIQUE",),),
-         TITRE           = SIMP(statut='f', typ='TXM',),
-         INFO            = SIMP(statut='f', typ='I', into=(1, 2), ),
-         )  ;
+LIRE_TABLE = MACRO(
+    nom="LIRE_TABLE",
+    op=OPS("code_aster.MacroCommands.lire_table_ops.lire_table_ops"),
+    sd_prod=table_sdaster,
+    fr=tr("Lecture d'un fichier contenant une table"),
+    UNITE=SIMP(statut="o", typ=UnitType(), inout="in"),
+    FORMAT=SIMP(statut="f", typ="TXM", into=("ASTER", "LIBRE", "TABLEAU"), defaut="TABLEAU"),
+    NUME_TABLE=SIMP(statut="f", typ="I", defaut=1),
+    SEPARATEUR=SIMP(statut="f", typ="TXM", defaut=" "),
+    RENOMME_PARA=SIMP(statut="f", typ="TXM", into=("UNIQUE",)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+)

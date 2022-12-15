@@ -160,10 +160,10 @@ class ConvergenceManager:
         """
 
         # scaling with diagonal of bounding box
-        TABG = self.phys_pb.getMesh().getTable('CARA_GEOM')
-        x_diag = TABG['X_MAX', 1] - TABG['X_MIN', 1]
-        y_diag = TABG['Y_MAX', 1] - TABG['Y_MIN', 1]
-        z_diag = TABG['Z_MAX', 1] - TABG['Z_MIN', 1]
+        TABG = self.phys_pb.getMesh().getTable("CARA_GEOM")
+        x_diag = TABG["X_MAX", 1] - TABG["X_MIN", 1]
+        y_diag = TABG["Y_MAX", 1] - TABG["Y_MIN", 1]
+        z_diag = TABG["Z_MAX", 1] - TABG["Z_MIN", 1]
         diag = sqrt(pow(x_diag, 2) + pow(y_diag, 2) + pow(z_diag, 2))
 
         self.values["RESI_GEOM"] = displ_delta.norm("NORM_INFINITY", ["DX", "DY", "DZ"]) / diag

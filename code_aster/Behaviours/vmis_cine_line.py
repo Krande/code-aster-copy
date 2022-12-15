@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,21 +21,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'VMIS_CINE_LINE',
-    lc_type        = ('MECANIQUE',),
-    doc            = """Loi de Von Mises - avec écrouissage cinématique linéaire""",
-    num_lc         = 3,
-    nb_vari        = 8,
-    nom_vari       = ('XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ',
-                      'INDIPLAS','EPSPEQ',),
-    mc_mater       = ('ELAS','ECRO_LINE',),
-    modelisation   = ('3D','AXIS','D_PLAN','1D','C_PLAN'),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','GDEF_LOG',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="VMIS_CINE_LINE",
+    lc_type=("MECANIQUE",),
+    doc="""Loi de Von Mises - avec écrouissage cinématique linéaire""",
+    num_lc=3,
+    nb_vari=8,
+    nom_vari=("XCINXX", "XCINYY", "XCINZZ", "XCINXY", "XCINXZ", "XCINYZ", "INDIPLAS", "EPSPEQ"),
+    mc_mater=("ELAS", "ECRO_LINE"),
+    modelisation=("3D", "AXIS", "D_PLAN", "1D", "C_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP", "GDEF_LOG"),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

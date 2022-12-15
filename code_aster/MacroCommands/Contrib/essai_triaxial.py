@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from math import pi
 import numpy as np
 
 
-def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0.0003,):
+def Triaxial_DR(K, G, phi, psi, cohes=0.0, sigma0=0.0, depzz=-0.000001, epzz_max=-0.0003):
     """
     VALIDATION DE LA LOI DE MOHR-COULOMB
     ====================================
@@ -39,7 +39,6 @@ def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0
     3 INCONNUES:       SIGMA1, EPSI3, DLAMBDA
     """
 
-
     # Parametres materiaux
     # ------------------------------
     tol = 1e-6
@@ -49,27 +48,27 @@ def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0
 
     depsi1 = depzz
     epsi1_max = epzz_max
-    epsi1 = list(np.arange(0., epsi1_max + depsi1, depsi1))
+    epsi1 = list(np.arange(0.0, epsi1_max + depsi1, depsi1))
     # ----Fin
 
     # Definition de certaines constantes
     # ------------------------------------------
-    s = np.sin(pi / 180. * phi)
-    t = np.sin(pi / 180. * psi)
-    cohes = 2. * c * np.cos(pi / 180. * phi)
-    C = K - 2. * G / 3.
-    D = 2. * (K + G / 3.)
-    E = K + 4. * G / 3.
-    det = E * D - 2. * C * C
+    s = np.sin(pi / 180.0 * phi)
+    t = np.sin(pi / 180.0 * psi)
+    cohes = 2.0 * c * np.cos(pi / 180.0 * phi)
+    C = K - 2.0 * G / 3.0
+    D = 2.0 * (K + G / 3.0)
+    E = K + 4.0 * G / 3.0
+    det = E * D - 2.0 * C * C
     # ----Fin
 
-    f = [0.]
-    epsi1_pla = [0.]
-    epsi3_pla = [0.]
-    epsi1_ela = [sigma0 * (D - 2. * C) / det]
+    f = [0.0]
+    epsi1_pla = [0.0]
+    epsi3_pla = [0.0]
+    epsi1_ela = [sigma0 * (D - 2.0 * C) / det]
     epsi3_ela = [sigma0 * (E - C) / det]
-    tlambda = [0.]
-    ttlambda = [0.]
+    tlambda = [0.0]
+    ttlambda = [0.0]
     DSDE = []
 
     # =========================================
@@ -79,14 +78,14 @@ def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0
     for i, ep1 in enumerate(epsi1[1:]):
 
         print()
-        print('==========================================================')
-        print('> pas i=', i, ' epsi1=', ep1)
+        print("==========================================================")
+        print("> pas i=", i, " epsi1=", ep1)
 
         # prediction elastique
         # ----------------------
         dep1 = depsi1
         dep3 = -C / D * depsi1
-        dsigma1 = E * dep1 + 2. * C * dep3
+        dsigma1 = E * dep1 + 2.0 * C * dep3
         dsigma3 = D * dep3 + C * dep1
 
         epsi1_ela.append(epsi1_ela[i] + dep1)
@@ -116,26 +115,27 @@ def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0
             n += 1
 
             si = np.sign(sigma1[i + 1] - sigma3[i + 1])
-            if si == 0.:
-                si = 1.
+            if si == 0.0:
+                si = 1.0
 
-            seuil = si * (sigma1[i + 1] - sigma3[i + 1]) + (
-                sigma1[i + 1] + sigma3[i + 1]) * s - cohes
+            seuil = (
+                si * (sigma1[i + 1] - sigma3[i + 1]) + (sigma1[i + 1] + sigma3[i + 1]) * s - cohes
+            )
 
-            ielas = (seuil / cohes < tol)
+            ielas = seuil / cohes < tol
 
-            print(' -----------')
-            print('  * Newton no.', n, ' seuil =', seuil / cohes, ' si =', si)
+            print(" -----------")
+            print("  * Newton no.", n, " seuil =", seuil / cohes, " si =", si)
 
             if not ielas:
                 # Cas plastique
                 # ---------------------
                 print()
-                print('  ====>>> Plasticite activee <<<====')
+                print("  ====>>> Plasticite activee <<<====")
                 print()
 
-                A = 2. * (K * s + G * (si + s / 3.))
-                B = 2. * (2. * K * s - G * (si + s / 3.))
+                A = 2.0 * (K * s + G * (si + s / 3.0))
+                B = 2.0 * (2.0 * K * s - G * (si + s / 3.0))
                 BB = A * (t + si) + B * (t - si)
 
                 dlambda = seuil / BB
@@ -149,45 +149,55 @@ def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0
                 # Cas elastique
                 # ---------------------
                 print()
-                print('  ====<<< Elastique >>>====')
+                print("  ====<<< Elastique >>>====")
                 print()
 
-                dlambda = 0.
-                depsi1_pla = 0.
-                depsi3_pla = 0.
+                dlambda = 0.0
+                depsi1_pla = 0.0
+                depsi3_pla = 0.0
 
             # Cacul de Dsigma
             # ---------------------
-            dsigma1 = -E * depsi1_pla - 2. * C * depsi3_pla
+            dsigma1 = -E * depsi1_pla - 2.0 * C * depsi3_pla
             dsigma3 = -C * depsi1_pla - D * depsi3_pla
 
             # Equilibre de Newton?
             # ----------------------------------
-            Newton = (abs((sigma3[i + 1] + dsigma3 - sigma0) / sigma0) < tol)
+            Newton = abs((sigma3[i + 1] + dsigma3 - sigma0) / sigma0) < tol
 
             if not Newton:
                 if not ielas:
-                    ddepsi3 = (sigma0 - sigma3[i + 1] - dsigma3) / (
-                        1. - B * (t - si + C / D * (t + si)) / BB) / D
+                    ddepsi3 = (
+                        (sigma0 - sigma3[i + 1] - dsigma3)
+                        / (1.0 - B * (t - si + C / D * (t + si)) / BB)
+                        / D
+                    )
                 else:
                     ddepsi3 = (sigma0 - sigma3[i + 1] - dsigma3) / D
                 epsi3_ela[i + 1] += ddepsi3
 
                 # Mis-a-jour Dsigma
-                sigma1[i + 1] += 2. * C * ddepsi3
+                sigma1[i + 1] += 2.0 * C * ddepsi3
                 sigma3[i + 1] += D * ddepsi3
-                f[i + 1] = si * (sigma1[i + 1] - sigma3[i + 1]) + (
-                    sigma1[i + 1] + sigma3[i + 1]) * s - cohes
+                f[i + 1] = (
+                    si * (sigma1[i + 1] - sigma3[i + 1])
+                    + (sigma1[i + 1] + sigma3[i + 1]) * s
+                    - cohes
+                )
 
                 # Matrice tangente consistente
                 # ----------------------------
                 DSDE.append(
-                    [[E - A * (
-                      E * (
-                      t + si) + C * (
-                      t - si)) / BB, C - B * (
-                        E * (t + si) + C * (t - si)) / BB, ],
-                        [C - E * (C * (t + si) + E * (t - si)) / BB, E - B * (C * (t + si) + E * (t - si)) / BB, ]]
+                    [
+                        [
+                            E - A * (E * (t + si) + C * (t - si)) / BB,
+                            C - B * (E * (t + si) + C * (t - si)) / BB,
+                        ],
+                        [
+                            C - E * (C * (t + si) + E * (t - si)) / BB,
+                            E - B * (C * (t + si) + E * (t - si)) / BB,
+                        ],
+                    ]
                 )
             else:
                 # Mise-a-jour Depsilon
@@ -203,43 +213,45 @@ def Triaxial_DR(K, G, phi, psi, cohes=0., sigma0=0., depzz=-.000001, epzz_max=-0
                 # Mise-a-jour VI
                 tlambda[i + 1] = dlambda
                 ttlambda[i + 1] += dlambda
-                f[i + 1] = si * (sigma1[i + 1] - sigma3[i + 1]) + (
-                    sigma1[i + 1] + sigma3[i + 1]) * s - cohes
+                f[i + 1] = (
+                    si * (sigma1[i + 1] - sigma3[i + 1])
+                    + (sigma1[i + 1] + sigma3[i + 1]) * s
+                    - cohes
+                )
 
                 # Matrice tangente consistente
                 # ----------------------------
-                DSDE.append(
-                    [[E, C, ],
-                     [C, E, ]]
-                )
+                DSDE.append([[E, C], [C, E]])
             if n >= 5:
                 print("  ====>>> Non Convergence <<<====")
                 break
 
     # Post-Traitements
     # ---------------------------
-    epsivp = list(2. * t * np.array(ttlambda))
-    epsidp = list(np.sqrt(t * t + 3.) * np.array(ttlambda))
+    epsivp = list(2.0 * t * np.array(ttlambda))
+    epsidp = list(np.sqrt(t * t + 3.0) * np.array(ttlambda))
 
-    return (epsi1, sigma1, sigma3, epsivp, epsidp,)
+    return (epsi1, sigma1, sigma3, epsivp, epsidp)
+
+
 # ---Fin
 
 
-def Defi_Xmcourbe(X=None, Y=None, FUNCTION=None, courbe=None, legend='X', color=0, mark=0,):
+def Defi_Xmcourbe(X=None, Y=None, FUNCTION=None, courbe=None, legend="X", color=0, mark=0):
 
     if FUNCTION:
-        def_co = {'FONCTION': FUNCTION}
+        def_co = {"FONCTION": FUNCTION}
     else:
-        def_co = {'ABSCISSE': X}
-        def_co['ORDONNEE'] = Y
+        def_co = {"ABSCISSE": X}
+        def_co["ORDONNEE"] = Y
 
-    def_co['LEGENDE'] = legend
-    def_co['COULEUR'] = color
-    def_co['MARQUEUR'] = mark
+    def_co["LEGENDE"] = legend
+    def_co["COULEUR"] = color
+    def_co["MARQUEUR"] = mark
 
     try:
         courbe.append(def_co)
     except:
-        courbe = [def_co, ]
+        courbe = [def_co]
 
     return courbe

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,9 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _("""
+    1: _(
+        """
 On ne peut avoir à la fois NOM_CAS et MODE_FOURIER.
-"""),
-
+"""
+    )
 }

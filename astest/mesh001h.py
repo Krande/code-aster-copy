@@ -26,9 +26,7 @@ test = code_aster.TestCase()
 
 mesh_init = LIRE_MAILLAGE()
 
-mesh = CREA_MAILLAGE(MAILLAGE=mesh_init,
-                     RAFFINEMENT=_F(TOUT='OUI', NIVEAU=2,),
-                     INFO=1,)
+mesh = CREA_MAILLAGE(MAILLAGE=mesh_init, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=2), INFO=1)
 
 
 test.assertEqual(mesh.getDimension(), 3)
@@ -37,10 +35,11 @@ test.assertEqual(mesh.getNumberOfNodes(), 3218)
 test.assertEqual(mesh.getNumberOfCells(), 2144)
 
 
-test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), [
-                         'HAUT', 'LEFT', 'PART', 'PART_extruded', 'PART_top', 'RIGHT'])
-test.assertSequenceEqual(mesh.getCells('LEFT'), [0, 1, 2, 3])
-test.assertEqual(len(mesh.getCells('HAUT')), 64)
+test.assertSequenceEqual(
+    sorted(mesh.getGroupsOfCells()), ["HAUT", "LEFT", "PART", "PART_extruded", "PART_top", "RIGHT"]
+)
+test.assertSequenceEqual(mesh.getCells("LEFT"), [0, 1, 2, 3])
+test.assertEqual(len(mesh.getCells("HAUT")), 64)
 
 IMPR_RESU(UNITE=50, FORMAT="MED", RESU=_F(MAILLAGE=mesh))
 mesh_read = LIRE_MAILLAGE(UNITE=50)

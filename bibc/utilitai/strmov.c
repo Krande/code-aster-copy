@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -18,9 +18,7 @@
 
 #include "aster.h"
 
-void DEFSPPPP(STRMOV, strmov, char *src,  STRING_SIZE len_src,
-              ASTERINTEGER *isb, ASTERINTEGER *num,
-              ASTERINTEGER *dest, ASTERINTEGER *idb)
-{
-    memcpy((char *)dest+*idb-1, src+*isb-1, *num);
+void DEFSPPPP( STRMOV, strmov, char *src, STRING_SIZE len_src, ASTERINTEGER *isb, ASTERINTEGER *num,
+               ASTERINTEGER *dest, ASTERINTEGER *idb ) {
+    memcpy( (char *)dest + *idb - 1, src + *isb - 1, *num );
 }

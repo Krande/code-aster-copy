@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,28 +20,24 @@
 # person_in_charge: jessica.haelewyn at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
-
-
-PMATTTR  = OutputParameter(phys=PHY.MTEM_R, type='RESL')
+PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 
 
 MTAN_RIGI_MASS = Option(
     para_in=(
-           PCOMPOR,
+        PCOMPOR,
         SP.PGEOMER,
         SP.PCAMASS,
         SP.PMATERC,
@@ -49,12 +45,8 @@ MTAN_RIGI_MASS = Option(
         SP.PTEMPSR,
         SP.PTMPCHF,
         SP.PTMPCHI,
-           PVARCPR,
+        PVARCPR,
     ),
-    para_out=(
-           PMATTTR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PMATTTR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

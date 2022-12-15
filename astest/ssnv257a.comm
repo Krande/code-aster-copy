@@ -29,7 +29,7 @@
 
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 import math
 import numpy as np
@@ -47,7 +47,7 @@ nb_arch = 100
 nb_poel = 10
 
 # INSTANT DE FIN <= DERNIER INSTANT
-inst_fin = 0.100 # max=1
+inst_fin = 0.100  # max=1
 
 # DERNIER INSTANT
 inst_total = 1
@@ -61,215 +61,199 @@ depl = 2
 # OBJET ASTER
 # -------------------------------------------------------------------------
 # LECTURE DU MAILLAGE
-MAIL = LIRE_MAILLAGE(FORMAT='MED', UNITE = 20)
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
 # AFFECTATION DU MODELE
-MODE = AFFE_MODELE(MAILLAGE = MAIL,
-             AFFE     = _F(TOUT         = 'OUI',
-                    PHENOMENE    = 'MECANIQUE',
-                        MODELISATION = 'AXIS_GRAD_VARI',
-                     ),
-           )
+MODE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_GRAD_VARI")
+)
 
 # MODELISATION DU MATERIAU
 # LES PARAMETRES UTILISES CI-DESSOUS VIENNENT DE LA THESE DE YI ZHANG(2016)
-ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
-              ECRO_NL  = _F(R0 = 488.361123569,
-                    RH = 0,
-                    R1 = 57.1333673502,
-                    GAMMA_1 = 8613.0,
-                    R2 = 238.731127339,
-                    GAMMA_2 = 10.386585592,
-                    ),
-                      GTN = _F(Q1 = 1.5,
-                                     Q2 = 1.07,
-                                     PORO_INIT = 2.e-4,
-                                     COAL_PORO = 0.05,
-                                     COAL_ACCE = 3,
-                                     NUCL_GAUSS_PORO = 0.0,
-                                     NUCL_GAUSS_PLAS = 0.2,
-                                     NUCL_GAUSS_DEV = 0.01,
-                     ),
-              NON_LOCAL = _F(C_GRAD_VARI = 1,
-                     PENA_LAGR   =5000,),
-                      )
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=190000.0, NU=0.3),
+    ECRO_NL=_F(
+        R0=488.361123569,
+        RH=0,
+        R1=57.1333673502,
+        GAMMA_1=8613.0,
+        R2=238.731127339,
+        GAMMA_2=10.386585592,
+    ),
+    GTN=_F(
+        Q1=1.5,
+        Q2=1.07,
+        PORO_INIT=2.0e-4,
+        COAL_PORO=0.05,
+        COAL_ACCE=3,
+        NUCL_GAUSS_PORO=0.0,
+        NUCL_GAUSS_PLAS=0.2,
+        NUCL_GAUSS_DEV=0.01,
+    ),
+    NON_LOCAL=_F(C_GRAD_VARI=1, PENA_LAGR=5000),
+)
 
 # AFFECTATION DES MATERIAUX
-MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
-                AFFE     = _F(TOUT  ='OUI',
-                      MATER = ACIER),)
+MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
 # CONDITIONS AUX LIMITES DE CHARGEMENT
-CL = AFFE_CHAR_MECA(MODELE=MODE,
-                    DDL_IMPO=(_F(GROUP_MA = 'LEFT_ed', DX = 0.),
-                              _F(GROUP_MA = 'BOTTOM_ed',DY = 0.),),)
+CL = AFFE_CHAR_MECA(
+    MODELE=MODE, DDL_IMPO=(_F(GROUP_MA="LEFT_ed", DX=0.0), _F(GROUP_MA="BOTTOM_ed", DY=0.0))
+)
 
-CHAR = AFFE_CHAR_MECA(MODELE=MODE,
-                      DDL_IMPO=_F(GROUP_MA = 'TOP_ed', DY = depl),)
+CHAR = AFFE_CHAR_MECA(MODELE=MODE, DDL_IMPO=_F(GROUP_MA="TOP_ed", DY=depl))
 
 
 # LISTE DES INSTANTS DE CALCUL
-REEL_CAL = DEFI_LIST_REEL(DEBUT      = 0,
-                          INTERVALLE = _F(JUSQU_A=inst_total, NOMBRE=nb_pas),)
+REEL_CAL = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=inst_total, NOMBRE=nb_pas))
 
-INST_CAL = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST=REEL_CAL),METHODE='AUTO')
+INST_CAL = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=REEL_CAL), METHODE="AUTO")
 
-REEL_ARC = DEFI_LIST_REEL(DEBUT      = 0,
-                          INTERVALLE = _F(JUSQU_A=inst_total, NOMBRE=nb_arch),)
+REEL_ARC = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=inst_total, NOMBRE=nb_arch))
 
-REEL_POE = DEFI_LIST_REEL(DEBUT      = 0,
-                          INTERVALLE = _F(JUSQU_A=inst_fin, NOMBRE=nb_poel),)
+REEL_POE = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=inst_fin, NOMBRE=nb_poel))
 
-FONC = DEFI_FONCTION(NOM_PARA = 'INST',
-                     VALE     = (0.0, 0.0 ,inst_total, 1.0),
-                     PROL_DROITE = 'LINEAIRE',)
+FONC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, inst_total, 1.0), PROL_DROITE="LINEAIRE")
 
 # CALCUL NON LINEAIRE
-RESU = STAT_NON_LINE (MODELE       = MODE,
-                CHAM_MATER   = MATE ,
-                EXCIT        = (_F(CHARGE = CL),
-                                _F(CHARGE = CHAR, FONC_MULT=FONC),),
-                COMPORTEMENT = _F(TOUT='OUI', RELATION='GTN', DEFORMATION='GDEF_LOG'),
-                      INCREMENT    = _F(LIST_INST = INST_CAL, INST_FIN=inst_fin),
-                      CONVERGENCE  = _F(ITER_GLOB_MAXI= 20,
-                    RESI_GLOB_MAXI=1.E-3,
-                    ),
-                      NEWTON       = _F(MATRICE='TANGENTE',REAC_ITER=1),
-                      SOLVEUR      = _F(METHODE='MUMPS', PCENT_PIVOT=20, MATR_DISTRIBUEE='OUI',),
-                      ARCHIVAGE    = _F(LIST_INST=REEL_ARC),
-            )
+RESU = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=MATE,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CHAR, FONC_MULT=FONC)),
+    COMPORTEMENT=_F(TOUT="OUI", RELATION="GTN", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=INST_CAL, INST_FIN=inst_fin),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_MAXI=1.0e-3),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    SOLVEUR=_F(METHODE="MUMPS", PCENT_PIVOT=20, MATR_DISTRIBUEE="OUI"),
+    ARCHIVAGE=_F(LIST_INST=REEL_ARC),
+)
 
-TAB_VI = POST_ELEM(INTEGRALE=_F(NOM_CHAM='VARI_ELGA',
-                                 NOM_VARI=('EPSPEQ', 'POROSITE' ),
-#                                 NOM_CMP=('V1','V2'),
-                                 TOUT='OUI',
-                                 TYPE_MAILLE='2D'),
-                    LIST_INST=REEL_POE,
-                    RESULTAT=RESU)
+TAB_VI = POST_ELEM(
+    INTEGRALE=_F(
+        NOM_CHAM="VARI_ELGA",
+        NOM_VARI=("EPSPEQ", "POROSITE"),
+        #                                 NOM_CMP=('V1','V2'),
+        TOUT="OUI",
+        TYPE_MAILLE="2D",
+    ),
+    LIST_INST=REEL_POE,
+    RESULTAT=RESU,
+)
 
-TEST_TABLE(TABLE = TAB_VI,
-       NOM_PARA = 'MOYE_POROSITE',
-           TYPE_TEST = 'MAX',
-           VALE_CALC= 0.0002015086325070597,
-           )
+TEST_TABLE(TABLE=TAB_VI, NOM_PARA="MOYE_POROSITE", TYPE_TEST="MAX", VALE_CALC=0.0002015086325070597)
 
-TEST_TABLE(TABLE = TAB_VI,
-       NOM_PARA = 'MOYE_EPSPEQ',
-           TYPE_TEST = 'MAX',
-           VALE_CALC= 0.002148967259229727,
-           )
+TEST_TABLE(TABLE=TAB_VI, NOM_PARA="MOYE_EPSPEQ", TYPE_TEST="MAX", VALE_CALC=0.002148967259229727)
 
 # COORDONNEES DES POINTS DE GAUSS
 
-COOR = CALC_CHAM_ELEM(MODELE = MODE,
-                OPTION = 'COOR_ELGA',)
+COOR = CALC_CHAM_ELEM(MODELE=MODE, OPTION="COOR_ELGA")
 
-COORX = COOR.EXTR_COMP('X',['NT4']).valeurs
-COORY = COOR.EXTR_COMP('Y',['NT4']).valeurs
+COORX = COOR.EXTR_COMP("X", ["NT4"]).valeurs
+COORY = COOR.EXTR_COMP("Y", ["NT4"]).valeurs
 
-    # PREMIER POINT A TESTER: PG LE PLUS PROCHE DE L'ORIGINE j
-    # DEUXIEME POINT A TESTER: PG MILIEU
-for i in range (len(COORX)):
-    if(COORX[i]<0.06 and COORY[i]<0.06):
+# PREMIER POINT A TESTER: PG LE PLUS PROCHE DE L'ORIGINE j
+# DEUXIEME POINT A TESTER: PG MILIEU
+for i in range(len(COORX)):
+    if COORX[i] < 0.06 and COORY[i] < 0.06:
         j = i
-    if(COORX[i]>2.5 and COORX[i]<2.56098 and COORY[i]<0.06):
+    if COORX[i] > 2.5 and COORX[i] < 2.56098 and COORY[i] < 0.06:
         k = i
 
 
-#---------------------------------------------------------------------------------------------------------------
-#------------------------------------------ TEST SUR SIYY-------------------------------------------------------
-#---------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
+# ------------------------------------------ TEST SUR SIYY-------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
 # ATTENTION: LA DISTRIBUTION DE SIYY N'EST PAS DU TOUT HOMOGENE!!!
 
 # INST1 = 0.10     (INST_TOTAL = 1.00)
-SIGMA1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                 OPERATION = 'EXTR',
-                   RESULTAT  = RESU,
-                   NOM_CHAM  = 'SIEF_ELGA',
-                   INST      = 0.10,
-                   )
+SIGMA1 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="SIEF_ELGA", INST=0.10
+)
 
-SIYY1 = SIGMA1.EXTR_COMP('SIYY',['NT4']).valeurs
+SIYY1 = SIGMA1.EXTR_COMP("SIYY", ["NT4"]).valeurs
 
-SXX11 = CREA_TABLE(LISTE = (_F(PARA='SIYY',LISTE_R = SIYY1[j])))
-SXX12 = CREA_TABLE(LISTE = (_F(PARA='SIYY',LISTE_R = SIYY1[k])))
+SXX11 = CREA_TABLE(LISTE=(_F(PARA="SIYY", LISTE_R=SIYY1[j])))
+SXX12 = CREA_TABLE(LISTE=(_F(PARA="SIYY", LISTE_R=SIYY1[k])))
 
-TEST_TABLE(TABLE = SXX11,
-       NOM_PARA = 'SIYY',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 1202.801544806596,
-           REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 1.202612e+03,
-       PRECISION = 0.01,
-           )
-TEST_TABLE(TABLE = SXX12,
-       NOM_PARA = 'SIYY',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 1051.328694843562,
-           REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 1.051092e+03 ,
-       PRECISION = 0.01,
-           )
+TEST_TABLE(
+    TABLE=SXX11,
+    NOM_PARA="SIYY",
+    TYPE_TEST="MAX",
+    VALE_CALC=1202.801544806596,
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=1.202612e03,
+    PRECISION=0.01,
+)
+TEST_TABLE(
+    TABLE=SXX12,
+    NOM_PARA="SIYY",
+    TYPE_TEST="MAX",
+    VALE_CALC=1051.328694843562,
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=1.051092e03,
+    PRECISION=0.01,
+)
 
 
-#---------------------------------------------------------------------------------------------------------------
-#------------------------------------- TEST SUR VARIABLE INTERNE : k et f---------------------------------------
-#---------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
+# ------------------------------------- TEST SUR VARIABLE INTERNE : k et f---------------------------------------
+# ---------------------------------------------------------------------------------------------------------------
 
 ###
 ### INST1 = 0.10     (INST_TOTAL = 1.00)
 ###
 
-VI1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
-               OPERATION = 'EXTR',
-                 RESULTAT  = RESU,
-                 NOM_CHAM  = 'VARI_ELGA',
-                 INST      = 0.10,
-                 )
+VI1 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_VARI_R", OPERATION="EXTR", RESULTAT=RESU, NOM_CHAM="VARI_ELGA", INST=0.10
+)
 
 #   VARIABLE D'ECROUISSAGE
-V11 = VI1.EXTR_COMP('V1',['NT4']).valeurs
-V111 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V11[j])))
-V112 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V11[k])))
+V11 = VI1.EXTR_COMP("V1", ["NT4"]).valeurs
+V111 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V11[j])))
+V112 = CREA_TABLE(LISTE=(_F(PARA="V1", LISTE_R=V11[k])))
 
-TEST_TABLE(TABLE = V111,
-       NOM_PARA = 'V1',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 0.06745016231932219,
-           REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 6.721424e-02,
-       PRECISION = 0.01,
-           )
-TEST_TABLE(TABLE = V112,
-       NOM_PARA = 'V1',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 0.0695283224914408,
-           REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 6.932525e-02,
-       PRECISION = 0.01,
-           )
+TEST_TABLE(
+    TABLE=V111,
+    NOM_PARA="V1",
+    TYPE_TEST="MAX",
+    VALE_CALC=0.06745016231932219,
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=6.721424e-02,
+    PRECISION=0.01,
+)
+TEST_TABLE(
+    TABLE=V112,
+    NOM_PARA="V1",
+    TYPE_TEST="MAX",
+    VALE_CALC=0.0695283224914408,
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=6.932525e-02,
+    PRECISION=0.01,
+)
 
 #  POROSITE
-V12 = VI1.EXTR_COMP('V2',['NT4']).valeurs
-V121 = CREA_TABLE(LISTE = (_F(PARA='V2',LISTE_R = V12[j])))
-V122 = CREA_TABLE(LISTE = (_F(PARA='V2',LISTE_R = V12[k])))
+V12 = VI1.EXTR_COMP("V2", ["NT4"]).valeurs
+V121 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V12[j])))
+V122 = CREA_TABLE(LISTE=(_F(PARA="V2", LISTE_R=V12[k])))
 
-TEST_TABLE(TABLE = V121,
-       NOM_PARA = 'V2',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 0.0003290923716142956,
-           REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 3.293419e-04,
-       PRECISION = 0.01,
-           )
-TEST_TABLE(TABLE = V122,
-       NOM_PARA = 'V2',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 0.00028074469353951963,
-           REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 2.808173e-04   ,
-       PRECISION = 0.01,
-           )
+TEST_TABLE(
+    TABLE=V121,
+    NOM_PARA="V2",
+    TYPE_TEST="MAX",
+    VALE_CALC=0.0003290923716142956,
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=3.293419e-04,
+    PRECISION=0.01,
+)
+TEST_TABLE(
+    TABLE=V122,
+    NOM_PARA="V2",
+    TYPE_TEST="MAX",
+    VALE_CALC=0.00028074469353951963,
+    REFERENCE="SOURCE_EXTERNE",
+    VALE_REFE=2.808173e-04,
+    PRECISION=0.01,
+)
 
 
 FIN()

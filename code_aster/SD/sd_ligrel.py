@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,38 +22,36 @@ from .sd_maillage import sd_maillage
 
 
 class sd_voisinage(AsBase):
-#-------------------------------
+    # -------------------------------
     nomj = SDNom(fin=12)
     PTVOIS = AsVI()
     ELVOIS = AsVI()
 
 
 class sd_ligrel(AsBase):
-#-------------------------------
+    # -------------------------------
     nomj = SDNom(fin=19)
 
-    LGRF = AsVK8(lonmax=3, docu=Parmi('ACOU', 'MECA', 'THER'), )
-    NBNO = AsVI(lonmax=1,)
+    LGRF = AsVK8(lonmax=3, docu=Parmi("ACOU", "MECA", "THER"))
+    NBNO = AsVI(lonmax=1)
     PRNM = AsVI()
 
     # AU_MOINS_UN : LIEL, SSSA
     # LIEL : il existe des éléments finis
     # SSSA : il existe des sous-structures statiques
-    LIEL = Facultatif(
-        AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
+    LIEL = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
     SSSA = Facultatif(AsVI())
     # ENSEMBLE  : LIEL, REPE
     REPE = Facultatif(AsVI())
 
     # si mailles tardives :
-    NEMA = Facultatif(
-        AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
+    NEMA = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
     # si noeuds tardifs :
     PRNS = Facultatif(AsVI())
     LGNS = Facultatif(AsVI())
 
     # si le ligrel contient des éléments nécessitant le voisinage :
-    NVGE = Facultatif(AsVK16(lonmax=1,))
+    NVGE = Facultatif(AsVK16(lonmax=1))
 
     def exists(self):
         # retourne True si la SD semble exister.
@@ -109,7 +107,7 @@ class sd_ligrel(AsBase):
             assert exi_prns
             assert exi_lgns
             assert exi_nema
-            assert self.LGNS.lonmax >= nb_no_tard   # .LGNS est surdimensionné
+            assert self.LGNS.lonmax >= nb_no_tard  # .LGNS est surdimensionné
             nbec = self.PRNS.lonmax / nb_no_tard
             assert self.PRNS.lonmax == nb_no_tard * nbec, (nbec, nb_no_tard)
             assert nbec >= 1 and nbec < 10, nbec

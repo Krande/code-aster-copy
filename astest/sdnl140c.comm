@@ -21,114 +21,105 @@
 # MAILLE       : QUAD4
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-mail=LIRE_MAILLAGE(FORMAT='MED')
-
-
-mail=MODI_MAILLAGE(reuse =mail,
-                   MAILLAGE=mail,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Haut_Contact','Bas_Contact',),),)
-
-modele=AFFE_MODELE(MAILLAGE=mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION=('C_PLAN',),),)
-
-acier=DEFI_MATERIAU(ELAS=_F(E=200e9,
-                            NU=0,
-                            RHO=7800,),)
-
-affe_mat=AFFE_MATERIAU(MAILLAGE=mail,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=acier,),)
-
-clim=AFFE_CHAR_MECA(MODELE=modele,
-                    DDL_IMPO=_F(GROUP_MA=('Encastrement',),
-                                DX=0,
-                                DY=0,),)
+mail = LIRE_MAILLAGE(FORMAT="MED")
 
 
-force=AFFE_CHAR_MECA(MODELE=modele,
-                     FORCE_NODALE=_F(GROUP_NO='Force',
-                                  FY=-1.e7,),)
+mail = MODI_MAILLAGE(
+    reuse=mail, MAILLAGE=mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("Haut_Contact", "Bas_Contact"))
+)
 
-#contact = NEWTON_GENERALISE
-contact=DEFI_CONTACT(MODELE=modele,
-                     FORMULATION='CONTINUE',
-                     FROTTEMENT='COULOMB',
-                     ALGO_RESO_GEOM='NEWTON',
-                     ALGO_RESO_CONT='NEWTON',
-                     ALGO_RESO_FROT='NEWTON',
-                     ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
-                             GROUP_MA_ESCL='Bas_Contact',
-                             CONTACT_INIT='OUI',
-                             COEF_FROT=2.E7,COEF_CONT=2.E9,
-                             SANS_GROUP_NO = ('N6'),
-                             COULOMB=0.2),)
+modele = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=("C_PLAN",))
+)
+
+acier = DEFI_MATERIAU(ELAS=_F(E=200e9, NU=0, RHO=7800))
+
+affe_mat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT="OUI", MATER=acier))
+
+clim = AFFE_CHAR_MECA(MODELE=modele, DDL_IMPO=_F(GROUP_MA=("Encastrement",), DX=0, DY=0))
 
 
-res=MECA_STATIQUE(MODELE=modele,
-                   CHAM_MATER=affe_mat,
-                   EXCIT=(_F(CHARGE=clim,),
-                          _F(CHARGE=force,),))
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=res,
-                  NOM_CHAM='DEPL',GROUP_NO='Force',NOM_CMP='DY'),)
+force = AFFE_CHAR_MECA(MODELE=modele, FORCE_NODALE=_F(GROUP_NO="Force", FY=-1.0e7))
 
-rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.    , 1.,
-                                          0.15, 1.))
+# contact = NEWTON_GENERALISE
+contact = DEFI_CONTACT(
+    MODELE=modele,
+    FORMULATION="CONTINUE",
+    FROTTEMENT="COULOMB",
+    ALGO_RESO_GEOM="NEWTON",
+    ALGO_RESO_CONT="NEWTON",
+    ALGO_RESO_FROT="NEWTON",
+    ZONE=_F(
+        GROUP_MA_MAIT="Haut_Contact",
+        GROUP_MA_ESCL="Bas_Contact",
+        CONTACT_INIT="OUI",
+        COEF_FROT=2.0e7,
+        COEF_CONT=2.0e9,
+        SANS_GROUP_NO=("N6"),
+        COULOMB=0.2,
+    ),
+)
 
-listinst=DEFI_LIST_REEL(DEBUT=0.,
-                        INTERVALLE=_F(JUSQU_A=.15,
-                                      PAS=0.001,),)
 
-list2=DEFI_LIST_INST(METHODE='MANUEL',
-                     DEFI_LIST=_F(LIST_INST=listinst,),
-                     ECHEC=_F(SUBD_PAS=2,SUBD_NIVEAU=12,),)
+res = MECA_STATIQUE(MODELE=modele, CHAM_MATER=affe_mat, EXCIT=(_F(CHARGE=clim), _F(CHARGE=force)))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=res, NOM_CHAM="DEPL", GROUP_NO="Force", NOM_CMP="DY"))
 
-lfin1=0.012
-lfin2=0.001
-#evol1 = Newton_GENERALISE
-evol1=DYNA_NON_LINE(MODELE=modele,
-                   CHAM_MATER=affe_mat,
-                   EXCIT=(_F(CHARGE=clim,),
-                          _F(CHARGE=force,
-                             FONC_MULT=rampe),),
-                   CONTACT=contact,
-                   COMPORTEMENT=_F(RELATION='ELAS',),
-                   NEWTON=_F(REAC_ITER=1,),
-                   INCREMENT=_F(LIST_INST=list2,INST_FIN=lfin1,),
-                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-4,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250,),
-                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
-                                   FORMULATION='DEPLACEMENT',),)
+rampe = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 1.0, 0.15, 1.0))
 
-#-----------couvrir C_PLAN / ECIN_ELEMIN_ELEM
-tab_ecin=POST_ELEM(ENER_CIN=_F(GROUP_MA='Poutre'),
-                   MODELE=modele,
-                   CHAM_MATER=affe_mat,
-                   RESULTAT=evol1)
+listinst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.15, PAS=0.001))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.0e-6,
-           VALE_CALC=434861.4201976741,
-           VALE_REFE=434861.420,
-           NOM_PARA='TOTALE',
-           TYPE_TEST='MAX',
-           TABLE=tab_ecin,)
+list2 = DEFI_LIST_INST(
+    METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=listinst), ECHEC=_F(SUBD_PAS=2, SUBD_NIVEAU=12)
+)
 
-#--------------------------------------------
-TEST_RESU(RESU=_F(INST      =  lfin1,
-                  NOM_CHAM  =  'DEPL',
-                  NOM_CMP   =  'DY',
-                  GROUP_NO  =  'Force',
-                  REFERENCE =  'SOURCE_EXTERNE',
-                  RESULTAT  =  evol1,
-                  VALE_CALC = -0.0132050023806,
-                  VALE_REFE = -0.03,
-                  CRITERE   =  'RELATIF',
-                  PRECISION =  60.E-2,),)
+lfin1 = 0.012
+lfin2 = 0.001
+# evol1 = Newton_GENERALISE
+evol1 = DYNA_NON_LINE(
+    MODELE=modele,
+    CHAM_MATER=affe_mat,
+    EXCIT=(_F(CHARGE=clim), _F(CHARGE=force, FONC_MULT=rampe)),
+    CONTACT=contact,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=list2, INST_FIN=lfin1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=30, RESI_GLOB_RELA=1.0e-4),
+    SOLVEUR=_F(METHODE="MUMPS", PCENT_PIVOT=250),
+    SCHEMA_TEMPS=_F(SCHEMA="HHT", ALPHA=-0.3, MODI_EQUI="OUI", FORMULATION="DEPLACEMENT"),
+)
 
+# -----------couvrir C_PLAN / ECIN_ELEMIN_ELEM
+tab_ecin = POST_ELEM(
+    ENER_CIN=_F(GROUP_MA="Poutre"), MODELE=modele, CHAM_MATER=affe_mat, RESULTAT=evol1
+)
+
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=434861.4201976741,
+    VALE_REFE=434861.420,
+    NOM_PARA="TOTALE",
+    TYPE_TEST="MAX",
+    TABLE=tab_ecin,
+)
+
+# --------------------------------------------
+TEST_RESU(
+    RESU=_F(
+        INST=lfin1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        GROUP_NO="Force",
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=evol1,
+        VALE_CALC=-0.0132050023806,
+        VALE_REFE=-0.03,
+        CRITERE="RELATIF",
+        PRECISION=60.0e-2,
+    )
+)
 
 
 FIN()

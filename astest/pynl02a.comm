@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,414 +17,429 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),
-      IMPR_MACRO="OUI")
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IMPR_MACRO="OUI")
 
 # MODELISATION A : COMPORTEMENT VMIS_ECMI_TRAC AVEC PLUSIEURS PAS DE TEMPS
 
 import numpy as NP
 
-#=========================================================
+# =========================================================
 #          DEFINITION DE L'ETUDE
-#=========================================================
+# =========================================================
 
 
-MA = LIRE_MAILLAGE(FORMAT='GMSH',
-                   UNITE=19,
-                   )
+MA = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='BORDINF',
-                                GROUP_MA='GM3',),
-                             _F(NOM='BORDSUP',
-                                GROUP_MA='GM2',),
-                             _F(NOM='CUBE',
-                                GROUP_MA='GM1',),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(NOM="BORDINF", GROUP_MA="GM3"),
+        _F(NOM="BORDSUP", GROUP_MA="GM2"),
+        _F(NOM="CUBE", GROUP_MA="GM1"),
+    ),
+)
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA=('CUBE','BORDINF','BORDSUP'),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),)
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA=("CUBE", "BORDINF", "BORDSUP"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+)
 
-FTRACTUB=DEFI_FONCTION(NOM_PARA='EPSI',
-                       VALE=(0.078667E-02,  174.28,
-                             0.109580E-02,  238.51,
-                             0.188500E-02,  280.76,
-                             0.291830E-02,  294.46,
-                             0.393670E-02,  306.02,
-                             0.495080E-02,  314.34,
-                             0.596830E-02,  322.62,
-                             0.699080E-02,  330.22,
-                             0.802000E-02,  335.56,
-                             0.904500E-02,  340.47,
-                             1.007100E-02,  345.42,
-                             1.108800E-02,  349.62,
-                             1.210100E-02,  354.02,
-                             1.313300E-02,  358.22,
-                             1.415300E-02,  362.53,
-                             1.516800E-02,  366.65,
-                             1.619000E-02,  370.73,
-                             1.720400E-02,  374.53,
-                             1.822300E-02,  378.29,
-                             1.923300E-02,  382.21,),
-                       PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',)
+FTRACTUB = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    VALE=(
+        0.078667e-02,
+        174.28,
+        0.109580e-02,
+        238.51,
+        0.188500e-02,
+        280.76,
+        0.291830e-02,
+        294.46,
+        0.393670e-02,
+        306.02,
+        0.495080e-02,
+        314.34,
+        0.596830e-02,
+        322.62,
+        0.699080e-02,
+        330.22,
+        0.802000e-02,
+        335.56,
+        0.904500e-02,
+        340.47,
+        1.007100e-02,
+        345.42,
+        1.108800e-02,
+        349.62,
+        1.210100e-02,
+        354.02,
+        1.313300e-02,
+        358.22,
+        1.415300e-02,
+        362.53,
+        1.516800e-02,
+        366.65,
+        1.619000e-02,
+        370.73,
+        1.720400e-02,
+        374.53,
+        1.822300e-02,
+        378.29,
+        1.923300e-02,
+        382.21,
+    ),
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=2.213E5,NU=0.3,),
-                  TRACTION=_F(SIGM=FTRACTUB,),
-                  PRAGER  =_F(C=2200,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=2.213e5, NU=0.3), TRACTION=_F(SIGM=FTRACTUB), PRAGER=_F(C=2200))
 
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-CHARB=AFFE_CHAR_MECA(MODELE=MO,
-                      DDL_IMPO=(_F(GROUP_MA='BORDINF',
-                                   DY=0.,
-                                   DX=0.,
-                                   DZ=0.,),
-                                _F(GROUP_MA='BORDSUP',
-                                   DZ=1.e-2,
-                                   ),),)
+CHARB = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_MA="BORDINF", DY=0.0, DX=0.0, DZ=0.0), _F(GROUP_MA="BORDSUP", DZ=1.0e-2)),
+)
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0., 0.,
-                          1., 1.))
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
-LIST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=2,),)
+LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 
 # STAT_NON_LINE DE REFERENCE
-SOLUT=STAT_NON_LINE(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
-                    COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
-                    NEWTON=_F(REAC_INCR=1,
-                              PREDICTION='ELASTIQUE',
-                              MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    INCREMENT=_F(LIST_INST=LIST,),
-                    INFO=1)
+SOLUT = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHARB, FONC_MULT=RAMPE),
+    COMPORTEMENT=_F(RELATION="VMIS_ECMI_TRAC"),
+    NEWTON=_F(REAC_INCR=1, PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=LIST),
+    INFO=1,
+)
 
 # boucle sur les pas de temps
-pred = 'elastique'
+pred = "elastique"
 l_inst = LIST.getValues()
-for i_inst in range(1,len(l_inst)) :
-   inst = l_inst[i_inst]
-   print(' ')
-   print('        ####################################')
-   print('             instant de calcul ',inst)
-   print('        ####################################')
-   print(' ')
+for i_inst in range(1, len(l_inst)):
+    inst = l_inst[i_inst]
+    print(" ")
+    print("        ####################################")
+    print("             instant de calcul ", inst)
+    print("        ####################################")
+    print(" ")
+
+    # creation du NUME_DDL
+    if i_inst == 1:
+
+        # matrice elementaire complete
+        M_EL = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MO, CHAM_MATER=CHMAT, CHARGE=CHARB)
+
+        # nume ddl complet (il ne doit pas changer entre 2 instants)
+        NU = NUME_DDL(MATR_RIGI=M_EL)
+
+    # =========================================================
+    #  MISE A JOUR DES CHAMPS OU INITIALISATION (1ER INSTANT)
+    # =========================================================
+
+    if i_inst == 1:
+
+        SIGMA = CREA_CHAMP(
+            TYPE_CHAM="ELGA_SIEF_R",
+            OPERATION="AFFE",
+            MODELE=MO,
+            AFFE=_F(
+                TOUT="OUI",
+                NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIYZ", "SIXZ"),
+                VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+            ),
+        )
+
+        VARI = CREA_CHAMP(
+            OPERATION="AFFE",
+            TYPE_CHAM="ELGA_VARI_R",
+            MODELE=MO,
+            PROL_ZERO="OUI",
+            AFFE=_F(TOUT="OUI", NOM_CMP="V8", VALE=0.0),
+        )
+
+    else:
+
+        # DEPLACEMENTS : U = U + DELTA_U
+        U += DU
+
+        SIGMA = CREA_CHAMP(
+            TYPE_CHAM="ELGA_SIEF_R",
+            OPERATION="ASSE",
+            MODELE=MO,
+            PROL_ZERO="OUI",
+            ASSE=_F(TOUT="OUI", CHAM_GD=result.SIEF_ELGA),
+        )
+
+        VARI = CREA_CHAMP(
+            TYPE_CHAM="ELGA_VARI_R",
+            OPERATION="ASSE",
+            MODELE=MO,
+            PROL_ZERO="OUI",
+            ASSE=_F(TOUT="OUI", CHAM_GD=result.VARI_ELGA),
+        )
+
+        # STOCKAGE DE LA CHARGE DU PAS DE TEMPS PRECEDENT
+        CHARB_PR = CREA_CHAMP(
+            OPERATION="COMB", TYPE_CHAM="NOEU_DEPL_R", COMB=_F(CHAM_GD=CHARB_AS, COEF_R=1.0)
+        )
+
+    # =========================================================
+    #               PREDICTION
+    # =========================================================
+
+    # pour le premier pas de temps, prediction elastique forcee
+    if i_inst == 1:
+
+        # matrice assemblee élastique
+        ME_AS = ASSE_MATRICE(MATR_ELEM=M_EL, NUME_DDL=NU)
+
+        ME_AS = FACTORISER(reuse=ME_AS, METHODE="MULT_FRONT", MATR_ASSE=ME_AS)
+
+    # charge elementaire de blocage
+    CHARB_EL = CALC_VECT_ELEM(OPTION="CHAR_MECA", INST=inst, CHARGE=CHARB)
+
+    # charge assemblee : attention : ca ne doit etre que des LAGR
+    CHARB_AS = ASSE_VECTEUR(VECT_ELEM=CHARB_EL, NUME_DDL=NU)
+
+    # multiplication de la charge par la rampe
+    CHARB_AS *= RAMPE(inst)
+
+    # construction du second membre
+    if i_inst == 1:
+        F_AS = CHARB_AS.duplicate()
+    else:
+        F_AS = CHARB_AS - CHARB_PR - FORIN_AS - BTLA_AS
+
+    if i_inst == 1 or pred == "elastique":
+        # prediction avec la matrice elastique
+        DU = RESOUDRE(MATR=ME_AS, CHAM_NO=F_AS)
+    else:
+        # prediction avec la matrice du pas de temps precedent
+        DU = RESOUDRE(MATR=M_AS, CHAM_NO=F_AS)
+
+    # initialisation de U A PARTIR DU PROFIL DE DU
+    if i_inst == 1:
+        U = DU.duplicate()
+
+    # creation du DELTA_U = (Ucourant - Uequilibre) = dU(pred)
+    DELTA_U = DU.duplicate()
+
+    # =========================================================
+    #               BOUCLE DE NEWTON
+    # =========================================================
+
+    NbIterNewtonMax = 10
+    ResiGlobRela = 1.0e-6
+    Residu = NP.zeros(NbIterNewtonMax + 1)
+    ResiduX = NP.zeros(NbIterNewtonMax + 1)
+    Conv = NP.zeros(NbIterNewtonMax + 1)
+
+    for IterNewton in range(1, NbIterNewtonMax + 1):
+
+        # =========================================================
+        #           INTEGRATION DE LA LOI DE COMPT
+        # =========================================================
+
+        # remarque la destruction du container 'CONT ne detruit pas les champs de la table...
+        # ce qui augmente leur numero  a chaque fois, et declenche les erreurs de verif SD
+        # DETRUIRE(OBJET=_F(CHAINE='CONT'),INFO=1)
+        # à vérifier en >15.2... maintenant qu'il y a 'update'
+
+        if i_inst == 1 and IterNewton == 1:
+            result = CALCUL(
+                __use_namedtuple__=True,
+                OPTION=("COMPORTEMENT", "FORC_INTE_ELEM", "MATR_TANG_ELEM"),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
+                EXCIT=_F(CHARGE=CHARB, FONC_MULT=RAMPE),
+                INCR_DEPL=DELTA_U,
+                DEPL=U,
+                SIGM=SIGMA,
+                VARI=VARI,
+                COMPORTEMENT=_F(RELATION="VMIS_ECMI_TRAC"),
+                INFO=2,
+            )
+        else:
+            result = CALCUL(
+                __use_namedtuple__=True,
+                OPTION=("COMPORTEMENT", "FORC_INTE_ELEM", "MATR_TANG_ELEM"),
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                INCREMENT=_F(LIST_INST=LIST, NUME_ORDRE=i_inst),
+                EXCIT=_F(CHARGE=CHARB, FONC_MULT=RAMPE),
+                INCR_DEPL=DELTA_U,
+                DEPL=U,
+                #  reuse = CONT,
+                #  TABLE = CONT,
+                SIGM=SIGMA,
+                VARI=VARI,
+                COMPORTEMENT=_F(RELATION="VMIS_ECMI_TRAC"),
+                INFO=2,
+            )
+
+        # =========================================================
+        #   VERIFICTION DU CODE RETOUR DE L'INTEGRATION DE LA LC
+        # =========================================================
+        if max(result.CODE_RETOUR_INTE.EXTR_COMP("IRET", []).valeurs) > 0:
+            print("echec d integration de la loi de comportement")
+            FIN()
+
+        # =========================================================
+        #   MATRICE TANGENTE
+        # =========================================================
+
+        # matrice assemblee tangente
+        MT_AS = ASSE_MATRICE(MATR_ELEM=result.MATR_TANG_ELEM, NUME_DDL=NU)
+
+        M_AS = FACTORISER(reuse=MT_AS, METHODE="MULT_FRONT", MATR_ASSE=MT_AS)
+
+        # =========================================================
+        #   SECONDS MEMBRES et RESIDU
+        # =========================================================
+
+        # forces internes assemblees
+        FORIN_AS = ASSE_VECTEUR(VECT_ELEM=result.FORC_INTE_ELEM, NUME_DDL=NU)
+
+        # Bt.La assemblee
+        BTLA_AS = ASSE_VECTEUR(VECT_ELEM=result.FORC_DIRI_ELEM, NUME_DDL=NU)
+
+        # f_v : sommes des 2nds membres
+        F_AS = -FORIN_AS - BTLA_AS
+
+        RESB = CHARB_AS - BTLA_AS
+
+        residu_haut = F_AS.norm("NORM_INFINITY")
+        residu_bas = RESB.norm("NORM_INFINITY")
+
+        Residu[IterNewton - 1] = residu_haut / residu_bas
+        ResiduX[IterNewton - 1] = residu_haut
+
+        print("RESI_GLOB_RELA et RESI_GLOB_MAXI ", Residu[IterNewton - 1], ResiduX[IterNewton - 1])
+
+        # estimation de la convergence
+        if Residu[IterNewton - 1] <= ResiGlobRela:
+            Conv[IterNewton - 1] = 1
+            break
+        else:
+            Conv[IterNewton - 1] = 0
+
+        # =========================================================
+        #   resolution M_AS . DU = FEXT - FORIN_AS - BTLA_AS
+        # =========================================================
+
+        DU = RESOUDRE(MATR=M_AS, CHAM_NO=F_AS)
+
+        DELTA_U += DU
+
+    print("instant ", inst)
+    print("IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence")
+    for i in range(0, IterNewton):
+        print("     %d     |   %e   |   %e  |    %d " % (i, Residu[i], ResiduX[i], Conv[i]))
+
+    if Conv[IterNewton - 1] != 1:
+        print("echec de la convergence des iteration de Newton")
+        FIN()
 
 
-   # creation du NUME_DDL
-   if i_inst == 1 :
-
-      # matrice elementaire complete
-      M_EL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                          MODELE=MO,
-                          CHAM_MATER=CHMAT,
-                          CHARGE=CHARB,)
-
-      # nume ddl complet (il ne doit pas changer entre 2 instants)
-      NU=NUME_DDL(MATR_RIGI=M_EL,)
-
-   #=========================================================
-   #  MISE A JOUR DES CHAMPS OU INITIALISATION (1ER INSTANT)
-   #=========================================================
-
-   if i_inst == 1 :
-
-      SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                      OPERATION='AFFE',
-                      MODELE=MO,
-                      AFFE=_F(TOUT='OUI',
-                              NOM_CMP=('SIXX','SIYY','SIZZ',
-                                       'SIXY','SIYZ','SIXZ',),
-                              VALE=(0.,0.,0.,0.,0.,0.,),
-                              ),)
-
-      VARI=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO,  PROL_ZERO='OUI',
-                       AFFE=_F(TOUT='OUI', NOM_CMP= 'V8', VALE = 0.)
-                       )
-
-   else :
-
-      # DEPLACEMENTS : U = U + DELTA_U
-      U += DU
-
-      SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                       OPERATION='ASSE',
-                       MODELE   =MO,
-                       PROL_ZERO='OUI',
-                       ASSE  = _F(TOUT       ='OUI',
-                                  CHAM_GD    =result.SIEF_ELGA))
-
-      VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
-                      OPERATION='ASSE',
-                      MODELE   =MO,
-                      PROL_ZERO='OUI',
-                      ASSE  = _F(TOUT       ='OUI',
-                                 CHAM_GD    =result.VARI_ELGA))
-
-      # STOCKAGE DE LA CHARGE DU PAS DE TEMPS PRECEDENT
-      CHARB_PR=CREA_CHAMP(OPERATION='COMB',
-                          TYPE_CHAM='NOEU_DEPL_R',
-                          COMB=_F(CHAM_GD=CHARB_AS, COEF_R=1.),)
-
-   #=========================================================
-   #               PREDICTION
-   #=========================================================
-
-   # pour le premier pas de temps, prediction elastique forcee
-   if i_inst == 1 :
-
-      # matrice assemblee élastique
-      ME_AS=ASSE_MATRICE(MATR_ELEM=M_EL,
-                         NUME_DDL=NU,)
-
-      ME_AS=FACTORISER(reuse =ME_AS, METHODE="MULT_FRONT",
-                       MATR_ASSE=ME_AS)
-
-   # charge elementaire de blocage
-   CHARB_EL=CALC_VECT_ELEM(OPTION='CHAR_MECA',INST = inst,CHARGE=CHARB,)
-
-   # charge assemblee : attention : ca ne doit etre que des LAGR
-   CHARB_AS=ASSE_VECTEUR(VECT_ELEM=CHARB_EL,NUME_DDL=NU,)
-
-   # multiplication de la charge par la rampe
-   CHARB_AS *= RAMPE(inst)
-
-   # construction du second membre
-   if i_inst == 1 :
-      F_AS = CHARB_AS.duplicate()
-   else :
-      F_AS = CHARB_AS - CHARB_PR - FORIN_AS - BTLA_AS
-
-   if i_inst == 1 or pred == 'elastique' :
-      # prediction avec la matrice elastique
-      DU=RESOUDRE(MATR=ME_AS,CHAM_NO=F_AS,)
-   else :
-      # prediction avec la matrice du pas de temps precedent
-      DU=RESOUDRE(MATR=M_AS,CHAM_NO=F_AS,)
-
-   # initialisation de U A PARTIR DU PROFIL DE DU
-   if i_inst == 1 :
-      U = DU.duplicate()
-
-   # creation du DELTA_U = (Ucourant - Uequilibre) = dU(pred)
-   DELTA_U = DU.duplicate()
-
-
-   #=========================================================
-   #               BOUCLE DE NEWTON
-   #=========================================================
-
-   NbIterNewtonMax = 10
-   ResiGlobRela = 1.e-6
-   Residu  = NP.zeros(NbIterNewtonMax+1)
-   ResiduX = NP.zeros(NbIterNewtonMax+1)
-   Conv    = NP.zeros(NbIterNewtonMax+1)
-
-   for IterNewton in range(1,NbIterNewtonMax+1) :
-
-
-      #=========================================================
-      #           INTEGRATION DE LA LOI DE COMPT
-      #=========================================================
-
-      # remarque la destruction du container 'CONT ne detruit pas les champs de la table...
-      # ce qui augmente leur numero  a chaque fois, et declenche les erreurs de verif SD
-      #DETRUIRE(OBJET=_F(CHAINE='CONT'),INFO=1)
-      # à vérifier en >15.2... maintenant qu'il y a 'update'
-
-      if (i_inst == 1 and IterNewton == 1):
-          result=CALCUL(__use_namedtuple__=True,
-                        OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
-                        MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                        INCREMENT=_F(LIST_INST=LIST,
-                                     NUME_ORDRE=i_inst),
-                        EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
-                        INCR_DEPL=DELTA_U,
-                        DEPL=U,
-                        SIGM=SIGMA,
-                        VARI=VARI,
-                        COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
-                        INFO=2,)
-      else:
-          result=CALCUL(__use_namedtuple__=True,
-                        OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
-                        MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                        INCREMENT=_F(LIST_INST=LIST,
-                                     NUME_ORDRE=i_inst),
-                        EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
-                        INCR_DEPL=DELTA_U,
-                        DEPL=U,
-                       #  reuse = CONT,
-                       #  TABLE = CONT,
-                        SIGM=SIGMA,
-                        VARI=VARI,
-                        COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
-                        INFO=2,)
-
-      #=========================================================
-      #   VERIFICTION DU CODE RETOUR DE L'INTEGRATION DE LA LC
-      #=========================================================
-      if max(result.CODE_RETOUR_INTE.EXTR_COMP("IRET",[]).valeurs) > 0 :
-         print('echec d integration de la loi de comportement')
-         FIN()
-
-
-      #=========================================================
-      #   MATRICE TANGENTE
-      #=========================================================
-
-      # matrice assemblee tangente
-      MT_AS=ASSE_MATRICE(MATR_ELEM=result.MATR_TANG_ELEM,
-                         NUME_DDL=NU,)
-
-      M_AS=FACTORISER(reuse =MT_AS, METHODE="MULT_FRONT",
-                       MATR_ASSE=MT_AS,)
-
-      #=========================================================
-      #   SECONDS MEMBRES et RESIDU
-      #=========================================================
-
-      # forces internes assemblees
-      FORIN_AS=ASSE_VECTEUR(VECT_ELEM=result.FORC_INTE_ELEM,
-                            NUME_DDL=NU,)
-
-      # Bt.La assemblee
-      BTLA_AS=ASSE_VECTEUR(VECT_ELEM=result.FORC_DIRI_ELEM,
-                           NUME_DDL=NU,)
-
-      # f_v : sommes des 2nds membres
-      F_AS = -FORIN_AS - BTLA_AS
-
-      RESB = CHARB_AS - BTLA_AS
-
-      residu_haut = F_AS.norm("NORM_INFINITY")
-      residu_bas = RESB.norm("NORM_INFINITY")
-
-      Residu[IterNewton-1]  = residu_haut / residu_bas
-      ResiduX[IterNewton-1] = residu_haut
-
-      print('RESI_GLOB_RELA et RESI_GLOB_MAXI ',Residu[IterNewton-1],ResiduX[IterNewton-1])
-
-      # estimation de la convergence
-      if Residu[IterNewton-1] <= ResiGlobRela :
-         Conv[IterNewton-1] = 1
-         break
-      else :
-         Conv[IterNewton-1] = 0
-
-      #=========================================================
-      #   resolution M_AS . DU = FEXT - FORIN_AS - BTLA_AS
-      #=========================================================
-
-      DU=RESOUDRE(MATR=M_AS,
-                  CHAM_NO=F_AS,)
-
-      DELTA_U +=  DU
-
-
-   print('instant ',inst)
-   print('IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence')
-   for i in range(0,IterNewton) :
-       print('     %d     |   %e   |   %e  |    %d ' %(i,Residu[i],ResiduX[i],Conv[i]))
-
-   if Conv[IterNewton-1] != 1 :
-      print('echec de la convergence des iteration de Newton')
-      FIN()
-
-
-
-#=========================================================
+# =========================================================
 #          DETERMINATION DE LA REFERENCE
-#=========================================================
+# =========================================================
 
 # ON EXTRAIT LES CHAMPS A TESTER au dernier instant
-SIG_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
-                   NOM_CHAM='SIEF_ELGA', RESULTAT=SOLUT,
-                   INST=1.
-                    )
+SIG_REF = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELGA_SIEF_R", NOM_CHAM="SIEF_ELGA", RESULTAT=SOLUT, INST=1.0
+)
 
-VAR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
-                   NOM_CHAM='VARI_ELGA', RESULTAT=SOLUT,
-                   INST=1.
-                    )
+VAR_REF = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELGA_VARI_R", NOM_CHAM="VARI_ELGA", RESULTAT=SOLUT, INST=1.0
+)
 
 
-#=========================================================
+# =========================================================
 #          EXTRACTION DES CHAMPS CALCULES
-#=========================================================
+# =========================================================
 
-SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                 OPERATION='ASSE',
-                 MODELE   =MO,
-                 PROL_ZERO='OUI',
-                 ASSE  = _F(TOUT       ='OUI',
-                            CHAM_GD    =result.SIEF_ELGA))
+SIGMA = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=MO,
+    PROL_ZERO="OUI",
+    ASSE=_F(TOUT="OUI", CHAM_GD=result.SIEF_ELGA),
+)
 
-VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
-                OPERATION='ASSE',
-                MODELE   =MO,
-                PROL_ZERO='OUI',
-                ASSE  = _F(TOUT       ='OUI',
-                           CHAM_GD    =result.VARI_ELGA))
+VARI = CREA_CHAMP(
+    TYPE_CHAM="ELGA_VARI_R",
+    OPERATION="ASSE",
+    MODELE=MO,
+    PROL_ZERO="OUI",
+    ASSE=_F(TOUT="OUI", CHAM_GD=result.VARI_ELGA),
+)
 
 
-#=========================================================
+# =========================================================
 #            REALISATION DES TESTS
-#=========================================================
+# =========================================================
 
 DIF_SIG = SIG_REF - SIGMA
 
 DIF_VAR = VAR_REF - VARI
 
-TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC= 6.25277607E-13,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC= 6.82121026E-13,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC= 5.32907052E-15,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='AUTRE_ASTER',
-                        PRECISION=1.E-08,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC= 1.06581410E-14,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI',),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=6.25277607e-13,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=6.82121026e-13,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=5.32907052e-15,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="AUTRE_ASTER",
+            PRECISION=1.0e-08,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=1.06581410e-14,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+    )
+)
 
-IMPR_RESU(FORMAT='GMSH',UNITE=37,
-          RESU=_F(RESULTAT=SOLUT,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),)
+IMPR_RESU(
+    FORMAT="GMSH",
+    UNITE=37,
+    RESU=_F(RESULTAT=SOLUT, NOM_CHAM="DEPL", TYPE_CHAM="VECT_2D", NOM_CMP=("DX", "DY")),
+)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,22 +21,23 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  Il y a trop de colonnes actives (%(i1)d colonnes).
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
  Il y a trop de colonnes à afficher dans le tableau de convergence.
  La largeur maximale affichable est de 256 caractères, donc 14 colonnes au maximum.
  Or vous avez <%(i1)d> caractères !
  Si vous avez des colonnes SUIVI_DDL, supprimez en.
  Vous pouvez éventuellement désactiver INFO_RESIDU ou INFO_TEMPS.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
  Il y a trop de colonnes de type SUIVI_DDL (%(i1)d colonnes).
-"""),
-
-
+"""
+    ),
 }

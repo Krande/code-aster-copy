@@ -34,26 +34,21 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 pMesh = code_aster.ParallelMesh()
 pMesh.readMedFile("mesh004b/%d.med" % rank, True)
 
-MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0,
-                              NU=0.,
-                              RHO=1.0,),
-                      )
+MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))
 
 affectMat = code_aster.MaterialField(pMesh)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 
-MODT = AFFE_MODELE(MAILLAGE=pMesh,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),
-                   )
+MODT = AFFE_MODELE(
+    MAILLAGE=pMesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
 # MODT = code_aster.Model(MAIL))
 
 charCine = code_aster.MechanicalDirichletBC(MODT)
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "EncastN")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "EncastN")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0.0, "EncastN")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0.0, "EncastN")
 charCine.build()
 
 # CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
@@ -63,12 +58,8 @@ charCine.build()
 #                      VERI_NORM='NON',)
 
 
-CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
-                      PRES_REP=_F(GROUP_MA='Press',
-                                  PRES=-10,),
-                      INFO=1,
-                      VERI_NORM='NON',)
-vect_elem = CALC_VECT_ELEM(OPTION='CHAR_MECA', CHARGE=CHT1)
+CHT1 = AFFE_CHAR_MECA(MODELE=MODT, PRES_REP=_F(GROUP_MA="Press", PRES=-10), INFO=1, VERI_NORM="NON")
+vect_elem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHARGE=CHT1)
 
 study = code_aster.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
@@ -82,7 +73,7 @@ numeDDL = code_aster.ParallelDOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)
 numeDDL.computeNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
-#numeDDL.debugPrint()
+# numeDDL.debugPrint()
 
 # compute Neumman
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)
@@ -97,7 +88,7 @@ matrAsse.setDOFNumbering(numeDDL)
 matrAsse.addDirichletBC(charCine)
 matrAsse.assemble()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
-#matrAsse.debugPrint()
+# matrAsse.debugPrint()
 
 print("retour=", retour.getValues())
 
@@ -108,19 +99,20 @@ resu = monSolver.solve(retour)
 # ------------------------------------
 # tests in local numbering
 physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
-test.assertListEqual(physicalRows, [i*2+j for i in range(pMesh.getNumberOfNodes())
-                                    for j in range(2)])
+test.assertListEqual(
+    physicalRows, [i * 2 + j for i in range(pMesh.getNumberOfNodes()) for j in range(2)]
+)
 multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
 test.assertListEqual(multipliersRows, [])
 test.assertFalse(numeDDL.useLagrangeMultipliers())
 test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
-test.assertEqual(numeDDL.getComponents(), ['DX', 'DY'])
-test.assertEqual(numeDDL.getComponentsAssociatedToNode(0, local=True), ['DX', 'DY'])
+test.assertEqual(numeDDL.getComponents(), ["DX", "DY"])
+test.assertEqual(numeDDL.getComponentsAssociatedToNode(0, local=True), ["DX", "DY"])
 test.assertEqual(numeDDL.getNodeAssociatedToRow(0, local=True), 0)
 test.assertTrue(numeDDL.isRowAssociatedToPhysical(0, local=True))
-test.assertEqual(numeDDL.getNumberOfDofs(local=True), 2*pMesh.getNumberOfNodes())
+test.assertEqual(numeDDL.getNumberOfDofs(local=True), 2 * pMesh.getNumberOfNodes())
 test.assertEqual(numeDDL.getNumberOfDofs(local=False), 16)
-test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
+test.assertEqual(numeDDL.getPhysicalQuantity(), "DEPL_R")
 ghostRows = numeDDL.getGhostRows(local=True)
 test.assertListEqual(ghostRows, [[6, 7, 10, 11], [4, 5, 8, 9]][rank])
 
@@ -128,15 +120,22 @@ test.assertListEqual(ghostRows, [[6, 7, 10, 11], [4, 5, 8, 9]][rank])
 # ------------------------------------
 # tests in global numbering
 physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=False)
-test.assertListEqual(physicalRows,  [numeDDL.localToGlobalRow(d)
-                                     for d in [i*2+j for i in range(pMesh.getNumberOfNodes())
-                                     for j in range(2)]])
-test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], 
-                                     [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank])
+test.assertListEqual(
+    physicalRows,
+    [
+        numeDDL.localToGlobalRow(d)
+        for d in [i * 2 + j for i in range(pMesh.getNumberOfNodes()) for j in range(2)]
+    ],
+)
+test.assertListEqual(
+    physicalRows,
+    [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank],
+)
 
 ghostRows = numeDDL.getGhostRows(local=False)
-test.assertListEqual(ghostRows, [numeDDL.localToGlobalRow(i)
-                                 for i in [[6, 7, 10, 11], [4, 5, 8, 9]][rank]])
+test.assertListEqual(
+    ghostRows, [numeDDL.localToGlobalRow(i) for i in [[6, 7, 10, 11], [4, 5, 8, 9]][rank]]
+)
 test.assertListEqual(ghostRows, [[12, 13, 14, 15], [4, 5, 6, 7]][rank])
 
 
@@ -148,7 +147,7 @@ v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_DENSE)
 pA.view(v)
 
 rank = pA.getComm().getRank()
-print('rank=', rank)
+print("rank=", rank)
 rs, re = pA.getOwnershipRange()
 ce, _ = pA.getSize()
 rows = N.array(list(range(rs, re)), dtype=petsc4py.PETSc.IntType)
@@ -156,8 +155,7 @@ cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
 rows = petsc4py.PETSc.IS().createGeneral(rows, comm=pA.getComm())
 cols = petsc4py.PETSc.IS().createGeneral(cols, comm=pA.getComm())
 (S,) = pA.createSubMatrices(rows, cols)
-v = petsc4py.PETSc.Viewer().createASCII(
-    "mesh004b_rank"+str(rank)+".out", comm=S.getComm())
+v = petsc4py.PETSc.Viewer().createASCII("mesh004b_rank" + str(rank) + ".out", comm=S.getComm())
 S.view(v)
 
 
@@ -165,10 +163,11 @@ S.view(v)
 # Scaling validation
 from code_aster.LinearAlgebra import MatrixScaler
 from code_aster.Utilities import logger
+
 pA_unscaled = matrAsse.toPetsc()
 pA_unscaled.view()
 # The Scling object
-S=MatrixScaler.MatrixScaler()
+S = MatrixScaler.MatrixScaler()
 logger.setLevel(2)
 newMat = matrAsse.duplicate()
 # Compute scaling with DX and DY gathered (default behavior)
@@ -179,7 +178,7 @@ pA_scaled = newMat.toPetsc()
 pA_scaled.view()
 nt = petsc4py.PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(pA_unscaled.norm(nt), 43055.55555560758)
-test.assertAlmostEqual(pA_scaled.norm(nt), 1.)
+test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
 
 newMat = matrAsse.duplicate()
@@ -191,7 +190,7 @@ pA_scaled = newMat.toPetsc()
 pA_scaled.view()
 nt = petsc4py.PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(pA_unscaled.norm(nt), 43055.55555560758)
-test.assertAlmostEqual(pA_scaled.norm(nt), 1.)
+test.assertAlmostEqual(pA_scaled.norm(nt), 1.0)
 
 rhs = vecass.duplicate()
 init_norm = rhs.norm("NORM_INFINITY")

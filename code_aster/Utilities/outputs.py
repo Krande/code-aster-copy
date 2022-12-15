@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,15 +50,16 @@ class CommandRepresentation(object):
         _curline (list[str]): List of strings composing the current line.
         _indent (list[int]): Stack of indentation levels.
     """
+
     interrupt_value = '"_interrupt_MARK_value_"'
-    interrupt_fact = '_interrupt_MARK_fact_()'
+    interrupt_fact = "_interrupt_MARK_fact_()"
 
     def __init__(self, limit=0, indent=0):
         self._limit = limit
         self._limit_reached = False
         self._lines = []
         self._curline = []
-        self._indent = [indent, ]
+        self._indent = [indent]
 
     def _newline(self):
         """Initialize a new line."""
@@ -67,14 +68,14 @@ class CommandRepresentation(object):
 
     def _endline(self):
         """Add the current line."""
-        line = ''.join(self._curline).rstrip()
-        if line != '':
+        line = "".join(self._curline).rstrip()
+        if line != "":
             self._lines.append(line)
         self._curline = []
 
     def _add_indent(self):
         """Set the next indent spacing."""
-        self._indent.append(len(''.join(self._curline)))
+        self._indent.append(len("".join(self._curline)))
 
     def _reset_indent(self):
         """Revert indent spacing to its previous level."""
@@ -166,7 +167,7 @@ class CommandRepresentation(object):
         if isinstance(value, str):
             self._curline.append("{0!r}".format(convert(value)))
         elif hasattr(value, "getName"):
-            if hasattr(value, 'value_repr'):
+            if hasattr(value, "value_repr"):
                 self._curline.append(value.value_repr)
             elif value.userName:
                 self._curline.append(value.userName)
@@ -175,7 +176,7 @@ class CommandRepresentation(object):
         elif isinstance(value, numpy.ndarray):
             self._curline.append("{0!r}".format(value))
         elif isinstance(value, (list, tuple)):
-            self._curline.append('(')
+            self._curline.append("(")
 
             for idx, item in enumerate(value):
                 self.repr_value(item)
@@ -195,8 +196,7 @@ class CommandRepresentation(object):
 
     def _limited(self, idx, sequence, string):
         """Tell if the output must be limited."""
-        if (self._limit <= 0 or idx < self._limit - 1
-                or idx == len(sequence) - 1):
+        if self._limit <= 0 or idx < self._limit - 1 or idx == len(sequence) - 1:
             return False
         self._limit_reached = True
         self._print_delimiter(0, [])
@@ -206,8 +206,11 @@ class CommandRepresentation(object):
     def end(self):
         """Close the export"""
         if self._limit_reached:
-            self._curline.append(("\n# sequences have been limited to "
-                "the first {0} occurrences.").format(self._limit))
+            self._curline.append(
+                ("\n# sequences have been limited to " "the first {0} occurrences.").format(
+                    self._limit
+                )
+            )
 
     @classmethod
     def clean(cls, text):
@@ -215,6 +218,7 @@ class CommandRepresentation(object):
         text = text.replace(cls.interrupt_value, "...")
         text = text.replace(cls.interrupt_fact, "...")
         return text
+
 
 def decorate_name(name):
     """Decorate a DataStructure's name.

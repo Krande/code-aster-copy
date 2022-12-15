@@ -28,6 +28,7 @@ from ..Cata.Syntax import _F
 
 class ComputeG(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Table`"""
+
     command_name = "CALC_G"
 
     def create_result(self, keywords):
@@ -37,6 +38,7 @@ class ComputeG(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = TableContainer()
+
 
 def calc_g_with_co(self, **args):
     """Wrapper around the original CALC_G command to return an additional
@@ -53,16 +55,20 @@ def calc_g_with_co(self, **args):
     titr = _result_calc_g.getTitle()
 
     # Extraction de la table qui contient G
-    _table_g = EXTR_TABLE(TYPE_RESU='TABLE_SDASTER',
-            TABLE=_result_calc_g, NOM_PARA='NOM_SD',
-            FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='TABLE_G'),
-        )
+    _table_g = EXTR_TABLE(
+        TYPE_RESU="TABLE_SDASTER",
+        TABLE=_result_calc_g,
+        NOM_PARA="NOM_SD",
+        FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="TABLE_G"),
+    )
     _table_g.setTitle(titr)
     # On fait quoi de theta ?
-    _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
-                TABLE=_result_calc_g, NOM_PARA='NOM_SD',
-                FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
-            )
+    _cham_theta_no = EXTR_TABLE(
+        TYPE_RESU="CHAM_NO_SDASTER",
+        TABLE=_result_calc_g,
+        NOM_PARA="NOM_SD",
+        FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="CHAM_THETA"),
+    )
     _cham_theta_no.setMesh(args["RESULTAT"].getMesh())
     _cham_theta_no.build()
 

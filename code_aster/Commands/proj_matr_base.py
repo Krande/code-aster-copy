@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,15 +19,17 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (AssemblyMatrixDisplacementReal,
-                       GeneralizedAssemblyMatrixComplex,
-                       GeneralizedAssemblyMatrixReal)
+from ..Objects import (
+    AssemblyMatrixDisplacementReal,
+    GeneralizedAssemblyMatrixComplex,
+    GeneralizedAssemblyMatrixReal,
+)
 from ..Supervis import ExecuteCommand
 
 
 class ProjMatrBase(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.GeneralizedAssemblyMatrix`.
-    """
+    """Command that defines :class:`~code_aster.Objects.GeneralizedAssemblyMatrix`."""
+
     command_name = "PROJ_MATR_BASE"
 
     def create_result(self, keywords):
@@ -50,8 +52,8 @@ class ProjMatrBase(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.setGeneralizedDOFNumbering(keywords['NUME_DDL_GENE'])
-        self._result.setModalBasis(keywords['BASE'])
+        self._result.setGeneralizedDOFNumbering(keywords["NUME_DDL_GENE"])
+        self._result.setModalBasis(keywords["BASE"])
 
 
 PROJ_MATR_BASE = ProjMatrBase.run

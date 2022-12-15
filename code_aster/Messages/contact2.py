@@ -20,93 +20,101 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-    3 : _("""
+    3: _(
+        """
   Toutes vos zones de contact sont en mode RESOLUTION='NON'.
   Le mode REAC_GEOM = 'SANS' est forcé.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
   Toutes vos zones de contact sont en mode RESOLUTION='NON'.
   Le mode ALGO_RESO_GEOM = 'POINT_FIXE' est forcé.
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
 Au moins une des mailles de contact que vous avez définies est de dimension %(i1)i, or la dimension de votre problème est : %(i2)i.
 Cette maille n'est donc pas une maille de bord. Il doit y avoir une erreur dans votre mise en données.
 
 Conseil :
 Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact.
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
 Contact avec formulation continue.
 Votre modèle contient des surfaces de contact qui s'appuient sur un mélange d'éléments axisymétriques et non axisymétriques.
 Cela n'a pas de sens. Toute la modélisation doit être axisymétrique.
 
 Conseil :
 Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact.
-"""),
-
-    13 : _("""
+"""
+    ),
+    13: _(
+        """
 Contact méthodes maillées.
 La zone de contact numéro %(i1)i contient %(i2)i noeuds communs aux surfaces maîtres et esclaves.
 Vérifiez la définition de vos surfaces de contact ou bien renseignez un des mots-clés SANS_NOEUD/SANS_GROUP_NO/SANS_GROUP_MA.
-"""),
-
-    14 : _("""
+"""
+    ),
+    14: _(
+        """
 Contact méthode continue.
   -> Une zone de contact est définie sur une modélisation axisymétrique. Le Jacobien
      est nul car un noeud de la surface de contact esclave appartient à l'axe.
      La pression de contact (degré de liberté LAGS_C) risque d'être erronée.
   -> Conseil :
      Il faut changer de schéma d'intégration et utiliser 'GAUSS'.
-"""),
-
-    15 : _("""
+"""
+    ),
+    15: _(
+        """
 Contact formulation discrète.
 Les zones de contact numéro %(i1)i et numéro %(i2)i ont %(i3)i noeuds communs à leurs surfaces esclaves. Cela peut parfois conduire à une matrice de contact singulière.
 
 Si le calcul venait à échouer, vérifiez la définition de vos surfaces de contact ou bien renseignez un des mots-clés SANS_NOEUD/SANS_GROUP_NO/SANS_GROUP_MA.
-"""),
-
-    16 : _("""
+"""
+    ),
+    16: _(
+        """
 Les zones de contact numéro %(i1)i et numéro %(i2)i ont %(i3)i noeuds communs à leurs surfaces esclaves : c'est interdit.
 Conseil :
  - changez vos surfaces de contact,
  - définissez alternativement les zones possédant un noeud commun comme maître et esclave,
  - pour la méthode LAC, il faut désactiver le lissage.
-"""),
-
-
-    17 : _("""
+"""
+    ),
+    17: _(
+        """
 L'option DECOUPE_LAC de CREA_MAILLAGE n'a pas traité le même nombre de zones que celles définies dans DEFI_CONTACT
 Conseil :
  - Assurez vous d'avoir renseigné le bon nombre de zones esclaves dans CREA_MAILLAGE/DECOUPE_LAC et DEFI_CONTACT
-"""),
-
-
-
-    18 : _("""
+"""
+    ),
+    18: _(
+        """
 L'option DECOUPE_LAC de CREA_MAILLAGE n'a pas traité la zone %(k1)s définie dans DEFI_CONTACT.
 Conseil :
  - Assurez vous d'avoir renseigné cette zone dans dans CREA_MAILLAGE/DECOUPE_LAC.
-"""),
-
-    19 : _("""
+"""
+    ),
+    19: _(
+        """
 La méthode de gestion du contact LAC n'est pas compatible avec l'option MATR_DISTRIBUEE='OUI'
 Conseil :
  - Assurez vous de ne pas utiliser MATR_DISTRIBUEE.
-"""),
-
-    20 : _("""
+"""
+    ),
+    20: _(
+        """
 Au moins une maille de peau sans volume a été détecté. L'orientation ne peut pas être vérifiée.
 Si l'orientation est incorrecte vous pouvez avoir des problèmes de détection de contact avec la méthode de gestion du contact LAC.
 
 Pour désactiver cette alarme, utilisez VERI_NORM='NON' dans DEFI_CONTACT.
-"""),
-
-    21 : _("""La méthode de gestion du contact LAC n'est pas compatible avec le critère de convergence RESI_REFE_RELA."""),
-
+"""
+    ),
+    21: _(
+        """La méthode de gestion du contact LAC n'est pas compatible avec le critère de convergence RESI_REFE_RELA."""
+    ),
 }

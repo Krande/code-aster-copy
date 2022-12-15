@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,62 +20,72 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  Erreur dans ENV_CINE_YACS :
  il faut donner RESULTAT ou ETAT_INIT, pas les deux en même temps
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
  Erreur dans ENV_CINE_YACS : problème avec VIS_A_VIS
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
  Erreur dans ENV_CINE_YACS : problème avec ETAT_INIT :
  il faut donner DEPL, VITE et ACCE
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
  Erreur dans ENV_CINE_YACS : incohérence entre maillage et champs
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  Erreur dans MODI_CHAR_YACS : problème avec VIS_A_VIS
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
  Erreur dans MODI_CHAR_YACS : incohérence entre maillage et champs
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
  Erreur dans MODI_CHAR_YACS : erreur lecture
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
  Erreur dans PROJ_CHAMP option COUPLAGE
      Nombre d'interfaces définies dans Code_Saturne : %(i1)i
      Nombre d'interfaces définies dans Code_Aster   : %(i2)i
      Vérifiez la cohérence entre :
        Code_Aster   : Le mot-clé GROUP_MA_IFS de la commande CALC_IFS_DNL
        Code_Saturne : La définition des structures dans USASTE.F
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
  Erreur dans PROJ_CHAMP option COUPLAGE : type de maille non reconnue : %(k1)s
-"""),
-
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
  Routine %(k1)s : argument %(k2)s : %(i1)d
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
  Routine %(k1)s : argument %(k2)s : %(k3)s
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
  Erreur dans PROJ_CHAMP option COUPLAGE :
      le nombre de noeuds à l'interface : %(i1)i est supérieur à la limite autorisée : %(i2)i
-"""),
-
+"""
+    ),
 }

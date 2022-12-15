@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,38 +63,38 @@ class MissDomains(object):
         . points de controle                            2       3               5
         . volume de la structure        2       3       3       4       5       6
         """
-        self.domain['struct'] = (1, [1])
-        self.domain['sol'] = (2, [-1])
-        self.group['sol-struct'] = i = 1
+        self.domain["struct"] = (1, [1])
+        self.domain["sol"] = (2, [-1])
+        self.group["sol-struct"] = i = 1
         if self.use_issf:
-            self.domain['fluide'] = (3, [-2, -3])
+            self.domain["fluide"] = (3, [-2, -3])
             if self.def_all_domains:
-                self.domain['fluide'] = (3, [-2, -3])
+                self.domain["fluide"] = (3, [-2, -3])
             else:
-                self.domain['sol'] = (1, [-1])
-                self.domain['fluide'] = (2, [-2, -3])
-            self.group['fluide-struct'] = i = i + 1
-            self.group['sol-fluide'] = i = i + 1
-            self.domain['struct'][1].append(self.group['fluide-struct'])
-            self.domain['sol'][1].append(self.group['sol-fluide'])
+                self.domain["sol"] = (1, [-1])
+                self.domain["fluide"] = (2, [-2, -3])
+            self.group["fluide-struct"] = i = i + 1
+            self.group["sol-fluide"] = i = i + 1
+            self.domain["struct"][1].append(self.group["fluide-struct"])
+            self.domain["sol"][1].append(self.group["sol-fluide"])
         if self.use_sol_libre:
-            self.group['sol libre'] = i = i + 1
-            self.domain['sol'][1].append(self.group['sol libre'])
+            self.group["sol libre"] = i = i + 1
+            self.domain["sol"][1].append(self.group["sol libre"])
         if self.use_pc:
-            self.group['pc'] = i = i + 1
-            self.domain['sol'][1].append(self.group['pc'])
-        self.group['struct'] = i = i + 1
-        self.domain['struct'][1].append(self.group['struct'])
+            self.group["pc"] = i = i + 1
+            self.domain["sol"][1].append(self.group["pc"])
+        self.group["struct"] = i = i + 1
+        self.domain["struct"][1].append(self.group["struct"])
         # checkings
         if not self.use_pc and not self.use_issf and not self.use_sol_libre:
-            assert self.group['struct'] == 2
+            assert self.group["struct"] == 2
         elif self.use_sol_libre and not self.use_pc and not self.use_issf:
-            assert self.group['struct'] == 3
+            assert self.group["struct"] == 3
         elif self.use_pc and not self.use_issf and not self.use_sol_libre:
-            assert self.group['struct'] == 3
+            assert self.group["struct"] == 3
         elif self.use_pc and not self.use_issf and self.use_sol_libre:
-            assert self.group['struct'] == 4
+            assert self.group["struct"] == 4
         elif not self.use_pc and self.use_issf:
-            assert self.group['struct'] == 5
+            assert self.group["struct"] == 5
         elif self.use_pc and self.use_issf:
-            assert self.group['struct'] == 6
+            assert self.group["struct"] == 6

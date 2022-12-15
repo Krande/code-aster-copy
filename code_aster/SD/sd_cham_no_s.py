@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ from .sd_util import *
 
 
 class sd_cham_no_s(AsBase):
-#----------------------------
+    # ----------------------------
     nomj = SDNom(fin=19)
 
     CNSK = AsVK8(lonmax=2)
     CNSD = AsVI(lonmax=2)
     CNSC = AsVK8()
-    CNSV = AsVect(type=Parmi('C', 'K', 'R', 'I'))
+    CNSV = AsVect(type=Parmi("C", "K", "R", "I"))
     CNSL = AsVL()
 
     def exists(self):

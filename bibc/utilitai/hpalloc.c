@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -17,6 +17,7 @@
 /* -------------------------------------------------------------------- */
 
 #include "aster.h"
+
 #include <errno.h>
 #include <sys/mman.h>
 // <malloc.h> is linux-specific
@@ -31,41 +32,33 @@ This function uses mmap() to prevent memory fragmentation with malloc() on Linux
 mmap() is not available on other platforms but should not be needed at least on OS X (darwin).
 */
 
-void DEFPPPP(HPALLOC, hpalloc, void **addr,ASTERINTEGER *length,
-             ASTERINTEGER *errcode, ASTERINTEGER *abrt)
-{
+void DEFPPPP( HPALLOC, hpalloc, void **addr, ASTERINTEGER *length, ASTERINTEGER *errcode,
+              ASTERINTEGER *abrt ) {
     void abort();
 #ifdef ASTER_PLATFORM_LINUX
     int ir;
 #endif
     if ( *length <= 0 ) {
         *errcode = -1;
-    }
-    else
-    {
+    } else {
 #ifdef ASTER_PLATFORM_LINUX
-        ir=mallopt(M_MMAP_THRESHOLD,0);
-        *addr = (void *)malloc(*length * sizeof(ASTERINTEGER));
-        ir=mallopt(M_MMAP_THRESHOLD,128*1024);
+        ir = mallopt( M_MMAP_THRESHOLD, 0 );
+        *addr = (void *)malloc( *length * sizeof( ASTERINTEGER ) );
+        ir = mallopt( M_MMAP_THRESHOLD, 128 * 1024 );
         if ( *addr == (void *)-1 )
 #else
-        *addr = (void *)malloc(*length * sizeof(ASTERINTEGER));
+        *addr = (void *)malloc( *length * sizeof( ASTERINTEGER ) );
         if ( *addr == (void *)0 )
 #endif
         {
             *errcode = -2;
-        }
-        else if ( *addr == NULL )
-        {
+        } else if ( *addr == NULL ) {
             *errcode = -3;
-        }
-        else
-        {
+        } else {
             *errcode = 0;
         }
     }
-    if ( *errcode != 0 && *abrt != 0 )
-    {
-     abort();
+    if ( *errcode != 0 && *abrt != 0 ) {
+        abort();
     }
 }

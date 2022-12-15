@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,8 @@ from .fieldonnodes_ext import post_comp_cham_no
 class ExtendedMeshCoordinatesField:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
 
-    def EXTR_COMP(self, comp=' ', lgno=[], topo=0):
-        """ retourne les valeurs de la composante comp du champ sur la liste
+    def EXTR_COMP(self, comp=" ", lgno=[], topo=0):
+        """retourne les valeurs de la composante comp du champ sur la liste
         de groupes de noeuds lgno avec eventuellement l'info de la
         topologie si topo>0. Si lgno est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
@@ -54,27 +54,23 @@ class ExtendedMeshCoordinatesField:
         """
 
         ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * ' '
-        nchams = aster.get_nom_concept_unique('_')
-        ncmp = comp + (8 - len(comp)) * ' '
+        ncham = ncham + (19 - len(ncham)) * " "
+        nchams = aster.get_nom_concept_unique("_")
+        ncmp = comp + (8 - len(comp)) * " "
 
         aster.prepcompcham(ncham, nchams, ncmp, "NO      ", topo, lgno)
 
-        valeurs = numpy.array(
-            aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.V'))
+        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
 
-        if (topo > 0):
-            noeud = (
-                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.N'))
+        if topo > 0:
+            noeud = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".N")
         else:
             noeud = None
 
-        if comp[:1] == ' ':
-            comp = (aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.C'))
-            aster.prepcompcham(
-                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+        if comp[:1] == " ":
+            comp = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".C")
+            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud, comp)
         else:
-            aster.prepcompcham(
-                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud)

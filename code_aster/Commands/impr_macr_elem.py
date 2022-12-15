@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,8 +23,9 @@ from ..Supervis import ExecuteCommand
 
 
 class ImprMacrElem(ExecuteCommand):
-    """Command IMPR_MACR_ELEM
-    """
+    """Command IMPR_MACR_ELEM"""
+
     command_name = "IMPR_MACR_ELEM"
+
 
 IMPR_MACR_ELEM = ImprMacrElem.run

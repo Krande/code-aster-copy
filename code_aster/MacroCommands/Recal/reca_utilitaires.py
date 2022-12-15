@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,15 +38,15 @@ except ImportError:
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------
 
-#_____________________________________________
+# _____________________________________________
 #
 # DIVERS UTILITAIRES POUR LA MACRO
-#_____________________________________________
+# _____________________________________________
 
 
 def transforme_list_Num(parametres, res_exp):
     """
-       Transforme les données entrées par l'utilisateur en tableau numpy
+    Transforme les données entrées par l'utilisateur en tableau numpy
     """
 
     dim_para = len(parametres)  # donne le nb de parametres
@@ -70,107 +70,123 @@ def Random_Tmp_Name(prefix=None):
         if prefix:
             fic = prefix + str(nombre)
         else:
-            if 'TEMP' in os.environ:
-                fic = os.path.join(os.environ['TEMP'], 'file%s' % str(nombre))
+            if "TEMP" in os.environ:
+                fic = os.path.join(os.environ["TEMP"], "file%s" % str(nombre))
             else:
-                fic = '/tmp/file' + str(nombre)
+                fic = "/tmp/file" + str(nombre)
         if not os.path.isfile(fic):
             crit = True
     return fic
 
 
-#_____________________________________________
+# _____________________________________________
 #
 # CALCUL DU TEMPS CPU RESTANT
-#_____________________________________________
+# _____________________________________________
 def temps_CPU(restant_old, temps_iter_old):
     """
-       Fonction controlant le temps restant
+    Fonction controlant le temps restant
     """
     __cpu = INFO_EXEC_ASTER(LISTE_INFO=("TEMPS_RESTANT",))
-    TEMPS = __cpu['TEMPS_RESTANT', 1]
+    TEMPS = __cpu["TEMPS_RESTANT", 1]
     err = 0
     # Indique une execution interactive
-    if (TEMPS > 1.E+9):
-        return 0., 0., 0
+    if TEMPS > 1.0e9:
+        return 0.0, 0.0, 0
     # Indique une execution en batch
     else:
         restant = TEMPS
         # Initialisation
-        if (restant_old == 0.):
-            temps_iter = -1.
+        if restant_old == 0.0:
+            temps_iter = -1.0
         else:
             # Première mesure
-            if (temps_iter_old == -1.):
-                temps_iter = (restant_old - restant)
+            if temps_iter_old == -1.0:
+                temps_iter = restant_old - restant
             # Mesure courante
             else:
-                temps_iter = (temps_iter_old + (restant_old - restant)) / 2.
-            if ((temps_iter > 0.96 * restant)or(restant < 0.)):
+                temps_iter = (temps_iter_old + (restant_old - restant)) / 2.0
+            if (temps_iter > 0.96 * restant) or (restant < 0.0):
                 err = 1
-                UTMESS('F', 'RECAL0_53')
+                UTMESS("F", "RECAL0_53")
 
     return restant, temps_iter, err
 
 
-#_____________________________________________
+# _____________________________________________
 #
 # IMPRESSIONS GRAPHIQUES
-#_____________________________________________
+# _____________________________________________
 def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None, INFO=0):
 
     if iter:
-        txt_iter = 'Iteration : ' + str(iter)
+        txt_iter = "Iteration : " + str(iter)
     else:
-        txt_iter = ''
+        txt_iter = ""
 
     # Le try/except est la pour eviter de planter betement dans un trace de
     # courbes (DISPLAY non defini, etc...)
     try:
-        if FORMAT == 'XMGRACE':
+        if FORMAT == "XMGRACE":
             for i in range(len(L_F)):
                 _tmp = []
                 courbe1 = res_exp[i]
-                _tmp.append({'ABSCISSE': courbe1[:, 0].tolist(), 'ORDONNEE': courbe1[
-                            :, 1].tolist(), 'COULEUR': 1, 'LEGENDE': 'Expérience'})
+                _tmp.append(
+                    {
+                        "ABSCISSE": courbe1[:, 0].tolist(),
+                        "ORDONNEE": courbe1[:, 1].tolist(),
+                        "COULEUR": 1,
+                        "LEGENDE": "Expérience",
+                    }
+                )
                 courbe2 = L_F[i]
-                _tmp.append({'ABSCISSE': courbe2[:, 0].tolist(), 'ORDONNEE': courbe2[
-                            :, 1].tolist(), 'COULEUR': 2, 'LEGENDE': 'Calcul'})
+                _tmp.append(
+                    {
+                        "ABSCISSE": courbe2[:, 0].tolist(),
+                        "ORDONNEE": courbe2[:, 1].tolist(),
+                        "COULEUR": 2,
+                        "LEGENDE": "Calcul",
+                    }
+                )
 
-                motscle2 = {'COURBE': _tmp}
-                motscle2['PILOTE'] = pilote
+                motscle2 = {"COURBE": _tmp}
+                motscle2["PILOTE"] = pilote
 
-                IMPR_FONCTION(FORMAT='XMGRACE',
-                              UNITE=int(UL_out),
-                              TITRE='Courbe : ' + reponses[i][0],
-                              SOUS_TITRE=txt_iter,
-                              LEGENDE_X=reponses[i][1],
-                              LEGENDE_Y=reponses[i][2],
-                              **motscle2
-                              )
-                dic = {'': '',
-                       'POSTSCRIPT': '.ps',
-                       'EPS': '.eps',
-                       'MIF': '.mif',
-                       'SVG': '.svg',
-                       'PNM': '.pnm',
-                       'PNG': '.png',
-                       'JPEG': '.jpg',
-                       'PDF': '.pdf',
-                       'INTERACTIF': '.agr'
-                       }
+                IMPR_FONCTION(
+                    FORMAT="XMGRACE",
+                    UNITE=int(UL_out),
+                    TITRE="Courbe : " + reponses[i][0],
+                    SOUS_TITRE=txt_iter,
+                    LEGENDE_X=reponses[i][1],
+                    LEGENDE_Y=reponses[i][2],
+                    **motscle2
+                )
+                dic = {
+                    "": "",
+                    "POSTSCRIPT": ".ps",
+                    "EPS": ".eps",
+                    "MIF": ".mif",
+                    "SVG": ".svg",
+                    "PNM": ".pnm",
+                    "PNG": ".png",
+                    "JPEG": ".jpg",
+                    "PDF": ".pdf",
+                    "INTERACTIF": ".agr",
+                }
                 ext = dic[pilote]
-                if ext != '':
-                    os.system('mv ./fort.%s ./REPE_OUT/courbes_%s_iter_%s%s' %
-                              (str(UL_out), reponses[i][0], str(iter), ext))
+                if ext != "":
+                    os.system(
+                        "mv ./fort.%s ./REPE_OUT/courbes_%s_iter_%s%s"
+                        % (str(UL_out), reponses[i][0], str(iter), ext)
+                    )
 
-        elif FORMAT == 'GNUPLOT':
+        elif FORMAT == "GNUPLOT":
 
             if fichier:
                 if INFO >= 2:
-                    UTMESS('I', 'RECAL0_41', valk=fichier)
+                    UTMESS("I", "RECAL0_41", valk=fichier)
                 # On efface les anciens graphes
-                liste = glob.glob(fichier + '*.ps')
+                liste = glob.glob(fichier + "*.ps")
                 for fic in liste:
                     try:
                         os.remove(fic)
@@ -180,37 +196,39 @@ def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, pilote, fichier=None
             graphe = []
             impr = Gnuplot.Gnuplot()
             Gnuplot.GnuplotOpts.prefer_inline_data = 1
-            impr('set data style linespoints')
-            impr('set grid')
-            impr('set pointsize 1.')
-            impr('set terminal postscript color')
+            impr("set data style linespoints")
+            impr("set grid")
+            impr("set pointsize 1.")
+            impr("set terminal postscript color")
             impr('set output "fort.' + str(UL_out) + '"')
 
             for i in range(len(L_F)):
                 graphe.append(Gnuplot.Gnuplot(persist=0))
-                graphe[i]('set data style linespoints')
-                graphe[i]('set grid')
-                graphe[i]('set pointsize 1.')
+                graphe[i]("set data style linespoints")
+                graphe[i]("set grid")
+                graphe[i]("set pointsize 1.")
                 graphe[i].xlabel(reponses[i][1])
                 graphe[i].ylabel(reponses[i][2])
-                graphe[i].title(reponses[i][0] + '  ' + txt_iter)
-                graphe[i].plot(Gnuplot.Data(L_F[i], title='Calcul'),
-                               Gnuplot.Data(res_exp[i], title='Experimental'))
-                if pilote == 'INTERACTIF':
-                    graphe[i]('pause 5')
+                graphe[i].title(reponses[i][0] + "  " + txt_iter)
+                graphe[i].plot(
+                    Gnuplot.Data(L_F[i], title="Calcul"),
+                    Gnuplot.Data(res_exp[i], title="Experimental"),
+                )
+                if pilote == "INTERACTIF":
+                    graphe[i]("pause 5")
                 else:
                     if fichier:
                         if INFO >= 2:
-                            UTMESS(
-                                'I', 'RECAL0_41', valk=fichier + '_' + str(i) + '.ps')
-                        graphe[i].hardcopy(
-                            fichier + '_' + str(i) + '.ps', enhanced=1, color=1)
+                            UTMESS("I", "RECAL0_41", valk=fichier + "_" + str(i) + ".ps")
+                        graphe[i].hardcopy(fichier + "_" + str(i) + ".ps", enhanced=1, color=1)
 
                 impr.xlabel(reponses[i][1])
                 impr.ylabel(reponses[i][2])
-                impr.title(reponses[i][0] + '  Iteration ' + str(iter))
-                impr.plot(Gnuplot.Data(L_F[i], title='Calcul'), Gnuplot.Data(
-                    res_exp[i], title='Experimental'))
+                impr.title(reponses[i][0] + "  Iteration " + str(iter))
+                impr.plot(
+                    Gnuplot.Data(L_F[i], title="Calcul"),
+                    Gnuplot.Data(res_exp[i], title="Experimental"),
+                )
 
     except Exception as err:
-        UTMESS('A', 'RECAL0_42', valk=str(err))
+        UTMESS("A", "RECAL0_42", valk=str(err))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import math
 
 
 def tocomplex(arg):
-    if arg[0] == 'RI':
+    if arg[0] == "RI":
         return complex(arg[1], arg[2])
-    if arg[0] == 'MP':
+    if arg[0] == "MP":
         return complex(arg[1] * math.cos(arg[2]), arg[1] * math.sin(arg[2]))

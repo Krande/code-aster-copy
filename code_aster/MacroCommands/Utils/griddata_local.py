@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
     Output :
                 grid_z .- Array containing the interpolated data
     """
-    grid_x = np.round(grid_x, 6)    # Rounded for precision E-6
+    grid_x = np.round(grid_x, 6)  # Rounded for precision E-6
     grid_y = np.round(grid_y, 6)
     seeds = np.round(seeds, 6)
 
@@ -45,7 +45,7 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
 
     for i_ in range(nbrow):
         for j_ in range(nbcol):
-            if A[i_, j_] == True:    # The point is inside the geometry
+            if A[i_, j_] == True:  # The point is inside the geometry
 
                 Nod_detec_x = seeds[:, 0] == grid_x[i_, j_]
                 Nod_detec_y = seeds[:, 1] == grid_y[i_, j_]
@@ -64,7 +64,7 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
                     D1 = Data_[np.multiply(Nod_detec_x, (seeds[:, 1] == y_upper))]
                     D2 = Data_[np.multiply(Nod_detec_x, (seeds[:, 1] == y_lower))]
 
-                    grid_z[i_, j_] = ((D2 - D1)/(y_upper - y_lower))*grid_y[i_, j_]
+                    grid_z[i_, j_] = ((D2 - D1) / (y_upper - y_lower)) * grid_y[i_, j_]
 
                 elif Nod_detec_x.sum() == 0 and Nod_detec_y.sum() > 0:
                     # Linear interpolation X axis
@@ -75,9 +75,9 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
                     D1 = Data_[np.multiply((seeds[:, 0] == x_upper), Nod_detec_y)]
                     D2 = Data_[np.multiply((seeds[:, 0] == x_lower), Nod_detec_y)]
 
-                    grid_z[i_, j_] = ((D2 - D1)/(x_upper - x_lower))*grid_x[i_, j_]
+                    grid_z[i_, j_] = ((D2 - D1) / (x_upper - x_lower)) * grid_x[i_, j_]
 
-                else: # bilinear interpolation needed
+                else:  # bilinear interpolation needed
 
                     Points = np.zeros((4, 3))
 
@@ -88,26 +88,33 @@ def griddata(seeds, Data_, grid_x, grid_y, A):
                     y_lower = seeds[:, 1][idy - 1]
                     y_upper = seeds[:, 1][idy]
 
-                    Points[0,:] = [x_lower, y_lower,
-                          Data_[np.multiply((seeds[:, 0] == x_lower),
-                                            (seeds[:, 1] == y_lower))]]
+                    Points[0, :] = [
+                        x_lower,
+                        y_lower,
+                        Data_[np.multiply((seeds[:, 0] == x_lower), (seeds[:, 1] == y_lower))],
+                    ]
 
-                    Points[1,:] = [x_upper, y_lower,
-                          Data_[np.multiply((seeds[:, 0] == x_upper),
-                                            (seeds[:, 1] == y_lower))]]
+                    Points[1, :] = [
+                        x_upper,
+                        y_lower,
+                        Data_[np.multiply((seeds[:, 0] == x_upper), (seeds[:, 1] == y_lower))],
+                    ]
 
-                    Points[2,:] = [x_upper, y_upper,
-                          Data_[np.multiply((seeds[:, 0] == x_upper),
-                                            (seeds[:, 1] == y_upper))]]
+                    Points[2, :] = [
+                        x_upper,
+                        y_upper,
+                        Data_[np.multiply((seeds[:, 0] == x_upper), (seeds[:, 1] == y_upper))],
+                    ]
 
-                    Points[3,:] = [x_lower, y_upper,
-                          Data_[np.multiply((seeds[:, 0] == x_lower),
-                                            (seeds[:, 1] == y_upper))]]
+                    Points[3, :] = [
+                        x_lower,
+                        y_upper,
+                        Data_[np.multiply((seeds[:, 0] == x_lower), (seeds[:, 1] == y_upper))],
+                    ]
 
-                    grid_z[i_, j_] = bilinear_interpolation(grid_x[i_, j_],
-                          grid_y[i_, j_], Points)
+                    grid_z[i_, j_] = bilinear_interpolation(grid_x[i_, j_], grid_y[i_, j_], Points)
             else:
-                grid_z[i_, j_] = 0    # The point is outside the geometry
+                grid_z[i_, j_] = 0  # The point is outside the geometry
 
     return grid_z
 
@@ -120,15 +127,17 @@ def bilinear_interpolation(x, y, Points):
             x .- x coordinate to be interpolated
             y .- y coordinate to be interpolated
     """
-    x_p = Points[:, 0]    # X coordinates
-    y_p = Points[:, 1]    # Y coordinates
-    q = Points[:, 2]    # Values
+    x_p = Points[:, 0]  # X coordinates
+    y_p = Points[:, 1]  # Y coordinates
+    q = Points[:, 2]  # Values
 
     if x_p[0] != x_p[3] or x_p[1] != x_p[2] or y_p[0] != y_p[1] or y_p[2] != y_p[3]:
         return 0.0
 
     else:
-        return (q[0] * (x_p[2] - x) * (y_p[2] - y) +
-                q[1] * (x - x_p[0]) * (y_p[2] - y) +
-                q[3] * (x_p[2] - x) * (y - y_p[0]) +
-                q[2] * (x - x_p[0]) * (y - y_p[0])) / ((x_p[2] - x_p[0]) * (y_p[2] - y_p[0]) + 0.0)
+        return (
+            q[0] * (x_p[2] - x) * (y_p[2] - y)
+            + q[1] * (x - x_p[0]) * (y_p[2] - y)
+            + q[3] * (x_p[2] - x) * (y - y_p[0])
+            + q[2] * (x - x_p[0]) * (y - y_p[0])
+        ) / ((x_p[2] - x_p[0]) * (y_p[2] - y_p[0]) + 0.0)

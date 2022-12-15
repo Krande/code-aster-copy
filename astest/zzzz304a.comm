@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # -------------------------------------------------------------------------------------
 # Ce test illustre comment projeter un champ ELNO fortement discontinu
@@ -47,19 +47,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #  On veut projeter CH1 sur MA2 pour obtenir CH2 de telle sorte
 #  que CARR1 et CARR2 conservent les memes valeurs.
 # -------------------------------------------------------------------------------------
-MA1 = LIRE_MAILLAGE(FORMAT='ASTER', UNITE=20)
+MA1 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
-MA2 = LIRE_MAILLAGE(FORMAT='ASTER', UNITE=21)
+MA2 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
 
-MO1 = AFFE_MODELE(
-    AFFE=_F(MODELISATION='PLAN', PHENOMENE='THERMIQUE', TOUT='OUI'),
-    MAILLAGE=MA1
-)
+MO1 = AFFE_MODELE(AFFE=_F(MODELISATION="PLAN", PHENOMENE="THERMIQUE", TOUT="OUI"), MAILLAGE=MA1)
 
-MO2 = AFFE_MODELE(
-    AFFE=_F(MODELISATION='PLAN', PHENOMENE='THERMIQUE', TOUT='OUI'),
-    MAILLAGE=MA2
-)
+MO2 = AFFE_MODELE(AFFE=_F(MODELISATION="PLAN", PHENOMENE="THERMIQUE", TOUT="OUI"), MAILLAGE=MA2)
 
 # 2. Projection du champ sur chaque zone :
 # ------------------------------------------------------
@@ -69,45 +63,43 @@ MO2 = AFFE_MODELE(
 # ------------------------------------------------------
 CH1 = CREA_CHAMP(
     AFFE=(
-        _F(GROUP_MA='CARR1', NOM_CMP='HYDR', VALE=0.8),
-        _F(GROUP_MA='CARR2', NOM_CMP='HYDR', VALE=0.2)
+        _F(GROUP_MA="CARR1", NOM_CMP="HYDR", VALE=0.8),
+        _F(GROUP_MA="CARR2", NOM_CMP="HYDR", VALE=0.2),
     ),
     INFO=1,
     MODELE=MO1,
-    OPERATION='AFFE',
-    PROL_ZERO='OUI',
-    TYPE_CHAM='ELNO_HYDR_R'
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    TYPE_CHAM="ELNO_HYDR_R",
 )
 
 CH2A = PROJ_CHAMP(
     CHAM_GD=CH1,
-    METHODE='COLLOCATION',
+    METHODE="COLLOCATION",
     MODELE_1=MO1,
     MODELE_2=MO2,
-    PROL_ZERO='OUI',
-    VIS_A_VIS=_F(CAS_FIGURE='2D', GROUP_MA_1='CARR1', GROUP_MA_2='CARR1')
+    PROL_ZERO="OUI",
+    VIS_A_VIS=_F(CAS_FIGURE="2D", GROUP_MA_1="CARR1", GROUP_MA_2="CARR1"),
 )
 
 CH2B = PROJ_CHAMP(
     CHAM_GD=CH1,
-    METHODE='COLLOCATION',
+    METHODE="COLLOCATION",
     MODELE_1=MO1,
     MODELE_2=MO2,
-    PROL_ZERO='OUI',
-    VIS_A_VIS=_F(CAS_FIGURE='2D', GROUP_MA_1='CARR2', GROUP_MA_2='CARR2')
+    PROL_ZERO="OUI",
+    VIS_A_VIS=_F(CAS_FIGURE="2D", GROUP_MA_1="CARR2", GROUP_MA_2="CARR2"),
 )
 
 # 3. Fabrication du champ final par assemblage de CH2A et CH2B :
 # ----------------------------------------------------------------
 CH2 = CREA_CHAMP(
-    ASSE=(
-        _F(CHAM_GD=CH2A, GROUP_MA='CARR1'), _F(CHAM_GD=CH2B, GROUP_MA='CARR2')
-    ),
+    ASSE=(_F(CHAM_GD=CH2A, GROUP_MA="CARR1"), _F(CHAM_GD=CH2B, GROUP_MA="CARR2")),
     INFO=1,
     MODELE=MO2,
-    OPERATION='ASSE',
-    PROL_ZERO='OUI',
-    TYPE_CHAM='ELNO_HYDR_R'
+    OPERATION="ASSE",
+    PROL_ZERO="OUI",
+    TYPE_CHAM="ELNO_HYDR_R",
 )
 
 # 4. Validation :
@@ -119,23 +111,24 @@ TEST_RESU(
     CHAM_ELEM=(
         _F(
             CHAM_GD=CH2,
-            GROUP_MA='M9',
-            GROUP_NO='N36',
-            NOM_CMP='HYDR',
+            GROUP_MA="M9",
+            GROUP_NO="N36",
+            NOM_CMP="HYDR",
             PRECISION=1e-10,
-            REFERENCE='ANALYTIQUE',
+            REFERENCE="ANALYTIQUE",
             VALE_CALC=0.8,
-            VALE_REFE=0.8
-        ), _F(
+            VALE_REFE=0.8,
+        ),
+        _F(
             CHAM_GD=CH2,
-            GROUP_MA='M10',
-            GROUP_NO='N36',
-            NOM_CMP='HYDR',
+            GROUP_MA="M10",
+            GROUP_NO="N36",
+            NOM_CMP="HYDR",
             PRECISION=1e-10,
-            REFERENCE='ANALYTIQUE',
+            REFERENCE="ANALYTIQUE",
             VALE_CALC=0.2,
-            VALE_REFE=0.2
-        )
+            VALE_REFE=0.2,
+        ),
     )
 )
 

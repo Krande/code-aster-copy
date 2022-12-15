@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020  EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,35 +17,27 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 # POUR COMPARER LES DEUX COURBES IL FAUT FAIRE
 # DANS LA COURBE ASTER ABSC = 57766.1-ABSC
 # ET PRENDRE ABS(MT)
 
 IMPR_FONCTION(
-   FORMAT='XMGRACE',
-   COURBE=(
-      _F(FONCTION = MTAST,
-         LEGENDE = 'ASTER',
-         COULEUR=3,
-         STYLE=3,
-      ),
-      _F(ABSCISSE = [57766.1-x for x in MTAST.Absc()],
-         ORDONNEE = [abs(y)    for y in MTAST.Ordo()],
-         LEGENDE = 'ASTER recalé',
-         COULEUR=2,
-      ),
-      _F(FONCTION = MTSYS,
-         LEGENDE = 'SYSPIPE',
-         COULEUR=1,
-         STYLE=0,
-         MARQUEUR=5,
-      ),
-   ),
-   TITRE='MT ASTER ET SYSPIPE',
-   LEGENDE_X='ABSC_CURV',
-   LEGENDE_Y='MT',
+    FORMAT="XMGRACE",
+    COURBE=(
+        _F(FONCTION=MTAST, LEGENDE="ASTER", COULEUR=3, STYLE=3),
+        _F(
+            ABSCISSE=[57766.1 - x for x in MTAST.Absc()],
+            ORDONNEE=[abs(y) for y in MTAST.Ordo()],
+            LEGENDE="ASTER recalé",
+            COULEUR=2,
+        ),
+        _F(FONCTION=MTSYS, LEGENDE="SYSPIPE", COULEUR=1, STYLE=0, MARQUEUR=5),
+    ),
+    TITRE="MT ASTER ET SYSPIPE",
+    LEGENDE_X="ABSC_CURV",
+    LEGENDE_Y="MT",
 )
 
 FIN()

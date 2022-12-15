@@ -23,92 +23,78 @@
 from code_aster import AsterError
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',
-              ),
-      ERREUR=_F(ERREUR_F='EXCEPTION'),
-      DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="EXCEPTION"), DEBUG=_F(SDVERI="OUI"))
 
 import re
-fmt_raison='-'*80+"""
+
+fmt_raison = (
+    "-" * 80
+    + """
 
    Exception interceptee
    Raison : %s
 
-"""+'-'*80+'\n'
+"""
+    + "-" * 80
+    + "\n"
+)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),
-               DISTRIBUTION=_F(METHODE='MAIL_CONTIGU',),
-               )
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+    DISTRIBUTION=_F(METHODE="MAIL_CONTIGU"),
+)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
-                          NU=0.3,
-                          RHO=1.e-1,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=202702.7, NU=0.3, RHO=1.0e-1))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=_F(GROUP_NO='GRNO7',
-                                 DX=0.0,
-                                 DY=0.01,),)
+CHA1 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO="GRNO7", DX=0.0, DY=0.01))
 
-CHA2=AFFE_CHAR_CINE(MODELE=MO,
-                    MECA_IMPO=(_F(GROUP_NO='GRNO1',
-                                 DZ=0.0,),
-                              _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),)
+CHA2 = AFFE_CHAR_CINE(
+    MODELE=MO, MECA_IMPO=(_F(GROUP_NO="GRNO1", DZ=0.0), _F(GROUP_NO="GRNO8", DY=0.0))
+)
 
-LIST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=10,),)
+LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=10))
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0,0,1,1),)
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
 
-DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST,),
-                       ECHEC=_F(ACTION='DECOUPE',),)
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST), ECHEC=_F(ACTION="DECOUPE"))
 
 is_ok = 0
-try :
-   EVOL=DYNA_NON_LINE(MODELE=MO,
-                      INFO=1,
-                      CHAM_MATER=CHMAT,
-                      EXCIT=(_F(CHARGE=CHA1,FONC_MULT=RAMPE,),
-                             _F(CHARGE=CHA2,FONC_MULT=RAMPE,),),
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                      FORMULATION='DEPLACEMENT',),
-                      COMPORTEMENT=_F(RELATION='ELAS',
-                                   TOUT='OUI',),
-                      NEWTON=_F(REAC_ITER=1),
-                      INCREMENT=_F(LIST_INST=DEFLIST,),
-                      SOLVEUR=_F(METHODE='GCPC',
-                                 PRE_COND='LDLT_SP',
-                                 NMAX_ITER=1,
-                                 ),)
+try:
+    EVOL = DYNA_NON_LINE(
+        MODELE=MO,
+        INFO=1,
+        CHAM_MATER=CHMAT,
+        EXCIT=(_F(CHARGE=CHA1, FONC_MULT=RAMPE), _F(CHARGE=CHA2, FONC_MULT=RAMPE)),
+        SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+        COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
+        NEWTON=_F(REAC_ITER=1),
+        INCREMENT=_F(LIST_INST=DEFLIST),
+        SOLVEUR=_F(METHODE="GCPC", PRE_COND="LDLT_SP", NMAX_ITER=1),
+    )
 
 except AsterError as err:
-   print(fmt_raison % str(err))
-   # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_12":
-      is_ok = 1
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MECANONLINE9_12":
+        is_ok = 1
 
 # TEST_RESU
-TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
-                       _F(PARA='BOOLEEN',LISTE_I=is_ok)))
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
 
-TEST_TABLE(TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  '),
-           NOM_PARA='BOOLEEN',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE')
+TEST_TABLE(
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+    NOM_PARA="BOOLEEN",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+)
 
 FIN()

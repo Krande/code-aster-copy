@@ -28,7 +28,7 @@ from code_aster.Commands import *
 # ***********************************************************************
 
 # ======================================================================
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # ***********************************************************************
 #
@@ -36,18 +36,18 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), )
 #
 # ***********************************************************************
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT='MED', PARTITIONNEUR='PTSCOTCH',)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
-MODELE = AFFE_MODELE(MAILLAGE=MAILLAGE,
-                     AFFE=_F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='AXIS', ), )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS")
+)
 
-MAILLAGE = MODI_MAILLAGE(reuse=MAILLAGE,
-                         MAILLAGE=MAILLAGE,
-                         ORIE_PEAU=_F(GROUP_MA_PEAU=('DROIT', 'GAUCHE',
-                                                     'BAS', 'HAUT'), ),
-                         INFO=1, )
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("DROIT", "GAUCHE", "BAS", "HAUT")),
+    INFO=1,
+)
 
 # ***********************************************************************
 #
@@ -55,19 +55,17 @@ MAILLAGE = MODI_MAILLAGE(reuse=MAILLAGE,
 #
 # ***********************************************************************
 
-tarret = 10.
-tfin = 20.
+tarret = 10.0
+tfin = 20.0
 npas = 30
-temps_max = 30.
+temps_max = 30.0
 
 dtemps = temps_max / npas
 
 ltemps = [dtemps * i for i in range(npas + 1)]
 
-TEMPS = DEFI_LIST_REEL(DEBUT=0.,
-                       INTERVALLE=(_F(JUSQU_A=20, NOMBRE=10, ),), )
-TEMPS2 = DEFI_LIST_REEL(DEBUT=20,
-                        INTERVALLE=(_F(JUSQU_A=temps_max, NOMBRE=5, ),), )
+TEMPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=20, NOMBRE=10),))
+TEMPS2 = DEFI_LIST_REEL(DEBUT=20, INTERVALLE=(_F(JUSQU_A=temps_max, NOMBRE=5),))
 
 # ***********************************************************************
 #
@@ -83,18 +81,15 @@ TEMPS2 = DEFI_LIST_REEL(DEBUT=20,
 # YOUNG = 9.*K*G /(3.*K+G)
 # POISSON = (3.*K-2.*G) /(6.*K+2.*G)
 
-YOUNG = 1e+6
+YOUNG = 1e6
 POISSON = 0.25
-SIGMA_T = 1.E+3
-K = YOUNG / 3. / (1. - 2. * POISSON)
-G = YOUNG / 2. / (1. + POISSON)
+SIGMA_T = 1.0e3
+K = YOUNG / 3.0 / (1.0 - 2.0 * POISSON)
+G = YOUNG / 2.0 / (1.0 + POISSON)
 
-SOL = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0., ),
-                    RANKINE=_F(SIGMA_T=SIGMA_T, ),
-                    INFO=1, )
+SOL = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.0), RANKINE=_F(SIGMA_T=SIGMA_T), INFO=1)
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                      AFFE=_F(TOUT='OUI', MATER=SOL, ), )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=SOL))
 
 # ***********************************************************************
 #
@@ -103,32 +98,27 @@ CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 # ***********************************************************************
 
 # pression de preconsolidation [en kPa]
-P0 = 5.E+3
-EPZZ = .03
+P0 = 5.0e3
+EPZZ = 0.03
 
 npas = 300
 dtemps = temps_max / npas
 linst = [dtemps * i for i in range(npas)]
 
-SIGLAT = AFFE_CHAR_MECA(MODELE=MODELE,
-                        PRES_REP=_F(GROUP_MA=('DROIT',),
-                                    PRES=P0, ), )
+SIGLAT = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("DROIT",), PRES=P0))
 
-DEPHAUT = AFFE_CHAR_CINE(MODELE=MODELE,
-                         MECA_IMPO=(_F(GROUP_MA=('HAUT',), DY=1., ),), )
+DEPHAUT = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=(_F(GROUP_MA=("HAUT",), DY=1.0),))
 
-DEPL_1 = AFFE_CHAR_CINE(MODELE=MODELE,
-                        MECA_IMPO=(_F(GROUP_MA='BAS', DY=0., ), _F(GROUP_NO='B', DX=0., ),), )
+DEPL_1 = AFFE_CHAR_CINE(
+    MODELE=MODELE, MECA_IMPO=(_F(GROUP_MA="BAS", DY=0.0), _F(GROUP_NO="B", DX=0.0))
+)
 
 
-COEF2 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(0., 0., 20, EPZZ,
-                            temps_max, 0,), )
+COEF2 = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 20, EPZZ, temps_max, 0)
+)
 
-COEF3 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(0., 1.,), )
+COEF3 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 1.0))
 
 
 # ***********************************************************************
@@ -137,14 +127,14 @@ COEF3 = DEFI_FONCTION(NOM_PARA='INST',
 #
 # ***********************************************************************
 
-SIG0 = CREA_CHAMP(INFO=2,
-                  TYPE_CHAM='ELGA_SIEF_R',
-                  OPERATION='AFFE',
-                  MODELE=MODELE,
-                  PROL_ZERO='OUI',
-                  AFFE=_F(GROUP_MA='BLOC',
-                          NOM_CMP=('SIXX', 'SIYY', 'SIZZ'),
-                          VALE=(-P0, -P0, -P0,), ), )
+SIG0 = CREA_CHAMP(
+    INFO=2,
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="AFFE",
+    MODELE=MODELE,
+    PROL_ZERO="OUI",
+    AFFE=_F(GROUP_MA="BLOC", NOM_CMP=("SIXX", "SIYY", "SIZZ"), VALE=(-P0, -P0, -P0)),
+)
 
 # ***********************************************************************
 #
@@ -152,37 +142,37 @@ SIG0 = CREA_CHAMP(INFO=2,
 #
 # ***********************************************************************
 
-U1 = STAT_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=SIGLAT, FONC_MULT=COEF3, ),
-                          _F(CHARGE=DEPHAUT, FONC_MULT=COEF2, ),
-                          _F(CHARGE=DEPL_1, FONC_MULT=COEF3, ),),
-                   ETAT_INIT=_F(SIGM=SIG0, ),
-                   COMPORTEMENT=_F(RELATION='RANKINE', ),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             PREDICTION='ELASTIQUE',
-                             REAC_ITER=1, ),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                  ITER_GLOB_MAXI=30,
-                                  ARRET='OUI', ),
-                   SOLVEUR=_F(METHODE='MUMPS', NPREC=8, ),
-                   INCREMENT=_F(LIST_INST=TEMPS, ), )
+U1 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=SIGLAT, FONC_MULT=COEF3),
+        _F(CHARGE=DEPHAUT, FONC_MULT=COEF2),
+        _F(CHARGE=DEPL_1, FONC_MULT=COEF3),
+    ),
+    ETAT_INIT=_F(SIGM=SIG0),
+    COMPORTEMENT=_F(RELATION="RANKINE"),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30, ARRET="OUI"),
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
+    INCREMENT=_F(LIST_INST=TEMPS),
+)
 
-U2 = MECA_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=SIGLAT, FONC_MULT=COEF3, ),
-                          _F(CHARGE=DEPHAUT, FONC_MULT=COEF2, ),
-                          _F(CHARGE=DEPL_1, FONC_MULT=COEF3, ),),
-                   ETAT_INIT=_F(SIGM=SIG0, ),
-                   COMPORTEMENT=_F(RELATION='RANKINE', ),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             PREDICTION='ELASTIQUE',
-                             REAC_ITER=1, ),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                  ITER_GLOB_MAXI=30,
-                                  ARRET='OUI', ),
-                   SOLVEUR=_F(METHODE='MUMPS', NPREC=8, ),
-                   INCREMENT=_F(LIST_INST=TEMPS, ), )
+U2 = MECA_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=SIGLAT, FONC_MULT=COEF3),
+        _F(CHARGE=DEPHAUT, FONC_MULT=COEF2),
+        _F(CHARGE=DEPL_1, FONC_MULT=COEF3),
+    ),
+    ETAT_INIT=_F(SIGM=SIG0),
+    COMPORTEMENT=_F(RELATION="RANKINE"),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30, ARRET="OUI"),
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
+    INCREMENT=_F(LIST_INST=TEMPS),
+)
 
 # TEST ETAT_INIT  AVEC SIGM
 # *************************
@@ -203,75 +193,85 @@ DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA
 DIF_VAR = VARI_REF - VARI
 
-TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        PRECISION=1e-5,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC=1E-10,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        PRECISION=1e-5,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC=1E-10,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        ORDRE_GRANDEUR=10e-3,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC=0.0,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        ORDRE_GRANDEUR=10e-3,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC=0.0,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=1e-10,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=1e-10,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=10e-3,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=10e-3,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+    )
+)
 
 # EVOL_NOLI
 # *********
 
-U3 = STAT_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=SIGLAT, FONC_MULT=COEF3, ),
-                          _F(CHARGE=DEPHAUT, FONC_MULT=COEF2, ),
-                          _F(CHARGE=DEPL_1, FONC_MULT=COEF3, ),),
-                   ETAT_INIT=_F(EVOL_NOLI=U1, INST_ETAT_INIT=14),
-                   COMPORTEMENT=_F(RELATION='RANKINE', ),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             PREDICTION='ELASTIQUE',
-                             REAC_ITER=1, ),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                  ITER_GLOB_MAXI=10,
-                                  ARRET='OUI', ),
-                   SOLVEUR=_F(METHODE='MUMPS', NPREC=8, ),
-                   INCREMENT=_F(LIST_INST=TEMPS2, ), )
+U3 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=SIGLAT, FONC_MULT=COEF3),
+        _F(CHARGE=DEPHAUT, FONC_MULT=COEF2),
+        _F(CHARGE=DEPL_1, FONC_MULT=COEF3),
+    ),
+    ETAT_INIT=_F(EVOL_NOLI=U1, INST_ETAT_INIT=14),
+    COMPORTEMENT=_F(RELATION="RANKINE"),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=10, ARRET="OUI"),
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
+    INCREMENT=_F(LIST_INST=TEMPS2),
+)
 
-U4 = MECA_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=SIGLAT, FONC_MULT=COEF3, ),
-                          _F(CHARGE=DEPHAUT, FONC_MULT=COEF2, ),
-                          _F(CHARGE=DEPL_1, FONC_MULT=COEF3, ),),
-                   ETAT_INIT=_F(EVOL_NOLI=U2, INST_ETAT_INIT=14),
-                   COMPORTEMENT=_F(RELATION='RANKINE', ),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             PREDICTION='ELASTIQUE',
-                             REAC_ITER=1, ),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                  ITER_GLOB_MAXI=10,
-                                  ARRET='OUI', ),
-                   SOLVEUR=_F(METHODE='MUMPS', NPREC=8, ),
-                   INCREMENT=_F(LIST_INST=TEMPS2, ), )
+U4 = MECA_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=SIGLAT, FONC_MULT=COEF3),
+        _F(CHARGE=DEPHAUT, FONC_MULT=COEF2),
+        _F(CHARGE=DEPL_1, FONC_MULT=COEF3),
+    ),
+    ETAT_INIT=_F(EVOL_NOLI=U2, INST_ETAT_INIT=14),
+    COMPORTEMENT=_F(RELATION="RANKINE"),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="ELASTIQUE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=10, ARRET="OUI"),
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=8),
+    INCREMENT=_F(LIST_INST=TEMPS2),
+)
 
 # TEST EVOL_NOLI et INST_ETAT_INIT
 # *******************************
@@ -300,56 +300,73 @@ DIF_DEPL = DEPL_REF - DEPL
 DIF_SIG = SIGMA_REF - SIGMA
 DIF_VAR = VARI_REF - VARI
 
-TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        PRECISION=1e-5,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC=1E-10,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        PRECISION=1e-5,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_SIG,
-                        VALE_CALC=1E-10,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        ORDRE_GRANDEUR=10e-3,
-                        TYPE_TEST='MIN',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC=0.0,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     _F(CRITERE='ABSOLU',
-                        REFERENCE='ANALYTIQUE',
-                        ORDRE_GRANDEUR=10e-3,
-                        TYPE_TEST='MAX',
-                        CHAM_GD=DIF_VAR,
-                        VALE_CALC=0.0,
-                        VALE_REFE=0.0,
-                        VALE_ABS='OUI', ),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=1e-10,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-5,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_SIG,
+            VALE_CALC=1e-10,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=10e-3,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=10e-3,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_VAR,
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+    )
+)
 
-TEST_RESU(CHAM_NO=(_F(CRITERE='ABSOLU',
-                      REFERENCE='ANALYTIQUE',
-                      PRECISION=1e-8,
-                      TYPE_TEST='MIN',
-                      CHAM_GD=DIF_DEPL,
-                      VALE_CALC=1.e-10,
-                      VALE_REFE=0.0,
-                      VALE_ABS='OUI', ),
-                   _F(CRITERE='ABSOLU',
-                      REFERENCE='ANALYTIQUE',
-                      PRECISION=1e-8,
-                      TYPE_TEST='MAX',
-                      CHAM_GD=DIF_DEPL,
-                      VALE_CALC=1.e-10,
-                      VALE_REFE=0.0,
-                      VALE_ABS='OUI', ),
-                   ))
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-8,
+            TYPE_TEST="MIN",
+            CHAM_GD=DIF_DEPL,
+            VALE_CALC=1.0e-10,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1e-8,
+            TYPE_TEST="MAX",
+            CHAM_GD=DIF_DEPL,
+            VALE_CALC=1.0e-10,
+            VALE_REFE=0.0,
+            VALE_ABS="OUI",
+        ),
+    )
+)
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,36 +22,42 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    2 : _("""
+    2: _(
+        """
 Le sommet de numéro global %(i1)i n'appartient pas à la maille %(i2)i
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Une des modélisations utilisée nécessite la création d'un voisinage des mailles.
 Or, pour une maille donnée il n'est pas autorisé de dépasser le seuil de 200 voisines.
 
 Avec le maillage fourni, ce seuil est dépassé pour la maille %(k1)s.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Le nombre de sommets communs %(i1)i est trop grand
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
 Le nombre de mailles %(i1)i est inférieur à un.
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
 Le type de voisinage %(k1)s est inconnu.
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
 Le type de voisinage %(k1)s a une longueur %(i1)i trop grande
-"""),
-
-    13 : _("""
+"""
+    ),
+    13: _(
+        """
 L'élément %(k1)s et la face  %(i1)i est non plane
-"""),
-
+"""
+    ),
 }

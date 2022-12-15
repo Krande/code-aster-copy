@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,7 @@
 import numpy
 
 import aster
-from libaster import (GeneralizedAssemblyVectorComplex,
-                      GeneralizedAssemblyVectorReal)
+from libaster import GeneralizedAssemblyVectorComplex, GeneralizedAssemblyVectorReal
 
 from ..Utilities import injector
 
@@ -38,65 +37,68 @@ class ExtendedGeneralizedAssemblyVectorComplex:
 
     def EXTR_VECT_GENE_C(self):
 
-        valeur=numpy.array(self.sdj.VALE.get(), complex)
+        valeur = numpy.array(self.sdj.VALE.get(), complex)
 
         return valeur
 
-    def RECU_VECT_GENE_C(self,vecteur):
+    def RECU_VECT_GENE_C(self, vecteur):
         numpy.asarray(vecteur)
-        ncham=self.getName()
-        ncham=ncham+(8-len(ncham))*' '
+        ncham = self.getName()
+        ncham = ncham + (8 - len(ncham)) * " "
         desc = self.sdj.DESC.get()
         # On teste si le DESC de la matrice existe
         if not desc:
-            raise AsException("L'objet vecteur {0!r} n'existe pas"
-                              .format(self.sdj.DESC.nomj()))
+            raise AsException("L'objet vecteur {0!r} n'existe pas".format(self.sdj.DESC.nomj()))
         desc = numpy.array(desc)
         # On teste si la taille de la matrice jeveux et python est identique
-        if desc[1] != numpy.shape(vecteur)[0] :
+        if desc[1] != numpy.shape(vecteur)[0]:
             raise AsException("La taille du vecteur python est incorrecte")
-        tmpr=vecteur.real
-        tmpc=vecteur.imag
-        aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',
-                         len(tmpr),
-                         tuple(range(1, len(tmpr)+1)),
-                         tuple(tmpr),
-                         tuple(tmpc),
-                         1)
+        tmpr = vecteur.real
+        tmpc = vecteur.imag
+        aster.putvectjev(
+            ncham + (19 - len(ncham)) * " " + ".VALE",
+            len(tmpr),
+            tuple(range(1, len(tmpr) + 1)),
+            tuple(tmpr),
+            tuple(tmpc),
+            1,
+        )
         return
+
 
 @injector(GeneralizedAssemblyVectorReal)
 class ExtendedGeneralizedAssemblyVectorReal:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
-    def EXTR_VECT_GENE_R(self) :
-      valeur = numpy.array(self.sdj.VALE.get())
-      return valeur
+    def EXTR_VECT_GENE_R(self):
+        valeur = numpy.array(self.sdj.VALE.get())
+        return valeur
 
     def EXTR_VECT_GENE_C(self):
-        valeur=numpy.array(self.sdj.VALE.get(), complex)
+        valeur = numpy.array(self.sdj.VALE.get(), complex)
 
         return valeur
 
-    def RECU_VECT_GENE_C(self,vecteur):
+    def RECU_VECT_GENE_C(self, vecteur):
         numpy.asarray(vecteur)
-        ncham=self.getName()
-        ncham=ncham+(8-len(ncham))*' '
+        ncham = self.getName()
+        ncham = ncham + (8 - len(ncham)) * " "
         desc = self.sdj.DESC.get()
         # On teste si le DESC de la matrice existe
         if not desc:
-            raise AsException("L'objet vecteur {0!r} n'existe pas"
-                              .format(self.sdj.DESC.nomj()))
+            raise AsException("L'objet vecteur {0!r} n'existe pas".format(self.sdj.DESC.nomj()))
         desc = numpy.array(desc)
         # On teste si la taille de la matrice jeveux et python est identique
-        if desc[1] != numpy.shape(vecteur)[0] :
+        if desc[1] != numpy.shape(vecteur)[0]:
             raise AsException("La taille du vecteur python est incorrecte")
-        tmpr=vecteur.real
-        tmpc=vecteur.imag
-        aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',
-                         len(tmpr),
-                         tuple(range(1, len(tmpr)+1)),
-                         tuple(tmpr),
-                         tuple(tmpc),
-                         1)
+        tmpr = vecteur.real
+        tmpc = vecteur.imag
+        aster.putvectjev(
+            ncham + (19 - len(ncham)) * " " + ".VALE",
+            len(tmpr),
+            tuple(range(1, len(tmpr) + 1)),
+            tuple(tmpr),
+            tuple(tmpc),
+            1,
+        )
         return

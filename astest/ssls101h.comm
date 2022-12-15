@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # POINTS: O      MAILLES  M1
 #         A               M147
 #         B               M98   M111
@@ -27,662 +27,732 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #         D               M85   M99
 #         E               M7    M8
 #         F               M91   M92    M105
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 
-T=0.1
+T = 0.1
 
-R=1.
+R = 1.0
 
-P=1.
+P = 1.0
 
-MATER=DEFI_MATERIAU( ELAS=_F(  E = 1., NU = 0.3,  RHO = 1.) )
+MATER = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3, RHO=1.0))
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED',)
+MAILL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MAILL = DEFI_GROUP(reuse=MAILL, MAILLAGE=MAILL, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
-                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
-MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
-                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'Q4G',
-                              PHENOMENE = 'MECANIQUE') )
+MODEL = AFFE_MODELE(MAILLAGE=MAILL, AFFE=_F(TOUT="OUI", MODELISATION="Q4G", PHENOMENE="MECANIQUE"))
 
-CINE=AFFE_CHAR_MECA(   MODELE=MODEL,DDL_IMPO=(
-              _F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.),
-                       _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'A',                 DRX = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'GRNO_OC',  DX = 0.,  DRY = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'C',                 DRY = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'O',        DX = 0.,  DY = 0.,
-                                          DRX = 0.,  DRY = 0.,  DRZ = 0.))
-                           )
+CINE = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(
+        _F(GROUP_NO="GRNO_ABC", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="GRNO_OA", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="A", DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="GRNO_OC", DX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="C", DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="O", DX=0.0, DY=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+)
 
-PRES=AFFE_CHAR_MECA(   MODELE=MODEL,
-                    FORCE_COQUE=_F(  TOUT = 'OUI', PRES = P)   )
+PRES = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_COQUE=_F(TOUT="OUI", PRES=P))
 
-CHF3=AFFE_CHAR_MECA(   MODELE=MODEL,
-                    FORCE_COQUE=_F(  TOUT = 'OUI', F3 = -1.)   )
+CHF3 = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_COQUE=_F(TOUT="OUI", F3=-1.0))
 
-CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
-                      PESANTEUR=_F(GRAVITE= 10.,
-                                   DIRECTION=(0., 0., -1., ), ),)
+CHPE = AFFE_CHAR_MECA(MODELE=MODEL, PESANTEUR=_F(GRAVITE=10.0, DIRECTION=(0.0, 0.0, -1.0)))
 
-CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
-                               COQUE=_F(
-       GROUP_MA = 'TOUT',
-  EPAIS = T) )
+CARELEM = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="TOUT", EPAIS=T))
 
-DEPR=MECA_STATIQUE(MODELE=MODEL,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARELEM,
-                   EXCIT=(_F(CHARGE=CINE,),
-                          _F(CHARGE=PRES,),),)
+DEPR = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM, EXCIT=(_F(CHARGE=CINE), _F(CHARGE=PRES))
+)
 
-DEF3=MECA_STATIQUE(MODELE=MODEL,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARELEM,
-                   EXCIT=(_F(CHARGE=CINE,),
-                          _F(CHARGE=CHF3,),),)
+DEF3 = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM, EXCIT=(_F(CHARGE=CINE), _F(CHARGE=CHF3))
+)
 
-DEPE=MECA_STATIQUE(MODELE=MODEL,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARELEM,
-                   EXCIT=(_F(CHARGE=CINE,),
-                          _F(CHARGE=CHPE,),),)
+DEPE = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM, EXCIT=(_F(CHARGE=CINE), _F(CHARGE=CHPE))
+)
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='O',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-702.283401679,
-                   VALE_REFE=-703.38999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=2.E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='A',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 3.5700609136E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='B',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-4.2396641753E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='C',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 2.0226875730E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='D',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-494.531448176,
-                   VALE_REFE=-495.56,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='E',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-494.530495902,
-                   VALE_REFE=-495.56,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='F',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-440.230123368,
-                   VALE_REFE=-441.18000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='O',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-702.283401679,
-                   VALE_REFE=-703.38999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=2.E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='A',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 3.5700609136E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='B',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-4.2396641753E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='C',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 2.0226875730E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='D',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-494.531448176,
-                   VALE_REFE=-495.56,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='E',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-494.530495902,
-                   VALE_REFE=-495.56,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='F',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-440.230123368,
-                   VALE_REFE=-441.18000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='O',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-702.283401679,
-                   VALE_REFE=-703.38999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=2.E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='A',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 3.5700609136E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='B',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-4.2396641753E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='C',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 2.0226875730E-15,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='D',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-494.531448176,
-                   VALE_REFE=-495.56,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='E',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-494.530495902,
-                   VALE_REFE=-495.56,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPR,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='F',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-440.230123368,
-                   VALE_REFE=-441.18000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="O",
+            NOM_CMP="DZ",
+            VALE_CALC=-702.283401679,
+            VALE_REFE=-703.38999999999999,
+            CRITERE="RELATIF",
+            PRECISION=2.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="A",
+            NOM_CMP="DZ",
+            VALE_CALC=3.5700609136e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="B",
+            NOM_CMP="DZ",
+            VALE_CALC=-4.2396641753e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="C",
+            NOM_CMP="DZ",
+            VALE_CALC=2.0226875730e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="D",
+            NOM_CMP="DZ",
+            VALE_CALC=-494.531448176,
+            VALE_REFE=-495.56,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="E",
+            NOM_CMP="DZ",
+            VALE_CALC=-494.530495902,
+            VALE_REFE=-495.56,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="F",
+            NOM_CMP="DZ",
+            VALE_CALC=-440.230123368,
+            VALE_REFE=-441.18000000000001,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="O",
+            NOM_CMP="DZ",
+            VALE_CALC=-702.283401679,
+            VALE_REFE=-703.38999999999999,
+            CRITERE="RELATIF",
+            PRECISION=2.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="A",
+            NOM_CMP="DZ",
+            VALE_CALC=3.5700609136e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="B",
+            NOM_CMP="DZ",
+            VALE_CALC=-4.2396641753e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="C",
+            NOM_CMP="DZ",
+            VALE_CALC=2.0226875730e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="D",
+            NOM_CMP="DZ",
+            VALE_CALC=-494.531448176,
+            VALE_REFE=-495.56,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="E",
+            NOM_CMP="DZ",
+            VALE_CALC=-494.530495902,
+            VALE_REFE=-495.56,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="F",
+            NOM_CMP="DZ",
+            VALE_CALC=-440.230123368,
+            VALE_REFE=-441.18000000000001,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="O",
+            NOM_CMP="DZ",
+            VALE_CALC=-702.283401679,
+            VALE_REFE=-703.38999999999999,
+            CRITERE="RELATIF",
+            PRECISION=2.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="A",
+            NOM_CMP="DZ",
+            VALE_CALC=3.5700609136e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="B",
+            NOM_CMP="DZ",
+            VALE_CALC=-4.2396641753e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="C",
+            NOM_CMP="DZ",
+            VALE_CALC=2.0226875730e-15,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="D",
+            NOM_CMP="DZ",
+            VALE_CALC=-494.531448176,
+            VALE_REFE=-495.56,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="E",
+            NOM_CMP="DZ",
+            VALE_CALC=-494.530495902,
+            VALE_REFE=-495.56,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPR,
+            NOM_CHAM="DEPL",
+            GROUP_NO="F",
+            NOM_CMP="DZ",
+            VALE_CALC=-440.230123368,
+            VALE_REFE=-441.18000000000001,
+            CRITERE="RELATIF",
+            PRECISION=3.0000000000000001e-3,
+        ),
+    )
+)
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-EPOT_PR=POST_ELEM(  RESULTAT=DEPR, NUME_ORDRE=1, MODELE=MODEL,
-                        CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                            ENER_POT=_F(  TOUT = 'OUI')     )
+EPOT_PR = POST_ELEM(
+    RESULTAT=DEPR,
+    NUME_ORDRE=1,
+    MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    ENER_POT=_F(TOUT="OUI"),
+)
 
-EPOT_F3=POST_ELEM(  RESULTAT=DEF3, NUME_ORDRE=1, MODELE=MODEL,
-                        CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                            ENER_POT=_F(  TOUT = 'OUI')     )
+EPOT_F3 = POST_ELEM(
+    RESULTAT=DEF3,
+    NUME_ORDRE=1,
+    MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    ENER_POT=_F(TOUT="OUI"),
+)
 
-EPOT_PE=POST_ELEM(  RESULTAT=DEPE, NUME_ORDRE=1, MODELE=MODEL,
-                        CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,
-                            ENER_POT=_F(  TOUT = 'OUI')     )
+EPOT_PE = POST_ELEM(
+    RESULTAT=DEPE,
+    NUME_ORDRE=1,
+    MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    ENER_POT=_F(TOUT="OUI"),
+)
 
 # LES VALEURS DE REFERENCE SONT CELLES D'ASTER VERSION 3.02.21
 # DU CAS TEST SSLS101B (MAILLAGE FIN EN DKT).
 # DEPLACEMENTS PRESSION
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=0.010999999999999999,
-           VALE_CALC=126.252364654,
-           VALE_REFE=124.997,
-           NOM_PARA='TOTALE',
-           TABLE=EPOT_PR,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='00000002',),
-           )
+TEST_TABLE(
+    REFERENCE="NON_DEFINI",
+    PRECISION=0.010999999999999999,
+    VALE_CALC=126.252364654,
+    VALE_REFE=124.997,
+    NOM_PARA="TOTALE",
+    TABLE=EPOT_PR,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K="00000002"),
+)
 
 # DEPLACEMENTS F3
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=0.010999999999999999,
-           VALE_CALC=126.252364654,
-           VALE_REFE=124.997,
-           NOM_PARA='TOTALE',
-           TABLE=EPOT_F3,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='00000002',),
-           )
+TEST_TABLE(
+    REFERENCE="NON_DEFINI",
+    PRECISION=0.010999999999999999,
+    VALE_CALC=126.252364654,
+    VALE_REFE=124.997,
+    NOM_PARA="TOTALE",
+    TABLE=EPOT_F3,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K="00000002"),
+)
 
 # DEPLACEMENTS PESANTEUR
 
-TEST_TABLE(REFERENCE='NON_DEFINI',
-           PRECISION=0.010999999999999999,
-           VALE_CALC=126.252364654,
-           VALE_REFE=124.997,
-           NOM_PARA='TOTALE',
-           TABLE=EPOT_PE,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='00000002',),
-           )
+TEST_TABLE(
+    REFERENCE="NON_DEFINI",
+    PRECISION=0.010999999999999999,
+    VALE_CALC=126.252364654,
+    VALE_REFE=124.997,
+    NOM_PARA="TOTALE",
+    TABLE=EPOT_PE,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K="00000002"),
+)
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-DEPR=CALC_CHAMP(reuse=DEPR,RESULTAT=DEPR,CONTRAINTE=('EFGE_ELNO'))
+DEPR = CALC_CHAMP(reuse=DEPR, RESULTAT=DEPR, CONTRAINTE=("EFGE_ELNO"))
 
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-RELEVE_1=POST_RELEVE_T(
-                   ACTION=_F(  GROUP_NO = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
-                            INTITULE = 'EFGE',
-                            RESULTAT = DEPR,
-                            NUME_ORDRE=1,
-                            NOM_CHAM='EFGE_ELNO',
-                            NOM_CMP = ( 'MXX', 'MYY', ),
-                            OPERATION = 'EXTRACTION')
-                          )
+RELEVE_1 = POST_RELEVE_T(
+    ACTION=_F(
+        GROUP_NO=("O", "A", "B", "C", "D", "E", "F"),
+        INTITULE="EFGE",
+        RESULTAT=DEPR,
+        NUME_ORDRE=1,
+        NOM_CHAM="EFGE_ELNO",
+        NOM_CMP=("MXX", "MYY"),
+        OPERATION="EXTRACTION",
+    )
+)
 #
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.E-3,
-           VALE_CALC=-0.205958026,
-           VALE_REFE=-0.20624999999999999,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='O',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=2.0e-3,
+    VALE_CALC=-0.205958026,
+    VALE_REFE=-0.20624999999999999,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="O"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.E-3,
-           VALE_CALC=-0.205959486,
-           VALE_REFE=-0.20624999999999999,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='O',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=2.0e-3,
+    VALE_CALC=-0.205959486,
+    VALE_REFE=-0.20624999999999999,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="O"),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=-0.012044055,
-           VALE_REFE=0.0,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='A',),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=-0.012044055,
+    VALE_REFE=0.0,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="A"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.044999999999999998,
-           VALE_CALC=-0.091068365,
-           VALE_REFE=-0.087499999999999994,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='A',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.044999999999999998,
+    VALE_CALC=-0.091068365,
+    VALE_REFE=-0.087499999999999994,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="A"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.20000000000000001,
-           VALE_CALC=-0.052330769,
-           VALE_REFE=-0.043749999999999997,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='B',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.20000000000000001,
+    VALE_CALC=-0.052330769,
+    VALE_REFE=-0.043749999999999997,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="B"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.20000000000000001,
-           VALE_CALC=-0.052362236,
-           VALE_REFE=-0.043749999999999997,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='B',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.20000000000000001,
+    VALE_CALC=-0.052362236,
+    VALE_REFE=-0.043749999999999997,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="B"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.044999999999999998,
-           VALE_CALC=-0.091071285,
-           VALE_REFE=-0.087499999999999994,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='C',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.044999999999999998,
+    VALE_CALC=-0.091071285,
+    VALE_REFE=-0.087499999999999994,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="C"),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=-0.012078044,
-           VALE_REFE=0.0,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='C',),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=-0.012078044,
+    VALE_REFE=0.0,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="C"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.5000000000000001E-3,
-           VALE_CALC=-0.154381309,
-           VALE_REFE=-0.15468999999999999,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='D',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=2.5000000000000001e-3,
+    VALE_CALC=-0.154381309,
+    VALE_REFE=-0.15468999999999999,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="D"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.5000000000000001E-3,
-           VALE_CALC=-0.176991360,
-           VALE_REFE=-0.17655999999999999,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='D',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=2.5000000000000001e-3,
+    VALE_CALC=-0.176991360,
+    VALE_REFE=-0.17655999999999999,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="D"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.5000000000000001E-3,
-           VALE_CALC=-0.176985009,
-           VALE_REFE=-0.17655999999999999,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='E',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=2.5000000000000001e-3,
+    VALE_CALC=-0.176985009,
+    VALE_REFE=-0.17655999999999999,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="E"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.5000000000000001E-3,
-           VALE_CALC=-0.154375443,
-           VALE_REFE=-0.15468999999999999,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='E',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=2.5000000000000001e-3,
+    VALE_CALC=-0.154375443,
+    VALE_REFE=-0.15468999999999999,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="E"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=3.5000000000000001E-3,
-           VALE_CALC=-0.153737548,
-           VALE_REFE=-0.15425,
-           NOM_PARA='MXX',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='F',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=3.5000000000000001e-3,
+    VALE_CALC=-0.153737548,
+    VALE_REFE=-0.15425,
+    NOM_PARA="MXX",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="F"),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=3.5000000000000001E-3,
-           VALE_CALC=-0.153745515,
-           VALE_REFE=-0.15425,
-           NOM_PARA='MYY',
-           TABLE=RELEVE_1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='F',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=3.5000000000000001e-3,
+    VALE_CALC=-0.153745515,
+    VALE_REFE=-0.15425,
+    NOM_PARA="MYY",
+    TABLE=RELEVE_1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="F"),
+)
 
-#======================================================================
+# ======================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE
-#======================================================================
+# ======================================================================
 
-TINF1=45.
+TINF1 = 45.0
 
-TSUP1=65.
+TSUP1 = 65.0
 
-T1=50.
+T1 = 50.0
 
-TR1=(T1 + TSUP1 + TINF1  ) / 3.
+TR1 = (T1 + TSUP1 + TINF1) / 3.0
 
-TINF2=70.
+TINF2 = 70.0
 
-TSUP2=90.
+TSUP2 = 90.0
 
-T2=75.
+T2 = 75.0
 
-TR2= ( T2 +  TSUP2 + TINF2 ) / 3.
+TR2 = (T2 + TSUP2 + TINF2) / 3.0
 
-TINF3=95.
+TINF3 = 95.0
 
-TSUP3=115.
+TSUP3 = 115.0
 
-T3=100.
+T3 = 100.0
 
-TR3=(T3 +  TSUP3 + TINF3 ) / 3.
+TR3 = (T3 + TSUP3 + TINF3) / 3.0
 
-E1=1.
+E1 = 1.0
 
-E2=1.1
+E2 = 1.1
 
-E3=1.2
+E3 = 1.2
 
-E_F=DEFI_FONCTION(  NOM_PARA='TEMP',
-                 PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',
-                        VALE=( TR1, E1,  TR2, E2,  TR3, E3, )  )
+E_F = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(TR1, E1, TR2, E2, TR3, E3),
+)
 
-NU1=0.3
+NU1 = 0.3
 
-NU2=0.33
+NU2 = 0.33
 
-NU3=0.35
+NU3 = 0.35
 
-NU_F=DEFI_FONCTION(  NOM_PARA='TEMP',
-                 PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',
-                         VALE=( TR1, NU1,  TR2, NU2,  TR3, NU3, )  )
+NU_F = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(TR1, NU1, TR2, NU2, TR3, NU3),
+)
 
-ALPHA_F=DEFI_FONCTION(  NOM_PARA='TEMP',
-                 PROL_DROITE='LINEAIRE',
-                 PROL_GAUCHE='LINEAIRE',
-                         VALE=( 0.,0.,TR1, 0.,  TR2, 0.,  TR3, 0., )  )
+ALPHA_F = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(0.0, 0.0, TR1, 0.0, TR2, 0.0, TR3, 0.0),
+)
 
-MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,   NU = NU_F,
-                                       ALPHA = ALPHA_F,TEMP_DEF_ALPHA=0.) )
+MATER_F = DEFI_MATERIAU(ELAS_FO=_F(E=E_F, NU=NU_F, ALPHA=ALPHA_F, TEMP_DEF_ALPHA=0.0))
 
 
-CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-                 MAILLAGE=MAILL,
-                 AFFE=_F(  TOUT = 'OUI',
-                           NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
-                              VALE = ( T1,     TINF1,      TSUP1, )))
+CHT1 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAILL,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP_MIL", "TEMP_INF", "TEMP_SUP"), VALE=(T1, TINF1, TSUP1)),
+)
 
-CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-                 MAILLAGE=MAILL,
-                 AFFE=_F(  TOUT = 'OUI',
-                           NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
-                              VALE = ( T2,     TINF2,      TSUP2, )))
+CHT2 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAILL,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP_MIL", "TEMP_INF", "TEMP_SUP"), VALE=(T2, TINF2, TSUP2)),
+)
 
-CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-                 MAILLAGE=MAILL,
-                 AFFE=_F(  TOUT = 'OUI',
-                           NOM_CMP = ('TEMP_MIL', 'TEMP_INF', 'TEMP_SUP',),
-                              VALE = ( T3,     TINF3,      TSUP3, )))
+CHT3 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAILL,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP_MIL", "TEMP_INF", "TEMP_SUP"), VALE=(T3, TINF3, TSUP3)),
+)
 
-LINST=DEFI_LIST_REEL( VALE=( 1.,  2.,  3.,  )  )
+LINST = DEFI_LIST_REEL(VALE=(1.0, 2.0, 3.0))
 
-TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                       NOM_CHAM='TEMP',AFFE=(
-                        _F(  INST = 1.,  CHAM_GD = CHT1),
-                                _F(  INST = 2.,  CHAM_GD = CHT2),
-                                _F(  INST = 3.,  CHAM_GD = CHT3))
-                  )
-TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
-    PREP_VRC2= _F(  MODELE=MODEL, CARA_ELEM=CARELEM, EVOL_THER = TEMP, ),)
-CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MAILL,
-                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F) ,
-                  AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',VALE_REF=0.0), )
+TEMP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(INST=1.0, CHAM_GD=CHT1), _F(INST=2.0, CHAM_GD=CHT2), _F(INST=3.0, CHAM_GD=CHT3)),
+)
+TEMPER1 = CREA_RESU(
+    OPERATION="PREP_VRC2",
+    TYPE_RESU="EVOL_THER",
+    PREP_VRC2=_F(MODELE=MODEL, CARA_ELEM=CARELEM, EVOL_THER=TEMP),
+)
+CHMAT_F = AFFE_MATERIAU(
+    MAILLAGE=MAILL,
+    AFFE=_F(TOUT="OUI", MATER=MATER_F),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=TEMPER1, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=0.0),
+)
 
-CHG1=AFFE_CHAR_MECA(  MODELE=MODEL,
-                         DDL_IMPO=(
-              _F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.),
-                       _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'A',                 DRX = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'GRNO_OC',  DX = 0.,  DRY = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'C',                 DRY = 0.,  DRZ = 0.),
-                       _F( GROUP_NO = 'O',        DX = 0.,  DY = 0.,
-                                          DRX = 0.,  DRY = 0.,  DRZ = 0.)),
-               FORCE_COQUE=_F(  TOUT = 'OUI', PRES = P) )
+CHG1 = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(
+        _F(GROUP_NO="GRNO_ABC", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="GRNO_OA", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="A", DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="GRNO_OC", DX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="C", DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="O", DX=0.0, DY=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+    FORCE_COQUE=_F(TOUT="OUI", PRES=P),
+)
 
-U2=MECA_STATIQUE(      MODELE=MODEL,
-                   CHAM_MATER=CHMAT_F,     CARA_ELEM=CARELEM,
-                    LIST_INST=LINST,
-                        EXCIT=_F(   CHARGE = CHG1)        )
+U2 = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=CHMAT_F, CARA_ELEM=CARELEM, LIST_INST=LINST, EXCIT=_F(CHARGE=CHG1)
+)
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-D1=E1*T*T*T / ( 12. * ( 1. - NU1*NU1 ) )
+D1 = E1 * T * T * T / (12.0 * (1.0 - NU1 * NU1))
 
-PH1=( 16. * T * T ) / ( 5. * R * R * ( 1. - NU1 ) )
+PH1 = (16.0 * T * T) / (5.0 * R * R * (1.0 - NU1))
 
-D2=E2*T*T*T / ( 12. * ( 1. - NU2*NU2 ) )
+D2 = E2 * T * T * T / (12.0 * (1.0 - NU2 * NU2))
 
-PH2=( 16. * T * T )/( 5. * R * R * ( 1. - NU2 ) )
+PH2 = (16.0 * T * T) / (5.0 * R * R * (1.0 - NU2))
 
-D3=E3*T*T*T / ( 12. * ( 1. - NU3*NU3 ) )
+D3 = E3 * T * T * T / (12.0 * (1.0 - NU3 * NU3))
 
-PH3=( 16. * T * T ) /( 5. * R * R * ( 1. - NU3 ) )
+PH3 = (16.0 * T * T) / (5.0 * R * R * (1.0 - NU3))
 
-V1=((-1.*P*(R**4))/(64.*D1))*((((5.+NU1)/(1.+NU1)))+PH1)
+V1 = ((-1.0 * P * (R**4)) / (64.0 * D1)) * ((((5.0 + NU1) / (1.0 + NU1))) + PH1)
 
-V2=( ( -1. * P * ( R ** 4 ))/(64.*D2))*((((5.+NU2)/( 1. + NU2 ) ) ) + PH2 )
+V2 = ((-1.0 * P * (R**4)) / (64.0 * D2)) * ((((5.0 + NU2) / (1.0 + NU2))) + PH2)
 
-V3=( ( -1. * P * (R**4))/(64.*D3))*((((5. + NU3 ) / ( 1. + NU3 ) ) ) + PH3 )
+V3 = ((-1.0 * P * (R**4)) / (64.0 * D3)) * ((((5.0 + NU3) / (1.0 + NU3))) + PH3)
 
-DE1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=1 )
+DE1 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=U2, NOM_CHAM="DEPL", NUME_ORDRE=1
+)
 
-DE2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=2 )
+DE2 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=U2, NOM_CHAM="DEPL", NUME_ORDRE=2
+)
 
-DE3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=3 )
+DE3 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=U2, NOM_CHAM="DEPL", NUME_ORDRE=3
+)
 
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='O',
-                      CRITERE='RELATIF',
-                      REFERENCE='NON_DEFINI',
-                      NOM_CMP='DZ',
-                      PRECISION=2.E-3,
-                      CHAM_GD=DE1,
-                      VALE_CALC=-702.283401679,
-                      VALE_REFE=-703.42499999999961,),
-                   _F(GROUP_NO='O',
-                      CRITERE='RELATIF',
-                      REFERENCE='NON_DEFINI',
-                      NOM_CMP='DZ',
-                      PRECISION=2.E-3,
-                      CHAM_GD=DE2,
-                      VALE_CALC=-614.970586976,
-                      VALE_REFE=-615.96477272727259,),
-                   _F(GROUP_NO='O',
-                      CRITERE='RELATIF',
-                      REFERENCE='NON_DEFINI',
-                      NOM_CMP='DZ',
-                      PRECISION=2.E-3,
-                      CHAM_GD=DE3,
-                      VALE_CALC=-549.224762735,
-                      VALE_REFE=-550.10937499999989,),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="O",
+            CRITERE="RELATIF",
+            REFERENCE="NON_DEFINI",
+            NOM_CMP="DZ",
+            PRECISION=2.0e-3,
+            CHAM_GD=DE1,
+            VALE_CALC=-702.283401679,
+            VALE_REFE=-703.42499999999961,
+        ),
+        _F(
+            GROUP_NO="O",
+            CRITERE="RELATIF",
+            REFERENCE="NON_DEFINI",
+            NOM_CMP="DZ",
+            PRECISION=2.0e-3,
+            CHAM_GD=DE2,
+            VALE_CALC=-614.970586976,
+            VALE_REFE=-615.96477272727259,
+        ),
+        _F(
+            GROUP_NO="O",
+            CRITERE="RELATIF",
+            REFERENCE="NON_DEFINI",
+            NOM_CMP="DZ",
+            PRECISION=2.0e-3,
+            CHAM_GD=DE3,
+            VALE_CALC=-549.224762735,
+            VALE_REFE=-550.10937499999989,
+        ),
+    )
+)
 
-FIN( )
+FIN()
 #

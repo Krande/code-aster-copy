@@ -21,127 +21,81 @@
 #                DRUCKER-PRAGER A ECROUISSAGE NEGATIF
 #                LINEAIRE POUR UN CONFINEMENT DE 2 MPA  (3D_HM)
 # ======================================================================
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-VISCOLIQ = DEFI_CONSTANTE( VALE=1.E-3)
+VISCOLIQ = DEFI_CONSTANTE(VALE=1.0e-3)
 
-DVISCOL  = DEFI_CONSTANTE( VALE=0.)
+DVISCOL = DEFI_CONSTANTE(VALE=0.0)
 
-KINT     = DEFI_CONSTANTE( VALE=1.E-18)
-#***********************************************************************
+KINT = DEFI_CONSTANTE(VALE=1.0e-18)
+# ***********************************************************************
 #    MAILLAGE + MODELE
-#***********************************************************************
+# ***********************************************************************
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT='MED')
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
 
-MODELE   = AFFE_MODELE(  MAILLAGE =    MAILLAGE,
-                         AFFE     =_F( TOUT         = 'OUI',
-                                       PHENOMENE    = 'MECANIQUE',
-                                       MODELISATION = '3D_HM',
-                                     )
-                      )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HM")
+)
 
-MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
-                          MAILLAGE     = MAILLAGE,
-                          ORIE_PEAU = _F( GROUP_MA_PEAU =
-                        ( 'HAUT',
-            'DEVANT',
-            'DROITE'))
-                        )
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE, MAILLAGE=MAILLAGE, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "DEVANT", "DROITE"))
+)
 
-MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
-                          MAILLAGE     = MAILLAGE,
-                          CREA_GROUP_MA=(_F(NOM='ROCHE',
-                                            TOUT='OUI')),
-                          CREA_GROUP_NO=(_F(NOM='ROCHES',
-                                            CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE')))
+MAILLAGE = DEFI_GROUP(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    CREA_GROUP_MA=(_F(NOM="ROCHE", TOUT="OUI")),
+    CREA_GROUP_NO=(_F(NOM="ROCHES", CRIT_NOEUD="SOMMET", GROUP_MA="ROCHE")),
+)
 
-SOL      = DEFI_MATERIAU( ELAS     = _F( E            = 5800.E6,
-                                         RHO          = 2500.,
-                                         NU           = 0.3,
-                                         ALPHA        = 1.E-5),
+SOL = DEFI_MATERIAU(
+    ELAS=_F(E=5800.0e6, RHO=2500.0, NU=0.3, ALPHA=1.0e-5),
+    DRUCK_PRAGER=_F(ECROUISSAGE="LINEAIRE", ALPHA=0.33, P_ULTM=0.01, SY=2.57e6, H=-2.00e8),
+    COMP_THM="LIQU_SATU",
+    THM_INIT=_F(PRE1=1.0, PORO=0.14),
+    THM_DIFFU=_F(RHO=2400.0, BIOT_COEF=1.0, PERM_IN=KINT, PESA_X=0.0, PESA_Y=0.0, PESA_Z=0.0),
+    THM_LIQU=_F(RHO=1000.0, UN_SUR_K=0.0, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL),
+)
 
-                          DRUCK_PRAGER  = _F( ECROUISSAGE  = 'LINEAIRE',
-                                         ALPHA        =    0.33   ,
-                                         P_ULTM       =    0.01   ,
-                                         SY           =    2.57E6 ,
-                                         H            =  - 2.00E8 ),
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=SOL))
 
-                          COMP_THM  = 'LIQU_SATU',
+PR_LATE = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("DEVANT", "DROITE"), PRES=1.0))
 
-                          THM_INIT  = _F( PRE1        = 1.0,
-                                          PORO        = 0.14),
+PR_V = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA="HAUT", PRES=1.0))
 
-                          THM_DIFFU = _F( RHO         = 2400.,
-                                          BIOT_COEF   = 1.,
-                                          PERM_IN     = KINT,
-                                          PESA_X      = 0.,
-                                          PESA_Y      = 0.,
-                                          PESA_Z      = 0.),
+DEP_SYM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    FACE_IMPO=(
+        _F(GROUP_MA="BAS", DZ=0.0),
+        _F(GROUP_MA="DERRIERE", DX=0.0),
+        _F(GROUP_MA="GAUCHE", DY=0.0),
+    ),
+)
 
-                          THM_LIQU  = _F( RHO         = 1000.,
-                                          UN_SUR_K    = 0.0,
-                                          VISC        = VISCOLIQ,
-                                          D_VISC_TEMP = DVISCOL,
-                                         ),
-                           )
+P0 = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="ROCHES", PRE1=0.0))
 
-CHMAT    = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
-                          AFFE     = _F( TOUT  = 'OUI',
-                           MATER = SOL)
-                        )
+EVOL_HYD = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 1.0, 2.0e6))
 
-PR_LATE  = AFFE_CHAR_MECA( MODELE   = MODELE,
-                           PRES_REP = _F( GROUP_MA = ( 'DEVANT','DROITE'),
-                                          PRES     = 1.,
-                                        )
-                          )
+TEMPS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-PR_V     = AFFE_CHAR_MECA( MODELE   = MODELE,
-                           PRES_REP = _F( GROUP_MA = 'HAUT',
-                     PRES     = 1.,
-                                        )
-                         )
+U1 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    SOLVEUR=_F(METHODE="MUMPS"),
+    EXCIT=(
+        _F(CHARGE=PR_LATE, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=PR_V, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=DEP_SYM),
+        _F(CHARGE=P0),
+    ),
+    COMPORTEMENT=_F(RELATION="KIT_HM", RELATION_KIT=("DRUCK_PRAGER", "LIQU_SATU", "HYDR_UTIL")),
+    INCREMENT=_F(LIST_INST=TEMPS1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-7),
+)
 
-DEP_SYM  = AFFE_CHAR_MECA( MODELE    = MODELE,
-                           FACE_IMPO = (
-                                        _F( GROUP_MA = 'BAS',      DZ = 0.),
-                                        _F( GROUP_MA = 'DERRIERE', DX = 0.),
-                                        _F( GROUP_MA = 'GAUCHE',   DY = 0.))
-                          )
-
-P0       = AFFE_CHAR_MECA( MODELE   = MODELE,
-                           DDL_IMPO = _F(GROUP_NO='ROCHES', PRE1 = 0.)
-                         )
-
-EVOL_HYD = DEFI_FONCTION(  NOM_PARA    = 'INST',
-                           PROL_DROITE = 'CONSTANT',
-                           VALE        = ( 0.0,  0.0,
-                                           1.0,  2.E6)
-                       )
-
-TEMPS1   = DEFI_LIST_REEL( DEBUT      = 0.,
-                           INTERVALLE = _F( JUSQU_A = 1., NOMBRE = 1)
-                         )
-
-U1       = STAT_NON_LINE( MODELE     = MODELE, CHAM_MATER = CHMAT,
-       SOLVEUR=_F(METHODE='MUMPS',   ),
-       EXCIT      = ( _F( CHARGE    = PR_LATE, FONC_MULT = EVOL_HYD),
-                      _F( CHARGE    = PR_V, FONC_MULT = EVOL_HYD),
-                      _F( CHARGE = DEP_SYM),
-                      _F( CHARGE = P0)),
-       COMPORTEMENT = _F( RELATION     = 'KIT_HM',
-                                          RELATION_KIT = ('DRUCK_PRAGER',
-                       'LIQU_SATU',
-                                                          'HYDR_UTIL'),
-                                         ),
-                         INCREMENT  = _F( LIST_INST = TEMPS1),
-                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-7)
-                        )
-
-U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
+U1 = CALC_CHAMP(reuse=U1, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U1)
 
 
 ############################################################################
@@ -153,397 +107,417 @@ U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESUL
 #                         )
 ############################################################################
 
-TEMPS2 = DEFI_LIST_REEL( DEBUT = 1.,
-                         INTERVALLE = (
-                                       _F( JUSQU_A = 1.004 , NOMBRE = 1,),
-                                       _F( JUSQU_A = 1.16  , NOMBRE = 1,),
-                                       _F( JUSQU_A = 1.34  , NOMBRE = 1,),
-                                       _F( JUSQU_A = 1.6   , NOMBRE = 1,),
-                                       _F( JUSQU_A = 2.    , NOMBRE = 1,),
-                                       )
-                        )
+TEMPS2 = DEFI_LIST_REEL(
+    DEBUT=1.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.004, NOMBRE=1),
+        _F(JUSQU_A=1.16, NOMBRE=1),
+        _F(JUSQU_A=1.34, NOMBRE=1),
+        _F(JUSQU_A=1.6, NOMBRE=1),
+        _F(JUSQU_A=2.0, NOMBRE=1),
+    ),
+)
 
-DEP_V    = AFFE_CHAR_MECA( MODELE    = MODELE,
-                           FACE_IMPO = _F( GROUP_MA = 'HAUT', DZ = 1.)
-                         )
+DEP_V = AFFE_CHAR_MECA(MODELE=MODELE, FACE_IMPO=_F(GROUP_MA="HAUT", DZ=1.0))
 
-EVOL_DEV = DEFI_FONCTION( NOM_PARA    = 'INST',
-                          PROL_DROITE = 'LINEAIRE',
-                          PROL_GAUCHE = 'CONSTANT',
-                          VALE=( 1.0,    0.00,
-                                 2.0,   -0.15)
-                       )
+EVOL_DEV = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="LINEAIRE", PROL_GAUCHE="CONSTANT", VALE=(1.0, 0.00, 2.0, -0.15)
+)
 
-#***********************************************************************
+# ***********************************************************************
 #    CALCUL DE LA SOLUTION
-#***********************************************************************
+# ***********************************************************************
 
 
+U2 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    #      On utilise le solveur PETSC + GMRES + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
+    #      (voir issue22110, issue21962 et issue24287).
+    #      Ne pas utiliser FGMRES
+    SOLVEUR=_F(
+        METHODE="PETSC", ALGORITHME="GMRES", PCENT_PIVOT=50.0, NMAX_ITER=20, RESI_RELA=1.0e-10
+    ),
+    EXCIT=(
+        _F(CHARGE=DEP_SYM),
+        _F(CHARGE=PR_LATE, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=DEP_V, FONC_MULT=EVOL_DEV),
+    ),
+    COMPORTEMENT=_F(RELATION="KIT_HM", RELATION_KIT=("DRUCK_PRAGER", "LIQU_SATU", "HYDR_UTIL")),
+    ETAT_INIT=_F(EVOL_NOLI=U1, NUME_ORDRE=1),
+    INCREMENT=_F(LIST_INST=TEMPS2),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-7, ITER_GLOB_MAXI=30),
+    MESURE=_F(TABLE="OUI"),
+)
+
+U2 = CALC_CHAMP(reuse=U2, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U2)
 
 
-
-
-U2 = STAT_NON_LINE(  MODELE     = MODELE, CHAM_MATER = CHMAT,
-
-#      On utilise le solveur PETSC + GMRES + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
-#      (voir issue22110, issue21962 et issue24287).
-#      Ne pas utiliser FGMRES
-       SOLVEUR=_F(METHODE='PETSC', ALGORITHME='GMRES', PCENT_PIVOT=50., NMAX_ITER=20,RESI_RELA=1.e-10),
-
-       EXCIT      = (
-          _F( CHARGE    = DEP_SYM),
-          _F( CHARGE    = PR_LATE, FONC_MULT = EVOL_HYD),
-          _F( CHARGE    = DEP_V, FONC_MULT = EVOL_DEV)),
-       COMPORTEMENT  = _F( RELATION     = 'KIT_HM',
-                           RELATION_KIT = ('DRUCK_PRAGER', 'LIQU_SATU', 'HYDR_UTIL')),
-       ETAT_INIT  = _F( EVOL_NOLI  = U1,
-                        NUME_ORDRE = 1),
-       INCREMENT  = _F( LIST_INST  = TEMPS2),
-       NEWTON     = _F( MATRICE    = 'TANGENTE', REAC_ITER  = 1),
-       CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-7, ITER_GLOB_MAXI = 30),
-       MESURE     = _F(TABLE='OUI'),
-                        )
-
-U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
-
-
-U2       = CALC_CHAMP( reuse    = U2,
-                    RESULTAT = U2,
-                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
-                  )
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE="SIGM_NOEU", VARI_INTERNE="VARI_NOEU")
 #
-#-------------------------
+# -------------------------
 #    TEST_TABLE DES NB DE FACTORISATIONS
-#-------------------------
+# -------------------------
 
-STATIS=RECU_TABLE(CO=U2,NOM_TABLE='STAT',)
+STATIS = RECU_TABLE(CO=U2, NOM_TABLE="STAT")
 IMPR_TABLE(TABLE=STATIS, UNITE=6)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.004,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.004),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=0,
-           VALE_CALC_I=0,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.16,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=0,
+    VALE_CALC_I=0,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.16),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.34,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.34),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.6,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.6),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=0,
-           VALE_CALC_I=0,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.,),
-           )
-
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=0,
+    VALE_CALC_I=0,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=2.0),
+)
 
 
 #
-#-------------------------
+# -------------------------
 #    TEST_RESU AU POINT A
-#-------------------------
+# -------------------------
 
-TEST_RESU(RESU=(_F(INST=1.004,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-969230.769928,
-                   ),
-                _F(INST=1.1599999999999999,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-45228240.1842,
-                   ),
-                _F(INST=1.3400000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-95912228.8354,
-                   ),
-                _F(INST=1.6000000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-169122434.648,
-                   ),
-                _F(INST=1.004,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-4061538.46202,
-                   ),
-                _F(INST=1.1599999999999999,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-112908774.187,
-                   ),
-                _F(INST=1.3400000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-238484029.657,
-                   ),
-                _F(INST=1.6000000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-419870509.728,
-                   ),
-                _F(INST=1.004,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=1030769.22998,
-                   ),
-                _F(INST=1.1599999999999999,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=-43228240.1834,
-                   ),
-                _F(INST=1.3400000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=-93912228.8356,
-                   ),
-                _F(INST=1.6000000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=-167122434.649,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.004,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-969230.769928,
+        ),
+        _F(
+            INST=1.1599999999999999,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-45228240.1842,
+        ),
+        _F(
+            INST=1.3400000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-95912228.8354,
+        ),
+        _F(
+            INST=1.6000000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-169122434.648,
+        ),
+        _F(
+            INST=1.004,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-4061538.46202,
+        ),
+        _F(
+            INST=1.1599999999999999,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-112908774.187,
+        ),
+        _F(
+            INST=1.3400000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-238484029.657,
+        ),
+        _F(
+            INST=1.6000000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-419870509.728,
+        ),
+        _F(
+            INST=1.004,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=1030769.22998,
+        ),
+        _F(
+            INST=1.1599999999999999,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=-43228240.1834,
+        ),
+        _F(
+            INST=1.3400000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=-93912228.8356,
+        ),
+        _F(
+            INST=1.6000000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=-167122434.649,
+        ),
+    )
+)
 
 
 # Meme resolution mais avec le preconditionneur LDLT_DP
 
-U2 = STAT_NON_LINE(  MODELE     = MODELE, CHAM_MATER = CHMAT,
+U2 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    #      On utilise le solveur PETSC + GMRES + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
+    #      (voir issue22110, issue21962, issue24287 et issue30816).
+    #      Ne pas utiliser FGMRES
+    SOLVEUR=_F(
+        METHODE="PETSC",
+        ALGORITHME="GMRES",
+        PCENT_PIVOT=50.0,
+        NMAX_ITER=20,
+        RESI_RELA=1.0e-10,
+        PRE_COND="LDLT_DP",
+    ),
+    EXCIT=(
+        _F(CHARGE=DEP_SYM),
+        _F(CHARGE=PR_LATE, FONC_MULT=EVOL_HYD),
+        _F(CHARGE=DEP_V, FONC_MULT=EVOL_DEV),
+    ),
+    COMPORTEMENT=_F(RELATION="KIT_HM", RELATION_KIT=("DRUCK_PRAGER", "LIQU_SATU", "HYDR_UTIL")),
+    ETAT_INIT=_F(EVOL_NOLI=U1, NUME_ORDRE=1),
+    INCREMENT=_F(LIST_INST=TEMPS2),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-7, ITER_GLOB_MAXI=30),
+    MESURE=_F(TABLE="OUI"),
+)
 
-#      On utilise le solveur PETSC + GMRES + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
-#      (voir issue22110, issue21962, issue24287 et issue30816).
-#      Ne pas utiliser FGMRES
-       SOLVEUR=_F(METHODE='PETSC', ALGORITHME='GMRES', PCENT_PIVOT=50., NMAX_ITER=20,RESI_RELA=1.e-10, PRE_COND='LDLT_DP',),
-
-       EXCIT      = (
-          _F( CHARGE    = DEP_SYM),
-          _F( CHARGE    = PR_LATE, FONC_MULT = EVOL_HYD),
-          _F( CHARGE    = DEP_V, FONC_MULT = EVOL_DEV)),
-       COMPORTEMENT  = _F( RELATION     = 'KIT_HM',
-                           RELATION_KIT = ('DRUCK_PRAGER', 'LIQU_SATU', 'HYDR_UTIL')),
-       ETAT_INIT  = _F( EVOL_NOLI  = U1,
-                        NUME_ORDRE = 1),
-       INCREMENT  = _F( LIST_INST  = TEMPS2),
-       NEWTON     = _F( MATRICE    = 'TANGENTE', REAC_ITER  = 1),
-       CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-7, ITER_GLOB_MAXI = 30),
-       MESURE     = _F(TABLE='OUI'),
-                        )
-
-U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
+U2 = CALC_CHAMP(reuse=U2, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U2)
 
 
-U2       = CALC_CHAMP( reuse    = U2,
-                    RESULTAT = U2,
-                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
-                  )
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE="SIGM_NOEU", VARI_INTERNE="VARI_NOEU")
 
 #
-#-------------------------
+# -------------------------
 #    TEST_TABLE DES NB DE FACTORISATIONS
-#-------------------------
+# -------------------------
 
-STATIS=RECU_TABLE(CO=U2,NOM_TABLE='STAT',)
+STATIS = RECU_TABLE(CO=U2, NOM_TABLE="STAT")
 IMPR_TABLE(TABLE=STATIS, UNITE=6)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.004,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.004),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=0,
-           VALE_CALC_I=0,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.16,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=0,
+    VALE_CALC_I=0,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.16),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.34,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.34),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=1,
-           VALE_CALC_I=1,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.6,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=1,
+    VALE_CALC_I=1,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.6),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE_I=0,
-           VALE_CALC_I=0,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='Count_Factor',
-           TABLE=STATIS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE_I=0,
+    VALE_CALC_I=0,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="Count_Factor",
+    TABLE=STATIS,
+    FILTRE=_F(NOM_PARA="INST", VALE=2.0),
+)
 
 
 #
-#-------------------------
+# -------------------------
 #    TEST_RESU AU POINT A
-#-------------------------
+# -------------------------
 
-TEST_RESU(RESU=(_F(INST=1.004,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-969230.769928,
-                   ),
-                _F(INST=1.1599999999999999,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-45228240.1842,
-                   ),
-                _F(INST=1.3400000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-95912228.8354,
-                   ),
-                _F(INST=1.6000000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-169122434.648,
-                   ),
-                _F(INST=1.004,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-4061538.46202,
-                   ),
-                _F(INST=1.1599999999999999,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-112908774.187,
-                   ),
-                _F(INST=1.3400000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-238484029.657,
-                   ),
-                _F(INST=1.6000000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIGM_NOEU',
-                   GROUP_NO='NO8',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=-419870509.728,
-                   ),
-                _F(INST=1.004,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=1030769.22998,
-                   ),
-                _F(INST=1.1599999999999999,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=-43228240.1834,
-                   ),
-                _F(INST=1.3400000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=-93912228.8356,
-                   ),
-                _F(INST=1.6000000000000001,
-                   RESULTAT=U2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO8',
-                   NOM_CMP='PRE1',
-                   VALE_CALC=-167122434.649,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.004,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-969230.769928,
+        ),
+        _F(
+            INST=1.1599999999999999,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-45228240.1842,
+        ),
+        _F(
+            INST=1.3400000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-95912228.8354,
+        ),
+        _F(
+            INST=1.6000000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIXX",
+            VALE_CALC=-169122434.648,
+        ),
+        _F(
+            INST=1.004,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-4061538.46202,
+        ),
+        _F(
+            INST=1.1599999999999999,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-112908774.187,
+        ),
+        _F(
+            INST=1.3400000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-238484029.657,
+        ),
+        _F(
+            INST=1.6000000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="NO8",
+            NOM_CMP="SIZZ",
+            VALE_CALC=-419870509.728,
+        ),
+        _F(
+            INST=1.004,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=1030769.22998,
+        ),
+        _F(
+            INST=1.1599999999999999,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=-43228240.1834,
+        ),
+        _F(
+            INST=1.3400000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=-93912228.8356,
+        ),
+        _F(
+            INST=1.6000000000000001,
+            RESULTAT=U2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO8",
+            NOM_CMP="PRE1",
+            VALE_CALC=-167122434.649,
+        ),
+    )
+)
 
 FIN()

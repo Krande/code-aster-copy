@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ from . import *
 
 class sd_liste_rela(AsBase):
     nomj = SDNom(fin=19)
-    RLBE = AsVR(SDNom(debut=19), )
-    RLSU = AsVI(SDNom(debut=19), )
-    RLTC = AsVK8(SDNom(debut=19), lonmax=1, )
-    RLNO = AsVK8(SDNom(debut=19), )
-    RLCO = AsVR(SDNom(debut=19), )
-    RLNT = AsVI(SDNom(debut=19), )
-    RLPO = AsVI(SDNom(debut=19), )
-    RLNR = AsVI(SDNom(debut=19), lonmax=1, )
-    RLTV = AsVK8(SDNom(debut=19), lonmax=1, )
-    RLDD = AsVK8(SDNom(debut=19), )
+    RLBE = AsVR(SDNom(debut=19))
+    RLSU = AsVI(SDNom(debut=19))
+    RLTC = AsVK8(SDNom(debut=19), lonmax=1)
+    RLNO = AsVK8(SDNom(debut=19))
+    RLCO = AsVR(SDNom(debut=19))
+    RLNT = AsVI(SDNom(debut=19))
+    RLPO = AsVI(SDNom(debut=19))
+    RLNR = AsVI(SDNom(debut=19), lonmax=1)
+    RLTV = AsVK8(SDNom(debut=19), lonmax=1)
+    RLDD = AsVK8(SDNom(debut=19))

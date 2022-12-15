@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,49 +20,41 @@
 # person_in_charge: samuel.geniaut at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
-
-
-PXFGEOM  = OutputParameter(phys=PHY.GEOM_R, type='ELGA')
+PXFGEOM = OutputParameter(phys=PHY.GEOM_R, type="ELGA")
 
 
 XFEM_XPG = Option(
-    para_in=(
-           PCNSETO,
-        SP.PGEOMER,
-           PHEAVTO,
-           PLONCHA,
-           PPINTTO,
-           PPMILTO,
-    ),
-    para_out=(
-           PXFGEOM,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
-    ),
+    para_in=(PCNSETO, SP.PGEOMER, PHEAVTO, PLONCHA, PPINTTO, PPMILTO),
+    para_out=(PXFGEOM,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.LXFEM, "OUI"))),),
     comment=""" CALCUL DES COORDONNEES DES POINTS DE GAUSS DES FAMILLES XFEM_... """,
 )

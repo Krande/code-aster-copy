@@ -26,6 +26,7 @@ from libaster import ContactNew, FrictionNew
 
 from ..Utilities import injector
 
+
 @injector(ContactNew)
 class ExtendedContactNew:
     cata_sdj = "SD.sd_char_cont.sd_char_cont"
@@ -35,6 +36,7 @@ class ExtendedContactNew:
         ContactNew object during unpickling.
         """
         return (self.getName(), self.getModel())
+
 
 @injector(FrictionNew)
 class ExtendedFrictionNew:

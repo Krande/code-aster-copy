@@ -20,105 +20,105 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment="""  Informations for non-linear comportment """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE, comment=""" ORIENTATION DES REPERES LOCAUX DES POUTRES ET TUYAUX """
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE,
-comment=""" ORIENTATION DES REPERES LOCAUX DES POUTRES ET TUYAUX """)
+PCONTMR = InputParameter(phys=PHY.SIEF_R, comment=""" VECTEUR DES CONTRAINTES POUR T- """)
 
 
-PCONTMR  = InputParameter(phys=PHY.SIEF_R,
-comment=""" VECTEUR DES CONTRAINTES POUR T- """)
+PVARIMR = InputParameter(phys=PHY.VARI_R, comment=""" VARIABLES INTERNES POUR T- """)
 
 
-PVARIMR  = InputParameter(phys=PHY.VARI_R,
-comment=""" VARIABLES INTERNES POUR T- """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" VARIABLES DE COMMANDES  POUR T+ """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment=""" VARIABLES DE COMMANDES  POUR T+ """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I,
+    comment=""" NOMBRE DE SOUS-POINTS (EPAISSEUR COQUES/TUYAUX) ET DE FIBRES (PMF) """,
+)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I,
-comment=""" NOMBRE DE SOUS-POINTS (EPAISSEUR COQUES/TUYAUX) ET DE FIBRES (PMF) """)
+PPINTTO = InputParameter(
+    phys=PHY.N132_R, comment=""" XFEM - COORD. POINTS SOMMETS DES SOUS-ELEMENTS """
+)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R,
-comment=""" XFEM - COORD. POINTS SOMMETS DES SOUS-ELEMENTS """)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PHEAVTO = InputParameter(
+    phys=PHY.N512_I, comment=""" XFEM - VALEUR FONCTION HEAVISIDE SUR LES SOUS-ELEMENTS """
+)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I,
-comment=""" XFEM - VALEUR FONCTION HEAVISIDE SUR LES SOUS-ELEMENTS """)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PBASLOR = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM - BASE LOCALE AU FOND DE FISSURE """)
 
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM - BASE LOCALE AU FOND DE FISSURE """)
+PLSN = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
+PLST = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM - VALEURS DE LA LEVEL SET TANGENTE """)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM - VALEURS DE LA LEVEL SET TANGENTE """)
+PSTANO = InputParameter(phys=PHY.N120_I, comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
+PFISNO = InputParameter(
+    phys=PHY.NEUT_I, comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """
+)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I,
-comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PCONTPR = OutputParameter(
+    phys=PHY.SIEF_R, type="ELGA", comment=""" VECTEUR DES CONTRAINTES POUR T+ """
+)
 
 
-PCONTPR  = OutputParameter(phys=PHY.SIEF_R, type='ELGA',
-comment=""" VECTEUR DES CONTRAINTES POUR T+ """)
+PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA", comment=""" VARIABLES INTERNES POUR T+ """)
 
 
-PVARIPR  = OutputParameter(phys=PHY.VARI_R, type='ELGA',
-comment=""" VARIABLES INTERNES POUR T+ """)
-
-
-PCACO3D  = OutputParameter(phys=PHY.CACO3D, type='ELEM',
-comment=""" COQUE_3D (ROTATION FICTIVE AUTOUR DE LA NORMALE) """)
+PCACO3D = OutputParameter(
+    phys=PHY.CACO3D, type="ELEM", comment=""" COQUE_3D (ROTATION FICTIVE AUTOUR DE LA NORMALE) """
+)
 
 # For HHO
-PCHHOGT  = InputParameter(phys=PHY.N1920R,
-comment=""" HHO - matrice du gradient local""")
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
 
-PCHHOST  = InputParameter(phys=PHY.N2448R,
-comment=""" HHO - matrice de la stabilisation locale""")
+PCHHOST = InputParameter(phys=PHY.N2448R, comment=""" HHO - matrice de la stabilisation locale""")
 
 
 FULL_MECA = Option(
     para_in=(
         SP.PACCKM1,
         SP.PACCPLU,
-           PBASLOR,
+        PBASLOR,
         SP.PCACABL,
         SP.PCACOQU,
         SP.PCADISK,
@@ -127,65 +127,65 @@ FULL_MECA = Option(
         SP.PCAGNPO,
         SP.PCAARPO,
         SP.PCAMASS,
-           PCAORIE,
+        PCAORIE,
         SP.PCARCRI,
         SP.PCINFDI,
-           PCNSETO,
-           PCOMPOR,
+        PCNSETO,
+        PCOMPOR,
         SP.PMULCOM,
-           PCONTMR,
+        PCONTMR,
         SP.PDDEPLA,
         SP.PDEPENT,
         SP.PDEPKM1,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PFIBRES,
-           PFISNO,
+        PFISNO,
         SP.PGEOMER,
         SP.PHEAVNO,
-           PHEAVTO,
-           PHEA_NO,
+        PHEAVTO,
+        PHEA_NO,
         SP.PINSTMR,
         SP.PINSTPR,
         SP.PITERAT,
-           PLONCHA,
-           PLSN,
-           PLST,
+        PLONCHA,
+        PLSN,
+        PLST,
         SP.PMATERC,
-           PNBSP_I,
-           PPINTTO,
-           PPMILTO,
+        PNBSP_I,
+        PPINTTO,
+        PPMILTO,
         SP.PROMK,
         SP.PROMKM1,
         SP.PSTADYN,
-           PSTANO,
+        PSTANO,
         SP.PSTRXMP,
         SP.PSTRXMR,
         SP.PVARCMR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
         SP.PVARIMP,
-           PVARIMR,
+        PVARIMR,
         SP.PVITENT,
         SP.PVITKM1,
         SP.PVITPLU,
-           PCHHOGT,
-           PCHHOST,
+        PCHHOGT,
+        PCHHOST,
     ),
     para_out=(
-           PCACO3D,
+        PCACO3D,
         SP.PCODRET,
-           PCONTPR,
+        PCONTPR,
         SP.PMATUNS,
         SP.PMATUUR,
         SP.PSTRXPR,
-           PVARIPR,
+        PVARIPR,
         SP.PVECTUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.ABSO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.FSI ,'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.FSI, "OUI"))),
     ),
     comment=""" MATRICE TANGENTE COHERENTE POUR MECANIQUE NON-LINEAIRE """,
 )

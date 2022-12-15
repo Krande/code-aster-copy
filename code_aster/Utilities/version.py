@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,8 @@ except ImportError:
 
 def get_version():
     """Return the version number as string"""
-    return '.'.join(str(i) for i in version_info.version)
+    return ".".join(str(i) for i in version_info.version)
+
 
 def get_version_name():
     """Return the 'name' of the version.
@@ -36,11 +37,12 @@ def get_version_name():
     - stable-updates or unstable
     """
     sta = version_info.version[-1] == 0
-    expl = version_info.branch.startswith('v')
+    expl = version_info.branch.startswith("v")
     if expl:
-        return 'stable' if sta else 'stable-updates'
+        return "stable" if sta else "stable-updates"
     else:
-        return 'testing' if sta else 'unstable'
+        return "testing" if sta else "unstable"
+
 
 def get_version_desc():
     """Return the description of the version"""
@@ -48,9 +50,9 @@ def get_version_desc():
     # can not be global because of the translation system (``_`` not
     # yet installed by gettext)
     names = {
-        'stable' : _("EXPLOITATION (stable)"),
-        'stable-updates' : _("CORRECTIVE AVANT STABILISATION (stable-updates)"),
-        'testing' : _("DÉVELOPPEMENT STABILISÉE (testing)"),
-        'unstable' : _("DÉVELOPPEMENT (unstable)"),
+        "stable": _("EXPLOITATION (stable)"),
+        "stable-updates": _("CORRECTIVE AVANT STABILISATION (stable-updates)"),
+        "testing": _("DÉVELOPPEMENT STABILISÉE (testing)"),
+        "unstable": _("DÉVELOPPEMENT (unstable)"),
     }
     return names.get(name, _("DÉVELOPPEMENT (%s)") % name)

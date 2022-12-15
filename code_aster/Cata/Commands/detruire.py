@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,20 +35,19 @@ def compat_syntax(keywords):
     to_del = []
     kwlist = force_list(keywords.pop("CONCEPT", []))
     if kwlist:
-        deprecate("DETRUIRE/CONCEPT/NOM", case=3,
-                  help="Just use DETRUIRE/NOM=... instead.")
+        deprecate("DETRUIRE/CONCEPT/NOM", case=3, help="Just use DETRUIRE/NOM=... instead.")
         for occ in kwlist:
             to_del.extend(force_list(occ["NOM"]))
         keywords["NOM"] = to_del
     if keywords.pop("OBJET", None):
-        deprecate("DETRUIRE/OBJET", case=2,
-                  help="Use DETRUIRE/NOM=... instead.")
+        deprecate("DETRUIRE/OBJET", case=2, help="Use DETRUIRE/NOM=... instead.")
+
 
 DETRUIRE = MACRO(
     nom="DETRUIRE",
     op=None,
     compat_syntax=compat_syntax,
     fr=tr("Détruit des concepts utilisateurs du contexte courant"),
-    NOM=SIMP(statut='o', typ=assd, validators=NoRepeat(), max='**'),
-    INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),
+    NOM=SIMP(statut="o", typ=assd, validators=NoRepeat(), max="**"),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2), defaut=1),
 )

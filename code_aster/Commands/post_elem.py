@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class PostElem(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "POST_ELEM"
 
     def create_result(self, keywords):

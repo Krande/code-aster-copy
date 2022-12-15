@@ -24,146 +24,130 @@ import os.path as osp
 import code_aster
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # -- Parametres du calcul
 
-E = 20000.
+E = 20000.0
 nu = 0.3
-h = 2.
-h_m = -1.*h
-R = 50.
+h = 2.0
+h_m = -1.0 * h
+R = 50.0
 
 # -- Lecture du maillage et affectation du modele, des chargements
 
-MA = LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MA = MODI_MAILLAGE(reuse=MA,
-                   MAILLAGE=MA,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('CONT1', 'CONT2',),),)
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT1", "CONT2")))
 
-MAT = DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=nu,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
-                      AFFE=_F(GROUP_MA=('SPH_HAU', 'SPH_BAS',),
-                              MATER=MAT,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA=("SPH_HAU", "SPH_BAS"), MATER=MAT))
 
-MO = AFFE_MODELE(MAILLAGE=MA,
-                 AFFE=_F(GROUP_MA=('SPH_HAU', 'SPH_BAS',),
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='AXIS',),)
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA=("SPH_HAU", "SPH_BAS"), PHENOMENE="MECANIQUE", MODELISATION="AXIS"),
+)
 
-CL = AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_MA='A1A2',
-                                 DX=0,),
-                              _F(GROUP_MA='A2B2',
-                                 DY=h_m,),
-                              _F(GROUP_MA='A1B1',
-                                 DY=h,),),)
+CL = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_MA="A1A2", DX=0), _F(GROUP_MA="A2B2", DY=h_m), _F(GROUP_MA="A1B1", DY=h)),
+)
 
-RAMPE = DEFI_FONCTION(NOM_PARA='INST', VALE=(0, 0,
-                                             1, 1,
-                                             ),)
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
 
 # -- Definition du contact
 
-CONT = DEFI_CONT(MODELE=MO,
-                 ZONE=_F(APPARIEMENT='MORTAR',
-                         GROUP_MA_MAIT='CONT2',
-                         GROUP_MA_ESCL='CONT1',
-                         COEF_CONT=2000.,
-                         ALGO_CONT="LAGRANGIEN",),)
+CONT = DEFI_CONT(
+    MODELE=MO,
+    ZONE=_F(
+        APPARIEMENT="MORTAR",
+        GROUP_MA_MAIT="CONT2",
+        GROUP_MA_ESCL="CONT1",
+        COEF_CONT=2000.0,
+        ALGO_CONT="LAGRANGIEN",
+    ),
+)
 
-TPS = DEFI_LIST_REEL(DEBUT=0,
-                     INTERVALLE=_F(JUSQU_A=1,
-                                   NOMBRE=4,),)
+TPS = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=4))
 
-STNL = MECA_NON_LINE(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     EXCIT=_F(CHARGE=CL,
-                              FONC_MULT=RAMPE,),
-                     CONTACT=_F(DEFINITION=CONT,
-                                ALGO_RESO_GEOM="NEWTON"),
-                     COMPORTEMENT=_F(RELATION='ELAS',),
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-10,
-                                    ITER_GLOB_MAXI=10,),
-                     INCREMENT=_F(LIST_INST=TPS,),
-                     SOLVEUR=_F(),)
+STNL = MECA_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CL, FONC_MULT=RAMPE),
+    CONTACT=_F(DEFINITION=CONT, ALGO_RESO_GEOM="NEWTON"),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10),
+    INCREMENT=_F(LIST_INST=TPS),
+    SOLVEUR=_F(),
+)
 
 # -- Post-traitement
 
-STNL = CALC_CHAMP(reuse=STNL, RESULTAT=STNL, CRITERES=(
-    'SIEQ_ELGA', 'SIEQ_ELNO'), CONTRAINTE=('SIEF_ELNO'))
+STNL = CALC_CHAMP(
+    reuse=STNL, RESULTAT=STNL, CRITERES=("SIEQ_ELGA", "SIEQ_ELNO"), CONTRAINTE=("SIEF_ELNO")
+)
 
 
-STNL = CALC_CHAMP(reuse=STNL,
-                  RESULTAT=STNL,
-                  CONTRAINTE='SIEF_NOEU', CRITERES='SIEQ_NOEU')
+STNL = CALC_CHAMP(reuse=STNL, RESULTAT=STNL, CONTRAINTE="SIEF_NOEU", CRITERES="SIEQ_NOEU")
 
 # -- Groupe de noeuds oriente depuis le centre de la zone de contact esclave
 
-MA = DEFI_GROUP(reuse=MA,
-                MAILLAGE=MA,
-                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
-                                 NOM='CONT_ord',
-                                 GROUP_MA='CONT1',
-                                 GROUP_NO_ORIG='C1',),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=_F(OPTION="NOEUD_ORDO", NOM="CONT_ord", GROUP_MA="CONT1", GROUP_NO_ORIG="C1"),
+)
 
 # -- Pression de contact extraite sur le bord oriente
 
-SIYY_abs = POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                   INTITULE='SIYY en fonction de ABSC_CURV',
-                                   RESULTAT=STNL,
-                                   NOM_CHAM='SIEF_NOEU',
-                                   INST=1.0,
-                                   GROUP_NO='CONT_ord',
-                                   NOM_CMP='SIYY',),)
+SIYY_abs = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="SIYY en fonction de ABSC_CURV",
+        RESULTAT=STNL,
+        NOM_CHAM="SIEF_NOEU",
+        INST=1.0,
+        GROUP_NO="CONT_ord",
+        NOM_CMP="SIYY",
+    )
+)
 
-IMPR_TABLE(TABLE=SIYY_abs,)
+IMPR_TABLE(TABLE=SIYY_abs)
 
 # -- Trace de la pression et de la solution analytique
 
-SIYY_f = RECU_FONCTION(TABLE=SIYY_abs,
-                       PARA_X='ABSC_CURV',
-                       PARA_Y='SIYY',)
+SIYY_f = RECU_FONCTION(TABLE=SIYY_abs, PARA_X="ABSC_CURV", PARA_Y="SIYY")
 
-V_ABSC = DEFI_LIST_REEL(DEBUT=0,
-                        INTERVALLE=_F(JUSQU_A=10,
-                                      NOMBRE=100,),)
+V_ABSC = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=10, NOMBRE=100))
 
 
 # -- Pression de hertz et demi-largeur de contact
 
-p0 = -E/(pi*(1.0-nu*nu))*sqrt(2.0*2.0*h/R)
-a = sqrt(R*h)
+p0 = -E / (pi * (1.0 - nu * nu)) * sqrt(2.0 * 2.0 * h / R)
+a = sqrt(R * h)
 
-PRES = FORMULE(VALE='p0*sqrt(1.0-(x/a)*(x/a))',
-               p0=p0,
-               a=a,
-               NOM_PARA='x',)
+PRES = FORMULE(VALE="p0*sqrt(1.0-(x/a)*(x/a))", p0=p0, a=a, NOM_PARA="x")
 
-PRES_sol = CALC_FONC_INTERP(FONCTION=PRES,
-                            LIST_PARA=V_ABSC,
-                            NOM_PARA='x',)
+PRES_sol = CALC_FONC_INTERP(FONCTION=PRES, LIST_PARA=V_ABSC, NOM_PARA="x")
 
 # -- Impressions des resultats
 
-IMPR_FONCTION(FORMAT='XMGRACE',
-              PILOTE='',
-              UNITE=29,
-              COURBE=(_F(FONCTION=SIYY_f,),
-                      _F(FONCTION=PRES_sol,),),
-              TITRE='Pression de Hertz',
-              BORNE_X=(0, 20,),
-              BORNE_Y=(-3000, 0,),
-              GRILLE_X=1,
-              GRILLE_Y=500,
-              LEGENDE_X='Abscisse curviligne (mm)',
-              LEGENDE_Y='Pression (Mpa)',)
+IMPR_FONCTION(
+    FORMAT="XMGRACE",
+    PILOTE="",
+    UNITE=29,
+    COURBE=(_F(FONCTION=SIYY_f), _F(FONCTION=PRES_sol)),
+    TITRE="Pression de Hertz",
+    BORNE_X=(0, 20),
+    BORNE_Y=(-3000, 0),
+    GRILLE_X=1,
+    GRILLE_Y=500,
+    LEGENDE_X="Abscisse curviligne (mm)",
+    LEGENDE_Y="Pression (Mpa)",
+)
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=STNL,),)
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=STNL))
 
 # os.system("cp fort.29 /home/C00976/tmp/fort29.grace")
 

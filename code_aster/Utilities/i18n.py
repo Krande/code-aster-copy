@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ def get_language():
     lang = locale.getdefaultlocale()[0]
     if type(lang) is str:
         # support en-US or en_US
-        lang = lang.split('_')[0].split('-')[0]
+        lang = lang.split("_")[0].split("-")[0]
     else:
         lang = ""
     return lang
@@ -49,12 +49,14 @@ def get_language():
 class Language(metaclass=Singleton):
 
     """Simple class to switch between languages."""
-    _singleton_id = 'i18n.Language'
+
+    _singleton_id = "i18n.Language"
 
     def __init__(self):
         """Initialization"""
-        self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
-            osp.join(os.environ.get('ASTER_ROOT', ''), 'share', 'locale')
+        self.localedir = os.environ.get("ASTER_LOCALEDIR") or osp.join(
+            os.environ.get("ASTER_ROOT", ""), "share", "locale"
+        )
         self.domain = None
         self.current_lang = self.default_lang = get_language()
         self._translate = None
@@ -70,7 +72,7 @@ class Language(metaclass=Singleton):
 
     def set_domain(self):
         """set the current domain"""
-        self.domain = 'aster_messages'
+        self.domain = "aster_messages"
 
     def get_current_settings(self):
         """Return the current language."""
@@ -88,18 +90,17 @@ class Language(metaclass=Singleton):
             lang.append(low)
             # add variants lang* (ex. en-UK, en-US...)
             try:
-                variants = [i for i in os.listdir(self.localedir) \
-                            if i.startswith(low)]
+                variants = [i for i in os.listdir(self.localedir) if i.startswith(low)]
             except OSError:
                 variants = []
             lang.extend(variants)
-        tr = gettext.translation(
-            self.domain, self.localedir, languages=lang, fallback=True)
+        tr = gettext.translation(self.domain, self.localedir, languages=lang, fallback=True)
         self._translate = tr.gettext
         return tr
 
 
 localization = Language()
+
 
 def translate(source_text):
     """Get translation text for source text.

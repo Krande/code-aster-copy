@@ -21,49 +21,51 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MECA_NON_LINE = MACRO(nom="MECA_NON_LINE",
-                      op=OPS(
-                          "code_aster.MacroCommands.meca_non_line_ops.meca_non_line_ops"),
-                      sd_prod=evol_noli,
-                      fr=tr("Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"
-                            " d'une structure en non linéaire"),
-                      reentrant='f:RESULTAT',
-                      reuse=SIMP(statut='c', typ=CO),
-                      # -------------------------------------------------------------------
-                      RESULTAT=SIMP(statut='f', typ=evol_noli,
-                                    fr=tr("Objet qui sera enrichi des nouveaux instants calculés")),
-                      # -------------------------------------------------------------------
-                      MODELE=SIMP(statut='o', typ=modele_sdaster),
-                      # -------------------------------------------------------------------
-                      CHAM_MATER=SIMP(statut='o', typ=cham_mater),
-                      # -------------------------------------------------------------------
-                      CARA_ELEM=SIMP(statut='f', typ=cara_elem),
-                      # -------------------------------------------------------------------
-                      EXCIT=FACT(statut='f', max='**',
-                                 CHARGE=SIMP(statut='o', typ=(
-                                     char_meca, char_cine_meca)),
-                                 FONC_MULT=SIMP(statut='f', typ=(
-                                     fonction_sdaster, nappe_sdaster, formule)),
-                                 TYPE_CHARGE=SIMP(statut='f', typ='TXM', defaut="FIXE_CSTE",
-                                                  into=("FIXE_CSTE",)),
-                                 ),
-                      # -------------------------------------------------------------------
-                      CONTACT=C_CONTACT(),
-                      # -------------------------------------------------------------------
-                      COMPORTEMENT=C_COMPORTEMENT('STAT_NON_LINE'),
-                      # -------------------------------------------------------------------
-                      ETAT_INIT=C_ETAT_INIT('STAT_NON_LINE', 'f'),
-                      # -------------------------------------------------------------------
-                      INCREMENT=C_INCREMENT('MECANIQUE'),
-                      # -------------------------------------------------------------------
-                      METHODE=SIMP(statut='f', typ='TXM', defaut="NEWTON", into=("NEWTON",)),
-                      b_meth_newton=BLOC(condition="""equal_to("METHODE", 'NEWTON')""",
-                                         NEWTON=C_NEWTON("MECA_NON_LINE"),
-                                         ),
-                      # -------------------------------------------------------------------
-                      CONVERGENCE=C_CONVERGENCE(),
-                      # -------------------------------------------------------------------
-                      SOLVEUR=C_SOLVEUR('STAT_NON_LINE'),
-                      # -------------------------------------------------------------------
-                      INFO=SIMP(statut='f', typ='I', into=(1, 2)),
-                      )
+MECA_NON_LINE = MACRO(
+    nom="MECA_NON_LINE",
+    op=OPS("code_aster.MacroCommands.meca_non_line_ops.meca_non_line_ops"),
+    sd_prod=evol_noli,
+    fr=tr(
+        "Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"
+        " d'une structure en non linéaire"
+    ),
+    reentrant="f:RESULTAT",
+    reuse=SIMP(statut="c", typ=CO),
+    # -------------------------------------------------------------------
+    RESULTAT=SIMP(
+        statut="f", typ=evol_noli, fr=tr("Objet qui sera enrichi des nouveaux instants calculés")
+    ),
+    # -------------------------------------------------------------------
+    MODELE=SIMP(statut="o", typ=modele_sdaster),
+    # -------------------------------------------------------------------
+    CHAM_MATER=SIMP(statut="o", typ=cham_mater),
+    # -------------------------------------------------------------------
+    CARA_ELEM=SIMP(statut="f", typ=cara_elem),
+    # -------------------------------------------------------------------
+    EXCIT=FACT(
+        statut="f",
+        max="**",
+        CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
+        FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+        TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+    ),
+    # -------------------------------------------------------------------
+    CONTACT=C_CONTACT(),
+    # -------------------------------------------------------------------
+    COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"),
+    # -------------------------------------------------------------------
+    ETAT_INIT=C_ETAT_INIT("STAT_NON_LINE", "f"),
+    # -------------------------------------------------------------------
+    INCREMENT=C_INCREMENT("MECANIQUE"),
+    # -------------------------------------------------------------------
+    METHODE=SIMP(statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON",)),
+    b_meth_newton=BLOC(
+        condition="""equal_to("METHODE", 'NEWTON')""", NEWTON=C_NEWTON("MECA_NON_LINE")
+    ),
+    # -------------------------------------------------------------------
+    CONVERGENCE=C_CONVERGENCE(),
+    # -------------------------------------------------------------------
+    SOLVEUR=C_SOLVEUR("STAT_NON_LINE"),
+    # -------------------------------------------------------------------
+    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+)

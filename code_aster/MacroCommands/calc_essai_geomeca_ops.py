@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,38 +22,45 @@ from .GeoMeca.geomec_essais import *
 from .GeoMeca.geomec_utils import *
 
 
-def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
-                           # ESSAI_XXX,
-                           **args):
+def calc_essai_geomeca_ops(
+    self,
+    MATER,
+    COMPORTEMENT,
+    CONVERGENCE,
+    INFO,
+    # ESSAI_XXX,
+    **args
+):
     """
     Objet : Programme principal CALC_ESSAI_GEOMECA
     """
     args = _F(args)
     COMPORTEMENT = ListFact(COMPORTEMENT)
     CONVERGENCE = ListFact(CONVERGENCE)
-    ESSAI_TRIA_DR_M_D = ListFact(args.get('ESSAI_TRIA_DR_M_D'))
-    ESSAI_TRIA_ND_M_D = ListFact(args.get('ESSAI_TRIA_ND_M_D'))
-    ESSAI_CISA_DR_C_D = ListFact(args.get('ESSAI_CISA_DR_C_D'))
-    ESSAI_TRIA_ND_C_F = ListFact(args.get('ESSAI_TRIA_ND_C_F'))
-    ESSAI_TRIA_ND_C_D = ListFact(args.get('ESSAI_TRIA_ND_C_D'))
-    ESSAI_TRIA_DR_C_D = ListFact(args.get('ESSAI_TRIA_DR_C_D'))
-    ESSAI_OEDO_DR_C_F = ListFact(args.get('ESSAI_OEDO_DR_C_F'))
-    ESSAI_ISOT_DR_C_F = ListFact(args.get('ESSAI_ISOT_DR_C_F'))
+    ESSAI_TRIA_DR_M_D = ListFact(args.get("ESSAI_TRIA_DR_M_D"))
+    ESSAI_TRIA_ND_M_D = ListFact(args.get("ESSAI_TRIA_ND_M_D"))
+    ESSAI_CISA_DR_C_D = ListFact(args.get("ESSAI_CISA_DR_C_D"))
+    ESSAI_TRIA_ND_C_F = ListFact(args.get("ESSAI_TRIA_ND_C_F"))
+    ESSAI_TRIA_ND_C_D = ListFact(args.get("ESSAI_TRIA_ND_C_D"))
+    ESSAI_TRIA_DR_C_D = ListFact(args.get("ESSAI_TRIA_DR_C_D"))
+    ESSAI_OEDO_DR_C_F = ListFact(args.get("ESSAI_OEDO_DR_C_F"))
+    ESSAI_ISOT_DR_C_F = ListFact(args.get("ESSAI_ISOT_DR_C_F"))
     str_num = None
-
 
     # Verifs supplementaires des valeurs renseignees pr les MCF ESSAI_*
     # -------------------------------------------------------------
-    verif_essais(COMPORTEMENT,
-                 ESSAI_TRIA_DR_M_D,
-                 ESSAI_TRIA_ND_M_D,
-                 ESSAI_CISA_DR_C_D,
-                 ESSAI_TRIA_ND_C_F,
-                 ESSAI_TRIA_ND_C_D,
-                 ESSAI_TRIA_DR_C_D,
-                 ESSAI_OEDO_DR_C_F,
-                 ESSAI_ISOT_DR_C_F,)
-                 # ESSAI_XXX,)
+    verif_essais(
+        COMPORTEMENT,
+        ESSAI_TRIA_DR_M_D,
+        ESSAI_TRIA_ND_M_D,
+        ESSAI_CISA_DR_C_D,
+        ESSAI_TRIA_ND_C_F,
+        ESSAI_TRIA_ND_C_D,
+        ESSAI_TRIA_DR_C_D,
+        ESSAI_OEDO_DR_C_F,
+        ESSAI_ISOT_DR_C_F,
+    )
+    # ESSAI_XXX,)
 
     # ---
     # Essai TRIA_DR_M_D
@@ -64,11 +71,10 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_DR_M_D.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_TRIA_DR_M_D(self, str_num, DicoEssai,
-                              MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_TRIA_DR_M_D(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai TRIA_ND_M_D
     # ---
@@ -78,11 +84,10 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_M_D.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_TRIA_ND_M_D(self, str_num, DicoEssai,
-                              MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_TRIA_ND_M_D(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai CISA_DR_C_D
     # ---
@@ -92,11 +97,10 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         for iocc, DicoEssai in enumerate(ESSAI_CISA_DR_C_D.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_CISA_DR_C_D(self, str_num, DicoEssai,
-                              MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_CISA_DR_C_D(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai TRIA_ND_C_F
     # ---
@@ -104,13 +108,12 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         nb_essai = len(ESSAI_TRIA_ND_C_F.List_F())
 
-        for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_F .List_F()):
+        for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_F.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_TRIA_ND_C_F (self, str_num, DicoEssai,
-                               MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_TRIA_ND_C_F(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai TRIA_ND_C_D
     # ---
@@ -118,13 +121,12 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         nb_essai = len(ESSAI_TRIA_ND_C_D.List_F())
 
-        for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_D .List_F()):
+        for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_D.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_TRIA_ND_C_D (self, str_num, DicoEssai,
-                               MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_TRIA_ND_C_D(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai TRIA_DR_C_D
     # ---
@@ -134,11 +136,10 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_DR_C_D.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai,)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_TRIA_DR_C_D(self, str_num, DicoEssai,
-                              MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_TRIA_DR_C_D(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai OEDO_DR_C_F
     # ---
@@ -148,11 +149,10 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         for iocc, DicoEssai in enumerate(ESSAI_OEDO_DR_C_F.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai,)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_OEDO_DR_C_F(self, str_num, DicoEssai,
-                              MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_OEDO_DR_C_F(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai ISOT_DR_C_F
     # ---
@@ -162,11 +162,10 @@ def calc_essai_geomeca_ops(self, MATER, COMPORTEMENT, CONVERGENCE, INFO,
 
         for iocc, DicoEssai in enumerate(ESSAI_ISOT_DR_C_F.List_F()):
 
-            if nb_essai>1:
-               str_num = int_2_str(iocc+1, nb_essai,)
+            if nb_essai > 1:
+                str_num = int_2_str(iocc + 1, nb_essai)
 
-            essai_ISOT_DR_C_F(self, str_num, DicoEssai,
-                              MATER, COMPORTEMENT, CONVERGENCE, INFO)
+            essai_ISOT_DR_C_F(self, str_num, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO)
     # ---
     # Essai 'XXX'
     # ---

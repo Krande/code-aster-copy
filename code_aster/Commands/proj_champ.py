@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class FieldProjector(ExecuteCommand):
     """Command that allows to project fields."""
+
     command_name = "PROJ_CHAMP"
 
     def create_result(self, keywords):

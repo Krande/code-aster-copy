@@ -23,24 +23,15 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PDEPL_R = OutputParameter(phys=PHY.DEPL_R, type="ELNO")
 
+PCCONT_R = OutputParameter(phys=PHY.CONT_R, type="ELNO")
 
-PDEPL_R  = OutputParameter(phys=PHY.DEPL_R, type='ELNO')
-
-PCCONT_R  = OutputParameter(phys=PHY.CONT_R, type='ELNO')
-
-PCFROT_R  = OutputParameter(phys=PHY.CONT_R, type='ELNO')
+PCFROT_R = OutputParameter(phys=PHY.CONT_R, type="ELNO")
 
 
 EXISTE_DDL = Option(
-    para_in=(
-    ),
-    para_out=(
-           PDEPL_R,
-           PCCONT_R,
-           PCFROT_R,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),)),
-    ),
+    para_in=(),
+    para_out=(PDEPL_R, PCCONT_R, PCFROT_R),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"),)),),
 )

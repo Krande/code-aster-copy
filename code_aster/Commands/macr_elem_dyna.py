@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class DynamicMacroElementDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.DynamicMacroElement`"""
+
     command_name = "MACR_ELEM_DYNA"
 
     def create_result(self, keywords):
@@ -69,5 +70,6 @@ class DynamicMacroElementDefinition(ExecuteCommand):
         matrImpeAmor = keywords.get("MATR_IMPE_AMOR")
         if matrImpeAmor is not None:
             self._result.setImpedanceDampingMatrix(matrImpeAmor)
+
 
 MACR_ELEM_DYNA = DynamicMacroElementDefinition.run

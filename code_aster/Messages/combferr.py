@@ -23,8 +23,8 @@
 from ..Utilities import _
 
 cata_msg = {
-
-4 : _("""
+    4: _(
+        """
  La liste NUME_ORDRE contient au moins une valeur répétée.
 """
     ),
@@ -41,9 +41,10 @@ Un NOM_CAS indiqué n'appartient pas aux cas disponibles
     7: _(
         """
 Un NUME_ORDRE indiqué n'appartient pas aux cas disponibles
-"""),
-
-9 : _("""
+"""
+    ),
+    9: _(
+        """
 Le cas '%(k1)s' existe déjà. Il sera écrasé.
 """
     ),
@@ -63,6 +64,6 @@ Type de combinaison :
     13: _(
         """
 Noms des cas présents :
-    %(k1)s"""),
-
+    %(k1)s"""
+    ),
 }

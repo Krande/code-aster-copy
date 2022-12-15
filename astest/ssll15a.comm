@@ -23,317 +23,330 @@
 #
 # LOADING CASE : LCAS_1 /  (Operating weight)
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 #
 # MESH AND FE-MODEL DEFINITIONS ##########
-MESH     = LIRE_MAILLAGE(FORMAT   = 'MED',);
-MESH     = MODI_MAILLAGE(reuse    = MESH,
-                         MAILLAGE = MESH,
-                         ECHELLE  = 1.E-3,
-                         #ABSC_CURV = _F(NOEUD_ORIG = 'PT_5',
-                         #               GROUP_MA   = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100'])
-                         );
+MESH = LIRE_MAILLAGE(FORMAT="MED")
+MESH = MODI_MAILLAGE(
+    reuse=MESH,
+    MAILLAGE=MESH,
+    ECHELLE=1.0e-3,
+    # ABSC_CURV = _F(NOEUD_ORIG = 'PT_5',
+    #               GROUP_MA   = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100'])
+)
 #
 #
-MODEL    = AFFE_MODELE  (MAILLAGE = MESH,
-                         AFFE     = (
-                                     _F(GROUP_MA   = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100'],
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'POU_D_T',),
-                                     _F(GROUP_MA     = 'ANCH_PT_5',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_10',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_20',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_30',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_40',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_50',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_60',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_70',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_80',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_90',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'RSTN_PT_100',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_T',),
-                                     _F(GROUP_MA     = 'ANCH_PT_5_ROT',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_TR',),
-                                    ),);
+MODEL = AFFE_MODELE(
+    MAILLAGE=MESH,
+    AFFE=(
+        _F(
+            GROUP_MA=[
+                "BEAM_PT_10",
+                "BEAM_PT_20",
+                "BEAM_PT_30",
+                "BEAM_PT_40",
+                "BEAM_PT_50",
+                "BEAM_PT_60",
+                "BEAM_PT_70",
+                "BEAM_PT_80",
+                "BEAM_PT_90",
+                "BEAM_PT_100",
+            ],
+            PHENOMENE="MECANIQUE",
+            MODELISATION="POU_D_T",
+        ),
+        _F(GROUP_MA="ANCH_PT_5", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_10", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_20", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_30", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_40", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_50", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_60", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_70", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_80", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_90", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="RSTN_PT_100", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA="ANCH_PT_5_ROT", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
 #
 # MATERIAL DEFINITIONS ##########
 #
 # MAT_1 : Mat 2 (Elastic)
-MAT_1    = DEFI_MATERIAU(ELAS = _F(E          = 210*1.E9,
-                                   NU         = 0.3,
-                                   RHO        = 520.0,
-                                   ),);
+MAT_1 = DEFI_MATERIAU(ELAS=_F(E=210 * 1.0e9, NU=0.3, RHO=520.0))
 #
 # ASSIGNING MATERIAL TO ELEMENTS ##########
-MATER_F  = AFFE_MATERIAU(MAILLAGE  = MESH,
-                         AFFE      = (
-                                      _F(GROUP_MA = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100'],
-                                         MATER    = MAT_1,),
-                                     ),
-                         );
+MATER_F = AFFE_MATERIAU(
+    MAILLAGE=MESH,
+    AFFE=(
+        _F(
+            GROUP_MA=[
+                "BEAM_PT_10",
+                "BEAM_PT_20",
+                "BEAM_PT_30",
+                "BEAM_PT_40",
+                "BEAM_PT_50",
+                "BEAM_PT_60",
+                "BEAM_PT_70",
+                "BEAM_PT_80",
+                "BEAM_PT_90",
+                "BEAM_PT_100",
+            ],
+            MATER=MAT_1,
+        ),
+    ),
+)
 #
 # FINITE ELEMENTS CARACTERISTICS (DIAMETER, THICKNESS) ##########
-FE_CAR   = AFFE_CARA_ELEM(MODELE      = MODEL,
-                          POUTRE      = (
-                                         _F(GROUP_MA = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100'],
-                                            SECTION  = 'GENERALE',
-                                            CARA     = ('A','IY','IZ','JX','AY','AZ'),
-                                            VALE     = (1000.0*1.E-6,
-                                                        100000000000.0*1.E-12,
-                                                        100000000.0*1.E-12,
-                                                        200000000000.0*1.E-12,
-                                                        1e-20,
-                                                        1e-20,
-                                                        ),),
-                                        ),
-                          COQUE       = (
-                                        ),
-                          ORIENTATION = (
-                                        ),
-                          DISCRET     = (
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'ANCH_PT_5',
-                                             VALE     = (0.0, 208740.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'ANCH_PT_5',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_10',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_10',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_20',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_20',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_30',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_30',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_40',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_40',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_50',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_50',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_60',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_60',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_70',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_70',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_80',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_80',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_90',
-                                             VALE     = (0.0, 417480.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_90',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'K_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_100',
-                                             VALE     = (0.0, 208740.0, 0.0,),),
-                                          _F(CARA     = 'M_T_D_L',
-                                             GROUP_MA = 'RSTN_PT_100',
-                                             VALE     = 0.0,),
-                                          _F(CARA     = 'M_TR_D_L',
-                                             GROUP_MA = 'ANCH_PT_5_ROT',
-                                             VALE     = (0.0, 0.0, 0.0, 0.0),),
-                                          _F(CARA     = 'K_TR_D_L',
-                                             GROUP_MA = 'ANCH_PT_5_ROT',
-                                             VALE     = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0001),),
-                                        ),
-                           );
+FE_CAR = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=(
+        _F(
+            GROUP_MA=[
+                "BEAM_PT_10",
+                "BEAM_PT_20",
+                "BEAM_PT_30",
+                "BEAM_PT_40",
+                "BEAM_PT_50",
+                "BEAM_PT_60",
+                "BEAM_PT_70",
+                "BEAM_PT_80",
+                "BEAM_PT_90",
+                "BEAM_PT_100",
+            ],
+            SECTION="GENERALE",
+            CARA=("A", "IY", "IZ", "JX", "AY", "AZ"),
+            VALE=(
+                1000.0 * 1.0e-6,
+                100000000000.0 * 1.0e-12,
+                100000000.0 * 1.0e-12,
+                200000000000.0 * 1.0e-12,
+                1e-20,
+                1e-20,
+            ),
+        ),
+    ),
+    COQUE=(),
+    ORIENTATION=(),
+    DISCRET=(
+        _F(CARA="K_T_D_L", GROUP_MA="ANCH_PT_5", VALE=(0.0, 208740.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="ANCH_PT_5", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_10", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_10", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_20", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_20", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_30", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_30", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_40", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_40", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_50", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_50", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_60", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_60", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_70", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_70", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_80", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_80", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_90", VALE=(0.0, 417480.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_90", VALE=0.0),
+        _F(CARA="K_T_D_L", GROUP_MA="RSTN_PT_100", VALE=(0.0, 208740.0, 0.0)),
+        _F(CARA="M_T_D_L", GROUP_MA="RSTN_PT_100", VALE=0.0),
+        _F(CARA="M_TR_D_L", GROUP_MA="ANCH_PT_5_ROT", VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA="ANCH_PT_5_ROT", VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0001)),
+    ),
+)
 #
 # MECHANICAL BOUNDARY CONDITIONS ##########
-BOUND_C  = AFFE_CHAR_MECA(MODELE   = MODEL,
-                          DDL_IMPO = (
-                                      _F(GROUP_NO = 'ANCH_PT_5_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_10_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_20_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_30_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_40_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_50_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_60_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_70_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_80_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_90_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'RSTN_PT_100_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = 'ANCH_PT_5_ROT_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                     ),
-                          DDL_POUTRE = (
-                                       ),
-                          LIAISON_DDL = (
-                                        ),
-                          # THERMAL STRATIFICATION (FANNY)
-                          PRE_EPSI = (
-                                       #KY and KZ are exchanged because of the local axis chosen (local Y and local Z are axchanged)
-                                      ),
-                          );
+BOUND_C = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(
+        _F(GROUP_NO="ANCH_PT_5_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_10_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_20_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_30_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_40_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_50_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_60_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_70_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_80_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_90_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="RSTN_PT_100_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="ANCH_PT_5_ROT_BASE", LIAISON="ENCASTRE"),
+    ),
+    DDL_POUTRE=(),
+    LIAISON_DDL=(),
+    # THERMAL STRATIFICATION (FANNY)
+    PRE_EPSI=(
+        # KY and KZ are exchanged because of the local axis chosen (local Y and local Z are axchanged)
+    ),
+)
 #
 # EXTERNAL FORCES AND CHARGING #############
 #
 # FOR_12 : FORC_PT_5_CA_1 (Force)
-FOR_12    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "FORC_PT_5_CA_1",
-                                            FX       =  0.0,
-                                            FY       =  -10000.0,
-                                            FZ       =  0.0),);
+FOR_12 = AFFE_CHAR_MECA(
+    MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="FORC_PT_5_CA_1", FX=0.0, FY=-10000.0, FZ=0.0)
+)
 #
 # FOR_13 : FORC_PT_50_CA_1 (Force)
-FOR_13    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "FORC_PT_50_CA_1",
-                                            FX       =  0.0,
-                                            FY       =  -10000.0,
-                                            FZ       =  0.0),);
+FOR_13 = AFFE_CHAR_MECA(
+    MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="FORC_PT_50_CA_1", FX=0.0, FY=-10000.0, FZ=0.0)
+)
 #
 # FOR_14 : FORC_PT_100_CA_1 (Force)
-FOR_14    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "FORC_PT_100_CA_1",
-                                            FX       =  0.0,
-                                            FY       =  -10000.0,
-                                            FZ       =  0.0),);
+FOR_14 = AFFE_CHAR_MECA(
+    MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="FORC_PT_100_CA_1", FX=0.0, FY=-10000.0, FZ=0.0)
+)
 #
 # DFOR_1 : GRAVITY (Gravity / Constant acceleration)
-DFOR_1   = AFFE_CHAR_MECA(MODELE    = MODEL,
-                          PESANTEUR = _F(GROUP_MA  = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100', 'ANCH_PT_5_ROT'],
-                                         GRAVITE   = 9.81,
-                                         DIRECTION = (0.0, -1.0, 0.0),),);
+DFOR_1 = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    PESANTEUR=_F(
+        GROUP_MA=[
+            "BEAM_PT_10",
+            "BEAM_PT_20",
+            "BEAM_PT_30",
+            "BEAM_PT_40",
+            "BEAM_PT_50",
+            "BEAM_PT_60",
+            "BEAM_PT_70",
+            "BEAM_PT_80",
+            "BEAM_PT_90",
+            "BEAM_PT_100",
+            "ANCH_PT_5_ROT",
+        ],
+        GRAVITE=9.81,
+        DIRECTION=(0.0, -1.0, 0.0),
+    ),
+)
 #
 # LINEAR STATIC SOLVER ####################
-STATIC   = MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATER_F,
-                         CARA_ELEM  = FE_CAR,
-                         EXCIT      = (
-                                       _F(CHARGE    = BOUND_C,),
-                                       _F(CHARGE    = FOR_12),
-                                       _F(CHARGE    = FOR_13),
-                                       _F(CHARGE    = FOR_14),
-                                       # _F(CHARGE    = DFOR_1,),
-                                      ),
-                         SOLVEUR = _F(RESI_RELA=1e-05, NPREC=-1));
+STATIC = MECA_STATIQUE(
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    EXCIT=(
+        _F(CHARGE=BOUND_C),
+        _F(CHARGE=FOR_12),
+        _F(CHARGE=FOR_13),
+        _F(CHARGE=FOR_14),
+        # _F(CHARGE    = DFOR_1,),
+    ),
+    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1),
+)
 #
 # EXTRA FIELD CALCULATIONS FROM THE RESULT AND THE FE-MODEL #########
-elem_groups = ['BEAM_PT_10', 'BEAM_PT_20', 'BEAM_PT_30', 'BEAM_PT_40', 'BEAM_PT_50', 'BEAM_PT_60', 'BEAM_PT_70', 'BEAM_PT_80', 'BEAM_PT_90', 'BEAM_PT_100']
-pts_groups = ['PT_5', 'PT_10', 'PT_20', 'PT_30', 'PT_40', 'PT_50', 'PT_60', 'PT_70', 'PT_80', 'PT_90', 'PT_100', 'ANCH_PT_5', 'RSTN_PT_10', 'RSTN_PT_20', 'RSTN_PT_30', 'RSTN_PT_40', 'RSTN_PT_50', 'RSTN_PT_60', 'RSTN_PT_70', 'RSTN_PT_80', 'RSTN_PT_90', 'RSTN_PT_100', 'FORC_PT_5_CA_1', 'FORC_PT_50_CA_1', 'FORC_PT_100_CA_1', 'ANCH_PT_5_ROT']
-MESH  = DEFI_GROUP(reuse    = MESH,
-                   MAILLAGE = MESH,
-                   CREA_GROUP_NO =  _F(NOM   = 'ALL_PTS',
-                                       UNION = pts_groups))
-STATIC   = CALC_CHAMP(reuse      = STATIC,
-                      RESULTAT   = STATIC,
-                      MODELE     = MODEL,
-                      CHAM_MATER = MATER_F,
-                      CARA_ELEM  = FE_CAR,
-                      GROUP_MA   = elem_groups,
-                      # TOUT       = 'OUI',
-                      CONTRAINTE = ('EFGE_ELNO','EFGE_NOEU'),
-                      FORCE      = ('REAC_NODA', 'FORC_NODA'),
-                      );
+elem_groups = [
+    "BEAM_PT_10",
+    "BEAM_PT_20",
+    "BEAM_PT_30",
+    "BEAM_PT_40",
+    "BEAM_PT_50",
+    "BEAM_PT_60",
+    "BEAM_PT_70",
+    "BEAM_PT_80",
+    "BEAM_PT_90",
+    "BEAM_PT_100",
+]
+pts_groups = [
+    "PT_5",
+    "PT_10",
+    "PT_20",
+    "PT_30",
+    "PT_40",
+    "PT_50",
+    "PT_60",
+    "PT_70",
+    "PT_80",
+    "PT_90",
+    "PT_100",
+    "ANCH_PT_5",
+    "RSTN_PT_10",
+    "RSTN_PT_20",
+    "RSTN_PT_30",
+    "RSTN_PT_40",
+    "RSTN_PT_50",
+    "RSTN_PT_60",
+    "RSTN_PT_70",
+    "RSTN_PT_80",
+    "RSTN_PT_90",
+    "RSTN_PT_100",
+    "FORC_PT_5_CA_1",
+    "FORC_PT_50_CA_1",
+    "FORC_PT_100_CA_1",
+    "ANCH_PT_5_ROT",
+]
+MESH = DEFI_GROUP(reuse=MESH, MAILLAGE=MESH, CREA_GROUP_NO=_F(NOM="ALL_PTS", UNION=pts_groups))
+STATIC = CALC_CHAMP(
+    reuse=STATIC,
+    RESULTAT=STATIC,
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    GROUP_MA=elem_groups,
+    # TOUT       = 'OUI',
+    CONTRAINTE=("EFGE_ELNO", "EFGE_NOEU"),
+    FORCE=("REAC_NODA", "FORC_NODA"),
+)
 # TEST_RESU moment flechissant
-TEST_RESU(RESU=_F(RESULTAT=STATIC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='EFGE_NOEU',
-                  NOM_CMP='MFZ',
-                  GROUP_NO=('PT_50', ),
-                  VALE_CALC=(-5737.806152509056, ),
-                  CRITERE=('RELATIF', ),
-                  REFERENCE='SOURCE_EXTERNE',
-                  VALE_REFE=(-5759, ),
-                  PRECISION=3.680127E-01/100,
-                  VALE_ABS='NON',),
-         );
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=STATIC,
+        NUME_ORDRE=1,
+        NOM_CHAM="EFGE_NOEU",
+        NOM_CMP="MFZ",
+        GROUP_NO=("PT_50",),
+        VALE_CALC=(-5737.806152509056,),
+        CRITERE=("RELATIF",),
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_REFE=(-5759,),
+        PRECISION=3.680127e-01 / 100,
+        VALE_ABS="NON",
+    )
+)
 # TEST_RESU depl
-TEST_RESU(RESU=(
-_F(RESULTAT=STATIC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO=('PT_50', ),
-                  VALE_CALC=(-0.006840123091826789, ),
-                  CRITERE=('RELATIF', ),
-                  REFERENCE='SOURCE_EXTERNE',
-                  VALE_REFE=(-0.006844, ),
-                  #PRECISION=5.664683E-02/100.,
-                  VALE_ABS='NON',),
-_F(RESULTAT=STATIC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO=('PT_5', ),
-                  VALE_CALC=(-0.007836368424989684, ),
-                  CRITERE=('RELATIF', ),
-                  REFERENCE='SOURCE_EXTERNE',
-                  VALE_REFE=(-0.007854, ),
-                  PRECISION=2.244918E-01/100.,
-                  VALE_ABS='NON',),
-_F(RESULTAT=STATIC,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DRZ',
-                  GROUP_NO=('PT_5', ),
-                  VALE_CALC=(0.0006900795073840247 , ),
-                  CRITERE=('RELATIF', ),
-                  REFERENCE='SOURCE_EXTERNE',
-                  VALE_REFE=(0.000706, ),
-                  PRECISION=2.255028E+00/100.,
-                  VALE_ABS='NON',),
-               ),
-         );
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=STATIC,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO=("PT_50",),
+            VALE_CALC=(-0.006840123091826789,),
+            CRITERE=("RELATIF",),
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=(-0.006844,),
+            # PRECISION=5.664683E-02/100.,
+            VALE_ABS="NON",
+        ),
+        _F(
+            RESULTAT=STATIC,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO=("PT_5",),
+            VALE_CALC=(-0.007836368424989684,),
+            CRITERE=("RELATIF",),
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=(-0.007854,),
+            PRECISION=2.244918e-01 / 100.0,
+            VALE_ABS="NON",
+        ),
+        _F(
+            RESULTAT=STATIC,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRZ",
+            GROUP_NO=("PT_5",),
+            VALE_CALC=(0.0006900795073840247,),
+            CRITERE=("RELATIF",),
+            REFERENCE="SOURCE_EXTERNE",
+            VALE_REFE=(0.000706,),
+            PRECISION=2.255028e00 / 100.0,
+            VALE_ABS="NON",
+        ),
+    )
+)
 
-FIN();
+FIN()

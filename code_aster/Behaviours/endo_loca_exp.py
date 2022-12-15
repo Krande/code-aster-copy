@@ -21,22 +21,22 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'ENDO_LOCA_EXP',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Comportement élastique-fragile, à 
+    nom="ENDO_LOCA_EXP",
+    lc_type=("MECANIQUE",),
+    doc="""Comportement élastique-fragile, à 
 endommagement scalaire, seuil exponentiel et
-   non local à gradient d'endommagement - R5.03.25"""              ,
-    num_lc         = 60,
-    nb_vari        = 5,
-    nom_vari       = ('ENDO','INDIENDO','ENDORIGI','ENERELAS','ENERDISS'),
-    mc_mater       = ('ELAS','ENDO_LOCA_EXP'),
-    modelisation   = ('3D','AXIS','D_PLAN'),
-    deformation    = ('PETIT','GDEF_LOG'),
-    algo_inte      = ('SPECIFIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
-    syme_matr_tang = ('No',),
-    exte_vari      = None,
-    deform_ldc     = ('MECANIQUE',),
-    regu_visc      = ('REGU_VISC_ELAS',),
+   non local à gradient d'endommagement - R5.03.25""",
+    num_lc=60,
+    nb_vari=5,
+    nom_vari=("ENDO", "INDIENDO", "ENDORIGI", "ENERELAS", "ENERDISS"),
+    mc_mater=("ELAS", "ENDO_LOCA_EXP"),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "GDEF_LOG"),
+    algo_inte=("SPECIFIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=("COMP_ELAS",),
+    syme_matr_tang=("No",),
+    exte_vari=None,
+    deform_ldc=("MECANIQUE",),
+    regu_visc=("REGU_VISC_ELAS",),
 )

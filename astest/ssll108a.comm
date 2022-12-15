@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,164 +24,157 @@
 #       LE PROBLEME EST TRAITE AVEC MECA_STATIQUE ET STAT_NON_LINE
 ###################################################################
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER", )
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 200000.,   NU = 0.3,
-                                  RHO = 10000.) )
-
-
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-             AFFE=_F(  GROUP_MA = ('GRMA',),    MATER = MATER1)  )
-
-MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-             _F(  GROUP_MA = ('GRMA',),
-                   MODELISATION = '2D_DIS_T',
-                   PHENOMENE = 'MECANIQUE'))
-                   )
-
-CELEM=AFFE_CARA_ELEM(   MODELE=MOD,
-               VERIF=( 'MAILLE', ),
-                DISCRET_2D= _F( GROUP_MA = 'GRMA',
-                                CARA = 'K_T_D_L',
-                                VALE = (1000., 1000.,),)
-                     )
-
-CH=AFFE_CHAR_MECA(
-            MODELE=MOD,
-#
-     DDL_IMPO=_F( GROUP_NO = 'P1',  DX = 0., DY = 0., ),
-#
-     FORCE_NODALE=_F( GROUP_NO = 'P11',  FX = 10.,)
-                                       )
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, RHO=10000.0))
 
 
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA=("GRMA",), MATER=MATER1))
 
-DEP=MECA_STATIQUE(MODELE=MOD, CARA_ELEM=CELEM,
-                               CHAM_MATER=CHMAT,
-                   EXCIT=_F( CHARGE = CH), )
+MOD = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA=("GRMA",), MODELISATION="2D_DIS_T", PHENOMENE="MECANIQUE"))
+)
 
-CALC_CHAMP(reuse=DEP,RESULTAT=DEP,CONTRAINTE=('EFGE_ELNO'))
+CELEM = AFFE_CARA_ELEM(
+    MODELE=MOD,
+    VERIF=("MAILLE",),
+    DISCRET_2D=_F(GROUP_MA="GRMA", CARA="K_T_D_L", VALE=(1000.0, 1000.0)),
+)
 
-
-L_INST=DEFI_LIST_REEL(
-              DEBUT=0.0,INTERVALLE=(
-
-               _F(  JUSQU_A = 1.00, NOMBRE = 1))
-             )
-
-F_CHAR=DEFI_FONCTION(
-                NOM_PARA='INST',
-              PROL_DROITE='CONSTANT',
-                    VALE=(
-               0.,   0.,
-               1.,   1.,
-                         )
-                    )
-DEP2=STAT_NON_LINE(MODELE=MOD,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=CELEM,
-                   EXCIT=_F(CHARGE = CH),
-                   COMPORTEMENT=_F(RELATION = 'ELAS',),
-                   INCREMENT=_F(LIST_INST = L_INST,
-                                NUME_INST_FIN = 1),
-                   NEWTON=_F(   MATRICE = 'TANGENTE',
-                                REAC_ITER = 1),
-                   CONVERGENCE=_F( RESI_GLOB_MAXI = 1.E-1,
-                                   ITER_GLOB_MAXI = 50),
-                   RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3)
-              )
+CH = AFFE_CHAR_MECA(
+    MODELE=MOD,
+    #
+    DDL_IMPO=_F(GROUP_NO="P1", DX=0.0, DY=0.0),
+    #
+    FORCE_NODALE=_F(GROUP_NO="P11", FX=10.0),
+)
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P6',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.050000000000000,
-                   VALE_REFE=0.050000000000000003,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=9.9999999999999995E-08,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P11',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.100000000000000,
-                   VALE_REFE=0.10000000000000001,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=9.9999999999999995E-08,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   VALE_CALC=10.0,
-                   VALE_REFE=10.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='S10',),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   VALE_CALC=10.0,
-                   VALE_REFE=10.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='S5',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P6',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.050000000000000,
-                   VALE_REFE=0.050000000000000003,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=9.9999999999999995E-08,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P11',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.100000000000000,
-                   VALE_REFE=0.10000000000000001,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=9.9999999999999995E-08,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   VALE_CALC=10.0,
-                   VALE_REFE=10.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='S10',),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=DEP,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
-                   VALE_CALC=10.0,
-                   VALE_REFE=10.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='S5',),
-                ),
-          )
+DEP = MECA_STATIQUE(MODELE=MOD, CARA_ELEM=CELEM, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CH))
 
-#---------------------------------------------------------------------
+CALC_CHAMP(reuse=DEP, RESULTAT=DEP, CONTRAINTE=("EFGE_ELNO"))
+
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.00, NOMBRE=1)))
+
+F_CHAR = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 1.0, 1.0))
+DEP2 = STAT_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CELEM,
+    EXCIT=_F(CHARGE=CH),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST, NUME_INST_FIN=1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-1, ITER_GLOB_MAXI=50),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+)
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=DEP2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P6",
+            NOM_CMP="DX",
+            VALE_CALC=0.050000000000000,
+            VALE_REFE=0.050000000000000003,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=9.9999999999999995e-08,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=DEP2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P11",
+            NOM_CMP="DX",
+            VALE_CALC=0.100000000000000,
+            VALE_REFE=0.10000000000000001,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=9.9999999999999995e-08,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            POINT=1,
+            RESULTAT=DEP2,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="N",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="S10",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            POINT=1,
+            RESULTAT=DEP2,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="N",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="S5",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=DEP,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P6",
+            NOM_CMP="DX",
+            VALE_CALC=0.050000000000000,
+            VALE_REFE=0.050000000000000003,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=9.9999999999999995e-08,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=DEP,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P11",
+            NOM_CMP="DX",
+            VALE_CALC=0.100000000000000,
+            VALE_REFE=0.10000000000000001,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=9.9999999999999995e-08,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            POINT=1,
+            RESULTAT=DEP,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="N",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="S10",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            POINT=1,
+            RESULTAT=DEP,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="N",
+            VALE_CALC=10.0,
+            VALE_REFE=10.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="S5",
+        ),
+    )
+)
+
+# ---------------------------------------------------------------------
 FIN()
 #

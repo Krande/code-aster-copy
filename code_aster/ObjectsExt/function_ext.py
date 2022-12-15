@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -185,9 +185,7 @@ class ExtendedFunctionComplex:
         elif arg == "modul":
             ordo = NP.sqrt(NP.array(self.Ordo()) ** 2 + NP.array(self.OrdoImg()) ** 2)
         elif arg == "phase":
-            ordo = (
-                NP.arctan2(NP.array(self.OrdoImg()), NP.array(self.Ordo())) * 180.0 / pi
-            )
+            ordo = NP.arctan2(NP.array(self.OrdoImg()), NP.array(self.Ordo())) * 180.0 / pi
         elif arg == "complex":
             ordo = list(map(complex, self.Ordo(), self.OrdoImg()))
         else:

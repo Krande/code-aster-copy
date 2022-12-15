@@ -30,7 +30,7 @@ from ..Cata.Language.SyntaxObjects import IDS
 from ..Cata.SyntaxUtils import value_is_sequence
 from ..Utilities import is_float, is_int
 
-EMPTY = '--'
+EMPTY = "--"
 
 
 def track_coverage(command, name, keywords):
@@ -43,7 +43,7 @@ def track_coverage(command, name, keywords):
     """
     cover = CodeVisitor(name)
     command.accept(cover, keywords)
-    libaster.affich('CODE', cover.get_text())
+    libaster.affich("CODE", cover.get_text())
 
 
 class CodeVisitor:
@@ -54,6 +54,7 @@ class CodeVisitor:
     Arguments:
         name (str): Command name
     """
+
     fname = "TEST"
 
     def __init__(self, name):
@@ -61,17 +62,16 @@ class CodeVisitor:
         self.cmdname = name
         self.mcfact = EMPTY
         self.mcsimp = None
-        self.value = ''
+        self.value = ""
         self.args = []
 
     def add_args(self):
         """Add the keyword"""
-        self.args.append(
-            (self.fname, self.cmdname, self.mcfact, self.mcsimp, self.value))
+        self.args.append((self.fname, self.cmdname, self.mcfact, self.mcsimp, self.value))
 
     def get_text(self):
         """Return the text"""
-        fmt = '%s %s %s %s %s'
+        fmt = "%s %s %s %s %s"
         lines = [fmt % args for args in self.args]
         return os.linesep.join(lines)
 
@@ -119,7 +119,7 @@ class CodeVisitor:
             step (*SimpleKeyword*): SimpleKeyword object
             skwValue (misc): Keyword value(s)
         """
-        self.value = ''
+        self.value = ""
         if not value_is_sequence(skwValue):
             skwValue = [skwValue]
         as_list = step.is_list() and step.definition.get("into") is not None
@@ -127,7 +127,7 @@ class CodeVisitor:
         is_default = True
         default = step.definition.get("defaut")
         for value in skwValue:
-            repr_value = ''
+            repr_value = ""
             if is_float(value):
                 repr_value = str(value)
             elif is_int(value):
@@ -147,7 +147,7 @@ class CodeVisitor:
             self.value = "(%s)" % self.value
         if step.definition.get("into") is None:
             if not is_default:
-                self.value = ''
+                self.value = ""
         self.add_args()
 
     def _visitComposite(self, step, userDict):

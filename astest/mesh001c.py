@@ -32,49 +32,48 @@ rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 # from MED format
 mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-pmesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO = 2)
+pmesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO=2)
 
-pmesh=DEFI_GROUP( reuse=pmesh, MAILLAGE=pmesh,
-                  CREA_GROUP_NO=(_F(  TOUT_GROUP_MA='OUI'),),)
+pmesh = DEFI_GROUP(reuse=pmesh, MAILLAGE=pmesh, CREA_GROUP_NO=(_F(TOUT_GROUP_MA="OUI"),))
 
 test.assertTrue(pmesh.isParallel())
 test.assertEqual(pmesh.getDimension(), 3)
 
 # test dimension
-TABG=RECU_TABLE(CO=mesh, NOM_TABLE='CARA_GEOM',)
-test.assertAlmostEqual(TABG['X_MIN',1], -1.0)
-test.assertAlmostEqual(TABG['X_MAX',1], 6.0)
-test.assertAlmostEqual(TABG['Y_MIN',1], -6.0)
-test.assertAlmostEqual(TABG['Y_MAX',1], 0.0)
-test.assertAlmostEqual(TABG['Z_MIN',1], -1.0)
-test.assertAlmostEqual(TABG['Z_MAX',1], 6.0)
-test.assertAlmostEqual(TABG['AR_MIN',1], 0.3)
-test.assertAlmostEqual(TABG['AR_MAX',1], 1.0)
+TABG = RECU_TABLE(CO=mesh, NOM_TABLE="CARA_GEOM")
+test.assertAlmostEqual(TABG["X_MIN", 1], -1.0)
+test.assertAlmostEqual(TABG["X_MAX", 1], 6.0)
+test.assertAlmostEqual(TABG["Y_MIN", 1], -6.0)
+test.assertAlmostEqual(TABG["Y_MAX", 1], 0.0)
+test.assertAlmostEqual(TABG["Z_MIN", 1], -1.0)
+test.assertAlmostEqual(TABG["Z_MAX", 1], 6.0)
+test.assertAlmostEqual(TABG["AR_MIN", 1], 0.3)
+test.assertAlmostEqual(TABG["AR_MAX", 1], 1.0)
 
-TABGP=RECU_TABLE(CO=pmesh, NOM_TABLE='CARA_GEOM',)
-test.assertAlmostEqual(TABG['X_MIN',1], TABGP['X_MIN',1])
-test.assertAlmostEqual(TABG['X_MAX',1], TABGP['X_MAX',1])
-test.assertAlmostEqual(TABG['Y_MIN',1], TABGP['Y_MIN',1])
-test.assertAlmostEqual(TABG['Y_MAX',1], TABGP['Y_MAX',1])
-test.assertAlmostEqual(TABG['Z_MIN',1], TABGP['Z_MIN',1])
-test.assertAlmostEqual(TABG['Z_MAX',1], TABGP['Z_MAX',1])
-test.assertAlmostEqual(TABG['AR_MIN',1], TABGP['AR_MIN',1])
-test.assertAlmostEqual(TABG['AR_MAX',1], TABGP['AR_MAX',1])
+TABGP = RECU_TABLE(CO=pmesh, NOM_TABLE="CARA_GEOM")
+test.assertAlmostEqual(TABG["X_MIN", 1], TABGP["X_MIN", 1])
+test.assertAlmostEqual(TABG["X_MAX", 1], TABGP["X_MAX", 1])
+test.assertAlmostEqual(TABG["Y_MIN", 1], TABGP["Y_MIN", 1])
+test.assertAlmostEqual(TABG["Y_MAX", 1], TABGP["Y_MAX", 1])
+test.assertAlmostEqual(TABG["Z_MIN", 1], TABGP["Z_MIN", 1])
+test.assertAlmostEqual(TABG["Z_MAX", 1], TABGP["Z_MAX", 1])
+test.assertAlmostEqual(TABG["AR_MIN", 1], TABGP["AR_MIN", 1])
+test.assertAlmostEqual(TABG["AR_MAX", 1], TABGP["AR_MAX", 1])
 
 global_grp = mesh.getGroupsOfCells()
 test.assertSequenceEqual(sorted(pmesh.getGroupsOfNodes()), sorted(global_grp))
-test.assertTrue( pmesh.hasGroupOfNodes("TOUT"))
+test.assertTrue(pmesh.hasGroupOfNodes("TOUT"))
 
-pmesh.printMedFile("mesh_%d.med"%rank)
+pmesh.printMedFile("mesh_%d.med" % rank)
 with shared_tmpdir("mesh001c_") as tmpdir:
     pmesh.printMedFile(osp.join(tmpdir, "mesh001c.med"), local=False)
 
 pmesh2 = code_aster.ParallelMesh()
-pmesh2.readMedFile("mesh_%d.med"%rank, True)
+pmesh2.readMedFile("mesh_%d.med" % rank, True)
 with shared_tmpdir("mesh001c_") as tmpdir:
     pmesh2.printMedFile(osp.join(tmpdir, "mesh001c.med"), local=False)
 
-#test global numbering of nodes
+# test global numbering of nodes
 nodes_gnum = pmesh.getNodes(localNumbering=False)
 nodes2_gnum = pmesh2.getNodes(localNumbering=False)
 test.assertSequenceEqual(nodes_gnum, nodes2_gnum)

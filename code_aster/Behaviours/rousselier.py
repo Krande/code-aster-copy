@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,23 +22,32 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'ROUSSELIER',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement élasto-plastique de G.Rousselier en grandes déformations.
+    nom="ROUSSELIER",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement élasto-plastique de G.Rousselier en grandes déformations.
    Elle permet de rendre compte de la croissance des cavités et de décrire la rupture ductile.
-   Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser systématiquement le redécoupage global du pas de temps (SUBD_PAS)."""              ,
-    num_lc         = 37,
-    nb_vari        = 9,
-    nom_vari       = ('EPSPEQ','POROSITE','INDIPLAS','EPSEXX','EPSEYY',
-        'EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ',),
-    mc_mater       = ('ELAS','ROUSSELIER',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('SIMO_MIEHE',),
-    algo_inte      = ('NEWTON_1D',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('TOTALE',),
-    regu_visc      = ('No',),
+   Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser systématiquement le redécoupage global du pas de temps (SUBD_PAS).""",
+    num_lc=37,
+    nb_vari=9,
+    nom_vari=(
+        "EPSPEQ",
+        "POROSITE",
+        "INDIPLAS",
+        "EPSEXX",
+        "EPSEYY",
+        "EPSEZZ",
+        "EPSEXY",
+        "EPSEXZ",
+        "EPSEYZ",
+    ),
+    mc_mater=("ELAS", "ROUSSELIER"),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("SIMO_MIEHE",),
+    algo_inte=("NEWTON_1D",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

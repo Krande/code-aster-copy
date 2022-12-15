@@ -66,7 +66,7 @@ class ContactManager:
 
     @profile
     def getPairingCoordinates(self):
-        """ Get the coordinates field used for pairing.
+        """Get the coordinates field used for pairing.
 
         Returns:
             MeshCoordinatesField: coordinates of nodes used for pairing:
@@ -79,7 +79,7 @@ class ContactManager:
 
     @profile
     def setPairingCoordinates(self, coor):
-        """ Set the coordinates field used for pairing.
+        """Set the coordinates field used for pairing.
 
         Returns:
             coor (MeshCoordinatesField): coordinates of nodes used for pairing:
@@ -111,14 +111,15 @@ class ContactManager:
         """
 
         if self.enable:
-            return self.comp.contactData(self.pair, self.phys_pb.getMaterialField(),
-                                         self.first_pairing)
+            return self.comp.contactData(
+                self.pair, self.phys_pb.getMaterialField(), self.first_pairing
+            )
 
         return None
 
     @property
     def enable(self):
-        """ Contact is enable or not
+        """Contact is enable or not
 
         Returns:
          (bool): True if enable else False

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
     if OPTION == "LONGUEUR":
 
         # Mots cles specifiques au bloc "LONGUEUR"
-        GROUP_MA = args['GROUP_MA']
-        POINT_ORIG = args['POINT_ORIG']
-        VECT_TANG = args['VECT_TANG']
+        GROUP_MA = args["GROUP_MA"]
+        POINT_ORIG = args["POINT_ORIG"]
+        VECT_TANG = args["VECT_TANG"]
 
         # On importe les definitions des commandes a utiliser dans la macro
 
@@ -69,13 +69,12 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         __MODEL = RESULTAT.getModel()
 
         if __MODEL is None:
-            UTMESS('F', 'RUPTURE0_18')
+            UTMESS("F", "RUPTURE0_18")
 
         # Calcul des coordonnees des points de Gauss
-        __CHAMEL = CALC_CHAM_ELEM(
-            MODELE=__MODEL, GROUP_MA=GROUP_MA, OPTION='COOR_ELGA')
-        __CORX = __CHAMEL.EXTR_COMP('X', list(GROUP_MA), 1)
-        __CORY = __CHAMEL.EXTR_COMP('Y', list(GROUP_MA), 1)
+        __CHAMEL = CALC_CHAM_ELEM(MODELE=__MODEL, GROUP_MA=GROUP_MA, OPTION="COOR_ELGA")
+        __CORX = __CHAMEL.EXTR_COMP("X", list(GROUP_MA), 1)
+        __CORY = __CHAMEL.EXTR_COMP("Y", list(GROUP_MA), 1)
 
         xg = __CORX.valeurs
         yg = __CORY.valeurs
@@ -113,15 +112,13 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         # cas ou le point de reference n'est pas aligne avec les points de
         # Gauss
 
-        if (abs(yref - A * xref - B) >= eps):
-            UTMESS('F', 'POST0_45', valk=list(
-                GROUP_MA), valr=(xmin, xmax, ymin, ymax))
+        if abs(yref - A * xref - B) >= eps:
+            UTMESS("F", "POST0_45", valk=list(GROUP_MA), valr=(xmin, xmax, ymin, ymax))
 
         # cas ou le vecteur n'est pas colineaire a la droite des points de
         # Gauss
         if (abs(alpha) >= eps) and (abs(alpha - pi) >= eps):
-            UTMESS('F', 'POST0_46', valk=list(
-                GROUP_MA), valr=(xmin, xmax, ymin, ymax))
+            UTMESS("F", "POST0_46", valk=list(GROUP_MA), valr=(xmin, xmax, ymin, ymax))
 
         # Calcul de la distance signee des points de Gauss au point de
         # reference
@@ -129,7 +126,7 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         ming = min(disg)
         maxg = max(disg)
 
-        __INST = aster.GetResu(RESULTAT.getName(), "VARI_ACCES")['INST']
+        __INST = aster.GetResu(RESULTAT.getName(), "VARI_ACCES")["INST"]
         nbinst = len(__INST)
 
         Lfis = [0] * (nbinst)
@@ -140,13 +137,14 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
         for j in range(0, nbinst):
 
             __VI[j] = CREA_CHAMP(
-                TYPE_CHAM='ELGA_VARI_R',
-                OPERATION='EXTR',
+                TYPE_CHAM="ELGA_VARI_R",
+                OPERATION="EXTR",
                 RESULTAT=RESULTAT,
-                NOM_CHAM='VARI_ELGA',
-                NUME_ORDRE=j,)
+                NOM_CHAM="VARI_ELGA",
+                NUME_ORDRE=j,
+            )
 
-            __VI3 = __VI[j].EXTR_COMP('V3', list(GROUP_MA), 1)
+            __VI3 = __VI[j].EXTR_COMP("V3", list(GROUP_MA), 1)
 
             mat_v3 = __VI3.valeurs
             nbpg = len(mat_v3)
@@ -164,38 +162,37 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
             min2 = maxg
 
             for i in range(0, nbpg):
-                if (disg[i] >= 0.0):
-                    if mat_v3[i] == 1.:   # si c'est un pdg en zone cohesive
+                if disg[i] >= 0.0:
+                    if mat_v3[i] == 1.0:  # si c'est un pdg en zone cohesive
                         cpt1 = cpt1 + 1
                         max1 = max(max1, disg[i])
                         min1 = min(min1, disg[i])
                     else:
-                        if mat_v3[i] == 2.:  # si c'est un pdg en fissure
+                        if mat_v3[i] == 2.0:  # si c'est un pdg en fissure
                             cpt2 = cpt2 + 1
                             max2 = max(max2, disg[i])
                             min2 = min(min2, disg[i])
                         else:
-                            if mat_v3[i] == 0.:  # si c'est un pdg sain
+                            if mat_v3[i] == 0.0:  # si c'est un pdg sain
                                 cpt0 = cpt0 + 1
                                 max0 = max(max0, disg[i])
                                 min0 = min(min0, disg[i])
 
             # verification qu'entre min1 et max1 on a que des mailles 1
             for i in range(0, nbpg):
-                if (cpt1 != 0):
+                if cpt1 != 0:
                     if (disg[i] >= min1) and (disg[i] <= max1):
-                        if (mat_v3[i] != 1.):
-                            UTMESS('A', 'POST0_48')
+                        if mat_v3[i] != 1.0:
+                            UTMESS("A", "POST0_48")
 
             # Verification qu'il y a bien des points de Gauss sur la
             # demi-droite definie par l'utilisateur
-            if (cpt0 + cpt1 + cpt2 == 0):
-                UTMESS('F', 'POST0_47', valk=list(
-                    GROUP_MA), valr=(xmin, xmax, ymin, ymax))
+            if cpt0 + cpt1 + cpt2 == 0:
+                UTMESS("F", "POST0_47", valk=list(GROUP_MA), valr=(xmin, xmax, ymin, ymax))
 
             # Verification de la taille de la zone cohesive
             if (cpt2 != 0) and (cpt1 <= 3):
-                UTMESS('A', 'POST0_49')
+                UTMESS("A", "POST0_49")
 
             # Evaluation des longueurs
             if (cpt1 == 0) and (cpt2 == 0):
@@ -215,11 +212,14 @@ def post_czm_fiss_ops(self, OPTION, RESULTAT, **args):
 
             Lcoh[j] = Ltot[j] - Lfis[j]
 
-        TABLE_OUT = CREA_TABLE(LISTE=(
-                               _F(LISTE_R=__INST, PARA='INST'),
-                               _F(LISTE_R=Lfis, PARA='LONG_FIS'),
-                               _F(LISTE_R=Ltot, PARA='LONG_TOT'),
-                               _F(LISTE_R=Lcoh, PARA='LONG_COH'),),)
+        TABLE_OUT = CREA_TABLE(
+            LISTE=(
+                _F(LISTE_R=__INST, PARA="INST"),
+                _F(LISTE_R=Lfis, PARA="LONG_FIS"),
+                _F(LISTE_R=Ltot, PARA="LONG_TOT"),
+                _F(LISTE_R=Lcoh, PARA="LONG_COH"),
+            )
+        )
 
         return TABLE_OUT
 

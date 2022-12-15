@@ -71,7 +71,7 @@ class PostFM(object):
         for cell_group in cell_groups:
             cells = mesh.getCells(cell_group)
             for cell in cells:
-                if node+1 in connectivity[cell]:
+                if node + 1 in connectivity[cell]:
                     return True
         return False
 
@@ -223,7 +223,7 @@ def post_fm_ops(self, **kwargs):
                 CHAM_GD=__cham_no_temp,
                 GROUP_NO=group_no,
                 NOM_CMP="TEMP",
-            ),
+            )
         )
         temp.extend(__table_temp.EXTR_TABLE().values()["TEMP"])
 

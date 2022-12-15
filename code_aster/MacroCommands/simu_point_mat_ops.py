@@ -572,7 +572,7 @@ def simu_point_mat_ops(
 
         if MODELISATION == "3D":
 
-            r33 = 3**-0.5
+            r33 = 3 ** -0.5
             __S[0] = AFFE_CHAR_MECA(
                 MODELE=__MO, FORCE_FACE=(_F(GROUP_MA="F1", FX=-1), _F(GROUP_MA="F4", FX=r33))
             )
@@ -613,7 +613,7 @@ def simu_point_mat_ops(
             )
 
         else:
-            r22 = 2**-0.5
+            r22 = 2 ** -0.5
             __S[0] = AFFE_CHAR_MECA(
                 MODELE=__MO, FORCE_CONTOUR=(_F(GROUP_MA="S1", FX=-1), _F(GROUP_MA="S3", FX=r22))
             )

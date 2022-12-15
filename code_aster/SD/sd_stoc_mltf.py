@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ class sd_stoc_mltf(AsBase):
     ADRE = AsVI()
     ANCI = AsVI()
     DECA = AsVI()
-    DESC = AsVI(lonmax=5,)
+    DESC = AsVI(lonmax=5)
     FILS = AsVI()
     FRER = AsVI()
     GLOB = AsVS()
@@ -39,6 +39,6 @@ class sd_stoc_mltf(AsBase):
     NBLI = AsVI()
     NCBL = AsVI()
     NOUV = AsVI()
-    RENU = AsVK8(lonmax=1,)
+    RENU = AsVK8(lonmax=1)
     SEQU = AsVI()
     SUPN = AsVI()

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -18,14 +18,15 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
+#include "aster_exceptions.h"
+
 #include "Python.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "aster.h"
+
 #include <setjmp.h>
 #include <signal.h>
-
-#include "aster.h"
-#include "aster_exceptions.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /*
  * Emulate the behavior of exceptions using the system functions 'setjmp/longjmp'.
@@ -62,28 +63,26 @@
  */
 int gExcLvl = 0;
 int gExcNumb = -1;
-jmp_buf gExcEnv[NIVMAX+1];
+jmp_buf gExcEnv[NIVMAX + 1];
 
-static PyObject* gExcArgs = NULL;
+static PyObject *gExcArgs = NULL;
 static PyObject *exc_module = NULL;
 
 /*
  *   PRIVATE FUNCTIONS
  *
  */
-void _new_try()
-{
+void _new_try() {
     /* Begin of try : `gExcLvl` incremented
      */
     gExcLvl += 1;
     if ( NIVMAX < gExcLvl ) {
-        printf("AssertionError: too many nested try/except statements: %d\n", gExcLvl);
+        printf( "AssertionError: too many nested try/except statements: %d\n", gExcLvl );
         abort();
     }
 }
 
-void _end_try()
-{
+void _end_try() {
     /* End if try : `gExcLvl` is decremented
      */
     gExcLvl -= 1;

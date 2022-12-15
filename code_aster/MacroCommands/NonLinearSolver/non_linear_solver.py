@@ -123,11 +123,9 @@ class NonLinearSolver:
         if solver:
             self.linear_solver = solver
         elif keywords is not None:
-            self.linear_solver = LinearSolver.factory(
-                "STAT_NON_LINE", keywords)
+            self.linear_solver = LinearSolver.factory("STAT_NON_LINE", keywords)
         else:
-            raise KeyError(
-                "At least one argument is expected: solver or keywords")
+            raise KeyError("At least one argument is expected: solver or keywords")
 
     def getStepSolver(self, step_rank):
         """Return a solver for the next step.
@@ -200,8 +198,7 @@ class NonLinearSolver:
         Arguments:
             time (float): current (pseudo)-time.
         """
-        self.storage_manager.storeState(
-            time, self.phys_pb, self.phys_state)
+        self.storage_manager.storeState(time, self.phys_pb, self.phys_state)
         self.storage_manager.completed()
 
     @profile
@@ -226,7 +223,7 @@ class NonLinearSolver:
             timeEndStep = self.stepper.getNext()
             self.phys_state.time_step = timeEndStep - self.phys_state.time
 
-            solv = self.getStepSolver(self.step_rank+1)
+            solv = self.getStepSolver(self.step_rank + 1)
 
             try:
                 solv.solve()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,26 +24,26 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCONTRR = InputParameter(
+    phys=PHY.SIEF_R,
+    container="RESU!SIGM_ELGA!N",
+    comment="""  PCONTRR : CONTRAINTES PAR ELEMENTS AUX POINTS DE GAUSS """,
+)
 
 
-PCONTRR  = InputParameter(phys=PHY.SIEF_R, container='RESU!SIGM_ELGA!N',
-comment="""  PCONTRR : CONTRAINTES PAR ELEMENTS AUX POINTS DE GAUSS """)
-
-
-PCONTEQ  = OutputParameter(phys=PHY.SIEF_R, type='ELGA',
-comment="""  PCONTEQ : CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS """)
+PCONTEQ = OutputParameter(
+    phys=PHY.SIEF_R,
+    type="ELGA",
+    comment="""  PCONTEQ : CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS """,
+)
 
 
 SIEQ_ELGA = Option(
-    para_in=(
-           PCONTRR,
-    ),
-    para_out=(
-           PCONTEQ,
-    ),
+    para_in=(PCONTRR,),
+    para_out=(PCONTEQ,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.EFGE,'OUI'),(AT.SIGM,'NON'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.EFGE, "OUI"), (AT.SIGM, "NON"))),
     ),
     comment="""  SIEQ_ELGA : CONTRAINTES EQUIVALENTES PAR ELEMENTS AUX POINTS DE GAUSS """,
 )

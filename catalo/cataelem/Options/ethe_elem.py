@@ -20,36 +20,24 @@
 # person_in_charge: xavier.desroches at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
-
-
-PENERDR  = OutputParameter(phys=PHY.ENER_R, type='ELEM')
+PENERDR = OutputParameter(phys=PHY.ENER_R, type="ELEM")
 
 
 ETHE_ELEM = Option(
-    para_in=(
-        SP.PCAMASS,
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PTEMPER,
-        SP.PTEMPSR,
-        SP.PVARCRR,
-           PVARCPR,
-    ),
-    para_out=(
-           PENERDR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PCAMASS, SP.PGEOMER, SP.PMATERC, SP.PTEMPER, SP.PTEMPSR, SP.PVARCRR, PVARCPR),
+    para_out=(PENERDR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

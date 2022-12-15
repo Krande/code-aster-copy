@@ -20,32 +20,29 @@
 # person_in_charge: david.haboussa at edf.fr
 
 
-
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='NON'),
-      IMPR_MACRO='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"), IMPR_MACRO="OUI")
 
 # donnee materiau et fonction
 
 # modules mecaniques [Pa]
-K=516.2E6
-G=238.2E6
+K = 516.2e6
+G = 238.2e6
 # =>
-YOUNG_Pa = 9.*K*G /(3.*K+G)
-POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+YOUNG_Pa = 9.0 * K * G / (3.0 * K + G)
+POISSON = (3.0 * K - 2.0 * G) / (6.0 * K + 2.0 * G)
 
-#YOUNG_Pa = 1.E10
-print('young=',YOUNG_Pa,' /// nu=',POISSON)
+# YOUNG_Pa = 1.E10
+print("young=", YOUNG_Pa, " /// nu=", POISSON)
 
 #   parametres loi de Mohr-Coulomb
 # ------------------------------------
-SY_Pa = 1.0E+3
+SY_Pa = 1.0e3
 
 # def des materiaux
-ACIER = [None]*2
+ACIER = [None] * 2
 
-#unite en Pa
-C_Pa = 1.e+6
+# unite en Pa
+C_Pa = 1.0e6
 
 YOUNG = YOUNG_Pa / C_Pa
 SY = SY_Pa / C_Pa
@@ -55,35 +52,29 @@ SY = SY_Pa / C_Pa
 # list_npas =[1,1,1,1,1,5,10,15,25,50,100]
 # list_tole =[1e-10]*(len(list_npas)+10)
 
-ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
-                               NU=POISSON,
-                               ALPHA=0.),
-                       MOHR_COULOMB=_F(
-                            PHI      = 33.,
-                            ANGDIL   = 27.,
-                            COHESION = SY_Pa,),)
-#unite en MPa
-ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                               NU=POISSON,
-                               ALPHA=0.),
-                       MOHR_COULOMB=_F(
-                            PHI      = 33.,
-                            ANGDIL   = 27.,
-                            COHESION = SY,),)
+ACIER[0] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG_Pa, NU=POISSON, ALPHA=0.0),
+    MOHR_COULOMB=_F(PHI=33.0, ANGDIL=27.0, COHESION=SY_Pa),
+)
+# unite en MPa
+ACIER[1] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.0), MOHR_COULOMB=_F(PHI=33.0, ANGDIL=27.0, COHESION=SY)
+)
 
-tabresu=TEST_COMPOR(INFO=2,
-              OPTION='MECA',
-              #LIST_NPAS=list_npas,
-              #LIST_TOLE=list_tole,
-              LIST_TOLE=[1.E-00,1.E-10,1.E-10,1.E-10]+\
-                        [1.e-1]+[2.e-2,1.e-2]+[1.e-8],
-              #SUPPORT  ='ELEMENT',
-              COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
-              NEWTON=_F(REAC_ITER=1),
-              LIST_MATER=ACIER,
-              VARI_TEST=('V1','V2','V3','VMIS','TRACE'),
-              YOUNG=YOUNG_Pa,
-              POISSON=POISSON,)
+tabresu = TEST_COMPOR(
+    INFO=2,
+    OPTION="MECA",
+    # LIST_NPAS=list_npas,
+    # LIST_TOLE=list_tole,
+    LIST_TOLE=[1.0e-00, 1.0e-10, 1.0e-10, 1.0e-10] + [1.0e-1] + [2.0e-2, 1.0e-2] + [1.0e-8],
+    # SUPPORT  ='ELEMENT',
+    COMPORTEMENT=_F(RELATION="MOHR_COULOMB"),
+    NEWTON=_F(REAC_ITER=1),
+    LIST_MATER=ACIER,
+    VARI_TEST=("V1", "V2", "V3", "VMIS", "TRACE"),
+    YOUNG=YOUNG_Pa,
+    POISSON=POISSON,
+)
 
 
 IMPR_TABLE(TABLE=tabresu)

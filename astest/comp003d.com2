@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@ from code_aster.Commands import *
 from code_aster.MacroCommands.Utils.testcomp_utils import rename_components
 
 
-
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 from comp003a import TEST_ECART
 
@@ -31,45 +30,44 @@ from comp003a import TEST_ECART
 # ---------------------------------------------------------------------
 
 for i in range(Ncal):
-    N     = N_pas[i]
-    imat  = P_imat[i]
+    N = N_pas[i]
+    imat = P_imat[i]
     temps = DEFI_LIST_REEL(
-        DEBUT      = 0.0,
-        INTERVALLE = (
-            _F(JUSQU_A=1.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=2.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=3.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=4.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=5.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=6.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=7.0*t_0, NOMBRE=N,),
-            _F(JUSQU_A=8.0*t_0, NOMBRE=N,),
-            ),
-        )
+        DEBUT=0.0,
+        INTERVALLE=(
+            _F(JUSQU_A=1.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=2.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=3.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=4.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=5.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=6.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=7.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=8.0 * t_0, NOMBRE=N),
+        ),
+    )
 
     RESU[i] = SIMU_POINT_MAT(
-        COMPORTEMENT = _F(RELATION=compor, ITER_INTE_MAXI=20, RESI_INTE_RELA=1.E-8),
-        ANGLE        =  angles[i],
-        NEWTON       = _F(MATRICE='TANGENTE', REAC_ITER=1),
-        CONVERGENCE  = _F(ITER_GLOB_MAXI=10),
-        MATER        =  BETON[imat],
-        INCREMENT    = _F(LIST_INST=temps),
-        ARCHIVAGE    = _F(LIST_INST=temps_ar),
-        EPSI_IMPOSE  = _F(
+        COMPORTEMENT=_F(RELATION=compor, ITER_INTE_MAXI=20, RESI_INTE_RELA=1.0e-8),
+        ANGLE=angles[i],
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+        MATER=BETON[imat],
+        INCREMENT=_F(LIST_INST=temps),
+        ARCHIVAGE=_F(LIST_INST=temps_ar),
+        EPSI_IMPOSE=_F(
             EPXX=eps_def[0],
             EPYY=eps_def[1],
             EPZZ=eps_def[2],
             EPXY=eps_def[3],
             EPXZ=eps_def[4],
-            EPYZ=eps_def[5]),
-        )
+            EPYZ=eps_def[5],
+        ),
+    )
 
     DETRUIRE(NOM=temps)
 
-
     # On renomme les composantes en fonction de  l'ordre de discretisation
-    R_SI = rename_components(i,N_pas,label_cal,ch_param,RESU,R_SI)
-
+    R_SI = rename_components(i, N_pas, label_cal, ch_param, RESU, R_SI)
 
 
 # ---------------------------------------------------------------------
@@ -81,12 +79,13 @@ if impr_resultat:
         IMPR_TABLE(TABLE=R_SI[i])
 
 
-
 # ---------------------------------------------------------------------
 #  TEST_RESU sur les erreurs relatives
 # ---------------------------------------------------------------------
 
-TEST_ECART(ch_param2, label_cal, N_pas,Ncal, nbequi, R_SI, prec_ecart, vale_calc, prec_zero, coef_para)
+TEST_ECART(
+    ch_param2, label_cal, N_pas, Ncal, nbequi, R_SI, prec_ecart, vale_calc, prec_zero, coef_para
+)
 
 
 FIN()

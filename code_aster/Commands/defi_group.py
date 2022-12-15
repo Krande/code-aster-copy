@@ -26,6 +26,7 @@ from ..Objects import ParallelMesh
 class GroupDefinition(ExecuteCommand):
     """Command that defines additional groups on a
     :class:`~code_aster.Objects.Mesh`."""
+
     command_name = "DEFI_GROUP"
 
     def create_result(self, keywords):
@@ -50,7 +51,6 @@ class GroupDefinition(ExecuteCommand):
             self._result._updateGlobalGroupOfNodes()
 
         self._result.build()
-
 
 
 DEFI_GROUP = GroupDefinition.run

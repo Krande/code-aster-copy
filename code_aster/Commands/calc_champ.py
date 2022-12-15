@@ -26,6 +26,7 @@ class ComputeAdditionalField(ExecuteCommand):
     """Command that computes additional fields in a
     :class:`~code_aster.Objects.Result`.
     """
+
     command_name = "CALC_CHAMP"
 
     def create_result(self, keywords):

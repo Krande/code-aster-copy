@@ -1,10 +1,10 @@
-@Parser   MaterialLaw;
+@Parser MaterialLaw;
 @Material Acier;
-@Law      ElasticYield ;
+@Law ElasticYield;
 
 @Input TC;
 
-TC.setGlossaryName("Temperature");
+TC.setGlossaryName( "Temperature" );
 
 @Output s0;
 
@@ -14,5 +14,5 @@ TC.setGlossaryName("Temperature");
 
 @Function
 {
-  s0 = 400.0  - 4.0*TC ;
+    s0 = 400.0 - 4.0 * TC;
 }

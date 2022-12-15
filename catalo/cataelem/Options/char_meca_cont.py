@@ -26,61 +26,49 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PLST = InputParameter(phys=PHY.NEUT_R,
-                      comment=""" XFEM """)
+PLST = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
-PLSN = InputParameter(phys=PHY.NEUT_R,
-                      comment=""" XFEM """)
+PLSN = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 
-PPINTER = InputParameter(phys=PHY.N816_R,
-                         comment=""" XFEM """)
+PPINTER = InputParameter(phys=PHY.N816_R, comment=""" XFEM """)
 
 
-PAINTER = InputParameter(phys=PHY.N1360R,
-                         comment=""" XFEM """)
+PAINTER = InputParameter(phys=PHY.N1360R, comment=""" XFEM """)
 
 
-PCFACE = InputParameter(phys=PHY.N720_I,
-                        comment=""" XFEM """)
+PCFACE = InputParameter(phys=PHY.N720_I, comment=""" XFEM """)
 
 
-PLONGCO = InputParameter(phys=PHY.N120_I,
-                         comment=""" XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PLONGCO = InputParameter(
+    phys=PHY.N120_I, comment=""" XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """
+)
 
 
-PBASECO = InputParameter(phys=PHY.N2448R,
-                         comment=""" XFEM """)
+PBASECO = InputParameter(phys=PHY.N2448R, comment=""" XFEM """)
 
 
-PSEUIL = InputParameter(phys=PHY.NEUT_R,
-                        comment=""" XFEM """)
+PSEUIL = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 
-PSTANO = InputParameter(phys=PHY.N120_I,
-                        comment=""" XFEM """)
+PSTANO = InputParameter(phys=PHY.N120_I, comment=""" XFEM """)
 
 
-PFISNO = InputParameter(phys=PHY.NEUT_I,
-                        comment=""" XFEM """)
+PFISNO = InputParameter(phys=PHY.NEUT_I, comment=""" XFEM """)
 
 
-PHEA_NO = InputParameter(phys=PHY.N120_I,
-                         comment=""" XFEM """)
+PHEA_NO = InputParameter(phys=PHY.N120_I, comment=""" XFEM """)
 
 
-PHEA_FA = InputParameter(phys=PHY.N240_I,
-                         comment=""" XFEM """)
+PHEA_FA = InputParameter(phys=PHY.N240_I, comment=""" XFEM """)
 
-PCOMPOR = InputParameter(phys=PHY.COMPOR,
-                         comment=""" UTILE POUR HM-XFEM """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment=""" UTILE POUR HM-XFEM """)
 
 PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 PBASLOC = InputParameter(phys=PHY.N480_R)
 
-PLSNGG = InputParameter(phys=PHY.NEUT_R,
-                        comment=""" XFEM """)
+PLSNGG = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 CHAR_MECA_CONT = Option(
     para_in=(
@@ -125,13 +113,8 @@ CHAR_MECA_CONT = Option(
         SP.PCCONTR,
         SP.PCFROTR,
     ),
-    para_out=(
-        SP.PVECTCR,
-        SP.PVECTFR,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.CONTACT, 'OUI'),)),
-    ),
+    para_out=(SP.PVECTCR, SP.PVECTFR),
+    condition=(CondCalcul("+", ((AT.CONTACT, "OUI"),)),),
     comment=""" CHAR_MECA_CONT: CALCUL DU SECOND MEMBRE
            ELEMENTAIRE DE CONTACT AVEC LA METHODE CONTINUE ET XFEM """,
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,17 +41,11 @@ with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
 # ... and factor keywords
 with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
     MODI_MAILLAGE(
-        reuse=MA,
-        MAILLAGE=MA,
-        ORIE_FISSURE=(_F(GROUP_MA="DCB_J"), _F(GROUP_MA="DCB_I")),
-        INFO=1,
+        reuse=MA, MAILLAGE=MA, ORIE_FISSURE=(_F(GROUP_MA="DCB_J"), _F(GROUP_MA="DCB_I")), INFO=1
     )
 
 with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
-    CREA_MAILLAGE(
-        RESTREINT=(_F(GROUP_MA="group1"), _F(GROUP_MA="group2")),
-        MAILLAGE=MA,
-    )
+    CREA_MAILLAGE(RESTREINT=(_F(GROUP_MA="group1"), _F(GROUP_MA="group2")), MAILLAGE=MA)
 
 test.printSummary()
 

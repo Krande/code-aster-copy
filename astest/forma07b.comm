@@ -17,8 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # MODELIDATION B : X-FEM 3D
 
@@ -31,73 +30,79 @@ import math
 ########
 
 # Taille de la plus grande maille dans la zone de la fissure
-h0=5.
+h0 = 5.0
 
 # Profondeur de la fissure
-a=2.
+a = 2.0
 
 # Taille cible des elements qu el on souhaite avoir apres raffinement
-hc=a/20.
+hc = a / 20.0
 
 # Calcul du nombre d iterations
-n= (log(h0)-log(hc))/log(2.)
-nb_raff=int(n)
-nb_iter=nb_raff+1
+n = (log(h0) - log(hc)) / log(2.0)
+nb_raff = int(n)
+nb_iter = nb_raff + 1
 
 # Calcul de la taille reelle apres raffinement (doit etre proche de hc)
-h=h0/2**nb_raff
+h = h0 / 2**nb_raff
 
 # Rayon de la zone que l on souhaite raffiner autour du front de fissure
-r_raff=5*h
+r_raff = 5 * h
 
 ########
 # Initialisation
 ########
 
-lMA=[None]*(nb_iter+1)
-CHERR=[None]*nb_iter
-FISS=[None]*nb_iter
+lMA = [None] * (nb_iter + 1)
+CHERR = [None] * nb_iter
+FISS = [None] * nb_iter
 
 ########
 # Lecture du maillage non raffine
 ########
 
-lMA[0] = LIRE_MAILLAGE(UNITE=20, FORMAT='MED')
+lMA[0] = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 ########
 # Boucle de raffinements
 ########
 
-for i_raff in range(nb_iter) :
+for i_raff in range(nb_iter):
 
-# Definition de la fissure
-    FISS[i_raff]=DEFI_FISS_XFEM(MAILLAGE=lMA[i_raff],
-                                TYPE_DISCONTINUITE='FISSURE',
-                                DEFI_FISS=_F(FORM_FISS='ELLIPSE',
-                                DEMI_GRAND_AXE=a,
-                                DEMI_PETIT_AXE=a,
-                                CENTRE=(0,0,0,),
-                                VECT_X=(1.,0.,0.,),
-                                VECT_Y=(0.,1.,0.,),),)
+    # Definition de la fissure
+    FISS[i_raff] = DEFI_FISS_XFEM(
+        MAILLAGE=lMA[i_raff],
+        TYPE_DISCONTINUITE="FISSURE",
+        DEFI_FISS=_F(
+            FORM_FISS="ELLIPSE",
+            DEMI_GRAND_AXE=a,
+            DEMI_PETIT_AXE=a,
+            CENTRE=(0, 0, 0),
+            VECT_X=(1.0, 0.0, 0.0),
+            VECT_Y=(0.0, 1.0, 0.0),
+        ),
+    )
 
-# Calcul du critere de raffinement
-    CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff],TYPE='ZONE',RAYON=r_raff)
+    # Calcul du critere de raffinement
+    CHERR[i_raff] = RAFF_XFEM(FISSURE=FISS[i_raff], TYPE="ZONE", RAYON=r_raff)
 
-#Definition du type du maillage n+1 --> pour dire que MAILLAGE_NP1 est un type maillage
-    lMA[i_raff+1]=CO('lMA_%d' % (i_raff+1))
+    # Definition du type du maillage n+1 --> pour dire que MAILLAGE_NP1 est un type maillage
+    lMA[i_raff + 1] = CO("lMA_%d" % (i_raff + 1))
 
-#Adaptation du maillage
-    MACR_ADAP_MAIL(ADAPTATION    = 'RAFFINEMENT',
-                   CHAM_GD       = CHERR[i_raff],
-                   CRIT_RAFF_ABS = 0.5,
-                   DIAM_MIN      = hc,
-                   MAILLAGE_N    = lMA[i_raff],
-                   MAILLAGE_NP1  = lMA[i_raff+1],)
+    # Adaptation du maillage
+    MACR_ADAP_MAIL(
+        ADAPTATION="RAFFINEMENT",
+        CHAM_GD=CHERR[i_raff],
+        CRIT_RAFF_ABS=0.5,
+        DIAM_MIN=hc,
+        MAILLAGE_N=lMA[i_raff],
+        MAILLAGE_NP1=lMA[i_raff + 1],
+    )
 
 ########
 # Impression du maillage raffine
 ########
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=lMA[nb_iter]))
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(MAILLAGE=lMA[nb_iter]))
 
 FIN()

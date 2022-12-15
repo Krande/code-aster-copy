@@ -21,88 +21,68 @@
 #  DETAILS : MODELISATION Q4GG
 #            Mailles TRIA3
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # Carateristiques de la dalle
 
-EP = 1.0;         # Epaisseur
-R0 = 0.2          # Position du lit d'armature
-young = 3.5E10
-nu =0.2
+EP = 1.0
+# Epaisseur
+R0 = 0.2  # Position du lit d'armature
+young = 3.5e10
+nu = 0.2
 
-MATER=DEFI_MATERIAU(
-                     ELAS = _F(E          = young,
-                               NU         = nu,
-                               RHO        = 2500.,
-                               AMOR_ALPHA = 6.69E-5,
-                               AMOR_BETA  = 20.06),
-                    )
+MATER = DEFI_MATERIAU(ELAS=_F(E=young, NU=nu, RHO=2500.0, AMOR_ALPHA=6.69e-5, AMOR_BETA=20.06))
 
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED')
+MAILL = LIRE_MAILLAGE(FORMAT="MED")
 
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
-                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
-MODEL=AFFE_MODELE(  MAILLAGE=MAILL,
-                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'Q4GG',
-                              PHENOMENE = 'MECANIQUE') )
+MODEL = AFFE_MODELE(MAILLAGE=MAILL, AFFE=_F(TOUT="OUI", MODELISATION="Q4GG", PHENOMENE="MECANIQUE"))
 
-CINE=AFFE_CHAR_MECA(   MODELE=MODEL,DDL_IMPO=
-              _F( GROUP_MA = 'Bords', DX = 0.,   DY  = 0.,   DZ = 0.,
-                                     DRX = 0.,   DRY = 0.,  DRZ = 0.,))
+CINE = AFFE_CHAR_MECA(
+    MODELE=MODEL, DDL_IMPO=_F(GROUP_MA="Bords", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)
+)
 
 
-PRES=AFFE_CHAR_MECA(   MODELE=MODEL,
-                    FORCE_COQUE=_F(  TOUT = 'OUI',   PRES = 1.E5)   )
+PRES = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_COQUE=_F(TOUT="OUI", PRES=1.0e5))
 
 
-CARELEM=AFFE_CARA_ELEM( MODELE=MODEL,
-                        COQUE=_F( GROUP_MA  = 'Poutre',
-                                  INER_ROTA = 'OUI',
-                                  EPAIS     = EP) )
+CARELEM = AFFE_CARA_ELEM(MODELE=MODEL, COQUE=_F(GROUP_MA="Poutre", INER_ROTA="OUI", EPAIS=EP))
 
-INER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
-               MODELE=MODEL,
-               CHAM_MATER=CHMAT,
-               CARA_ELEM=CARELEM,)
+INER = POST_ELEM(MASS_INER=_F(TOUT="OUI"), MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM)
 
 IMPR_TABLE(TABLE=INER)
 
-F_PRES=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,    0.0,
-                                           0.0001, 1.0,
-                                           1.0,    1.0,
-                           ),)
+F_PRES = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 0.0001, 1.0, 1.0, 1.0))
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 #
 # DYNA_NON_LINE: CALCUL EXPLICIT AVEC AMORTISSEMENT
 #
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
-LIST=DEFI_LIST_REEL(DEBUT=0.0,
-#                     INTERVALLE=_F(JUSQU_A=2.7E-2,
-                     INTERVALLE=_F(JUSQU_A=1.E-3,
-                                   PAS=1e-05,),)
+LIST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    #                     INTERVALLE=_F(JUSQU_A=2.7E-2,
+    INTERVALLE=_F(JUSQU_A=1.0e-3, PAS=1e-05),
+)
 
 
-DYNA_AMO = DYNA_NON_LINE( MODELE=MODEL,
-                      CHAM_MATER= CHMAT,
-                      CARA_ELEM = CARELEM,
-                      MASS_DIAG='OUI',
-                      COMPORTEMENT=_F(RELATION ='ELAS',),
-                      INCREMENT=_F(LIST_INST = LIST,),
-                      EXCIT=(_F(CHARGE=PRES,FONC_MULT=F_PRES),
-                             _F(CHARGE=CINE,),),
-                      NEWTON=_F(MATRICE='TANGENTE',
-                                REAC_ITER=1,
-                                REAC_INCR=1,),
-                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
-                                FORMULATION='ACCELERATION',),
-                      )
+DYNA_AMO = DYNA_NON_LINE(
+    MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    MASS_DIAG="OUI",
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LIST),
+    EXCIT=(_F(CHARGE=PRES, FONC_MULT=F_PRES), _F(CHARGE=CINE)),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, REAC_INCR=1),
+    SCHEMA_TEMPS=_F(SCHEMA="DIFF_CENT", FORMULATION="ACCELERATION"),
+)
 
-'''
+"""
 DAMO_DEP=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
@@ -123,24 +103,26 @@ DAMO_ACC=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      GROUP_NO='N9',)
 
 IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_ACC,),),)
-'''
+"""
 # ------------------------------
 # VERIFICATION DES DEPLACEMENTS
 # ------------------------------
 
 # EUROPLEXUS (T3GS GLRC) t=0.001s, DZ=-1.795079E-5 m
 
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=DYNA_AMO,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N9',
-                  NOM_CMP='DZ',
-                  VALE_CALC=-1.79509456099E-05,
-                  VALE_REFE=-1.795079E-05,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=100,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=DYNA_AMO,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N9",
+        NOM_CMP="DZ",
+        VALE_CALC=-1.79509456099e-05,
+        VALE_REFE=-1.795079e-05,
+        CRITERE="RELATIF",
+    )
+)
 
 # --------------------------
 # VERIFICATION DES VITESSES
@@ -148,17 +130,20 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
 
 # EUROPLEXUS (T3GS GLRC) t=0.001s, DZ=-3.73088E-2 m/s
 
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=DYNA_AMO,
-                  NOM_CHAM='VITE',
-                  GROUP_NO='N9',
-                  NOM_CMP='DZ',
-                  VALE_CALC=-0.0376274299738,
-                  VALE_REFE=-0.037308800000000003,
-                  CRITERE='RELATIF',
-                  PRECISION = 9E-3),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=100,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=DYNA_AMO,
+        NOM_CHAM="VITE",
+        GROUP_NO="N9",
+        NOM_CMP="DZ",
+        VALE_CALC=-0.0376274299738,
+        VALE_REFE=-0.037308800000000003,
+        CRITERE="RELATIF",
+        PRECISION=9e-3,
+    )
+)
 
 # -------------------------------
 # VERIFICATION DES ACCELERATIONS
@@ -166,16 +151,18 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
 
 # EUROPLEXUS (T3GS GLRC) t=0.001s, DZ=-39.17340 m/s/S
 
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=DYNA_AMO,
-                  NOM_CHAM='ACCE',
-                  GROUP_NO='N9',
-                  NOM_CMP='DZ',
-                  VALE_CALC=-39.1745768096,
-                  VALE_REFE=-39.173400000000001,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=100,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=DYNA_AMO,
+        NOM_CHAM="ACCE",
+        GROUP_NO="N9",
+        NOM_CMP="DZ",
+        VALE_CALC=-39.1745768096,
+        VALE_REFE=-39.173400000000001,
+        CRITERE="RELATIF",
+    )
+)
 
 FIN()

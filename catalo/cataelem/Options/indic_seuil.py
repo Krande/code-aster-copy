@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,43 +20,26 @@
 # person_in_charge: xavier.desroches at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCONTPR = InputParameter(phys=PHY.SIEF_R)
 
 
-PCONTPR  = InputParameter(phys=PHY.SIEF_R)
+PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARIPR  = InputParameter(phys=PHY.VARI_R)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R)
+PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
 INDIC_SEUIL = Option(
-    para_in=(
-           PCOMPOR,
-           PCONTPR,
-        SP.PDEPLR,
-        SP.PGEOMER,
-        SP.PMATERC,
-           PVARCPR,
-        SP.PVARCRR,
-           PVARIPR,
-    ),
-    para_out=(
-        SP.PENERD1,
-        SP.PENERD2,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(PCOMPOR, PCONTPR, SP.PDEPLR, SP.PGEOMER, SP.PMATERC, PVARCPR, SP.PVARCRR, PVARIPR),
+    para_out=(SP.PENERD1, SP.PENERD2),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

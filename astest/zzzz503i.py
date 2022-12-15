@@ -30,16 +30,17 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-mesh=LIRE_MAILLAGE(FORMAT='MED')
-model=AFFE_MODELE(MAILLAGE=mesh,
-               AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='D_PLAN'),
-               DISTRIBUTION=_F(METHODE='SOUS_DOMAINE',NB_SOUS_DOMAINE=2),
+mesh = LIRE_MAILLAGE(FORMAT="MED")
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+    DISTRIBUTION=_F(METHODE="SOUS_DOMAINE", NB_SOUS_DOMAINE=2),
 )
 
-material=DEFI_MATERIAU(ELAS=_F(E=100., NU=0.3))
-mat_field=AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT='OUI',  MATER=material))
+material = DEFI_MATERIAU(ELAS=_F(E=100.0, NU=0.3))
+mat_field = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=material))
 
-dirichlet=AFFE_CHAR_MECA(MODELE=model, DDL_IMPO= _F(GROUP_MA='Encast', DX=1.0 , DY=2.0))
+dirichlet = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=_F(GROUP_MA="Encast", DX=1.0, DY=2.0))
 
 phys_pb = code_aster.PhysicalProblem(model, mat_field)
 phys_pb.addLoad(dirichlet)
@@ -73,13 +74,13 @@ multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
 test.assertListEqual(multipliersRows, [0, 1, 4, 5, 6, 7, 10, 11, 16, 17, 20, 21, 22, 23, 26, 27])
 test.assertTrue(numeDDL.useLagrangeMultipliers())
 test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
-test.assertEqual(numeDDL.getComponents(), ['DX', 'DY', 'LAGR'])
-test.assertEqual(numeDDL.getComponentsAssociatedToNode(0, local=True), ['DX', 'DY'])
+test.assertEqual(numeDDL.getComponents(), ["DX", "DY", "LAGR"])
+test.assertEqual(numeDDL.getComponentsAssociatedToNode(0, local=True), ["DX", "DY"])
 test.assertEqual(numeDDL.getNodeAssociatedToRow(0, local=True), 0)
 test.assertFalse(numeDDL.isRowAssociatedToPhysical(0, local=True))
 test.assertEqual(numeDDL.getNumberOfDofs(local=True), 32)
 test.assertEqual(numeDDL.getNumberOfDofs(local=False), 32)
-test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
+test.assertEqual(numeDDL.getPhysicalQuantity(), "DEPL_R")
 
 # TODO A compléter après correction de issue32247
 # ------------------------------------
@@ -88,7 +89,7 @@ test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
 # test.assertListEqual(physicalRows,  [numeDDL.localToGlobalRow(d)
 #                                      for d in [i*2+j for i in range(mesh.getNumberOfNodes())
 #                                      for j in range(2)]])
-# test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15], 
+# test.assertListEqual(physicalRows,  [[0, 1, 2, 3, 4, 5, 12, 13, 6, 7, 14, 15],
 #                                      [8, 9, 10, 11, 4, 5, 12, 13, 6, 7, 14, 15]][rank])
 
 
@@ -99,7 +100,7 @@ from scipy.linalg import norm
 
 logger.setLevel(2)
 
-S=MatrixScaler.MatrixScaler()
+S = MatrixScaler.MatrixScaler()
 nt = petsc4py.PETSc.NormType.NORM_INFINITY
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), 1527.7777777794063)
 test.assertAlmostEqual(matrAsse.toPetsc().norm(nt), norm(matrAsse.EXTR_MATR(), np.inf))

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,22 +23,16 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 VERI_JACOBIEN = Option(
-    para_in=(
-        SP.PGEOMER,
-    ),
-    para_out=(
-        SP.PCODRET,
-    ),
+    para_in=(SP.PGEOMER,),
+    para_out=(SP.PCODRET,),
     condition=(
-#  C'est un peu le bazar, mais ce n'est qu'une option de verification :
-      CondCalcul('+', ((AT.DIM_COOR_MODELI,'3'),(AT.DIM_TOPO_MODELI,'3'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.DIM_COOR_MODELI,'2'),(AT.DIM_TOPO_MODELI,'2'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.INTERFACE,'OUI'),)),
-      CondCalcul('-', ((AT.TYPMOD3,'SUSHI'),)),
-      CondCalcul('-', ((AT.PESA,'OUI'),)),
+        #  C'est un peu le bazar, mais ce n'est qu'une option de verification :
+        CondCalcul("+", ((AT.DIM_COOR_MODELI, "3"), (AT.DIM_TOPO_MODELI, "3"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.DIM_COOR_MODELI, "2"), (AT.DIM_TOPO_MODELI, "2"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.INTERFACE, "OUI"),)),
+        CondCalcul("-", ((AT.TYPMOD3, "SUSHI"),)),
+        CondCalcul("-", ((AT.PESA, "OUI"),)),
     ),
     comment=""" verification que les jacobiens des differents points de Gauss
    ont tous le meme signe """,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,23 +23,22 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
+
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment="""  Informations for non-linear comportment """)
-
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PCONTMR = InputParameter(phys=PHY.SIEF_R)
 
 
-PCONTMR  = InputParameter(phys=PHY.SIEF_R)
+PVARIMR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARIMR  = InputParameter(phys=PHY.VARI_R)
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
 
 
 RIGI_MECA_IMPLEX = Option(
@@ -47,11 +46,11 @@ RIGI_MECA_IMPLEX = Option(
         SP.PCACOQU,
         SP.PCAGNBA,
         SP.PCAMASS,
-           PCAORIE,
+        PCAORIE,
         SP.PCARCRI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PMULCOM,
-           PCONTMR,
+        PCONTMR,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PGEOMER,
@@ -59,17 +58,11 @@ RIGI_MECA_IMPLEX = Option(
         SP.PINSTPR,
         SP.PMATERC,
         SP.PVARCMR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
         SP.PVARIMP,
-           PVARIMR,
+        PVARIMR,
     ),
-    para_out=(
-        SP.PCONTXR,
-        SP.PMATUNS,
-        SP.PMATUUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(SP.PCONTXR, SP.PMATUNS, SP.PMATUUR),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

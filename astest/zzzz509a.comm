@@ -17,212 +17,160 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # --------------------------------------------------------------------------------------------------
 # Traction sur un cube en beton homogene avec 3D + BARRE + GRILLE
 #  Objectif : s'assurer que la phase de prediction dans STAT_NON_LINE traite bien
-#             les variables de commande. On s'assure que, dans un cas lineaire, il ne faut qu'une 
+#             les variables de commande. On s'assure que, dans un cas lineaire, il ne faut qu'une
 #             iteration de Newton (y compris avec regularisation visco-elastique)
 #
 #             A noter que la loi elastique n'est pas encore adaptee a ce traitement (dans les
-#             barres et les grilles), d'ou l'absence de variations du module de Young avec la 
+#             barres et les grilles), d'ou l'absence de variations du module de Young avec la
 #             temperature.
 # --------------------------------------------------------------------------------------------------
 
 
-mesh = LIRE_MAILLAGE(UNITE=20,FORMAT='MED')
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 
 mo = AFFE_MODELE(
-    MAILLAGE = mesh,
-    AFFE     = (
-        _F(
-            GROUP_MA     = ('cube','xsup'),
-            MODELISATION = '3D', 
-            PHENOMENE    = 'MECANIQUE',
-            ), 
-        _F(
-            GROUP_MA     = 'barre',
-            MODELISATION = 'BARRE', 
-            PHENOMENE    = 'MECANIQUE',
-            ), 
-        _F(
-            GROUP_MA     = 'grille',      
-            MODELISATION = 'GRILLE_MEMBRANE',
-            PHENOMENE    = 'MECANIQUE', 
-            ),
-        ),
-    )
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(GROUP_MA=("cube", "xsup"), MODELISATION="3D", PHENOMENE="MECANIQUE"),
+        _F(GROUP_MA="barre", MODELISATION="BARRE", PHENOMENE="MECANIQUE"),
+        _F(GROUP_MA="grille", MODELISATION="GRILLE_MEMBRANE", PHENOMENE="MECANIQUE"),
+    ),
+)
 
 
-cael = AFFE_CARA_ELEM( 
-    MODELE = mo, 
-    BARRE  = _F(
-        GROUP_MA = 'barre',
-        SECTION  = 'GENERALE',
-        CARA     = 'A',
-        VALE     = 100.,
-        ),
-    GRILLE = _F(
-        GROUP_MA = 'grille', 
-        SECTION  =  2.0, 
-        VECT_1   = (1.0,0.0,0.0),
-        ),
-    )
-      
-        
-young_b = DEFI_FONCTION(
-    NOM_PARA = 'TEMP',
-    ABSCISSE = (10  , 110 ),
-    ORDONNEE = (30.e3, 25.e3),
-    )
-    
-    
-young_a = DEFI_FONCTION(
-    NOM_PARA = 'TEMP',
-    ABSCISSE = (10  , 110 ),
-    ORDONNEE = (200.e3, 200.e3),
-    )
-    
-    
+cael = AFFE_CARA_ELEM(
+    MODELE=mo,
+    BARRE=_F(GROUP_MA="barre", SECTION="GENERALE", CARA="A", VALE=100.0),
+    GRILLE=_F(GROUP_MA="grille", SECTION=2.0, VECT_1=(1.0, 0.0, 0.0)),
+)
+
+
+young_b = DEFI_FONCTION(NOM_PARA="TEMP", ABSCISSE=(10, 110), ORDONNEE=(30.0e3, 25.0e3))
+
+
+young_a = DEFI_FONCTION(NOM_PARA="TEMP", ABSCISSE=(10, 110), ORDONNEE=(200.0e3, 200.0e3))
+
+
 nu = DEFI_CONSTANTE(VALE=0.0)
 
 
-alpha = DEFI_CONSTANTE(VALE=1.e-5)
+alpha = DEFI_CONSTANTE(VALE=1.0e-5)
 
 
 beton = DEFI_MATERIAU(
-    ELAS_FO   = _F(E=young_b, NU=nu, ALPHA=alpha, TEMP_DEF_ALPHA=10),
-    ECRO_NL   = _F(R0=1.e30),
-    VISC_ELAS = _F(K=50.e3, TAU=1.0),
-    )
+    ELAS_FO=_F(E=young_b, NU=nu, ALPHA=alpha, TEMP_DEF_ALPHA=10),
+    ECRO_NL=_F(R0=1.0e30),
+    VISC_ELAS=_F(K=50.0e3, TAU=1.0),
+)
 
 
 acier = DEFI_MATERIAU(
-    ELAS_FO   = _F(E=young_a, NU=nu, ALPHA=alpha, TEMP_DEF_ALPHA=10),
-    ECRO_LINE = _F(SY=1.e30, D_SIGM_EPSI=0),
-    )
+    ELAS_FO=_F(E=young_a, NU=nu, ALPHA=alpha, TEMP_DEF_ALPHA=10),
+    ECRO_LINE=_F(SY=1.0e30, D_SIGM_EPSI=0),
+)
 
 
 bc = AFFE_CHAR_MECA(
-    MODELE    = mo,
-    FACE_IMPO = (
-        _F(GROUP_MA='xinf', DX=0),
-        _F(GROUP_MA='yinf', DY=0),
-        _F(GROUP_MA='zinf', DZ=0),
-        ),
-    )
+    MODELE=mo,
+    FACE_IMPO=(_F(GROUP_MA="xinf", DX=0), _F(GROUP_MA="yinf", DY=0), _F(GROUP_MA="zinf", DZ=0)),
+)
 
 
-rampe = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = (0,1),
-    ORDONNEE    = (0,1),
-    )
+rampe = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=(0, 1), ORDONNEE=(0, 1))
 
 
-load = AFFE_CHAR_MECA(
-    MODELE     = mo,
-    FORCE_FACE = _F(GROUP_MA='xsup', FX=4.6),
-    )
-
+load = AFFE_CHAR_MECA(MODELE=mo, FORCE_FACE=_F(GROUP_MA="xsup", FX=4.6))
 
 
 # --------------------------------------------------------------------------------------------------
-# Temperature applique au liner 
+# Temperature applique au liner
 # --------------------------------------------------------------------------------------------------
 
 temp_list = [
     CREA_CHAMP(
-        OPERATION = 'AFFE',
-        TYPE_CHAM = 'NOEU_TEMP_R',
-        MODELE    =  mo,
-        AFFE      = (
-            _F(GROUP_MA=('cube','barre','grille'), NOM_CMP='TEMP', VALE=temp),
-            ),
-        )
-    for temp in (10,110)
-    ]
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_TEMP_R",
+        MODELE=mo,
+        AFFE=(_F(GROUP_MA=("cube", "barre", "grille"), NOM_CMP="TEMP", VALE=temp),),
+    )
+    for temp in (10, 110)
+]
 
 
 temp = CREA_RESU(
-    OPERATION = 'AFFE',
-    TYPE_RESU = 'EVOL_THER',
-    NOM_CHAM  = 'TEMP',
-    AFFE      = [ _F(INST=t, CHAM_GD=temp_field) for (t,temp_field) in zip((0,1),temp_list) ],
-    )
-           
-            
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=[_F(INST=t, CHAM_GD=temp_field) for (t, temp_field) in zip((0, 1), temp_list)],
+)
+
+
 mat = AFFE_MATERIAU(
-    MODELE    = mo,
-    AFFE      = (
-        _F(GROUP_MA='cube',   MATER=beton),
-        _F(GROUP_MA='barre',  MATER=acier),
-        _F(GROUP_MA='grille', MATER=acier),
-        ),
-    AFFE_VARC = _F(
-        GROUP_MA = ('cube','barre','grille'),
-        NOM_VARC = 'TEMP',
-        EVOL     =  temp,
-        NOM_CHAM = 'TEMP',
-        VALE_REF =  10,
-        ),
-    )
+    MODELE=mo,
+    AFFE=(
+        _F(GROUP_MA="cube", MATER=beton),
+        _F(GROUP_MA="barre", MATER=acier),
+        _F(GROUP_MA="grille", MATER=acier),
+    ),
+    AFFE_VARC=_F(
+        GROUP_MA=("cube", "barre", "grille"),
+        NOM_VARC="TEMP",
+        EVOL=temp,
+        NOM_CHAM="TEMP",
+        VALE_REF=10,
+    ),
+)
 
 
-stepping = DEFI_LIST_INST(
-    DEFI_LIST = _F(VALE = (0,0.5,1)),
-    )
-    
-    
+stepping = DEFI_LIST_INST(DEFI_LIST=_F(VALE=(0, 0.5, 1)))
+
+
 evol = STAT_NON_LINE(
-    MODELE       = mo,
-    CHAM_MATER   = mat,
-    CARA_ELEM    = cael,
-    EXCIT        = (
-        _F(CHARGE=bc),
-        _F(CHARGE=load, FONC_MULT=rampe),
-        )
-        ,
-    COMPORTEMENT = (
-        _F(GROUP_MA='cube',   RELATION='VMIS_ISOT_NL',    REGU_VISC='OUI'),
-        _F(GROUP_MA='grille', RELATION='GRILLE_ISOT_LINE'                ),
-        _F(GROUP_MA='barre',  RELATION='VMIS_ISOT_LINE'                  ),
-        ),
-    INCREMENT     = _F(LIST_INST=stepping),
-    NEWTON        = _F(MATRICE='TANGENTE', REAC_ITER=1),
-    CONVERGENCE   = _F(
-        ITER_GLOB_MAXI = 50,
-        RESI_GLOB_MAXI = 3.e2*1.e-3,
-        ),
-    MESURE        = _F(TABLE='OUI'),
-    )
+    MODELE=mo,
+    CHAM_MATER=mat,
+    CARA_ELEM=cael,
+    EXCIT=(_F(CHARGE=bc), _F(CHARGE=load, FONC_MULT=rampe)),
+    COMPORTEMENT=(
+        _F(GROUP_MA="cube", RELATION="VMIS_ISOT_NL", REGU_VISC="OUI"),
+        _F(GROUP_MA="grille", RELATION="GRILLE_ISOT_LINE"),
+        _F(GROUP_MA="barre", RELATION="VMIS_ISOT_LINE"),
+    ),
+    INCREMENT=_F(LIST_INST=stepping),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_MAXI=3.0e2 * 1.0e-3),
+    MESURE=_F(TABLE="OUI"),
+)
 
 
-mesure = RECU_TABLE(CO=evol, NOM_TABLE='STAT')
+mesure = RECU_TABLE(CO=evol, NOM_TABLE="STAT")
 
 
 TEST_TABLE(
-    TABLE       = mesure,
-    NOM_PARA    ='Count_Newt_Iter',
-    FILTRE      = _F(NOM_PARA='INST',VALE=0.5),    
-    REFERENCE   = 'ANALYTIQUE',
-    PRECISION   = 0.1,
-    VALE_CALC_I = 1,
-    VALE_REFE_I = 1,
-    )
-    
-    
+    TABLE=mesure,
+    NOM_PARA="Count_Newt_Iter",
+    FILTRE=_F(NOM_PARA="INST", VALE=0.5),
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.1,
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+)
+
+
 TEST_TABLE(
-    TABLE       = mesure,
-    NOM_PARA    ='Count_Newt_Iter',
-    FILTRE      = _F(NOM_PARA='INST',VALE=1.0),    
-    REFERENCE   = 'ANALYTIQUE',
-    PRECISION   = 0.1,
-    VALE_CALC_I = 1,
-    VALE_REFE_I = 1,
-    )
-    
-        
+    TABLE=mesure,
+    NOM_PARA="Count_Newt_Iter",
+    FILTRE=_F(NOM_PARA="INST", VALE=1.0),
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.1,
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+)
+
+
 FIN()

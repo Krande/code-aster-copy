@@ -19,30 +19,38 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),  DEBUG=_F(SDVERI='OUI',),   INFO=1,)
-
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 
 ###TEST groupe de maille avec maille voulumique commune
 
-Mail=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',)
+Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 
-Mail1=CREA_MAILLAGE(MAILLAGE=Mail,
-                   DECOUPE_LAC=_F(GROUP_MA_ESCL=('escl_tot'),),)
+Mail1 = CREA_MAILLAGE(MAILLAGE=Mail, DECOUPE_LAC=_F(GROUP_MA_ESCL=("escl_tot")))
 
 
-IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mail1),)
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(MAILLAGE=Mail1))
 
 
-TEST_RESU(MAILLAGE=(
-       _F( REFERENCE='ANALYTIQUE', MAILLAGE=Mail1,
-           CARA='NB_MAILLE', VALE_REFE_I=4047, VALE_CALC_I=4047,),
-       _F( REFERENCE='ANALYTIQUE', MAILLAGE=Mail1,
-           CARA='NB_NOEUD', VALE_REFE_I=873, VALE_CALC_I=873,),))
-
-
+TEST_RESU(
+    MAILLAGE=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            MAILLAGE=Mail1,
+            CARA="NB_MAILLE",
+            VALE_REFE_I=4047,
+            VALE_CALC_I=4047,
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            MAILLAGE=Mail1,
+            CARA="NB_NOEUD",
+            VALE_REFE_I=873,
+            VALE_CALC_I=873,
+        ),
+    )
+)
 
 
 FIN()

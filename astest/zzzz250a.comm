@@ -19,10 +19,9 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
-                            NU=0.0,),)
+acier = DEFI_MATERIAU(ELAS=_F(E=210000000000.0, NU=0.0))
 
 
 # 1 - VALIDATION DE ORIE_PEAU/GROUP_MA_INTERNE
@@ -48,69 +47,68 @@ acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 # L'etat initial est tel que la maille CD est mal orientee, il faut donc la
 # reoriente avec MODI_MAILLAGE et ORIE_PEAU/GROUP_MA_INTERNE
 #
-mail2D = LIRE_MAILLAGE (FORMAT="ASTER",INFO=2)
+mail2D = LIRE_MAILLAGE(FORMAT="ASTER", INFO=2)
 
-mail2D=MODI_MAILLAGE(reuse=mail2D,
-                 MAILLAGE=mail2D,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_CD'),
-                                 GROUP_MA_INTERNE=('GXXXXXX_MA1'),),)
+mail2D = MODI_MAILLAGE(
+    reuse=mail2D,
+    MAILLAGE=mail2D,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("GXXXXXX_CD"), GROUP_MA_INTERNE=("GXXXXXX_MA1")),
+)
 
-chmat2D=AFFE_MATERIAU(MAILLAGE=mail2D,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=acier,),)
+chmat2D = AFFE_MATERIAU(MAILLAGE=mail2D, AFFE=_F(TOUT="OUI", MATER=acier))
 
-mo2D=AFFE_MODELE(MAILLAGE=mail2D,
-                AFFE=_F(TOUT='OUI',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='C_PLAN',),)
+mo2D = AFFE_MODELE(
+    MAILLAGE=mail2D, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")
+)
 
 
-clim2D=AFFE_CHAR_MECA(MODELE=mo2D,
-                    DDL_IMPO=_F(GROUP_NO=('GXXXXXX_AB',),
-                                DX=0.,DY=0.,),)
+clim2D = AFFE_CHAR_MECA(MODELE=mo2D, DDL_IMPO=_F(GROUP_NO=("GXXXXXX_AB",), DX=0.0, DY=0.0))
 
 # On ajoute VERI_NORM='NON' pour annuler la verification de la normale
 
-pres2D=AFFE_CHAR_MECA(MODELE=mo2D,VERI_NORM='NON',
-                      PRES_REP=_F(GROUP_MA=('GXXXXXX_CD',),
-                      PRES=-1.E8),)
+pres2D = AFFE_CHAR_MECA(
+    MODELE=mo2D, VERI_NORM="NON", PRES_REP=_F(GROUP_MA=("GXXXXXX_CD",), PRES=-1.0e8)
+)
 
-resu2D=MECA_STATIQUE(
-                   MODELE=mo2D,
-                   CHAM_MATER=chmat2D,
-                   EXCIT=(_F(CHARGE=pres2D,),
-                        _F(CHARGE=clim2D,),),)
+resu2D = MECA_STATIQUE(
+    MODELE=mo2D, CHAM_MATER=chmat2D, EXCIT=(_F(CHARGE=pres2D), _F(CHARGE=clim2D))
+)
 
-resu2D=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=resu2D,reuse=resu2D)
+resu2D = CALC_CHAMP(CONTRAINTE=("SIGM_ELNO"), RESULTAT=resu2D, reuse=resu2D)
 
 
 # On verifie que :
 #  - le deplacement est positif et egal = 0.00142857 aux noeuds C et D.
 #  - la contrainte SIXX dans la maille MA1 est positive et egale a 1.E8.
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=resu2D,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='C',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.42857143E-03,
-                  VALE_REFE=1.4285700000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=resu2D,
+        NOM_CHAM="DEPL",
+        GROUP_NO="C",
+        NOM_CMP="DX",
+        VALE_CALC=1.42857143e-03,
+        VALE_REFE=1.4285700000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=resu2D,
-                  NOM_CHAM='SIGM_ELNO',
-                  GROUP_NO='C',
-                  NOM_CMP='SIXX',
-                  VALE_CALC= 1.00000000E+08,
-                  VALE_REFE=1.E8,
-                  GROUP_MA='MA1',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=resu2D,
+        NOM_CHAM="SIGM_ELNO",
+        GROUP_NO="C",
+        NOM_CMP="SIXX",
+        VALE_CALC=1.00000000e08,
+        VALE_REFE=1.0e8,
+        GROUP_MA="MA1",
+    )
+)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu2D))
-
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=resu2D))
 
 
 # 2 - VALIDATION DE ORIE_PEAU/GROUP_MA_INTERNE
@@ -141,67 +139,65 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu2D))
 # reoriente avec MODI_MAILLAGE et ORIE_PEAU/GROUP_MA_INTERNE
 #
 
-mail3D = LIRE_MAILLAGE (FORMAT="ASTER",UNITE=21,INFO=2)
+mail3D = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21, INFO=2)
 
-mail3D=MODI_MAILLAGE(reuse=mail3D,
-                 MAILLAGE=mail3D,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_M2'),
-                                 GROUP_MA_INTERNE=('GXXXXXX_MA1'),),)
+mail3D = MODI_MAILLAGE(
+    reuse=mail3D,
+    MAILLAGE=mail3D,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("GXXXXXX_M2"), GROUP_MA_INTERNE=("GXXXXXX_MA1")),
+)
 
-chmat3D=AFFE_MATERIAU(MAILLAGE=mail3D,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=acier,),)
+chmat3D = AFFE_MATERIAU(MAILLAGE=mail3D, AFFE=_F(TOUT="OUI", MATER=acier))
 
-mo3D=AFFE_MODELE(MAILLAGE=mail3D,
-                AFFE=_F(TOUT='OUI',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),)
+mo3D = AFFE_MODELE(MAILLAGE=mail3D, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-clim3D=AFFE_CHAR_MECA(MODELE=mo3D,
-                    DDL_IMPO=_F(GROUP_MA=('GXXXXXX_M1',),
-                                DX=0.,DY=0.,DZ=0.),)
+clim3D = AFFE_CHAR_MECA(MODELE=mo3D, DDL_IMPO=_F(GROUP_MA=("GXXXXXX_M1",), DX=0.0, DY=0.0, DZ=0.0))
 
 # On ajoute VERI_NORM='NON' pour annuler la verification de la normale
 
-pres3D=AFFE_CHAR_MECA(MODELE=mo3D,VERI_NORM='NON',
-                      PRES_REP=_F(GROUP_MA=('GXXXXXX_M2',),
-                      PRES=-1.E8),)
+pres3D = AFFE_CHAR_MECA(
+    MODELE=mo3D, VERI_NORM="NON", PRES_REP=_F(GROUP_MA=("GXXXXXX_M2",), PRES=-1.0e8)
+)
 
-resu3D=MECA_STATIQUE(
-                   MODELE=mo3D,
-                   CHAM_MATER=chmat3D,
-                   EXCIT=(_F(CHARGE=pres3D,),
-                        _F(CHARGE=clim3D,),),)
+resu3D = MECA_STATIQUE(
+    MODELE=mo3D, CHAM_MATER=chmat3D, EXCIT=(_F(CHARGE=pres3D), _F(CHARGE=clim3D))
+)
 
-resu3D=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=resu3D,reuse=resu3D)
+resu3D = CALC_CHAMP(CONTRAINTE=("SIGM_ELNO"), RESULTAT=resu3D, reuse=resu3D)
 
 
 # On verifie que :
 #  - le deplacement est positif et egal = 0.00142857 aux noeuds C,D
 #  - la contrainte SIXX, dans la maille MA1, est positive et egale a 1.E8
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=resu3D,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='C',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.42857143E-03,
-                  VALE_REFE=1.4285700000000001E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=resu3D,
+        NOM_CHAM="DEPL",
+        GROUP_NO="C",
+        NOM_CMP="DX",
+        VALE_CALC=1.42857143e-03,
+        VALE_REFE=1.4285700000000001e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=resu3D,
-                  NOM_CHAM='SIGM_ELNO',
-                  GROUP_NO='C',
-                  NOM_CMP='SIXX',
-                  VALE_CALC= 1.00000000E+08,
-                  VALE_REFE=1.E8,
-                  GROUP_MA='MA1',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=resu3D,
+        NOM_CHAM="SIGM_ELNO",
+        GROUP_NO="C",
+        NOM_CMP="SIXX",
+        VALE_CALC=1.00000000e08,
+        VALE_REFE=1.0e8,
+        GROUP_MA="MA1",
+    )
+)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu3D))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=resu3D))
 
 
 FIN()

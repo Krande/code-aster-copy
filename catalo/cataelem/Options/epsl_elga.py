@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,38 +20,32 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
-
-
-PDEFOPG  = OutputParameter(phys=PHY.EPSI_R, type='ELGA',
-comment="""  PDEFOPG : DEFORMATIONS LOGARITHMIQUES AUX POINTS DE GAUSS """)
+PDEFOPG = OutputParameter(
+    phys=PHY.EPSI_R,
+    type="ELGA",
+    comment="""  PDEFOPG : DEFORMATIONS LOGARITHMIQUES AUX POINTS DE GAUSS """,
+)
 
 
 EPSL_ELGA = Option(
-    para_in=(
-        SP.PDEPLAR,
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PTEMPSR,
-           PVARCPR,
-        SP.PVARCRR,
-    ),
-    para_out=(
-           PDEFOPG,
-    ),
+    para_in=(SP.PDEPLAR, SP.PGEOMER, SP.PMATERC, SP.PTEMPSR, PVARCPR, SP.PVARCRR),
+    para_out=(PDEFOPG,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.DISCRET, "OUI"))),
     ),
     comment="""  EPSL_ELGA : DEFORMATIONS LOGARITHMIQUES PAR ELEMENTS
                        AUX POINTS DE GAUSS """,

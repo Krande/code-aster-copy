@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,22 +21,33 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'LKR',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """To complete ..."""            ,
-    num_lc         = 59,
-    nb_vari        = 12,
-    nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL',
-        'INDIVISC','INDIPLAS','EPSVOLME','EPSVOLTH','EPSPVOL',
-        'EPSVOLVP','DOMAINE',),
-    mc_mater       = ('ELAS','LKR',),
-    modelisation   = ('3D','AXIS','D_PLAN','THM',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('NEWTON','NEWTON_PERT','SPECIFIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('No',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="LKR",
+    lc_type=("MECANIQUE",),
+    doc="""To complete ...""",
+    num_lc=59,
+    nb_vari=12,
+    nom_vari=(
+        "XIP",
+        "GAMMAP",
+        "XIVP",
+        "GAMMAVP",
+        "INDICDIL",
+        "INDIVISC",
+        "INDIPLAS",
+        "EPSVOLME",
+        "EPSVOLTH",
+        "EPSPVOL",
+        "EPSVOLVP",
+        "DOMAINE",
+    ),
+    mc_mater=("ELAS", "LKR"),
+    modelisation=("3D", "AXIS", "D_PLAN", "THM"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("NEWTON", "NEWTON_PERT", "SPECIFIQUE"),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("No",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

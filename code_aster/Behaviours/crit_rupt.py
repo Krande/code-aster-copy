@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'CRIT_RUPT',
-    lc_type        = ('UTILITAIRE',),
-    doc            =   """Détection critère de rupture"""              ,
-    num_lc         = 0,
-    nb_vari        = 6,
-    nom_vari       = ('EPSPVIT','EDISS','EDISSCUM','PDISS','PDISSCUM',
-        'CRITRUPT',),
-    mc_mater       = None,
-    modelisation   = None,
-    deformation    = None,
-    algo_inte      = None,
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="CRIT_RUPT",
+    lc_type=("UTILITAIRE",),
+    doc="""Détection critère de rupture""",
+    num_lc=0,
+    nb_vari=6,
+    nom_vari=("EPSPVIT", "EDISS", "EDISSCUM", "PDISS", "PDISSCUM", "CRITRUPT"),
+    mc_mater=None,
+    modelisation=None,
+    deformation=None,
+    algo_inte=None,
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

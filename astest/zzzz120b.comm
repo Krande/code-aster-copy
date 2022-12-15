@@ -17,582 +17,467 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET',),
-      DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), DEBUG=_F(SDVERI="OUI"))
 
 from zzzz120a_geom import *
 
 # CAS TEST : CALCUL D UN ASSEMBLAGE GOUJON-BRIDE
 # LA BRIDE NE COMPORTE NI HAUT DE BRIDE NI BAS DE BRIDE
 
-MAIL=LIRE_MAILLAGE()
+MAIL = LIRE_MAILLAGE()
 
-modele=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=(_F(GROUP_MA='GOUJON',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_E',),
-                         _F(GROUP_MA='FILETS',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='2D_DIS_T',),
-                         _F(GROUP_MA='BRIDE',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='AXIS',),),)
+modele = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="GOUJON", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+        _F(GROUP_MA="FILETS", PHENOMENE="MECANIQUE", MODELISATION="2D_DIS_T"),
+        _F(GROUP_MA="BRIDE", PHENOMENE="MECANIQUE", MODELISATION="AXIS"),
+    ),
+)
 
-carael=AFFE_CARA_ELEM(MODELE=modele,
-                      POUTRE=_F(GROUP_MA='GOUJON',
-                                SECTION='CERCLE',
-                                CARA='R',
-                                VALE=73.6478136849,),
-                      DISCRET_2D=_F(GROUP_MA='FILETS',
-                                    CARA='K_T_D_L',
-                                    VALE=(10000000.0,10000000.0,),),)
+carael = AFFE_CARA_ELEM(
+    MODELE=modele,
+    POUTRE=_F(GROUP_MA="GOUJON", SECTION="CERCLE", CARA="R", VALE=73.6478136849),
+    DISCRET_2D=_F(GROUP_MA="FILETS", CARA="K_T_D_L", VALE=(10000000.0, 10000000.0)),
+)
 
-MF_1=DEFI_MATERIAU(TRACTION=_F(SIGM=PFM155B,),)
+MF_1 = DEFI_MATERIAU(TRACTION=_F(SIGM=PFM155B))
 
-MF_2=DEFI_MATERIAU(TRACTION=_F(SIGM=DFM155B,),)
+MF_2 = DEFI_MATERIAU(TRACTION=_F(SIGM=DFM155B))
 
-MF_C=DEFI_MATERIAU(TRACTION=_F(SIGM=FCM155B,),)
+MF_C = DEFI_MATERIAU(TRACTION=_F(SIGM=FCM155B))
 
-chmat=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=(_F(GROUP_MA='GOUJON',
-                             MATER=MGM155B,),
-                          _F(GROUP_MA='FILETS',
-                             MATER=MF_C,),
-                          _F(GROUP_MA='BRIDE',
-                             MATER=MBM155B,),
-                          _F(GROUP_MA='FIL001',
-                             MATER=MF_1,),
-                          _F(GROUP_MA='FIL002',
-                             MATER=MF_2,),),)
+chmat = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="GOUJON", MATER=MGM155B),
+        _F(GROUP_MA="FILETS", MATER=MF_C),
+        _F(GROUP_MA="BRIDE", MATER=MBM155B),
+        _F(GROUP_MA="FIL001", MATER=MF_1),
+        _F(GROUP_MA="FIL002", MATER=MF_2),
+    ),
+)
 
-charme=AFFE_CHAR_MECA(MODELE=modele,
-                      DDL_IMPO=_F(GROUP_NO=('GOUJ_NO','FILET_NO','BRIDE_NO',),
-                                  DX=0.0,),
-                      FACE_IMPO=(_F(GROUP_MA=('DBRIDE','BBRIDE',),
-                                    DY=0.0,),
-                                 _F(GROUP_MA='GOUJON',
-                                    DZ=0.0,
-                                    DRY=0.0,),),
-                      FORCE_NODALE=_F(GROUP_NO='PHGOUJ',
-                                      FY=1.0,),)
+charme = AFFE_CHAR_MECA(
+    MODELE=modele,
+    DDL_IMPO=_F(GROUP_NO=("GOUJ_NO", "FILET_NO", "BRIDE_NO"), DX=0.0),
+    FACE_IMPO=(_F(GROUP_MA=("DBRIDE", "BBRIDE"), DY=0.0), _F(GROUP_MA="GOUJON", DZ=0.0, DRY=0.0)),
+    FORCE_NODALE=_F(GROUP_NO="PHGOUJ", FY=1.0),
+)
 
-fonc=DEFI_FONCTION(NOM_PARA='INST',
-                   NOM_RESU='TOUTRESU',
-                   VALE=(0.0,0.0,5.0,5000000.0,),)
+fonc = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TOUTRESU", VALE=(0.0, 0.0, 5.0, 5000000.0))
 
-listinst=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=(_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),
-                                _F(JUSQU_A=2.0,
-                                   NOMBRE=1,),
-                                _F(JUSQU_A=3.0,
-                                   NOMBRE=1,),
-                                _F(JUSQU_A=4.0,
-                                   NOMBRE=1,),
-                                _F(JUSQU_A=5.0,
-                                   NOMBRE=1,),),)
+listinst = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0, NOMBRE=1),
+        _F(JUSQU_A=2.0, NOMBRE=1),
+        _F(JUSQU_A=3.0, NOMBRE=1),
+        _F(JUSQU_A=4.0, NOMBRE=1),
+        _F(JUSQU_A=5.0, NOMBRE=1),
+    ),
+)
 
-CALC=STAT_NON_LINE(MODELE=modele,
-                   CHAM_MATER=chmat,
-                   CARA_ELEM=carael,
-                   EXCIT=_F(CHARGE=charme,
-                            FONC_MULT=fonc,
-                            TYPE_CHARGE='FIXE_CSTE',),
-                   COMPORTEMENT=(_F(RELATION='ELAS',
-                                 DEFORMATION='PETIT',
-                                 GROUP_MA='GOUJON',),
-                              _F(RELATION='ELAS',
-                                 DEFORMATION='PETIT',
-                                 GROUP_MA='BRIDE',),
-                              _F(RELATION='DIS_GOUJ2E_PLAS',
-                                 DEFORMATION='PETIT',
-                                 GROUP_MA='FILETS',),),
-                   INCREMENT=_F(LIST_INST=listinst,),
-                   NEWTON=_F(REAC_ITER=3,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=20,),)
+CALC = STAT_NON_LINE(
+    MODELE=modele,
+    CHAM_MATER=chmat,
+    CARA_ELEM=carael,
+    EXCIT=_F(CHARGE=charme, FONC_MULT=fonc, TYPE_CHARGE="FIXE_CSTE"),
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", DEFORMATION="PETIT", GROUP_MA="GOUJON"),
+        _F(RELATION="ELAS", DEFORMATION="PETIT", GROUP_MA="BRIDE"),
+        _F(RELATION="DIS_GOUJ2E_PLAS", DEFORMATION="PETIT", GROUP_MA="FILETS"),
+    ),
+    INCREMENT=_F(LIST_INST=listinst),
+    NEWTON=_F(REAC_ITER=3),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+)
 
-CALC=CALC_CHAMP(reuse =CALC,
-             RESULTAT=CALC,
-             PRECISION=0.001,
-             CRITERE='RELATIF',
-             FORCE='FORC_NODA',
-             GROUP_MA='FILETS',)
+CALC = CALC_CHAMP(
+    reuse=CALC,
+    RESULTAT=CALC,
+    PRECISION=0.001,
+    CRITERE="RELATIF",
+    FORCE="FORC_NODA",
+    GROUP_MA="FILETS",
+)
 
-tab1=POST_RELEVE_T(ACTION=_F(INTITULE='RESU_T1',
-                             GROUP_NO='NDFILETS',
-                             FORMAT_C='MODULE',
-                             RESULTAT=CALC,
-                             NOM_CHAM='FORC_NODA',
-                             NUME_ORDRE    = (1,2,3,4,5),
-                             PRECISION=1e-06,
-                             CRITERE='RELATIF',
-                             NOM_CMP='DY',
-                             REPERE='GLOBAL',
-                             MOYE_NOEUD='OUI',
-                             OPERATION='EXTRACTION',),)
+tab1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="RESU_T1",
+        GROUP_NO="NDFILETS",
+        FORMAT_C="MODULE",
+        RESULTAT=CALC,
+        NOM_CHAM="FORC_NODA",
+        NUME_ORDRE=(1, 2, 3, 4, 5),
+        PRECISION=1e-06,
+        CRITERE="RELATIF",
+        NOM_CMP="DY",
+        REPERE="GLOBAL",
+        MOYE_NOEUD="OUI",
+        OPERATION="EXTRACTION",
+    )
+)
 
-tab2=POST_GOUJ(TABLE=tab1,)
+tab2 = POST_GOUJ(TABLE=tab1)
 
-IMPR_TABLE(TABLE=tab2,
-           UNITE=8,
-           FORMAT='AGRAF',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=1,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
+IMPR_TABLE(
+    TABLE=tab2,
+    UNITE=8,
+    FORMAT="AGRAF",
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+    NOM_PARA=("NUME_ORDRE", "NUME_FILET", "REACTION", "REACTION_CUMU"),
+)
 
-IMPR_TABLE(TABLE=tab2,
-           UNITE=8,
-           FORMAT='AGRAF',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=2,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
+IMPR_TABLE(
+    TABLE=tab2,
+    UNITE=8,
+    FORMAT="AGRAF",
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=2),
+    NOM_PARA=("NUME_ORDRE", "NUME_FILET", "REACTION", "REACTION_CUMU"),
+)
 
-IMPR_TABLE(TABLE=tab2,
-           UNITE=8,
-           FORMAT='AGRAF',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=3,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
+IMPR_TABLE(
+    TABLE=tab2,
+    UNITE=8,
+    FORMAT="AGRAF",
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=3),
+    NOM_PARA=("NUME_ORDRE", "NUME_FILET", "REACTION", "REACTION_CUMU"),
+)
 
-IMPR_TABLE(TABLE=tab2,
-           UNITE=8,
-           FORMAT='AGRAF',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=4,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
+IMPR_TABLE(
+    TABLE=tab2,
+    UNITE=8,
+    FORMAT="AGRAF",
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=4),
+    NOM_PARA=("NUME_ORDRE", "NUME_FILET", "REACTION", "REACTION_CUMU"),
+)
 
-IMPR_TABLE(TABLE=tab2,
-           UNITE=8,
-           FORMAT='AGRAF',
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=5,),
-           NOM_PARA=('NUME_ORDRE','NUME_FILET','REACTION','REACTION_CUMU',),)
+IMPR_TABLE(
+    TABLE=tab2,
+    UNITE=8,
+    FORMAT="AGRAF",
+    FILTRE=_F(NOM_PARA="NUME_ORDRE", VALE_I=5),
+    NOM_PARA=("NUME_ORDRE", "NUME_FILET", "REACTION", "REACTION_CUMU"),
+)
 
 # POST-TRAITMENT
 
-TFORC=POST_RELEVE_T(ACTION=_F(INTITULE='C_TEST1',
-                              GROUP_NO='NDFILETS',
-                              RESULTAT=CALC,
-                              NOM_CHAM='FORC_NODA',
-                              NUME_ORDRE    = (1,2,3,4,5),
-                              NOM_CMP='DY',
-                              OPERATION='EXTRACTION',),)
+TFORC = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="C_TEST1",
+        GROUP_NO="NDFILETS",
+        RESULTAT=CALC,
+        NOM_CHAM="FORC_NODA",
+        NUME_ORDRE=(1, 2, 3, 4, 5),
+        NOM_CMP="DY",
+        OPERATION="EXTRACTION",
+    )
+)
 
-NTFORC=POST_GOUJ(TABLE=TFORC,)
+NTFORC = POST_GOUJ(TABLE=TFORC)
 
-#---------------------------------------------
+# ---------------------------------------------
 # TEST DES VALEURS
-#---------------------------------------------
+# ---------------------------------------------
 # TEST DES VALEURS PAR RAPPORT AUX RESULTATS ANTHEMIX
 # PAS DE CHARGE 1
 
-TEST_TABLE(PRECISION=0.035000000000000003,
-           VALE_CALC= 5.55045645E+04,
-           VALE_REFE=5.5327099999999999E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=1,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.035000000000000003,
+    VALE_CALC=5.55045645e04,
+    VALE_REFE=5.5327099999999999e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=1)),
+)
 
-TEST_TABLE(PRECISION=0.11650000000000001,
-           VALE_CALC= 6.48494242E+04,
-           VALE_REFE=7.3394399999999994E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=2,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.11650000000000001,
+    VALE_CALC=6.48494242e04,
+    VALE_REFE=7.3394399999999994e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=2)),
+)
 
-TEST_TABLE(PRECISION=0.1235,
-           VALE_CALC= 6.25511993E+04,
-           VALE_REFE=7.1361100000000006E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=5,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.1235,
+    VALE_CALC=6.25511993e04,
+    VALE_REFE=7.1361100000000006e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=5)),
+)
 
-TEST_TABLE(PRECISION=0.13869999999999999,
-           VALE_CALC= 5.56556829E+04,
-           VALE_REFE=6.46135E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=6,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.13869999999999999,
+    VALE_CALC=5.56556829e04,
+    VALE_REFE=6.46135e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=6)),
+)
 
-TEST_TABLE(PRECISION=0.14899999999999999,
-           VALE_CALC= 5.00993442E+04,
-           VALE_REFE=5.8517199999999997E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=7,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.14899999999999999,
+    VALE_CALC=5.00993442e04,
+    VALE_REFE=5.8517199999999997e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=7)),
+)
 
-TEST_TABLE(PRECISION=0.35199999999999998,
-           VALE_CALC= 1.12943796E+04,
-           VALE_REFE=8359.7199999999993,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=28,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.35199999999999998,
+    VALE_CALC=1.12943796e04,
+    VALE_REFE=8359.7199999999993,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=28)),
+)
 
-TEST_TABLE(PRECISION=0.0154,
-           VALE_CALC= 1.02132866E+04,
-           VALE_REFE=1.0058799999999999E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=55,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.0154,
+    VALE_CALC=1.02132866e04,
+    VALE_REFE=1.0058799999999999e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=55)),
+)
 
-TEST_TABLE(PRECISION=0.065000000000000002,
-           VALE_CALC= 1.17139688E+04,
-           VALE_REFE=1.10041E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=56,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.065000000000000002,
+    VALE_CALC=1.17139688e04,
+    VALE_REFE=1.10041e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=56)),
+)
 
 # PAS DE CHARGE 5
 
-TEST_TABLE(PRECISION=0.13400000000000001,
-           VALE_CALC= 2.57684631E+05,
-           VALE_REFE=2.97536E5,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=1,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.13400000000000001,
+    VALE_CALC=2.57684631e05,
+    VALE_REFE=2.97536e5,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=1)),
+)
 
-TEST_TABLE(PRECISION=0.067000000000000004,
-           VALE_CALC= 3.20997893E+05,
-           VALE_REFE=3.43887E5,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=2,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.067000000000000004,
+    VALE_CALC=3.20997893e05,
+    VALE_REFE=3.43887e5,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=2)),
+)
 
-TEST_TABLE(PRECISION=0.084199999999999997,
-           VALE_CALC= 3.07108327E+05,
-           VALE_REFE=3.35310E5,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=5,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.084199999999999997,
+    VALE_CALC=3.07108327e05,
+    VALE_REFE=3.35310e5,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=5)),
+)
 
-TEST_TABLE(PRECISION=0.1128,
-           VALE_CALC= 2.77724314E+05,
-           VALE_REFE=3.12992E5,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=6,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.1128,
+    VALE_CALC=2.77724314e05,
+    VALE_REFE=3.12992e5,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=6)),
+)
 
-TEST_TABLE(PRECISION=0.1381,
-           VALE_CALC= 2.50588395E+05,
-           VALE_REFE=2.90708E5,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=7,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.1381,
+    VALE_CALC=2.50588395e05,
+    VALE_REFE=2.90708e5,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=7)),
+)
 
-TEST_TABLE(PRECISION=0.3347,
-           VALE_CALC= 5.70916176E+04,
-           VALE_REFE=4.2778699999999997E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=28,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.3347,
+    VALE_CALC=5.70916176e04,
+    VALE_REFE=4.2778699999999997e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=28)),
+)
 
-TEST_TABLE(PRECISION=0.018200000000000001,
-           VALE_CALC= 5.13516980E+04,
-           VALE_REFE=5.04395E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=55,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.018200000000000001,
+    VALE_CALC=5.13516980e04,
+    VALE_REFE=5.04395e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=55)),
+)
 
-TEST_TABLE(PRECISION=0.067519999999999997,
-           VALE_CALC= 5.88938021E+04,
-           VALE_REFE=5.5169099999999999E4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=56,),
-                   ),
-           )
+TEST_TABLE(
+    PRECISION=0.067519999999999997,
+    VALE_CALC=5.88938021e04,
+    VALE_REFE=5.5169099999999999e4,
+    REFERENCE="NON_DEFINI",
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=56)),
+)
 
 # TEST DES VALEURS PAR RAPPORT AUX RESULTATS ASTER
 # (TEST DE NON REGRESSION)
 # PAS DE CHARGE 1
 
 TEST_TABLE(
-           VALE_CALC=5.5504573218899997E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=1,),
-                   ),
-           )
+    VALE_CALC=5.5504573218899997e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=1)),
+)
 
 TEST_TABLE(
-           VALE_CALC=6.4849430359999998E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=2,),
-                   ),
-           )
+    VALE_CALC=6.4849430359999998e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=2)),
+)
 
 TEST_TABLE(
-           VALE_CALC=6.2551200299600001E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=5,),
-                   ),
-           )
+    VALE_CALC=6.2551200299600001e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=5)),
+)
 
 TEST_TABLE(
-           VALE_CALC=5.5655683342299999E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=6,),
-                   ),
-           )
+    VALE_CALC=5.5655683342299999e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=6)),
+)
 
 TEST_TABLE(
-           VALE_CALC=5.0099344212800002E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=7,),
-                   ),
-           )
+    VALE_CALC=5.0099344212800002e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=7)),
+)
 
 TEST_TABLE(
-           VALE_CALC=1.12943792507E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=28,),
-                   ),
-           )
+    VALE_CALC=1.12943792507e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=28)),
+)
 
 TEST_TABLE(
-           VALE_CALC=1.0213286455699999E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=55,),
-                   ),
-           )
+    VALE_CALC=1.0213286455699999e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=55)),
+)
 
 TEST_TABLE(
-           VALE_CALC=1.17139686477E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=56,),
-                   ),
-           )
+    VALE_CALC=1.17139686477e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=1), _F(NOM_PARA="NUME_FILET", VALE_I=56)),
+)
 
 # PAS DE CHARGE 5
 
 TEST_TABLE(
-           VALE_CALC=2.5768465908799999E5,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=1,),
-                   ),
-           )
+    VALE_CALC=2.5768465908799999e5,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=1)),
+)
 
 TEST_TABLE(
-           VALE_CALC=3.2099790458099998E5,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=2,),
-                   ),
-           )
+    VALE_CALC=3.2099790458099998e5,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=2)),
+)
 
 TEST_TABLE(
-           VALE_CALC=3.0710831698E5,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=5,),
-                   ),
-           )
+    VALE_CALC=3.0710831698e5,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=5)),
+)
 
 TEST_TABLE(
-           VALE_CALC=2.7772429590500001E5,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=6,),
-                   ),
-           )
+    VALE_CALC=2.7772429590500001e5,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=6)),
+)
 
 TEST_TABLE(
-           VALE_CALC=2.50588373272E5,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=7,),
-                   ),
-           )
+    VALE_CALC=2.50588373272e5,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=7)),
+)
 
 TEST_TABLE(
-           VALE_CALC=5.7091611793199998E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=28,),
-                   ),
-           )
+    VALE_CALC=5.7091611793199998e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=28)),
+)
 
 TEST_TABLE(
-           VALE_CALC=5.1351695599300001E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=55,),
-                   ),
-           )
+    VALE_CALC=5.1351695599300001e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=55)),
+)
 
 TEST_TABLE(
-           VALE_CALC=5.8893799435699999E4,
-           TOLE_MACHINE=1.E-4,
-           NOM_PARA='REACTION',
-           TABLE=NTFORC,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=5,),
-                   _F(NOM_PARA='NUME_FILET',
-                      VALE_I=56,),
-                   ),
-           )
+    VALE_CALC=5.8893799435699999e4,
+    TOLE_MACHINE=1.0e-4,
+    NOM_PARA="REACTION",
+    TABLE=NTFORC,
+    FILTRE=(_F(NOM_PARA="NUME_ORDRE", VALE_I=5), _F(NOM_PARA="NUME_FILET", VALE_I=56)),
+)
 
 FIN()
 #

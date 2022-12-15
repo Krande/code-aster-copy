@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,7 @@
 # person_in_charge: albert.alarcon at edf.fr
 
 from ..Cata.SyntaxUtils import remove_none
-from ..Commands import (
-    ASSE_MATRICE,
-    ASSE_VECTEUR,
-    CALC_MATR_ELEM,
-    CALC_VECT_ELEM,
-    NUME_DDL,
-)
+from ..Commands import ASSE_MATRICE, ASSE_VECTEUR, CALC_MATR_ELEM, CALC_VECT_ELEM, NUME_DDL
 from ..Messages import UTMESS
 
 
@@ -146,9 +140,7 @@ def assemblage_ops(self, MODELE, NUME_DDL, INFO, **args):
 
             # Create NUME_DDL
             if numeddl_status != "OK":
-                num = create_nume(
-                    self, numeddl_status, option, numeddl, _a, CHARGE, info, MODELE
-                )
+                num = create_nume(self, numeddl_status, option, numeddl, _a, CHARGE, info, MODELE)
                 if numeddl_status == "To_Create":
                     self.register_result(num, numeddl)
                 numeddl_status = "OK"
@@ -195,7 +187,7 @@ def assemblage_ops(self, MODELE, NUME_DDL, INFO, **args):
                 if INST:
                     motscles["INST"] = INST
 
-            elif option == 'CHAR_ACOU':
+            elif option == "CHAR_ACOU":
                 if CHAM_MATER is None:
                     UTMESS("F", "MATRICE0_7")
                 else:
@@ -207,9 +199,7 @@ def assemblage_ops(self, MODELE, NUME_DDL, INFO, **args):
 
             # Create NUME_DDL
             if numeddl_status != "OK":
-                num = create_nume(
-                    self, numeddl_status, option, numeddl, None, CHARGE, info, MODELE
-                )
+                num = create_nume(self, numeddl_status, option, numeddl, None, CHARGE, info, MODELE)
                 if numeddl_status == "To_Create":
                     self.register_result(num, numeddl)
                 numeddl_status = "OK"

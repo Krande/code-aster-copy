@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class ConstantAsFunction(ExecuteCommand):
     """Command that creates a :py:class:`~code_aster.Objects.Function`."""
+
     command_name = "DEFI_CONSTANTE"
 
     def create_result(self, keywords):
@@ -44,12 +45,12 @@ class ConstantAsFunction(ExecuteCommand):
         funct = self._result
 
         value = None
-        if type(keywords['VALE']) is tuple:
-            value = list(keywords['VALE'])
+        if type(keywords["VALE"]) is tuple:
+            value = list(keywords["VALE"])
         else:
-            value = [keywords['VALE'],]
-        funct.setValues([1.], value)
-        funct.setResultName(keywords['NOM_RESU'])
+            value = [keywords["VALE"]]
+        funct.setValues([1.0], value)
+        funct.setResultName(keywords["NOM_RESU"])
         funct.setParameterName("TOUTPARA")
         funct.setInterpolation("LIN LIN")
         funct.setExtrapolation("CC")

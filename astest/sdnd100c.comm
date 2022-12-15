@@ -21,153 +21,150 @@
 #   FICHIER DE COMMANDE ASTER DU CAS-TEST DE FROTTEMENT A 1 DDL
 #   LIAISON DIS_CONTACT A UN NOEUD / METHODE : DYNA_NON_LINE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 #
-M=1.
+M = 1.0
 
-K=1.E+04
+K = 1.0e04
 
-G=10.
+G = 10.0
 
-U0=0.85E-03
+U0 = 0.85e-03
 
-COULOMB=0.1
+COULOMB = 0.1
 
-ANG=cos(pi/4.)
-
-#
-POUTRE=LIRE_MAILLAGE(FORMAT="ASTER", )
+ANG = cos(pi / 4.0)
 
 #
-MODELE=AFFE_MODELE(  MAILLAGE=POUTRE,
-                      AFFE=_F(  GROUP_MA = 'EL1',  PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DIS_T'))
+POUTRE = LIRE_MAILLAGE(FORMAT="ASTER")
 
 #
-MATCHO=DEFI_MATERIAU(
-              DIS_CONTACT=_F(  RIGI_NOR = 20.,
-                            DIST_1 = 0.5,
-                            RIGI_TAN = 400000.,
-                            COULOMB = COULOMB)  )
+MODELE = AFFE_MODELE(
+    MAILLAGE=POUTRE, AFFE=_F(GROUP_MA="EL1", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
+)
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=POUTRE,
-              AFFE=_F(  GROUP_MA = 'EL1',  MATER = MATCHO)
-                     )
+MATCHO = DEFI_MATERIAU(
+    DIS_CONTACT=_F(RIGI_NOR=20.0, DIST_1=0.5, RIGI_TAN=400000.0, COULOMB=COULOMB)
+)
 
 #
-CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                _F(  GROUP_MA = 'EL1',  CARA = 'K_T_D_N',  VALE = ( K, K, K, )),
-                        _F(  GROUP_MA = 'EL1',  CARA = 'M_T_D_N',  VALE = M)),
-                ORIENTATION=_F(  GROUP_MA = 'EL1',  CARA = 'VECT_X_Y',
-                              VALE = ( 0., 0., -1., 0., 1., 0., )) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=POUTRE, AFFE=_F(GROUP_MA="EL1", MATER=MATCHO))
 
 #
-mANG=-ANG
-CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
-             DDL_IMPO=_F(  GROUP_NO = 'NO1',  DZ = 0.),
-             LIAISON_DDL=_F(  GROUP_NO = ( 'NO1',  'NO1', ),
-                           DDL = ('DX', 'DY', ),
-                           COEF_MULT = ( ANG, mANG, ),
-                           COEF_IMPO = 0.))
+CHAMPCAR = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    DISCRET=(
+        _F(GROUP_MA="EL1", CARA="K_T_D_N", VALE=(K, K, K)),
+        _F(GROUP_MA="EL1", CARA="M_T_D_N", VALE=M),
+    ),
+    ORIENTATION=_F(GROUP_MA="EL1", CARA="VECT_X_Y", VALE=(0.0, 0.0, -1.0, 0.0, 1.0, 0.0)),
+)
 
 #
-RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,   CHARGE=CHARGE,
-                            CARA_ELEM=CHAMPCAR,
-                            OPTION='RIGI_MECA')
+mANG = -ANG
+CHARGE = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=_F(GROUP_NO="NO1", DZ=0.0),
+    LIAISON_DDL=_F(GROUP_NO=("NO1", "NO1"), DDL=("DX", "DY"), COEF_MULT=(ANG, mANG), COEF_IMPO=0.0),
+)
 
 #
-NUME=NUME_DDL(  MATR_RIGI=RIGIELEM)
+RIGIELEM = CALC_MATR_ELEM(MODELE=MODELE, CHARGE=CHARGE, CARA_ELEM=CHAMPCAR, OPTION="RIGI_MECA")
 
 #
-U1=U0 * ANG
+NUME = NUME_DDL(MATR_RIGI=RIGIELEM)
 
 #
-DEPLINI=CREA_CHAMP( OPERATION='AFFE', PROL_ZERO='OUI', TYPE_CHAM='NOEU_DEPL_R',
-MAILLAGE=POUTRE,
-                         NUME_DDL=NUME,
-                         AFFE=_F(  GROUP_NO = 'NO1',
-                                NOM_CMP = ('DX', 'DY',),
-                                VALE = ( U1,   U1, )))
+U1 = U0 * ANG
 
 #
-L_INST=DEFI_LIST_REEL(  DEBUT=0.,
-               INTERVALLE=_F(  JUSQU_A = .2, PAS = 0.0005))
+DEPLINI = CREA_CHAMP(
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MAILLAGE=POUTRE,
+    NUME_DDL=NUME,
+    AFFE=_F(GROUP_NO="NO1", NOM_CMP=("DX", "DY"), VALE=(U1, U1)),
+)
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
-                        ECHEC=_F(EVENEMENT     = 'ERREUR',
-                                 ACTION        = 'DECOUPE',
-                                 SUBD_METHODE  = 'MANUEL',
-                                 SUBD_PAS      = 4,
-                                ),)
 #
-TRAN_DI=DYNA_NON_LINE(
-                MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CHAMPCAR,
-                EXCIT=_F(  CHARGE = CHARGE),
-                ETAT_INIT=_F(  INST = 0.,
-                               DEPL = DEPLINI),
-                COMPORTEMENT=_F(  RELATION = 'DIS_CHOC',
-                           GROUP_MA = 'EL1'),
-                INCREMENT=_F(  LIST_INST = DEFLIST),
-                SCHEMA_TEMPS=_F(SCHEMA='HHT', MODI_EQUI='NON',
-                                FORMULATION='DEPLACEMENT',
-                                ALPHA = -0.02),  #0.01
-                CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-4,
-                             ITER_GLOB_MAXI = 7),
-                SOLVEUR=_F( METHODE = 'LDLT',),
-                NEWTON=_F( REAC_ITER = 1)
-                      )
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.2, PAS=0.0005))
+
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=4),
+)
+#
+TRAN_DI = DYNA_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CHAMPCAR,
+    EXCIT=_F(CHARGE=CHARGE),
+    ETAT_INIT=_F(INST=0.0, DEPL=DEPLINI),
+    COMPORTEMENT=_F(RELATION="DIS_CHOC", GROUP_MA="EL1"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    SCHEMA_TEMPS=_F(SCHEMA="HHT", MODI_EQUI="NON", FORMULATION="DEPLACEMENT", ALPHA=-0.02),  # 0.01
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4, ITER_GLOB_MAXI=7),
+    SOLVEUR=_F(METHODE="LDLT"),
+    NEWTON=_F(REAC_ITER=1),
+)
 
 #
 # PROBLEME DE VARIATION ENTRE MACHINES: LA TOLERANCE DE LA DERNIERE
 # VALEUR DU TEST_RESU EST PASSEE A 5%
 
 
-TEST_RESU(RESU=(_F(INST=0.0315,
-                   RESULTAT=TRAN_DI,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DX',
-                   VALE_REFE=-4.596E-4,
-                   VALE_CALC=-4.5855226696626E-4,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=3.E-3,
-                   ),
-                _F(INST=0.063,
-                   RESULTAT=TRAN_DI,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DX',
-                   VALE_REFE=3.173E-4,
-                   VALE_CALC=3.1733081967066E-4,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   ),
-                _F(INST=0.0945,
-                   RESULTAT=TRAN_DI,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DX',
-                   VALE_REFE=-1.754E-04,
-                   VALE_CALC=-1.7548163530351E-4,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   ),
-                _F(NUME_ORDRE=251,
-                   RESULTAT=TRAN_DI,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DX',
-                   VALE_REFE=3.55E-05,
-                   VALE_CALC=3.5495594193909E-05,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.05,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.0315,
+            RESULTAT=TRAN_DI,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DX",
+            VALE_REFE=-4.596e-4,
+            VALE_CALC=-4.5855226696626e-4,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=3.0e-3,
+        ),
+        _F(
+            INST=0.063,
+            RESULTAT=TRAN_DI,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DX",
+            VALE_REFE=3.173e-4,
+            VALE_CALC=3.1733081967066e-4,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            INST=0.0945,
+            RESULTAT=TRAN_DI,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DX",
+            VALE_REFE=-1.754e-04,
+            VALE_CALC=-1.7548163530351e-4,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=251,
+            RESULTAT=TRAN_DI,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DX",
+            VALE_REFE=3.55e-05,
+            VALE_CALC=3.5495594193909e-05,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.05,
+        ),
+    )
+)
 
 FIN()
 #

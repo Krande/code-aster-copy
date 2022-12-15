@@ -25,8 +25,8 @@ from ..Utilities import deprecate, force_list
 
 
 class MeshModification(ExecuteCommand):
-    """Command that changes a :class:`~code_aster.Objects.Mesh`.
-    """
+    """Command that changes a :class:`~code_aster.Objects.Mesh`."""
+
     command_name = "MODI_MAILLAGE"
 
     def create_result(self, keywords):
@@ -51,5 +51,6 @@ class MeshModification(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.build()
+
 
 MODI_MAILLAGE = MeshModification.run

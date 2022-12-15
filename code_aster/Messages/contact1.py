@@ -21,30 +21,35 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
 Il y a des noeuds en commun entre les surfaces esclave et maître. Ceci est interdit
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 Le modèle n'est pas de type mécanique, ce n'est pas possible.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Il existe des noeuds communs aux surfaces esclaves entre les zones de contact : c'est interdit.
 Conseil :
  - changez vos surfaces de contact,
  - définissez alternativement les zones possédant un noeud commun comme maître et esclave,
  - A MODIFIER pour la méthode LAC, il faut désactiver le lissage.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Il y a un problème de dimension lié au modèle.
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
 Certains noeuds sont projetés dans plus de deux mailles différentes.
 
 Il y a probablement un problème avec la projection.
-"""),
+"""
+    ),
 }

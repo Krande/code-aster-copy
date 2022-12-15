@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,11 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-FONC_FLUI_STRU=OPER(nom="FONC_FLUI_STRU",op= 169,sd_prod=fonction_sdaster,
-                    reentrant='n',fr=tr("Crée une fonction constante paramétrée par l'abscisse curviligne"),
-         TYPE_FLUI_STRU  =SIMP(statut='o',typ=(type_flui_stru) ),
-)  ;
+FONC_FLUI_STRU = OPER(
+    nom="FONC_FLUI_STRU",
+    op=169,
+    sd_prod=fonction_sdaster,
+    reentrant="n",
+    fr=tr("Crée une fonction constante paramétrée par l'abscisse curviligne"),
+    TYPE_FLUI_STRU=SIMP(statut="o", typ=(type_flui_stru)),
+)

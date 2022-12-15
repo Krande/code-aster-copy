@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#----------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 # Ce test montre comment on peut faire un calcul thermo-mecanique dont le chargement
 # thermique est complexe : plusieurs transitoires repetes plusieurs fois.
 #
@@ -38,165 +38,197 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 #  On teste :
 #    U(t=1.0) = U(t=2.0) = U(t=4.0) = 15.
 #    U(t=1.3) = U(t=2.3) = U(t=4.3) = 16.
-#----------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------
 
-epsi=1.e-13
-t1=0.7
-t2=0.3
-t3=1.5
+epsi = 1.0e-13
+t1 = 0.7
+t2 = 0.3
+t3 = 1.5
 
 
-MATERI=DEFI_MATERIAU( THER=_F(  LAMBDA = 1., RHO_CP = 1.0),
-                      ELAS=_F( E=1.,NU=0,ALPHA=1.),)
+MATERI = DEFI_MATERIAU(THER=_F(LAMBDA=1.0, RHO_CP=1.0), ELAS=_F(E=1.0, NU=0, ALPHA=1.0))
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER", )
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
 
 # 2 calculs thermiques :
-#-----------------------
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,  AFFE=_F(  TOUT = 'OUI', MATER = MATERI) )
+# -----------------------
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERI))
 
-MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
-                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN', PHENOMENE = 'THERMIQUE'))
+MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="PLAN", PHENOMENE="THERMIQUE"))
 
 # 1er transitoire thermique : intervalle [0, t1]
-#------------------------------------------------
-LR81=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A = t1, NOMBRE = 3) )
-T_IMP1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 10., t1, 17.))
-CHTH1=AFFE_CHAR_THER_F(  MODELE=MOTH,  TEMP_IMPO=_F( GROUP_MA = 'ABCD', TEMP = T_IMP1) )
+# ------------------------------------------------
+LR81 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=t1, NOMBRE=3))
+T_IMP1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 10.0, t1, 17.0))
+CHTH1 = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=_F(GROUP_MA="ABCD", TEMP=T_IMP1))
 
-ch1=THER_LINEAIRE( MODELE=MOTH, ETAT_INIT=_F( STAT = 'OUI'),
-                     INCREMENT=_F( LIST_INST = LR81),
-                     CHAM_MATER=CHMAT,  EXCIT=_F( CHARGE = CHTH1), )
+ch1 = THER_LINEAIRE(
+    MODELE=MOTH,
+    ETAT_INIT=_F(STAT="OUI"),
+    INCREMENT=_F(LIST_INST=LR81),
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHTH1),
+)
 
 # 2eme transitoire thermique : intervalle [0, t2]
-#------------------------------------------------
-LR82=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A = t2, NOMBRE = 2) )
-T_IMP2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 17., t2, 14.))
-CHTH2=AFFE_CHAR_THER_F(  MODELE=MOTH,  TEMP_IMPO=_F( GROUP_MA = 'ABCD', TEMP = T_IMP2) )
+# ------------------------------------------------
+LR82 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=t2, NOMBRE=2))
+T_IMP2 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 17.0, t2, 14.0))
+CHTH2 = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=_F(GROUP_MA="ABCD", TEMP=T_IMP2))
 
-ch2=THER_LINEAIRE( MODELE=MOTH, ETAT_INIT=_F( STAT = 'OUI'),
-                     INCREMENT=_F( LIST_INST = LR82),
-                     CHAM_MATER=CHMAT,  EXCIT=_F( CHARGE = CHTH2), )
+ch2 = THER_LINEAIRE(
+    MODELE=MOTH,
+    ETAT_INIT=_F(STAT="OUI"),
+    INCREMENT=_F(LIST_INST=LR82),
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHTH2),
+)
 
 # Concatenation de ch1 et ch2  => intervalle [t3, t4]
-#---------------------------------------------------------
-t4=t3+t1+t2
+# ---------------------------------------------------------
+t4 = t3 + t1 + t2
 # On decale un tout petit peu la translation pour ch2, car sinon, l'evol_ther
 # a 2 numeros d'ordre differents pour t3+t1 (instant du recollement).
 # cette situation est en principe interdite et provoque une erreur si SDVERI='OUI'
-TEMPE=CREA_RESU(OPERATION='ASSE', TYPE_RESU='EVOL_THER',
-      ASSE=(
-        _F(RESULTAT=ch1, TRANSLATION=t3),
-        _F(RESULTAT=ch2, TRANSLATION=(t3+t1+epsi)),
-      ))
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=TEMPE))
-
+TEMPE = CREA_RESU(
+    OPERATION="ASSE",
+    TYPE_RESU="EVOL_THER",
+    ASSE=(_F(RESULTAT=ch1, TRANSLATION=t3), _F(RESULTAT=ch2, TRANSLATION=(t3 + t1 + epsi))),
+)
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=TEMPE))
 
 
 # calcul mecanique :
-#-------------------
-MOME=AFFE_MODELE(  MAILLAGE=MAIL,
-                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'))
+# -------------------
+MOME = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="D_PLAN", PHENOMENE="MECANIQUE"))
 
 
-LR8M=DEFI_LIST_REEL( DEBUT=0.5, INTERVALLE=_F(    JUSQU_A = 4.5,   PAS = 0.10) )
+LR8M = DEFI_LIST_REEL(DEBUT=0.5, INTERVALLE=_F(JUSQU_A=4.5, PAS=0.10))
 
 
 # fonction periodique ramenant la droite reelle dans l'intervalle [t3, t4]
-def periodique(inst_calc) :
+def periodique(inst_calc):
     dt = t4 - t3
     inst_ev = t3 + (inst_calc - t3) % dt
     return inst_ev
 
-finst = FORMULE(VALE='periodique(INST)',
-                periodique=periodique,
-                NOM_PARA='INST',)
 
-CHMATM=AFFE_MATERIAU(  MAILLAGE=MAIL,  AFFE=_F(  TOUT = 'OUI', MATER = MATERI),
-                       AFFE_VARC=_F(  TOUT = 'OUI', NOM_VARC='TEMP', EVOL=TEMPE,VALE_REF=0.,
-                                      FONC_INST=finst,
-                       ),)
-CHME=AFFE_CHAR_MECA(  MODELE=MOME,  DDL_IMPO=(_F( GROUP_NO = 'A',   DX=0., DY=0.),
-                                              _F( GROUP_NO = 'B',   DY=0.)))
+finst = FORMULE(VALE="periodique(INST)", periodique=periodique, NOM_PARA="INST")
 
-U=MECA_STATIQUE( MODELE=MOME,  LIST_INST = LR8M,  OPTION='SANS',
-                 CHAM_MATER=CHMATM,  EXCIT=_F( CHARGE = CHME), )
+CHMATM = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=MATERI),
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=TEMPE, VALE_REF=0.0, FONC_INST=finst),
+)
+CHME = AFFE_CHAR_MECA(
+    MODELE=MOME, DDL_IMPO=(_F(GROUP_NO="A", DX=0.0, DY=0.0), _F(GROUP_NO="B", DY=0.0))
+)
+
+U = MECA_STATIQUE(
+    MODELE=MOME, LIST_INST=LR8M, OPTION="SANS", CHAM_MATER=CHMATM, EXCIT=_F(CHARGE=CHME)
+)
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DY',
-                   VALE_CALC=15.000000000,
-                   VALE_REFE=15,),
-                _F(INST=1.3,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DY',
-                   VALE_CALC=16.000000000,
-                   VALE_REFE=16,),
-                _F(INST=2.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DY',
-                   VALE_CALC=15.000000000,
-                   VALE_REFE=15,),
-                _F(INST=2.2999999999999998,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DY',
-                   VALE_CALC=16.000000000,
-                   VALE_REFE=16,),
-                _F(INST=4.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DY',
-                   VALE_CALC=15.000000000,
-                   VALE_REFE=15,),
-                _F(INST=4.2999999999999998,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DY',
-                   VALE_CALC=16.000000000,
-                   VALE_REFE=16,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DY",
+            VALE_CALC=15.000000000,
+            VALE_REFE=15,
+        ),
+        _F(
+            INST=1.3,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DY",
+            VALE_CALC=16.000000000,
+            VALE_REFE=16,
+        ),
+        _F(
+            INST=2.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DY",
+            VALE_CALC=15.000000000,
+            VALE_REFE=15,
+        ),
+        _F(
+            INST=2.2999999999999998,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DY",
+            VALE_CALC=16.000000000,
+            VALE_REFE=16,
+        ),
+        _F(
+            INST=4.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DY",
+            VALE_CALC=15.000000000,
+            VALE_REFE=15,
+        ),
+        _F(
+            INST=4.2999999999999998,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DY",
+            VALE_CALC=16.000000000,
+            VALE_REFE=16,
+        ),
+    )
+)
 
 # visualisation du resultat :
-#----------------------------
-UN2=POST_RELEVE_T( ACTION=_F( RESULTAT = U, INTITULE = 'DEPLACEMENT_N2',
-                  GROUP_NO = 'N2', NOM_CHAM = 'DEPL', NOM_CMP = ('DY',),
-                  OPERATION = 'EXTRACTION') )
+# ----------------------------
+UN2 = POST_RELEVE_T(
+    ACTION=_F(
+        RESULTAT=U,
+        INTITULE="DEPLACEMENT_N2",
+        GROUP_NO="N2",
+        NOM_CHAM="DEPL",
+        NOM_CMP=("DY",),
+        OPERATION="EXTRACTION",
+    )
+)
 
-IMPR_TABLE( TABLE=UN2, UNITE=38,  NOM_PARA=('INST', 'DY',), FORMAT='XMGRACE',
-            TRI=_F( NOM_PARA = ('INST',), ORDRE = 'CROISSANT',) )
+IMPR_TABLE(
+    TABLE=UN2,
+    UNITE=38,
+    NOM_PARA=("INST", "DY"),
+    FORMAT="XMGRACE",
+    TRI=_F(NOM_PARA=("INST",), ORDRE="CROISSANT"),
+)
 
 
 # validation de la commande EXTR_RESU / ARCHIVAGE (+reuse) :
-#-----------------------------------------------------------
-U =CALC_CHAMP(reuse=U ,  RESULTAT=U ,  CONTRAINTE=('SIEF_ELGA'))
-U2=EXTR_RESU(RESULTAT=U, ARCHIVAGE=_F(NUME_ORDRE = (3,5,7,9),))
+# -----------------------------------------------------------
+U = CALC_CHAMP(reuse=U, RESULTAT=U, CONTRAINTE=("SIEF_ELGA"))
+U2 = EXTR_RESU(RESULTAT=U, ARCHIVAGE=_F(NUME_ORDRE=(3, 5, 7, 9)))
 # on appelle 3 fois CALC_CHAMP + MAILLE pour forcer la creation de 3 LIGREL differents
 # (validation de la fiche 15152)
-U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=5, GROUP_MA='M1')
-U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=7, GROUP_MA='M1')
-U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=9, GROUP_MA='M1')
-U2=CALC_CHAMP  (reuse=U2,  RESULTAT=U2, CONTRAINTE='SIGM_NOEU', NUME_ORDRE=(5,7,9))
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE=("SIGM_ELNO"), NUME_ORDRE=5, GROUP_MA="M1")
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE=("SIGM_ELNO"), NUME_ORDRE=7, GROUP_MA="M1")
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE=("SIGM_ELNO"), NUME_ORDRE=9, GROUP_MA="M1")
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, CONTRAINTE="SIGM_NOEU", NUME_ORDRE=(5, 7, 9))
 
-U3=EXTR_RESU(          RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU = ('SIGM_NOEU') ))
-U2=EXTR_RESU(reuse=U2, RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU = ('SIGM_NOEU') ))
+U3 = EXTR_RESU(RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE=(5, 9), CHAM_EXCLU=("SIGM_NOEU")))
+U2 = EXTR_RESU(reuse=U2, RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE=(5, 9), CHAM_EXCLU=("SIGM_NOEU")))
 
 FIN()

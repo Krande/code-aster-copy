@@ -20,48 +20,56 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
 Résultat du test faux pour le produit vectoriel %(r1)f.
 Il s'agit d'un test purement informatique. 
 On continue le calcul. 
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 La valeur de NUME_ORDRE n'est pas valide.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 La valeur de INST n'est pas valide.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 Seule l'option GROUP_NO ou NB_POINT_FOND peut être sélectionnée.
-"""),
-
-    8: _("""
+"""
+    ),
+    8: _(
+        """
 Erreur sur le nombre de noeuds de réduction.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
 Le nombre de contours (NB_COUCHES) doit  être supérieur ou égal à 4.
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
 Il est nécessaire de définir au moins une lèvre.
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
 Le nombre de contours (NB_COUCHES) doit être inférieur à 20.
-"""),
-
-    12: _("""
+"""
+    ),
+    12: _(
+        """
 Le nombre de contours (NB_COUCHES) doit être inférieur à 10.
-"""),
-
-    13: _("""
+"""
+    ),
+    13: _(
+        """
 Le nombre de contours (NB_COUCHES) doit  être supérieur ou égal à 2.
-"""),
-
-
+"""
+    ),
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,168 +17,108 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#CAS_TEST__: SSLP100A
+# CAS_TEST__: SSLP100A
 # SSLP100/A
 # CROSSE CHARGEE EN SOUS-STRUCTURATION STATIQUE.
 # MODELISATION : SANS SOUS-STRUCTURES (MODELISATION DE REFERENCE).
-#======================================================================
+# ======================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-ZERO=DEFI_CONSTANTE(VALE=0.0)
-DEUX=DEFI_CONSTANTE(VALE=2.0)
-FONC = FORMULE(VALE='-X+Y',
-               NOM_PARA=['X', 'Y'],)
-ACIER=DEFI_MATERIAU(ELAS=_F( E = 15., NU = 0.3) )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+DEUX = DEFI_CONSTANTE(VALE=2.0)
+FONC = FORMULE(VALE="-X+Y", NOM_PARA=["X", "Y"])
+ACIER = DEFI_MATERIAU(ELAS=_F(E=15.0, NU=0.3))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-MO=AFFE_MODELE(  MAILLAGE=MA,     AFFE= (
-    _F( TOUT = 'OUI',      MODELISATION = 'D_PLAN',   PHENOMENE = 'MECANIQUE'),
-    _F( GROUP_MA = 'MISOLE', MODELISATION = '2D_DIS_T', PHENOMENE = 'MECANIQUE'),
-))
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(TOUT="OUI", MODELISATION="D_PLAN", PHENOMENE="MECANIQUE"),
+        _F(GROUP_MA="MISOLE", MODELISATION="2D_DIS_T", PHENOMENE="MECANIQUE"),
+    ),
+)
 
-CARELE=AFFE_CARA_ELEM( MODELE=MO, DISCRET_2D=( _F(GROUP_MA='MISOLE',CARA = 'K_T_N',
-                                     VALE = (180000.,0.,180000.,),),
-                      ))
-CHBL=AFFE_CHAR_MECA_F(MODELE=MO,DDL_IMPO=(
-#                    J , N8, N17, N25 :
+CARELE = AFFE_CARA_ELEM(
+    MODELE=MO, DISCRET_2D=(_F(GROUP_MA="MISOLE", CARA="K_T_N", VALE=(180000.0, 0.0, 180000.0)),)
+)
+CHBL = AFFE_CHAR_MECA_F(
+    MODELE=MO,
+    DDL_IMPO=(
+        #                    J , N8, N17, N25 :
+        _F(GROUP_NO=("N8", "N17", "N25"), DX=ZERO, DY=ZERO),
+        _F(GROUP_NO=("N35",), DX=DEUX),
+    ),
+    #
+    #  TEST DE LIAISON_DDL COEF_MULT_FONC
+    #
+    LIAISON_DDL=(
+        #           GH :
+        _F(GROUP_NO=("N22", "N22"), DDL=("DY", "DX"), COEF_MULT_FONC=(FONC, FONC), COEF_IMPO=ZERO),
+        _F(GROUP_NO=("N24", "N24"), DDL=("DY", "DX"), COEF_MULT_FONC=(FONC, FONC), COEF_IMPO=ZERO),
+        _F(GROUP_NO=("N26", "N26"), DDL=("DY", "DX"), COEF_MULT_FONC=(FONC, FONC), COEF_IMPO=ZERO),
+        _F(GROUP_NO=("N28", "N28"), DDL=("DY", "DX"), COEF_MULT_FONC=(FONC, FONC), COEF_IMPO=ZERO),
+    ),
+)
 
-                    _F( GROUP_NO = ('N8','N17','N25',), DX = ZERO, DY = ZERO),
-                    _F( GROUP_NO = ('N35',), DX = DEUX)),
-#
-#  TEST DE LIAISON_DDL COEF_MULT_FONC
-#
-                    LIAISON_DDL=(
-#           GH :
+CHF1 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    #           SUIVEUR:
+    PRES_REP=_F(GROUP_MA=("GRMA14", "GRMA17", "GRMA20"), PRES=10.0),
+)
 
-  _F( GROUP_NO = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
-   COEF_IMPO = ZERO),
-  _F( GROUP_NO = ('N24','N24',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
-   COEF_IMPO = ZERO),
-  _F( GROUP_NO = ('N26','N26',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
-   COEF_IMPO = ZERO),
-  _F( GROUP_NO = ('N28','N28',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
-   COEF_IMPO = ZERO))
-            )
+CHF2 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    #       NON-SUIVEUR:
+    FORCE_NODALE=_F(GROUP_NO=("N11", "N19", "N27", "N33", "N31"), FY=-20.0),
+)
 
-CHF1=AFFE_CHAR_MECA(MODELE=MO,
-#           SUIVEUR:
-           PRES_REP=_F( GROUP_MA = ('GRMA14','GRMA17','GRMA20',), PRES = 10.0)
-                       )
+MELGR = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", CARA_ELEM=CARELE, MODELE=MO, CHARGE=CHBL, CHAM_MATER=CHMAT
+)
 
-CHF2=AFFE_CHAR_MECA(MODELE=MO,
-#       NON-SUIVEUR:
-         FORCE_NODALE=_F( GROUP_NO = ('N11','N19','N27','N33','N31',), FY = -20.0)
-                       )
+VELG1 = CALC_VECT_ELEM(CHARGE=(CHBL, CHF1), OPTION="CHAR_MECA")
 
-MELGR=CALC_MATR_ELEM(   OPTION='RIGI_MECA',  CARA_ELEM=CARELE,
-           MODELE=MO, CHARGE=CHBL,       CHAM_MATER=CHMAT )
+VELG2 = CALC_VECT_ELEM(CHARGE=(CHBL, CHF2), OPTION="CHAR_MECA")
 
-VELG1=CALC_VECT_ELEM(   CHARGE=(CHBL,CHF1,), OPTION='CHAR_MECA' )
+NUG = NUME_DDL(MATR_RIGI=MELGR)
 
-VELG2=CALC_VECT_ELEM(   CHARGE=(CHBL,CHF2,), OPTION='CHAR_MECA' )
+MATAS = ASSE_MATRICE(NUME_DDL=NUG, MATR_ELEM=MELGR)
 
-NUG=NUME_DDL(  MATR_RIGI=MELGR)
+VECAS1 = ASSE_VECTEUR(NUME_DDL=NUG, VECT_ELEM=VELG1)
 
-MATAS=ASSE_MATRICE(   NUME_DDL=NUG,  MATR_ELEM=MELGR)
+VECAS2 = ASSE_VECTEUR(NUME_DDL=NUG, VECT_ELEM=VELG2)
 
-VECAS1=ASSE_VECTEUR(   NUME_DDL=NUG,  VECT_ELEM=VELG1)
+MATAS = FACTORISER(reuse=MATAS, MATR_ASSE=MATAS, METHODE="LDLT")
 
-VECAS2=ASSE_VECTEUR(   NUME_DDL=NUG,  VECT_ELEM=VELG2)
+U1 = RESOUDRE(MATR=MATAS, CHAM_NO=VECAS1)
 
-MATAS=FACTORISER( reuse=MATAS, MATR_ASSE=MATAS,    METHODE='LDLT')
-
-U1=RESOUDRE( MATR=MATAS,   CHAM_NO=VECAS1)
-
-U2=RESOUDRE( MATR=MATAS,   CHAM_NO=VECAS2)
+U2 = RESOUDRE(MATR=MATAS, CHAM_NO=VECAS2)
 
 
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='N31',
-                      NOM_CMP='DX',
-                      CHAM_GD=U1,
-                      VALE_CALC=1.8832652708647,
-                      ),
-                   _F(GROUP_NO='N31',
-                      NOM_CMP='DY',
-                      CHAM_GD=U1,
-                      VALE_CALC=0.025922399211262,
-                      ),
-                   _F(GROUP_NO='N28',
-                      NOM_CMP='DX',
-                      CHAM_GD=U1,
-                      VALE_CALC=-0.082737184695115,
-                      ),
-                   _F(GROUP_NO='N28',
-                      NOM_CMP='DY',
-                      CHAM_GD=U1,
-                      VALE_CALC=0.082737184695115,
-                      ),
-                   _F(GROUP_NO='N13',
-                      NOM_CMP='DX',
-                      CHAM_GD=U1,
-                      VALE_CALC=0.27037492108666,
-                      ),
-                   _F(GROUP_NO='N13',
-                      NOM_CMP='DY',
-                      CHAM_GD=U1,
-                      VALE_CALC=0.56955184648386,
-                      ),
-                   _F(GROUP_NO='N10',
-                      NOM_CMP='DX',
-                      CHAM_GD=U1,
-                      VALE_CALC=0.51770335804207,
-                      ),
-                   _F(GROUP_NO='N10',
-                      NOM_CMP='DY',
-                      CHAM_GD=U1,
-                      VALE_CALC=0.54338669895341,
-                      ),
-                   _F(GROUP_NO='N31',
-                      NOM_CMP='DX',
-                      CHAM_GD=U2,
-                      VALE_CALC=1.7188307362546,
-                      ),
-                   _F(GROUP_NO='N31',
-                      NOM_CMP='DY',
-                      CHAM_GD=U2,
-                      VALE_CALC=-6.0436725555975,
-                      ),
-                   _F(GROUP_NO='N28',
-                      NOM_CMP='DX',
-                      CHAM_GD=U2,
-                      VALE_CALC=-0.046019646555591,
-                      ),
-                   _F(GROUP_NO='N28',
-                      NOM_CMP='DY',
-                      CHAM_GD=U2,
-                      VALE_CALC=0.046019646555591,
-                      ),
-                   _F(GROUP_NO='N13',
-                      NOM_CMP='DX',
-                      CHAM_GD=U2,
-                      VALE_CALC=0.22690259632066,
-                      ),
-                   _F(GROUP_NO='N13',
-                      NOM_CMP='DY',
-                      CHAM_GD=U2,
-                      VALE_CALC=-0.61429597203523,
-                      ),
-                   _F(GROUP_NO='N10',
-                      NOM_CMP='DX',
-                      CHAM_GD=U2,
-                      VALE_CALC=-0.95711048704247,
-                      ),
-                   _F(GROUP_NO='N10',
-                      NOM_CMP='DY',
-                      CHAM_GD=U2,
-                      VALE_CALC=-2.538780684867,
-                      ),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(GROUP_NO="N31", NOM_CMP="DX", CHAM_GD=U1, VALE_CALC=1.8832652708647),
+        _F(GROUP_NO="N31", NOM_CMP="DY", CHAM_GD=U1, VALE_CALC=0.025922399211262),
+        _F(GROUP_NO="N28", NOM_CMP="DX", CHAM_GD=U1, VALE_CALC=-0.082737184695115),
+        _F(GROUP_NO="N28", NOM_CMP="DY", CHAM_GD=U1, VALE_CALC=0.082737184695115),
+        _F(GROUP_NO="N13", NOM_CMP="DX", CHAM_GD=U1, VALE_CALC=0.27037492108666),
+        _F(GROUP_NO="N13", NOM_CMP="DY", CHAM_GD=U1, VALE_CALC=0.56955184648386),
+        _F(GROUP_NO="N10", NOM_CMP="DX", CHAM_GD=U1, VALE_CALC=0.51770335804207),
+        _F(GROUP_NO="N10", NOM_CMP="DY", CHAM_GD=U1, VALE_CALC=0.54338669895341),
+        _F(GROUP_NO="N31", NOM_CMP="DX", CHAM_GD=U2, VALE_CALC=1.7188307362546),
+        _F(GROUP_NO="N31", NOM_CMP="DY", CHAM_GD=U2, VALE_CALC=-6.0436725555975),
+        _F(GROUP_NO="N28", NOM_CMP="DX", CHAM_GD=U2, VALE_CALC=-0.046019646555591),
+        _F(GROUP_NO="N28", NOM_CMP="DY", CHAM_GD=U2, VALE_CALC=0.046019646555591),
+        _F(GROUP_NO="N13", NOM_CMP="DX", CHAM_GD=U2, VALE_CALC=0.22690259632066),
+        _F(GROUP_NO="N13", NOM_CMP="DY", CHAM_GD=U2, VALE_CALC=-0.61429597203523),
+        _F(GROUP_NO="N10", NOM_CMP="DX", CHAM_GD=U2, VALE_CALC=-0.95711048704247),
+        _F(GROUP_NO="N10", NOM_CMP="DY", CHAM_GD=U2, VALE_CALC=-2.538780684867),
+    )
+)
 
 FIN()
 #

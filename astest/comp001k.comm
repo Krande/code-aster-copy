@@ -17,9 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='NON'),
-      IMPR_MACRO='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"), IMPR_MACRO="OUI")
 
 ### >>>>>>>>>>>>>>>>>
 ### >>> Materials <<<
@@ -28,66 +26,73 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 ### Elasticity
 k = 516.2e6
 g = 238.2e6
-young_pa = 9.*k*g /(3.*k+g)
-nu = (3.*k-2.*g) /(6.*k+2.*g)
+young_pa = 9.0 * k * g / (3.0 * k + g)
+nu = (3.0 * k - 2.0 * g) / (6.0 * k + 2.0 * g)
 
 ### MC parameters
-cohe_pa = 1.e3
-phi = 33.
-psi = 27.
-lodeT = 20.
-a_pa = .25*cohe_pa/tan(phi*pi/180.)
-hC = 0.
+cohe_pa = 1.0e3
+phi = 33.0
+psi = 27.0
+lodeT = 20.0
+a_pa = 0.25 * cohe_pa / tan(phi * pi / 180.0)
+hC = 0.0
 
-c_pa = 1.e6
+c_pa = 1.0e6
 
-young_mpa = young_pa/c_pa
-cohe_mpa = cohe_pa/c_pa
-a_mpa = a_pa/c_pa
+young_mpa = young_pa / c_pa
+cohe_mpa = cohe_pa / c_pa
+a_mpa = a_pa / c_pa
 
 MAT = [None] * 2
 
-MAT[0] = DEFI_MATERIAU(ELAS=_F(E=young_pa,
-                               NU=nu,
-                               ALPHA=0.),
-                       MohrCoulombAS=_F(YoungModulus=young_pa,
-                                        PoissonRatio=nu,
-                                        FrictionAngle=phi,
-                                        DilatancyAngle=psi,
-                                        Cohesion=cohe_pa,
-                                        TransitionAngle=lodeT,
-                                        TensionCutOff=a_pa,
-                                        HardeningCoef=hC,),)
+MAT[0] = DEFI_MATERIAU(
+    ELAS=_F(E=young_pa, NU=nu, ALPHA=0.0),
+    MohrCoulombAS=_F(
+        YoungModulus=young_pa,
+        PoissonRatio=nu,
+        FrictionAngle=phi,
+        DilatancyAngle=psi,
+        Cohesion=cohe_pa,
+        TransitionAngle=lodeT,
+        TensionCutOff=a_pa,
+        HardeningCoef=hC,
+    ),
+)
 
-MAT[1] = DEFI_MATERIAU(ELAS=_F(E=young_mpa,
-                               NU=nu,
-                               ALPHA=0.),
-                       MohrCoulombAS=_F(YoungModulus=young_mpa,
-                                        PoissonRatio=nu,
-                                        FrictionAngle=phi,
-                                        DilatancyAngle=psi,
-                                        Cohesion=cohe_mpa,
-                                        TransitionAngle=lodeT,
-                                        TensionCutOff=a_mpa,
-                                        HardeningCoef=hC,),)
+MAT[1] = DEFI_MATERIAU(
+    ELAS=_F(E=young_mpa, NU=nu, ALPHA=0.0),
+    MohrCoulombAS=_F(
+        YoungModulus=young_mpa,
+        PoissonRatio=nu,
+        FrictionAngle=phi,
+        DilatancyAngle=psi,
+        Cohesion=cohe_mpa,
+        TransitionAngle=lodeT,
+        TensionCutOff=a_mpa,
+        HardeningCoef=hC,
+    ),
+)
 
 # lst_npas_long = 4*[1]+[1,5,25,125,625,3125]
 # lst_tole_long = [1.e-00,1.e-10,1.e-10,1.e-10]+[1.e-1]+[3.e-2,1.e-2,7.e-3,2.e-3,6.e-5,1.e-8]+[1.e-8]
-lst_npas_shor = 4*[1]+[1,5,25]
-lst_tole_shor = [1.e-00,1.e-10,1.e-10,1.e-10]+[1.e-1]+[3.e-2,1.e-2,7.e-3]+[1.e-8]
+lst_npas_shor = 4 * [1] + [1, 5, 25]
+lst_tole_shor = (
+    [1.0e-00, 1.0e-10, 1.0e-10, 1.0e-10] + [1.0e-1] + [3.0e-2, 1.0e-2, 7.0e-3] + [1.0e-8]
+)
 
-TRESU = TEST_COMPOR(INFO=2,
-                    OPTION='MECA',
-                    COMPORTEMENT=_F(RELATION='MohrCoulombAS',
-                                    RESI_INTE_RELA=1.e-12,),
-                    CONVERGENCE=_F(RESI_GLOB_RELA=1.e-10,),
-                    NEWTON=_F(REAC_ITER=1),
-                    LIST_MATER=MAT,
-                    LIST_NPAS=lst_npas_shor,
-                    LIST_TOLE=lst_tole_shor,
-                    VARI_TEST=('V7','V8','V9','VMIS','TRACE'),
-                    YOUNG=young_pa,
-                    POISSON=nu,)
+TRESU = TEST_COMPOR(
+    INFO=2,
+    OPTION="MECA",
+    COMPORTEMENT=_F(RELATION="MohrCoulombAS", RESI_INTE_RELA=1.0e-12),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10),
+    NEWTON=_F(REAC_ITER=1),
+    LIST_MATER=MAT,
+    LIST_NPAS=lst_npas_shor,
+    LIST_TOLE=lst_tole_shor,
+    VARI_TEST=("V7", "V8", "V9", "VMIS", "TRACE"),
+    YOUNG=young_pa,
+    POISSON=nu,
+)
 
 # IMPR_TABLE(TABLE=TRESU,
 #            UNITE=8,)

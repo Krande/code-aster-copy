@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ def translate(string):
     """Install a fake translation function."""
     return string
 
+
 builtins._ = translate
 
 
@@ -54,20 +55,18 @@ def build(target, debug, *args):
         return
     debugdir = None
     if debug:
-        debugdir = osp.join(osp.dirname(target), 'debug')
+        debugdir = osp.join(osp.dirname(target), "debug")
         if osp.exists(debugdir):
             shutil.rmtree(debugdir)
         os.makedirs(debugdir)
     impr_cata(cel, target, debugdir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = optparse.OptionParser(usage=__doc__)
-    parser.add_option('-g', '--debug', action='store_true',
-                      help='enable debugging')
-    parser.add_option('-o', '--output', dest='ojb', metavar='FILE',
-                      help='output object file')
+    parser.add_option("-g", "--debug", action="store_true", help="enable debugging")
+    parser.add_option("-o", "--output", dest="ojb", metavar="FILE", help="output object file")
     opts, args = parser.parse_args()
     if not opts.ojb:
-        parser.error('You must provide the destination file')
+        parser.error("You must provide the destination file")
     build(opts.ojb, opts.debug, *args)

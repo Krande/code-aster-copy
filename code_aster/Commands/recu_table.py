@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class RecuTable(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "RECU_TABLE"
 
     def create_result(self, keywords):
@@ -42,5 +42,6 @@ class RecuTable(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+
 
 RECU_TABLE = RecuTable.run

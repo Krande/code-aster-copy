@@ -23,8 +23,7 @@
 *****************************************************************************
 """
 
-from ..Objects import (ParallelThermalLoadFunction,
-                       ParallelThermalLoadReal)
+from ..Objects import ParallelThermalLoadFunction, ParallelThermalLoadReal
 
 from ..Utilities import injector
 
@@ -33,6 +32,7 @@ from ..Utilities import injector
 class ExtendedParallelThermalLoadReal:
     cata_sdj = "SD.sd_char_ther.sd_parallel_char_ther"
     # TODO getinitarg needed + new constructor or save internal state
+
 
 @injector(ParallelThermalLoadFunction)
 class ExtendedParallelThermalLoadFunction:

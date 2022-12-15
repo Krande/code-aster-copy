@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,19 +29,19 @@ from .sd_util import *
 class sd_carte(sd_titre):
     nomj = SDNom(fin=19)
 
-    DESC = AsVI(docu='CART', )
-    NOMA = AsVK8(lonmax=1, )
-    VALE = AsVect(type=Parmi('C', 'K', 'R', 'I',), ltyp=Parmi(4, 8, 16, 24,), )
+    DESC = AsVI(docu="CART")
+    NOMA = AsVK8(lonmax=1)
+    VALE = AsVect(type=Parmi("C", "K", "R", "I"), ltyp=Parmi(4, 8, 16, 24))
 
     NOLI = Facultatif(AsVK24())
-    LIMA = Facultatif(
-        AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
+    LIMA = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
 
     def exists(self):
         return self.NOMA.exists
 
     def check_NOMA(self, checker):
         from .sd_maillage import sd_maillage
+
         if not self.exists():
             return
         noma = self.NOMA.get_stripped()
@@ -84,7 +84,7 @@ class sd_carte(sd_titre):
         assert n1 == ncmp_max * n_gd_max, (n1, ncmp_max, n_gd_max)
 
         # parfois, la carte contient des fonctions crees pendant la commande :
-        if self.VALE.type == 'K':
+        if self.VALE.type == "K":
             nom_concept = self.nomj()[:8]
             vale = self.VALE.get()
             for nom in vale:

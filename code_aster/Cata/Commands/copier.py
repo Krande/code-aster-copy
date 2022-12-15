@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,31 +25,34 @@ from ..Language.Syntax import *
 
 # liste des types de concept acceptes par la commande :
 copier_ltyp = (
-  cabl_precont,
-  listr8_sdaster,
-  listis_sdaster,
-  fonction_sdaster,
-  nappe_sdaster,
-  table_sdaster,
-  maillage_sdaster,
-  modele_sdaster,
-  evol_elas,
-  evol_noli,
-  evol_ther,
+    cabl_precont,
+    listr8_sdaster,
+    listis_sdaster,
+    fonction_sdaster,
+    nappe_sdaster,
+    table_sdaster,
+    maillage_sdaster,
+    modele_sdaster,
+    evol_elas,
+    evol_noli,
+    evol_ther,
 )
 
-def copier_prod(CONCEPT,**args):
-    if args.get('__all__'):
+
+def copier_prod(CONCEPT, **args):
+    if args.get("__all__"):
         return copier_ltyp
 
     return AsType(CONCEPT)
 
 
-COPIER=OPER(nom="COPIER",op= 185,sd_prod=copier_prod,
-            reentrant='f:CONCEPT',
-            fr=tr("Copier un concept utilisateur sous un autre nom"),
-
-            reuse=SIMP(statut='c', typ=CO),
-            CONCEPT = SIMP(statut='o',typ=copier_ltyp,),
-            INFO   = SIMP(statut='f', typ='I', into=(1, 2), defaut=1, ),
+COPIER = OPER(
+    nom="COPIER",
+    op=185,
+    sd_prod=copier_prod,
+    reentrant="f:CONCEPT",
+    fr=tr("Copier un concept utilisateur sous un autre nom"),
+    reuse=SIMP(statut="c", typ=CO),
+    CONCEPT=SIMP(statut="o", typ=copier_ltyp),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2), defaut=1),
 )

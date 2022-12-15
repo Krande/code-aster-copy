@@ -17,174 +17,152 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-ma=LIRE_MAILLAGE()
+ma = LIRE_MAILLAGE()
 
-mo=AFFE_MODELE(MAILLAGE=ma,
-               AFFE=(_F(GROUP_MA=('CABLE',),
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='CABLE',),
-                     _F(GROUP_MA=('R1','R2',),
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_TR',),),)
+mo = AFFE_MODELE(
+    MAILLAGE=ma,
+    AFFE=(
+        _F(GROUP_MA=("CABLE",), PHENOMENE="MECANIQUE", MODELISATION="CABLE"),
+        _F(GROUP_MA=("R1", "R2"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
 
-bracing=DEFI_MATERIAU(ELAS=_F(E=2.e11,
-                              NU=0.3,
-                              RHO=7800,),
-                      CABLE=_F(EC_SUR_E=0.0001,),
-                      )
+bracing = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3, RHO=7800), CABLE=_F(EC_SUR_E=0.0001))
 
-mater=AFFE_MATERIAU(MAILLAGE=ma,
-                    AFFE=_F(GROUP_MA='CABLE',
-                            MATER=bracing,),)
+mater = AFFE_MATERIAU(MAILLAGE=ma, AFFE=_F(GROUP_MA="CABLE", MATER=bracing))
 
 
 # Caracteristiques cable
-Cd1=1.
-D1=1.
+Cd1 = 1.0
+D1 = 1.0
 # masse volumique eau
-rhoeau=1000.
+rhoeau = 1000.0
 
-cara=AFFE_CARA_ELEM(MODELE=mo,
-                    CABLE=_F(GROUP_MA='CABLE',
-                             SECTION=0.03110176,
-                             N_INIT = 1000.,
-                                         ),
-                    DISCRET=(_F(CARA='K_TR_D_L',
-                               GROUP_MA=('R1','R2',),
-                               VALE=(50.,50.,50.,1000.,1000.,1000.,),),
-                             _F(CARA='M_TR_D_L',
-                               GROUP_MA=('R1','R2',),
-                               VALE=(0.,0.,0.,0.),),)
+cara = AFFE_CARA_ELEM(
+    MODELE=mo,
+    CABLE=_F(GROUP_MA="CABLE", SECTION=0.03110176, N_INIT=1000.0),
+    DISCRET=(
+        _F(CARA="K_TR_D_L", GROUP_MA=("R1", "R2"), VALE=(50.0, 50.0, 50.0, 1000.0, 1000.0, 1000.0)),
+        _F(CARA="M_TR_D_L", GROUP_MA=("R1", "R2"), VALE=(0.0, 0.0, 0.0, 0.0)),
+    ),
+)
 
-
-                 )
-
-encas14=AFFE_CHAR_MECA(MODELE=mo,
-                       DDL_IMPO=_F(GROUP_NO=('N0001','N0004',),
-                                   DX=0.,
-                                   DY=0.,
-                                   DZ=0.,
-                                   DRX=0.,
-                                   DRY=0.,
-                                   DRZ=0.,),)
+encas14 = AFFE_CHAR_MECA(
+    MODELE=mo,
+    DDL_IMPO=_F(GROUP_NO=("N0001", "N0004"), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+)
 
 from sdnl142a import *
 
-FXP = FORMULE(VALE='FP(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,depth,lstrech,VITE_X,VITE_Y,VITE_Z,DX,DY,DZ,1,cinelin,projvect,dragquad)',
-              FP=FP,
-              rhoeau=rhoeau,
-              Cd1=Cd1,
-              D1=D1,
-              H=H,
-              T=T,
-              L=L,
-              thetai=thetai,
-              proinf=proinf,
-              depth=depth,
-              lstrech=lstrech,
-              cinelin=cinelin,
-              projvect=projvect,
-              dragquad=dragquad,
-              NOM_PARA=['X', 'Y', 'Z', 'INST', 'VITE_X', 'VITE_Y', 'VITE_Z', 'DX', 'DY', 'DZ'],)
+FXP = FORMULE(
+    VALE="FP(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,depth,lstrech,VITE_X,VITE_Y,VITE_Z,DX,DY,DZ,1,cinelin,projvect,dragquad)",
+    FP=FP,
+    rhoeau=rhoeau,
+    Cd1=Cd1,
+    D1=D1,
+    H=H,
+    T=T,
+    L=L,
+    thetai=thetai,
+    proinf=proinf,
+    depth=depth,
+    lstrech=lstrech,
+    cinelin=cinelin,
+    projvect=projvect,
+    dragquad=dragquad,
+    NOM_PARA=["X", "Y", "Z", "INST", "VITE_X", "VITE_Y", "VITE_Z", "DX", "DY", "DZ"],
+)
 
-FYP = FORMULE(VALE='FP(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,depth,lstrech,VITE_X,VITE_Y,VITE_Z,DX,DY,DZ,2,cinelin,projvect,dragquad)',
-              FP=FP,
-              rhoeau=rhoeau,
-              Cd1=Cd1,
-              D1=D1,
-              H=H,
-              T=T,
-              L=L,
-              thetai=thetai,
-              proinf=proinf,
-              depth=depth,
-              lstrech=lstrech,
-              cinelin=cinelin,
-              projvect=projvect,
-              dragquad=dragquad,
-              NOM_PARA=['X', 'Y', 'Z', 'INST', 'VITE_X', 'VITE_Y', 'VITE_Z', 'DX', 'DY', 'DZ'],)
+FYP = FORMULE(
+    VALE="FP(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,depth,lstrech,VITE_X,VITE_Y,VITE_Z,DX,DY,DZ,2,cinelin,projvect,dragquad)",
+    FP=FP,
+    rhoeau=rhoeau,
+    Cd1=Cd1,
+    D1=D1,
+    H=H,
+    T=T,
+    L=L,
+    thetai=thetai,
+    proinf=proinf,
+    depth=depth,
+    lstrech=lstrech,
+    cinelin=cinelin,
+    projvect=projvect,
+    dragquad=dragquad,
+    NOM_PARA=["X", "Y", "Z", "INST", "VITE_X", "VITE_Y", "VITE_Z", "DX", "DY", "DZ"],
+)
 
 
-FZP = FORMULE(VALE='FP(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,depth,lstrech,VITE_X,VITE_Y,VITE_Z,DX,DY,DZ,3,cinelin,projvect,dragquad)',
-              FP=FP,
-              rhoeau=rhoeau,
-              Cd1=Cd1,
-              D1=D1,
-              H=H,
-              T=T,
-              L=L,
-              thetai=thetai,
-              proinf=proinf,
-              depth=depth,
-              lstrech=lstrech,
-              cinelin=cinelin,
-              projvect=projvect,
-              dragquad=dragquad,
-              NOM_PARA=['X', 'Y', 'Z', 'INST', 'VITE_X', 'VITE_Y', 'VITE_Z', 'DX', 'DY', 'DZ'],)
+FZP = FORMULE(
+    VALE="FP(rhoeau,Cd1,D1,X,Y,Z,INST,H,T,L,thetai,0.,0.,proinf,depth,lstrech,VITE_X,VITE_Y,VITE_Z,DX,DY,DZ,3,cinelin,projvect,dragquad)",
+    FP=FP,
+    rhoeau=rhoeau,
+    Cd1=Cd1,
+    D1=D1,
+    H=H,
+    T=T,
+    L=L,
+    thetai=thetai,
+    proinf=proinf,
+    depth=depth,
+    lstrech=lstrech,
+    cinelin=cinelin,
+    projvect=projvect,
+    dragquad=dragquad,
+    NOM_PARA=["X", "Y", "Z", "INST", "VITE_X", "VITE_Y", "VITE_Z", "DX", "DY", "DZ"],
+)
 
-visqueux=AFFE_CHAR_MECA_F(MODELE=mo,
-                     FORCE_POUTRE=_F(GROUP_MA='CABLE',
-                                     TYPE_CHARGE='FORCE',
-                                     FX=FXP,
-                                     FY=FYP,
-                                     FZ=FZP,),)
+visqueux = AFFE_CHAR_MECA_F(
+    MODELE=mo, FORCE_POUTRE=_F(GROUP_MA="CABLE", TYPE_CHARGE="FORCE", FX=FXP, FY=FYP, FZ=FZP)
+)
 
-liaiz=AFFE_CHAR_MECA(MODELE=mo,
-                    LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=0.,),)
-liaix=AFFE_CHAR_MECA(MODELE=mo,
-                    LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
-                                   DDL=('DX','DX',),
-                                   COEF_MULT=(1.0,-1.0,),
-                                   COEF_IMPO=0.,),)
+liaiz = AFFE_CHAR_MECA(
+    MODELE=mo,
+    LIAISON_DDL=_F(
+        GROUP_NO=("N0002", "N0003"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0
+    ),
+)
+liaix = AFFE_CHAR_MECA(
+    MODELE=mo,
+    LIAISON_DDL=_F(
+        GROUP_NO=("N0002", "N0003"), DDL=("DX", "DX"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0
+    ),
+)
 
-poids=AFFE_CHAR_MECA(MODELE=mo,
-                    PESANTEUR=_F(GRAVITE=10.,
-                                 DIRECTION=(0.,0.,-1.0,),),)
+poids = AFFE_CHAR_MECA(MODELE=mo, PESANTEUR=_F(GRAVITE=10.0, DIRECTION=(0.0, 0.0, -1.0)))
 
-temps=DEFI_LIST_REEL(DEBUT=0.,
-                     INTERVALLE=_F(JUSQU_A=100.,
-                                   PAS=0.05,),)
+temps = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=100.0, PAS=0.05))
 
-tempsm=DEFI_LIST_REEL(DEBUT=-1.,
-                      INTERVALLE=_F(JUSQU_A=0.,
-                                    PAS=1,),)
+tempsm = DEFI_LIST_REEL(DEBUT=-1.0, INTERVALLE=_F(JUSQU_A=0.0, PAS=1))
 
-tfin = 2.
+tfin = 2.0
 
-dyna=DYNA_NON_LINE(MODELE=mo,
-                   CHAM_MATER=mater,
-                   CARA_ELEM=cara,
-                   EXCIT=(_F(CHARGE=encas14,),
-                          _F(CHARGE=liaiz,),
-                          _F(CHARGE=liaix,),
-                          _F(
-                             TYPE_CHARGE='SUIV',
-                             CHARGE=visqueux,),
-                             ),
-                   COMPORTEMENT=(_F(RELATION='CABLE',
-                                DEFORMATION='GROT_GDEP',
-                                GROUP_MA='CABLE'),
-                                _F(RELATION='ELAS',
-                                DEFORMATION='PETIT',
-                                GROUP_MA=('R1','R2')),
-                                ),
-                   INCREMENT=_F(LIST_INST=temps,
-                                INST_FIN=tfin,),
-                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                   FORMULATION='DEPLACEMENT',),
-                   NEWTON=_F(REAC_ITER=2,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
-                   SOLVEUR    =_F(METHODE='LDLT',),
-                                   )
+dyna = DYNA_NON_LINE(
+    MODELE=mo,
+    CHAM_MATER=mater,
+    CARA_ELEM=cara,
+    EXCIT=(
+        _F(CHARGE=encas14),
+        _F(CHARGE=liaiz),
+        _F(CHARGE=liaix),
+        _F(TYPE_CHARGE="SUIV", CHARGE=visqueux),
+    ),
+    COMPORTEMENT=(
+        _F(RELATION="CABLE", DEFORMATION="GROT_GDEP", GROUP_MA="CABLE"),
+        _F(RELATION="ELAS", DEFORMATION="PETIT", GROUP_MA=("R1", "R2")),
+    ),
+    INCREMENT=_F(LIST_INST=temps, INST_FIN=tfin),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    NEWTON=_F(REAC_ITER=2),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=100),
+    SOLVEUR=_F(METHODE="LDLT"),
+)
 
 
 # Comparaison avec CALHYPSO à T=40.4
-#TEST_RESU(RESU=_F(RESULTAT=dyna,
+# TEST_RESU(RESU=_F(RESULTAT=dyna,
 #                   INST= 40.4,
 #                   NOM_CHAM='DEPL',
 #                   GROUP_NO='N0002',
@@ -194,7 +172,7 @@ dyna=DYNA_NON_LINE(MODELE=mo,
 #                   REFERENCE='AUTRE_ASTER',
 #                   PRECISION=0.03,
 #                   ),)
-#TEST_RESU(RESU=_F(RESULTAT=dyna,
+# TEST_RESU(RESU=_F(RESULTAT=dyna,
 #                   INST= 40.4,
 #                   NOM_CHAM='DEPL',
 #                   GROUP_NO='N0002',
@@ -206,35 +184,47 @@ dyna=DYNA_NON_LINE(MODELE=mo,
 #                   ),)
 
 # Test de non-régression
-TEST_RESU(RESU=_F(RESULTAT=dyna,
-                   INST= 1.,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N0002',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.31906496211665625,
-                   ),)
-TEST_RESU(RESU=_F(RESULTAT=dyna,
-                   INST= 1.,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N0002',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.15953248105832818,
-                   ),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=dyna,
+        INST=1.0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N0002",
+        NOM_CMP="DX",
+        VALE_CALC=0.31906496211665625,
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=dyna,
+        INST=1.0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N0002",
+        NOM_CMP="DZ",
+        VALE_CALC=-0.15953248105832818,
+    )
+)
 
 # Test de non-régression
-TEST_RESU(RESU=_F(RESULTAT=dyna,
-                   INST= 2.,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N0002',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.836120871263743,
-                   ),)
-TEST_RESU(RESU=_F(RESULTAT=dyna,
-                   INST= 2.,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N0002',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.4180604356318712,
-                   ),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=dyna,
+        INST=2.0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N0002",
+        NOM_CMP="DX",
+        VALE_CALC=0.836120871263743,
+    )
+)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=dyna,
+        INST=2.0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N0002",
+        NOM_CMP="DZ",
+        VALE_CALC=-0.4180604356318712,
+    )
+)
 
 FIN()

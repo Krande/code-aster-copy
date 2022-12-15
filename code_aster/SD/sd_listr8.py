@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ from .sd_titre import sd_titre
 
 
 class sd_listr8(sd_titre):
-#----------------------------------
+    # ----------------------------------
     nomj = SDNom(fin=19)
     LPAS = AsVR()
     BINT = AsVR()
@@ -33,9 +33,9 @@ class sd_listr8(sd_titre):
         # retourne  1  si a est proche de b
         # retourne -1  si a est loin de b
         # retourne  0  si a = 0. (ou b = 0.)
-        if a != 0. and b != 0.:
+        if a != 0.0 and b != 0.0:
             erreur = abs(a - b) / (abs(a) + abs(b))
-            if erreur < 1.e-12:
+            if erreur < 1.0e-12:
                 return 1
             else:
                 return -1
@@ -59,8 +59,7 @@ class sd_listr8(sd_titre):
                 npas = nbpa[k]
                 assert npas > 0
                 n1 = n1 + npas
-                assert self.proche(vale[n1], bint[k + 1]) in (
-                    1, 0), (k + 1, vale[n1], bint[k + 1],)
+                assert self.proche(vale[n1], bint[k + 1]) in (1, 0), (k + 1, vale[n1], bint[k + 1])
 
             assert len(vale) == n1 + 1
 

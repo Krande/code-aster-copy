@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,33 +21,37 @@
 /* recherche de la  n-ieme apparition d un K*8 dans une liste de K*8    */
 /* resultat = indice si present / 0 si absent                           */
 
-ASTERINTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm,
-                char *mot, STRING_SIZE lm, ASTERINTEGER *n, ASTERINTEGER *nmot)
-{
-    long i,j=0;
-    char *p,m[8];
+ASTERINTEGER DEFSSPP( INDIK8, indik8, char *lstmot, STRING_SIZE llm, char *mot, STRING_SIZE lm,
+                      ASTERINTEGER *n, ASTERINTEGER *nmot ) {
+    long i, j = 0;
+    char *p, m[8];
 
     // m = mot[1:8] to allow fast comparisons
     if ( lm < 8 ) {
-        for (i=0; i<lm;i++) m[i] = mot[i];
-        for (i=lm;i<8 ;i++) m[i] = ' ';
+        for ( i = 0; i < lm; i++ )
+            m[i] = mot[i];
+        for ( i = lm; i < 8; i++ )
+            m[i] = ' ';
     } else if ( lm == 8 ) {
-        for (i=0;i<8;i++)  m[i] = mot[i];
+        for ( i = 0; i < 8; i++ )
+            m[i] = mot[i];
     } else {
-      return 0;
+        return 0;
     }
 
     if ( *n == 1 ) {
-       for (i=0;i<*nmot;i++){
-          p = lstmot+8*i;
-          if (! strncmp(m,p,8)) return (i+1);
-       }
+        for ( i = 0; i < *nmot; i++ ) {
+            p = lstmot + 8 * i;
+            if ( !strncmp( m, p, 8 ) )
+                return ( i + 1 );
+        }
     } else {
-       for (i=0;i<*nmot;i++){
-          p = lstmot+8*i;
-          if (! strncmp(m,p,8))
-             if ( ++j == *n ) return (i+1);
-       }
+        for ( i = 0; i < *nmot; i++ ) {
+            p = lstmot + 8 * i;
+            if ( !strncmp( m, p, 8 ) )
+                if ( ++j == *n )
+                    return ( i + 1 );
+        }
     }
 
     return 0;

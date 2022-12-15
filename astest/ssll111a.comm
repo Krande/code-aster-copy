@@ -24,99 +24,118 @@
 #    CAS 2 : POIDS PROPRE DE LA POUTRE
 #    CAS 3 : TEMPERATURE UNIFORME
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # lecture maillage lineique
-MAPOU=LIRE_MAILLAGE(FORMAT='MED',UNITE=17,)
+MAPOU = LIRE_MAILLAGE(FORMAT="MED", UNITE=17)
 
 # lecture maillage section fine
-MASECF=LIRE_MAILLAGE(FORMAT='MED',UNITE=18,)
+MASECF = LIRE_MAILLAGE(FORMAT="MED", UNITE=18)
 
 # lecture maillage section grossiere
-MASECG=LIRE_MAILLAGE(FORMAT='MED',UNITE=19,)
+MASECG = LIRE_MAILLAGE(FORMAT="MED", UNITE=19)
 
-MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
-                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),)
+MOPOU = AFFE_MODELE(
+    MAILLAGE=MAPOU, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_EM")
+)
 
-GFF=DEFI_GEOM_FIBRE(SECTION=_F(MAILLAGE_SECT = MASECF , TOUT_SECT = 'OUI',
-                               GROUP_FIBRE = 'BETON',
-                               COOR_AXE_POUTRE = (0.,0.943170965E-2,)),
+GFF = DEFI_GEOM_FIBRE(
+    SECTION=_F(
+        MAILLAGE_SECT=MASECF,
+        TOUT_SECT="OUI",
+        GROUP_FIBRE="BETON",
+        COOR_AXE_POUTRE=(0.0, 0.943170965e-2),
+    ),
+    FIBRE=_F(
+        CARA="SURFACE",
+        GROUP_FIBRE="ACIER",
+        COOR_AXE_POUTRE=(0.0, 0.943170965e-2),
+        VALE=(0.08, -0.125, 2.0e-4, -0.08, -0.125, 2.0e-4, 0.1, 0.125, 1.5e-4, -0.1, 0.125, 1.5e-4),
+    ),
+)
 
-                   FIBRE=_F(CARA = 'SURFACE', GROUP_FIBRE = 'ACIER',
-                            COOR_AXE_POUTRE = (0.,0.943170965E-2,),
-                            VALE =( 0.08 ,-0.125, 2.E-4,
-                                  -0.08, -0.125, 2.E-4,
-                                  0.1, 0.125, 1.5E-4,
-                                  -0.1, 0.125, 1.5E-4, ),  )
-                  )
-
-POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
-# caracteristiques des sections, orientations et rigidite de torsion
-           POUTRE=_F(GROUP_MA=('POUTRE'),
-                     SECTION='GENERALE',
-                     CARA = ('A','IY','IZ','JX'),
-                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5), ),
-           ORIENTATION=_F(GROUP_MA=('POUTRE'),
-                          CARA='ANGL_VRIL', VALE=-90.0,),
-           MULTIFIBRE = _F( GROUP_MA = 'POUTRE', GROUP_FIBRE= ('BETON','ACIER'),
-                           PREC_AIRE=1.0E-06, PREC_INERTIE=2.5E-01, ),
-           GEOM_FIBRE = GFF ,
+POUCA = AFFE_CARA_ELEM(
+    MODELE=MOPOU,
+    INFO=2,
+    # caracteristiques des sections, orientations et rigidite de torsion
+    POUTRE=_F(
+        GROUP_MA=("POUTRE"),
+        SECTION="GENERALE",
+        CARA=("A", "IY", "IZ", "JX"),
+        VALE=(4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5),
+    ),
+    ORIENTATION=_F(GROUP_MA=("POUTRE"), CARA="ANGL_VRIL", VALE=-90.0),
+    MULTIFIBRE=_F(
+        GROUP_MA="POUTRE", GROUP_FIBRE=("BETON", "ACIER"), PREC_AIRE=1.0e-06, PREC_INERTIE=2.5e-01
+    ),
+    GEOM_FIBRE=GFF,
 )
 
 
 # LES MATERIAUX
-BETON=DEFI_MATERIAU(ELAS=_F(E=2.E10, NU=0.25, RHO=2400., ALPHA=1.E-5,),)
+BETON = DEFI_MATERIAU(ELAS=_F(E=2.0e10, NU=0.25, RHO=2400.0, ALPHA=1.0e-5))
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11, NU=0.3, RHO=7800., ALPHA=1.E-5,),)
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2.10000000000e11, NU=0.3, RHO=7800.0, ALPHA=1.0e-5))
 #
 
 # MATERIAU POUR LES GROUPES DE FIBRES
-MATFF=DEFI_COMPOR(GEOM_FIBRE=GFF,MATER_SECT=BETON,
-                 MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS'),
-                             _F(GROUP_FIBRE='ACIER',MATER=ACIER,RELATION='ELAS')))
-
-TEMPE0 = CREA_CHAMP( OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAPOU,
-             AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.),)
-TEMPE1 = CREA_CHAMP( OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAPOU,
-             AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=100.),)
-
-TEMPEV =CREA_RESU(
-    OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
-    AFFE=(
-        _F( CHAM_GD=TEMPE0, INST= 0.0,),
-        _F( CHAM_GD=TEMPE1, INST= 1.0,),
+MATFF = DEFI_COMPOR(
+    GEOM_FIBRE=GFF,
+    MATER_SECT=BETON,
+    MULTIFIBRE=(
+        _F(GROUP_FIBRE="BETON", MATER=BETON, RELATION="ELAS"),
+        _F(GROUP_FIBRE="ACIER", MATER=ACIER, RELATION="ELAS"),
     ),
+)
+
+TEMPE0 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAPOU,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.0),
+)
+TEMPE1 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAPOU,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=100.0),
+)
+
+TEMPEV = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=TEMPE0, INST=0.0), _F(CHAM_GD=TEMPE1, INST=1.0)),
 )
 
 
 # LES CHAMPS DE MATERIAUX
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
-                    AFFE=_F(GROUP_MA='POUTRE', MATER=(BETON,ACIER)),
-                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=MATFF),
-                    AFFE_VARC= _F( TOUT = 'OUI', NOM_VARC = 'TEMP', CHAM_GD=TEMPE1,VALE_REF=0.)
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAPOU,
+    AFFE=_F(GROUP_MA="POUTRE", MATER=(BETON, ACIER)),
+    AFFE_COMPOR=_F(GROUP_MA="POUTRE", COMPOR=MATFF),
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", CHAM_GD=TEMPE1, VALE_REF=0.0),
 )
 
 
-
-CHMATL=AFFE_MATERIAU(MAILLAGE=MAPOU,
-                    AFFE=_F(GROUP_MA='POUTRE', MATER=(BETON,ACIER)),
-                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=MATFF),
-                    AFFE_VARC= _F( TOUT = 'OUI', NOM_VARC = 'TEMP', EVOL=TEMPEV,VALE_REF=0.)
+CHMATL = AFFE_MATERIAU(
+    MAILLAGE=MAPOU,
+    AFFE=_F(GROUP_MA="POUTRE", MATER=(BETON, ACIER)),
+    AFFE_COMPOR=_F(GROUP_MA="POUTRE", COMPOR=MATFF),
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=TEMPEV, VALE_REF=0.0),
 )
 
 
+BLOQUAGE = AFFE_CHAR_MECA(
+    MODELE=MOPOU,
+    DDL_IMPO=(_F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0), _F(GROUP_NO="B", DY=0.0)),
+)
 
-BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
-                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,  DRX=0.0,  DRY=0.0,),
-                                  _F(GROUP_NO='B', DY=0.0,),
-                                  ),)
-
-instant=DEFI_LIST_REEL(VALE=(0.0, 1.0),)
+instant = DEFI_LIST_REEL(VALE=(0.0, 1.0))
 
 #  ============ CAS DE CHARGE 1 ================
 # FLEXION 3 POINTS
-CHAR1=AFFE_CHAR_MECA(MODELE=MOPOU,
-                      FORCE_NODALE=_F(GROUP_NO='C', FY=1.E4,),)
+CHAR1 = AFFE_CHAR_MECA(MODELE=MOPOU, FORCE_NODALE=_F(GROUP_NO="C", FY=1.0e4))
 
 """
 !!! NE PAS EFFACER: VOLONTAIREMENT MIS EN COMMENTAIRE
@@ -164,41 +183,68 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 """
 
-STNL1=STAT_NON_LINE(
-    MODELE=MOPOU, CHAM_MATER=CHMATL, CARA_ELEM=POUCA,
-    COMPORTEMENT=_F(TOUT='OUI', RELATION='MULTIFIBRE',),
+STNL1 = STAT_NON_LINE(
+    MODELE=MOPOU,
+    CHAM_MATER=CHMATL,
+    CARA_ELEM=POUCA,
+    COMPORTEMENT=_F(TOUT="OUI", RELATION="MULTIFIBRE"),
     INCREMENT=_F(LIST_INST=instant),
-    EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHAR1,),),
+    EXCIT=(_F(CHARGE=BLOQUAGE), _F(CHARGE=CHAR1)),
 )
 #
 # CALCUL DES EFFORTS GENERALISES
-STNL1=CALC_CHAMP(reuse=STNL1, RESULTAT=STNL1,CONTRAINTE=('EFGE_ELNO'))
-STNL1=CALC_CHAMP(reuse=STNL1, RESULTAT=STNL1, CONTRAINTE='EFGE_NOEU')
-STNL1=CALC_CHAMP(reuse=STNL1, RESULTAT=STNL1, FORCE='REAC_NODA')
+STNL1 = CALC_CHAMP(reuse=STNL1, RESULTAT=STNL1, CONTRAINTE=("EFGE_ELNO"))
+STNL1 = CALC_CHAMP(reuse=STNL1, RESULTAT=STNL1, CONTRAINTE="EFGE_NOEU")
+STNL1 = CALC_CHAMP(reuse=STNL1, RESULTAT=STNL1, FORCE="REAC_NODA")
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='RESULTAT',
-    #RESU=_F(RESULTAT=STNL1, NOM_CHAM=('REAC_NODA','EFGE_ELNO','EFGE_NOEU'),INST=1.0 )
-#)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='RESULTAT',
+# RESU=_F(RESULTAT=STNL1, NOM_CHAM=('REAC_NODA','EFGE_ELNO','EFGE_NOEU'),INST=1.0 )
+# )
 
-TEST_RESU(RESU=(
-    _F( NUME_ORDRE=1, GROUP_NO='C', REFERENCE='ANALYTIQUE', RESULTAT=STNL1,
-        NOM_CHAM='DEPL', NOM_CMP='DY',
-        VALE_CALC= 2.27401159E-03, VALE_REFE=2.2734999999999999E-3, PRECISION=1.E-3,),
-    _F( NUME_ORDRE=1, GROUP_NO='C', REFERENCE='ANALYTIQUE', RESULTAT=STNL1,
-        NOM_CHAM='EFGE_ELNO', NOM_CMP='VZ',GROUP_MA='M1',
-        VALE_CALC= 5.00000000E+03, VALE_REFE=5000.0, PRECISION=1.0E-06,),
-    _F( NUME_ORDRE=1, GROUP_NO='C', REFERENCE='ANALYTIQUE', RESULTAT=STNL1,
-        NOM_CHAM='EFGE_ELNO', NOM_CMP='MFY',GROUP_MA='M1',
-        VALE_CALC= 1.25000000E+04, VALE_REFE=1.2500E4, PRECISION=1.0E-06,),
-    ),
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="C",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=2.27401159e-03,
+            VALE_REFE=2.2734999999999999e-3,
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="C",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL1,
+            NOM_CHAM="EFGE_ELNO",
+            NOM_CMP="VZ",
+            GROUP_MA="M1",
+            VALE_CALC=5.00000000e03,
+            VALE_REFE=5000.0,
+            PRECISION=1.0e-06,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="C",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL1,
+            NOM_CHAM="EFGE_ELNO",
+            NOM_CMP="MFY",
+            GROUP_MA="M1",
+            VALE_CALC=1.25000000e04,
+            VALE_REFE=1.2500e4,
+            PRECISION=1.0e-06,
+        ),
+    )
 )
-
 
 
 #  ============ CAS DE CHARGE 2 ================
 # PESANTEUR
-CHAR2=AFFE_CHAR_MECA(MODELE=MOPOU, PESANTEUR=_F(GRAVITE=9.8,
-                                                DIRECTION=( 0., -1., 0.),),)
+CHAR2 = AFFE_CHAR_MECA(MODELE=MOPOU, PESANTEUR=_F(GRAVITE=9.8, DIRECTION=(0.0, -1.0, 0.0)))
 """
 !!! NE PAS EFFACER: VOLONTAIREMENT MIS EN COMMENTAIRE
  fiche 20443 : vérouillage de POU_D_EM+MECA_STATIQUE+AFFE_VARC
@@ -223,23 +269,33 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 """
 
-STLN2=STAT_NON_LINE(
-    MODELE=MOPOU, CHAM_MATER=CHMATL, CARA_ELEM=POUCA,
-    COMPORTEMENT=_F(TOUT='OUI', RELATION='MULTIFIBRE',),
+STLN2 = STAT_NON_LINE(
+    MODELE=MOPOU,
+    CHAM_MATER=CHMATL,
+    CARA_ELEM=POUCA,
+    COMPORTEMENT=_F(TOUT="OUI", RELATION="MULTIFIBRE"),
     INCREMENT=_F(LIST_INST=instant),
-    EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHAR2,),),
+    EXCIT=(_F(CHARGE=BLOQUAGE), _F(CHARGE=CHAR2)),
 )
 
-STLN2=CALC_CHAMP(reuse=STLN2, RESULTAT=STLN2, CONTRAINTE=('EFGE_ELNO'))
-STLN2=CALC_CHAMP(reuse=STLN2, RESULTAT=STLN2, FORCE='REAC_NODA')
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='RESULTAT',
-    #RESU=_F(RESULTAT=STLN2, NOM_CHAM=('EFGE_ELNO','REAC_NODA',),INST=1.0 )
-#)
+STLN2 = CALC_CHAMP(reuse=STLN2, RESULTAT=STLN2, CONTRAINTE=("EFGE_ELNO"))
+STLN2 = CALC_CHAMP(reuse=STLN2, RESULTAT=STLN2, FORCE="REAC_NODA")
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='RESULTAT',
+# RESU=_F(RESULTAT=STLN2, NOM_CHAM=('EFGE_ELNO','REAC_NODA',),INST=1.0 )
+# )
 # Fleche
 TEST_RESU(
-    RESU=_F(NUME_ORDRE=1, GROUP_NO='C', REFERENCE='ANALYTIQUE', RESULTAT=STLN2,
-            NOM_CHAM='DEPL', NOM_CMP='DY', VALE_CALC=-7.90153651E-04,
-            VALE_REFE=-7.9000000000000001E-4, PRECISION=1.E-3,),
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="C",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=STLN2,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=-7.90153651e-04,
+        VALE_REFE=-7.9000000000000001e-4,
+        PRECISION=1.0e-3,
+    )
 )
 
 #  ============ CAS DE CHARGE 3 ================
@@ -300,191 +356,245 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 """
 
-STNL3=STAT_NON_LINE(
-    MODELE=MOPOU, CHAM_MATER=CHMATL, CARA_ELEM=POUCA,
-    COMPORTEMENT=_F(TOUT='OUI', RELATION='MULTIFIBRE',),
+STNL3 = STAT_NON_LINE(
+    MODELE=MOPOU,
+    CHAM_MATER=CHMATL,
+    CARA_ELEM=POUCA,
+    COMPORTEMENT=_F(TOUT="OUI", RELATION="MULTIFIBRE"),
     INCREMENT=_F(LIST_INST=instant),
-    EXCIT=(_F(CHARGE=BLOQUAGE,),),
+    EXCIT=(_F(CHARGE=BLOQUAGE),),
 )
 #
 # CALCUL DES EFFORTS GENERALISES
-STNL3=CALC_CHAMP(reuse=STNL3, RESULTAT=STNL3,CONTRAINTE=('EFGE_ELNO'))
-STNL3=CALC_CHAMP(reuse=STNL3, RESULTAT=STNL3, CONTRAINTE='EFGE_NOEU')
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STNL3,NOM_CHAM=('EFGE_ELNO','EFGE_NOEU',),),)
+STNL3 = CALC_CHAMP(reuse=STNL3, RESULTAT=STNL3, CONTRAINTE=("EFGE_ELNO"))
+STNL3 = CALC_CHAMP(reuse=STNL3, RESULTAT=STNL3, CONTRAINTE="EFGE_NOEU")
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STNL3,NOM_CHAM=('EFGE_ELNO','EFGE_NOEU',),),)
 
-TEST_RESU(RESU=(
-    _F( NUME_ORDRE=1, GROUP_NO='B', REFERENCE='ANALYTIQUE', RESULTAT=STNL3,
-        NOM_CHAM='DEPL', NOM_CMP='DX',
-        VALE_CALC= 5.00000000E-03, VALE_REFE=5.0000000000000001E-3, PRECISION=1.0E-06,),
-    _F( NUME_ORDRE=1, GROUP_NO='A', REFERENCE='ANALYTIQUE', RESULTAT=STNL3,
-        NOM_CHAM='EFGE_NOEU', NOM_CMP='N',
-        VALE_CALC= 0.00000000E+00, VALE_REFE=0.0, CRITERE='ABSOLU', PRECISION=1.0E-06,),
-    _F( NUME_ORDRE=1, GROUP_NO='C', REFERENCE='ANALYTIQUE', RESULTAT=STNL3,
-        NOM_CHAM='EFGE_NOEU', NOM_CMP='MFY',
-        VALE_CALC=-2.11758237E-22, VALE_REFE=0.0, CRITERE='ABSOLU', PRECISION=1.0E-06,),
-    _F( NUME_ORDRE=1, GROUP_NO='C', REFERENCE='ANALYTIQUE', RESULTAT=STNL3,
-        NOM_CHAM='EFGE_NOEU', NOM_CMP='VZ',
-        VALE_CALC= 2.58040822E-24, VALE_REFE=0.0, CRITERE='ABSOLU', PRECISION=1.0E-06,),
-    ),
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL3,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=5.00000000e-03,
+            VALE_REFE=5.0000000000000001e-3,
+            PRECISION=1.0e-06,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="A",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL3,
+            NOM_CHAM="EFGE_NOEU",
+            NOM_CMP="N",
+            VALE_CALC=0.00000000e00,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-06,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="C",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL3,
+            NOM_CHAM="EFGE_NOEU",
+            NOM_CMP="MFY",
+            VALE_CALC=-2.11758237e-22,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-06,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="C",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=STNL3,
+            NOM_CHAM="EFGE_NOEU",
+            NOM_CMP="VZ",
+            VALE_CALC=2.58040822e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-06,
+        ),
+    )
 )
 
 # cas de charge 1 bis
 # on repasse le cas de charge 1 avec un maillage plus grossier
-GFG=DEFI_GEOM_FIBRE(SECTION=_F(MAILLAGE_SECT = MASECG , TOUT_SECT = 'OUI',
-                               GROUP_FIBRE = 'BETON',
-                               COOR_AXE_POUTRE = (0.,0.943170965E-2,)),
+GFG = DEFI_GEOM_FIBRE(
+    SECTION=_F(
+        MAILLAGE_SECT=MASECG,
+        TOUT_SECT="OUI",
+        GROUP_FIBRE="BETON",
+        COOR_AXE_POUTRE=(0.0, 0.943170965e-2),
+    ),
+    FIBRE=_F(
+        CARA="SURFACE",
+        GROUP_FIBRE="ACIER",
+        COOR_AXE_POUTRE=(0.0, 0.943170965e-2),
+        VALE=(0.08, -0.125, 2.0e-4, -0.08, -0.125, 2.0e-4, 0.1, 0.125, 1.5e-4, -0.1, 0.125, 1.5e-4),
+    ),
+)
 
-                   FIBRE=_F(CARA = 'SURFACE', GROUP_FIBRE = 'ACIER',
-                            COOR_AXE_POUTRE = (0.,0.943170965E-2,),
-                            VALE =( 0.08 ,-0.125, 2.E-4,
-                                  -0.08, -0.125, 2.E-4,
-                                  0.1, 0.125, 1.5E-4,
-                                  -0.1, 0.125, 1.5E-4, ),  )
-                  )
+POUCAG = AFFE_CARA_ELEM(
+    MODELE=MOPOU,
+    INFO=2,
+    POUTRE=_F(
+        GROUP_MA=("POUTRE"),
+        SECTION="GENERALE",
+        CARA=("A", "IY", "IZ", "JX"),
+        VALE=(4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5),
+    ),
+    ORIENTATION=_F(GROUP_MA=("POUTRE"), CARA="ANGL_VRIL", VALE=-90.0),
+    MULTIFIBRE=_F(
+        GROUP_MA="POUTRE", PREC_INERTIE=1.0, PREC_AIRE=1.0, GROUP_FIBRE=("BETON", "ACIER")
+    ),
+    GEOM_FIBRE=GFG,
+)
 
-POUCAG=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
-           POUTRE=_F(GROUP_MA=('POUTRE'),
-                     SECTION='GENERALE',
-                     CARA = ('A','IY','IZ','JX'),
-                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5), ),
-           ORIENTATION=_F(GROUP_MA=('POUTRE'),
-                          CARA='ANGL_VRIL', VALE=-90.0,),
-           MULTIFIBRE = _F( GROUP_MA = 'POUTRE',PREC_INERTIE=1., PREC_AIRE=1. ,
-                            GROUP_FIBRE= ('BETON','ACIER'),),
-           GEOM_FIBRE = GFG ,
-                  )
-
-MATFG=DEFI_COMPOR(GEOM_FIBRE=GFG,MATER_SECT=BETON,
-                 MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS'),
-                             _F(GROUP_FIBRE='ACIER',MATER=ACIER,RELATION='ELAS')))
-CHMATG=AFFE_MATERIAU(MAILLAGE=MAPOU,
-                    AFFE=_F(GROUP_MA='POUTRE', MATER=(BETON,ACIER)),
-                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=MATFG)
-                         )
+MATFG = DEFI_COMPOR(
+    GEOM_FIBRE=GFG,
+    MATER_SECT=BETON,
+    MULTIFIBRE=(
+        _F(GROUP_FIBRE="BETON", MATER=BETON, RELATION="ELAS"),
+        _F(GROUP_FIBRE="ACIER", MATER=ACIER, RELATION="ELAS"),
+    ),
+)
+CHMATG = AFFE_MATERIAU(
+    MAILLAGE=MAPOU,
+    AFFE=_F(GROUP_MA="POUTRE", MATER=(BETON, ACIER)),
+    AFFE_COMPOR=_F(GROUP_MA="POUTRE", COMPOR=MATFG),
+)
 
 
-DEP1G=MECA_STATIQUE(MODELE=MOPOU, CHAM_MATER=CHMATG, CARA_ELEM=POUCAG,
-                  EXCIT=(_F(CHARGE=BLOQUAGE,),  _F(CHARGE=CHAR1,),),)
+DEP1G = MECA_STATIQUE(
+    MODELE=MOPOU, CHAM_MATER=CHMATG, CARA_ELEM=POUCAG, EXCIT=(_F(CHARGE=BLOQUAGE), _F(CHARGE=CHAR1))
+)
 #
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='C',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DEP1G,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC= 2.29556029E-03,
-                  VALE_REFE=2.2734999999999999E-3,
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="C",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DEP1G,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=2.29556029e-03,
+        VALE_REFE=2.2734999999999999e-3,
+        PRECISION=1.0e-2,
+    )
+)
 
-#=================================================
+# =================================================
 # Test sur SIEF_ELGA
-#=================================================
+# =================================================
 
-coord=CALC_CHAM_ELEM(MODELE=MOPOU, OPTION='COOR_ELGA',CARA_ELEM=POUCAG,)
+coord = CALC_CHAM_ELEM(MODELE=MOPOU, OPTION="COOR_ELGA", CARA_ELEM=POUCAG)
 
-MAPOU= DEFI_GROUP(reuse=MAPOU,MAILLAGE=MAPOU,
-                                  CREA_GROUP_MA=_F(NOM='MAILLE_M1',MAILLE='M1'))
-MAPOU= DEFI_GROUP(reuse=MAPOU,MAILLAGE=MAPOU,
-                                  CREA_GROUP_MA=_F(NOM='MAILLE_M2',MAILLE='M2'))
+MAPOU = DEFI_GROUP(reuse=MAPOU, MAILLAGE=MAPOU, CREA_GROUP_MA=_F(NOM="MAILLE_M1", MAILLE="M1"))
+MAPOU = DEFI_GROUP(reuse=MAPOU, MAILLAGE=MAPOU, CREA_GROUP_MA=_F(NOM="MAILLE_M2", MAILLE="M2"))
 
-VOLUM2=POST_ELEM( RESULTAT=DEP1G,
-                  MODELE=MOPOU,
-                  VOLUMOGRAMME=  _F(NOM_CMP='SIXX',
-                                    CARA_ELEM=POUCAG,
-                                    TOUT='OUI',
-                                    NOM_CHAM='SIEF_ELGA',
-                                    NORME='RELATIF',
-                                    NB_INTERV=5),
-                )
+VOLUM2 = POST_ELEM(
+    RESULTAT=DEP1G,
+    MODELE=MOPOU,
+    VOLUMOGRAMME=_F(
+        NOM_CMP="SIXX",
+        CARA_ELEM=POUCAG,
+        TOUT="OUI",
+        NOM_CHAM="SIEF_ELGA",
+        NORME="RELATIF",
+        NB_INTERV=5,
+    ),
+)
 
 IMPR_TABLE(TABLE=VOLUM2)
 
 TEST_TABLE(
-           VALE_CALC=0.437636761488,
-           VALE_REFE=0.437636761488,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM2,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIXX',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=1,),
-                   ),
-           )
+    VALE_CALC=0.437636761488,
+    VALE_REFE=0.437636761488,
+    REFERENCE="NON_DEFINI",
+    PRECISION=1.0e-3,
+    NOM_PARA="DISTRIBUTION",
+    TABLE=VOLUM2,
+    FILTRE=(
+        _F(NOM_PARA="NOM_CMP", VALE_K="SIXX"),
+        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+        _F(NOM_PARA="INTERVALLE", VALE_I=1),
+    ),
+)
 
 TEST_TABLE(
-           VALE_CALC=98.4682713348,
-           VALE_REFE=98.4682713348,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM2,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIXX',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=3,),
-                   ),
-           )
+    VALE_CALC=98.4682713348,
+    VALE_REFE=98.4682713348,
+    REFERENCE="NON_DEFINI",
+    PRECISION=1.0e-3,
+    NOM_PARA="DISTRIBUTION",
+    TABLE=VOLUM2,
+    FILTRE=(
+        _F(NOM_PARA="NOM_CMP", VALE_K="SIXX"),
+        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+        _F(NOM_PARA="INTERVALLE", VALE_I=3),
+    ),
+)
 
-#=================================================
+# =================================================
 #
 # Test SIGM_ELNO
 #
-#=================================================
+# =================================================
 
-DEP1G=CALC_CHAMP(reuse =DEP1G,
-             RESULTAT=DEP1G,
-             CONTRAINTE='SIGM_ELNO')
+DEP1G = CALC_CHAMP(reuse=DEP1G, RESULTAT=DEP1G, CONTRAINTE="SIGM_ELNO")
 
-VOLUM3=POST_ELEM( RESULTAT=DEP1G,
-                  MODELE=MOPOU,
-                  VOLUMOGRAMME=  _F(NOM_CMP='SIXX',
-                                    CARA_ELEM=POUCAG,
-                                    TOUT='OUI',
-                                    NOM_CHAM='SIGM_ELNO',
-                                    NORME='RELATIF',
-                                    NB_INTERV=5),
-                )
+VOLUM3 = POST_ELEM(
+    RESULTAT=DEP1G,
+    MODELE=MOPOU,
+    VOLUMOGRAMME=_F(
+        NOM_CMP="SIXX",
+        CARA_ELEM=POUCAG,
+        TOUT="OUI",
+        NOM_CHAM="SIGM_ELNO",
+        NORME="RELATIF",
+        NB_INTERV=5,
+    ),
+)
 
 IMPR_TABLE(TABLE=VOLUM3)
 TEST_TABLE(
-           VALE_CALC=99.2341356674,
-           VALE_REFE=99.2341356674,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM3,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIXX',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=3,),
-                   ),
-           )
-#=================================================
+    VALE_CALC=99.2341356674,
+    VALE_REFE=99.2341356674,
+    REFERENCE="NON_DEFINI",
+    PRECISION=1.0e-3,
+    NOM_PARA="DISTRIBUTION",
+    TABLE=VOLUM3,
+    FILTRE=(
+        _F(NOM_PARA="NOM_CMP", VALE_K="SIXX"),
+        _F(NOM_PARA="NUME_ORDRE", VALE_I=1),
+        _F(NOM_PARA="INTERVALLE", VALE_I=3),
+    ),
+)
+# =================================================
 #
 # Test VOLUME
 #
-#=================================================
+# =================================================
 
-VOLUM4=POST_ELEM( RESULTAT=DEP1G,
-                  MODELE=MOPOU,
-                  VOLUMOGRAMME=  _F(NOM_CMP='SIXX',
-                                    CARA_ELEM=POUCAG,
-                                    TOUT='OUI',
-                                    NOM_CHAM='SIGM_ELNO',
-                                    NORME='ABSOLU',
-                                    NB_INTERV=5),
-                )
+VOLUM4 = POST_ELEM(
+    RESULTAT=DEP1G,
+    MODELE=MOPOU,
+    VOLUMOGRAMME=_F(
+        NOM_CMP="SIXX",
+        CARA_ELEM=POUCAG,
+        TOUT="OUI",
+        NOM_CHAM="SIGM_ELNO",
+        NORME="ABSOLU",
+        NB_INTERV=5,
+    ),
+)
 
 IMPR_TABLE(TABLE=VOLUM4)
-TEST_TABLE(TABLE=VOLUM4,  NOM_PARA='DISTRIBUTION',     TYPE_TEST='SOMM_ABS', VALE_CALC=0.2285,)
+TEST_TABLE(TABLE=VOLUM4, NOM_PARA="DISTRIBUTION", TYPE_TEST="SOMM_ABS", VALE_CALC=0.2285)
 
 FIN()

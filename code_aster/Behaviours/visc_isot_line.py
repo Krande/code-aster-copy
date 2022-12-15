@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'VISC_ISOT_LINE',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi viscoplastique avec critère de Von Mises, écrouissage isotrope linéaire et viscosité en sinh"""              ,
-    num_lc         = 2,
-    nb_vari        = 2,
-    nom_vari       = ('EPSPEQ','INDIPLAS',),
-    mc_mater       = ('ELAS','ECRO_LINE','VISC_SINH',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('SIMO_MIEHE',),
-    algo_inte      = ('SECANTE','BRENT',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('TOTALE',),
-    regu_visc      = ('No',),
+    nom="VISC_ISOT_LINE",
+    lc_type=("MECANIQUE",),
+    doc="""Loi viscoplastique avec critère de Von Mises, écrouissage isotrope linéaire et viscosité en sinh""",
+    num_lc=2,
+    nb_vari=2,
+    nom_vari=("EPSPEQ", "INDIPLAS"),
+    mc_mater=("ELAS", "ECRO_LINE", "VISC_SINH"),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("SIMO_MIEHE",),
+    algo_inte=("SECANTE", "BRENT"),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE",),
+    regu_visc=("No",),
 )

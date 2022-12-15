@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,24 +24,21 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""Initialisations pour le champ %(k1)s."""),
-
-    2 : _("""Préparation des objets pour la numérotation."""),
-
-    3 : _("""Troncature de la matrice des modes.
+    1: _("""Initialisations pour le champ %(k1)s."""),
+    2: _("""Préparation des objets pour la numérotation."""),
+    3: _(
+        """Troncature de la matrice des modes.
  Dimensions initiales: [%(i1)d,%(i2)d]
- Dimensions finales  : [%(i3)d,%(i4)d]"""),
-
-    4 : _("""Préparation des coordonnées réduites par reconstruction partielle."""),
-
-    5 : _("""Préparation des coordonnées réduites par récupération directe dans la table des coordonnées réduites."""),
-
-    6 : _("""Construction du champ complet sur tous les pas de temps."""),
-
-    7 : _("""Calcul pour le champ %(k1)s."""),
-
-    8 : _("""Calcul des coordonnées réduites."""),
-
-    9 : _("""Échec lors du calcul des coordonnées réduites. Les modes sont peut-être colinéaires."""),
+ Dimensions finales  : [%(i3)d,%(i4)d]"""
+    ),
+    4: _("""Préparation des coordonnées réduites par reconstruction partielle."""),
+    5: _(
+        """Préparation des coordonnées réduites par récupération directe dans la table des coordonnées réduites."""
+    ),
+    6: _("""Construction du champ complet sur tous les pas de temps."""),
+    7: _("""Calcul pour le champ %(k1)s."""),
+    8: _("""Calcul des coordonnées réduites."""),
+    9: _(
+        """Échec lors du calcul des coordonnées réduites. Les modes sont peut-être colinéaires."""
+    ),
 }

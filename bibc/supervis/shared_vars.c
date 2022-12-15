@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -30,19 +30,19 @@
  * their access methods.
  */
 
-#include "Python.h"
-#include <stdio.h>
-
 #include "shared_vars.h"
+
+#include "Python.h"
+
+#include <stdio.h>
 
 /* Global variables */
 
 /*! Global variable to handle the ExecutionParameter object */
-static PyObject* gParams = (PyObject*)0;
+static PyObject *gParams = (PyObject *)0;
 
 /*! Global variable to handle the MessageLog object */
-static PyObject* gMsgLog = (PyObject*)0;
-
+static PyObject *gMsgLog = (PyObject *)0;
 
 /*! gJeveuxStatus is:
       0 before aster_init,
@@ -54,27 +54,26 @@ static PyObject* gMsgLog = (PyObject*)0;
 static int gJeveuxStatus = 0;
 
 /*! Variable referencing the 'etape' object */
-static PyObject *gEtape = (PyObject*)0;
+static PyObject *gEtape = (PyObject *)0;
 
 /*! Stack of 'etape' objects */
-static PyObject *gPileEtapes = (PyObject*)0;
-
+static PyObject *gPileEtapes = (PyObject *)0;
 
 /* register functions */
 /*! Register the ExecutionParameter object as a global variable */
-void register_sh_params(PyObject *obj) {
+void register_sh_params( PyObject *obj ) {
     gParams = obj;
     return;
 }
 
 /*! Register the MessageLog object as a global variable */
-void register_sh_msglog(PyObject *obj) {
+void register_sh_msglog( PyObject *obj ) {
     gMsgLog = obj;
     return;
 }
 
 /*! Register the current 'etape' object as a global variable */
-void register_sh_etape(PyObject *obj) {
+void register_sh_etape( PyObject *obj ) {
     // printf("DEBUG: register: ");
     // PyObject_Print(obj, stdout, 0);
     // printf("\n");
@@ -83,31 +82,23 @@ void register_sh_etape(PyObject *obj) {
 }
 
 /*! Register the status of jeveux */
-void register_sh_jeveux_status(int obj) {
+void register_sh_jeveux_status( int obj ) {
     gJeveuxStatus = obj;
     return;
 }
 
 /* get functions */
 /*! Return the global ExecutionParameter object */
-PyObject * get_sh_params() {
-    return gParams;
-}
+PyObject *get_sh_params() { return gParams; }
 
 /*! Return the global MessageLog object */
-PyObject * get_sh_msglog() {
-    return gMsgLog;
-}
+PyObject *get_sh_msglog() { return gMsgLog; }
 
 /*! Return the current 'etape' object */
-PyObject * get_sh_etape() {
-    return gEtape;
-}
+PyObject *get_sh_etape() { return gEtape; }
 
 /*! Return the status of jeveux */
-int get_sh_jeveux_status() {
-    return gJeveuxStatus;
-}
+int get_sh_jeveux_status() { return gJeveuxStatus; }
 
 /*
  * Pour conserver le lien entre le code de calcul en Fortran et le superviseur
@@ -123,40 +114,36 @@ int get_sh_jeveux_status() {
  */
 
 /*! Initialize the stack of 'etape' objects */
-void init_etape_stack() {
-    gPileEtapes = PyList_New(0);
-}
+void init_etape_stack() { gPileEtapes = PyList_New( 0 ); }
 
 /*! Append the given 'etape' object on stack */
-PyObject * append_etape(PyObject *etape)
-{
+PyObject *append_etape( PyObject *etape ) {
     /* PyList_Append incremente de 1 le compteur de references de c (commande courante) */
-    PyList_Append(gPileEtapes, etape);
+    PyList_Append( gPileEtapes, etape );
     return etape;
 }
 
 /*! Remove and return the previous 'etape' object on stack ('.pop()' x 2) */
-PyObject * pop_etape()
-{
-    PyObject * etape;
-    int l = PyList_Size(gPileEtapes);
-    if (l == 0) {
+PyObject *pop_etape() {
+    PyObject *etape;
+    int l = PyList_Size( gPileEtapes );
+    if ( l == 0 ) {
         /* Pile vide */
-        Py_INCREF(Py_None);
+        Py_INCREF( Py_None );
         return Py_None;
     }
     /* Derniere commande dans la pile */
-    etape = PyList_GetItem(gPileEtapes, l-1);
+    etape = PyList_GetItem( gPileEtapes, l - 1 );
     /* PyList_GetItem n'incremente pas le compteur de ref de etape */
     /* On tronque la liste a la dimension l-1 */
-    PyList_SetSlice(gPileEtapes, l-1, l, NULL);
+    PyList_SetSlice( gPileEtapes, l - 1, l, NULL );
     /* Le compteur de ref de etape est decremente de 1 */
-    if (l == 1) {
+    if ( l == 1 ) {
         /* La pile tronquee est vide */
-        Py_INCREF(Py_None);
+        Py_INCREF( Py_None );
         return Py_None;
     }
     /* On retourne la derniere commande de la pile */
-    etape = PyList_GetItem(gPileEtapes, l-2);
+    etape = PyList_GetItem( gPileEtapes, l - 2 );
     return etape;
 }

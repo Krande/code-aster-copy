@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,24 +23,26 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-IMPR_CO=PROC(nom="IMPR_CO",op=17,
-             fr=tr("Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)"),
-         regles=(UN_PARMI('CONCEPT','CHAINE','TOUT' ),),
-
-         UNITE           =SIMP(statut='f',typ=UnitType(),defaut=8, inout='out'),
-         NIVEAU          =SIMP(statut='f',typ='I',defaut=2,into=(-1,0,1,2) ),
-         ATTRIBUT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
-         CONTENU         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
-         BASE            =SIMP(statut='f',typ='TXM',defaut="G",into=(" ","G","V","L") ),
-         CONCEPT    =FACT(statut='f',max='**',
-             NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),),
-         CHAINE          =SIMP(statut='f',typ='TXM'),
-         POSITION        =SIMP(statut='f',typ='I',defaut=1),
-         TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-
-         b_permut = BLOC(
-                         condition   = """equal_to("NIVEAU", -1) """,
-                         PERMUTATION = SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI")),
-                         ),
-
-)  ;
+IMPR_CO = PROC(
+    nom="IMPR_CO",
+    op=17,
+    fr=tr(
+        "Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)"
+    ),
+    regles=(UN_PARMI("CONCEPT", "CHAINE", "TOUT"),),
+    UNITE=SIMP(statut="f", typ=UnitType(), defaut=8, inout="out"),
+    NIVEAU=SIMP(statut="f", typ="I", defaut=2, into=(-1, 0, 1, 2)),
+    ATTRIBUT=SIMP(statut="f", typ="TXM", defaut="NON", into=("NON", "OUI")),
+    CONTENU=SIMP(statut="f", typ="TXM", defaut="OUI", into=("NON", "OUI")),
+    BASE=SIMP(statut="f", typ="TXM", defaut="G", into=(" ", "G", "V", "L")),
+    CONCEPT=FACT(
+        statut="f", max="**", NOM=SIMP(statut="o", typ=assd, validators=NoRepeat(), max="**")
+    ),
+    CHAINE=SIMP(statut="f", typ="TXM"),
+    POSITION=SIMP(statut="f", typ="I", defaut=1),
+    TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+    b_permut=BLOC(
+        condition="""equal_to("NIVEAU", -1) """,
+        PERMUTATION=SIMP(statut="f", typ="TXM", defaut="OUI", into=("NON", "OUI")),
+    ),
+)

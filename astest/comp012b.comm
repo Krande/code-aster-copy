@@ -22,58 +22,56 @@
 
 
 from code_aster.Commands import *
+
 # Calcul de la solution analytique
 # ---------------------------------
 from code_aster.MacroCommands.Contrib.essai_triaxial import Triaxial_DR
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # modules mecaniques [kPa]
-K=516.2E6
-G=238.2E6
+K = 516.2e6
+G = 238.2e6
 # =>
-YOUNG = 9.*K*G /(3.*K+G)
-POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+YOUNG = 9.0 * K * G / (3.0 * K + G)
+POISSON = (3.0 * K - 2.0 * G) / (6.0 * K + 2.0 * G)
 
-print('young=',YOUNG,' /// nu=',POISSON)
+print("young=", YOUNG, " /// nu=", POISSON)
 
 # pression de preconsolidation [en kPa]
-PCO=50.E+3
+PCO = 50.0e3
 
-#*******************************************************************
+# *******************************************************************
 #
 #                     INCREMENTS DE CHARGEMENT
 #
-#*******************************************************************
+# *******************************************************************
 
-nb_inst =200
-#depzz   =-.000001
-epzz_max=.0003
-depzz   =epzz_max/nb_inst
-tfin    =100.
+nb_inst = 200
+# depzz   =-.000001
+epzz_max = 0.0003
+depzz = epzz_max / nb_inst
+tfin = 100.0
 
 
-#***********************************************************************
+# ***********************************************************************
 #    ESSAI TRIAXIAL NON DRAINE CYCLIQUE
-#***********************************************************************
-SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.),
-                  MOHR_COULOMB=_F(
-                            PHI      = 33.,
-                            ANGDIL   = 27.,
-                            COHESION = 1.0E+3,),)
+# ***********************************************************************
+SOL = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=0.0), MOHR_COULOMB=_F(PHI=33.0, ANGDIL=27.0, COHESION=1.0e3)
+)
 
-CALC_ESSAI_GEOMECA(INFO=1,
-                   MATER=SOL,
-                   COMPORTEMENT=_F(RELATION='MOHR_COULOMB',
-                                ITER_INTE_PAS=20,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                  ITER_GLOB_MAXI = 5,),
-                   #
-                   # Essai triaxial draine
-                   ESSAI_TRIA_DR_M_D = _F(PRES_CONF   = PCO,
-                                 EPSI_IMPOSE = epzz_max,
-                                 NB_INST     = nb_inst,
-                                 TABLE_RESU  = CO('TSIMU')),)
+CALC_ESSAI_GEOMECA(
+    INFO=1,
+    MATER=SOL,
+    COMPORTEMENT=_F(RELATION="MOHR_COULOMB", ITER_INTE_PAS=20),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=5),
+    #
+    # Essai triaxial draine
+    ESSAI_TRIA_DR_M_D=_F(
+        PRES_CONF=PCO, EPSI_IMPOSE=epzz_max, NB_INST=nb_inst, TABLE_RESU=CO("TSIMU")
+    ),
+)
 
 IMPR_TABLE(TABLE=TSIMU)
 
@@ -84,30 +82,29 @@ IMPR_TABLE(TABLE=TSIMU)
 # =============================================================================
 
 
-epzz,sizz,sixx,epsivp,epsidp, =\
-                Triaxial_DR(K,G,33.,27.,1.e+3,-PCO,-depzz,-epzz_max)
+epzz, sizz, sixx, epsivp, epsidp = Triaxial_DR(K, G, 33.0, 27.0, 1.0e3, -PCO, -depzz, -epzz_max)
 
 
-TEST_TABLE(NOM_PARA='SIG_LAT', TABLE=TSIMU,
-           FILTRE=_F(NOM_PARA ='EPS_AXI',
-                     VALE     =3.E-4,
-                     CRITERE  ='ABSOLU',
-                     PRECISION=1e-7,),
-           # Non-regression
-           VALE_CALC=50000.,
-           # Reference
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=-sixx[-1],)
+TEST_TABLE(
+    NOM_PARA="SIG_LAT",
+    TABLE=TSIMU,
+    FILTRE=_F(NOM_PARA="EPS_AXI", VALE=3.0e-4, CRITERE="ABSOLU", PRECISION=1e-7),
+    # Non-regression
+    VALE_CALC=50000.0,
+    # Reference
+    REFERENCE="ANALYTIQUE",
+    VALE_REFE=-sixx[-1],
+)
 
-TEST_TABLE(NOM_PARA='SIG_AXI', TABLE=TSIMU,
-           FILTRE=_F(NOM_PARA ='EPS_AXI',
-                     VALE     =3.E-4,
-                     CRITERE  ='ABSOLU',
-                     PRECISION=1e-7,),
-           # Non-regression
-           VALE_CALC=1.7328954160409E+05,
-           # Reference
-           REFERENCE='ANALYTIQUE',
-           VALE_REFE=-sizz[-1],)
+TEST_TABLE(
+    NOM_PARA="SIG_AXI",
+    TABLE=TSIMU,
+    FILTRE=_F(NOM_PARA="EPS_AXI", VALE=3.0e-4, CRITERE="ABSOLU", PRECISION=1e-7),
+    # Non-regression
+    VALE_CALC=1.7328954160409e05,
+    # Reference
+    REFERENCE="ANALYTIQUE",
+    VALE_REFE=-sizz[-1],
+)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ from .sd_table import sd_table
 
 
 class sd_table_fonction(sd_table):
-#-------------------------------------
+    # -------------------------------------
     nomj = SDNom(fin=17)
 
     def check_table_fonction_i_COL_FONC(self, checker):
@@ -37,7 +37,7 @@ class sd_table_fonction(sd_table):
         desc = self.TBLP.get()
         for n in range(shape[0]):
             nomcol = desc[4 * n].strip()
-            if not (nomcol == 'FONCTION' or nomcol == 'FONCTION_C'):
+            if not (nomcol == "FONCTION" or nomcol == "FONCTION_C"):
                 continue
             col_d, col_m = self.get_column_name(nomcol)
             lnom = col_d.data.get()

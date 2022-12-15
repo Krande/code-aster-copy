@@ -21,95 +21,114 @@
 #
 # person_in_charge: jean-luc.flejou at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), DEBUG=_F(SDVERI="OUI"))
 
 
-ZERO  =DEFI_CONSTANTE(VALE = 0.0)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 # [][][][][][][][] Maillage et Modele [][][][][][][][]
-mail = LIRE_MAILLAGE(FORMAT="ASTER",)
+mail = LIRE_MAILLAGE(FORMAT="ASTER")
 
-mode = AFFE_MODELE( MAILLAGE=mail,
-   AFFE = ( _F(PHENOMENE='MECANIQUE',MODELISATION='3D', TOUT='OUI' ,), ), )
+mode = AFFE_MODELE(MAILLAGE=mail, AFFE=(_F(PHENOMENE="MECANIQUE", MODELISATION="3D", TOUT="OUI"),))
 
 # [][][][][][][][] Champ de Temperature [][][][][][][][]
-ChTref = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI', NOM_CMP='TEMP', VALE=25.0, ),
+ChTref = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=25.0),
 )
-ChT400 = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI', NOM_CMP='TEMP', VALE=400.0, ),
+ChT400 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=400.0),
 )
-ChT060 = CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI', NOM_CMP='TEMP', VALE=60.0, ),
+ChT060 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=60.0),
 )
 
-Temper = CREA_RESU(OPERATION = 'AFFE', TYPE_RESU = 'EVOL_THER', NOM_CHAM = 'TEMP',
-   AFFE = (
-     _F(CHAM_GD= ChTref, INST= 0.0),
-     _F(CHAM_GD= ChTref, INST=10.0),
-     _F(CHAM_GD= ChT400, INST=20.0),
-     _F(CHAM_GD= ChT400, INST=30.0),
-     _F(CHAM_GD= ChT060, INST=40.0),
-     _F(CHAM_GD= ChT400, INST=50.0),
-     _F(CHAM_GD= ChT400, INST=60.0),
-     _F(CHAM_GD= ChT060, INST=70.0),
-     _F(CHAM_GD= ChT400, INST=80.0),
-     _F(CHAM_GD= ChT400, INST=90.0),
-   )
+Temper = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(
+        _F(CHAM_GD=ChTref, INST=0.0),
+        _F(CHAM_GD=ChTref, INST=10.0),
+        _F(CHAM_GD=ChT400, INST=20.0),
+        _F(CHAM_GD=ChT400, INST=30.0),
+        _F(CHAM_GD=ChT060, INST=40.0),
+        _F(CHAM_GD=ChT400, INST=50.0),
+        _F(CHAM_GD=ChT400, INST=60.0),
+        _F(CHAM_GD=ChT060, INST=70.0),
+        _F(CHAM_GD=ChT400, INST=80.0),
+        _F(CHAM_GD=ChT400, INST=90.0),
+    ),
 )
 
 # [][][][][][][][] Champ d'Irradiation [][][][][[][]][]
-ChIr000 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 0.0, ),
+ChIr000 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="IRRA", VALE=0.0),
 )
-ChIr002 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 2.0, ),
+ChIr002 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="IRRA", VALE=2.0),
 )
-ChIr004 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 4.0, ),
+ChIr004 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="IRRA", VALE=4.0),
 )
-ChIr006 = CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=mail,
-   AFFE = _F(TOUT='OUI',NOM_CMP='IRRA', VALE= 6.0, ),
+ChIr006 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="AFFE",
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", NOM_CMP="IRRA", VALE=6.0),
 )
-Irrad = CREA_RESU( OPERATION = 'AFFE', TYPE_RESU = 'EVOL_VARC', NOM_CHAM = 'IRRA',
-   AFFE = (
-     _F(CHAM_GD= ChIr000, INST= 0.0),
-     _F(CHAM_GD= ChIr000, INST=20.0),
-     _F(CHAM_GD= ChIr002, INST=30.0),
-     _F(CHAM_GD= ChIr002, INST=50.0),
-     _F(CHAM_GD= ChIr004, INST=60.0),
-     _F(CHAM_GD= ChIr004, INST=80.0),
-     _F(CHAM_GD= ChIr006, INST=90.0),
-   )
+Irrad = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_VARC",
+    NOM_CHAM="IRRA",
+    AFFE=(
+        _F(CHAM_GD=ChIr000, INST=0.0),
+        _F(CHAM_GD=ChIr000, INST=20.0),
+        _F(CHAM_GD=ChIr002, INST=30.0),
+        _F(CHAM_GD=ChIr002, INST=50.0),
+        _F(CHAM_GD=ChIr004, INST=60.0),
+        _F(CHAM_GD=ChIr004, INST=80.0),
+        _F(CHAM_GD=ChIr006, INST=90.0),
+    ),
 )
 
 # [][][][][][][][] Deplacement Impose [][][][][[][]][]
-FDepla=DEFI_FONCTION(
-   NOM_PARA ='INST',
-   VALE=(   0.0,   0.0,
-           10.0,   3.0E-03,),
-   PROL_GAUCHE='CONSTANT',
-   PROL_DROITE='CONSTANT',
+FDepla = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 10.0, 3.0e-03), PROL_GAUCHE="CONSTANT", PROL_DROITE="CONSTANT"
 )
 
-CDepl=AFFE_CHAR_MECA_F(
-   MODELE=mode,
-   DDL_IMPO=(
-      _F(GROUP_NO='N1',DX=ZERO,DY=ZERO,DZ=ZERO),
-      _F(GROUP_NO='N4',DX=ZERO,        DZ=ZERO),
-      _F(GROUP_NO='N8',DX=ZERO,),
-      _F(GROUP_NO='N5',DX=ZERO,DY=ZERO),
-
-      _F(GROUP_NO='N2',DX=FDepla,DY=ZERO,DZ=ZERO),
-      _F(GROUP_NO='N3',DX=FDepla,        DZ=ZERO),
-      _F(GROUP_NO='N7',DX=FDepla,),
-      _F(GROUP_NO='N6',DX=FDepla,DY=ZERO),
-   )
+CDepl = AFFE_CHAR_MECA_F(
+    MODELE=mode,
+    DDL_IMPO=(
+        _F(GROUP_NO="N1", DX=ZERO, DY=ZERO, DZ=ZERO),
+        _F(GROUP_NO="N4", DX=ZERO, DZ=ZERO),
+        _F(GROUP_NO="N8", DX=ZERO),
+        _F(GROUP_NO="N5", DX=ZERO, DY=ZERO),
+        _F(GROUP_NO="N2", DX=FDepla, DY=ZERO, DZ=ZERO),
+        _F(GROUP_NO="N3", DX=FDepla, DZ=ZERO),
+        _F(GROUP_NO="N7", DX=FDepla),
+        _F(GROUP_NO="N6", DX=FDepla, DY=ZERO),
+    ),
 )
 
 # [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
-
-
 
 
 FIN()

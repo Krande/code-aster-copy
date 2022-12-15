@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,40 +20,29 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU,
+           ISSUE DE AFFE_CARA_ELEM MOT CLE ORIENTATION """,
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU,
-           ISSUE DE AFFE_CARA_ELEM MOT CLE ORIENTATION """)
-
-
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS """
+)
 
 
 EFGE_ELGA = Option(
-    para_in=(
-        SP.PCACOQU,
-        SP.PCAGEPO,
-           PCAORIE,
-        SP.PMATERC,
-           PNBSP_I,
-        SP.PSIEFR,
-    ),
-    para_out=(
-        SP.PEFGEC,
-        SP.PEFGER,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.EFGE,'OUI'),)),
-    ),
+    para_in=(SP.PCACOQU, SP.PCAGEPO, PCAORIE, SP.PMATERC, PNBSP_I, SP.PSIEFR),
+    para_out=(SP.PEFGEC, SP.PEFGER),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.EFGE, "OUI"))),),
     comment="""  EFGE_ELGA : CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
                 A PARTIR DE SIEF_ELGA """,
 )

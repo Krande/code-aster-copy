@@ -31,5 +31,6 @@ from ..ObjectsExt.result_ext import ResultStateBuilder
 @injector(ThermalResult)
 class ExtentedThermalResult:
     """Object for ThermalResult."""
+
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ from . import *
 
 
 class sd_matr_cine(AsBase):
-#-----------------------
+    # -----------------------
     nomj = SDNom(fin=19)
 
     CCID = AsVI()
     CCII = Facultatif(AsVI())
     CCLL = Facultatif(AsVI())
-    CCVA = Facultatif(AsObject(genr='V', xous='S', type=Parmi('R', 'C')))
+    CCVA = Facultatif(AsObject(genr="V", xous="S", type=Parmi("R", "C")))

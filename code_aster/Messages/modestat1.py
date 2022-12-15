@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,25 +20,29 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
 Aucun noeud n'a été sélectionné pour la commande MODE_STATIQUE.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 Pour le mot clé MODE_STAT, le degré de liberté défini ci-dessus n'est pas bloqué.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Pour le mot clé FORCE_NODALE, le degré de liberté défini ci-dessus n'est pas libre.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Pour le mot clé PSEUDO_MODE, le degré de liberté défini ci-dessus est de type Lagrange.
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
 Pour le mot clé MODE_INTERF, le degré de liberté défini ci-dessus n'est pas bloqué.
-"""),
-
+"""
+    ),
 }

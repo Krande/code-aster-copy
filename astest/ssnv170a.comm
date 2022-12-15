@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,94 +17,82 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#......................................................................
+# ......................................................................
 # CUBE EN TRACTION SIMPLE CALCUL 3D
 # DEFORMATION IMPOSEE ET VITESSE DE DEFORMATION CONSTANTE
 # LOI DE LEMAITRE
-#......................................................................
+# ......................................................................
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER", )
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAT=DEFI_MATERIAU(ELAS=_F( E = 200.E+3, NU = .3),
-      LEMAITRE=_F( N = 10.8, UN_SUR_K = 6.9E-4, UN_SUR_M = 0.102)
-                     )
+MAT = DEFI_MATERIAU(
+    ELAS=_F(E=200.0e3, NU=0.3), LEMAITRE=_F(N=10.8, UN_SUR_K=6.9e-4, UN_SUR_M=0.102)
+)
 
-CM=AFFE_MATERIAU(MAILLAGE=MAIL,
-                 AFFE=_F( TOUT = 'OUI', MATER = MAT)
-                     )
+CM = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
-   AFFE=_F( TOUT = 'OUI', MODELISATION = '3D', PHENOMENE = 'MECANIQUE')
-                     )
+MOMECA = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="MECANIQUE"))
 
-CHMECA=AFFE_CHAR_MECA(  MODELE=MOMECA,
-                        FACE_IMPO=(
-                              _F( GROUP_MA = 'DEVANT',  DZ = 0.),
-                              _F( GROUP_MA = 'BAS',     DY = 0.),
-                              _F( GROUP_MA = 'HAUT',    DY = 1.),
-                              _F( GROUP_MA = 'GAUCHE',  DX = 0 )
-                                   )
-                               )
+CHMECA = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    FACE_IMPO=(
+        _F(GROUP_MA="DEVANT", DZ=0.0),
+        _F(GROUP_MA="BAS", DY=0.0),
+        _F(GROUP_MA="HAUT", DY=1.0),
+        _F(GROUP_MA="GAUCHE", DX=0),
+    ),
+)
 
-CHMECA2=AFFE_CHAR_MECA( MODELE=MOMECA,
-                        FORCE_FACE=_F(GROUP_MA='HAUT', FY = 1)
-                        )
+CHMECA2 = AFFE_CHAR_MECA(MODELE=MOMECA, FORCE_FACE=_F(GROUP_MA="HAUT", FY=1))
 
-FDEPL=DEFI_FONCTION(    NOM_PARA='INST',
-                        PROL_DROITE='EXCLU',
-                        PROL_GAUCHE='EXCLU',
-                        VALE=(
-                                0.,      0,
-                                240.,    0.5,
-                             )
-                          )
+FDEPL = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU", VALE=(0.0, 0, 240.0, 0.5)
+)
 
-L_INST=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
-                           _F( JUSQU_A = 240.,NOMBRE = 30),
-                                 )
-                         )
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=240.0, NOMBRE=30),))
 
-U=STAT_NON_LINE(        MODELE=MOMECA,
-                        CHAM_MATER=CM,
-                        EXCIT=(
-                                _F(     CHARGE = CHMECA,
-                                        FONC_MULT = FDEPL
-                                        ),
-                               ),
-                        COMPORTEMENT=_F(RELATION = 'LEMAITRE',
-                                     ITER_INTE_MAXI = 100),
-                        NEWTON=_F(MATRICE = 'TANGENTE', REAC_ITER = 1),
-                        INCREMENT=_F(LIST_INST = L_INST),
-                        CONVERGENCE=_F(
-                                        RESI_GLOB_RELA = 1.E-6,
-                                        ITER_GLOB_MAXI = 25,
-                                       ),
-                         )
+U = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=CHMECA, FONC_MULT=FDEPL),),
+    COMPORTEMENT=_F(RELATION="LEMAITRE", ITER_INTE_MAXI=100),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=L_INST),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=25),
+)
 
-U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO','EPSP_ELNO'),RESULTAT=U)
+U = CALC_CHAMP(
+    reuse=U, CONTRAINTE=("SIGM_ELNO"), DEFORMATION=("EPSI_ELNO", "EPSP_ELNO"), RESULTAT=U
+)
 
 
-TEST_RESU(RESU=(_F(INST=40.0,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N6',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=632.293250581,
-                   VALE_REFE=632.29324999999994,
-                   GROUP_MA='M1',),
-                _F(INST=240.0,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N6',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=761.749298068,
-                   VALE_REFE=761.74929999999995,
-                   GROUP_MA='M1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=40.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N6",
+            NOM_CMP="SIYY",
+            VALE_CALC=632.293250581,
+            VALE_REFE=632.29324999999994,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=240.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N6",
+            NOM_CMP="SIYY",
+            VALE_CALC=761.749298068,
+            VALE_REFE=761.74929999999995,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 FIN()

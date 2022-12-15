@@ -23,6 +23,7 @@ from ..Supervis import ExecuteCommand
 
 class SismicLoading(ExecuteCommand):
     """ """
+
     command_name = "CALC_CHAR_SEISME"
 
     def create_result(self, keywords):

@@ -25,7 +25,7 @@ from ..Language.Syntax import *
 
 
 def compat_syntax(keywords):
-    """ Update keywords for compatibility """
+    """Update keywords for compatibility"""
 
     # reuse
     if "reuse" in keywords and "RESULTAT" not in keywords:
@@ -38,119 +38,129 @@ def compat_syntax(keywords):
             keywords["ETAT_INIT"]["STAT"] = "OUI"
 
 
-THER_NON_LINE = OPER(nom="THER_NON_LINE", op=186, sd_prod=evol_ther,
-                     compat_syntax=compat_syntax,
-                     reentrant='f:RESULTAT',
-                     fr=tr("Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
-                           " stationnaire ou transitoire"),
-                     reuse=SIMP(statut='c', typ=CO),
-                     RESULTAT=SIMP(statut='f', typ=evol_ther,
-                                   fr=tr("Objet qui sera enrichi des nouveaux instants calculés")),
-                     MODELE=SIMP(statut='o', typ=(modele_sdaster),),
-                     CHAM_MATER=SIMP(statut='o', typ=(cham_mater)),
-                     CARA_ELEM=SIMP(statut='f', typ=(cara_elem)),
-                     COMPORTEMENT=FACT(statut='d', max='**',
-                                       RELATION=SIMP(statut='f', typ='TXM', defaut="THER_NL",
-                                                     into=("THER_NL",
-                                                           "THER_HYDR",
-                                                           "SECH_GRANGER",
-                                                           "SECH_MENSI",
-                                                           "SECH_BAZANT",
-                                                           "SECH_NAPPE"
-                                                           )),
-                                       regles=(PRESENT_ABSENT(
-                                           'TOUT', 'GROUP_MA', 'MAILLE'),),
-                                       TOUT=SIMP(
-                                           statut='f', typ='TXM', into=("OUI",)),
-                                       GROUP_MA=SIMP(
-                                           statut='f', typ=grma, validators=NoRepeat(), max='**'),
-                                       MAILLE=SIMP(
-                                           statut='c', typ=ma, validators=NoRepeat(), max='**'),
-                                       ),
-                     EVOL_THER_SECH=SIMP(statut='f', typ=evol_ther),
-                     EXCIT=FACT(statut='o', max='**',
-                                CHARGE=SIMP(statut='o', typ=(
-                                    char_ther, char_cine_ther)),
-                                FONC_MULT=SIMP(statut='f', typ=(
-                                    fonction_sdaster, nappe_sdaster, formule)),
-                                ),
-                     # -------------------------------------------------------------------
-                     AFFICHAGE=C_AFFICHAGE(),
-                     # -------------------------------------------------------------------
-                     METHODE=SIMP(statut='f', typ='TXM', defaut="NEWTON", into=(
-                         "NEWTON", "MODELE_REDUIT", "NEWTON_KRYLOV")),
-                     b_meth_newton=BLOC(condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
-                                        NEWTON=FACT(statut='d',
-                                                    REAC_ITER=SIMP(
-                                                        statut='f', typ='I', defaut=0, val_min=0),
-                                                    RESI_LINE_RELA=SIMP(
-                                                        statut='f', typ='R', defaut=1.0E-3),
-                                                    ITER_LINE_MAXI=SIMP(
-                                                        statut='f', typ='I', defaut=0),
-                                                    ),),
-                     b_meth_rom=BLOC(condition="""equal_to("METHODE", 'MODELE_REDUIT')""",
-                                     MODELE_REDUIT=FACT(statut='d',
-                                                        REAC_ITER=SIMP(
-                                                            statut='f', typ='I', defaut=0, val_min=0),
-                                                        BASE_PRIMAL=SIMP(
-                                                            statut='o', typ=mode_empi, max=1),
-                                                        DOMAINE_REDUIT=SIMP(
-                                                            statut='f', typ='TXM', defaut='NON', into=('OUI', 'NON'),),
-                                                        b_hr_cond=BLOC(condition="""(equal_to("DOMAINE_REDUIT", 'OUI'))""",
-                                                                       GROUP_NO_INTERF=SIMP(
-                                                                           statut='o', typ=grno, max=1),
-                                                                       CORR_COMPLET=SIMP(
-                                                                           statut='f', typ='TXM', defaut='NON', into=('OUI', 'NON'),),
-                                                                       b_hrcoor_cond=BLOC(condition="""(equal_to("CORR_COMPLET", 'OUI'))""",
-                                                                                          GROUP_NO_ENCASTRE=SIMP(
-                                                                                              statut='o', typ=grno, max=1),
-                                                                                          COEF_PENA=SIMP(
-                                                                                              statut='f', typ='R', defaut=1.E6),
-                                                                                          ),),
-                                                        ),),
-                     # -------------------------------------------------------------------
-                     INCREMENT=C_INCREMENT('THERMIQUE', False),
-                     # -------------------------------------------------------------------
-                     ETAT_INIT=FACT(statut='f',
-                                    regles=(
-                                        EXCLUS('EVOL_THER', 'CHAM_NO', 'VALE',),),
-                                    STAT=SIMP(statut='f', typ='TXM',
-                                              into=("OUI",)),
-                                    EVOL_THER=SIMP(statut='f', typ=evol_ther),
-                                    CHAM_NO=SIMP(
-                                        statut='f', typ=cham_no_sdaster),
-                                    VALE=SIMP(statut='f', typ='R'),
-
-                                    b_evol=BLOC(condition="""exists("EVOL_THER")""",
-                                                NUME_ORDRE=SIMP(
-                                                    statut='f', typ='I'),
-                                                INST=SIMP(statut='f', typ='R'),
-                                                b_inst=BLOC(condition="""exists("INST")""",
-                                                            CRITERE=SIMP(statut='f', typ='TXM', defaut="RELATIF", into=(
-                                                                "RELATIF", "ABSOLU")),
-                                                            b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                                                                             PRECISION=SIMP(statut='f', typ='R', defaut=1.E-6,),),
-                                                            b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                                                                             PRECISION=SIMP(statut='o', typ='R',),),
-                                                            ),),
-                                    ),
-                     CONVERGENCE=FACT(statut='d',
-                                      RESI_GLOB_MAXI=SIMP(statut='f', typ='R'),
-                                      RESI_GLOB_RELA=SIMP(statut='f', typ='R'),
-                                      ITER_GLOB_MAXI=SIMP(
-                                          statut='f', typ='I', defaut=10),
-                                      ),
-                     # -------------------------------------------------------------------
-                     #        Catalogue commun SOLVEUR
-                     SOLVEUR=C_SOLVEUR('THER_NON_LINE'),
-                     # -------------------------------------------------------------------
-                     PARM_THETA=SIMP(statut='f', typ='R',
-                                     defaut=0.57, val_min=0., val_max=1.),
-                     # -------------------------------------------------------------------
-                     ARCHIVAGE=C_ARCHIVAGE(),
-                     # -------------------------------------------------------------------
-                     OBSERVATION=C_OBSERVATION('THERMIQUE'),
-                     # -------------------------------------------------------------------
-                     TITRE=SIMP(statut='f', typ='TXM'),
-                     INFO=SIMP(statut='f', typ='I', into=(1, 2)),
-                     )
+THER_NON_LINE = OPER(
+    nom="THER_NON_LINE",
+    op=186,
+    sd_prod=evol_ther,
+    compat_syntax=compat_syntax,
+    reentrant="f:RESULTAT",
+    fr=tr(
+        "Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
+        " stationnaire ou transitoire"
+    ),
+    reuse=SIMP(statut="c", typ=CO),
+    RESULTAT=SIMP(
+        statut="f", typ=evol_ther, fr=tr("Objet qui sera enrichi des nouveaux instants calculés")
+    ),
+    MODELE=SIMP(statut="o", typ=(modele_sdaster)),
+    CHAM_MATER=SIMP(statut="o", typ=(cham_mater)),
+    CARA_ELEM=SIMP(statut="f", typ=(cara_elem)),
+    COMPORTEMENT=FACT(
+        statut="d",
+        max="**",
+        RELATION=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="THER_NL",
+            into=(
+                "THER_NL",
+                "THER_HYDR",
+                "SECH_GRANGER",
+                "SECH_MENSI",
+                "SECH_BAZANT",
+                "SECH_NAPPE",
+            ),
+        ),
+        regles=(PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+    ),
+    EVOL_THER_SECH=SIMP(statut="f", typ=evol_ther),
+    EXCIT=FACT(
+        statut="o",
+        max="**",
+        CHARGE=SIMP(statut="o", typ=(char_ther, char_cine_ther)),
+        FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+    ),
+    # -------------------------------------------------------------------
+    AFFICHAGE=C_AFFICHAGE(),
+    # -------------------------------------------------------------------
+    METHODE=SIMP(
+        statut="f", typ="TXM", defaut="NEWTON", into=("NEWTON", "MODELE_REDUIT", "NEWTON_KRYLOV")
+    ),
+    b_meth_newton=BLOC(
+        condition="""equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
+        NEWTON=FACT(
+            statut="d",
+            REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
+            RESI_LINE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-3),
+            ITER_LINE_MAXI=SIMP(statut="f", typ="I", defaut=0),
+        ),
+    ),
+    b_meth_rom=BLOC(
+        condition="""equal_to("METHODE", 'MODELE_REDUIT')""",
+        MODELE_REDUIT=FACT(
+            statut="d",
+            REAC_ITER=SIMP(statut="f", typ="I", defaut=0, val_min=0),
+            BASE_PRIMAL=SIMP(statut="o", typ=mode_empi, max=1),
+            DOMAINE_REDUIT=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
+            b_hr_cond=BLOC(
+                condition="""(equal_to("DOMAINE_REDUIT", 'OUI'))""",
+                GROUP_NO_INTERF=SIMP(statut="o", typ=grno, max=1),
+                CORR_COMPLET=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
+                b_hrcoor_cond=BLOC(
+                    condition="""(equal_to("CORR_COMPLET", 'OUI'))""",
+                    GROUP_NO_ENCASTRE=SIMP(statut="o", typ=grno, max=1),
+                    COEF_PENA=SIMP(statut="f", typ="R", defaut=1.0e6),
+                ),
+            ),
+        ),
+    ),
+    # -------------------------------------------------------------------
+    INCREMENT=C_INCREMENT("THERMIQUE", False),
+    # -------------------------------------------------------------------
+    ETAT_INIT=FACT(
+        statut="f",
+        regles=(EXCLUS("EVOL_THER", "CHAM_NO", "VALE"),),
+        STAT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        EVOL_THER=SIMP(statut="f", typ=evol_ther),
+        CHAM_NO=SIMP(statut="f", typ=cham_no_sdaster),
+        VALE=SIMP(statut="f", typ="R"),
+        b_evol=BLOC(
+            condition="""exists("EVOL_THER")""",
+            NUME_ORDRE=SIMP(statut="f", typ="I"),
+            INST=SIMP(statut="f", typ="R"),
+            b_inst=BLOC(
+                condition="""exists("INST")""",
+                CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+                b_prec_rela=BLOC(
+                    condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+                ),
+                b_prec_abso=BLOC(
+                    condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                    PRECISION=SIMP(statut="o", typ="R"),
+                ),
+            ),
+        ),
+    ),
+    CONVERGENCE=FACT(
+        statut="d",
+        RESI_GLOB_MAXI=SIMP(statut="f", typ="R"),
+        RESI_GLOB_RELA=SIMP(statut="f", typ="R"),
+        ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
+    ),
+    # -------------------------------------------------------------------
+    #        Catalogue commun SOLVEUR
+    SOLVEUR=C_SOLVEUR("THER_NON_LINE"),
+    # -------------------------------------------------------------------
+    PARM_THETA=SIMP(statut="f", typ="R", defaut=0.57, val_min=0.0, val_max=1.0),
+    # -------------------------------------------------------------------
+    ARCHIVAGE=C_ARCHIVAGE(),
+    # -------------------------------------------------------------------
+    OBSERVATION=C_OBSERVATION("THERMIQUE"),
+    # -------------------------------------------------------------------
+    TITRE=SIMP(statut="f", typ="TXM"),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+)

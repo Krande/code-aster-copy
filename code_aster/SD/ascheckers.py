@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,10 @@ class Parmi(object):
 
     def __call__(self, obj, name, value, log):
         if value not in self.values:
-            log.err(obj, "l'attribut %s=%r n'est pas dans %r" %
-                    (name, value, self.values))
+            log.err(obj, "l'attribut %s=%r n'est pas dans %r" % (name, value, self.values))
 
     def __repr__(self):
-        l = ["Parmi(", ]
+        l = ["Parmi("]
         g = [repr(v) for v in self.values]
         l.append(", ".join(g))
         l.append(")")
@@ -68,7 +67,7 @@ class CheckLog(object):
         if obj:
             self.msg.append((level, obj.nomj(), msg))
         else:
-            self.msg.append((level, 'None', msg))
+            self.msg.append((level, "None", msg))
 
     def err(self, obj, msg):
         self.log(0, obj, msg)
@@ -80,7 +79,7 @@ class CheckLog(object):
         key = obj.nomj()
         self.names[key] = self._marq
 
-    def checkSumOJB(self, obj, sd, maj='non'):
+    def checkSumOJB(self, obj, sd, maj="non"):
         # vérifie que le checksum de obj n'a pas changé
         # sd : concept qui contient obj
         # maj='maj', l'opérateur a le droit de modifier ojb
@@ -100,7 +99,7 @@ class CheckLog(object):
                     if nom[0:8].strip() == sd.nomj.nomj[0:8].strip():
                         pass
                     else:
-                        self.err(obj, 'Le checksum a changé')
+                        self.err(obj, "Le checksum a changé")
 
     def visitAsBase(self, obj):
         key = (obj.nomj(), obj.__class__.__name__)
@@ -116,7 +115,7 @@ class CheckLog(object):
     def checkedOJB(self, obj):
         key = obj.nomj()
         res = self.names.get(key, 0) >= self._marq
-        self.help_dbg([key, ], res)
+        self.help_dbg([key], res)
         return res
 
     def checkedAsBase(self, obj):
@@ -128,15 +127,14 @@ class CheckLog(object):
     def help_dbg(self, key, res):
         if self._debug:
             if res:
-                s = 'ignore'
+                s = "ignore"
             else:
-                s = 'check '
-            print('#DBG %6d %s : %s' % (self._marq, s, ', '.join(key)))
+                s = "check "
+            print("#DBG %6d %s : %s" % (self._marq, s, ", ".join(key)))
 
     def __str__(self):
         d = {0: "E", 1: "W"}
-        return "\n".join(["%s:%s: %s" % (d[l], n, m)
-                          for l, n, m in self.msg])
+        return "\n".join(["%s:%s: %s" % (d[l], n, m) for l, n, m in self.msg])
 
 
 class CheckFail(CheckLog):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'HYDR_UTIL',
-    lc_type        = ('HYDRAULIQUE',),
-    doc            =   """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
+    nom="HYDR_UTIL",
+    lc_type=("HYDRAULIQUE",),
+    doc="""Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
    Signifie qu'aucune donnée matériau n'est rentrée en dur.
    Concrètement dans le cas saturé, il faudra définir les 6 courbes point par point (par DEFI_FONCTION) suivantes :
    - la saturation en fonction de la pression capillaire,
@@ -32,19 +32,18 @@ loi = LoiComportement(
    - la perméabilité relative au liquide en fonction de la saturation,
    - sa dérivée.
    - la perméabilité relative au gaz en fonction de la saturation,
-   - sa dérivée."""              ,
-    num_lc         = 0,
-    nb_vari        = 1,
-    nom_vari       = ('RHOLIQ',),
-    mc_mater       = None,
-    modelisation   = ('KIT_HH','KIT_HHM','KIT_HM','KIT_THHM','KIT_THH',
-        'KIT_THM','KIT_THV',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('SANS_OBJET',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   - sa dérivée.""",
+    num_lc=0,
+    nb_vari=1,
+    nom_vari=("RHOLIQ",),
+    mc_mater=None,
+    modelisation=("KIT_HH", "KIT_HHM", "KIT_HM", "KIT_THHM", "KIT_THH", "KIT_THM", "KIT_THV"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("SANS_OBJET",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

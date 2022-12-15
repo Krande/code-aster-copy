@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class DirichletBCComputation(ExecuteCommand):
     """Command that computes :class:`~code_aster.Objects.DirichletBC`."""
+
     command_name = "CALC_CHAR_CINE"
 
     def create_result(self, keywords):

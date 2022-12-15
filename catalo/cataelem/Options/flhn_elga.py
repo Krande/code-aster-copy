@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,19 +23,12 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 FLHN_ELGA = Option(
-    para_in=(
-        SP.PCONTR,
-        SP.PGEOMER,
-    ),
-    para_out=(
-        SP.PFLHN,
-    ),
+    para_in=(SP.PCONTR, SP.PGEOMER),
+    para_out=(SP.PFLHN,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.TYPMOD2, 'THM'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.TYPMOD2, 'XFEM_HM'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "-1"), (AT.TYPMOD2, "THM"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "-1"), (AT.TYPMOD2, "XFEM_HM"))),
     ),
     comment="""  FLHN_ELGA : CALCUL DU FLUX HYDRAULIQUE AUX POINTS DE GAUSS """,
 )

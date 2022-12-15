@@ -43,10 +43,11 @@ test.assertSequenceEqual(nodes_nume[rank], mesh.getNodes(localNumbering=False))
 
 mesh_quad = CREA_MAILLAGE(MAILLAGE=mesh, LINE_QUAD=_F(TOUT="OUI"))
 nb_nodes_quad = [13, 13]
-nodes_rank_quad = [[0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-    [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1]]
-nodes_nume_quad = [[0, 1, 2, 12, 3, 13, 4, 5, 6, 7, 8, 9, 17],
-    [10, 11, 2, 12, 3, 13, 6, 14, 15, 8, 16, 9, 17]]
+nodes_rank_quad = [[0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1], [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1]]
+nodes_nume_quad = [
+    [0, 1, 2, 12, 3, 13, 4, 5, 6, 7, 8, 9, 17],
+    [10, 11, 2, 12, 3, 13, 6, 14, 15, 8, 16, 9, 17],
+]
 test.assertEqual(nb_nodes_quad[rank], mesh_quad.getNumberOfNodes())
 test.assertEqual(nb_cells[rank], mesh_quad.getNumberOfCells())
 test.assertTrue(mesh_quad.isParallel())

@@ -20,13 +20,8 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    2  : _("""Le nombre de couches est limité à %(i1)d pour un élément tuyau."""),
-
-    3  : _("""Le nombre de secteurs est limité à %(i1)d pour un élément tuyau."""),
-
-    44 : _("""Le comportement élastique %(k1)s n'est pas autorisé pour un élément tuyau."""),
-
-    46 : _("""Le nombre de couches et de secteurs d'un élément tuyau doit être supérieur a zéro."""),
-
+    2: _("""Le nombre de couches est limité à %(i1)d pour un élément tuyau."""),
+    3: _("""Le nombre de secteurs est limité à %(i1)d pour un élément tuyau."""),
+    44: _("""Le comportement élastique %(k1)s n'est pas autorisé pour un élément tuyau."""),
+    46: _("""Le nombre de couches et de secteurs d'un élément tuyau doit être supérieur a zéro."""),
 }

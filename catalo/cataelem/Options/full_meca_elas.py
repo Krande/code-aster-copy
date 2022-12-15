@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,43 +20,39 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """
+)
+
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
+
+PCONTMR = InputParameter(phys=PHY.SIEF_R)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
-
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment="""  Informations for non-linear comportment """)
-
-PCONTMR  = InputParameter(phys=PHY.SIEF_R)
+PVARIMR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARIMR  = InputParameter(phys=PHY.VARI_R)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE, comment=""" CHAMP DE CARACTERISTIQUES D'ORIENTATION. CONCEPT CARA_ELEM """
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE,
-comment=""" CHAMP DE CARACTERISTIQUES D'ORIENTATION. CONCEPT CARA_ELEM """)
+PCONTPR = OutputParameter(phys=PHY.SIEF_R, type="ELGA")
 
 
-PCONTPR  = OutputParameter(phys=PHY.SIEF_R, type='ELGA')
+PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA")
 
 
-PVARIPR  = OutputParameter(phys=PHY.VARI_R, type='ELGA')
-
-
-PCACO3D  = OutputParameter(phys=PHY.CACO3D, type='ELEM',
-comment=""" NE SERT QUE POUR COQUE_3D """)
+PCACO3D = OutputParameter(phys=PHY.CACO3D, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
 
 
 FULL_MECA_ELAS = Option(
@@ -65,12 +61,12 @@ FULL_MECA_ELAS = Option(
         SP.PCADISK,
         SP.PCAGNBA,
         SP.PCAMASS,
-           PCAORIE,
+        PCAORIE,
         SP.PCARCRI,
         SP.PCINFDI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PMULCOM,
-           PCONTMR,
+        PCONTMR,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PGEOMER,
@@ -78,23 +74,13 @@ FULL_MECA_ELAS = Option(
         SP.PINSTPR,
         SP.PITERAT,
         SP.PMATERC,
-           PNBSP_I,
+        PNBSP_I,
         SP.PVARCMR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
         SP.PVARIMP,
-           PVARIMR,
+        PVARIMR,
     ),
-    para_out=(
-           PCACO3D,
-        SP.PCODRET,
-           PCONTPR,
-        SP.PMATUNS,
-        SP.PMATUUR,
-           PVARIPR,
-        SP.PVECTUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PCACO3D, SP.PCODRET, PCONTPR, SP.PMATUNS, SP.PMATUUR, PVARIPR, SP.PVECTUR),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

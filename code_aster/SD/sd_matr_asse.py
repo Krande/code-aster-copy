@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ from .sd_matr_asse_com import sd_matr_asse_com
 from .sd_matr_asse_gd import sd_matr_asse_gd
 from .sd_matr_asse_gene import sd_matr_asse_gene
 
-#---------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 # classe "chapeau" à sd_matr_asse_gene et sd_matr_asse_gd ne servant que pour "check"
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 class sd_matr_asse(sd_matr_asse_com):
-#--------------------------------------------
+    # --------------------------------------------
     nomj = SDNom(fin=19)
 
     # pour orienter vers sd_matr_asse_gene ou sd_matr_asse_gd :
@@ -37,7 +37,7 @@ class sd_matr_asse(sd_matr_asse_com):
         # :
         if not self.REFA.get():
             return
-        gene = self.REFA.get()[9].strip() == 'GENE'
+        gene = self.REFA.get()[9].strip() == "GENE"
         if gene:
             sd2 = sd_matr_asse_gene(self.nomj)
         else:

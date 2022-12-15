@@ -19,61 +19,38 @@
 
 # MODELISATION B : 3D + GRILLE_MEMBRANE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # VALIDATION DU CHARGEMENT THERMIQUE SUR DES GRILLES MEMBRANE (EX BETON ARME)
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
 # -----------------------------------------------------
 # DEFINITION DES MATERIAUX
 # -----------------------------------------------------
 
-BETON=DEFI_MATERIAU(
-                    ELAS=_F(
-                            E = 3.E10,
-                            NU = 0.0,
-                            ALPHA = 1.E-5,
-                            ),
-                    )
+BETON = DEFI_MATERIAU(ELAS=_F(E=3.0e10, NU=0.0, ALPHA=1.0e-5))
 
-ACIER=DEFI_MATERIAU(
-                    ELAS=_F(
-                            E = 2.E11,
-                            NU = 0.0,
-                            ALPHA = 1.E-5,
-                            ),
-                    )
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.0, ALPHA=1.0e-5))
 
 # -------------------------------------------------
 # AFFECTATION DES MODELES
 # -------------------------------------------------
 LEMOD = AFFE_MODELE(
-                MAILLAGE=MA,
-
-                AFFE=(
-                        _F( GROUP_MA = 'GEOB',
-                            PHENOMENE = 'MECANIQUE',
-                            MODELISATION = '3D',),
-                        _F( GROUP_MA = 'GEOA',
-                            PHENOMENE = 'MECANIQUE',
-                            MODELISATION = 'GRILLE_MEMBRANE',),
-                    )
-                )
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="GEOB", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="GEOA", PHENOMENE="MECANIQUE", MODELISATION="GRILLE_MEMBRANE"),
+    ),
+)
 
 # -------------------------------------------------
 # AFFECTATION DES CARACTERISTIQUES
 # -------------------------------------------------
 
-LECAR=AFFE_CARA_ELEM(
-                    MODELE=LEMOD,
-                    GRILLE=_F(GROUP_MA = 'GEOA',
-                              SECTION = .01,
-                              ANGL_REP_1=(0,0),
-                              )
-                 )
+LECAR = AFFE_CARA_ELEM(MODELE=LEMOD, GRILLE=_F(GROUP_MA="GEOA", SECTION=0.01, ANGL_REP_1=(0, 0)))
 # -------------------------------------------------
 # CONSTRUCTION DU CHAMP DE TEMPERATURE
 # ------------------------------------------------
@@ -81,309 +58,298 @@ LECAR=AFFE_CARA_ELEM(
 # LA TEMPERATURE DE REFERENCE TO EST COMMUNE AUX DEUX MAILLES
 # ENSUITE IL FAUT TOUT FAIRE EN DOUBLE 5ACIER ET BETON) CAR LES MAILLES S'APPUIENT SUR LES MEMES NOEUDS
 
-T0A=CREA_CHAMP(
-                OPERATION='AFFE',
-                TYPE_CHAM='NOEU_TEMP_R',
-                MAILLAGE=MA,
-                AFFE=_F(
-                        TOUT = 'OUI',
-                        NOM_CMP = ('TEMP',),
-                        VALE = (20., ),
-                       )
-            )
+T0A = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP",), VALE=(20.0,)),
+)
 
-T1A=CREA_CHAMP(
-                OPERATION='AFFE',
-                TYPE_CHAM='NOEU_TEMP_R',
-                MAILLAGE=MA,
-                AFFE=_F(
-                        GROUP_MA = 'GEOA',
-                        NOM_CMP = ('TEMP', ),
-                        VALE = (120., ),
-                        ),
-                )
+T1A = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA="GEOA", NOM_CMP=("TEMP",), VALE=(120.0,)),
+)
 
-T1B=CREA_CHAMP(
-                OPERATION='AFFE',
-                TYPE_CHAM='NOEU_TEMP_R',
-                MAILLAGE=MA,
-                AFFE=_F(
-                        GROUP_MA = 'GEOB',
-                        NOM_CMP = 'TEMP',
-                        VALE = 20.,
-                        ),
-              )
+T1B = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA="GEOB", NOM_CMP="TEMP", VALE=20.0),
+)
 
-TA=CREA_RESU(
-            OPERATION='AFFE',
-            TYPE_RESU='EVOL_THER',
-            NOM_CHAM='TEMP',
-            AFFE=(  _F(CHAM_GD = T0A, INST = 0.,),
-                    _F(CHAM_GD = T1A, INST = 1.,),
-                )
-            )
+TA = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=T0A, INST=0.0), _F(CHAM_GD=T1A, INST=1.0)),
+)
 
-TB=CREA_RESU(
-            OPERATION='AFFE',
-            TYPE_RESU='EVOL_THER',
-            NOM_CHAM='TEMP',
-            AFFE=(  _F(CHAM_GD = T1B, INST = 0.,),
-                    _F(CHAM_GD = T1B, INST = 1.,),
-                )
-            )
+TB = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=T1B, INST=0.0), _F(CHAM_GD=T1B, INST=1.0)),
+)
 
 # -------------------------------------------------
 # AFFECTATION DES MATERIAUX
 # -------------------------------------------------
 
-MATAF=AFFE_MATERIAU(   INFO=1,
-                    MAILLAGE=MA,
-                    AFFE=(  _F(GROUP_MA = ('GEOA',),
-                               MATER = ACIER,
-                               ),
-                            _F(GROUP_MA = ('GEOB'),
-                               MATER = BETON,
-                               ),
-                        ),
-                    AFFE_VARC=( _F( GROUP_MA='GEOA',
-                                    EVOL=TA,
-                                    #EVOL=TEMPERA,
-                                    NOM_VARC='TEMP',
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=20.0),
-                                _F( GROUP_MA='GEOB',
-                                    EVOL=TB,
-                                    NOM_VARC='TEMP',
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=20.0),
-                                ),
-                )
+MATAF = AFFE_MATERIAU(
+    INFO=1,
+    MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA=("GEOA",), MATER=ACIER), _F(GROUP_MA=("GEOB"), MATER=BETON)),
+    AFFE_VARC=(
+        _F(
+            GROUP_MA="GEOA",
+            EVOL=TA,
+            # EVOL=TEMPERA,
+            NOM_VARC="TEMP",
+            NOM_CHAM="TEMP",
+            VALE_REF=20.0,
+        ),
+        _F(GROUP_MA="GEOB", EVOL=TB, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
+    ),
+)
 # ----------------------------------------------
 # CHARGEMENT
 # ----------------------------------------------
 #
-CL=AFFE_CHAR_MECA(
-                    MODELE=LEMOD,
-                    DDL_IMPO=(  _F(GROUP_MA = 'FAA', DX = 0.),
-                                _F(GROUP_MA = 'LIA', DZ = 0.),
-                                _F(GROUP_NO = 'P1',  DY = 0.),
-                                ),
-                )
+CL = AFFE_CHAR_MECA(
+    MODELE=LEMOD,
+    DDL_IMPO=(_F(GROUP_MA="FAA", DX=0.0), _F(GROUP_MA="LIA", DZ=0.0), _F(GROUP_NO="P1", DY=0.0)),
+)
 
 # ----------------------------------------------
 # CALCUL
 # ----------------------------------------------
 
-ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
-                        INTERVALLE=_F( JUSQU_A = 1.0,  NOMBRE = 1, )
-                    )
+ZLIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-DEP=STAT_NON_LINE(  MODELE=LEMOD,
-                    CHAM_MATER=MATAF,
-                    CARA_ELEM=LECAR,
-                    EXCIT=      _F( CHARGE = CL,),
-                    COMPORTEMENT=  _F( RELATION = 'ELAS',),
-                    INCREMENT=  _F( LIST_INST = ZLIST,),
-                    NEWTON=     _F( MATRICE = 'ELASTIQUE',),
-                    CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-3,
-                                   ITER_GLOB_MAXI = 30,),
-                                   )
-DEPB=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=DEP,GROUP_MA='GEOB')
+DEP = STAT_NON_LINE(
+    MODELE=LEMOD,
+    CHAM_MATER=MATAF,
+    CARA_ELEM=LECAR,
+    EXCIT=_F(CHARGE=CL),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=ZLIST),
+    NEWTON=_F(MATRICE="ELASTIQUE"),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-3, ITER_GLOB_MAXI=30),
+)
+DEPB = CALC_CHAMP(CONTRAINTE=("SIGM_ELNO"), RESULTAT=DEP, GROUP_MA="GEOB")
 
-CALC_CHAMP(reuse=DEP, RESULTAT=DEP, DEFORMATION=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'),
-           GROUP_MA='GEOA')
+CALC_CHAMP(
+    reuse=DEP,
+    RESULTAT=DEP,
+    DEFORMATION=("EPSI_ELGA", "EPME_ELGA", "EPVC_ELGA", "EPSP_ELGA"),
+    GROUP_MA="GEOA",
+)
 
-CALC_CHAMP(reuse=DEP, RESULTAT=DEP, DEFORMATION=('EPSI_ELNO', 'EPME_ELNO', 'EPVC_ELNO','EPSP_ELNO'),
-           GROUP_MA='GEOA')
+CALC_CHAMP(
+    reuse=DEP,
+    RESULTAT=DEP,
+    DEFORMATION=("EPSI_ELNO", "EPME_ELNO", "EPVC_ELNO", "EPSP_ELNO"),
+    GROUP_MA="GEOA",
+)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DEP, NOM_CHAM=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'),
-                  INST = 1., GROUP_MA = 'M107'))
+IMPR_RESU(
+    FORMAT="RESULTAT",
+    RESU=_F(
+        RESULTAT=DEP,
+        NOM_CHAM=("EPSI_ELGA", "EPME_ELGA", "EPVC_ELGA", "EPSP_ELGA"),
+        INST=1.0,
+        GROUP_MA="M107",
+    ),
+)
 
-DEPB=CALC_CHAMP(reuse =DEPB,
-                RESULTAT=DEPB,
-                CONTRAINTE='SIGM_NOEU',)
+DEPB = CALC_CHAMP(reuse=DEPB, RESULTAT=DEPB, CONTRAINTE="SIGM_NOEU")
 
 
 # TEST DE EPME_ELGA, EPVC_ELGA ET EPSP_ELGA SUR LES GRILLE_MEMBRANE
 
-TEST_RESU(RESU=(
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   RESULTAT=DEP,
-                   NOM_CHAM='EPSI_ELGA',
-                   NOM_CMP='EXX',
-                   VALE_CALC= 5.68067753827888E-04,
-                   ),
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEP,
-                   NOM_CHAM='EPVC_ELGA',
-                   NOM_CMP='EPTHER_L',
-                   VALE_CALC= 1.00000000000000E-03,
-                   VALE_REFE=1.00000000000000E-03,
-                   ),
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   RESULTAT=DEP,
-                   NOM_CHAM='EPME_ELGA',
-                   NOM_CMP='EXX',
-                   VALE_CALC=-4.31932246172112E-04,
-                   ),
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEP,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EXX',
-                   VALE_CALC=0.,
-                   VALE_REFE=0.,
-                   CRITERE='ABSOLU',
-                   ),
-          ))
-
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            RESULTAT=DEP,
+            NOM_CHAM="EPSI_ELGA",
+            NOM_CMP="EXX",
+            VALE_CALC=5.68067753827888e-04,
+        ),
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEP,
+            NOM_CHAM="EPVC_ELGA",
+            NOM_CMP="EPTHER_L",
+            VALE_CALC=1.00000000000000e-03,
+            VALE_REFE=1.00000000000000e-03,
+        ),
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            RESULTAT=DEP,
+            NOM_CHAM="EPME_ELGA",
+            NOM_CMP="EXX",
+            VALE_CALC=-4.31932246172112e-04,
+        ),
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEP,
+            NOM_CHAM="EPSP_ELGA",
+            NOM_CMP="EXX",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+    )
+)
 
 
 # -------------------------------------------------
 # TESTS DES RESULTATS (REFERENCE ANALYTIQUE)
 # -------------------------------------------------
-TEST_RESU(RESU=(_F(GROUP_NO='PMB',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEP,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 7.19892140E-05,
-                   VALE_REFE=7.1428569999999994E-05,
-                   PRECISION=1.E-2,),
-                _F(GROUP_NO='PMB',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEP,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 5.30112955E-04,
-                   VALE_REFE=5.3571427500000005E-4,
-                   PRECISION=0.010500000000000001,),
-                _F(GROUP_NO='PMB',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=DEPB,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIXX',
-                   VALE_CALC= 4.31992334E+06,
-                   VALE_REFE=4.2857145E6,
-                   PRECISION=1.E-2,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PMB",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEP,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=7.19892140e-05,
+            VALE_REFE=7.1428569999999994e-05,
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            GROUP_NO="PMB",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEP,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=5.30112955e-04,
+            VALE_REFE=5.3571427500000005e-4,
+            PRECISION=0.010500000000000001,
+        ),
+        _F(
+            GROUP_NO="PMB",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=DEPB,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIXX",
+            VALE_CALC=4.31992334e06,
+            VALE_REFE=4.2857145e6,
+            PRECISION=1.0e-2,
+        ),
+    )
+)
 
-DEPA=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=DEP,GROUP_MA='GEOA')
+DEPA = CALC_CHAMP(CONTRAINTE=("SIGM_ELNO"), RESULTAT=DEP, GROUP_MA="GEOA")
 
 
-DEPA=CALC_CHAMP(reuse=DEPA,
-                RESULTAT=DEPA,
-                CONTRAINTE='SIGM_NOEU',)
+DEPA = CALC_CHAMP(reuse=DEPA, RESULTAT=DEPA, CONTRAINTE="SIGM_NOEU")
 
-TEST_RESU(RESU=_F(GROUP_NO='PMA',
-                  INST=1.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DEPA,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=-8.63879617E+07,
-                  VALE_REFE=-8.5714290E7,
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO="PMA",
+        INST=1.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DEPA,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIXX",
+        VALE_CALC=-8.63879617e07,
+        VALE_REFE=-8.5714290e7,
+        PRECISION=1.0e-2,
+    )
+)
 
 # deuxieme calcul en VMIS_ISOT_LINE pour tester EPSP_ELGA
 
 
-ACIER2=DEFI_MATERIAU(
-                    ELAS=_F(
-                            E = 2.E11,
-                            NU = 0.0,
-                            ALPHA = 1.E-5,
-                            ),
-                    ECRO_LINE=_F(
-                                 D_SIGM_EPSI = 0.5E11,
-                                 SY = 1E7)
-                    )
+ACIER2 = DEFI_MATERIAU(
+    ELAS=_F(E=2.0e11, NU=0.0, ALPHA=1.0e-5), ECRO_LINE=_F(D_SIGM_EPSI=0.5e11, SY=1e7)
+)
 
 
-MATAF2=AFFE_MATERIAU(   INFO=1,
-                    MAILLAGE=MA,
-                    AFFE=(  _F(GROUP_MA = ('GEOA',),
-                               MATER = ACIER2,
-                               ),
-                            _F(GROUP_MA = ('GEOB'),
-                               MATER = BETON,
-                               ),
-                        ),
-                    AFFE_VARC=( _F( GROUP_MA='GEOA',
-                                    EVOL=TA,
-                                    #EVOL=TEMPERA,
-                                    NOM_VARC='TEMP',
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=20.0),
-                                _F( GROUP_MA='GEOB',
-                                    EVOL=TB,
-                                    NOM_VARC='TEMP',
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=20.0),
-                                ),
-                )
+MATAF2 = AFFE_MATERIAU(
+    INFO=1,
+    MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA=("GEOA",), MATER=ACIER2), _F(GROUP_MA=("GEOB"), MATER=BETON)),
+    AFFE_VARC=(
+        _F(
+            GROUP_MA="GEOA",
+            EVOL=TA,
+            # EVOL=TEMPERA,
+            NOM_VARC="TEMP",
+            NOM_CHAM="TEMP",
+            VALE_REF=20.0,
+        ),
+        _F(GROUP_MA="GEOB", EVOL=TB, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=20.0),
+    ),
+)
 
 
-DEP2=STAT_NON_LINE(  MODELE=LEMOD,
-                    CHAM_MATER=MATAF2,
-                    CARA_ELEM=LECAR,
-                    EXCIT=      _F( CHARGE = CL,),
-                    COMPORTEMENT= ( _F( RELATION = 'GRILLE_ISOT_LINE',GROUP_MA = 'GEOA'),
-                                    _F( RELATION = 'ELAS',GROUP_MA = 'GEOB'),
-                                  ),
-                    INCREMENT=  _F( LIST_INST = ZLIST,),
-                    NEWTON=     _F( MATRICE = 'ELASTIQUE',),
-                    CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-3,
-                                   ITER_GLOB_MAXI = 30,),
-                                   )
+DEP2 = STAT_NON_LINE(
+    MODELE=LEMOD,
+    CHAM_MATER=MATAF2,
+    CARA_ELEM=LECAR,
+    EXCIT=_F(CHARGE=CL),
+    COMPORTEMENT=(
+        _F(RELATION="GRILLE_ISOT_LINE", GROUP_MA="GEOA"),
+        _F(RELATION="ELAS", GROUP_MA="GEOB"),
+    ),
+    INCREMENT=_F(LIST_INST=ZLIST),
+    NEWTON=_F(MATRICE="ELASTIQUE"),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-3, ITER_GLOB_MAXI=30),
+)
 
-CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, DEFORMATION=('EPME_ELGA','EPSP_ELGA'),
-           GROUP_MA='GEOA')
-
-
-TEST_RESU(RESU=(
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC= -43272304.9744,
-                   ),
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='EPME_ELGA',
-                   NOM_CMP='EXX',
-                   VALE_CALC= -0.000715446099488,
-                   ),
-                _F(GROUP_MA='M107',
-                   POINT = 1,
-                   INST=1.0,
-                   RESULTAT=DEP2,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EXX',
-                   VALE_CALC=-0.000499084574616,
-                   ),
-          ))
+CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, DEFORMATION=("EPME_ELGA", "EPSP_ELGA"), GROUP_MA="GEOA")
 
 
-
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            RESULTAT=DEP2,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-43272304.9744,
+        ),
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            RESULTAT=DEP2,
+            NOM_CHAM="EPME_ELGA",
+            NOM_CMP="EXX",
+            VALE_CALC=-0.000715446099488,
+        ),
+        _F(
+            GROUP_MA="M107",
+            POINT=1,
+            INST=1.0,
+            RESULTAT=DEP2,
+            NOM_CHAM="EPSP_ELGA",
+            NOM_CMP="EXX",
+            VALE_CALC=-0.000499084574616,
+        ),
+    )
+)
 
 
 FIN()

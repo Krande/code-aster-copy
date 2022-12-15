@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from ..Utilities.misc import get_titre_concept
 
 def post_k_trans_ops(self, **args):
     """
-       Ecriture de la macro post_k_trans
+    Ecriture de la macro post_k_trans
     """
     EnumTypes = (list, tuple)
 
@@ -39,49 +39,47 @@ def post_k_trans_ops(self, **args):
     INST = args.get("INST")
     LIST_INST = args.get("LIST_INST")
 
-#------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # On importe les definitions des commandes a utiliser dans la macro
 
-#------------------------------------------------------------------
-    TABK = K_MODAL['TABL_K_MODA']
+    # ------------------------------------------------------------------
+    TABK = K_MODAL["TABL_K_MODA"]
 
     __kgtheta = TABK
 
     tablin = __kgtheta.EXTR_TABLE()
 
-#  sif_arg = args['tablin']
-    if 'K3' in tablin.para:
+    #  sif_arg = args['tablin']
+    if "K3" in tablin.para:
         DIME = 3
     else:
         DIME = 2
 
-#-----------------------------------------
-#
-# Verification de cohérence sur le nombre de modes
-#
-# RESULTAT TRANSITOIRE
+    # -----------------------------------------
+    #
+    # Verification de cohérence sur le nombre de modes
+    #
+    # RESULTAT TRANSITOIRE
     nomresu = RESU_TRANS.getName()
-    coef = aster.getvectjev(nomresu.ljust(19) + '.DEPL')
-    nmodtr = aster.getvectjev(nomresu.ljust(19) + '.DESC')[1]
-# BASE MODALE
+    coef = aster.getvectjev(nomresu.ljust(19) + ".DEPL")
+    nmodtr = aster.getvectjev(nomresu.ljust(19) + ".DESC")[1]
+    # BASE MODALE
     if DIME == 2:
-        n_mode = len((__kgtheta.EXTR_TABLE())['K1'])
+        n_mode = len((__kgtheta.EXTR_TABLE())["K1"])
         nbno = 1
     else:
-        n_mode = max((__kgtheta.EXTR_TABLE())[
-                     'NUME_MODE'].values()['NUME_MODE'])
-        nbno = max((__kgtheta.EXTR_TABLE())['NUM_PT'].values()['NUM_PT'])
-        labsc = (__kgtheta.EXTR_TABLE())[
-            'ABSC_CURV'].values()['ABSC_CURV'][0:nbno]
+        n_mode = max((__kgtheta.EXTR_TABLE())["NUME_MODE"].values()["NUME_MODE"])
+        nbno = max((__kgtheta.EXTR_TABLE())["NUM_PT"].values()["NUM_PT"])
+        labsc = (__kgtheta.EXTR_TABLE())["ABSC_CURV"].values()["ABSC_CURV"][0:nbno]
     if nmodtr != n_mode:
         n_mode = min(nmodtr, n_mode)
-        UTMESS('A', 'RUPTURE0_50', valk=nomresu, vali=n_mode)
+        UTMESS("A", "RUPTURE0_50", valk=nomresu, vali=n_mode)
 
-#
-# Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
-#
-    l0_inst = aster.getvectjev(nomresu.ljust(19) + '.DISC')
-    l0_ord = aster.getvectjev(nomresu.ljust(19) + '.ORDR')
+    #
+    # Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
+    #
+    l0_inst = aster.getvectjev(nomresu.ljust(19) + ".DISC")
+    l0_ord = aster.getvectjev(nomresu.ljust(19) + ".ORDR")
     nbtrans = len(l0_ord)
     li = [[l0_ord[i], l0_inst[i]] for i in range(nbtrans)]
     ln = [[l0_ord[i], i] for i in range(nbtrans)]
@@ -101,32 +99,31 @@ def post_k_trans_ops(self, **args):
                 NUME_ORDRE = (NUME_ORDRE,)
             ltmp = list(NUME_ORDRE)
         elif LIST_ORDRE:
-            ltmp = aster.getvectjev(LIST_ORDRE.getName().ljust(19) + '.VALE')
+            ltmp = aster.getvectjev(LIST_ORDRE.getName().ljust(19) + ".VALE")
         for ord in ltmp:
             if ord in l0_ord:
                 l_ord.append(ord)
                 l_inst.append(d_ins[ord][0])
             else:
-                UTMESS('A', 'RUPTURE0_51', vali=ord, valk=nomresu)
+                UTMESS("A", "RUPTURE0_51", vali=ord, valk=nomresu)
     elif LIST_INST or INST:
-        CRITERE = args['CRITERE']
-        PRECISION = args['PRECISION']
+        CRITERE = args["CRITERE"]
+        PRECISION = args["PRECISION"]
         if INST:
             if type(INST) not in EnumTypes:
                 INST = (INST,)
             ltmp = list(INST)
         elif LIST_INST:
-            ltmp = aster.getvectjev(LIST_INST.getName().ljust(19) + '.VALE')
+            ltmp = aster.getvectjev(LIST_INST.getName().ljust(19) + ".VALE")
         for ins in ltmp:
-            if CRITERE == 'RELATIF' and ins != 0.:
-                match = [
-                    x for x in l0_inst if abs((ins - x) / ins) < PRECISION]
+            if CRITERE == "RELATIF" and ins != 0.0:
+                match = [x for x in l0_inst if abs((ins - x) / ins) < PRECISION]
             else:
                 match = [x for x in l0_inst if abs(ins - x) < PRECISION]
             if len(match) == 0:
-                UTMESS('A', 'RUPTURE0_38', valr=ins)
+                UTMESS("A", "RUPTURE0_38", valr=ins)
             elif len(match) >= 2:
-                UTMESS('A', 'RUPTURE0_39', valr=ins)
+                UTMESS("A", "RUPTURE0_39", valr=ins)
             else:
                 l_inst.append(match[0])
                 l_ord.append(d_ord[match[0]][0])
@@ -135,11 +132,11 @@ def post_k_trans_ops(self, **args):
         l_inst = l0_inst
     nbarch = len(l_ord)
     if nbarch == 0:
-        UTMESS('F', 'RUPTURE0_54')
+        UTMESS("F", "RUPTURE0_54")
 
-#
-# Calcul des K(t)
-#
+    #
+    # Calcul des K(t)
+    #
     K1mod = [None] * n_mode * nbno
     K2mod = [None] * n_mode * nbno
     K1t = [None] * nbarch * nbno
@@ -147,12 +144,12 @@ def post_k_trans_ops(self, **args):
     if DIME == 3:
         K3mod = [None] * n_mode * nbno
         K3t = [None] * nbarch * nbno
-        k1 = 'K1'
-        k2 = 'K2'
-        k3 = 'K3'
+        k1 = "K1"
+        k2 = "K2"
+        k3 = "K3"
     else:
-        k1 = 'K1'
-        k2 = 'K2'
+        k1 = "K1"
+        k2 = "K2"
 
     for x in range(0, nbno):
         for k in range(0, n_mode):
@@ -169,21 +166,22 @@ def post_k_trans_ops(self, **args):
             for k in range(0, n_mode):
                 num_ord = d_num[l_ord[num]][0]
                 alpha = coef[n_mode * num_ord + k]
-                K1t[num * nbno + x] = K1t[
-                    num * nbno + x] + alpha * K1mod[k * nbno + x]
-                K2t[num * nbno + x] = K2t[
-                    num * nbno + x] + alpha * K2mod[k * nbno + x]
+                K1t[num * nbno + x] = K1t[num * nbno + x] + alpha * K1mod[k * nbno + x]
+                K2t[num * nbno + x] = K2t[num * nbno + x] + alpha * K2mod[k * nbno + x]
                 if DIME == 3:
-                    K3t[num * nbno + x] = K3t[
-                        num * nbno + x] + alpha * K3mod[k * nbno + x]
+                    K3t[num * nbno + x] = K3t[num * nbno + x] + alpha * K3mod[k * nbno + x]
 
     titre = get_titre_concept()
     if DIME == 2:
-        tabout = CREA_TABLE(LISTE=(_F(LISTE_I=l_ord, PARA='NUME_ORDRE'),
-                                   _F(LISTE_R=l_inst, PARA='INST'),
-                            _F(LISTE_R=K1t, PARA=k1),
-                            _F(LISTE_R=K2t, PARA=k2),),
-                            TITRE = titre,)
+        tabout = CREA_TABLE(
+            LISTE=(
+                _F(LISTE_I=l_ord, PARA="NUME_ORDRE"),
+                _F(LISTE_R=l_inst, PARA="INST"),
+                _F(LISTE_R=K1t, PARA=k1),
+                _F(LISTE_R=K2t, PARA=k2),
+            ),
+            TITRE=titre,
+        )
     else:
         lo = []
         li = []
@@ -191,17 +189,18 @@ def post_k_trans_ops(self, **args):
             for j in range(nbno):
                 lo.append(l_ord[i])
                 li.append(l_inst[i])
-        tabout = CREA_TABLE(LISTE=(_F(LISTE_I=lo, PARA='NUME_ORDRE'),
-                                   _F(LISTE_R=li, PARA='INST'),
-                                   _F(LISTE_I=list(range(
-                                      nbno)) * nbarch, PARA='NUM_PT'),
-                                   _F(LISTE_R=labsc * nbarch,
-                                      PARA='ABSC_CURV'),
-                                   _F(LISTE_R=K1t, PARA=k1),
-                                   _F(LISTE_R=K2t, PARA=k2),
-                                   _F(LISTE_R=K3t, PARA=k3),),
-                            TITRE = titre,
-                            )
+        tabout = CREA_TABLE(
+            LISTE=(
+                _F(LISTE_I=lo, PARA="NUME_ORDRE"),
+                _F(LISTE_R=li, PARA="INST"),
+                _F(LISTE_I=list(range(nbno)) * nbarch, PARA="NUM_PT"),
+                _F(LISTE_R=labsc * nbarch, PARA="ABSC_CURV"),
+                _F(LISTE_R=K1t, PARA=k1),
+                _F(LISTE_R=K2t, PARA=k2),
+                _F(LISTE_R=K3t, PARA=k3),
+            ),
+            TITRE=titre,
+        )
 
-#------------------------------------------------------------------
+    # ------------------------------------------------------------------
     return tabout

@@ -17,23 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 ### >>>>>>>>>>>>>>>>>>>>
 ### >>> Mesh + Model <<<
 ### <<<<<<<<<<<<<<<<<<<<
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER",)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MODELE = AFFE_MODELE(MAILLAGE=MAILLAGE,
-                     AFFE=_F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='3D'),)
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
-MAILLAGE = MODI_MAILLAGE(reuse =MAILLAGE,
-                         MAILLAGE=MAILLAGE,
-                         ORIE_PEAU=_F(GROUP_MA_PEAU=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE',),),)
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    ORIE_PEAU=_F(
+        GROUP_MA_PEAU=("DEVANT", "DROIT", "ARRIERE", "GAUCHE", "BAS", "HAUT", "APPUI", "COTE")
+    ),
+)
 
 ### >>>>>>>>>>>>>>>>
 ### >>> Material <<<
@@ -43,184 +45,178 @@ MAILLAGE = MODI_MAILLAGE(reuse =MAILLAGE,
 k = 516.2e6
 g = 238.2e6
 
-young = 9.*k*g /(3.*k+g)
-nu = (3.*k-2.*g) /(6.*k+2.*g)
+young = 9.0 * k * g / (3.0 * k + g)
+nu = (3.0 * k - 2.0 * g) / (6.0 * k + 2.0 * g)
 
 ### Preconsolidation pressure
-pc0 = 50.e3
+pc0 = 50.0e3
 
 ### MC parameters
-cohe = 1.e3
-phi = 33.
-psi = 27.
+cohe = 1.0e3
+phi = 33.0
+psi = 27.0
 lodeT = 29.9
-a = .25*cohe/tan(phi*pi/180.)
-hC = 0.
+a = 0.25 * cohe / tan(phi * pi / 180.0)
+hC = 0.0
 
-SOL = DEFI_MATERIAU(ELAS=_F(E=young,
-                            NU=nu,
-                            ALPHA=0.),
-                    MohrCoulombAS=_F(YoungModulus=young,
-                                     PoissonRatio=nu,
-                                     FrictionAngle=phi,
-                                     DilatancyAngle=psi,
-                                     Cohesion=cohe,
-                                     TransitionAngle=lodeT,
-                                     TensionCutOff=a,
-                                     HardeningCoef=hC,),)
+SOL = DEFI_MATERIAU(
+    ELAS=_F(E=young, NU=nu, ALPHA=0.0),
+    MohrCoulombAS=_F(
+        YoungModulus=young,
+        PoissonRatio=nu,
+        FrictionAngle=phi,
+        DilatancyAngle=psi,
+        Cohesion=cohe,
+        TransitionAngle=lodeT,
+        TensionCutOff=a,
+        HardeningCoef=hC,
+    ),
+)
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                      AFFE=_F(TOUT='OUI',
-                              MATER=SOL),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=SOL))
 
 ### >>>>>>>>>>>>>>>>>>>>
 ### >>> List of time <<<
 ### <<<<<<<<<<<<<<<<<<<<
 
-epzz_max = -3.e-4
-depzz = -pc0/3./k
+epzz_max = -3.0e-4
+depzz = -pc0 / 3.0 / k
 
-TEMPS1 = DEFI_LIST_REEL(DEBUT=0.,
-                        INTERVALLE=(_F(JUSQU_A=1.,
-                                       NOMBRE=1),
-                                    _F(JUSQU_A=30.,
-                                       NOMBRE=100),),)
+TEMPS1 = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1), _F(JUSQU_A=30.0, NOMBRE=100))
+)
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS1,),
-                         ECHEC=_F(EVENEMENT='ERREUR',
-                                  ACTION='DECOUPE',
-                                  SUBD_METHODE='AUTO',),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=TEMPS1),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO"),
+)
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Boundary conditions <<<
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-CHAR_U1 = AFFE_CHAR_MECA(MODELE=MODELE,
-                         PRES_REP=_F(GROUP_MA=('DROIT','ARRIERE'),
-                                     PRES=1.),)
+CHAR_U1 = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("DROIT", "ARRIERE"), PRES=1.0))
 
-CHAR_U2 = AFFE_CHAR_MECA(MODELE=MODELE,
-                         PRES_REP=_F(GROUP_MA='APPUI',
-                                     PRES = 1.),)
+CHAR_U2 = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA="APPUI", PRES=1.0))
 
-CHAR_U3 = AFFE_CHAR_MECA(MODELE=MODELE,
-                         FACE_IMPO=_F(GROUP_MA='APPUI',
-                                      DZ=1.),)
+CHAR_U3 = AFFE_CHAR_MECA(MODELE=MODELE, FACE_IMPO=_F(GROUP_MA="APPUI", DZ=1.0))
 
-DEPL_1 = AFFE_CHAR_CINE(MODELE=MODELE,
-                        MECA_IMPO=(_F(GROUP_MA='BAS',
-                                      DZ=0.),
-                                   _F(GROUP_MA='GAUCHE',
-                                      DX=0.),
-                                   _F(GROUP_MA='DEVANT',
-                                      DY=0.),),)
+DEPL_1 = AFFE_CHAR_CINE(
+    MODELE=MODELE,
+    MECA_IMPO=(
+        _F(GROUP_MA="BAS", DZ=0.0),
+        _F(GROUP_MA="GAUCHE", DX=0.0),
+        _F(GROUP_MA="DEVANT", DY=0.0),
+    ),
+)
 
-COEF0 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(0.,0.,
-                            1.,pc0,
-                            30.,pc0,),)
+COEF0 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 1.0, pc0, 30.0, pc0))
 
-COEF3 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(0.,0.,
-                            1.,depzz,
-                            30.,epzz_max,),)
+COEF3 = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 0.0, 1.0, depzz, 30.0, epzz_max)
+)
 
 ### >>>>>>>>>>>>>>>>
 ### >>> Solution <<<
 ### <<<<<<<<<<<<<<<<
 
-U1 = STAT_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHAR_U1,
-                             FONC_MULT=COEF0),
-                          _F(CHARGE=CHAR_U3,
-                             FONC_MULT=COEF3,),
-                          _F(CHARGE=DEPL_1,),),
-                   COMPORTEMENT=_F(RELATION='MohrCoulombAS',
-                                   RESI_INTE_RELA=1.e-14,),
-                   NEWTON=_F(MATRICE = 'TANGENTE',),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.e-10,
-                                  ITER_GLOB_MAXI=10,),
-                   SOLVEUR=_F(METHODE='MUMPS',),
-                   INCREMENT=_F(LIST_INST=DEFLIST,),)
+U1 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=CHAR_U1, FONC_MULT=COEF0),
+        _F(CHARGE=CHAR_U3, FONC_MULT=COEF3),
+        _F(CHARGE=DEPL_1),
+    ),
+    COMPORTEMENT=_F(RELATION="MohrCoulombAS", RESI_INTE_RELA=1.0e-14),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-10, ITER_GLOB_MAXI=10),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+)
 
 ### >>>>>>>>>>>>>
 ### >>> Tests <<<
 ### <<<<<<<<<<<<<
 
-U1 = CALC_CHAMP(reuse=U1,
-                CONTRAINTE=('SIGM_ELNO'),
-                VARI_INTERNE=('VARI_ELNO'),
-                DEFORMATION=('EPSI_ELNO'),
-                RESULTAT=U1,)
+U1 = CALC_CHAMP(
+    reuse=U1,
+    CONTRAINTE=("SIGM_ELNO"),
+    VARI_INTERNE=("VARI_ELNO"),
+    DEFORMATION=("EPSI_ELNO"),
+    RESULTAT=U1,
+)
 
-U1 = CALC_CHAMP(reuse=U1,
-                CONTRAINTE='SIGM_NOEU',
-                VARI_INTERNE='VARI_NOEU',
-                DEFORMATION='EPSI_NOEU',
-                RESULTAT=U1,)
+U1 = CALC_CHAMP(
+    reuse=U1, CONTRAINTE="SIGM_NOEU", VARI_INTERNE="VARI_NOEU", DEFORMATION="EPSI_NOEU", RESULTAT=U1
+)
 
-TAB_SIGM = POST_RELEVE_T(ACTION=_F(INTITULE='SIGM_NOEU',
-                                   GROUP_NO='C',
-                                   RESULTAT=U1,
-                                   NOM_CHAM='SIGM_NOEU',
-                                   TOUT_CMP='OUI',
-                                   OPERATION='EXTRACTION'),)
+TAB_SIGM = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="SIGM_NOEU",
+        GROUP_NO="C",
+        RESULTAT=U1,
+        NOM_CHAM="SIGM_NOEU",
+        TOUT_CMP="OUI",
+        OPERATION="EXTRACTION",
+    )
+)
 
-TAB_VARI = POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
-                                   GROUP_NO='C',
-                                   RESULTAT=U1,
-                                   NOM_CHAM='VARI_NOEU',
-                                   TOUT_CMP='OUI',
-                                   OPERATION='EXTRACTION'),)
+TAB_VARI = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="VARI_NOEU",
+        GROUP_NO="C",
+        RESULTAT=U1,
+        NOM_CHAM="VARI_NOEU",
+        TOUT_CMP="OUI",
+        OPERATION="EXTRACTION",
+    )
+)
 
-TAB_EPSI = POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU',
-                                   GROUP_NO='C',
-                                   RESULTAT=U1,
-                                   NOM_CHAM='EPSI_NOEU',
-                                   TOUT_CMP='OUI',
-                                   OPERATION='EXTRACTION'),)
+TAB_EPSI = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="EPSI_NOEU",
+        GROUP_NO="C",
+        RESULTAT=U1,
+        NOM_CHAM="EPSI_NOEU",
+        TOUT_CMP="OUI",
+        OPERATION="EXTRACTION",
+    )
+)
 
-TEST_TABLE(NOM_PARA='SIXX',
-           TABLE=TAB_SIGM,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,
-                     CRITERE='ABSOLU',
-                     PRECISION=1e-7,),
-           VALE_CALC=-50000.00000081833,)
+TEST_TABLE(
+    NOM_PARA="SIXX",
+    TABLE=TAB_SIGM,
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0, CRITERE="ABSOLU", PRECISION=1e-7),
+    VALE_CALC=-50000.00000081833,
+)
 
-TEST_TABLE(NOM_PARA='SIZZ',
-           TABLE=TAB_SIGM,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,
-                     CRITERE='ABSOLU',
-                     PRECISION=1e-7,),
-           VALE_CALC=-173077.28028242028,)
+TEST_TABLE(
+    NOM_PARA="SIZZ",
+    TABLE=TAB_SIGM,
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0, CRITERE="ABSOLU", PRECISION=1e-7),
+    VALE_CALC=-173077.28028242028,
+)
 
-TEST_TABLE(NOM_PARA='V7',
-           TABLE=TAB_VARI,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,
-                     CRITERE='ABSOLU',
-                     PRECISION=1e-7,),
-           VALE_CALC=0.0002523646130157128,)
+TEST_TABLE(
+    NOM_PARA="V7",
+    TABLE=TAB_VARI,
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0, CRITERE="ABSOLU", PRECISION=1e-7),
+    VALE_CALC=0.0002523646130157128,
+)
 
-TEST_TABLE(NOM_PARA='V8',
-           TABLE=TAB_VARI,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,
-                     CRITERE='ABSOLU',
-                     PRECISION=1e-7,),
-           VALE_CALC=0.00011457113677957863,)
+TEST_TABLE(
+    NOM_PARA="V8",
+    TABLE=TAB_VARI,
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0, CRITERE="ABSOLU", PRECISION=1e-7),
+    VALE_CALC=0.00011457113677957863,
+)
 
-TEST_TABLE(NOM_PARA='V9',
-           TABLE=TAB_VARI,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,
-                     CRITERE='ABSOLU',
-                     PRECISION=1e-7,),
-           VALE_CALC=2.76232343120816,)
+TEST_TABLE(
+    NOM_PARA="V9",
+    TABLE=TAB_VARI,
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0, CRITERE="ABSOLU", PRECISION=1e-7),
+    VALE_CALC=2.76232343120816,
+)
 
 FIN()

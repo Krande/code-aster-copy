@@ -58,6 +58,7 @@ except ImportError:
     class ParallelMechanicalLoadReal(OnlyParallelObject):
         pass
 
+
 try:
     from libaster import ParallelMechanicalLoadFunction
 
@@ -65,6 +66,7 @@ except ImportError:
 
     class ParallelMechanicalLoadFunction(OnlyParallelObject):
         pass
+
 
 try:
     from libaster import ParallelThermalLoadReal
@@ -74,6 +76,7 @@ except ImportError:
     class ParallelThermalLoadReal(OnlyParallelObject):
         pass
 
+
 try:
     from libaster import ParallelThermalLoadFunction
 
@@ -81,6 +84,7 @@ except ImportError:
 
     class ParallelThermalLoadFunction(OnlyParallelObject):
         pass
+
 
 try:
     from libaster import ParallelDOFNumbering

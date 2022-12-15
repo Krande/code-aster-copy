@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,15 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-PROD_MATR_CHAM=OPER(nom="PROD_MATR_CHAM",op= 156,sd_prod=cham_no_sdaster,
-                    fr=tr("Effectuer le produit d'une matrice par un vecteur"),
-                    reentrant='n',
-         MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,matr_asse_pres_c ) ),
-         CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
-         TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
+PROD_MATR_CHAM = OPER(
+    nom="PROD_MATR_CHAM",
+    op=156,
+    sd_prod=cham_no_sdaster,
+    fr=tr("Effectuer le produit d'une matrice par un vecteur"),
+    reentrant="n",
+    MATR_ASSE=SIMP(
+        statut="o", typ=(matr_asse_depl_r, matr_asse_depl_c, matr_asse_temp_r, matr_asse_pres_c)
+    ),
+    CHAM_NO=SIMP(statut="o", typ=cham_no_sdaster),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

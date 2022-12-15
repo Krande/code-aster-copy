@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,25 +17,25 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-mesh = LIRE_MAILLAGE(UNITE=25, FORMAT='MED',)
+mesh = LIRE_MAILLAGE(UNITE=25, FORMAT="MED")
 
 model = AFFE_MODELE(
-    MAILLAGE=mesh,
-    AFFE=_F(MODELISATION=('DKT', ), PHENOMENE='MECANIQUE', TOUT='OUI'),
+    MAILLAGE=mesh, AFFE=_F(MODELISATION=("DKT",), PHENOMENE="MECANIQUE", TOUT="OUI")
 )
 
 load = AFFE_CHAR_MECA(
     MODELE=model,
-    DDL_IMPO=(
-        _F(GROUP_MA=('MGBordMurBas', 'MGBordMurHau'), LIAISON='ENCASTRE'),
-    ),
-    FORCE_ARETE=_F(FZ=-2.0E+07, GROUP_MA=('MGBordPlaDro', ),),
+    DDL_IMPO=(_F(GROUP_MA=("MGBordMurBas", "MGBordMurHau"), LIAISON="ENCASTRE"),),
+    FORCE_ARETE=_F(FZ=-2.0e07, GROUP_MA=("MGBordPlaDro",)),
     LIAISON_MAIL=(
-        _F(GROUP_MA_ESCL=('MGBordPlaGau', ), GROUP_MA_MAIT=('MGFaceMur', ),
-           TYPE_RACCORD='COQUE',
-           DISTANCE_ALARME=0.15,DISTANCE_MAX=0.15,
+        _F(
+            GROUP_MA_ESCL=("MGBordPlaGau",),
+            GROUP_MA_MAIT=("MGFaceMur",),
+            TYPE_RACCORD="COQUE",
+            DISTANCE_ALARME=0.15,
+            DISTANCE_MAX=0.15,
         ),
     ),
 )
@@ -43,24 +43,17 @@ load = AFFE_CHAR_MECA(
 elemprop = AFFE_CARA_ELEM(
     MODELE=model,
     COQUE=(
-        _F(ANGL_REP=(1.0, 1.0), EPAIS=0.15, GROUP_MA=('MGFaceMur', ),),
-        _F(ANGL_REP=(1.0, 1.0), EPAIS=0.15, GROUP_MA=('MGFacePla', ),),
+        _F(ANGL_REP=(1.0, 1.0), EPAIS=0.15, GROUP_MA=("MGFaceMur",)),
+        _F(ANGL_REP=(1.0, 1.0), EPAIS=0.15, GROUP_MA=("MGFacePla",)),
     ),
 )
 
-mater    = DEFI_MATERIAU( ELAS=_F(E=2e+11, NU=0.2),)
-fieldmat = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(MATER=(mater, ), TOUT='OUI'),)
+mater = DEFI_MATERIAU(ELAS=_F(E=2e11, NU=0.2))
+fieldmat = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(MATER=(mater,), TOUT="OUI"))
 #
 inst_fin = 1.0
-listr = DEFI_LIST_REEL(
-    DEBUT=0.0,
-    INTERVALLE=_F(JUSQU_A=inst_fin, NOMBRE=5),
-)
-fctm = DEFI_FONCTION(
-    NOM_PARA='INST',
-    VALE=(0.0,      0.0,
-          inst_fin, 1.0),
-)
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=inst_fin, NOMBRE=5))
+fctm = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, inst_fin, 1.0))
 
 resnonl = STAT_NON_LINE(
     MODELE=model,
@@ -71,36 +64,55 @@ resnonl = STAT_NON_LINE(
 )
 
 # Les déplacements aux points de Gauss
-resnonl=CALC_CHAMP(reuse=resnonl,
+resnonl = CALC_CHAMP(
+    reuse=resnonl,
     MODELE=model,
     CARA_ELEM=elemprop,
     CHAM_MATER=fieldmat,
     RESULTAT=resnonl,
-    TOUT='OUI',
-    SOUS_POINT='DEPL_ELGA',
+    TOUT="OUI",
+    SOUS_POINT="DEPL_ELGA",
 )
 
 #  Maille, Point, Sous-point, DX, DZ
-resultats=[
-  ('M108', 3, 1, -5.791071922E-02, -1.982195490E-01,),
-  ('M108', 3, 2, -3.791787230E-02, -1.982195490E-01,),
-  ('M108', 3, 3, -1.792502537E-02, -1.982195490E-01,),
-  ('M109', 2, 1, -5.791071922E-02, -1.982195490E-01,),
-  ('M109', 2, 2, -3.791787230E-02, -1.982195490E-01,),
-  ('M109', 2, 3, -1.792502537E-02, -1.982195490E-01,),
+resultats = [
+    ("M108", 3, 1, -5.791071922e-02, -1.982195490e-01),
+    ("M108", 3, 2, -3.791787230e-02, -1.982195490e-01),
+    ("M108", 3, 3, -1.792502537e-02, -1.982195490e-01),
+    ("M109", 2, 1, -5.791071922e-02, -1.982195490e-01),
+    ("M109", 2, 2, -3.791787230e-02, -1.982195490e-01),
+    ("M109", 2, 3, -1.792502537e-02, -1.982195490e-01),
 ]
 
-for maille,point,spoint,dx,dz in resultats:
+for maille, point, spoint, dx, dz in resultats:
     TEST_RESU(
         RESU=(
-            _F(RESULTAT=resnonl, NUME_ORDRE=5, NOM_CHAM='DEPL_ELGA',
-               MAILLE=maille, POINT=point, SOUS_POINT=spoint,
-               NOM_CMP='DX', VALE_CALC=dx, VALE_REFE=dx, REFERENCE='AUTRE_ASTER',),
-            _F(RESULTAT=resnonl, NUME_ORDRE=5, NOM_CHAM='DEPL_ELGA',
-               MAILLE=maille, POINT=point, SOUS_POINT=spoint,
-               NOM_CMP='DZ', VALE_CALC=dz, VALE_REFE=dz, REFERENCE='AUTRE_ASTER',),
-    ),
-)
+            _F(
+                RESULTAT=resnonl,
+                NUME_ORDRE=5,
+                NOM_CHAM="DEPL_ELGA",
+                MAILLE=maille,
+                POINT=point,
+                SOUS_POINT=spoint,
+                NOM_CMP="DX",
+                VALE_CALC=dx,
+                VALE_REFE=dx,
+                REFERENCE="AUTRE_ASTER",
+            ),
+            _F(
+                RESULTAT=resnonl,
+                NUME_ORDRE=5,
+                NOM_CHAM="DEPL_ELGA",
+                MAILLE=maille,
+                POINT=point,
+                SOUS_POINT=spoint,
+                NOM_CMP="DZ",
+                VALE_CALC=dz,
+                VALE_REFE=dz,
+                REFERENCE="AUTRE_ASTER",
+            ),
+        )
+    )
 
 """
 leficdepl  = './REPE_OUT/depl_elga.med'

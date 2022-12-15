@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,41 +20,29 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PSIEF_R = InputParameter(
+    phys=PHY.SIEF_R, comment="""  PSIEF_R : CONTRAINTES AUX POINTS DE GAUSS  """
+)
 
 
-PSIEF_R  = InputParameter(phys=PHY.SIEF_R,
-comment="""  PSIEF_R : CONTRAINTES AUX POINTS DE GAUSS  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLE DE COMMANDE  """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLE DE COMMANDE  """)
-
-
-PERREUR  = OutputParameter(phys=PHY.ERRE_R, type='ELEM',
-comment="""  PERREUR : ESTIMATEUR D ERREUR  """)
+PERREUR = OutputParameter(
+    phys=PHY.ERRE_R, type="ELEM", comment="""  PERREUR : ESTIMATEUR D ERREUR  """
+)
 
 
 CALC_ESTI_ERRE = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PMATERC,
-           PSIEF_R,
-        SP.PSIGMA,
-           PVARCPR,
-    ),
-    para_out=(
-           PERREUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PGEOMER, SP.PMATERC, PSIEF_R, SP.PSIGMA, PVARCPR),
+    para_out=(PERREUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  CALC_ESTI_ERRE :
            ESTIMATEUR D ERREUR PAR LISSAGE DE CHAMP
            PRODUIT UN CHAMP PAR ELEMENT  """,

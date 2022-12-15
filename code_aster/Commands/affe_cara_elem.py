@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -27,6 +27,7 @@ class EltCharacteristicsAssignment(ExecuteCommand):
     """Command that assigns
     :class:`~code_aster.Objects.ElementaryCharacteristics` on a model.
     """
+
     command_name = "AFFE_CARA_ELEM"
 
     def create_result(self, keywords):
@@ -36,5 +37,6 @@ class EltCharacteristicsAssignment(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = ElementaryCharacteristics(keywords["MODELE"])
+
 
 AFFE_CARA_ELEM = EltCharacteristicsAssignment.run

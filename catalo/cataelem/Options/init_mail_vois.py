@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,18 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PVOISIN  = OutputParameter(phys=PHY.VOISIN, type='ELEM',
-comment="""  PVOISIN : VOISINS DE L ELEMENT  """)
+PVOISIN = OutputParameter(
+    phys=PHY.VOISIN, type="ELEM", comment="""  PVOISIN : VOISINS DE L ELEMENT  """
+)
 
 
 INIT_MAIL_VOIS = Option(
-    para_in=(
-    ),
-    para_out=(
-           PVOISIN,
-    ),
+    para_in=(),
+    para_out=(PVOISIN,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.TYPMOD2, 'HHO'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.TYPMOD2, "HHO"))),
     ),
     comment="""  INIT_MAIL_VOIS :
            CALCUL DES VOISINS DE L ELEMENT

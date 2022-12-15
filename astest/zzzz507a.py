@@ -25,72 +25,66 @@ test = code_aster.TestCase()
 
 # Prepare mesh
 mesh = code_aster.Mesh.buildCube(refine=1)
-model = DEFI_GROUP(reuse =mesh,
-                    MAILLAGE=mesh,
-                    CREA_GROUP_MA= (_F(OPTION='BANDE',
-                                       NOM='VOLU_HAUT',
-                                       POINT = (0,0,0.9),
-                                       VECT_NORMALE= (0.,0.,1.),
-                                       DIST=0.15),
-                                     _F(OPTION='BANDE',
-                                       NOM='VOLU_BAS',
-                                       POINT = (0,0,0.1),
-                                       VECT_NORMALE= (0.,0.,-1.),
-                                       DIST=0.15),
-                                       ),
-                    INFO=2)
+model = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_MA=(
+        _F(
+            OPTION="BANDE",
+            NOM="VOLU_HAUT",
+            POINT=(0, 0, 0.9),
+            VECT_NORMALE=(0.0, 0.0, 1.0),
+            DIST=0.15,
+        ),
+        _F(
+            OPTION="BANDE",
+            NOM="VOLU_BAS",
+            POINT=(0, 0, 0.1),
+            VECT_NORMALE=(0.0, 0.0, -1.0),
+            DIST=0.15,
+        ),
+    ),
+    INFO=2,
+)
 
 
-model=AFFE_MODELE( MAILLAGE=mesh,
-                AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),)
-material=DEFI_MATERIAU(ELAS=_F(E=1, NU=0.0,  RHO=1,),)
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
+material = DEFI_MATERIAU(ELAS=_F(E=1, NU=0.0, RHO=1))
 
-fieldMate=AFFE_MATERIAU(MAILLAGE=mesh,
-                    AFFE=_F(TOUT='OUI', MATER=material,),
-                    )
+fieldMate = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=material))
 
-clamp=AFFE_CHAR_MECA( MODELE=model,
-                        DDL_IMPO=(_F(GROUP_MA='BOTTOM', DX=0.0, DY=0.0, DZ=0.0,),
-                                 ),)
+clamp = AFFE_CHAR_MECA(MODELE=model, DDL_IMPO=(_F(GROUP_MA="BOTTOM", DX=0.0, DY=0.0, DZ=0.0),))
 
-gravity=AFFE_CHAR_MECA( MODELE=model,
-                        PESANTEUR=_F(GRAVITE=9.81,DIRECTION=( 0., 0., -1.),),)
+gravity = AFFE_CHAR_MECA(MODELE=model, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, 0.0, -1.0)))
 
-numeDof = NUME_DDL(MODELE = model, CHARGE = clamp)
+numeDof = NUME_DDL(MODELE=model, CHARGE=clamp)
 
-loadElem = CALC_VECT_ELEM(OPTION = 'CHAR_MECA',
-                          CHAM_MATER = fieldMate,
-                          CHARGE = gravity)
+loadElem = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHAM_MATER=fieldMate, CHARGE=gravity)
 
-loadAsse = ASSE_VECTEUR(VECT_ELEM = loadElem,
-                        NUME_DDL = numeDof)
+loadAsse = ASSE_VECTEUR(VECT_ELEM=loadElem, NUME_DDL=numeDof)
 
 
-
-
-
-maskField = CREA_CHAMP(TYPE_CHAM = 'ELEM_NEUT_I',
-                       OPERATION = 'AFFE',
-                       MODELE    = model,
-                       PROL_ZERO = 'OUI',
-                       INFO      = 2,
-                       AFFE      = (_F(GROUP_MA='VOLU_BAS',
-                                      NOM_CMP  = 'X1',
-                                      VALE_I  = 1,),
-                                     _F(GROUP_MA='VOLU_HAUT',
-                                      NOM_CMP  = 'X1',
-                                      VALE_I  = 0,),),
-                       )
+maskField = CREA_CHAMP(
+    TYPE_CHAM="ELEM_NEUT_I",
+    OPERATION="AFFE",
+    MODELE=model,
+    PROL_ZERO="OUI",
+    INFO=2,
+    AFFE=(
+        _F(GROUP_MA="VOLU_BAS", NOM_CMP="X1", VALE_I=1),
+        _F(GROUP_MA="VOLU_HAUT", NOM_CMP="X1", VALE_I=0),
+    ),
+)
 
 loadAsse2 = loadElem.assembleWithMask(numeDof, maskField, 0)
-nodalField2  = loadAsse2.exportToSimpleFieldOnNodes()
+nodalField2 = loadAsse2.exportToSimpleFieldOnNodes()
 nodalField2.updateValuePointers()
 
 test.assertAlmostEqual(nodalField2.getValue(1, 2), -0.15328124999999998)
 test.assertAlmostEqual(nodalField2.getValue(23, 2), 0)
 
 loadAsse3 = loadElem.assembleWithMask(numeDof, maskField, 1)
-nodalField3  = loadAsse3.exportToSimpleFieldOnNodes()
+nodalField3 = loadAsse3.exportToSimpleFieldOnNodes()
 nodalField3.updateValuePointers()
 
 test.assertAlmostEqual(nodalField3.getValue(23, 2), -0.6131250000000001)

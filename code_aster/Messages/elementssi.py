@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,15 @@
 from ..Utilities import _
 
 cata_msg = {
-    1  : _("""Le modèle de déformation %(k1)s n'est pas possible avec des éléments linéaires sous-intégrés."""),
-
-    2  : _("""Le seul comportement élastique valide est ELAS pour les éléments linéaires sous-intégrés."""),
-
-    3  : _("""Les comportements écrits en configuration de référence ne sont pas disponibles sur les éléments linéaires pour la modélisation 3D_SI.
+    1: _(
+        """Le modèle de déformation %(k1)s n'est pas possible avec des éléments linéaires sous-intégrés."""
+    ),
+    2: _(
+        """Le seul comportement élastique valide est ELAS pour les éléments linéaires sous-intégrés."""
+    ),
+    3: _(
+        """Les comportements écrits en configuration de référence ne sont pas disponibles sur les éléments linéaires pour la modélisation 3D_SI.
 Pour contourner le problème et passer à un comportement en configuration actuelle, ajoutez un état initial nul au calcul.
-"""),
-
+"""
+    ),
 }

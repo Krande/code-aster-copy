@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,22 +21,31 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'ENDO_SCALAIRE',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Comportement elastique-fragile, a endommagement scalaire, seuil elliptique et
-   ecrouissage isotrope lineaire negatif - R5.03.18"""              ,
-    num_lc         = 46,
-    nb_vari        = 9,
-    nom_vari       = ('ENDO','INDIENDO','ENDORIGI','EPSEXX','EPSEYY',
-        'EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ',),
-    mc_mater       = ('ELAS','ENDO_SCALAIRE','NON_LOCAL',),
-    modelisation   = ('3D','AXIS','D_PLAN','GRADVARI',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('NEWTON',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="ENDO_SCALAIRE",
+    lc_type=("MECANIQUE",),
+    doc="""Comportement elastique-fragile, a endommagement scalaire, seuil elliptique et
+   ecrouissage isotrope lineaire negatif - R5.03.18""",
+    num_lc=46,
+    nb_vari=9,
+    nom_vari=(
+        "ENDO",
+        "INDIENDO",
+        "ENDORIGI",
+        "EPSEXX",
+        "EPSEYY",
+        "EPSEZZ",
+        "EPSEXY",
+        "EPSEXZ",
+        "EPSEYZ",
+    ),
+    mc_mater=("ELAS", "ENDO_SCALAIRE", "NON_LOCAL"),
+    modelisation=("3D", "AXIS", "D_PLAN", "GRADVARI"),
+    deformation=("PETIT",),
+    algo_inte=("NEWTON",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,27 +25,27 @@ from .sd_util import *
 
 class sd_nume_equa(sd_prof_chno):
     nomj = SDNom(fin=19)
-    NEQU = AsVI(lonmax=2,)
+    NEQU = AsVI(lonmax=2)
     DELG = AsVI()
-    REFN = AsVK24(lonmax=4,)
+    REFN = AsVK24(lonmax=4)
 
     def check_REFN(self, checker):
         assert self.REFN.exists
         refn = self.REFN.get_stripped()
 
         # nom du maillage :
-        assert refn[0] != ''
+        assert refn[0] != ""
         sd2 = sd_maillage(refn[0])
         sd2.check(checker)
 
         # nom de la grandeur :
-        assert refn[1] != ''
+        assert refn[1] != ""
         sdu_verif_nom_gd(refn[1])
 
-        assert refn[2] in ('', 'XXXX')  # inutilise
+        assert refn[2] in ("", "XXXX")  # inutilise
 
         # Cas ELIM_LAGR :
-        assert refn[3] in ('', 'ELIM_LAGR')
+        assert refn[3] in ("", "ELIM_LAGR")
 
     def check_1(self, checker):
         nequ = self.NEQU.get()

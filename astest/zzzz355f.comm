@@ -24,10 +24,10 @@
 #   FRICTION OPTION : 2 (IFROT)
 #   FLUID TYPE : 5 (AIR + SATURATED STEAM)
 #############################################################################################
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # Tested options for heat transfer
-lst_ichal = (11,12)
+lst_ichal = (11, 12)
 Npos = len(lst_ichal)
 
 # Flow computed by Ecrevisse alone
@@ -37,112 +37,122 @@ VTRECRE = (19.96619, 19.96619)
 
 
 # Non-Regression results : Flow
-VQCALC  = (0.00392945, 0.00392945)
+VQCALC = (0.00392945, 0.00392945)
 # Non-Regression results : Temperature
-VTCALC  = (19.96619,19.96619)
+VTCALC = (19.96619, 19.96619)
 
 # Pressure boundary conditions for Ecrevisse (Pa)
-prext  = 1.0E5
-printe = 1.E6
-prinin = 1.E6
-PrAPart = 6.E5
+prext = 1.0e5
+printe = 1.0e6
+prinin = 1.0e6
+PrAPart = 6.0e5
 
 # Temperature boundary conditions  for Ecrevisse (C)
-tempint   = 180.
-temp_ext  = 20.
-temp_ref  = 20.
+tempint = 180.0
+temp_ext = 20.0
+temp_ref = 20.0
 
 # Test duration (in seconds)
-duree_inj = 5000.
+duree_inj = 5000.0
 
 # Geometry parametres
-profondeur = 1.  #m
+profondeur = 1.0  # m
 
 # Material properties making coupling negligible
-lambd   = 0.     #W/M/K
-cp      = 88000000000.   #J/kg/K
-rho     = 2500.   #kg/m3
-rho_cp  = rho*cp  #J/m3/K
-alpha   = 1.0E-20 #1/K
-coeff_H = 0.      #W/m2/K
-young   = 1.E25   #Pa
+lambd = 0.0  # W/M/K
+cp = 88000000000.0  # J/kg/K
+rho = 2500.0  # kg/m3
+rho_cp = rho * cp  # J/m3/K
+alpha = 1.0e-20  # 1/K
+coeff_H = 0.0  # W/m2/K
+young = 1.0e25  # Pa
 
 
 # ------------------------------------- #
 # MESH
 # ------------------------------------- #
-MAIL = LIRE_MAILLAGE(FORMAT='MED',)
-
-MAIL = DEFI_GROUP(reuse         = MAIL,
-                  MAILLAGE      = MAIL,
-                  CREA_GROUP_MA = (
-                _F(NOM='GHAUT',GROUP_MA = ('GM21'),),
-                 _F(NOM='GBAS',GROUP_MA = ('GM22'),),
-                 _F(NOM='BETON',UNION = ('GM21','GM22'),),
-                 _F(NOM='INTRADOS',UNION = ('GM14','GM19'),),
-                 _F(NOM='EXTRADOS',UNION = ('GM15','GM18'),),
-                 _F(NOM='HAUT',GROUP_MA = ('GM16'),),
-                 _F(NOM='BAS',GROUP_MA = ('GM20'),),
-                 _F(NOM='ENCASTRE',UNION = ('BAS','HAUT'),),
-                 _F(NOM='BFISH',GROUP_MA = ('GM13'),),
-                 _F(NOM='BFISB',UNION = ('GM17'),), ),)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 MAIL = DEFI_GROUP(
-              reuse    = MAIL,
-              MAILLAGE = MAIL,
-              CREA_GROUP_NO = (
-                    _F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
-                                              'EXTRADOS','BFISH','BFISB',),),
-                                _F(OPTION    ='SEGM_DROI_ORDO',
-                                    NOM      ='BFISBO',
-                                    GROUP_NO ='BFISB',
-                                    GROUP_NO_ORIG = 'GM28',
-                                    GROUP_NO_EXTR = 'GM30',
-                                    PRECISION     = 1.E-6,
-                                    CRITERE = 'ABSOLU',),
-                                _F(OPTION    = 'SEGM_DROI_ORDO',
-                                    NOM      ='BFISHO',
-                                    GROUP_NO ='BFISH',
-                                    GROUP_NO_ORIG = 'GM27',
-                                    GROUP_NO_EXTR = 'GM29',
-                                    PRECISION     = 1.E-6,
-                                    CRITERE = 'ABSOLU',),),)
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_MA=(
+        _F(NOM="GHAUT", GROUP_MA=("GM21")),
+        _F(NOM="GBAS", GROUP_MA=("GM22")),
+        _F(NOM="BETON", UNION=("GM21", "GM22")),
+        _F(NOM="INTRADOS", UNION=("GM14", "GM19")),
+        _F(NOM="EXTRADOS", UNION=("GM15", "GM18")),
+        _F(NOM="HAUT", GROUP_MA=("GM16")),
+        _F(NOM="BAS", GROUP_MA=("GM20")),
+        _F(NOM="ENCASTRE", UNION=("BAS", "HAUT")),
+        _F(NOM="BFISH", GROUP_MA=("GM13")),
+        _F(NOM="BFISB", UNION=("GM17")),
+    ),
+)
+
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA=("BETON", "ENCASTRE", "INTRADOS", "EXTRADOS", "BFISH", "BFISB")),
+        _F(
+            OPTION="SEGM_DROI_ORDO",
+            NOM="BFISBO",
+            GROUP_NO="BFISB",
+            GROUP_NO_ORIG="GM28",
+            GROUP_NO_EXTR="GM30",
+            PRECISION=1.0e-6,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            OPTION="SEGM_DROI_ORDO",
+            NOM="BFISHO",
+            GROUP_NO="BFISH",
+            GROUP_NO_ORIG="GM27",
+            GROUP_NO_EXTR="GM29",
+            PRECISION=1.0e-6,
+            CRITERE="ABSOLU",
+        ),
+    ),
+)
 
 MAIL = MODI_MAILLAGE(
-              reuse        = MAIL,
-              MAILLAGE     = MAIL,
-              ORIE_PEAU = _F(GROUP_MA_PEAU = ('ENCASTRE','INTRADOS',
-                                            'EXTRADOS','BFISH','BFISB',),),)
-
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("ENCASTRE", "INTRADOS", "EXTRADOS", "BFISH", "BFISB")),
+)
 
 
 # ------------------------------------- #
 # DEFINITION OF MODELS AND MATERIALS
 # ------------------------------------- #
 MODMECA = AFFE_MODELE(
-                  MAILLAGE  = MAIL,
-                  AFFE      = (_F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
-                                              'EXTRADOS','BFISH','BFISB',),
-                  PHENOMENE = 'MECANIQUE',
-                  MODELISATION = 'D_PLAN',),),)
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(
+            GROUP_MA=("BETON", "ENCASTRE", "INTRADOS", "EXTRADOS", "BFISH", "BFISB"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="D_PLAN",
+        ),
+    ),
+)
 MODTHER = AFFE_MODELE(
-                  MAILLAGE  = MAIL,
-                  AFFE      = _F(GROUP_MA=('BETON','ENCASTRE','INTRADOS',
-                                           'EXTRADOS','BFISH','BFISB',),
-                  PHENOMENE = 'THERMIQUE',
-                  MODELISATION = 'PLAN_DIAG',),)
+    MAILLAGE=MAIL,
+    AFFE=_F(
+        GROUP_MA=("BETON", "ENCASTRE", "INTRADOS", "EXTRADOS", "BFISH", "BFISB"),
+        PHENOMENE="THERMIQUE",
+        MODELISATION="PLAN_DIAG",
+    ),
+)
 
-BETON = DEFI_MATERIAU(ELAS = _F(E      = young,
-                                NU     = 0.2,
-                                ALPHA  = alpha,),
-                      THER = _F(LAMBDA = lambd,
-                                RHO_CP = rho_cp,),)
+BETON = DEFI_MATERIAU(ELAS=_F(E=young, NU=0.2, ALPHA=alpha), THER=_F(LAMBDA=lambd, RHO_CP=rho_cp))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE  = MAIL,
-                    AFFE      = (_F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
-                                                'EXTRADOS','BFISH','BFISB',),
-                                    MATER    = BETON,),),)
-
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA=("BETON", "ENCASTRE", "INTRADOS", "EXTRADOS", "BFISH", "BFISB"), MATER=BETON),
+    ),
+)
 
 
 # ------------------------------------- #
@@ -150,61 +160,54 @@ CHMAT=AFFE_MATERIAU(MAILLAGE  = MAIL,
 # ------------------------------------- #
 # Mechanical B.C. :
 #
-CONDMECA = AFFE_CHAR_MECA( MODELE      = MODMECA,
-                           FACE_IMPO   = _F(GROUP_MA = ('ENCASTRE'), DNOR = 0.0,),
-                           DDL_IMPO    = _F(GROUP_NO = ('GM24','GM25'), DX = 0),
-                      )
+CONDMECA = AFFE_CHAR_MECA(
+    MODELE=MODMECA,
+    FACE_IMPO=_F(GROUP_MA=("ENCASTRE"), DNOR=0.0),
+    DDL_IMPO=_F(GROUP_NO=("GM24", "GM25"), DX=0),
+)
 
-CONT  = DEFI_CONTACT(MODELE      = MODMECA,
-                     FORMULATION = 'DISCRETE',
-                     REAC_GEOM   = 'SANS',
-                     ZONE        = _F(
-                            GROUP_MA_MAIT = 'BFISH',
-                            GROUP_MA_ESCL = 'BFISB',
-                     ),)
+CONT = DEFI_CONTACT(
+    MODELE=MODMECA,
+    FORMULATION="DISCRETE",
+    REAC_GEOM="SANS",
+    ZONE=_F(GROUP_MA_MAIT="BFISH", GROUP_MA_ESCL="BFISB"),
+)
 
 # Temperature and pressure time functions
 #
-PR_EXT = DEFI_CONSTANTE(VALE = prext,)
+PR_EXT = DEFI_CONSTANTE(VALE=prext)
 
-PR_INT = DEFI_FONCTION( NOM_PARA    = 'INST',
-                        PROL_GAUCHE = 'CONSTANT',
-                        PROL_DROITE = 'CONSTANT',
-                        VALE = ( 0,              prinin,
-                                 duree_inj,      printe, ), )
+PR_INT = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    VALE=(0, prinin, duree_inj, printe),
+)
 
-TEMP_INT = DEFI_FONCTION(NOM_PARA    = 'INST',
-                       PROL_GAUCHE = 'CONSTANT',
-                       PROL_DROITE = 'CONSTANT',
-                       VALE = ( 0.,        tempint,
-                                duree_inj, tempint, ),
-                       )
+TEMP_INT = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+    VALE=(0.0, tempint, duree_inj, tempint),
+)
 
-TEMP_EXT = DEFI_CONSTANTE(VALE = temp_ext,)
+TEMP_EXT = DEFI_CONSTANTE(VALE=temp_ext)
 
 # Thermal B.C. :
 #
-H_EXT    = DEFI_CONSTANTE(VALE = coeff_H,)
-H_INT    = DEFI_CONSTANTE(VALE = coeff_H,)
+H_EXT = DEFI_CONSTANTE(VALE=coeff_H)
+H_INT = DEFI_CONSTANTE(VALE=coeff_H)
 
 CONDTHER = AFFE_CHAR_THER_F(
-                    MODELE  = MODTHER,
-                    ECHANGE = (_F(GROUP_MA = 'INTRADOS',
-                                  COEF_H   = H_INT,
-                                  TEMP_EXT = TEMP_INT,),
-                               _F(GROUP_MA = 'EXTRADOS',
-                                  COEF_H   = H_EXT,
-                                  TEMP_EXT = TEMP_EXT,),),)
+    MODELE=MODTHER,
+    ECHANGE=(
+        _F(GROUP_MA="INTRADOS", COEF_H=H_INT, TEMP_EXT=TEMP_INT),
+        _F(GROUP_MA="EXTRADOS", COEF_H=H_EXT, TEMP_EXT=TEMP_EXT),
+    ),
+)
 
 
-
-
-L_INST = DEFI_LIST_REEL(
-                DEBUT      = 0.0,
-                INTERVALLE = (
-                        _F(JUSQU_A = duree_inj, NOMBRE = 2,), ),)
-
-
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=duree_inj, NOMBRE=2),))
 
 
 # --------------------------------------- #
@@ -213,91 +216,83 @@ L_INST = DEFI_LIST_REEL(
 #   USING DIFFERENT HEAT EXCHANGE OPTIONS
 # --------------------------------------- #
 iflow = 5
-RMECA=[None]*Npos
+RMECA = [None] * Npos
 
 # ICHAL >= 0
 for icalc in range(Npos):
 
     ichal = lst_ichal[icalc]
-    titre = 'IFROT=2, IFLOW=5, ICHAL='+str(ichal)
+    titre = "IFROT=2, IFLOW=5, ICHAL=" + str(ichal)
     RMECA[icalc] = MACR_ECREVISSE(
-                    TABLE  = CO('TABLECR'),
-                    DEBIT  = CO('DEBECR'),
-                    TEMPER = CO('TEMPECR'),
-                    #
-                    CHAM_MATER  = CHMAT,
-                    MODELE_MECA = MODMECA,
-                    MODELE_THER = MODTHER,
-                    TEMP_INIT   = temp_ref,
-                    EXCIT_MECA  = _F(CHARGE   = CONDMECA),
-                    EXCIT_THER  = _F(CHARGE   = CONDTHER),
-                    COMPORTEMENT= _F(RELATION ='ELAS',),
-                    CONTACT     = CONT,
-                    #
-                    FISSURE = _F(
-                          PREFIXE_FICHIER  = 'FISSURE1',
-                          SECTION          = 'RECTANGLE',
-                          GROUP_MA         = ('BFISH','BFISB',),
-                          RUGOSITE         = 0.5E-06,
-                          ZETA             = 0.0,
-                          GROUP_NO_ORIG    = ('GM27','GM28',),
-                          GROUP_NO_EXTR    = ('GM29','GM30',),
-                          LISTE_VAL_BL     = (profondeur,profondeur),
-                          OUVERT_REMANENTE = 10.0E-06,
-                          TORTUOSITE       = 1.0, ),
-                    #
-                    ECOULEMENT = _F(
-                          FLUIDE_ENTREE  = iflow,
-                          PRES_ENTREE_FO    = PR_INT,
-                          PRES_SORTIE_FO    = PR_EXT,
-                          PRES_PART         = PrAPart,
-                          TITR_MASS = 0.3,),
-                    #
-                    LIST_INST = L_INST,
-                    #
-                    MODELE_ECRE = _F(
-                          IVENAC         = 0,
-                          ECOULEMENT     = 'SATURATION',
-                          FROTTEMENT     = 2,
-                          TRANSFERT_CHAL = ichal,),
-                    #
-                    CONV_CRITERE = _F(
-                          TEMP_REF = 0.5,
-                          PRES_REF = 0.01*prext,
-                          CRITERE  = 'EXPLICITE',),
-                    #
-                    CONVERGENCE_ECREVISSE = _F(
-                          CRIT_CONV_DEBI = 1.e-5,
-                          KGTEST         = 0.5,
-                          ITER_GLOB_MAXI = 400,),
-                    #
-                    VERSION     = '3.2.2',
-                    COURBES     = 'AUCUNE',
-                    ENTETE      = titre,
-                    IMPRESSION  = 'NON',
-                    INFO        = 1,
-                    )
+        TABLE=CO("TABLECR"),
+        DEBIT=CO("DEBECR"),
+        TEMPER=CO("TEMPECR"),
+        #
+        CHAM_MATER=CHMAT,
+        MODELE_MECA=MODMECA,
+        MODELE_THER=MODTHER,
+        TEMP_INIT=temp_ref,
+        EXCIT_MECA=_F(CHARGE=CONDMECA),
+        EXCIT_THER=_F(CHARGE=CONDTHER),
+        COMPORTEMENT=_F(RELATION="ELAS"),
+        CONTACT=CONT,
+        #
+        FISSURE=_F(
+            PREFIXE_FICHIER="FISSURE1",
+            SECTION="RECTANGLE",
+            GROUP_MA=("BFISH", "BFISB"),
+            RUGOSITE=0.5e-06,
+            ZETA=0.0,
+            GROUP_NO_ORIG=("GM27", "GM28"),
+            GROUP_NO_EXTR=("GM29", "GM30"),
+            LISTE_VAL_BL=(profondeur, profondeur),
+            OUVERT_REMANENTE=10.0e-06,
+            TORTUOSITE=1.0,
+        ),
+        #
+        ECOULEMENT=_F(
+            FLUIDE_ENTREE=iflow,
+            PRES_ENTREE_FO=PR_INT,
+            PRES_SORTIE_FO=PR_EXT,
+            PRES_PART=PrAPart,
+            TITR_MASS=0.3,
+        ),
+        #
+        LIST_INST=L_INST,
+        #
+        MODELE_ECRE=_F(IVENAC=0, ECOULEMENT="SATURATION", FROTTEMENT=2, TRANSFERT_CHAL=ichal),
+        #
+        CONV_CRITERE=_F(TEMP_REF=0.5, PRES_REF=0.01 * prext, CRITERE="EXPLICITE"),
+        #
+        CONVERGENCE_ECREVISSE=_F(CRIT_CONV_DEBI=1.0e-5, KGTEST=0.5, ITER_GLOB_MAXI=400),
+        #
+        VERSION="3.2.2",
+        COURBES="AUCUNE",
+        ENTETE=titre,
+        IMPRESSION="NON",
+        INFO=1,
+    )
 
-    TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-                VALE_CALC = VQCALC[icalc],
-                VALE_REFE = VQRECRE[icalc],
-                NOM_PARA  = 'DEBTOT',
-                TABLE     = DEBECR,
-                FILTRE    = (_F(NOM_PARA = 'INST',
-                              VALE     = duree_inj,),), )
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=VQCALC[icalc],
+        VALE_REFE=VQRECRE[icalc],
+        NOM_PARA="DEBTOT",
+        TABLE=DEBECR,
+        FILTRE=(_F(NOM_PARA="INST", VALE=duree_inj),),
+    )
 
-    TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-                VALE_CALC = VTCALC[icalc],
-                VALE_REFE = VTRECRE[icalc],
-                NOM_PARA  = 'TEMP',
-                TABLE     = TABLECR,
-                FILTRE    = (_F(NOM_PARA = 'COTES',
-                              VALE     = 0.475,),
-                            _F(NOM_PARA = 'INST',
-                              VALE     = duree_inj,), ),)
+    TEST_TABLE(
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=VTCALC[icalc],
+        VALE_REFE=VTRECRE[icalc],
+        NOM_PARA="TEMP",
+        TABLE=TABLECR,
+        FILTRE=(_F(NOM_PARA="COTES", VALE=0.475), _F(NOM_PARA="INST", VALE=duree_inj)),
+    )
 
-    DETRUIRE(NOM = DEBECR)
-    DETRUIRE(NOM = TEMPECR)
-    DETRUIRE(NOM = TABLECR)
+    DETRUIRE(NOM=DEBECR)
+    DETRUIRE(NOM=TEMPECR)
+    DETRUIRE(NOM=TABLECR)
 
 FIN()

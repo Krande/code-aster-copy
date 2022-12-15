@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ from .base_utils import array_to_list, force_list
 
 def warn_to_stdout(message, category, filename, lineno, file=None, line=None):
     """Same as `showwarning` but on stdout"""
-    return showwarning(message, category, filename, lineno,
-                       file=sys.stdout, line=line)
+    return showwarning(message, category, filename, lineno, file=sys.stdout, line=line)
+
 
 warnings.showwarning = warn_to_stdout
 
@@ -57,16 +57,13 @@ def deprecate(feature, case=1, help=None, level=4):
         level (int): Level of the caller in the stack.
     """
     if case == 1:
-        msg = ("This feature is obsoleted, {0!r} will be "
-               "removed in the future.")
+        msg = "This feature is obsoleted, {0!r} will be " "removed in the future."
     elif case == 2:
         msg = "This feature is obsoleted, {0!r} has been removed."
     elif case == 3:
-        msg = ("This feature has a new implementation, {0!r} will be "
-               "removed in the future.")
+        msg = "This feature has a new implementation, {0!r} will be " "removed in the future."
     elif case == 4:
-        msg = ("This feature has a new implementation, {0!r} has been "
-               "removed.")
+        msg = "This feature has a new implementation, {0!r} has been " "removed."
     else:
         msg = "This feature is obsoleted: {0!r}"
     if help:
@@ -89,8 +86,10 @@ def deprecated(case=1, help=None):
             Case 4: the feature does nothing but has a new implementation.
         help (str): Additional help message.
     """
+
     def deprecated_decorator(func):
         """Raw decorator"""
+
         @wraps(func)
         def wrapper(*args, **kwargs):
             """Wrapper"""
@@ -197,11 +196,11 @@ def remove_keyword(keywords, factor_keyword, simple_keyword, warning=False):
             string the factor keyword is entirely removed.
         warning (bool): If *True* a warning message is emitted.
     """
+
     def _warn(container, key):
         if not warning:
             return
-        msg = ("This keyword is not yet supported and are currently "
-               "removed: {0}{1}{2}")
+        msg = "This keyword is not yet supported and are currently " "removed: {0}{1}{2}"
         sep = "/" if factor_keyword.strip() and simple_keyword.strip() else ""
         warn(msg.format(factor_keyword, sep, simple_keyword))
         del container[key]
@@ -222,8 +221,9 @@ def unsupported(keywords, factor_keyword, simple_keyword, warning=False):
         warning (bool): If *True* *DeprecationWarning* is emitted. Otherwise
             a *NotImplementedError* is raised.
     """
+
     def _raise(container, key):
-        msg = ("This keyword is not yet supported: {0}{1}{2}")
+        msg = "This keyword is not yet supported: {0}{1}{2}"
         sep = "/" if factor_keyword.strip() and simple_keyword.strip() else ""
         text_msg = msg.format(factor_keyword, sep, simple_keyword)
         if not warning:
@@ -246,8 +246,9 @@ def required(keywords, factor_keyword, simple_keyword):
         simple_keyword (str): Name of the simple keyword. It it is an empty
             string the factor keyword is entirely removed.
     """
+
     def _raise(container, key):
-        msg = ("This keyword is currently required: {0}{1}{2}")
+        msg = "This keyword is currently required: {0}{1}{2}"
         sep = "/" if factor_keyword.strip() and simple_keyword.strip() else ""
         text_msg = msg.format(factor_keyword, sep, simple_keyword)
         raise NotImplementedError(text_msg)

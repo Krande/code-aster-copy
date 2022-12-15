@@ -19,17 +19,20 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (FullHarmonicResult,
-                       FullTransientResult, GeneralizedModeResult,
-                       HarmoGeneralizedResult,
-                       ModeResult,
-                       TransientGeneralizedResult)
+from ..Objects import (
+    FullHarmonicResult,
+    FullTransientResult,
+    GeneralizedModeResult,
+    HarmoGeneralizedResult,
+    ModeResult,
+    TransientGeneralizedResult,
+)
 from ..Supervis import ExecuteCommand
 
 
 class RestGenePhys(ExecuteCommand):
-    """Command REST_GENE_PHYS
-    """
+    """Command REST_GENE_PHYS"""
+
     command_name = "REST_GENE_PHYS"
 
     def create_result(self, keywords):
@@ -65,8 +68,7 @@ class RestGenePhys(ExecuteCommand):
             fnds += keywords["MODE_MECA"].getFieldOnNodesDescriptions()
 
         resu_gene = keywords["RESU_GENE"]
-        if isinstance(resu_gene, (TransientGeneralizedResult,
-                                  HarmoGeneralizedResult)):
+        if isinstance(resu_gene, (TransientGeneralizedResult, HarmoGeneralizedResult)):
             dofNum = resu_gene.getDOFNumbering()
 
             if dofNum is not None:

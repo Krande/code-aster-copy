@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,57 +20,69 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    2 : _("""
+    2: _(
+        """
  La charge de nom <%(k1)s> est en double.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
  La charge de nom <%(k1)s> n'est pas autorisée dans la commande <%(k2)s>.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
  La charge de nom <%(k1)s> se base sur un PHENOMENE non pris en charge dans la commande.
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  La charge de nom <%(k1)s> se base sur un MODELE différent de la commande.
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
  Les charges n'ont pas le même MODELE.
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
  La charge de nom <%(k1)s> ne peut pas être suiveuse.
  Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être des charges suiveuses.
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
  La charge de nom <%(k1)s> ne peut pas être DIDI.
  Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être des charges DIDI.
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
  La charge de nom <%(k1)s> ne peut pas être pilotée.
  Les charges de type Dirichlet par élimination (AFFE_CHAR_CINE) ne peuvent pas être des charges pilotées.
-"""),
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
  La charge de nom <%(k1)s> ne peut pas être suiveuse.
  Les charges de type Dirichlet ne peuvent pas être des charges suiveuses.
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
  La charge de nom <%(k1)s> ne peut pas être pilotée.
  Les charges de type EVOL_CHAR ne peuvent pas être des charges pilotées.
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
  Le type de la charge <%(k1)s> ne peut être traité dans cette commande
-"""),
-    13 : _("""
+"""
+    ),
+    13: _(
+        """
  La charge de nom <%(k1)s> doit être de type suiveuse (ECHANGE_THM).
-"""),
-
+"""
+    ),
 }

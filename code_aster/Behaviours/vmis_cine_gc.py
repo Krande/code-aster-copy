@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,22 +22,34 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'VMIS_CINE_GC',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi de Von Mises en 1D-2D - Écrouissage cinématique linéaire.
+    nom="VMIS_CINE_GC",
+    lc_type=("MECANIQUE",),
+    doc="""Loi de Von Mises en 1D-2D - Écrouissage cinématique linéaire.
    Application aux études en génie civil : armatures, trellis soudés, plaque tôles""",
-    num_lc         = 3,
-    nb_vari        = 12,
-    nom_vari       = ('CRITSIG','CRITEPS','EPSPEQ','INDIPLAS','DISSIP','DISSTHER',
-                      'XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ',),
-    mc_mater       = ('ELAS','ECRO_LINE',),
-    modelisation   = ('1D','GRILLE_EXCENTRE','C_PLAN'),
-    deformation    = ('PETIT','PETIT_REAC',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    num_lc=3,
+    nb_vari=12,
+    nom_vari=(
+        "CRITSIG",
+        "CRITEPS",
+        "EPSPEQ",
+        "INDIPLAS",
+        "DISSIP",
+        "DISSTHER",
+        "XCINXX",
+        "XCINYY",
+        "XCINZZ",
+        "XCINXY",
+        "XCINXZ",
+        "XCINYZ",
+    ),
+    mc_mater=("ELAS", "ECRO_LINE"),
+    modelisation=("1D", "GRILLE_EXCENTRE", "C_PLAN"),
+    deformation=("PETIT", "PETIT_REAC"),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

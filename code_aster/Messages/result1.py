@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,65 +20,76 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
   Lors de la construction ou de la lecture d'un résultat non-linéaire, le champ des variables internes lu ou créé n'est pas cohérent avec le comportement donné par le mot-clef COMPORTEMENT.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 Le paramètre <%(k2)s> n'est pas le même sur tous les numéros d'ordre dans la structure de données résultat de nom <%(k1)s>.
 Ce n'est pas possible dans cet opérateur.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 On ne trouve aucun numéro d'ordre dans la structure de données résultat de nom <%(k1)s>
-"""),
-
-    4 : _("""Le modèle n'est pas unique sur tous les pas de temps. La commande ne sait pas gérer cette situation."""),
-
-    5 : _("""Il n'y a pas d'information relative au comportement dans le résultat. La commande ne sait pas gérer cette situation."""),
-
-    6 : _("""Le comportement n'est pas unique sur tous les pas de temps. La commande ne sait pas gérer cette situation."""),
-
-    7 : _("""On ne peut pas utiliser NOM_VARI car on n'a pas accès à la définition du comportement."""),
-
-    37: _("""
+"""
+    ),
+    4: _(
+        """Le modèle n'est pas unique sur tous les pas de temps. La commande ne sait pas gérer cette situation."""
+    ),
+    5: _(
+        """Il n'y a pas d'information relative au comportement dans le résultat. La commande ne sait pas gérer cette situation."""
+    ),
+    6: _(
+        """Le comportement n'est pas unique sur tous les pas de temps. La commande ne sait pas gérer cette situation."""
+    ),
+    7: _(
+        """On ne peut pas utiliser NOM_VARI car on n'a pas accès à la définition du comportement."""
+    ),
+    37: _(
+        """
 Le MODELE fourni par l'utilisateur est différent de celui présent dans la structure de données Résultat.
 On poursuit les calculs avec le MODELE fourni par l'utilisateur.
 
 Risque & Conseil : Vérifiez si le MODELE fourni dans la commande est bien celui que vous souhaitez.
 Si oui, vous allez poursuivre les calculs de post-traitement avec un MODELE différent de
 celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    38: _("""
+"""
+    ),
+    38: _(
+        """
 Les caractéristiques élémentaires CARA_ELEM fournies par l'utilisateur sont différentes de celles présentes dans la structure de données Résultat.
 On poursuit les calculs avec le CARA_ELEM fourni par l'utilisateur.
 
 Risque & Conseil : Vérifiez si le CARA_ELEM fourni dans la commande est bien celui que vous souhaitez.
 Si oui, vous allez poursuivre les calculs de post-traitement avec un CARA_ELEM différent de
 celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    39: _("""
+"""
+    ),
+    39: _(
+        """
 Le matériau fourni par l'utilisateur est différent de celui présent dans la structure de données Résultat.
 On poursuit les calculs avec le matériau fourni par l'utilisateur.
 
 Risque & Conseil : Vérifiez si le matériau fourni dans la commande est bien celui que vous souhaitez.
 Si oui, vous allez poursuivre les calculs de post-traitement avec un matériau différent de
 celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    40: _("""
+"""
+    ),
+    40: _(
+        """
 Le chargement fourni par l'utilisateur est différent de celui présent dans la
 structure de données Résultat. On poursuit les calculs avec le chargement fourni par l'utilisateur.
 
 Risque & Conseil : Vérifiez si le chargement fourni dans la commande est bien celui que vous souhaitez.
 Si oui vous allez poursuivre les calculs post-traitement avec un chargement différent de celui utilisé
 pour calculer les déplacements, températures,...
-"""),
-
-    41: _("""
+"""
+    ),
+    41: _(
+        """
 Les fonctions multiplicatrices du chargement (mot clé: FONC_MULT) fournies par l'utilisateur sont
 différentes de celles présentes dans la structure de données Résultat. On poursuit les calculs avec
 les fonctions multiplicatrices fournies par l'utilisateur.
@@ -86,24 +97,25 @@ les fonctions multiplicatrices fournies par l'utilisateur.
 Risque & Conseil : Vérifiez si les fonctions fournies dans la commande sont bien celles que vous souhaitez.
 Si oui vous allez poursuivre les calculs de post-traitement avec des fonctions différentes de celles
 utilisées pour calculer les déplacements, températures,...
-"""),
-
-
-    65: _("""
+"""
+    ),
+    65: _(
+        """
 Vous avez fourni %(i1)d charges alors qu'il n'y a %(i2)d dans la structure de données Résultat.
 
 Risque & Conseil :
    Vous pouvez obtenir des résultats faux si les charges sont différentes.
    Vérifiez que vous n'avez pas oublié de charge ou que vous n'en avez pas ajouté.
-"""),
-
-    66: _("""
+"""
+    ),
+    66: _(
+        """
 Le couple (charge, fonction) fourni par l'utilisateur n'est pas présent dans la structure de données résultat.
 On poursuit le calcul avec le chargement fourni par l'utilisateur.
    Charge   (utilisateur) : %(k1)s
    Fonction (utilisateur) : %(k2)s
    Charge   (résultat)    : %(k3)s
    Fonction (résultat)    : %(k4)s
-"""),
-
+"""
+    ),
 }

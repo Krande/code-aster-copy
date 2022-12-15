@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,31 +20,25 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PTRIAPG  = InputParameter(phys=PHY.ENDO_R, container='RESU!ENDO_ELGA!N',
-comment="""  PTRIAPG : TRIAXIALITE, CONTRAINTE ENDOMMAGEMENT,
+PTRIAPG = InputParameter(
+    phys=PHY.ENDO_R,
+    container="RESU!ENDO_ELGA!N",
+    comment="""  PTRIAPG : TRIAXIALITE, CONTRAINTE ENDOMMAGEMENT,
            ET DOMMAGE DE LEMAITRE-SERMAGE INSTANT ACTUEL
-           AUX POINTS DE GAUSS """)
+           AUX POINTS DE GAUSS """,
+)
 
 
 ENDO_ELNO = Option(
-    para_in=(
-           PTRIAPG,
-    ),
-    para_out=(
-        SP.PTRIANO,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(PTRIAPG,),
+    para_out=(SP.PTRIANO,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  ENDO_ELNO : CALCUL DU TAUX DE TRIAXIALITE DES CONTRAINTES,
            DE LA CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT ET DE
            L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE

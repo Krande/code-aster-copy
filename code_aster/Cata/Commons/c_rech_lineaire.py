@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,13 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_RECH_LINEAIRE() : return FACT(statut='f',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE","PILOTAGE") ),
-           RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-1 ),
-           ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 3,val_max=999),
-           RHO_MIN         =SIMP(statut='f',typ='R',defaut=1.0E-2),
-           RHO_MAX         =SIMP(statut='f',typ='R',defaut=1.0E+1),
-           RHO_EXCL        =SIMP(statut='f',typ='R',defaut=0.9E-2,val_min=0.),
-         );
+def C_RECH_LINEAIRE():
+    return FACT(
+        statut="f",
+        METHODE=SIMP(statut="f", typ="TXM", defaut="CORDE", into=("CORDE", "MIXTE", "PILOTAGE")),
+        RESI_LINE_RELA=SIMP(statut="f", typ="R", defaut=1.0e-1),
+        ITER_LINE_MAXI=SIMP(statut="f", typ="I", defaut=3, val_max=999),
+        RHO_MIN=SIMP(statut="f", typ="R", defaut=1.0e-2),
+        RHO_MAX=SIMP(statut="f", typ="R", defaut=1.0e1),
+        RHO_EXCL=SIMP(statut="f", typ="R", defaut=0.9e-2, val_min=0.0),
+    )

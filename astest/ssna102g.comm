@@ -17,22 +17,24 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------
 
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU=('BOTTOM_T','SPH_B_B','SPH_B_T','SPH_T_B','SPH_T_T','TOP_B','ENCAST',),),)
+MA = MODI_MAILLAGE(
+    reuse=MA,
+    MAILLAGE=MA,
+    ORIE_PEAU=_F(
+        GROUP_MA_PEAU=("BOTTOM_T", "SPH_B_B", "SPH_B_T", "SPH_T_B", "SPH_T_T", "TOP_B", "ENCAST")
+    ),
+)
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA='ENCAST',),)
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
 
 #
 # --------------------------------------------------------------------
@@ -40,12 +42,9 @@ MA=DEFI_GROUP(reuse =MA,
 # --------------------------------------------------------------------
 #
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=200000,
-                          NU=0.3,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=200000, NU=0.3))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 #
 # --------------------------------------------------------------------
@@ -53,10 +52,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 # --------------------------------------------------------------------
 #
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA=('TOUT',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),)
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA=("TOUT",), PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 #
 # --------------------------------------------------------------------
@@ -65,16 +61,14 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 #
 
 
-CL=AFFE_CHAR_CINE(MODELE=MO,
-                 MECA_IMPO=(_F(GROUP_MA='ENCAST',
-                               DX=0,
-                               DY=0,
-                               DZ=0,
-                               ),
-                            _F(GROUP_MA='SX',
-                               DX=0,),
-                            _F(GROUP_MA='SY',
-                               DY=0,),),)
+CL = AFFE_CHAR_CINE(
+    MODELE=MO,
+    MECA_IMPO=(
+        _F(GROUP_MA="ENCAST", DX=0, DY=0, DZ=0),
+        _F(GROUP_MA="SX", DX=0),
+        _F(GROUP_MA="SY", DY=0),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -82,9 +76,7 @@ CL=AFFE_CHAR_CINE(MODELE=MO,
 # --------------------------------------------------------------------
 #
 
-DEPL=AFFE_CHAR_CINE(MODELE=MO,
-                   MECA_IMPO=_F(GROUP_MA='DEPLA',
-                                DZ=-2,),)
+DEPL = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA="DEPLA", DZ=-2))
 
 #
 # --------------------------------------------------------------------
@@ -93,23 +85,17 @@ DEPL=AFFE_CHAR_CINE(MODELE=MO,
 # --------------------------------------------------------------------
 #
 
-CONT=DEFI_CONTACT(MODELE         = MO,
-                  FORMULATION    = 'CONTINUE',
-                  ALGO_RESO_CONT = 'POINT_FIXE',
-                  ALGO_RESO_GEOM = 'POINT_FIXE',
-                  ZONE=(
-                  _F(GROUP_MA_MAIT='TOP_B',
-                     GROUP_MA_ESCL='SPH_T_T',
-                     CONTACT_INIT='INTERPENETRE',
-                     ),
-                  _F(GROUP_MA_MAIT='SPH_B_T',
-                     GROUP_MA_ESCL='SPH_T_B',
-                     CONTACT_INIT='INTERPENETRE',
-                     ),
-                  _F(GROUP_MA_MAIT='BOTTOM_T',
-                     GROUP_MA_ESCL='SPH_B_B',
-                     CONTACT_INIT='INTERPENETRE',
-                     ),),)
+CONT = DEFI_CONTACT(
+    MODELE=MO,
+    FORMULATION="CONTINUE",
+    ALGO_RESO_CONT="POINT_FIXE",
+    ALGO_RESO_GEOM="POINT_FIXE",
+    ZONE=(
+        _F(GROUP_MA_MAIT="TOP_B", GROUP_MA_ESCL="SPH_T_T", CONTACT_INIT="INTERPENETRE"),
+        _F(GROUP_MA_MAIT="SPH_B_T", GROUP_MA_ESCL="SPH_T_B", CONTACT_INIT="INTERPENETRE"),
+        _F(GROUP_MA_MAIT="BOTTOM_T", GROUP_MA_ESCL="SPH_B_B", CONTACT_INIT="INTERPENETRE"),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -118,13 +104,9 @@ CONT=DEFI_CONTACT(MODELE         = MO,
 # --------------------------------------------------------------------
 #
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
-                          1,1,
-                          ),)
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
 
-TPS=DEFI_LIST_REEL(DEBUT=0,
-                   INTERVALLE=_F(JUSQU_A=1,
-                                 NOMBRE=1,),)
+TPS = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
 
 #
 # --------------------------------------------------------------------
@@ -132,22 +114,17 @@ TPS=DEFI_LIST_REEL(DEBUT=0,
 # --------------------------------------------------------------------
 #
 
-RESU=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CL,),
-                          _F(CHARGE=DEPL,
-                             FONC_MULT=RAMPE,),),
-                   CONTACT=CONT,
-                   COMPORTEMENT=_F(RELATION='ELAS',
-                                DEFORMATION='PETIT',),
-                   INCREMENT=_F(LIST_INST=TPS,),
-                   NEWTON=_F(MATRICE='ELASTIQUE',
-                             REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='GCPC',
-                              RESI_RELA=1.0E-12,
-                              PRE_COND='LDLT_SP',
-                              ),
-                   CONVERGENCE=_F(),)
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=DEPL, FONC_MULT=RAMPE)),
+    CONTACT=CONT,
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT"),
+    INCREMENT=_F(LIST_INST=TPS),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),
+    SOLVEUR=_F(METHODE="GCPC", RESI_RELA=1.0e-12, PRE_COND="LDLT_SP"),
+    CONVERGENCE=_F(),
+)
 
 #
 # --------------------------------------------------------------------
@@ -155,34 +132,39 @@ RESU=STAT_NON_LINE(MODELE=MO,
 # --------------------------------------------------------------------
 #
 
-RESU=CALC_CHAMP(reuse =RESU,
-             RESULTAT=RESU,
-             FORCE='REAC_NODA')
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="REAC_NODA")
 
 # --------------------------------------------------------------------
 #                COMPARAISON SOURCE EXTRENE : DEPLACEMENT
 # --------------------------------------------------------------------
 
-DEPL_PA4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='Deplacement en PA4',
-                                 RESULTAT=RESU,
-                                 NOM_CHAM='DEPL',
-                                 GROUP_NO='PA4',
-                                 RESULTANTE='DZ',),)
+DEPL_PA4 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="Deplacement en PA4",
+        RESULTAT=RESU,
+        NOM_CHAM="DEPL",
+        GROUP_NO="PA4",
+        RESULTANTE="DZ",
+    )
+)
 
-IMPR_TABLE(TABLE=DEPL_PA4,)
+IMPR_TABLE(TABLE=DEPL_PA4)
 
-TEST_RESU(RESU=_F(GROUP_NO='PA4',
-                  INST=1.0,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE_CALC=-0.795101625939,
-                  VALE_REFE=-0.81,
-                  CRITERE='RELATIF',
-                  PRECISION=0.04,),
-          )
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO="PA4",
+        INST=1.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DZ",
+        VALE_CALC=-0.795101625939,
+        VALE_REFE=-0.81,
+        CRITERE="RELATIF",
+        PRECISION=0.04,
+    )
+)
 
 #
 # --------------------------------------------------------------------
@@ -191,32 +173,35 @@ TEST_RESU(RESU=_F(GROUP_NO='PA4',
 #                COMPARAISON SOURCE EXTRENE
 # --------------------------------------------------------------------
 
-FORC_ENC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='Reaction a l encastrement',
-                                 RESULTAT=RESU,
-                                 NOM_CHAM='REAC_NODA',
-                                 GROUP_NO='ENCAST',
-                                 RESULTANTE='DZ',),)
+FORC_ENC = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="Reaction a l encastrement",
+        RESULTAT=RESU,
+        NOM_CHAM="REAC_NODA",
+        GROUP_NO="ENCAST",
+        RESULTANTE="DZ",
+    )
+)
 
-IMPR_TABLE(TABLE=FORC_ENC,)
+IMPR_TABLE(TABLE=FORC_ENC)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 28308.0167167,
-           VALE_REFE=2.706425E4,
-           NOM_PARA='DZ',
-           TABLE=FORC_ENC,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=0.050000000000000003,
+    VALE_CALC=28308.0167167,
+    VALE_REFE=2.706425e4,
+    NOM_PARA="DZ",
+    TABLE=FORC_ENC,
+    FILTRE=_F(NOM_PARA="INST", VALE=1.0),
+)
 
 # --------------------------------------------------------------------
 #                IMPRESSION DES RESULTATS
 # --------------------------------------------------------------------
 
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESU,),)
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=RESU))
 
 FIN()

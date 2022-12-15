@@ -18,92 +18,109 @@
 # --------------------------------------------------------------------
 
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 # TESTS POUR LE MODE 1
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  GROUP_NO='N5',
-                  VALE_CALC_C=-0.0136385180872-0.000474962272176j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        GROUP_NO="N5",
+        VALE_CALC_C=-0.0136385180872 - 0.000474962272176j,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO='N5',
-                  VALE_CALC_C=-0.0193494227752-0.00280161433662j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        GROUP_NO="N5",
+        VALE_CALC_C=-0.0193494227752 - 0.00280161433662j,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='PRES',
-                  GROUP_NO='N9',
-                  VALE_CALC_C=1.95864154062E-06+2.00405811699E-07j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRES",
+        GROUP_NO="N9",
+        VALE_CALC_C=1.95864154062e-06 + 2.00405811699e-07j,
+    )
+)
 
 # TESTS POUR LE MODE 2
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  GROUP_NO='N5',
-                  VALE_CALC_C=-0.00814134942489-0.000962208604432j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=2,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        GROUP_NO="N5",
+        VALE_CALC_C=-0.00814134942489 - 0.000962208604432j,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO='N5',
-                  VALE_CALC_C=0.00636393997553-0.000996719131689j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=2,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        GROUP_NO="N5",
+        VALE_CALC_C=0.00636393997553 - 0.000996719131689j,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='PRES',
-                  GROUP_NO='N9',
-                  VALE_CALC_C=-5.62437714679E-07+2.6314253546E-07j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=2,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRES",
+        GROUP_NO="N9",
+        VALE_CALC_C=-5.62437714679e-07 + 2.6314253546e-07j,
+    )
+)
 
 # TESTS POUR LE MODE 3
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  GROUP_NO='N5',
-                  VALE_CALC_C=-0.0104483570717-0.00136886182463j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=3,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        GROUP_NO="N5",
+        VALE_CALC_C=-0.0104483570717 - 0.00136886182463j,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO='N5',
-                  VALE_CALC_C=0.00676537706228+0.000859108242421j,
-                 ),
-          )
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=3,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        GROUP_NO="N5",
+        VALE_CALC_C=0.00676537706228 + 0.000859108242421j,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESH,
-                  NUME_ORDRE = 3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='PRES',
-                  GROUP_NO='N9',
-                  VALE_CALC_C=-3.36883848967E-07-2.00405581285E-07j,
-                 ),
-          )
-
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESH,
+        NUME_ORDRE=3,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRES",
+        GROUP_NO="N9",
+        VALE_CALC_C=-3.36883848967e-07 - 2.00405581285e-07j,
+    )
+)
 
 
 FIN()

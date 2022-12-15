@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import aster
 
 from ..Messages import UTMESS
 
-_trans = str.maketrans('e', 'E')
+_trans = str.maketrans("e", "E")
 
 
 def _fortran(srepr):
@@ -36,10 +36,11 @@ def _fortran(srepr):
     return srepr.translate(_trans)
 
 
-class TestResult():
+class TestResult:
     """This class provides the feature to print the testcase results.
     A singleton object is created to avoid to repeat some global tasks.
     """
+
     _isVerif = None
 
     @classmethod
@@ -48,7 +49,7 @@ class TestResult():
         if cls._isVerif is None:
             cls._isVerif = cls._checkVerif()
             if not cls._isVerif:
-                UTMESS('I', 'TEST0_19')
+                UTMESS("I", "TEST0_19")
         return cls._isVerif
 
     @staticmethod
@@ -58,17 +59,16 @@ class TestResult():
     @classmethod
     def write(cls, width, *args):
         """shortcut to print in the RESULTAT file"""
-        fmtval = '%%-%ds' % width
-        fmtcols = ['%-4s ', '%-16s', '%-16s', fmtval, fmtval, '%-16s', '%-16s']
+        fmtval = "%%-%ds" % width
+        fmtcols = ["%-4s ", "%-16s", "%-16s", fmtval, fmtval, "%-16s", "%-16s"]
         assert len(args) <= 7, args
-        fmt = ' '.join(fmtcols[:len(args)])
+        fmt = " ".join(fmtcols[: len(args)])
         line = fmt % args
         cls._printLine(line)
         return line
 
     @classmethod
-    def showResult(cls, type_ref, legend, label, skip, relative,
-                   tole, ref, val, compare=1.):
+    def showResult(cls, type_ref, legend, label, skip, relative, tole, ref, val, compare=1.0):
         """Print a table for TEST_RESU
 
         type_ref : ANALYTIQUE, NON_REGRESSION, AUTRE_ASTER...
@@ -84,56 +84,57 @@ class TestResult():
         # ignore NON_REGRESSION tests for validation testcases
         isNonRegr = type_ref.strip() == "NON_REGRESSION"
         isValidIgn = isNonRegr and not cls.isVerif()
-        lines = ['pass in showResult']
+        lines = ["pass in showResult"]
         # compute
-        diag = 'SKIP'
-        error = '-'
+        diag = "SKIP"
+        error = "-"
         if not skip:
-            error = abs(1. * ref - val)
-            tole = 1. * tole
+            error = abs(1.0 * ref - val)
+            tole = 1.0 * tole
             if relative:
                 ok = error <= abs((tole * ref))
-                tole = tole * 100.
-                if ref != 0.:
-                    error = error / abs(ref) * 100.
+                tole = tole * 100.0
+                if ref != 0.0:
+                    error = error / abs(ref) * 100.0
                 elif ok:
-                    error = 0.
+                    error = 0.0
                 else:
                     error = 999.999999
             else:
                 tole = abs(tole * compare)
                 ok = error <= tole
-            diag = ' OK ' if ok else 'NOOK'
+            diag = " OK " if ok else "NOOK"
         else:
             # do not warn if validation testcase
             if not isValidIgn:
-                UTMESS('A', 'TEST0_12')
+                UTMESS("A", "TEST0_12")
         # formatting
-        sref = '%s' % ref
-        sval = '%s' % val
+        sref = "%s" % ref
+        sval = "%s" % val
         width = max([16, len(sref), len(sval)]) + 2
-        serr = '%s' % error
+        serr = "%s" % error
         if len(serr) > 15:
-            serr = '%13.6e' % error
-        stol = '%s' % tole
+            serr = "%13.6e" % error
+        stol = "%s" % tole
         if relative:
-            serr += '%'
-            stol += '%'
+            serr += "%"
+            stol += "%"
         sref, sval, serr, stol = [_fortran(i) for i in [sref, sval, serr, stol]]
-        if diag == 'SKIP':
-            legend = sref = sval = serr = stol = '-'
+        if diag == "SKIP":
+            legend = sref = sval = serr = stol = "-"
         # printing
-        if compare != 1.:
-            lines.append(cls.write(width, ' ', 'ORDRE DE GRANDEUR :', compare))
+        if compare != 1.0:
+            lines.append(cls.write(width, " ", "ORDRE DE GRANDEUR :", compare))
         if label:
-            lines.append(cls.write(width, ' ', 'REFERENCE', 'LEGENDE',
-                                   'VALE_REFE', 'VALE_CALC', 'ERREUR', 'TOLE'))
+            lines.append(
+                cls.write(
+                    width, " ", "REFERENCE", "LEGENDE", "VALE_REFE", "VALE_CALC", "ERREUR", "TOLE"
+                )
+            )
         if isValidIgn:
-            lines.append(cls.write(width, "-", type_ref, legend, sref,
-                                   sval, serr, "-"))
+            lines.append(cls.write(width, "-", type_ref, legend, sref, sval, serr, "-"))
         else:
-            lines.append(cls.write(width, diag, type_ref, legend, sref,
-                                   sval, serr, stol))
+            lines.append(cls.write(width, diag, type_ref, legend, sref, sval, serr, stol))
         return lines
 
     @staticmethod
@@ -151,8 +152,7 @@ class TestResult():
         return isVerif
 
 
-def testresu_print(type_ref, legend, label, skip, relative,
-                   tole, ref, val, compare=1.):
+def testresu_print(type_ref, legend, label, skip, relative, tole, ref, val, compare=1.0):
     """Print a table for TEST_RESU
 
     type_ref : ANALYTIQUE, NON_REGRESSION, AUTRE_ASTER...
@@ -165,32 +165,26 @@ def testresu_print(type_ref, legend, label, skip, relative,
     val : computed value (same type as ref)
     compare : order of magnitude
     """
-    lines = TestResult.showResult(type_ref, legend, label, skip, relative,
-                                  tole, ref, val, compare)
+    lines = TestResult.showResult(type_ref, legend, label, skip, relative, tole, ref, val, compare)
     return lines
 
 
-if __name__ == '__main__':
-    testresu_print('NON_REGRESSION', 'DX', True, False, False,
-                   1.e-6, 1.123e-6, 0.0, compare=275.0)
-    testresu_print('AUTRE_ASTER', 'DX', False, False, False,
-                   1.e-6, 1.123e-6, 0.0)
+if __name__ == "__main__":
+    testresu_print("NON_REGRESSION", "DX", True, False, False, 1.0e-6, 1.123e-6, 0.0, compare=275.0)
+    testresu_print("AUTRE_ASTER", "DX", False, False, False, 1.0e-6, 1.123e-6, 0.0)
     print()
 
-    testresu_print('NON_REGRESSION', 'DX', True, True, False,
-                   1.e-6, 1.123e-6, 0.0)
-    testresu_print('NON_REGRESSION', 'XXXXX', True, False, False,
-                   1.e-6, 1.123e-3, 0.0, compare=275.0)
+    testresu_print("NON_REGRESSION", "DX", True, True, False, 1.0e-6, 1.123e-6, 0.0)
+    testresu_print(
+        "NON_REGRESSION", "XXXXX", True, False, False, 1.0e-6, 1.123e-3, 0.0, compare=275.0
+    )
     print()
 
-    testresu_print('NON_REGRESSION', 'XXXXX', True, False, True,
-                   1.e-6, 1.123e-2, 0.0)
+    testresu_print("NON_REGRESSION", "XXXXX", True, False, True, 1.0e-6, 1.123e-2, 0.0)
     print()
 
-    testresu_print('NON_REGRESSION', 'XXXXX', True, False, True,
-                   0.02, 456, 458)
+    testresu_print("NON_REGRESSION", "XXXXX", True, False, True, 0.02, 456, 458)
     print()
 
-    testresu_print('ANALYTIQUE', 'DEPL_C', True, False, True,
-                   1.e-4, 1. + 1.j, -0.5 + 0.99j)
+    testresu_print("ANALYTIQUE", "DEPL_C", True, False, True, 1.0e-4, 1.0 + 1.0j, -0.5 + 0.99j)
     print()

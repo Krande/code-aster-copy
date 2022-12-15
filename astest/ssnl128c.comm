@@ -19,296 +19,239 @@
 
 #   GRAN_IRRA_LOG DEPENDANT DE LA FLUENCE ET GRANDISSEMENT
 
-DEBUT(CODE=_F(
-NIV_PUB_WEB='INTRANET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), DEBUG=_F(SDVERI="OUI"))
 EP = 0.001
 
 REXT = 0.1
 
 from ssnl128c_mater import *
 
-M1=LIRE_MAILLAGE(FORMAT="ASTER",)
+M1 = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MA=CREA_MAILLAGE(MAILLAGE=M1,
-                 MODI_MAILLE=_F(MAILLE=('M1','M2',),
-                                OPTION='SEG3_4',),)
+MA = CREA_MAILLAGE(MAILLAGE=M1, MODI_MAILLE=_F(MAILLE=("M1", "M2"), OPTION="SEG3_4"))
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),)
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='TUYAU_3M',),)
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M"))
 
-CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
-                OPERATION='EXTR',
-                MAILLAGE=MA,
-                NOM_CHAM='GEOMETRIE',)
+CHXN = CREA_CHAMP(TYPE_CHAM="NOEU_GEOM_R", OPERATION="EXTR", MAILLAGE=MA, NOM_CHAM="GEOMETRIE")
 
-FLUXAX=DEFI_FONCTION(NOM_PARA='X',
-                     VALE=(0.,1E-5,4000.,1E-5,),)
+FLUXAX = DEFI_FONCTION(NOM_PARA="X", VALE=(0.0, 1e-5, 4000.0, 1e-5))
 
-FLUX_Y=DEFI_FONCTION(NOM_PARA='Y',
-                     VALE=(0.,1.,100.,1.,),)
+FLUX_Y = DEFI_FONCTION(NOM_PARA="Y", VALE=(0.0, 1.0, 100.0, 1.0))
 
-FLUXPL=DEFI_NAPPE(NOM_PARA='Z',
-                  PARA=(0.,100.,),
-                  FONCTION=(FLUX_Y,FLUX_Y,),)
-#------------------------------------------------
+FLUXPL = DEFI_NAPPE(NOM_PARA="Z", PARA=(0.0, 100.0), FONCTION=(FLUX_Y, FLUX_Y))
+# ------------------------------------------------
 # CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXAX
-#------------------------------------------------
+# ------------------------------------------------
 
-CH_FAX=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
-                  OPERATION='AFFE',
-                  MAILLAGE=MA,
-                  AFFE=_F(
-                  TOUT='OUI',
-                  NOM_CMP='X1',
-                  VALE_F=FLUXAX,),)
+CH_FAX = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_F",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=FLUXAX),
+)
 
-CH_FAX_R=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                    OPERATION='EVAL',
-                    CHAM_F=CH_FAX,
-                    CHAM_PARA=CHXN,)
-#-----------------------------------------------
+CH_FAX_R = CREA_CHAMP(TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CH_FAX, CHAM_PARA=CHXN)
+# -----------------------------------------------
 # CREATION DU CHAMP ASSOCIE A LA FONCTION FLUXPL
-#-----------------------------------------------
+# -----------------------------------------------
 
-CH_FPL=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
-                  OPERATION='AFFE',
-                  MAILLAGE=MA,
-                  AFFE=_F(
-                  TOUT='OUI',
-                  NOM_CMP='X2',
-                  VALE_F=FLUXPL,),)
+CH_FPL = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_F",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="X2", VALE_F=FLUXPL),
+)
 
-CH_FPL_R=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                    OPERATION='EVAL',
-                    CHAM_F=CH_FPL,
-                    CHAM_PARA=CHXN,)
-#------------------
+CH_FPL_R = CREA_CHAMP(TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CH_FPL, CHAM_PARA=CHXN)
+# ------------------
 # FONCTION PRODUIT
-#------------------
+# ------------------
 
-MULT = FORMULE(VALE='X1*X2*INST',
-               NOM_PARA=['X1', 'X2', 'INST'],)
+MULT = FORMULE(VALE="X1*X2*INST", NOM_PARA=["X1", "X2", "INST"])
 
-CHRES=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
-                 OPERATION='AFFE',
-                 MAILLAGE=MA,
-                 AFFE=_F(
-                 TOUT='OUI',
-                 NOM_CMP='X1',
-                 VALE_F=MULT,),)
-#-----------------------------------------------------
+CHRES = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_F",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="X1", VALE_F=MULT),
+)
+# -----------------------------------------------------
 # CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
 # LE CHAMP EST CALCULE POUR LES 5 PREMIERS INSTANTS
-#-----------------------------------------------------
+# -----------------------------------------------------
 #
 
-INST0_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
-                   OPERATION='AFFE',
-                   MAILLAGE=MA,
-                   AFFE=_F(
-                   TOUT='OUI',
-                   NOM_CMP='INST',
-                   VALE=0.0,),)
+INST0_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_INST_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="INST", VALE=0.0),
+)
 
-REST0_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                   OPERATION='EVAL',
-                   CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST0_1,),)
+REST0_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHRES, CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST0_1)
+)
 
-RES00_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
-                   OPERATION='ASSE',
-                   MAILLAGE=MA,
-                   ASSE=_F(
-                   TOUT='OUI',
-                   CHAM_GD=REST0_1,
-                   NOM_CMP='X1',
-                   NOM_CMP_RESU='IRRA',),
-                   INFO=2,)
+RES00_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="ASSE",
+    MAILLAGE=MA,
+    ASSE=_F(TOUT="OUI", CHAM_GD=REST0_1, NOM_CMP="X1", NOM_CMP_RESU="IRRA"),
+    INFO=2,
+)
 #
 #
 #
 
-INST1_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
-                   OPERATION='AFFE',
-                   MAILLAGE=MA,
-                   AFFE=_F(
-                   TOUT='OUI',
-                   NOM_CMP='INST',
-                   VALE=1.0,),)
+INST1_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_INST_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="INST", VALE=1.0),
+)
 
-REST1_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                   OPERATION='EVAL',
-                   CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST1_1,),)
+REST1_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHRES, CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST1_1)
+)
 
-RES11_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
-                   OPERATION='ASSE',
-                   MAILLAGE=MA,
-                   ASSE=_F(
-                   TOUT='OUI',
-                   CHAM_GD=REST1_1,
-                   NOM_CMP='X1',
-                   NOM_CMP_RESU='IRRA',),
-                   INFO=2,)
+RES11_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="ASSE",
+    MAILLAGE=MA,
+    ASSE=_F(TOUT="OUI", CHAM_GD=REST1_1, NOM_CMP="X1", NOM_CMP_RESU="IRRA"),
+    INFO=2,
+)
 #
 #
 
-INST2_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
-                   OPERATION='AFFE',
-                   MAILLAGE=MA,
-                   AFFE=_F(
-                   TOUT='OUI',
-                   NOM_CMP='INST',
-                   VALE=864.99,),)
+INST2_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_INST_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="INST", VALE=864.99),
+)
 
-REST2_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                   OPERATION='EVAL',
-                   CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST2_1,),)
+REST2_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHRES, CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST2_1)
+)
 
-RES22_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
-                   OPERATION='ASSE',
-                   MAILLAGE=MA,
-                   ASSE=_F(
-                   TOUT='OUI',
-                   CHAM_GD=REST2_1,
-                   NOM_CMP='X1',
-                   NOM_CMP_RESU='IRRA',),
-                   INFO=2,)
+RES22_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="ASSE",
+    MAILLAGE=MA,
+    ASSE=_F(TOUT="OUI", CHAM_GD=REST2_1, NOM_CMP="X1", NOM_CMP_RESU="IRRA"),
+    INFO=2,
+)
 #
 #
 
-INST3_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
-                   OPERATION='AFFE',
-                   MAILLAGE=MA,
-                   AFFE=_F(
-                   TOUT='OUI',
-                   NOM_CMP='INST',
-                   VALE=1728.98,),)
+INST3_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_INST_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="INST", VALE=1728.98),
+)
 
-REST3_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                   OPERATION='EVAL',
-                   CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST3_1,),)
+REST3_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHRES, CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST3_1)
+)
 
-RES33_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
-                   OPERATION='ASSE',
-                   MAILLAGE=MA,
-                   ASSE=_F(
-                   TOUT='OUI',
-                   CHAM_GD=REST3_1,
-                   NOM_CMP='X1',
-                   NOM_CMP_RESU='IRRA',),
-                   INFO=2,)
+RES33_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="ASSE",
+    MAILLAGE=MA,
+    ASSE=_F(TOUT="OUI", CHAM_GD=REST3_1, NOM_CMP="X1", NOM_CMP_RESU="IRRA"),
+    INFO=2,
+)
 #
 #
 
-INST4_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
-                   OPERATION='AFFE',
-                   MAILLAGE=MA,
-                   AFFE=_F(
-                   TOUT='OUI',
-                   NOM_CMP='INST',
-                   VALE=2592.97,),)
+INST4_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_INST_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="INST", VALE=2592.97),
+)
 
-REST4_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                   OPERATION='EVAL',
-                   CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST4_1,),)
+REST4_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHRES, CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST4_1)
+)
 
-RES44_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
-                   OPERATION='ASSE',
-                   MAILLAGE=MA,
-                   ASSE=_F(
-                   TOUT='OUI',
-                   CHAM_GD=REST4_1,
-                   NOM_CMP='X1',
-                   NOM_CMP_RESU='IRRA',),
-                   INFO=2,)
+RES44_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="ASSE",
+    MAILLAGE=MA,
+    ASSE=_F(TOUT="OUI", CHAM_GD=REST4_1, NOM_CMP="X1", NOM_CMP_RESU="IRRA"),
+    INFO=2,
+)
 #
 #
 
-INST5_1=CREA_CHAMP(TYPE_CHAM='NOEU_INST_R',
-                   OPERATION='AFFE',
-                   MAILLAGE=MA,
-                   AFFE=_F(
-                   TOUT='OUI',
-                   NOM_CMP='INST',
-                   VALE=3456.96,),)
+INST5_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_INST_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="INST", VALE=3456.96),
+)
 
-REST5_1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                   OPERATION='EVAL',
-                   CHAM_F=CHRES,
-                   CHAM_PARA=(CH_FAX_R,CH_FPL_R,INST5_1,),)
+REST5_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHRES, CHAM_PARA=(CH_FAX_R, CH_FPL_R, INST5_1)
+)
 
-RES55_1=CREA_CHAMP(TYPE_CHAM='NOEU_IRRA_R',
-                   OPERATION='ASSE',
-                   MAILLAGE=MA,
-                   ASSE=_F(
-                   TOUT='OUI',
-                   CHAM_GD=REST5_1,
-                   NOM_CMP='X1',
-                   NOM_CMP_RESU='IRRA',),
-                   INFO=2,)
+RES55_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="ASSE",
+    MAILLAGE=MA,
+    ASSE=_F(TOUT="OUI", CHAM_GD=REST5_1, NOM_CMP="X1", NOM_CMP_RESU="IRRA"),
+    INFO=2,
+)
 #
 #
 
-FLUENC1=CREA_RESU(OPERATION='AFFE',
-                  TYPE_RESU='EVOL_VARC',
-                  NOM_CHAM='IRRA',
-                  AFFE=(
-                  _F(CHAM_GD=RES00_1,
-                     INST=0.0,),
-                  _F(CHAM_GD=RES11_1,
-                     INST=1.0,),
-                  _F(CHAM_GD=RES22_1,
-                     INST=864.99,),
-                  _F(CHAM_GD=RES33_1,
-                     INST=1728.98,),
-                  _F(CHAM_GD=RES44_1,
-                     INST=2592.97,),
-                  _F(CHAM_GD=RES55_1,
-                     INST=3456.96,),
-                  _F(CHAM_GD=RES55_1,
-                     INST=5000.,),),)
+FLUENC1 = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_VARC",
+    NOM_CHAM="IRRA",
+    AFFE=(
+        _F(CHAM_GD=RES00_1, INST=0.0),
+        _F(CHAM_GD=RES11_1, INST=1.0),
+        _F(CHAM_GD=RES22_1, INST=864.99),
+        _F(CHAM_GD=RES33_1, INST=1728.98),
+        _F(CHAM_GD=RES44_1, INST=2592.97),
+        _F(CHAM_GD=RES55_1, INST=3456.96),
+        _F(CHAM_GD=RES55_1, INST=5000.0),
+    ),
+)
 
-FON_T=DEFI_FONCTION(NOM_PARA='X',
-                    NOM_RESU='TEMP',
-                    VALE=(0.,299.85,1.,299.85,),)
+FON_T = DEFI_FONCTION(NOM_PARA="X", NOM_RESU="TEMP", VALE=(0.0, 299.85, 1.0, 299.85))
 
-CHTEM=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
-                 OPERATION='AFFE',
-                 MAILLAGE=MA,
-                 AFFE=_F(
-                 TOUT='OUI',
-                 NOM_CMP='TEMP',
-                 VALE_F=FON_T,),)
-CHTH=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                       NOM_CHAM='TEMP',AFFE=(
-                       _F(  CHAM_GD = CHTEM,
-                                 INST = 0.),
-                       _F(  CHAM_GD = CHTEM,
-                                 INST = 5000.))
-                   )
+CHTEM = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_F",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=FON_T),
+)
+CHTH = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=CHTEM, INST=0.0), _F(CHAM_GD=CHTEM, INST=5000.0)),
+)
 
-CAREL=AFFE_CARA_ELEM(MODELE=MO,
-                     INFO=2,
-                     POUTRE=_F(GROUP_MA='TOUT',
-                               SECTION='CERCLE',
-                               CARA=('R','EP',),
-                               VALE=(REXT,EP,),
-                               TUYAU_NSEC=8,
-                               TUYAU_NCOU=1,),
-                     ORIENTATION=_F(GROUP_NO='A',
-                                    CARA='GENE_TUYAU',
-                                    VALE=(0.,0.,1.,),),
+CAREL = AFFE_CARA_ELEM(
+    MODELE=MO,
+    INFO=2,
+    POUTRE=_F(
+        GROUP_MA="TOUT",
+        SECTION="CERCLE",
+        CARA=("R", "EP"),
+        VALE=(REXT, EP),
+        TUYAU_NSEC=8,
+        TUYAU_NCOU=1,
+    ),
+    ORIENTATION=_F(GROUP_NO="A", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0)),
 )
 
 

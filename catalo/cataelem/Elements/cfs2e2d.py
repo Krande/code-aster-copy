@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,30 +25,26 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY','LAGS_C','LAGS_F1',))
+DDL_MECA = LocatedComponents(
+    phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "LAGS_C", "LAGS_F1")
+)
 
 
-
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFS2E2D(Element):
     """Please document this element"""
+
     meshType = MT.SEG2
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-            para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-        ),
-
-    )
+    calculs = (OP.EXISTE_DDL(te=99, para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),)),)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFS3E2D(CFS2E2D):
     """Please document this element"""
+
     meshType = MT.SEG3

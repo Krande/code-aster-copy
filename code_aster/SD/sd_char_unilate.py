@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ class sd_char_unilate(AsBase):
     DIMECU = AsVI()
     LISNOE = AsVI()
     POINOE = AsVI()
-    METHCU = AsVI(lonmax=1,)
-    PARACU = AsVR(lonmax=1,)
+    METHCU = AsVI(lonmax=1)
+    PARACU = AsVR(lonmax=1)
     CMPGCU = AsVK8()
-    COEFD = AsVect(ltyp=8, type=Parmi('K', 'R'))
-    COEFG = AsVect(ltyp=8, type=Parmi('K', 'R'))
+    COEFD = AsVect(ltyp=8, type=Parmi("K", "R"))
+    COEFG = AsVect(ltyp=8, type=Parmi("K", "R"))

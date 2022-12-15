@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,25 +20,27 @@
 # person_in_charge: jessica.haelewyn at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE COUCHE """
+)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE COUCHE """)
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
-
-
-PFLUXPG  = OutputParameter(phys=PHY.FLUX_R, type='ELGA',
-comment="""  PFLUXPG : FLUX AUX POINTS DE GAUSS """)
+PFLUXPG = OutputParameter(
+    phys=PHY.FLUX_R, type="ELGA", comment="""  PFLUXPG : FLUX AUX POINTS DE GAUSS """
+)
 
 
 FLUX_ELGA = Option(
@@ -48,16 +50,12 @@ FLUX_ELGA = Option(
         SP.PGEOMER,
         SP.PHARMON,
         SP.PMATERC,
-           PNBSP_I,
+        PNBSP_I,
         SP.PTEMPER,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
     ),
-    para_out=(
-           PFLUXPG,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PFLUXPG,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
     comment="""  FLUX_ELGA : CALCUL DU FLUX AUX POINTS DE GAUSS """,
 )

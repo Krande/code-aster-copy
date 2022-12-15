@@ -28,8 +28,7 @@ from .logging_manager import LoggingManager
 
 
 class StepSolver:
-    """Solves a step, loops on iterations.
-    """
+    """Solves a step, loops on iterations."""
 
     current_incr = phys_state = None
     phys_pb = linear_solver = contact_manager = None
@@ -75,7 +74,7 @@ class StepSolver:
         return self.phys_state
 
     def setContactManager(self, contact_manager):
-        """ Set contact manager.
+        """Set contact manager.
 
         Arguments:
             contact_manager (ContactManager): contact manager
@@ -109,8 +108,11 @@ class StepSolver:
 
         convManager.evalGeometricResidual(geom_diff)
 
-        self.geom = self.phys_pb.getMesh().getCoordinates() \
-            + self.phys_state.primal + self.phys_state.primal_step
+        self.geom = (
+            self.phys_pb.getMesh().getCoordinates()
+            + self.phys_state.primal
+            + self.phys_state.primal_step
+        )
 
     def createConvergenceManager(self):
         """Return an object that holds convergence criteria.
@@ -214,8 +216,11 @@ class StepSolver:
             if self._get("CONTACT", "ALGO_RESO_GEOM") == "POINT_FIXE":
                 logManager.printConvTableRow(
                     [
-                        self.current_incr, " ", " ",
-                        convManager.getCriteria("RESI_GEOM"), "POINT_FIXE",
+                        self.current_incr,
+                        " ",
+                        " ",
+                        convManager.getCriteria("RESI_GEOM"),
+                        "POINT_FIXE",
                     ]
                 )
 

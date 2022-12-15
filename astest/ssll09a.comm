@@ -23,191 +23,185 @@
 #
 # LOADING CASE : LCAS_1 / FORCE NODALE (Operating weight)
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 #
 # MESH AND FE-MODEL DEFINITIONS ##########
-MESH     = LIRE_MAILLAGE(FORMAT   = 'MED',);
-MESH     = MODI_MAILLAGE(reuse    = MESH,
-                         MAILLAGE = MESH,
-                         ECHELLE  = 1.E-3,
-                         #ABSC_CURV = _F(NOEUD_ORIG = 'PT_5',
-                         #               GROUP_MA   = ['BEAM_PT_10', 'BEAM_PT_20'])
-                         );
+MESH = LIRE_MAILLAGE(FORMAT="MED")
+MESH = MODI_MAILLAGE(
+    reuse=MESH,
+    MAILLAGE=MESH,
+    ECHELLE=1.0e-3,
+    # ABSC_CURV = _F(NOEUD_ORIG = 'PT_5',
+    #               GROUP_MA   = ['BEAM_PT_10', 'BEAM_PT_20'])
+)
 #
 #
-MODEL    = AFFE_MODELE  (MAILLAGE = MESH,
-                         AFFE     = (
-                                     _F(GROUP_MA   = ['BEAM_PT_10', 'BEAM_PT_20'],
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'POU_D_T',),
-                                     _F(GROUP_MA     = 'ANCH_PT_5_ROT',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'DIS_TR',),
-                                    ),);
+MODEL = AFFE_MODELE(
+    MAILLAGE=MESH,
+    AFFE=(
+        _F(GROUP_MA=["BEAM_PT_10", "BEAM_PT_20"], PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),
+        _F(GROUP_MA="ANCH_PT_5_ROT", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
 #
 # MATERIAL DEFINITIONS ##########
 #
 # MAT_1 : Mat 2 (Elastic)
-MAT_1    = DEFI_MATERIAU(ELAS = _F(E          = 210*1.E9,
-                                   NU         = 0.3,
-                                   RHO        = 3333.333,
-                                   ),);
+MAT_1 = DEFI_MATERIAU(ELAS=_F(E=210 * 1.0e9, NU=0.3, RHO=3333.333))
 #
 # ASSIGNING MATERIAL TO ELEMENTS ##########
-MATER_F  = AFFE_MATERIAU(MAILLAGE  = MESH,
-                         AFFE      = (
-                                      _F(GROUP_MA = ['BEAM_PT_10', 'BEAM_PT_20'],
-                                         MATER    = MAT_1,),
-                                     ),
-                         );
+MATER_F = AFFE_MATERIAU(
+    MAILLAGE=MESH, AFFE=(_F(GROUP_MA=["BEAM_PT_10", "BEAM_PT_20"], MATER=MAT_1),)
+)
 #
 # FINITE ELEMENTS CARACTERISTICS (DIAMETER, THICKNESS) ##########
-FE_CAR   = AFFE_CARA_ELEM(MODELE      = MODEL,
-                          POUTRE      = (
-                                         _F(GROUP_MA = ['BEAM_PT_10', 'BEAM_PT_20'],
-                                            SECTION  = 'GENERALE',
-                                            CARA     = ('A','IY','IZ','JX','AY','AZ'),
-                                            VALE     = (300.0*1.E-6,
-                                                        1.0*1.E-12,
-                                                        1.0*1.E-12,
-                                                        1.0*1.E-12,
-                                                        1e-20,
-                                                        1e-20,
-                                                        ),),
-                                        ),
-                          COQUE       = (
-                                        ),
-                          ORIENTATION = (
-                                        ),
-                          DISCRET     = (
-                                          _F(CARA     = 'M_TR_D_L',
-                                             GROUP_MA = 'ANCH_PT_5_ROT',
-                                             VALE     = (0.0, 0.0, 0.0, 0.0),),
-                                          _F(CARA     = 'K_TR_D_L',
-                                             GROUP_MA = 'ANCH_PT_5_ROT',
-                                             VALE     = (0.0, 0.0, 0.0, 1e-05, 1e-05, 1e-05),),
-                                        ),
-                           );
+FE_CAR = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=(
+        _F(
+            GROUP_MA=["BEAM_PT_10", "BEAM_PT_20"],
+            SECTION="GENERALE",
+            CARA=("A", "IY", "IZ", "JX", "AY", "AZ"),
+            VALE=(300.0 * 1.0e-6, 1.0 * 1.0e-12, 1.0 * 1.0e-12, 1.0 * 1.0e-12, 1e-20, 1e-20),
+        ),
+    ),
+    COQUE=(),
+    ORIENTATION=(),
+    DISCRET=(
+        _F(CARA="M_TR_D_L", GROUP_MA="ANCH_PT_5_ROT", VALE=(0.0, 0.0, 0.0, 0.0)),
+        _F(CARA="K_TR_D_L", GROUP_MA="ANCH_PT_5_ROT", VALE=(0.0, 0.0, 0.0, 1e-05, 1e-05, 1e-05)),
+    ),
+)
 #
 # MECHANICAL BOUNDARY CONDITIONS ##########
-BOUND_C  = AFFE_CHAR_MECA(MODELE   = MODEL,
-                          DDL_IMPO = (
-                                      _F(GROUP_NO = 'ANCH_PT_5_ROT_BASE',
-                                         LIAISON  = 'ENCASTRE'),
-                                      _F(GROUP_NO = "ANCH_PT_5",
-                                         DX = 0., DY = 0., DZ = 0.),
-                                      _F(GROUP_NO = "ANCH_PT_20",
-                                         DX = 0., DY = 0., DZ = 0.),
-                                     ),
-                          DDL_POUTRE = (
-                                       ),
-                          LIAISON_DDL = (
-                                        ),
-                          # THERMAL STRATIFICATION (FANNY)
-                          PRE_EPSI = (
-                                       #KY and KZ are exchanged because of the local axis chosen (local Y and local Z are axchanged)
-                                      ),
-                          );
+BOUND_C = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(
+        _F(GROUP_NO="ANCH_PT_5_ROT_BASE", LIAISON="ENCASTRE"),
+        _F(GROUP_NO="ANCH_PT_5", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="ANCH_PT_20", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+    DDL_POUTRE=(),
+    LIAISON_DDL=(),
+    # THERMAL STRATIFICATION (FANNY)
+    PRE_EPSI=(
+        # KY and KZ are exchanged because of the local axis chosen (local Y and local Z are axchanged)
+    ),
+)
 #
 # EXTERNAL FORCES AND CHARGING #############
 #
 # FOR_2 : FORC_PT_10_CA_1 (Force)
-FOR_2    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "FORC_PT_10_CA_1",
-                                            FX       =  0.0,
-                                            FY       =  -21000.0,
-                                            FZ       =  0.0),);
+FOR_2 = AFFE_CHAR_MECA(
+    MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="FORC_PT_10_CA_1", FX=0.0, FY=-21000.0, FZ=0.0)
+)
 #
 # DFOR_1 : GRAVITY (Gravity / Constant acceleration)
-DFOR_1   = AFFE_CHAR_MECA(MODELE    = MODEL,
-                          PESANTEUR = _F(GROUP_MA  = ['BEAM_PT_10', 'BEAM_PT_20', 'ANCH_PT_5_ROT'],
-                                         GRAVITE   = 9.81,
-                                         DIRECTION = (0.0, -1.0, 0.0),),);
+DFOR_1 = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    PESANTEUR=_F(
+        GROUP_MA=["BEAM_PT_10", "BEAM_PT_20", "ANCH_PT_5_ROT"],
+        GRAVITE=9.81,
+        DIRECTION=(0.0, -1.0, 0.0),
+    ),
+)
 #
 # LINEAR STATIC SOLVER ####################
-STATIC   = MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATER_F,
-                         CARA_ELEM  = FE_CAR,
-                         EXCIT      = (
-                                       _F(CHARGE    = BOUND_C,),
-                                       _F(CHARGE    = FOR_2),
-                                       _F(CHARGE    = DFOR_1,),
-                                      ),
-                         SOLVEUR = _F(RESI_RELA=1e-05, NPREC=-1));
+STATIC = MECA_STATIQUE(
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    EXCIT=(_F(CHARGE=BOUND_C), _F(CHARGE=FOR_2), _F(CHARGE=DFOR_1)),
+    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1),
+)
 #
 # EXTRA FIELD CALCULATIONS FROM THE RESULT AND THE FE-MODEL #########
-elem_groups = ['BEAM_PT_10', 'BEAM_PT_20']
-pts_groups = ['PT_5', 'PT_10', 'PT_20', 'ANCH_PT_5', 'FORC_PT_10_CA_1', 'ANCH_PT_5_ROT', 'ANCH_PT_20']
-MESH  = DEFI_GROUP(reuse    = MESH,
-                   MAILLAGE = MESH,
-                   CREA_GROUP_NO =  _F(NOM   = 'ALL_PTS',
-                                       UNION = pts_groups))
-STATIC   = CALC_CHAMP(reuse      = STATIC,
-                      RESULTAT   = STATIC,
-                      MODELE     = MODEL,
-                      CHAM_MATER = MATER_F,
-                      CARA_ELEM  = FE_CAR,
-                      GROUP_MA   = elem_groups,
-                      # TOUT       = 'OUI',
-                      CONTRAINTE = ('EFGE_ELNO'),
-                      FORCE      = ('REAC_NODA', 'FORC_NODA'),
-                      );
+elem_groups = ["BEAM_PT_10", "BEAM_PT_20"]
+pts_groups = [
+    "PT_5",
+    "PT_10",
+    "PT_20",
+    "ANCH_PT_5",
+    "FORC_PT_10_CA_1",
+    "ANCH_PT_5_ROT",
+    "ANCH_PT_20",
+]
+MESH = DEFI_GROUP(reuse=MESH, MAILLAGE=MESH, CREA_GROUP_NO=_F(NOM="ALL_PTS", UNION=pts_groups))
+STATIC = CALC_CHAMP(
+    reuse=STATIC,
+    RESULTAT=STATIC,
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    GROUP_MA=elem_groups,
+    # TOUT       = 'OUI',
+    CONTRAINTE=("EFGE_ELNO"),
+    FORCE=("REAC_NODA", "FORC_NODA"),
+)
 # Effort dans barres
-EF_AC  = CALC_CHAMP( 
-                      RESULTAT   = STATIC,
-                      MODELE     = MODEL,
-                      CHAM_MATER = MATER_F,
-                      CARA_ELEM  = FE_CAR,
-                      GROUP_MA   = 'BEAM_PT_10',    
-                      CONTRAINTE = ('EFGE_NOEU'),
-                      );
-EF_BC  = CALC_CHAMP( 
-                      RESULTAT   = STATIC,
-                      MODELE     = MODEL,
-                      CHAM_MATER = MATER_F,
-                      CARA_ELEM  = FE_CAR,
-                      GROUP_MA   = 'BEAM_PT_20',    
-                      CONTRAINTE = ('EFGE_NOEU'),
-                      );
+EF_AC = CALC_CHAMP(
+    RESULTAT=STATIC,
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    GROUP_MA="BEAM_PT_10",
+    CONTRAINTE=("EFGE_NOEU"),
+)
+EF_BC = CALC_CHAMP(
+    RESULTAT=STATIC,
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    GROUP_MA="BEAM_PT_20",
+    CONTRAINTE=("EFGE_NOEU"),
+)
 # TEST DEPL
-TEST_RESU(RESU=(
-_F(NUME_ORDRE= 1,
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='FORC_PT_10_CA_1',                   
-                   RESULTAT=STATIC,
-                   VALE_CALC=-0.0030072901727052318,
-                   VALE_REFE=-3.000/1000.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   CRITERE='RELATIF',
-                   PRECISION=2.430059E-01/100.0,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="FORC_PT_10_CA_1",
+            RESULTAT=STATIC,
+            VALE_CALC=-0.0030072901727052318,
+            VALE_REFE=-3.000 / 1000.0,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=2.430059e-01 / 100.0,
+        ),
+    )
+)
 # TEST contrainte
 
-TEST_RESU(RESU=(
-_F(NUME_ORDRE= 1,
-                   NOM_CHAM = 'EFGE_NOEU',
-                   NOM_CMP='N',
-                   GROUP_NO='FORC_PT_10_CA_1',
-                   RESULTAT=EF_AC,
-                   VALE_CALC=21040.92129423375, 
-                   VALE_REFE= 70.0*300,
-                   REFERENCE='SOURCE_EXTERNE',
-                   CRITERE='RELATIF',
-                   PRECISION= 1.948634E-01/100.,),
-_F(NUME_ORDRE= 1,
-                   NOM_CHAM = 'EFGE_NOEU',
-                   NOM_CMP='N',
-                   GROUP_NO='FORC_PT_10_CA_1',
-                   RESULTAT=EF_BC,
-                   VALE_CALC=21040.92119352501 , 
-                   VALE_REFE=70.0*300,
-                   REFERENCE='SOURCE_EXTERNE',
-                   CRITERE='RELATIF',
-                   PRECISION=1.948629E-01/100.,),
-                ),
-          );
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="EFGE_NOEU",
+            NOM_CMP="N",
+            GROUP_NO="FORC_PT_10_CA_1",
+            RESULTAT=EF_AC,
+            VALE_CALC=21040.92129423375,
+            VALE_REFE=70.0 * 300,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=1.948634e-01 / 100.0,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="EFGE_NOEU",
+            NOM_CMP="N",
+            GROUP_NO="FORC_PT_10_CA_1",
+            RESULTAT=EF_BC,
+            VALE_CALC=21040.92119352501,
+            VALE_REFE=70.0 * 300,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            PRECISION=1.948629e-01 / 100.0,
+        ),
+    )
+)
 
 #
-FIN();
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,7 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: mathieu.courtois at edf.fr
-DEBUT(CODE=_F(
-NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # Lance tel quel ce test effectue un cas de calcul (dont les valeurs
 # de F_Norm et F_Tang correspondent au cas theta=0).
@@ -38,83 +37,70 @@ NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # On retrouvera le fichier de commandes utilise pour chaque cas de calcul
 # dans "repe_resu"/calc_NUMERO/command_0.comm
 # NUMERO etant l'occurence du jeu de parametres dans le fichier distr.
-F_Norm = 1.e6
-F_Tang = 0.
+F_Norm = 1.0e6
+F_Tang = 0.0
 
 # Dans la suite du jeu de commandes, on utilise les variables F_Norm et
 # F_Tang la ou on a besoin de ces parametres.
 
-MA=DEFI_MATERIAU(ELAS=_F(E=2.10e11, NU=0.3,),)
+MA = DEFI_MATERIAU(ELAS=_F(E=2.10e11, NU=0.3))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=MODI_MAILLAGE(reuse=MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Press',),),)
+MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("Press",)))
 
-MAIL=DEFI_GROUP(reuse=MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
-                                 GROUP_MA='Lsup',
-                                 NOM='Lsup'),)
+MAIL = DEFI_GROUP(
+    reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(OPTION="NOEUD_ORDO", GROUP_MA="Lsup", NOM="Lsup")
+)
 
-MODE=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),)
+MODE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
 
-MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           MATER=MA,),)
+MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MA))
 
-ENCAS=AFFE_CHAR_CINE(MODELE=MODE,
-                     MECA_IMPO=(_F(GROUP_MA='Encast',
-                                   DX=0.0,
-                                   DY=0.0,),),)
+ENCAS = AFFE_CHAR_CINE(MODELE=MODE, MECA_IMPO=(_F(GROUP_MA="Encast", DX=0.0, DY=0.0),))
 
-CHAR=AFFE_CHAR_MECA(MODELE=MODE,
-                    FORCE_CONTOUR=_F(GROUP_MA='Press',
-                                     # Utilisation des variables
-                                     FX=F_Norm,
-                                     FY=F_Tang),)
+CHAR = AFFE_CHAR_MECA(
+    MODELE=MODE,
+    FORCE_CONTOUR=_F(
+        GROUP_MA="Press",
+        # Utilisation des variables
+        FX=F_Norm,
+        FY=F_Tang,
+    ),
+)
 
-RESU=MECA_STATIQUE(MODELE=MODE,
-                   CHAM_MATER=MATE,
-                   EXCIT=(_F(CHARGE=CHAR,),
-                  _F(CHARGE=ENCAS),),)
+RESU = MECA_STATIQUE(MODELE=MODE, CHAM_MATER=MATE, EXCIT=(_F(CHARGE=CHAR), _F(CHARGE=ENCAS)))
 
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CRITERES=("SIEQ_ELNO"), CONTRAINTE=("SIGM_ELNO"))
 
 
-RESU=CALC_CHAMP(reuse=RESU,
-             RESULTAT=RESU,
-             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU')
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_NOEU", CRITERES="SIEQ_NOEU")
 
 # Pour recuperer un fichier pour chaque cas de calcul, il est necessaire
 # de l'ecrire dans REPE_OUT. On retrouvera le fichier dans
 # "repe_resu"/calc_NUMERO/REPE_OUT/poutre.resu.med
-DEFI_FICHIER(UNITE=80, TYPE='BINARY',
-             FICHIER='./REPE_OUT/poutre.resu.med')
+DEFI_FICHIER(UNITE=80, TYPE="BINARY", FICHIER="./REPE_OUT/poutre.resu.med")
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(MAILLAGE=MAIL,
-                  RESULTAT=RESU,
-                  NOM_CHAM=('SIEF_ELGA','SIEQ_NOEU','DEPL',),),)
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=80,
+    RESU=_F(MAILLAGE=MAIL, RESULTAT=RESU, NOM_CHAM=("SIEF_ELGA", "SIEQ_NOEU", "DEPL")),
+)
 
-VMIS=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                             INTITULE='Contraintes',
-                             RESULTAT=RESU,
-                             NOM_CHAM='SIEQ_NOEU',
-                             GROUP_NO='Lsup',
-                             NOM_CMP='VMIS',),)
+VMIS = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="Contraintes",
+        RESULTAT=RESU,
+        NOM_CHAM="SIEQ_NOEU",
+        GROUP_NO="Lsup",
+        NOM_CMP="VMIS",
+    )
+)
 
 # On retrouvera ce fichier dans "repe_resu"/calc_NUMERO/REPE_OUT/poutre.vmis
-DEFI_FICHIER(UNITE=38,FICHIER='./REPE_OUT/poutre.vmis')
+DEFI_FICHIER(UNITE=38, FICHIER="./REPE_OUT/poutre.vmis")
 
-IMPR_TABLE(TABLE=VMIS,
-           UNITE=38,
-           FORMAT='ASTER',
-           NOM_PARA=('ABSC_CURV','VMIS'),)
+IMPR_TABLE(TABLE=VMIS, UNITE=38, FORMAT="ASTER", NOM_PARA=("ABSC_CURV", "VMIS"))
 
 FIN()

@@ -33,98 +33,106 @@
 #      7 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,0,0)jusqu a EPSxx = 0.0
 # ________________________________________________________
 
-DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'NON'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
-MAIL = LIRE_MAILLAGE( FORMAT = "MED")
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
-                      CREA_GROUP_MA= (
-                                        _F( NOM = 'M1', MAILLE = 'M1'),
-                                     ),
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N5', NOEUD = 'N5'),
-                                        _F( NOM = 'N6', NOEUD = 'N6'),
-                                        _F( NOM = 'N1', NOEUD = 'N1'),
-                                     ),
-         )
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1"),),
+    CREA_GROUP_NO=(_F(NOM="N5", NOEUD="N5"), _F(NOM="N6", NOEUD="N6"), _F(NOM="N1", NOEUD="N1")),
+)
 
-MODELE = AFFE_MODELE( MAILLAGE = MAIL,
-                      AFFE =_F( TOUT = 'OUI',
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = '3D'),)
+MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-coef = 1.0e6 # Pa
-#coef = 1.   # MPa
+coef = 1.0e6  # Pa
+# coef = 1.   # MPa
 
 ENDO_MC__ = 1.5
 ENDO_MT__ = 1.7
-ENDO_SIGUC__ = 38.3*coef
-ENDO_SIGUT__ = 5.66*coef
-YOUNG__ = 32000.0*coef
+ENDO_SIGUC__ = 38.3 * coef
+ENDO_SIGUT__ = 5.66 * coef
+YOUNG__ = 32000.0 * coef
 
-MATERIAU = DEFI_MATERIAU( BETON_RAG =_F( COMP_BETON  = 'ENDO',
-                                         ENDO_SIGUC  = ENDO_SIGUC__,
-                                         ENDO_SIGUT  = ENDO_SIGUT__,
-                                         ENDO_MC = ENDO_MC__,
-                                         ENDO_MT = ENDO_MT__,
-                                         ENDO_DRUPRA = 0.15),
-                          ELAS =_F( NU = 0.2,
-                                    E = YOUNG__,
-                                    ALPHA = 0.0),)
+MATERIAU = DEFI_MATERIAU(
+    BETON_RAG=_F(
+        COMP_BETON="ENDO",
+        ENDO_SIGUC=ENDO_SIGUC__,
+        ENDO_SIGUT=ENDO_SIGUT__,
+        ENDO_MC=ENDO_MC__,
+        ENDO_MT=ENDO_MT__,
+        ENDO_DRUPRA=0.15,
+    ),
+    ELAS=_F(NU=0.2, E=YOUNG__, ALPHA=0.0),
+)
 
-CH_MAT = AFFE_MATERIAU( AFFE = _F( MATER = MATERIAU,
-                                   TOUT = 'OUI'),
-                                   MAILLAGE = MAIL)
+CH_MAT = AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU, TOUT="OUI"), MAILLAGE=MAIL)
 
-CLIM = AFFE_CHAR_MECA( MODELE = MODELE,
-                       DDL_IMPO = (_F( GROUP_NO = 'COTEG', DX = 0.0),
-                                   _F( GROUP_NO = 'N1', DY = 0.0, DZ = 0.0),
-                                   _F( GROUP_NO = 'N5', DY = 0.0),),)
+CLIM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO="COTEG", DX=0.0),
+        _F(GROUP_NO="N1", DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N5", DY=0.0),
+    ),
+)
 
-F_DEPL = DEFI_FONCTION( NOM_PARA = 'INST',
-                        VALE = ( 0.0, 0.0,
-                                 1.0, 1.4e-4,
-                                 2.0, 0.0,
-                                 3.0, 1.0e-3,
-                                 4.0, -4.0e-3,
-                                 5.0, 0.0,
-                                 6.0, -5.0e-3,
-                                 7.0, 0.0),
-                        PROL_DROITE = 'EXCLU',
-                        PROL_GAUCHE = 'EXCLU')
+F_DEPL = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        0.0,
+        0.0,
+        1.0,
+        1.4e-4,
+        2.0,
+        0.0,
+        3.0,
+        1.0e-3,
+        4.0,
+        -4.0e-3,
+        5.0,
+        0.0,
+        6.0,
+        -5.0e-3,
+        7.0,
+        0.0,
+    ),
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+)
 
-CHAR = AFFE_CHAR_MECA_F( MODELE = MODELE,
-                         DDL_IMPO = _F( GROUP_NO = 'COTED', DX = F_DEPL),)
+CHAR = AFFE_CHAR_MECA_F(MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="COTED", DX=F_DEPL))
 
-L_INST = DEFI_LIST_REEL( DEBUT = 0.0,
-                         INTERVALLE = (_F( JUSQU_A = 1.0, NOMBRE = 50),
-                                       _F( JUSQU_A = 2.0, NOMBRE = 50),
-                                       _F( JUSQU_A = 3.0, NOMBRE = 50),
-                                       _F( JUSQU_A = 4.0, NOMBRE = 32),
-                                       _F( JUSQU_A = 5.0, NOMBRE = 50),
-                                       _F( JUSQU_A = 6.0, NOMBRE = 50),
-                                       _F( JUSQU_A = 7.0, NOMBRE = 50),),)
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0, NOMBRE=50),
+        _F(JUSQU_A=2.0, NOMBRE=50),
+        _F(JUSQU_A=3.0, NOMBRE=50),
+        _F(JUSQU_A=4.0, NOMBRE=32),
+        _F(JUSQU_A=5.0, NOMBRE=50),
+        _F(JUSQU_A=6.0, NOMBRE=50),
+        _F(JUSQU_A=7.0, NOMBRE=50),
+    ),
+)
 
-L_DECOUP = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = L_INST),
-                                           ECHEC = _F( EVENEMENT = 'ERREUR',
-                                                       ACTION = 'DECOUPE',
-                                                       SUBD_METHODE = 'MANUEL',
-                                                       SUBD_PAS = 4,
-                                                       SUBD_NIVEAU = 4),)
+L_DECOUP = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(
+        EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=4, SUBD_NIVEAU=4
+    ),
+)
 
-RESU = STAT_NON_LINE( MODELE = MODELE,
-                      CHAM_MATER = CH_MAT,
-                      EXCIT = (_F( CHARGE = CLIM),
-                               _F( CHARGE = CHAR),),
-                      CONVERGENCE = _F(RESI_GLOB_RELA = 1e-6,
-                                       ITER_GLOB_MAXI = 20, ITER_GLOB_ELAS=100,),
-                      INCREMENT = _F( LIST_INST = L_DECOUP),
-                      COMPORTEMENT =_F( RELATION = 'BETON_RAG'),
-                      NEWTON = _F(MATRICE = 'TANGENTE',
-                                  REAC_ITER = 1,
-                                  PAS_MINI_ELAS = 0.010,
-                                  REAC_ITER_ELAS = 1, ),
-                      TITRE = 'BENCH-B LOI BETON_RAG',
+RESU = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CH_MAT,
+    EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CHAR)),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1e-6, ITER_GLOB_MAXI=20, ITER_GLOB_ELAS=100),
+    INCREMENT=_F(LIST_INST=L_DECOUP),
+    COMPORTEMENT=_F(RELATION="BETON_RAG"),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1, PAS_MINI_ELAS=0.010, REAC_ITER_ELAS=1),
+    TITRE="BENCH-B LOI BETON_RAG",
 )
 
 """
@@ -181,50 +189,66 @@ DEFI_FICHIER( ACTION = 'LIBERER', UNITE = 33)
 """
 
 ## TESTS
-RESU = CALC_CHAMP( reuse = RESU, RESULTAT = RESU, CONTRAINTE = 'SIGM_ELNO')
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_ELNO")
 
 ## VALEURS DE NON-REGRESSION
-TEST_RESU( RESU = (_F( INST = 6.0,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_ELNO',
-                       GROUP_NO = 'N6',
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = -18.0882255938*coef,
-                       GROUP_MA = 'M1'),),)
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=6.0,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N6",
+            NOM_CMP="SIXX",
+            VALE_CALC=-18.0882255938 * coef,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 ## VALEURS EXPERIMENTALES
-TEST_RESU( RESU = (_F( INST = 1.0,
-                       REFERENCE = 'SOURCE_EXTERNE',
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_ELNO',
-                       GROUP_NO = 'N6',
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = 2.939677*coef,
-                       VALE_REFE = 3.0*coef,
-                       PRECISION = 0.07,
-                       GROUP_MA = 'M1'),
-                   _F( INST = 3.0,
-                       REFERENCE = 'SOURCE_EXTERNE',
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_ELNO',
-                       GROUP_NO = 'N6',
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = 0.001452797752*coef,
-                       VALE_REFE = 0.0*coef,
-                       CRITERE = 'ABSOLU',
-                       PRECISION = 0.02*coef,
-                       GROUP_MA = 'M1'),
-                   _F( INST = 7.0,
-                       REFERENCE = 'SOURCE_EXTERNE',
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_ELNO',
-                       GROUP_NO = 'N6',
-                       ORDRE_GRANDEUR= 0.01*coef,
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = 0.0*coef,
-                       VALE_REFE = 0.0*coef,
-                       CRITERE = 'ABSOLU',
-                       PRECISION=1.0E-05,
-                       GROUP_MA = 'M1'),),)
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N6",
+            NOM_CMP="SIXX",
+            VALE_CALC=2.939677 * coef,
+            VALE_REFE=3.0 * coef,
+            PRECISION=0.07,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=3.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N6",
+            NOM_CMP="SIXX",
+            VALE_CALC=0.001452797752 * coef,
+            VALE_REFE=0.0 * coef,
+            CRITERE="ABSOLU",
+            PRECISION=0.02 * coef,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=7.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N6",
+            ORDRE_GRANDEUR=0.01 * coef,
+            NOM_CMP="SIXX",
+            VALE_CALC=0.0 * coef,
+            VALE_REFE=0.0 * coef,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-05,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 FIN()

@@ -154,27 +154,23 @@ void DEFSS( SDMPIC, sdmpic, const char *, STRING_SIZE, const char *, STRING_SIZE
 
 #define CALLO_VECHME_WRAP( a, b, c, d, e, f, g, h, i, l, m, n )                                    \
     CALLOOOOPPPOOOOO( VECHME_WRAP, vechme_wrap, a, b, c, d, e, f, g, h, i, l, m, n )
-void DEFSSSSPPPSSSSS( VECHME_WRAP, vechme_wrap,
-                      const char *, STRING_SIZE, const char *, STRING_SIZE,
-                      const char *, STRING_SIZE, const char *, STRING_SIZE,
-                      const ASTERDOUBLE *, const ASTERDOUBLE *, const ASTERDOUBLE *,
-                      const char *, STRING_SIZE, const char *, STRING_SIZE,
-                      const char *, STRING_SIZE, const char *, STRING_SIZE,
-                      const char *, STRING_SIZE );
+void DEFSSSSPPPSSSSS( VECHME_WRAP, vechme_wrap, const char *, STRING_SIZE, const char *,
+                      STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                      const ASTERDOUBLE *, const ASTERDOUBLE *, const ASTERDOUBLE *, const char *,
+                      STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                      const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_RSINCH( a, b, c, d, e, f, g, h, i, l )                                               \
-  CALLOOOPOOOPOP( RSINCH, rsinch, a, b, c, d, e, f, g, h, i, l)
-void DEFSSSPSSSPSP( RSINCH, rsinch,  const char *, STRING_SIZE,
-                    const char *, STRING_SIZE, const char *, STRING_SIZE,
-                    const ASTERDOUBLE *,
-                    const char *, STRING_SIZE, const char *, STRING_SIZE,
-                    const char *, STRING_SIZE, const ASTERINTEGER *,
+    CALLOOOPOOOPOP( RSINCH, rsinch, a, b, c, d, e, f, g, h, i, l )
+void DEFSSSPSSSPSP( RSINCH, rsinch, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, const ASTERDOUBLE *, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, const char *, STRING_SIZE, const ASTERINTEGER *,
                     const char *, STRING_SIZE, const ASTERINTEGER * );
 
 #define CALLO_VEDIME( a, b, c, d, e, f ) CALLOOOPOO( VEDIME, vedime, a, b, c, d, e, f )
-void DEFSSSPSS( VEDIME, vedime, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                const char *, STRING_SIZE, const ASTERDOUBLE *, const char *, STRING_SIZE,
-                const char *, STRING_SIZE );
+void DEFSSSPSS( VEDIME, vedime, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+                STRING_SIZE, const ASTERDOUBLE *, const char *, STRING_SIZE, const char *,
+                STRING_SIZE );
 
 #define CALLO_VEBTLA( a, b, c, d, e, f, g ) CALLOOOOOOO( VEBTLA, vebtla, a, b, c, d, e, f, g )
 void DEFSSSSSSS( VEBTLA, vebtla, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,27 +44,34 @@ def macr_rota_globale_ops(self, **args):
     GROUP_NO_EXTR = args["GROUP_NO_EXTR"]
     # On importe les definitions des commandes a utiliser dans la macro
     # Commandes de la macro
-    __ROTAB = POST_RELEVE_T(ACTION=_F(INTITULE='__ROTAB',
-                                      GROUP_NO=GROUP_NO_ORIG,
-                                      RESULTAT=RESULTAT,
-                                      NOM_CHAM='DEPL',
-                                      NOM_CMP=('DRX', 'DRY', 'DRZ',),
-                                      OPERATION='EXTRACTION',),
-                            )
-    __ROTAC = POST_RELEVE_T(ACTION=_F(INTITULE='__ROTAC',
-                                      GROUP_NO=GROUP_NO_EXTR,
-                                      RESULTAT=RESULTAT,
-                                      NOM_CHAM='DEPL',
-                                      NOM_CMP=('DRX', 'DRY', 'DRZ',),
-                                      OPERATION='EXTRACTION',),)
+    __ROTAB = POST_RELEVE_T(
+        ACTION=_F(
+            INTITULE="__ROTAB",
+            GROUP_NO=GROUP_NO_ORIG,
+            RESULTAT=RESULTAT,
+            NOM_CHAM="DEPL",
+            NOM_CMP=("DRX", "DRY", "DRZ"),
+            OPERATION="EXTRACTION",
+        )
+    )
+    __ROTAC = POST_RELEVE_T(
+        ACTION=_F(
+            INTITULE="__ROTAC",
+            GROUP_NO=GROUP_NO_EXTR,
+            RESULTAT=RESULTAT,
+            NOM_CHAM="DEPL",
+            NOM_CMP=("DRX", "DRY", "DRZ"),
+            OPERATION="EXTRACTION",
+        )
+    )
     ROTABt = __ROTAB.EXTR_TABLE()
     ROTACt = __ROTAC.EXTR_TABLE()
-    DRXC = ROTACt.Array('INST', 'DRX')
-    DRYC = ROTACt.Array('INST', 'DRY')
-    DRZC = ROTACt.Array('INST', 'DRZ')
-    DRXB = ROTABt.Array('INST', 'DRX')
-    DRYB = ROTABt.Array('INST', 'DRY')
-    DRZB = ROTABt.Array('INST', 'DRZ')
+    DRXC = ROTACt.Array("INST", "DRX")
+    DRYC = ROTACt.Array("INST", "DRY")
+    DRZC = ROTACt.Array("INST", "DRZ")
+    DRXB = ROTABt.Array("INST", "DRX")
+    DRYB = ROTABt.Array("INST", "DRY")
+    DRZB = ROTABt.Array("INST", "DRZ")
     DRXBC = DRXC - DRXB
     DRYBC = DRYC - DRYB
     DRZBC = DRZC - DRZB
@@ -83,21 +90,21 @@ def macr_rota_globale_ops(self, **args):
     print(livali)
     __LROTG = DEFI_LIST_REEL(VALE=livalr)
     __LINST = DEFI_LIST_REEL(VALE=livali)
-    ROTGD = DEFI_FONCTION(NOM_PARA='INST',
-                          VALE_PARA=__LINST,
-                          VALE_FONC=__LROTG,)
+    ROTGD = DEFI_FONCTION(NOM_PARA="INST", VALE_PARA=__LINST, VALE_FONC=__LROTG)
     return ROTGD
 
 
-MACR_ROTA_GLOBALE_CATA = MACRO(nom="MACR_ROTA_GLOBALE", op=macr_rota_globale_ops,
-                               sd_prod=fonction_sdaster,
-                               docu="", reentrant='n',
-                               fr="calcul de la rotation globale dans un coude.",
-                               RESULTAT=SIMP(
-                               statut='o', typ=(evol_elas, evol_noli, evol_ther)),
-                               GROUP_NO_ORIG = SIMP(statut='o', typ=grno, max=1),
-                               GROUP_NO_EXTR = SIMP(statut='o', typ=grno, max=1),
-                               )
+MACR_ROTA_GLOBALE_CATA = MACRO(
+    nom="MACR_ROTA_GLOBALE",
+    op=macr_rota_globale_ops,
+    sd_prod=fonction_sdaster,
+    docu="",
+    reentrant="n",
+    fr="calcul de la rotation globale dans un coude.",
+    RESULTAT=SIMP(statut="o", typ=(evol_elas, evol_noli, evol_ther)),
+    GROUP_NO_ORIG=SIMP(statut="o", typ=grno, max=1),
+    GROUP_NO_EXTR=SIMP(statut="o", typ=grno, max=1),
+)
 
 
 MACR_ROTA_GLOBALE = UserMacro("MACR_ROTA_GLOBALE", MACR_ROTA_GLOBALE_CATA, macr_rota_globale_ops)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,59 +16,55 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'))
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 # VolumicForce: equivalent to pressure
-voluForc = AFFE_CHAR_MECA(MODELE        = MODEL,
-                          FORCE_INTERNE = _F(GROUP_MA = 'volume',
-                                             FZ       = -presAppl,),)
+voluForc = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_INTERNE=_F(GROUP_MA="volume", FZ=-presAppl))
 
 # Static linear
-resuLinearVoluForce = MECA_STATIQUE(MODELE     = MODEL,
-                                    CHAM_MATER = MATERIAL,
-                                    EXCIT      = (_F(CHARGE=kineCondition,),
-                                                  _F(CHARGE=voluForc,),
-                                                 ),
-                                    )
+resuLinearVoluForce = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=MATERIAL, EXCIT=(_F(CHARGE=kineCondition), _F(CHARGE=voluForc))
+)
 
 # Test
-deplDZTole = 0.01 * 8.3E-2
-TEST_RESU(RESU=_F(RESULTAT       = resuLinearVoluForce,
-                  INST           = 0,
-                  GROUP_NO       = 'c1',
-                  REFERENCE      = 'ANALYTIQUE',
-                  NOM_CHAM       = 'DEPL',
-                  NOM_CMP        = ('DZ',),
-                  VALE_REFE      = deplDZRefe,
-                  VALE_CALC      = -1.0008268440234867,
-                  PRECISION      = deplDZTole,
-          ),)
+deplDZTole = 0.01 * 8.3e-2
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=resuLinearVoluForce,
+        INST=0,
+        GROUP_NO="c1",
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="DEPL",
+        NOM_CMP=("DZ",),
+        VALE_REFE=deplDZRefe,
+        VALE_CALC=-1.0008268440234867,
+        PRECISION=deplDZTole,
+    )
+)
 
 # VolumicForce (function): equivalent to pressure
-presApplFunc = DEFI_CONSTANTE(VALE = -presAppl)
-voluForcFunc = AFFE_CHAR_MECA_F(MODELE        = MODEL,
-                          FORCE_INTERNE = _F(GROUP_MA = 'volume',
-                                             FZ       = presApplFunc,),)
+presApplFunc = DEFI_CONSTANTE(VALE=-presAppl)
+voluForcFunc = AFFE_CHAR_MECA_F(MODELE=MODEL, FORCE_INTERNE=_F(GROUP_MA="volume", FZ=presApplFunc))
 
 # Static linear
-resuLinearVoluForceFunc = MECA_STATIQUE(MODELE     = MODEL,
-                                        CHAM_MATER = MATERIAL,
-                                        EXCIT      = (_F(CHARGE=kineCondition,),
-                                                      _F(CHARGE=voluForcFunc,),
-                                                     ),
-                                        )
+resuLinearVoluForceFunc = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=MATERIAL, EXCIT=(_F(CHARGE=kineCondition), _F(CHARGE=voluForcFunc))
+)
 
 # Test
-deplDZTole = 0.01 * 8.3E-2
-TEST_RESU(RESU=_F(RESULTAT       = resuLinearVoluForceFunc,
-                  INST           = 0,
-                  GROUP_NO       = 'c1',
-                  REFERENCE      = 'ANALYTIQUE',
-                  NOM_CHAM       = 'DEPL',
-                  NOM_CMP        = ('DZ',),
-                  VALE_REFE      = deplDZRefe,
-                  VALE_CALC      = -1.0008268440234853,
-                  PRECISION      = deplDZTole,
-          ),)
+deplDZTole = 0.01 * 8.3e-2
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=resuLinearVoluForceFunc,
+        INST=0,
+        GROUP_NO="c1",
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="DEPL",
+        NOM_CMP=("DZ",),
+        VALE_REFE=deplDZRefe,
+        VALE_CALC=-1.0008268440234853,
+        PRECISION=deplDZTole,
+    )
+)
 
 FIN()

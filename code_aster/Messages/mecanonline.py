@@ -20,79 +20,91 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  Échec dans le calcul des matrices élastiques pour l'amortissement.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
  Lors de la recopie du champ %(k1)s donné dans ETAT_INIT de la commande
  STAT_NON_LINE vers le champ %(k2)s, certaines composantes de %(k2)s
  ont du être mises à zéro.
 
  Ce problème survient lorsque le champ donné dans ETAT_INIT ne comporte
  pas assez de composantes, on complète donc par des zéros.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Erreur utilisateur :
   Vous essayez de faire un calcul non-linéaire mécanique ou un post-traitement sur un modèle dont les éléments
   ne sont pas programmés pour cela.
   On arrête le calcul.
 Risques & conseils :
   Vous devriez changer de modélisation.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Erreur utilisateur :
   Vous essayez de faire un calcul non-linéaire mécanique en utilisant un concept résultat sans préciser l'état
   initial (mot clé ETAT_INIT).
   On arrête le calcul.
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
 Erreur utilisateur :
   L'utilisation de simple Lagrange est interdite dans STAT_NON_LINE.
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
 L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
-"""),
-
-
-    23 : _("""
+"""
+    ),
+    23: _(
+        """
  Le calcul de l'accélération initiale a ignoré les chargements de type:
  - ONDE_PLANE
  - LAPLACE
  - GRAPPE_FLUIDE
-"""),
-
-    24 : _("""
+"""
+    ),
+    24: _(
+        """
  L'état initial n'a pas d'accélération donnée.
  On la calcule.
- """),
-
-    43 : _("""
+ """
+    ),
+    43: _(
+        """
  Contact et pilotage sont des fonctionnalités incompatibles
-"""),
-
-    59 : _("""
+"""
+    ),
+    59: _(
+        """
  Cette loi de comportement n'est pas disponible pour le pilotage de type PRED_ELAS
-"""),
-
-    60 : _("""
+"""
+    ),
+    60: _(
+        """
  Le pilotage de type PRED_ELAS nécessite ETA_PILO_R_MIN et ETA_PILO_R_MAX pour la loi %(k1)s
-"""),
-
-    61 : _("""
+"""
+    ),
+    61: _(
+        """
  Le pilotage de type DEFORMATION n'est pas disponible pour la modélisation %(k1)s
-"""),
-
-    62 : _("""
+"""
+    ),
+    62: _(
+        """
  Pilotage: SELECTION='MIXTE' incompatible avec ACTION='AUTRE_PILOTAGE' dans DEFI_LIST_INST
-"""),
-
-    69 : _("""
+"""
+    ),
+    69: _(
+        """
  Problème rencontré :
    la matrice de masse est non inversible.
    On ne peut donc pas s'en servir pour calculer l'accélération initiale.
@@ -103,9 +115,10 @@ L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
 
  Certains éléments ne peuvent évaluer de matrice masse.
  Dans ce cas, vous pouvez donner un champ d'accélération explicitement nul dans ETAT_INIT pour supprimer l'alarme.
-"""),
-
-    70 : _("""
+"""
+    ),
+    70: _(
+        """
  Problème rencontré :
    Le calcul de l'accélération initiale a échoué lors de la phase de résolution.
    => on initialise l'accélération à zéro.
@@ -115,12 +128,10 @@ L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
 
  Certains éléments ne peuvent évaluer de matrice masse.
  Dans ce cas, vous pouvez donner un champ d'accélération explicitement nul dans ETAT_INIT pour supprimer l'alarme.
-"""),
-
-
-
-
-    78 : _("""
+"""
+    ),
+    78: _(
+        """
  Problème rencontré :
    la matrice de masse est quasi singulière.
    On se sert de cette matrice pour calculer l'accélération initiale.
@@ -134,10 +145,6 @@ L'option MATR_DISTRIBUEE='OUI' est interdite avec le contact continu.
    avec, éventuellement, un schéma d'intégration choisi volontairement très
    dissipatif (par exemple HHT avec alpha=-0.3).
    On peut ensuite reprendre en poursuite avec un schéma moins dissipatif si besoin est.
-"""),
-
-
-
-
-
+"""
+    ),
 }

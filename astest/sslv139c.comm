@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,124 +23,103 @@
 # MODELISATION : AXIS_FOURIER
 # MAILLAGE     : 8280 TRIA6, 17964 NOEUDS
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_MA=_F(NOM='TOUT',
-                                 TOUT='OUI',),)
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA='TOUT',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='AXIS_FOURIER',),)
+MODMECA = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA="TOUT", PHENOMENE="MECANIQUE", MODELISATION="AXIS_FOURIER")
+)
 
-MAIL = MODI_MAILLAGE(MAILLAGE=MAIL, reuse=MAIL,
-                     ORIE_PEAU=_F(GROUP_MA_PEAU=('BC',),),)
+MAIL = MODI_MAILLAGE(MAILLAGE=MAIL, reuse=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("BC",)))
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
-                           NU=0.3,),)
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    MODELE=MODMECA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT1,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, MODELE=MODMECA, AFFE=_F(TOUT="OUI", MATER=MAT1))
 
-PCRIT=1./(2.*pi)
+PCRIT = 1.0 / (2.0 * pi)
 
-CLS=AFFE_CHAR_MECA(MODELE=MODMECA,
-                   DDL_IMPO=(_F(GROUP_MA='DA',
-                                DX=0.0,DZ=0.),
-                             _F(GROUP_MA='BC',
-                                DY=0.,DZ=0.),),)
+CLS = AFFE_CHAR_MECA(
+    MODELE=MODMECA, DDL_IMPO=(_F(GROUP_MA="DA", DX=0.0, DZ=0.0), _F(GROUP_MA="BC", DY=0.0, DZ=0.0))
+)
 
-CHAR=AFFE_CHAR_MECA(MODELE=MODMECA,
-                    FORCE_CONTOUR=_F(GROUP_MA='BC',
-                                     FX=PCRIT,),)
+CHAR = AFFE_CHAR_MECA(MODELE=MODMECA, FORCE_CONTOUR=_F(GROUP_MA="BC", FX=PCRIT))
 
-ELAS=MACRO_ELAS_MULT(MODELE=MODMECA,
-                     CHAM_MATER=CHMAT,
-                     SOLVEUR=_F(METHODE="MULT_FRONT"),
-                     CHAR_MECA_GLOBAL=CLS,
-                     CAS_CHARGE=_F(MODE_FOURIER=0,
-                                   TYPE_MODE='SYME',
-                                   CHAR_MECA=CHAR,
-                                   OPTION='SIEF_ELGA',),)
+ELAS = MACRO_ELAS_MULT(
+    MODELE=MODMECA,
+    CHAM_MATER=CHMAT,
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CHAR_MECA_GLOBAL=CLS,
+    CAS_CHARGE=_F(MODE_FOURIER=0, TYPE_MODE="SYME", CHAR_MECA=CHAR, OPTION="SIEF_ELGA"),
+)
 
-SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-               OPERATION='EXTR',
-               RESULTAT=ELAS,
-               NOM_CHAM='SIEF_ELGA',
-               TYPE_MAXI='MINI',
-               TYPE_RESU='VALE',)
+SIG = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=ELAS,
+    NOM_CHAM="SIEF_ELGA",
+    TYPE_MAXI="MINI",
+    TYPE_RESU="VALE",
+)
 
-MAT_RI_M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=MODMECA,
-                        CHAM_MATER=CHMAT,
-                        MODE_FOURIER=0,
-                        CHARGE=(CLS,CHAR,),)
+MAT_RI_M = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", MODELE=MODMECA, CHAM_MATER=CHMAT, MODE_FOURIER=0, CHARGE=(CLS, CHAR)
+)
 
-MAT_RI_G=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
-                        MODELE=MODMECA,
-                        SIEF_ELGA=SIG,
-                        MODE_FOURIER=0,)
+MAT_RI_G = CALC_MATR_ELEM(OPTION="RIGI_GEOM", MODELE=MODMECA, SIEF_ELGA=SIG, MODE_FOURIER=0)
 
 
-NUM=NUME_DDL(MATR_RIGI=MAT_RI_M,)
+NUM = NUME_DDL(MATR_RIGI=MAT_RI_M)
 
-MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MAT_RI_M,
-                      NUME_DDL=NUM,)
+MAS_RI_M = ASSE_MATRICE(MATR_ELEM=MAT_RI_M, NUME_DDL=NUM)
 
-MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
-                      NUME_DDL=NUM,)
+MAS_RI_G = ASSE_MATRICE(MATR_ELEM=MAT_RI_G, NUME_DDL=NUM)
 
-RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
-                  VERI_MODE=_F(SEUIL=1e-04,
-                               ),
-                  TYPE_RESU='MODE_FLAMB',
-                  MATR_RIGI_GEOM=MAS_RI_G,
-                  CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=10,
-                                    ),
-                  SOLVEUR_MODAL=_F(NMAX_ITER_SOREN=20,
-                                   METHODE='SORENSEN',
-                                   ),
-                  OPTION='PLUS_PETITE',
-                  )
+RESULT = CALC_MODES(
+    MATR_RIGI=MAS_RI_M,
+    VERI_MODE=_F(SEUIL=1e-04),
+    TYPE_RESU="MODE_FLAMB",
+    MATR_RIGI_GEOM=MAS_RI_G,
+    CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=10),
+    SOLVEUR_MODAL=_F(NMAX_ITER_SOREN=20, METHODE="SORENSEN"),
+    OPTION="PLUS_PETITE",
+)
 
 
+RES_NORM = NORM_MODE(MODE=RESULT, NORME="TRAN")
 
-RES_NORM=NORM_MODE(MODE=RESULT,
-                   NORME='TRAN',)
+CHA_DEPL = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESULT, NOM_CHAM="DEPL", NUME_MODE=1
+)
 
-CHA_DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    OPERATION='EXTR',
-                    RESULTAT=RESULT,
-                    NOM_CHAM='DEPL',
-                    NUME_MODE=1,)
+MODE_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RES_NORM, NOM_CHAM="DEPL", NUME_ORDRE=10
+)
 
-MODE_1 =CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                   OPERATION='EXTR',
-                   RESULTAT=RES_NORM,
-                   NOM_CHAM='DEPL',
-                   NUME_ORDRE=10,)
+TEST_RESU(
+    RESU=_F(
+        PARA="CHAR_CRIT",
+        NUME_MODE=10,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RES_NORM,
+        VALE_CALC=-8.69426931044e05,
+        VALE_REFE=-8.493509396e5,
+        TOLE_MACHINE=1.0e-5,  # TODO TOLE_MACHINE
+        PRECISION=0.025,
+    )
+)
 
-TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
-                  NUME_MODE=10,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RES_NORM,
-                  VALE_CALC=-8.69426931044E+05,
-                  VALE_REFE=-8.493509396E5,
-                  TOLE_MACHINE=1.E-5,           # TODO TOLE_MACHINE
-                  PRECISION=0.025,),)
-
-TEST_RESU(CHAM_NO=_F(GROUP_NO='N4',
-                     REFERENCE='ANALYTIQUE',
-                     NOM_CMP='DY',
-                     CHAM_GD=MODE_1,
-                     VALE_CALC=0.999986163,
-                     VALE_REFE=1.0,),
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        GROUP_NO="N4",
+        REFERENCE="ANALYTIQUE",
+        NOM_CMP="DY",
+        CHAM_GD=MODE_1,
+        VALE_CALC=0.999986163,
+        VALE_REFE=1.0,
+    )
+)
 
 FIN()

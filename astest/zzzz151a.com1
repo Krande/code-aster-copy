@@ -24,40 +24,45 @@ import tempfile
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
-POURSUITE(CODE='OUI',
-          DEBUG=_F(SDVERI='OUI'),)
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
-fic = tempfile.NamedTemporaryFile(dir='.')
-prog_salome=ExecutionParameter().get_option('prog:salome')
+fic = tempfile.NamedTemporaryFile(dir=".")
+prog_salome = ExecutionParameter().get_option("prog:salome")
 
 # Lancement d'une instance salome en récupérant le port
 #
-os.system('%s start -t --ns-port-log=%s'% (prog_salome,fic.name))
+os.system("%s start -t --ns-port-log=%s" % (prog_salome, fic.name))
 
-fic=open(fic.name,'r')
-port=fic.read()
+fic = open(fic.name, "r")
+port = fic.read()
 fic.close()
 
 # Appel à salome pour construire le maillage
 #
-msalom2 = EXEC_LOGICIEL(
-                        SALOME=_F(
-                        CHEMIN_SCRIPT   = './fort.17',  PORT=int(port),
-                        ),)
+msalom2 = EXEC_LOGICIEL(SALOME=_F(CHEMIN_SCRIPT="./fort.17", PORT=int(port)))
 # Arrêt de l'instance salome
 #
-os.system('%s shell -p %s killSalomeWithPort.py args:%s'%(prog_salome,port,port))
+os.system("%s shell -p %s killSalomeWithPort.py args:%s" % (prog_salome, port, port))
 
 # --------------------------------------------------------------------------------------------------
 # Test des concepts
-unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='./plaque.med',ACCES='NEW')
+unite = DEFI_FICHIER(ACTION="ASSOCIER", FICHIER="./plaque.med", ACCES="NEW")
 
-MA=LIRE_MAILLAGE(FORMAT='MED',UNITE = unite,)
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=unite)
 
-TEST_RESU(MAILLAGE=(
-       _F( REFERENCE='ANALYTIQUE', MAILLAGE=MA,
-           CARA='NB_MAILLE', VALE_REFE_I=1508, VALE_CALC_I=1508,),
-       _F( REFERENCE='ANALYTIQUE', MAILLAGE=MA,
-           CARA='NB_NOEUD', VALE_REFE_I=2917, VALE_CALC_I=2917,),))
+TEST_RESU(
+    MAILLAGE=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            MAILLAGE=MA,
+            CARA="NB_MAILLE",
+            VALE_REFE_I=1508,
+            VALE_CALC_I=1508,
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE", MAILLAGE=MA, CARA="NB_NOEUD", VALE_REFE_I=2917, VALE_CALC_I=2917
+        ),
+    )
+)
 
 FIN()

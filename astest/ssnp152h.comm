@@ -19,29 +19,31 @@
 
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),IGNORE_ALARM=('CONTACT3_16'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("CONTACT3_16"))
 # IGNORE_ALARM=('CONTACT3_16') : utilisation d'un schema de Gauss pour le contact
 
 from math import *
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-#| noms des groupes de noeuds et mailles
+# | noms des groupes de noeuds et mailles
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='S1R2',
-                                NOM='CONT_N_1',),
-                             _F(GROUP_MA='S2R2',
-                                NOM='CONT_N_2',),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(_F(GROUP_MA="S1R2", NOM="CONT_N_1"), _F(GROUP_MA="S2R2", NOM="CONT_N_2")),
+)
 
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU=(_F(GROUP_MA_PEAU='S1R1',),
-                               _F(GROUP_MA_PEAU='S1R2',),
-                               _F(GROUP_MA_PEAU='S2R2',),
-                               _F(GROUP_MA_PEAU='S2R3',),),)
+MA = MODI_MAILLAGE(
+    reuse=MA,
+    MAILLAGE=MA,
+    ORIE_PEAU=(
+        _F(GROUP_MA_PEAU="S1R1"),
+        _F(GROUP_MA_PEAU="S1R2"),
+        _F(GROUP_MA_PEAU="S2R2"),
+        _F(GROUP_MA_PEAU="S2R3"),
+    ),
+)
 E1 = 1000000000.0
 
 E2 = 1000000000.0
@@ -52,23 +54,18 @@ nu2 = 0.2
 
 
 # False plastic material for large strains in elasticity (ticket #26286)
-MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E15),)
-MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E15),)
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=E1, NU=nu1), ECRO_LINE=_F(D_SIGM_EPSI=1.0, SY=1e15))
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=E2, NU=nu2), ECRO_LINE=_F(D_SIGM_EPSI=1.0, SY=1e15))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='C1',
-                             MATER=MAT1,),
-                          _F(GROUP_MA='C2',
-                             MATER=MAT2,),),)
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="C1", MATER=MAT1), _F(GROUP_MA="C2", MATER=MAT2))
+)
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_SI',),)
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN_SI"))
 
-#+----------------------------------------+
-#|       conditions aux limites           |
-#+----------------------------------------+
+# +----------------------------------------+
+# |       conditions aux limites           |
+# +----------------------------------------+
 # pression externe
 p = 1000000.0
 
@@ -80,242 +77,260 @@ R3 = 0.2
 
 
 # calcul analytique de la pression de contact
-pres_cont = ((((2 * p) * R1) * R1) / ((((R2 * R2) * (1 - nu1)) + ((R1 * R1) * (1 + nu1))) + (((E1 / E2) * (((R1 * R1) - (R2 * R2)) / ((R2 * R2) - (R3 * R3)))) * (((R2 * R2) * (1 - nu2)) + ((R3 * R3) * (1 + nu2))))))
+pres_cont = (((2 * p) * R1) * R1) / (
+    (((R2 * R2) * (1 - nu1)) + ((R1 * R1) * (1 + nu1)))
+    + (
+        ((E1 / E2) * (((R1 * R1) - (R2 * R2)) / ((R2 * R2) - (R3 * R3))))
+        * (((R2 * R2) * (1 - nu2)) + ((R3 * R3) * (1 + nu2)))
+    )
+)
 
 
 # couronne externe
-a1 = ((((pres_cont * R2) * R2) - ((p * R1) * R1)) / ((R1 * R1) - (R2 * R2)))
+a1 = (((pres_cont * R2) * R2) - ((p * R1) * R1)) / ((R1 * R1) - (R2 * R2))
 
-b1 = (((pres_cont - p) * (((R1 * R1) * R2) * R2)) / ((R1 * R1) - (R2 * R2)))
+b1 = ((pres_cont - p) * (((R1 * R1) * R2) * R2)) / ((R1 * R1) - (R2 * R2))
 
-eps_r_1 = ((1 / E1) * (((a1 * (1 - nu1)) * R1) + ((b1 * (1 + nu1)) / R1)))
+eps_r_1 = (1 / E1) * (((a1 * (1 - nu1)) * R1) + ((b1 * (1 + nu1)) / R1))
 
 
-ux1 = FORMULE(VALE='eps_r_1*cos(atan2(Y,X))',
-              eps_r_1=eps_r_1,
-              NOM_PARA=['X', 'Y'],)
+ux1 = FORMULE(VALE="eps_r_1*cos(atan2(Y,X))", eps_r_1=eps_r_1, NOM_PARA=["X", "Y"])
 
-uy1 = FORMULE(VALE='eps_r_1*sin(atan2(Y,X))',
-              eps_r_1=eps_r_1,
-              NOM_PARA=['X', 'Y'],)
+uy1 = FORMULE(VALE="eps_r_1*sin(atan2(Y,X))", eps_r_1=eps_r_1, NOM_PARA=["X", "Y"])
 
-CH1=AFFE_CHAR_MECA_F(MODELE=MO,
-                     DDL_IMPO=_F(GROUP_MA='S1R1',
-                                 DX=ux1,
-                                 DY=uy1,),)
+CH1 = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=_F(GROUP_MA="S1R1", DX=ux1, DY=uy1))
 
 # couronne interne
-a2 = (((-(pres_cont) * R2) * R2) / ((R2 * R2) - (R3 * R3)))
+a2 = ((-(pres_cont) * R2) * R2) / ((R2 * R2) - (R3 * R3))
 
-b2 = ((-(pres_cont) * (((R2 * R2) * R3) * R3)) / ((R2 * R2) - (R3 * R3)))
+b2 = (-(pres_cont) * (((R2 * R2) * R3) * R3)) / ((R2 * R2) - (R3 * R3))
 
-eps_r_2 = ((1 / E2) * (((a2 * (1 - nu2)) * R3) + ((b2 * (1 + nu2)) / R3)))
+eps_r_2 = (1 / E2) * (((a2 * (1 - nu2)) * R3) + ((b2 * (1 + nu2)) / R3))
 
 
-ux2 = FORMULE(VALE='eps_r_2*cos(atan2(Y,X))',
-              eps_r_2=eps_r_2,
-              NOM_PARA=['X', 'Y'],)
+ux2 = FORMULE(VALE="eps_r_2*cos(atan2(Y,X))", eps_r_2=eps_r_2, NOM_PARA=["X", "Y"])
 
-uy2 = FORMULE(VALE='eps_r_2*sin(atan2(Y,X))',
-              eps_r_2=eps_r_2,
-              NOM_PARA=['X', 'Y'],)
+uy2 = FORMULE(VALE="eps_r_2*sin(atan2(Y,X))", eps_r_2=eps_r_2, NOM_PARA=["X", "Y"])
 
-CH2=AFFE_CHAR_MECA_F(MODELE=MO,
-                     DDL_IMPO=_F(GROUP_MA='S2R3',
-                                 DX=ux2,
-                                 DY=uy2,),)
+CH2 = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=_F(GROUP_MA="S2R3", DX=ux2, DY=uy2))
 
-#+----------------------------------------+
-#|               contact                  |
-#+----------------------------------------+
+# +----------------------------------------+
+# |               contact                  |
+# +----------------------------------------+
 
-CONT_N=DEFI_CONTACT(MODELE=MO,
-                    FORMULATION='CONTINUE',
-                    LISSAGE='OUI',
-                    ALGO_RESO_GEOM='NEWTON',
-                    ALGO_RESO_CONT='NEWTON',
-                    ZONE=_F(GROUP_MA_MAIT='S1R2',
-                            GROUP_MA_ESCL='S2R2',),)
+CONT_N = DEFI_CONTACT(
+    MODELE=MO,
+    FORMULATION="CONTINUE",
+    LISSAGE="OUI",
+    ALGO_RESO_GEOM="NEWTON",
+    ALGO_RESO_CONT="NEWTON",
+    ZONE=_F(GROUP_MA_MAIT="S1R2", GROUP_MA_ESCL="S2R2"),
+)
 
-CONT_G=DEFI_CONTACT(MODELE=MO,
-                    FORMULATION='CONTINUE',
-                    LISSAGE='OUI',
-                    ALGO_RESO_GEOM='NEWTON',
-                    ALGO_RESO_CONT='NEWTON',
-                    ZONE=_F(GROUP_MA_MAIT='S1R2',
-                            GROUP_MA_ESCL='S2R2',
-                            INTEGRATION='GAUSS',
-                            ),)
+CONT_G = DEFI_CONTACT(
+    MODELE=MO,
+    FORMULATION="CONTINUE",
+    LISSAGE="OUI",
+    ALGO_RESO_GEOM="NEWTON",
+    ALGO_RESO_CONT="NEWTON",
+    ZONE=_F(GROUP_MA_MAIT="S1R2", GROUP_MA_ESCL="S2R2", INTEGRATION="GAUSS"),
+)
 
-#+----------------------------------------+
-#|               calcul                   |
-#+----------------------------------------+
+# +----------------------------------------+
+# |               calcul                   |
+# +----------------------------------------+
 
-T=DEFI_LIST_REEL(DEBUT=0.1,
-                 INTERVALLE=_F(JUSQU_A=2.1,
-                               NOMBRE=20,),)
+T = DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F(JUSQU_A=2.1, NOMBRE=20))
 
-EXP = FORMULE(VALE='pow(10,INST-1.1)',
-              NOM_PARA='INST',)
+EXP = FORMULE(VALE="pow(10,INST-1.1)", NOM_PARA="INST")
 
-RP_EXP=CALC_FONC_INTERP(FONCTION=EXP,
-                        LIST_PARA=T,
-                        PROL_DROITE='EXCLU',
-                        PROL_GAUCHE='EXCLU',)
+RP_EXP = CALC_FONC_INTERP(FONCTION=EXP, LIST_PARA=T, PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU")
 
-INSTS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=2.1,
-                                   NOMBRE=21,),)
+INSTS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=2.1, NOMBRE=21))
 
-RESU1=STAT_NON_LINE(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CH1,
-                              FONC_MULT=RP_EXP,),
-                           _F(CHARGE=CH2,
-                              FONC_MULT=RP_EXP,),),
-                    CONTACT=CONT_N,
-                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
-                                 DEFORMATION='GDEF_LOG',),
-                    INCREMENT=_F(LIST_INST=INSTS,),
-                    NEWTON=_F(REAC_INCR=1,
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
-                    SOLVEUR=_F(METHODE='MUMPS',),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,)
+RESU1 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH1, FONC_MULT=RP_EXP), _F(CHARGE=CH2, FONC_MULT=RP_EXP)),
+    CONTACT=CONT_N,
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=INSTS),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
+    INFO=1,
+)
 
-RESU2=STAT_NON_LINE(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CH1,
-                              FONC_MULT=RP_EXP,),
-                           _F(CHARGE=CH2,
-                              FONC_MULT=RP_EXP,),),
-                    CONTACT=CONT_G,
-                    COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
-                                 DEFORMATION='GDEF_LOG',),
-                    INCREMENT=_F(LIST_INST=INSTS,),
-                    NEWTON=_F(REAC_INCR=1,
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
-                    SOLVEUR=_F(METHODE='MUMPS',),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,)
+RESU2 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH1, FONC_MULT=RP_EXP), _F(CHARGE=CH2, FONC_MULT=RP_EXP)),
+    CONTACT=CONT_G,
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),
+    INCREMENT=_F(LIST_INST=INSTS),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    ARCHIVAGE=_F(CHAM_EXCLU="VARI_ELGA"),
+    INFO=1,
+)
 
-#+----------------------------------------+
-#|          tests de validation           |
-#+----------------------------------------+
+# +----------------------------------------+
+# |          tests de validation           |
+# +----------------------------------------+
 # noeud
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=92592.5925926,
-                  PRECISION=0.0007,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=92533.10955649089,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU1,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=92592.5925926,
+        PRECISION=0.0007,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=92533.10955649089,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=232582.076992,
-                  PRECISION=0.0005,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=232474.93398896485,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU1,
+        NUME_ORDRE=5,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=232582.076992,
+        PRECISION=0.0005,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=232474.93398896485,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=10,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=735489.106226,
-                  PRECISION=0.0002,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=735630.8965233705,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU1,
+        NUME_ORDRE=10,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=735489.106226,
+        PRECISION=0.0002,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=735630.8965233705,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=15,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=2325820.76992,
-                  PRECISION=0.003,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=2331087.7874866864,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU1,
+        NUME_ORDRE=15,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=2325820.76992,
+        PRECISION=0.003,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=2331087.7874866864,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
-                  NUME_ORDRE=21,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=9259259.25926,
-                  PRECISION=0.015,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=9364761.541946419,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU1,
+        NUME_ORDRE=21,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=9259259.25926,
+        PRECISION=0.015,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=9364761.541946419,
+    )
+)
 
 # gauss
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=92592.5925926,
-                  PRECISION=0.002,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=92426.95631551328,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU2,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=92592.5925926,
+        PRECISION=0.002,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=92426.95631551328,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=5,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=232582.076992,
-                  PRECISION=0.0017,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=232208.25337467212,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU2,
+        NUME_ORDRE=5,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=232582.076992,
+        PRECISION=0.0017,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=232208.25337467212,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=10,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=735489.106226,
-                  PRECISION=0.001,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=734787.1724351611,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU2,
+        NUME_ORDRE=10,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=735489.106226,
+        PRECISION=0.001,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=734787.1724351611,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=15,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=2325820.76992,
-                  PRECISION=0.0015,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=2328415.6413385025,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU2,
+        NUME_ORDRE=15,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=2325820.76992,
+        PRECISION=0.0015,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=2328415.6413385025,
+    )
+)
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
-                  NUME_ORDRE=21,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='LAGS_C',
-                  GROUP_NO='N10',
-                  VALE_ABS='OUI',
-                  VALE_REFE=9259259.25926,
-                  PRECISION=0.015,
-                  REFERENCE='ANALYTIQUE',
-                  VALE_CALC=9354053.35832358,),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=RESU2,
+        NUME_ORDRE=21,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        GROUP_NO="N10",
+        VALE_ABS="OUI",
+        VALE_REFE=9259259.25926,
+        PRECISION=0.015,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=9354053.35832358,
+    )
+)
 
 FIN()

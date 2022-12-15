@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class XfemModelModication(ExecuteCommand):
     """ """
+
     command_name = "MODI_MODELE_XFEM"
 
     def create_result(self, keywords):

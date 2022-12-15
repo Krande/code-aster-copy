@@ -17,18 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 from math import sqrt
 
 # MODELISATION B : CHARGEMENT VOLUMIQUE, MAILLES QUAD4, ENRICHISSEMENT GEOMETRIQUE
 
-#*********************************************************
+# *********************************************************
 #                    GEOMETRIE
 #                    *********
 #     Parametres a modifier avec le maillage
-#*********************************************************
+# *********************************************************
 #
 # LARGEUR DE L EPROUVETTE SELON X
 W = 0.2
@@ -37,95 +36,119 @@ W = 0.2
 H = 0.5
 #
 # NOMBRE D ELEMENTS SELON X
-NX = 100.
+NX = 100.0
 #
 # NOMBRE D ELEMENTS SELON Y
-NY = 100.
+NY = 100.0
 #
 # precision
-eps = sqrt((W/NX)**2+(H/NY)**2)
+eps = sqrt((W / NX) ** 2 + (H / NY) ** 2)
 
-#*********************************************************
+# *********************************************************
 
 # LONGUEUR DE LA FISSURE
 A = 0.04
 
 # DEFINITION DU MATERIAU
-E   = 210E9
-nu  = 0.
-rho = 7800.
+E = 210e9
+nu = 0.0
+rho = 7800.0
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
+ACIER = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho))
 
-#*********************************************************
+# *********************************************************
 
 # ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
-alphaf = [0., 45.]
+alphaf = [0.0, 45.0]
 
 # DEFINITION DE lA COURONNE POUR LE CALCUL DES SIF
-RI=0.1*A
-RS=0.3*A
+RI = 0.1 * A
+RS = 0.3 * A
 
-#----------------------------------------------
+# ----------------------------------------------
 #                MAILLAGE, MODELE INITIAL
-#----------------------------------------------
+# ----------------------------------------------
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED")
 
-MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
-                    MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=(_F(NOM='NA',OPTION='ENV_SPHERE',POINT=(-W/2.,0.),PRECISION=eps/4.,RAYON=eps/4.),
-                                   _F(NOM='NB',OPTION='ENV_SPHERE',POINT=(+W/2.,0.),PRECISION=eps/4.,RAYON=eps/4.),
-                                   _F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,-H/2.),PRECISION=eps/4.,RAYON=eps/4.),
-                                   _F(NOM='ND',OPTION='ENV_SPHERE',POINT=(0.,+H/2.),PRECISION=eps/4.,RAYON=eps/4.),
-                                   ),
-                     )
+MAILLAGE = DEFI_GROUP(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    CREA_GROUP_NO=(
+        _F(
+            NOM="NA",
+            OPTION="ENV_SPHERE",
+            POINT=(-W / 2.0, 0.0),
+            PRECISION=eps / 4.0,
+            RAYON=eps / 4.0,
+        ),
+        _F(
+            NOM="NB",
+            OPTION="ENV_SPHERE",
+            POINT=(+W / 2.0, 0.0),
+            PRECISION=eps / 4.0,
+            RAYON=eps / 4.0,
+        ),
+        _F(
+            NOM="NC",
+            OPTION="ENV_SPHERE",
+            POINT=(0.0, -H / 2.0),
+            PRECISION=eps / 4.0,
+            RAYON=eps / 4.0,
+        ),
+        _F(
+            NOM="ND",
+            OPTION="ENV_SPHERE",
+            POINT=(0.0, +H / 2.0),
+            PRECISION=eps / 4.0,
+            RAYON=eps / 4.0,
+        ),
+    ),
+)
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
-                     AFFE= _F(GROUP_MA=('SURF','LIG1','LIG3'),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN'))
+MODELEIN = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=_F(GROUP_MA=("SURF", "LIG1", "LIG3"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+)
 
-MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
-                       MAILLAGE=MAILLAGE,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU=('LIG1','LIG3',),),
-                       )
-
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE, MAILLAGE=MAILLAGE, ORIE_PEAU=_F(GROUP_MA_PEAU=("LIG1", "LIG3"))
+)
 
 
-#----------------------------------------------
+# ----------------------------------------------
 #         DEBUT DE LA BOUCLE SUR LES ANGLES
-#----------------------------------------------
+# ----------------------------------------------
 
 nbcalc = len(alphaf)
-alpha = [None]*nbcalc
-FISS = [None]*nbcalc
-MODELK = [None]*nbcalc
-CHMA = [None]*nbcalc
-CH1 = [None]*nbcalc
-CH2 = [None]*nbcalc
-UTOT1 = [None]*nbcalc
-UTOT2 = [None]*nbcalc
-PK1 = [None]*nbcalc
-PK2 = [None]*nbcalc
+alpha = [None] * nbcalc
+FISS = [None] * nbcalc
+MODELK = [None] * nbcalc
+CHMA = [None] * nbcalc
+CH1 = [None] * nbcalc
+CH2 = [None] * nbcalc
+UTOT1 = [None] * nbcalc
+UTOT2 = [None] * nbcalc
+PK1 = [None] * nbcalc
+PK2 = [None] * nbcalc
 
 # VALEURS DES SIF POUR LES TESTS DE NON REGRESSION
-#--------------------------------------------------
+# --------------------------------------------------
 
 # K1 SUR LE FOND 1 POUR LES DEUX ANGLES
-K1_1=[5013.598 , 2454.4]
+K1_1 = [5013.598, 2454.4]
 
 # K1 SUR LE FOND 2 POUR LES DEUX ANGLES
-K1_2=[ 5013.586 , 2592.142]
+K1_2 = [5013.586, 2592.142]
 
 # G SUR LE FOND 1 POUR LES DEUX ANGLES (valeurs obtenues par CALC_G, option CALC_K_G)
 # GR N'A PAS DE SENS CAR IL S'AGIT DE LA NON REGRESSION PURE
-GR  =[1.19751E-04 , 5.64356E-05]
+GR = [1.19751e-04, 5.64356e-05]
 
 # K1 SUR LE FOND 2 (POST_K1_K2_K3) POUR LES DEUX ANGLES
-PK  =[5090.1606206214 , 2622.2245936207]
+PK = [5090.1606206214, 2622.2245936207]
 
-VAL_CALC =  [
+VAL_CALC = [
     5013.34366243,
     5013.34329688,
     5013.34366243,
@@ -138,209 +161,151 @@ VAL_CALC =  [
     2592.33025236,
     2454.03913422,
     2592.33025236,
-    5.63656034531E-05,
-    5.63656034531E-05,
+    5.63656034531e-05,
+    5.63656034531e-05,
     2622.22459362,
-    2622.22459362,   ]
+    2622.22459362,
+]
 
-SI1CH1 = [None]*(nbcalc)
-SI2CH1 = [None]*(nbcalc)
-TG1CH1 = [None]*(nbcalc)
-TG1CH2 = [None]*(nbcalc)
-SI1CH2 = [None]*(nbcalc)
-SI2CH2 = [None]*(nbcalc)
+SI1CH1 = [None] * (nbcalc)
+SI2CH1 = [None] * (nbcalc)
+TG1CH1 = [None] * (nbcalc)
+TG1CH2 = [None] * (nbcalc)
+SI1CH2 = [None] * (nbcalc)
+SI2CH2 = [None] * (nbcalc)
 
 # BOUCLE SUR LES ANGLES DE LA FISSURE
-#--------------------------------------
-for i in range(nbcalc) :
+# --------------------------------------
+for i in range(nbcalc):
 
-  alpha = alphaf[i]*pi/180.
+    alpha = alphaf[i] * pi / 180.0
 
-  FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
-                    DEFI_FISS=_F(
-                                 FORM_FISS  = 'SEGMENT',
-                                 PFON_ORIG  = (-A*cos(alpha)/2,-A*sin(alpha)/2, 0.),
-                                 PFON_EXTR  = ( A*cos(alpha)/2, A*sin(alpha)/2, 0.),
-                                 ),
-                    TYPE_ENRI_FOND='GEOMETRIQUE',
-                    NB_COUCHES=5,
-                    INFO=1)
+    FISS[i] = DEFI_FISS_XFEM(
+        MAILLAGE=MAILLAGE,
+        DEFI_FISS=_F(
+            FORM_FISS="SEGMENT",
+            PFON_ORIG=(-A * cos(alpha) / 2, -A * sin(alpha) / 2, 0.0),
+            PFON_EXTR=(A * cos(alpha) / 2, A * sin(alpha) / 2, 0.0),
+        ),
+        TYPE_ENRI_FOND="GEOMETRIQUE",
+        NB_COUCHES=5,
+        INFO=1,
+    )
 
-  MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,)
+    MODELK[i] = MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS[i], INFO=1)
 
+    CHMA[i] = AFFE_MATERIAU(MAILLAGE=MAILLAGE, MODELE=MODELK[i], AFFE=_F(TOUT="OUI", MATER=ACIER))
+    #
+    # DEUX CHARGEMENTS VOLUMIQUES IDENTIQUES (L'UN AVEC FORCE_INTERNE L'AUTRE AVEC PESANTEUR)
+    #
+    # FORCE VOLUMIQUE
+    CH1[i] = AFFE_CHAR_MECA(
+        MODELE=MODELK[i],
+        FACE_IMPO=(_F(GROUP_MA=("LIG3"), DX=0.0, DY=0.0),),
+        FORCE_INTERNE=(_F(TOUT="OUI", FX=0, FY=-78000)),
+    )
+    # PESANTEUR
+    CH2[i] = AFFE_CHAR_MECA(
+        MODELE=MODELK[i],
+        FACE_IMPO=(_F(GROUP_MA=("LIG3"), DX=0.0, DY=0.0),),
+        PESANTEUR=_F(GRAVITE=10, DIRECTION=(0.0, -1.0, 0.0)),
+    )
 
-  CHMA[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                       MODELE=MODELK[i],
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                ),
-                             )
-#
-# DEUX CHARGEMENTS VOLUMIQUES IDENTIQUES (L'UN AVEC FORCE_INTERNE L'AUTRE AVEC PESANTEUR)
-#
-# FORCE VOLUMIQUE
-  CH1[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
-                       FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
-                       FORCE_INTERNE=(_F(TOUT='OUI',FX=0,FY=-78000))
-                       )
-# PESANTEUR
-  CH2[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
-                       FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
-                       PESANTEUR=_F(GRAVITE=10,
-                                    DIRECTION=(0.,-1.,0.),),
-                       )
+    #
+    # RESOLUTIONS AVEC LES DEUX CHARGEMENTS
+    #
+    UTOT1[i] = MECA_STATIQUE(
+        MODELE=MODELK[i], CHAM_MATER=CHMA[i], EXCIT=(_F(CHARGE=CH1[i])), INFO=1
+    )
 
-#
-# RESOLUTIONS AVEC LES DEUX CHARGEMENTS
-#
-  UTOT1[i]=MECA_STATIQUE(MODELE=MODELK[i],
-                   CHAM_MATER=CHMA[i],
-                   EXCIT=(_F(CHARGE=CH1[i])),
-                   INFO=1,)
+    UTOT2[i] = MECA_STATIQUE(
+        MODELE=MODELK[i], CHAM_MATER=CHMA[i], EXCIT=(_F(CHARGE=CH2[i])), INFO=1
+    )
 
-  UTOT2[i]=MECA_STATIQUE(MODELE=MODELK[i],
-                   CHAM_MATER=CHMA[i],
-                   EXCIT=(_F(CHARGE=CH2[i])),
-                   INFO=1,)
+    # POST-TRAITEMENT : CALCUL DES SIFS
+    # ----------------------------------
 
+    # 1) CALCUL AVEC CALC_G POUR L'ANGLE COURANT i
 
-# POST-TRAITEMENT : CALCUL DES SIFS
-#----------------------------------
+    # CAS DU PREMIER CHARGEMENT
+    SI1CH1[i] = CALC_G_XFEM(
+        RESULTAT=UTOT1[i],
+        INST=0.0,
+        OPTION="CALC_K_G",
+        THETA=_F(FISSURE=FISS[i], R_INF=RI, R_SUP=RS),
+        CHAM_THETA=CO("cham_theta_no1"),
+    )
 
-# 1) CALCUL AVEC CALC_G POUR L'ANGLE COURANT i
+    SI2CH1[i] = CALC_G_XFEM(
+        RESULTAT=UTOT1[i],
+        INST=0.0,
+        OPTION="CALC_K_G",
+        THETA=_F(FISSURE=FISS[i], NUME_FOND=2, R_INF=RI, R_SUP=RS),
+    )
 
-# CAS DU PREMIER CHARGEMENT
-  SI1CH1[i]=CALC_G_XFEM(RESULTAT=UTOT1[i],
-                   INST=0.,
-                   OPTION='CALC_K_G',
-                   THETA=_F(FISSURE=FISS[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
-                    CHAM_THETA=CO('cham_theta_no1'),
-                   )
+    TG1CH1[i] = CALC_G_XFEM(
+        RESULTAT=UTOT1[i], INST=0.0, THETA=_F(FISSURE=FISS[i], R_INF=RI, R_SUP=RS)
+    )
 
-  SI2CH1[i]=CALC_G_XFEM(RESULTAT=UTOT1[i],
-                   INST=0.,
-                   OPTION='CALC_K_G',
-                   THETA=_F(FISSURE=FISS[i],
-                            NUME_FOND=2,
-                            R_INF=RI,
-                            R_SUP=RS,),
-                   )
+    IMPR_TABLE(TABLE=SI1CH1[i])
+    IMPR_TABLE(TABLE=SI2CH1[i])
+    IMPR_TABLE(TABLE=TG1CH1[i])
 
-  TG1CH1[i]=CALC_G_XFEM(RESULTAT=UTOT1[i],
-                   INST=0.,
-                   THETA=_F(FISSURE=FISS[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
-                   )
+    # CAS DU DEUXIEME CHARGEMENT
+    SI1CH2[i] = CALC_G_XFEM(
+        RESULTAT=UTOT2[i],
+        INST=0.0,
+        OPTION="CALC_K_G",
+        THETA=_F(FISSURE=FISS[i], R_INF=RI, R_SUP=RS),
+    )
 
-  IMPR_TABLE(TABLE=SI1CH1[i])
-  IMPR_TABLE(TABLE=SI2CH1[i])
-  IMPR_TABLE(TABLE=TG1CH1[i])
+    SI2CH2[i] = CALC_G_XFEM(
+        RESULTAT=UTOT2[i],
+        INST=0.0,
+        OPTION="CALC_K_G",
+        CHAM_THETA=CO("cham_theta_no2"),
+        THETA=_F(FISSURE=FISS[i], NUME_FOND=2, R_INF=RI, R_SUP=RS),
+    )
 
-# CAS DU DEUXIEME CHARGEMENT
-  SI1CH2[i]=CALC_G_XFEM(RESULTAT=UTOT2[i],
-                   INST=0.,
-                   OPTION='CALC_K_G',
-                   THETA=_F(FISSURE=FISS[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
-                   )
+    DETRUIRE(NOM=(cham_theta_no1, cham_theta_no2))
 
-  SI2CH2[i]=CALC_G_XFEM(RESULTAT=UTOT2[i],
-                   INST=0.,
-                   OPTION='CALC_K_G',
-                   CHAM_THETA=CO('cham_theta_no2'),
-                   THETA=_F(FISSURE=FISS[i],
-                            NUME_FOND=2,
-                            R_INF=RI,
-                            R_SUP=RS,),
-                   )
+    TG1CH2[i] = CALC_G_XFEM(
+        RESULTAT=UTOT2[i], INST=0.0, THETA=_F(FISSURE=FISS[i], R_INF=RI, R_SUP=RS)
+    )
 
+    IMPR_TABLE(TABLE=SI1CH2[i])
+    IMPR_TABLE(TABLE=SI2CH2[i])
+    IMPR_TABLE(TABLE=TG1CH2[i])
 
-  DETRUIRE(NOM=(cham_theta_no1, cham_theta_no2),)
+    TEST_TABLE(TABLE=SI1CH1[i], NOM_PARA="K1", VALE_CALC=VAL_CALC[8 * i + 0], CRITERE="RELATIF")
 
-  TG1CH2[i]=CALC_G_XFEM(RESULTAT=UTOT2[i],
-                   INST=0.,
-                   THETA=_F(FISSURE=FISS[i],
-                            R_INF=RI,
-                            R_SUP=RS,),
-                   )
+    TEST_TABLE(TABLE=SI2CH1[i], NOM_PARA="K1", VALE_CALC=VAL_CALC[8 * i + 1], CRITERE="RELATIF")
 
-  IMPR_TABLE(TABLE=SI1CH2[i])
-  IMPR_TABLE(TABLE=SI2CH2[i])
-  IMPR_TABLE(TABLE=TG1CH2[i])
+    TEST_TABLE(TABLE=SI1CH2[i], NOM_PARA="K1", VALE_CALC=VAL_CALC[8 * i + 2], CRITERE="RELATIF")
 
-  TEST_TABLE(TABLE=SI1CH1[i],
-             NOM_PARA='K1',
-             VALE_CALC=VAL_CALC[8*i+0],
-             CRITERE='RELATIF',
-             )
+    TEST_TABLE(TABLE=SI2CH2[i], NOM_PARA="K1", VALE_CALC=VAL_CALC[8 * i + 3], CRITERE="RELATIF")
 
-  TEST_TABLE(TABLE=SI2CH1[i],
-             NOM_PARA='K1',
-             VALE_CALC=VAL_CALC[8*i+1],
-             CRITERE='RELATIF',
-             )
+    TEST_TABLE(TABLE=TG1CH1[i], NOM_PARA="G", VALE_CALC=VAL_CALC[8 * i + 4], CRITERE="RELATIF")
 
+    TEST_TABLE(TABLE=TG1CH2[i], NOM_PARA="G", VALE_CALC=VAL_CALC[8 * i + 5], CRITERE="RELATIF")
 
-  TEST_TABLE(TABLE=SI1CH2[i],
-              NOM_PARA='K1',
-              VALE_CALC=VAL_CALC[8*i+2],
-              CRITERE='RELATIF',
-              )
+    # 2) CALCUL AVEC POST_K1_K2_K3  POUR L'ANGLE COURANT i
 
-  TEST_TABLE(TABLE=SI2CH2[i],
-             NOM_PARA='K1',
-             VALE_CALC=VAL_CALC[8*i+3],
-             CRITERE='RELATIF',
-             )
+    # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 1
+    PK1[i] = POST_K1_K2_K3(
+        INST=0.0, FISSURE=FISS[i], NUME_FOND=2, ABSC_CURV_MAXI=RS, RESULTAT=UTOT1[i]
+    )
 
-  TEST_TABLE(TABLE=TG1CH1[i],
-             NOM_PARA='G',
-             VALE_CALC=VAL_CALC[8*i+4],
-             CRITERE='RELATIF',)
+    # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 2
+    PK2[i] = POST_K1_K2_K3(
+        INST=0.0, FISSURE=FISS[i], NUME_FOND=2, ABSC_CURV_MAXI=RS, RESULTAT=UTOT2[i]
+    )
 
-  TEST_TABLE(TABLE=TG1CH2[i],
-             NOM_PARA='G',
-             VALE_CALC=VAL_CALC[8*i+5],
-             CRITERE='RELATIF',)
+    IMPR_TABLE(TABLE=PK1[i])
+    IMPR_TABLE(TABLE=PK2[i])
 
-# 2) CALCUL AVEC POST_K1_K2_K3  POUR L'ANGLE COURANT i
+    TEST_TABLE(TABLE=PK1[i], NOM_PARA="K1", VALE_CALC=VAL_CALC[8 * i + 6], CRITERE="RELATIF")
 
-  # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 1
-  PK1[i]=POST_K1_K2_K3(INST=0.,
-                       FISSURE = FISS[i],
-                       NUME_FOND = 2,
-                       ABSC_CURV_MAXI = RS,
-                       RESULTAT  = UTOT1[i],
-                      )
-
-  # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 2
-  PK2[i]=POST_K1_K2_K3(INST=0.,
-                       FISSURE = FISS[i],
-                       NUME_FOND = 2,
-                       ABSC_CURV_MAXI = RS,
-                       RESULTAT  = UTOT2[i],
-                      )
-
-  IMPR_TABLE(TABLE = PK1[i])
-  IMPR_TABLE(TABLE = PK2[i])
-
-  TEST_TABLE(TABLE=PK1[i],
-              NOM_PARA='K1',
-              VALE_CALC=VAL_CALC[8*i+6],
-              CRITERE='RELATIF',
-
-              )
-
-
-  TEST_TABLE(CRITERE='RELATIF',
-             VALE_CALC=VAL_CALC[8*i+7],
-
-             NOM_PARA='K1',
-             TABLE=PK2[i],
-             )
+    TEST_TABLE(CRITERE="RELATIF", VALE_CALC=VAL_CALC[8 * i + 7], NOM_PARA="K1", TABLE=PK2[i])
 
 FIN()

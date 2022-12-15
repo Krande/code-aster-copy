@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,17 +23,24 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-CALC_CHAM_FLUI = OPER(nom="CALC_CHAM_FLUI",op= 116,sd_prod=evol_ther,
-                      fr="Calculer le champ de vitesses et de pression fluides",
-         # Mot-clés obligatoires
-         RIGI_THER   = SIMP(statut='o',typ=matr_asse_temp_r ),
-         EXCIT       = FACT(statut='o',max='**',
-                       CHARGE    = SIMP(statut='o',typ=(char_ther,)),
-                       FONC_MULT = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule))),
-         POTENTIEL   = SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE","PRES")),
-         DIST_REFE   = SIMP(statut='f',typ='R',defaut= 1.E-2 ),
-         MODE_MECA   = SIMP(statut='o',typ=mode_meca),
-         b_coefmult       = BLOC(condition  = """exists("MODE_MECA")""",
-                                COEF_MULT    =SIMP(statut='f',typ='R',defaut=(1.0),max='**'),
-                               ),
-                      )
+CALC_CHAM_FLUI = OPER(
+    nom="CALC_CHAM_FLUI",
+    op=116,
+    sd_prod=evol_ther,
+    fr="Calculer le champ de vitesses et de pression fluides",
+    # Mot-clés obligatoires
+    RIGI_THER=SIMP(statut="o", typ=matr_asse_temp_r),
+    EXCIT=FACT(
+        statut="o",
+        max="**",
+        CHARGE=SIMP(statut="o", typ=(char_ther,)),
+        FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+    ),
+    POTENTIEL=SIMP(statut="f", typ="TXM", defaut="DEPL", into=("DEPL", "VITE", "PRES")),
+    DIST_REFE=SIMP(statut="f", typ="R", defaut=1.0e-2),
+    MODE_MECA=SIMP(statut="o", typ=mode_meca),
+    b_coefmult=BLOC(
+        condition="""exists("MODE_MECA")""",
+        COEF_MULT=SIMP(statut="f", typ="R", defaut=(1.0), max="**"),
+    ),
+)

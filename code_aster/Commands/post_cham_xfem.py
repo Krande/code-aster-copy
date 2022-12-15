@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,15 +19,14 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (ThermalResult,
-                       ElasticResult,
-                       ModeResult, NonLinearResult)
+from ..Objects import ThermalResult, ElasticResult, ModeResult, NonLinearResult
 from ..Supervis import ExecuteCommand
 
 
 class XfemFieldPostprocessing(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.??` by assigning
     finite elements on a :class:`~code_aster.Objects.??`."""
+
     command_name = "POST_CHAM_XFEM"
 
     def create_result(self, keywords):

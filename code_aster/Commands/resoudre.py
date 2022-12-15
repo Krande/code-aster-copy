@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class SolveLinearSystem(ExecuteCommand):
     """Command that solves :class:`~code_aster.Objects.AssemblyMatrix`."""
+
     command_name = "RESOUDRE"
 
     def create_result(self, keywords):
@@ -35,7 +36,6 @@ class SolveLinearSystem(ExecuteCommand):
         """
 
         self._result = FieldOnNodesReal()
-
 
     def post_exec(self, keywords):
         """Post-execute the command.

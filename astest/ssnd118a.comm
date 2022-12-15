@@ -16,132 +16,117 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA=DEFI_MATERIAU(
-    ELAS=_F(E=100000.0E+06, NU=0.3, RHO=40000.0),
-    ECRO_LINE=_F(D_SIGM_EPSI=700.0E+066, SY=10000.0E+066, )
+MA = DEFI_MATERIAU(
+    ELAS=_F(E=100000.0e06, NU=0.3, RHO=40000.0), ECRO_LINE=_F(D_SIGM_EPSI=700.0e066, SY=10000.0e066)
 )
 
-Kn = 1.0E+07
-Kt = Kn*100.0
+Kn = 1.0e07
+Kt = Kn * 100.0
 # Ldiscret = 4.50E-03
-MADIS=DEFI_MATERIAU(
-    DIS_CONTACT=_F(
-        RIGI_NOR = Kn,
-        RIGI_TAN = Kt,
-        COULOMB  = 0.5,
-        DIST_1  =  0.0046,
-        INST_COMP_INIT=(-1.0,0.0),
-    )
+MADIS = DEFI_MATERIAU(
+    DIS_CONTACT=_F(RIGI_NOR=Kn, RIGI_TAN=Kt, COULOMB=0.5, DIST_1=0.0046, INST_COMP_INIT=(-1.0, 0.0))
 )
 
-MAI=LIRE_MAILLAGE(FORMAT='MED')
+MAI = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=CREA_MAILLAGE(
-  MAILLAGE = MAI,
-  CREA_POI1=(
-    _F(GROUP_NO='crayon',NOM_GROUP_MA='crayon'), )
-)
+MAIL = CREA_MAILLAGE(MAILLAGE=MAI, CREA_POI1=(_F(GROUP_NO="crayon", NOM_GROUP_MA="crayon"),))
 
-MODE=AFFE_MODELE(
+MODE = AFFE_MODELE(
     MAILLAGE=MAIL,
     AFFE=(
-        _F(GROUP_MA='face',   PHENOMENE='MECANIQUE', MODELISATION='D_PLAN',),
-        _F(GROUP_MA='ressC',  PHENOMENE='MECANIQUE', MODELISATION='2D_DIS_T',),
-        _F(GROUP_MA='crayon', PHENOMENE='MECANIQUE', MODELISATION='2D_DIS_T',),
+        _F(GROUP_MA="face", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(GROUP_MA="ressC", PHENOMENE="MECANIQUE", MODELISATION="2D_DIS_T"),
+        _F(GROUP_MA="crayon", PHENOMENE="MECANIQUE", MODELISATION="2D_DIS_T"),
     ),
 )
 
-CAEL=AFFE_CARA_ELEM(
+CAEL = AFFE_CARA_ELEM(
     MODELE=MODE,
     DISCRET_2D=(
-      _F(GROUP_MA='ressC', CARA='K_T_D_L', VALE=(Kn, Kt),),
-      _F(GROUP_MA='ressC', CARA='M_T_D_L', VALE=(0.0),),
-      _F(GROUP_MA='crayon',CARA='M_T_D_N', VALE=(20.0), ),
-    )
+        _F(GROUP_MA="ressC", CARA="K_T_D_L", VALE=(Kn, Kt)),
+        _F(GROUP_MA="ressC", CARA="M_T_D_L", VALE=(0.0)),
+        _F(GROUP_MA="crayon", CARA="M_T_D_N", VALE=(20.0)),
+    ),
 )
 
-MATE=AFFE_MATERIAU(
-    MAILLAGE=MAIL,
-    AFFE=(
-    _F(GROUP_MA='face',MATER=MA,),
-    _F(GROUP_MA='ressC',MATER=MADIS,),),
+MATE = AFFE_MATERIAU(
+    MAILLAGE=MAIL, AFFE=(_F(GROUP_MA="face", MATER=MA), _F(GROUP_MA="ressC", MATER=MADIS))
 )
 
-CLBLOC=AFFE_CHAR_MECA(
-    MODELE=MODE,
-    DDL_IMPO=_F(GROUP_NO=('Coins',), DX=0.0, DY=0.0,)
-)
+CLBLOC = AFFE_CHAR_MECA(MODELE=MODE, DDL_IMPO=_F(GROUP_NO=("Coins",), DX=0.0, DY=0.0))
 
 # ----------------------------------------------------
 vini = 0.500
 LTEMPS1 = DEFI_LIST_REEL(
-    DEBUT=-1.0,
-    INTERVALLE=(
-        _F(JUSQU_A=0.00,     NOMBRE=5),
-        _F(JUSQU_A=10.0E-03, NOMBRE=500),
-    ),
+    DEBUT=-1.0, INTERVALLE=(_F(JUSQU_A=0.00, NOMBRE=5), _F(JUSQU_A=10.0e-03, NOMBRE=500))
 )
-LTEMP1 =DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST = LTEMPS1),
-    ECHEC=_F(EVENEMENT     = 'ERREUR',
-             ACTION        = 'DECOUPE',
-             SUBD_METHODE  = 'AUTO',
-             SUBD_PAS_MINI = 1.0E-8,
-             ),
+LTEMP1 = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LTEMPS1),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO", SUBD_PAS_MINI=1.0e-8),
 )
 
 viteini = CREA_CHAMP(
-  TYPE_CHAM = 'NOEU_DEPL_R', OPERATION = 'AFFE', MODELE = MODE,
-  AFFE=(
-    _F(GROUP_MA = ('face',),  NOM_CMP = ('DX','DY'), VALE = (vini , 0.0),),
-    _F(GROUP_MA = ('ressC',), NOM_CMP = ('DX','DY'), VALE = ( 0.0 , 0.0),),
-  ),
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=MODE,
+    AFFE=(
+        _F(GROUP_MA=("face",), NOM_CMP=("DX", "DY"), VALE=(vini, 0.0)),
+        _F(GROUP_MA=("ressC",), NOM_CMP=("DX", "DY"), VALE=(0.0, 0.0)),
+    ),
 )
 acceini = CREA_CHAMP(
-  TYPE_CHAM = 'NOEU_DEPL_R', OPERATION = 'AFFE', MODELE = MODE,
-  AFFE=_F(GROUP_MA = ('face','ressC'), NOM_CMP = ('DX','DY'), VALE = (0. , 0.),),
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=MODE,
+    AFFE=_F(GROUP_MA=("face", "ressC"), NOM_CMP=("DX", "DY"), VALE=(0.0, 0.0)),
 )
 
 # ----------------------------------------------------
 RESUSTAT = STAT_NON_LINE(
-    MODELE      = MODE,
-    CHAM_MATER  = MATE,
-    CARA_ELEM   = CAEL,
-    COMPORTEMENT = (
-        _F(GROUP_MA='face',),
-        _F(GROUP_MA='ressC',RELATION  ='DIS_CONTACT',),
-    ),
-    EXCIT=(
-        _F(CHARGE=CLBLOC,),
-    ),
-    INCREMENT=_F(LIST_INST=LTEMP1, INST_FIN=0.0,),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
-                   RESI_GLOB_MAXI=1.0),
-    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+    MODELE=MODE,
+    CHAM_MATER=MATE,
+    CARA_ELEM=CAEL,
+    COMPORTEMENT=(_F(GROUP_MA="face"), _F(GROUP_MA="ressC", RELATION="DIS_CONTACT")),
+    EXCIT=(_F(CHARGE=CLBLOC),),
+    INCREMENT=_F(LIST_INST=LTEMP1, INST_FIN=0.0),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
 )
 
 # ----------------------------------------------------
 RESUDYN = DYNA_NON_LINE(
-    MODELE      = MODE,
-    CHAM_MATER  = MATE,
-    CARA_ELEM   = CAEL,
-    COMPORTEMENT = (
-        _F(GROUP_MA='face',),
-        _F(GROUP_MA='ressC',RELATION  ='DIS_CONTACT',),
-    ),
-    INCREMENT=_F(LIST_INST=LTEMP1, INST_FIN=0.0,),
-    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT',),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
-                   RESI_GLOB_MAXI=1.0),
-    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+    MODELE=MODE,
+    CHAM_MATER=MATE,
+    CARA_ELEM=CAEL,
+    COMPORTEMENT=(_F(GROUP_MA="face"), _F(GROUP_MA="ressC", RELATION="DIS_CONTACT")),
+    INCREMENT=_F(LIST_INST=LTEMP1, INST_FIN=0.0),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_MAXI=1.0),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
 )
 
 # ----------------------------------------------------
 # Liste des discrets
-Ldiscrets= ['M305','M311','M315','M317','M306','M310','M316','M320',
-            'M307','M309','M313','M319','M308','M312','M314','M318',]
+Ldiscrets = [
+    "M305",
+    "M311",
+    "M315",
+    "M317",
+    "M306",
+    "M310",
+    "M316",
+    "M320",
+    "M307",
+    "M309",
+    "M313",
+    "M319",
+    "M308",
+    "M312",
+    "M314",
+    "M318",
+]
 
 Force1stat = -992.0269126494252
 Force1dyna = -992.026620299333
@@ -153,44 +138,132 @@ Force3stat = -997.0071767812262
 
 Force4stat = Force4dyna = -999.4534523549171
 
-Lforcedyna   = [Force1dyna,Force1dyna,Force1dyna,Force1dyna,Force2dyna,Force2dyna,Force2dyna,Force2dyna,
-                Force3dyna,Force3dyna,Force3dyna,Force3dyna,Force4dyna,Force4dyna,Force4dyna,Force4dyna,]
-Lforcestat   = [Force1stat,Force1stat,Force1stat,Force1stat,Force2stat,Force2stat,Force2stat,Force2stat,
-                Force3stat,Force3stat,Force3stat,Force3stat,Force4stat,Force4stat,Force4stat,Force4stat,]
+Lforcedyna = [
+    Force1dyna,
+    Force1dyna,
+    Force1dyna,
+    Force1dyna,
+    Force2dyna,
+    Force2dyna,
+    Force2dyna,
+    Force2dyna,
+    Force3dyna,
+    Force3dyna,
+    Force3dyna,
+    Force3dyna,
+    Force4dyna,
+    Force4dyna,
+    Force4dyna,
+    Force4dyna,
+]
+Lforcestat = [
+    Force1stat,
+    Force1stat,
+    Force1stat,
+    Force1stat,
+    Force2stat,
+    Force2stat,
+    Force2stat,
+    Force2stat,
+    Force3stat,
+    Force3stat,
+    Force3stat,
+    Force3stat,
+    Force4stat,
+    Force4stat,
+    Force4stat,
+    Force4stat,
+]
 
-for mm,ffdyna,ffstat in zip(Ldiscrets,Lforcedyna,Lforcestat):
+for mm, ffdyna, ffstat in zip(Ldiscrets, Lforcedyna, Lforcestat):
     TEST_RESU(
         RESU=(
             # Le jeu, calcul DYNA_NON_LINE
-            _F(MAILLE=mm, POINT=1, INST=0.0, REFERENCE='ANALYTIQUE', RESULTAT=RESUDYN,
-               NOM_CHAM='VARI_ELGA', NOM_CMP='V8',
-               VALE_CALC=-1.0E-04, VALE_REFE=-1.0E-04, ),
-            _F(MAILLE=mm, POINT=2, INST=0.0, REFERENCE='ANALYTIQUE', RESULTAT=RESUDYN,
-               NOM_CHAM='VARI_ELGA', NOM_CMP='V8',
-               VALE_CALC=-1.0E-04, VALE_REFE=-1.0E-04, ),
+            _F(
+                MAILLE=mm,
+                POINT=1,
+                INST=0.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=RESUDYN,
+                NOM_CHAM="VARI_ELGA",
+                NOM_CMP="V8",
+                VALE_CALC=-1.0e-04,
+                VALE_REFE=-1.0e-04,
+            ),
+            _F(
+                MAILLE=mm,
+                POINT=2,
+                INST=0.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=RESUDYN,
+                NOM_CHAM="VARI_ELGA",
+                NOM_CMP="V8",
+                VALE_CALC=-1.0e-04,
+                VALE_REFE=-1.0e-04,
+            ),
             # Les efforts, calcul DYNA_NON_LINE
-            _F(MAILLE=mm, POINT=1, INST=0.0, RESULTAT=RESUDYN,
-               NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ffdyna,),
-            _F(MAILLE=mm, POINT=2, INST=0.0, RESULTAT=RESUDYN,
-               NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ffdyna,),
+            _F(
+                MAILLE=mm,
+                POINT=1,
+                INST=0.0,
+                RESULTAT=RESUDYN,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP="N",
+                VALE_CALC=ffdyna,
+            ),
+            _F(
+                MAILLE=mm,
+                POINT=2,
+                INST=0.0,
+                RESULTAT=RESUDYN,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP="N",
+                VALE_CALC=ffdyna,
+            ),
             #
             # Le jeu, calcul STAT_NON_LINE
-            _F(MAILLE=mm, POINT=1, INST=0.0, REFERENCE='ANALYTIQUE', RESULTAT=RESUSTAT,
-               NOM_CHAM='VARI_ELGA', NOM_CMP='V8',
-               VALE_CALC=-1.0E-04, VALE_REFE=-1.0E-04, ),
-            _F(MAILLE=mm, POINT=2, INST=0.0, REFERENCE='ANALYTIQUE', RESULTAT=RESUSTAT,
-               NOM_CHAM='VARI_ELGA', NOM_CMP='V8',
-               VALE_CALC=-1.0E-04, VALE_REFE=-1.0E-04, ),
+            _F(
+                MAILLE=mm,
+                POINT=1,
+                INST=0.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=RESUSTAT,
+                NOM_CHAM="VARI_ELGA",
+                NOM_CMP="V8",
+                VALE_CALC=-1.0e-04,
+                VALE_REFE=-1.0e-04,
+            ),
+            _F(
+                MAILLE=mm,
+                POINT=2,
+                INST=0.0,
+                REFERENCE="ANALYTIQUE",
+                RESULTAT=RESUSTAT,
+                NOM_CHAM="VARI_ELGA",
+                NOM_CMP="V8",
+                VALE_CALC=-1.0e-04,
+                VALE_REFE=-1.0e-04,
+            ),
             # Les efforts, calcul STAT_NON_LINE
-            _F(MAILLE=mm, POINT=1, INST=0.0, RESULTAT=RESUSTAT,
-               NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ffstat,),
-            _F(MAILLE=mm, POINT=2, INST=0.0, RESULTAT=RESUSTAT,
-               NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ffstat,),
-        ),
+            _F(
+                MAILLE=mm,
+                POINT=1,
+                INST=0.0,
+                RESULTAT=RESUSTAT,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP="N",
+                VALE_CALC=ffstat,
+            ),
+            _F(
+                MAILLE=mm,
+                POINT=2,
+                INST=0.0,
+                RESULTAT=RESUSTAT,
+                NOM_CHAM="SIEF_ELGA",
+                NOM_CMP="N",
+                VALE_CALC=ffstat,
+            ),
+        )
     )
 
 FIN()

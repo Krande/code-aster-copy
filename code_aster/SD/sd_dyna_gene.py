@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,24 +25,24 @@ from .sd_util import *
 
 
 class sd_dyna_gene_common(AsBase):
-#--------------------------------------
+    # --------------------------------------
     nomj = SDNom(fin=19)
 
     # Ces trois objets sont facultatifs car dans le cas d'un calcul HARM, seul
     # un parmi les trois est obligatoire.
-    ACCE = Facultatif(OJBVect(type=Parmi('C', 'R')))
-    VITE = Facultatif(OJBVect(type=Parmi('C', 'R')))
-                      # peuvent etre des gros objets. Contienent des reels si
-                      # calcul TRAN et des complexes si HARM
-    DEPL = Facultatif(OJBVect(type=Parmi('C', 'R')))
+    ACCE = Facultatif(OJBVect(type=Parmi("C", "R")))
+    VITE = Facultatif(OJBVect(type=Parmi("C", "R")))
+    # peuvent etre des gros objets. Contienent des reels si
+    # calcul TRAN et des complexes si HARM
+    DEPL = Facultatif(OJBVect(type=Parmi("C", "R")))
 
     PTEM = Facultatif(AsVR())
-                      # Pas de temps d'integration sauvegardés aux instants
-                      # d'archivage
+    # Pas de temps d'integration sauvegardés aux instants
+    # d'archivage
 
     DISC = AsVR()
-                # gros objet. contient la liste des instants du calcul
-                # sauvegardes si TRANS et les frequences si HARM
+    # gros objet. contient la liste des instants du calcul
+    # sauvegardes si TRANS et les frequences si HARM
     ORDR = AsVI()  # gros objet.
 
     DESC = AsVI(lonmax=5)
@@ -60,10 +60,10 @@ class sd_dyna_gene_common(AsBase):
 
         assert indic in (1, 2, 3, 4)
 
-        if (indic in (1, 2, 3)):
-                type_calcul = 'TRAN'
-        elif (indic == 4):
-                type_calcul = 'HARM'
+        if indic in (1, 2, 3):
+            type_calcul = "TRAN"
+        elif indic == 4:
+            type_calcul = "HARM"
 
         nbmode = desc[1]
         assert nbmode > 0
@@ -91,54 +91,50 @@ class sd_dyna_gene_common(AsBase):
 
         # on verifie que dans le cas d'un calcul harmonique, il n'y a pas de
         # presence de non linearites
-        if (desc[0] == 4):
-                assert desc[2] == 0  # pas de nonlinearie si HARM
-                assert desc[3] == 0  # pas de correction statique ou multi appui si HARM
-
+        if desc[0] == 4:
+            assert desc[2] == 0  # pas de nonlinearie si HARM
+            assert desc[3] == 0  # pas de correction statique ou multi appui si HARM
 
     def check_ORDR_DISC(self, checker):
         type_calcul, nbmode, nbnoli, nbsauv, nbexcit, nbvint = self.u_dime()
 
         assert self.ORDR.lonmax == nbsauv  # verification de la longueur
         sdu_tous_differents(self.ORDR, checker)
-                            ## verification de tous les elements differents
-        if (nbsauv > 1):
-                assert sdu_monotone(
-                    self.ORDR.get()) == 1  # test de monotonie croissante
+        ## verification de tous les elements differents
+        if nbsauv > 1:
+            assert sdu_monotone(self.ORDR.get()) == 1  # test de monotonie croissante
 
         assert self.DISC.lonmax == nbsauv  # verification de la longueur
         sdu_tous_differents(self.DISC, checker)
-                            ## verification de tous les elements differents
+        ## verification de tous les elements differents
 
-        if (type_calcul == 'TRAN' and nbsauv > 1):
-                assert sdu_monotone(
-                    self.DISC.get()) == 1  # test de monotonie croissante
-                assert self.PTEM.lonmax == nbsauv
+        if type_calcul == "TRAN" and nbsauv > 1:
+            assert sdu_monotone(self.DISC.get()) == 1  # test de monotonie croissante
+            assert self.PTEM.lonmax == nbsauv
 
     def check_DEPL_VITE_ACCE(self, checker):
         type_calcul, nbmode, nbnoli, nbsauv, nbexcit, nbvint = self.u_dime()
 
-        if (type_calcul == 'TRAN'):
-                assert (self.DEPL.lonmax == nbsauv * nbmode and self.VITE.lonmax == nbsauv *
-                        nbmode and self.ACCE.lonmax == nbsauv * nbmode)
-                        # on verifie que les trois objets existent et sont de
-                        # la bonne longueur
-                assert (
-                    self.DEPL.type == 'R' and self.VITE.type == 'R' and self.ACCE.type == 'R')
-                        ## on verifie que les valeurs sont reelles
-        elif (type_calcul == 'HARM'):
-                # on verifie qu'au moins un des trois objets existe et qu'il
-                # est de type complexe
-                assert self.DEPL.exists or self.VITE.exists or self.ACCE.exists
-                if self.DEPL.exists:
-                    assert self.DEPL.lonmax == nbsauv * \
-                        nbmode and self.DEPL.type == 'C'
-                if self.VITE.exists:
-                    assert self.VITE.lonmax == nbsauv * \
-                        nbmode and self.VITE.type == 'C'
-                if self.ACCE.exists:
-                    assert self.ACCE.lonmax == nbsauv * \
-                        nbmode and self.ACCE.type == 'C'
+        if type_calcul == "TRAN":
+            assert (
+                self.DEPL.lonmax == nbsauv * nbmode
+                and self.VITE.lonmax == nbsauv * nbmode
+                and self.ACCE.lonmax == nbsauv * nbmode
+            )
+            # on verifie que les trois objets existent et sont de
+            # la bonne longueur
+            assert self.DEPL.type == "R" and self.VITE.type == "R" and self.ACCE.type == "R"
+            ## on verifie que les valeurs sont reelles
+        elif type_calcul == "HARM":
+            # on verifie qu'au moins un des trois objets existe et qu'il
+            # est de type complexe
+            assert self.DEPL.exists or self.VITE.exists or self.ACCE.exists
+            if self.DEPL.exists:
+                assert self.DEPL.lonmax == nbsauv * nbmode and self.DEPL.type == "C"
+            if self.VITE.exists:
+                assert self.VITE.lonmax == nbsauv * nbmode and self.VITE.type == "C"
+            if self.ACCE.exists:
+                assert self.ACCE.lonmax == nbsauv * nbmode and self.ACCE.type == "C"
 
     def check_EXCIT(self, checker):
         type_calcul, nbmode, nbnoli, nbsauv, nbexcit, nbvint = self.u_dime()
@@ -152,7 +148,7 @@ class sd_dyna_gene_common(AsBase):
 
 
 class sd_dyna_gene_nl(AsBase):
-#--------------------------------------
+    # --------------------------------------
     nomj = SDNom(fin=19)
 
     VIND = AsVI()
@@ -162,32 +158,33 @@ class sd_dyna_gene_nl(AsBase):
 
     def u_dime_nl(self):
 
-        if self.TYPE.lonmax is None : return (0, 0, 0)
+        if self.TYPE.lonmax is None:
+            return (0, 0, 0)
 
-        nbnoli  = self.TYPE.lonmax
-        vindex  = self.VIND.get()
-        nbvint  = vindex[-1]-1
+        nbnoli = self.TYPE.lonmax
+        vindex = self.VIND.get()
+        nbvint = vindex[-1] - 1
 
-        nbsaves = self.VINT.lonmax/nbvint
+        nbsaves = self.VINT.lonmax / nbvint
         return nbnoli, nbvint, nbsaves
 
     def check_NONL(self, checker):
         nbnoli, nbvint, nbsaves = self.u_dime_nl()
-        if nbnoli > 0  :
-            assert self.VIND.lonmax == nbnoli+1
-            assert self.VINT.lonmax == nbvint*nbsaves
-            assert self.INTI.lonmax == 5*nbnoli
+        if nbnoli > 0:
+            assert self.VIND.lonmax == nbnoli + 1
+            assert self.VINT.lonmax == nbvint * nbsaves
+            assert self.INTI.lonmax == 5 * nbnoli
             assert self.TYPE.lonmax == nbnoli
 
 
-
 class sd_dyna_gene(sd_titre, sd_resu_dyna, sd_dyna_gene_common):
-#--------------------------------------
-    nomj      = SDNom(fin=19)
-    sd_nl     = Facultatif(sd_dyna_gene_nl(SDNom(nomj='.NL', debut=16,fin=19)))
+    # --------------------------------------
+    nomj = SDNom(fin=19)
+    sd_nl = Facultatif(sd_dyna_gene_nl(SDNom(nomj=".NL", debut=16, fin=19)))
 
     # non linearities
     def check_NONL(self, checker):
-        desc      = self.DESC.get()
-        nbnoli    = desc[2]
-        if nbnoli > 0 : assert(self.sd_nl is not None)
+        desc = self.DESC.get()
+        nbnoli = desc[2]
+        if nbnoli > 0:
+            assert self.sd_nl is not None

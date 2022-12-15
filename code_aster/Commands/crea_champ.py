@@ -75,8 +75,7 @@ class FieldCreator(ExecuteCommand):
 
         if location == "CART":
             if mesh is None:
-                raise NotImplementedError(
-                    "Must have Mesh, Model or ElementaryCharacteristics")
+                raise NotImplementedError("Must have Mesh, Model or ElementaryCharacteristics")
             self._result = ConstantFieldOnCellsReal(mesh)
         elif location == "NOEU":
             if typ == "R":
@@ -115,8 +114,7 @@ class FieldCreator(ExecuteCommand):
                         if dofNum is not None:
                             model = dofNum.getModel()
                             if model is not None:
-                                self._result.setDescription(
-                                    model.getFiniteElementDescriptor())
+                                self._result.setDescription(model.getFiniteElementDescriptor())
 
                     if resultat.getModel() is not None:
                         model = resultat.getModel()

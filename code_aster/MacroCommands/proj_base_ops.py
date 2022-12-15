@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ from .Utils.proj_resu_base import PROJ_RESU_BASE
 
 def proj_base_ops(self, **args):
     """
-     Ecriture de la macro PROJ_BASE
+    Ecriture de la macro PROJ_BASE
     """
     BASE = args.get("BASE")
     NB_VECT = args.get("NB_VECT")
@@ -36,7 +36,6 @@ def proj_base_ops(self, **args):
     RESU_GENE = args.get("RESU_GENE")
     NUME_DDL_GENE = args.get("NUME_DDL_GENE")
     STOCKAGE = args.get("STOCKAGE")
-
 
     # On importe les definitions des commandes a utiliser dans la macro
     # et  creation du nume_ddl_gene
@@ -49,47 +48,45 @@ def proj_base_ops(self, **args):
         _num = NUME_DDL_GENE_CMD(BASE=BASE, NB_VECT=NB_VECT, STOCKAGE=STOCKAGE)
         self.register_result(_num, numgen)
     else:
-        assert( False )
-
-
+        assert False
 
     if MATR_ASSE_GENE:
         for m in MATR_ASSE_GENE:
             motscles = {}
-            if m['MATR_ASSE']:
-                motscles['MATR_ASSE'] = m['MATR_ASSE']
-            elif m['MATR_ASSE_GENE']:
-                motscles['MATR_ASSE_GENE'] = m['MATR_ASSE_GENE']
+            if m["MATR_ASSE"]:
+                motscles["MATR_ASSE"] = m["MATR_ASSE"]
+            elif m["MATR_ASSE_GENE"]:
+                motscles["MATR_ASSE_GENE"] = m["MATR_ASSE_GENE"]
             else:
-                UTMESS('F', 'MODAL0_1')
+                UTMESS("F", "MODAL0_1")
             mm = PROJ_MATR_BASE(BASE=BASE, NUME_DDL_GENE=_num, **motscles)
             mm.setGeneralizedDOFNumbering(_num)
             mm.setModalBasis(BASE)
-            self.register_result(mm, m['MATRICE'])
+            self.register_result(mm, m["MATRICE"])
 
     if VECT_ASSE_GENE:
         for v in VECT_ASSE_GENE:
             motscles = {}
-            if v['VECT_ASSE']:
-                motscles['VECT_ASSE'] = v['VECT_ASSE']
-            elif v['VECT_ASSE_GENE']:
-                motscles['VECT_ASSE_GENE'] = v['VECT_ASSE_GENE']
+            if v["VECT_ASSE"]:
+                motscles["VECT_ASSE"] = v["VECT_ASSE"]
+            elif v["VECT_ASSE_GENE"]:
+                motscles["VECT_ASSE_GENE"] = v["VECT_ASSE_GENE"]
             else:
-                UTMESS('F', 'MODAL0_1')
-            motscles['TYPE_VECT'] = v['TYPE_VECT']
+                UTMESS("F", "MODAL0_1")
+            motscles["TYPE_VECT"] = v["TYPE_VECT"]
             vv = PROJ_VECT_BASE(BASE=BASE, NUME_DDL_GENE=_num, **motscles)
-            self.register_result(vv, v['VECTEUR'])
+            self.register_result(vv, v["VECTEUR"])
 
     if RESU_GENE:
         for v in RESU_GENE:
             motscles = {}
-            if v['RESU']:
-                motscles['RESU'] = v['RESU']
+            if v["RESU"]:
+                motscles["RESU"] = v["RESU"]
             else:
-                UTMESS('F', 'MODAL0_1')
-            motscles['TYPE_VECT'] = v['TYPE_VECT']
+                UTMESS("F", "MODAL0_1")
+            motscles["TYPE_VECT"] = v["TYPE_VECT"]
             vv = PROJ_RESU_BASE(BASE=BASE, NUME_DDL_GENE=_num, **motscles)
             vv.setGeneralizedDOFNumbering(_num)
-            self.register_result(vv, v['RESULTAT'])
+            self.register_result(vv, v["RESULTAT"])
 
     return

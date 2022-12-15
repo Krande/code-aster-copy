@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,28 +23,23 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
-PMATERR  = OutputParameter(phys=PHY.MATE_R, type='ELGA')
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
+PMATERR = OutputParameter(phys=PHY.MATE_R, type="ELGA")
 
 MATE_ELGA = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PMATERC,
-           PVARCPR,
-    ),
-    para_out=(
-        PMATERR,
-    ),
+    para_in=(SP.PGEOMER, SP.PMATERC, PVARCPR),
+    para_out=(PMATERR,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FS2'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FSA'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "3FL"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "2FL"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "3FA"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "2FA"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "FS2"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "FSA"))),
     ),
 )

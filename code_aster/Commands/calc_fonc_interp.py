@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -27,6 +27,7 @@ from ..Utilities import compat_listr8
 class FunctionInterpolation(ExecuteCommand):
     """Command that interpolates functions and formulas to create a new
     :py:class:`~code_aster.Objects.Function`."""
+
     command_name = "CALC_FONC_INTERP"
 
     def adapt_syntax(self, keywords):

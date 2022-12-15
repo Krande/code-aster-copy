@@ -21,54 +21,34 @@
 # person_in_charge : stefano.cherubini@edf.fr
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # Lecture du maillage
 
-MA    = LIRE_MAILLAGE(FORMAT='MED')
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
 # Definition des modèles mécaniques
 
-MODEL = AFFE_MODELE(MAILLAGE=MA,
-                    AFFE    =(_F(GROUP_MA     = 'SEMELLE'  ,
-                                 PHENOMENE    = 'MECANIQUE',
-                                 MODELISATION = '3D'       ,
-                                 ),
-                              _F(GROUP_MA     =('DALLES','VOILES'),
-                                 PHENOMENE    = 'MECANIQUE'       ,
-                                 MODELISATION = 'DKT'             ,
-                                 ),
-                              _F(GROUP_MA     =('POUTRES','POTEAUX'),
-                                 PHENOMENE    = 'MECANIQUE'         ,
-                                 MODELISATION = 'POU_D_E'           ,
-                                 ),
-                              )
-                   )
+MODEL = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="SEMELLE", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA=("DALLES", "VOILES"), PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA=("POUTRES", "POTEAUX"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+    ),
+)
 
 # Définition des caractéristiques des éléments coque et poutre
 
-CAREL  = AFFE_CARA_ELEM(MODELE = MODEL,
-                        COQUE  = _F(GROUP_MA=('DALLES','VOILES')  ,
-                                    EPAIS   =0.30                 ,
-                                    ),
-                        POUTRE = _F(GROUP_MA=('POUTRES','POTEAUX'),
-                                    SECTION = 'RECTANGLE'         ,
-                                    CARA    = 'H'                 ,
-                                    VALE    = 0.4                 ,
-                                    )
-                        )
+CAREL = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    COQUE=_F(GROUP_MA=("DALLES", "VOILES"), EPAIS=0.30),
+    POUTRE=_F(GROUP_MA=("POUTRES", "POTEAUX"), SECTION="RECTANGLE", CARA="H", VALE=0.4),
+)
 
 # Définition et affectation du matériau
 
-MAT1  = DEFI_MATERIAU(ELAS=_F(E   = 3.E10,
-                              NU  = 0.3  ,
-                              RHO = 2500.,
-                              )
-                      )
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=3.0e10, NU=0.3, RHO=2500.0))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE =MA,
-                      AFFE     =_F(TOUT  = 'OUI',
-                                   MATER = MAT1 ,
-                                   )
-                      )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT1))
 FIN()

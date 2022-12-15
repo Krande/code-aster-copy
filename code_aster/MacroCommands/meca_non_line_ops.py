@@ -35,7 +35,7 @@ from .NonLinearSolver import NonLinearSolver, TimeStepper
 
 
 def _contact_check(CONTACT):
-    """ Add check to forbid not convered functionnalities """
+    """Add check to forbid not convered functionnalities"""
     if CONTACT is not None:
         defi = CONTACT["DEFINITION"]
 
@@ -52,7 +52,7 @@ def _contact_check(CONTACT):
 
 
 def _keywords_check(keywords):
-    """ To forbid unsupported keywords."""
+    """To forbid unsupported keywords."""
 
     if "EXCIT" in keywords:
         for load in keywords["EXCIT"]:
@@ -64,8 +64,8 @@ def _keywords_check(keywords):
             raise RuntimeError("unsupported value in INCREMENT")
     if "CONVERGENCE" in keywords:
         for key in keywords["CONVERGENCE"]:
-            if key in ("RESI_REFE_RELA", "RESI_COMP_RELA",):
-                raise RuntimeError("unsupported value in CONVERGENCE: %s"%key)
+            if key in ("RESI_REFE_RELA", "RESI_COMP_RELA"):
+                raise RuntimeError("unsupported value in CONVERGENCE: %s" % key)
 
     if keywords["METHODE"] != "NEWTON":
         raise RuntimeError("unsupported value in METHODE")
@@ -78,7 +78,7 @@ def meca_non_line_ops(self, **args):
         **args (dict): User's keywords.
     """
 
-    UTMESS('A', 'QUALITY1_2')
+    UTMESS("A", "QUALITY1_2")
 
     args = _F(args)
 
@@ -88,8 +88,7 @@ def meca_non_line_ops(self, **args):
 
     snl = NonLinearSolver()
     snl.setLoggingLevel(args["INFO"])
-    snl.setPhysicalProblem(
-        args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
+    snl.setPhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
 
     # Add parameters
     snl.setKeywords(
@@ -131,12 +130,10 @@ def meca_non_line_ops(self, **args):
     # Add stepper
     timeStepper = TimeStepper(args["INCREMENT"]["LIST_INST"].getValues()[1::])
     if "INST_INIT" in args["INCREMENT"]:
-        timeStepper.setInitialStep(args["INCREMENT"]["INST_INIT"],
-                                   args["INCREMENT"]["PRECISION"])
+        timeStepper.setInitialStep(args["INCREMENT"]["INST_INIT"], args["INCREMENT"]["PRECISION"])
 
     if "INST_FIN" in args["INCREMENT"]:
-        timeStepper.setFinalStep(args["INCREMENT"]["INST_FIN"],
-                                 args["INCREMENT"]["PRECISION"])
+        timeStepper.setFinalStep(args["INCREMENT"]["INST_FIN"], args["INCREMENT"]["PRECISION"])
 
     if args["ETAT_INIT"] is not None:
         if "EVOL_NOLI" in args["ETAT_INIT"]:

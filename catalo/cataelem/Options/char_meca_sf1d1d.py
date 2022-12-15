@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,23 +20,23 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
 CHAR_MECA_SF1D1D = Option(
     para_in=(
         SP.PCAGNPO,
-           PCAORIE,
+        PCAORIE,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PFF1D1D,
@@ -47,12 +47,8 @@ CHAR_MECA_SF1D1D = Option(
         SP.PACCPLU,
         SP.PSTRXMR,
     ),
-    para_out=(
-        SP.PVECTUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.DIM_TOPO_MODELI,'1'),)),
-    ),
+    para_out=(SP.PVECTUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.DIM_TOPO_MODELI, "1"))),),
     comment=""" CHAR_MECA_SF1D1D (MOT-CLE : FORCE_POUTRE): CALCUL DU SECOND MEMBRE
            ELEMENTAIRE CORRESPONDANT A UNE FORCE LINEIQUE SUIVEUSE. LA FORCE
            EST DONNEE SOUS FORME DE FONCTION """,

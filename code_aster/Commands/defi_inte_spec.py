@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class InterspectralDefinition(ExecuteCommand):
     """Execute legacy operator DEFI_INTE_SPEC."""
+
     command_name = "DEFI_INTE_SPEC"
 
     def create_result(self, keywords):
@@ -34,5 +35,6 @@ class InterspectralDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = InterspectralMatrix()
+
 
 DEFI_INTE_SPEC = InterspectralDefinition.run

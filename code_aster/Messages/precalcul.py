@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,23 +20,26 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    60 : _("""
+    60: _(
+        """
 Appel à CALCUL
 Le nom du paramètre de champ d'entrée numéro %(i1)d est vide.
-"""),
-
-    61 : _("""
+"""
+    ),
+    61: _(
+        """
 Appel à CALCUL
 Le champ d'entrée numéro %(i1)d est vide.
-"""),
-
-    62 : _("""
+"""
+    ),
+    62: _(
+        """
 Appel à CALCUL. Le nom du paramètre de champ de sortie numéro %(i1)d est vide.
-"""),
-
-    63 : _("""
+"""
+    ),
+    63: _(
+        """
 Appel à CALCUL. Le champ de sortie numéro %(i1)d est vide.
-"""),
-
+"""
+    ),
 }

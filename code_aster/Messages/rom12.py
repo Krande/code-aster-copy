@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,26 +24,15 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""Construction de la matrice des modes de dimension [%(i1)d, %(i2)d]."""),
-
-    2 : _("""Sauvegarde de la base avec %(i1)d modes."""),
-
-    3 : _("""Création de la base pour les modes réduits avec %(i1)d numéros d'ordre."""),
-
-   10 : _("""Paramètres de la base:"""),
-
-   11 : _("""La base contient %(i1)d modes."""),
-
-   12 : _("""La base contient des modes linéiques."""),
-
-   13 : _("""Les modes linéiques ont pour axe: %(k1)s"""),
-
-   14 : _("""Les modes linéiques ont pour section de référence le GROUP_MA %(k1)s ."""),
-
-   15 : _("""La base contient des modes volumiques."""),
-
-   16 : _("""La base a été construite avec %(i1)d clichés."""),
-
-   17 : _("""La base contient les modes suivants:"""),
+    1: _("""Construction de la matrice des modes de dimension [%(i1)d, %(i2)d]."""),
+    2: _("""Sauvegarde de la base avec %(i1)d modes."""),
+    3: _("""Création de la base pour les modes réduits avec %(i1)d numéros d'ordre."""),
+    10: _("""Paramètres de la base:"""),
+    11: _("""La base contient %(i1)d modes."""),
+    12: _("""La base contient des modes linéiques."""),
+    13: _("""Les modes linéiques ont pour axe: %(k1)s"""),
+    14: _("""Les modes linéiques ont pour section de référence le GROUP_MA %(k1)s ."""),
+    15: _("""La base contient des modes volumiques."""),
+    16: _("""La base a été construite avec %(i1)d clichés."""),
+    17: _("""La base contient les modes suivants:"""),
 }

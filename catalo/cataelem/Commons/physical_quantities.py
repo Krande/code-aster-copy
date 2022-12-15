@@ -23,32 +23,31 @@ from cataelem.Tools.base_objects import objects_from_context
 
 # PhysicalQuantities
 
-ABSC_R   = PhysicalQuantity(type='R',
-    components=(
-       'ABSC[4]',
-    ),
+ABSC_R = PhysicalQuantity(
+    type="R",
+    components=("ABSC[4]",),
     comment="""  ABSC_R  Type:R  Abscisse curviligne le long d'un maillage filaire
        ABSC1 : abscisse curviligne du 1er noeud d'un SEG ou d'un POI1
        ABSC2 : abscisse curviligne du 2eme noeud d'un SEG
        ABSC3 : abscisse curviligne du 3eme noeud d'un SEG (s'il existe)
        ABSC4 : abscisse curviligne du 4eme noeud d'un SEG (s'il existe)
-""")
+""",
+)
 
 
-ADRSJEVE = PhysicalQuantity(type='I',
-    components=(
-       'I1',
-    ),
+ADRSJEVE = PhysicalQuantity(
+    type="I",
+    components=("I1",),
     comment="""  ADRSJEVE  Type:I  Grandeur reservee au materiau code
               Attention : ne pas lui ajouter de composante
        I1 : adresse du materiau code
-""")
+""",
+)
 
 
-ADRSJEVN = PhysicalQuantity(type='I',
-    components=(
-       'I[5]',
-    ),
+ADRSJEVN = PhysicalQuantity(
+    type="I",
+    components=("I[5]",),
     comment="""  ADRSJEVN  Type:I  Grandeur dont les CMPS sont des adresses d'objets
                       JEVEUX
        I1 : adresse du 1er objet
@@ -56,16 +55,13 @@ ADRSJEVN = PhysicalQuantity(type='I',
        I3 : adresse du 3eme objet
        I4 : adresse du 4eme objet
        I5 : adresse du 5eme objet
-""")
+""",
+)
 
 
-CAARPO   = PhysicalQuantity(type='R',
-    components=(
-       'C_FLEX_Y',
-       'I_SIGM_Y',
-       'C_FLEX_Z',
-       'I_SIGM_Z',
-    ),
+CAARPO = PhysicalQuantity(
+    type="R",
+    components=("C_FLEX_Y", "I_SIGM_Y", "C_FLEX_Z", "I_SIGM_Z"),
     comment="""  CAARPO  Type:R  Caracteristiques des poutres courbes
         Coefficient de flexibilite anisotrope
             C_FLEX_Y : dans le plan (X,Y)
@@ -75,42 +71,43 @@ CAARPO   = PhysicalQuantity(type='R',
             I_SIGM_Y : dans le plan (X,Y)
             I_SIGM_Z : dans le plan (X,Z)
                 sigmaz = I_SIGM_Z*sigmaz  et sigmay = I_SIGM_Y*sigmay
-""")
+""",
+)
 
 
-CACABL   = PhysicalQuantity(type='R',
-    components=(
-       'SECT',
-       'TENS',
-    ),
+CACABL = PhysicalQuantity(
+    type="R",
+    components=("SECT", "TENS"),
     comment="""  CACABL  Type:R  Caracteristiques des cables
        SECT : section du cable
        TENS : tension initiale
-""")
+""",
+)
 
 
-CACO3D   = PhysicalQuantity(type='R',
-    components=(
-       'CRF',
-    ),
+CACO3D = PhysicalQuantity(
+    type="R",
+    components=("CRF",),
     comment="""  CACO3D  Type:R  Une "CARACTERISTIQUE" des elements de COQUE_3D
        CRF : coefficient de rotation fictive
-""")
+""",
+)
 
 
-CACOQU_R   = PhysicalQuantity(type='R',
+CACOQU_R = PhysicalQuantity(
+    type="R",
     components=(
-       'EP',
-       'SECT_L',
-       'ALPHA',
-       'BETA',
-       'KAPPA',
-       'C_METR',
-       'DIST_N',
-       'CTOR',
-       'EXCENT',
-       'INERTIE',
-       'TENS',
+        "EP",
+        "SECT_L",
+        "ALPHA",
+        "BETA",
+        "KAPPA",
+        "C_METR",
+        "DIST_N",
+        "CTOR",
+        "EXCENT",
+        "INERTIE",
+        "TENS",
     ),
     comment="""  CACOQU_R : Caracteristiques des coques
        EP      : epaisseur de la coque
@@ -131,63 +128,54 @@ CACOQU_R   = PhysicalQuantity(type='R',
        TENS    : (réservé aux membranes) application d'une contrainte
                  initiale pour faire converger à la première iteration.
                  Elle disparait aux increments suivants
-""")
+""",
+)
 
 
-CACOQU_F  = PhysicalQuantity(type='K8',
-    components=(
-       'EP',
-       'SECT_L',
-       'DIST_N',
-       'EXCENT',
-    ),
+CACOQU_F = PhysicalQuantity(
+    type="K8",
+    components=("EP", "SECT_L", "DIST_N", "EXCENT"),
     comment="""  CACOQU_F : Caracteristiques des coques qui dependent d'une fonction
        EP      : epaisseur de la coque
        SECT_L  : somme des sections d'armatures dans la direction L
        DIST_N  : excentrement de la nappe d'armatures vs la maille support
        EXCENT  : excentrement du feuillet moyen
-""")
+""",
+)
 
 
-CADISA   = PhysicalQuantity(type='R',
-    components=(
-       'A[144]',
-    ),
+CADISA = PhysicalQuantity(
+    type="R",
+    components=("A[144]",),
     comment="""  CADISA  Type:R  Matrice d'amortissement des elements discrets
         A[144] : coefficients de la matrice d'amortissement
-""")
+""",
+)
 
 
-CADISK   = PhysicalQuantity(type='R',
-    components=(
-       'K[144]',
-    ),
+CADISK = PhysicalQuantity(
+    type="R",
+    components=("K[144]",),
     comment="""  CADISK Type:R  Matrice de rigidite des elements discrets
        K[144] : coefficients de la matrice de rigidite
-""")
+""",
+)
 
 
-CADISM   = PhysicalQuantity(type='R',
-    components=(
-       'M[144]',
-    ),
+CADISM = PhysicalQuantity(
+    type="R",
+    components=("M[144]",),
     comment="""  CADISM Type:R Matrice de masse des elements discrets 12 x 12
                   (MODELISATION='DIS_XXXX')
        M[144] : coefficients de la matrice masse des elements
 
-""")
+""",
+)
 
 
-CAFI_R   = PhysicalQuantity(type='R',
-    components=(
-       'YG',
-       'ZG',
-       'AIRE',
-       'YP',
-       'ZP',
-       'GX',
-       'NUMGR',
-    ),
+CAFI_R = PhysicalQuantity(
+    type="R",
+    components=("YG", "ZG", "AIRE", "YP", "ZP", "GX", "NUMGR"),
     comment="""  CAFI_R  Type:R Caracteristiques des fibres dans le repere local de la poutre
        YG    : coordonnee du centre de gravite de la fibre
        ZG    : coordonnee du centre de gravite de la fibre
@@ -196,24 +184,26 @@ CAFI_R   = PhysicalQuantity(type='R',
        ZP    : coordonnee du centre de gravite du groupe de fibre
        GX    : Constante de torsion pour le groupe de fibre
        NUMGR : numero du groupe de fibre
-""")
+""",
+)
 
 
-CAGEPO   = PhysicalQuantity(type='R',
+CAGEPO = PhysicalQuantity(
+    type="R",
     components=(
-       'HY1',
-       'HZ1',
-       'EPY1',
-       'EPZ1',
-       'HY2',
-       'HZ2',
-       'EPY2',
-       'EPZ2',
-       'R1',
-       'EP1',
-       'R2',
-       'EP2',
-       'TSEC',
+        "HY1",
+        "HZ1",
+        "EPY1",
+        "EPZ1",
+        "HY2",
+        "HZ2",
+        "EPY2",
+        "EPZ2",
+        "R1",
+        "EP1",
+        "R2",
+        "EP2",
+        "TSEC",
     ),
     comment="""  CAGEPO Type:R Caracteristiques geometriques des poutres a section
     rectangulaire ou circulaire
@@ -230,51 +220,53 @@ CAGEPO   = PhysicalQuantity(type='R',
        R2 : rayon du cercle (noeud 2)
        EP2 : epaisseur du cercle creux (noeud 2)
        TSEC : type de la section (generale, rectangle, cercle)
-""")
+""",
+)
 
 
-CAGNBA   = PhysicalQuantity(type='R',
-    components=(
-       'A1',
-    ),
+CAGNBA = PhysicalQuantity(
+    type="R",
+    components=("A1",),
     comment="""  CAGNBA Type:R Caracteristiques geometriques d'une section de barre
        A1 : aire de la section transversale
-""")
+""",
+)
 
 
-CAGNPO   = PhysicalQuantity(type='R',
+CAGNPO = PhysicalQuantity(
+    type="R",
     components=(
-       'A1',
-       'IY1',
-       'IZ1',
-       'AY1',
-       'AZ1',
-       'EY1',
-       'EZ1',
-       'JX1',
-       'RY1',
-       'RZ1',
-       'RT1',
-       'AI1',
-       'JG1',
-       'IYR21',
-       'IZR21',
-       'A2',
-       'IY2',
-       'IZ2',
-       'AY2',
-       'AZ2',
-       'EY2',
-       'EZ2',
-       'JX2',
-       'RY2',
-       'RZ2',
-       'RT2',
-       'AI2',
-       'JG2',
-       'IYR22',
-       'IZR22',
-       'TVAR',
+        "A1",
+        "IY1",
+        "IZ1",
+        "AY1",
+        "AZ1",
+        "EY1",
+        "EZ1",
+        "JX1",
+        "RY1",
+        "RZ1",
+        "RT1",
+        "AI1",
+        "JG1",
+        "IYR21",
+        "IZR21",
+        "A2",
+        "IY2",
+        "IZ2",
+        "AY2",
+        "AZ2",
+        "EY2",
+        "EZ2",
+        "JX2",
+        "RY2",
+        "RZ2",
+        "RT2",
+        "AI2",
+        "JG2",
+        "IYR22",
+        "IZR22",
+        "TVAR",
     ),
     comment="""  CAGNPO Type:R Caracteristiques mecaniques d'une section de poutre
       A1 : aire de la section (noeud 1)
@@ -314,19 +306,13 @@ CAGNPO   = PhysicalQuantity(type='R',
       IYR22 : INT(y(y*y+z*z)ds sur le domaine S(noeud 2)
       IZR22 : INT(z(y*y+z*z)ds sur le domaine S(noeud 2)
       TVAR : type de section (constante, variable)
-""")
+""",
+)
 
 
-CAMASS   = PhysicalQuantity(type='R',
-    components=(
-       'C',
-       'ALPHA',
-       'BETA',
-       'KAPPA',
-       'X',
-       'Y',
-       'Z',
-    ),
+CAMASS = PhysicalQuantity(
+    type="R",
+    components=("C", "ALPHA", "BETA", "KAPPA", "X", "Y", "Z"),
     comment="""  CAMASS Type:R Caracteristiques geometriques des elements massifs
       C : indice de definition du repere d'orthotropie (=1 definition par 3)
       angles nautiques, = -1 definition par un axe et un point sur cet axe)
@@ -336,35 +322,37 @@ CAMASS   = PhysicalQuantity(type='R',
       X : nul si C=1, sinon 1ere coordonnee du point de l'axe
       Y : nul si C=1, sinon 2eme coordonnee du point de l'axe
       Z : nul si C=1, sinon 3eme coordonnee du point de l'axe
-""")
+""",
+)
 
 
-CAORIE   = PhysicalQuantity(type='R',
+CAORIE = PhysicalQuantity(
+    type="R",
     components=(
-       'ALPHA',
-       'BETA',
-       'GAMMA',
-       'ALPHA2',
-       'BETA2',
-       'GAMMA2',
-       'ALPHA3',
-       'BETA3',
-       'GAMMA3',
-       'ALPHA4',
-       'BETA4',
-       'GAMMA4',
-       'ICOUDE',
-       'DN1N2',
-       'RCOURB',
-       'ANGCOU',
-       'ANGZZK',
-       'REP',
-       'AXE_X',
-       'AXE_Y',
-       'AXE_Z',
-       'O_X',
-       'O_Y',
-       'O_Z',
+        "ALPHA",
+        "BETA",
+        "GAMMA",
+        "ALPHA2",
+        "BETA2",
+        "GAMMA2",
+        "ALPHA3",
+        "BETA3",
+        "GAMMA3",
+        "ALPHA4",
+        "BETA4",
+        "GAMMA4",
+        "ICOUDE",
+        "DN1N2",
+        "RCOURB",
+        "ANGCOU",
+        "ANGZZK",
+        "REP",
+        "AXE_X",
+        "AXE_Y",
+        "AXE_Z",
+        "O_X",
+        "O_Y",
+        "O_Z",
     ),
     comment="""  CAORIE Type:R Orientation d'un segment en 3D. Angles nautiques
        ALPHA : 1er angle nautique pour la maille SEG2 (ou le 1er noeud
@@ -404,18 +392,13 @@ CAORIE   = PhysicalQuantity(type='R',
        O_X   : composante X de O (origine du repere cylindrique)
        O_Y   : composante Y de O (origine du repere cylindrique)
        O_Z   : composante Z de O (origine du repere cylindrique)
-""")
+""",
+)
 
 
-CAPOUF   = PhysicalQuantity(type='R',
-    components=(
-       'B_T',
-       'B_N',
-       'B_TN',
-       'A_FLUI',
-       'A_CELL',
-       'COEF_ECH',
-    ),
+CAPOUF = PhysicalQuantity(
+    type="R",
+    components=("B_T", "B_N", "B_TN", "A_FLUI", "A_CELL", "COEF_ECH"),
     comment="""  CAPOUF Type:R Caracteristiques geometriques des elements poutre fluide
        B_T : terme correcteur transverse
        B_N : terme correcteur normal
@@ -423,33 +406,35 @@ CAPOUF   = PhysicalQuantity(type='R',
        A_FLUI : aire fluide associe au terme correcteur
        A_CELL : aire de la cellule de reference
        COEF_ECH:  par rapport a la periode reelle de la cellule de reference
-""")
+""",
+)
 
-CARCRI   = PhysicalQuantity(type='R',
+CARCRI = PhysicalQuantity(
+    type="R",
     components=(
-       'ITECREL',
-       'MACOMP',
-       'RESCREL',
-       'THETA',
-       'ITEDEC',
-       'INTLOC',
-       'PERTURB',
-       'TOLDEBO',
-       'ITEDEBO',
-       'RESIRADI',
-       'VARIEXT1',
-       'THETATHM',
-       'POSTITER',
-       'LC_EXT[3]',
-       'MATRNSYM',
-       'ALPHATHM',
-       'LC_EXT2[2]',
-       'POSTINCR',
-       'STRAIN',
-       'VARIEXT2',
-       'HHO_COEF',
-       'HHO_STAB',
-       'HHO_CALC',
+        "ITECREL",
+        "MACOMP",
+        "RESCREL",
+        "THETA",
+        "ITEDEC",
+        "INTLOC",
+        "PERTURB",
+        "TOLDEBO",
+        "ITEDEBO",
+        "RESIRADI",
+        "VARIEXT1",
+        "THETATHM",
+        "POSTITER",
+        "LC_EXT[3]",
+        "MATRNSYM",
+        "ALPHATHM",
+        "LC_EXT2[2]",
+        "POSTINCR",
+        "STRAIN",
+        "VARIEXT2",
+        "HHO_COEF",
+        "HHO_STAB",
+        "HHO_CALC",
     ),
     comment="""  CARCRI Type :R Critere de convergence d'un probleme non-lineaire materiel
     (pour 1 point de Gauss)
@@ -476,58 +461,58 @@ CARCRI   = PhysicalQuantity(type='R',
        HHO_COEF : coefficient de stabilisation HHO
        HHO_STAB : methode pour choisr le parametre de stabilisation HHO
        HHO_CALC : precalcul des opérateurs HHO
-""")
+""",
+)
 
 
-CASECT   = PhysicalQuantity(type='K8',
-    components=(
-       'NOM',
-    ),
+CASECT = PhysicalQuantity(
+    type="K8",
+    components=("NOM",),
     comment="""  CASECT Type:K8 Nom d'un objet de type cara-poutre contenant le
     caracteristiques d'une section de poutre
        NOM : nom d'un objet cara-poutre
-""")
+""",
+)
 
-CHGREPER = PhysicalQuantity(type='R',
-    components=(
-       'NATCHG',
-       'CMAT[9]',
-    ),
+CHGREPER = PhysicalQuantity(
+    type="R",
+    components=("NATCHG", "CMAT[9]"),
     comment=""" CHGREPER  Type:R  Sert a definir les parametres des changements de repere
     NATCHG  : Nature du changement de repere
                 0.5 : passage GLOBAL vers LOCAL, matrice constante par elements
     CMAT[9] : Matrice de passage 3x3 pour le changement de repere.
     En sortie de l'option REPERE_LOCAL
     En entree de l'option MODI_REPERE
-""")
+""",
+)
 
 
-CHLI_R   = PhysicalQuantity(type='R',
-    components=(
-       'CHLI[3]',
-       'CHAR0',
-    ),
+CHLI_R = PhysicalQuantity(
+    type="R",
+    components=("CHLI[3]", "CHAR0"),
     comment="""  CHLI_R Type:R Charge limite
        CHLI1 : 1er terme elementaire
        CHLI2 : 2eme terme elementaire
        CHLI3 : 3eme terme elementaire
        CHAR0 : terme elementaire du au chargement permanent
-""")
+""",
+)
 
 
-CINFDI   = PhysicalQuantity(type='R',
+CINFDI = PhysicalQuantity(
+    type="R",
     components=(
-       'REPK',
-       'REPM',
-       'REPA',
-       'SYMK',
-       'SYMM',
-       'SYMA',
-       'DISK',
-       'DISM',
-       'DISA',
-       'ETAK',
-       'TYDI',
+        "REPK",
+        "REPM",
+        "REPA",
+        "SYMK",
+        "SYMM",
+        "SYMA",
+        "DISK",
+        "DISM",
+        "DISA",
+        "ETAK",
+        "TYDI",
     ),
     comment="""  CINFDI Type:R : Informations pour les elements discrets
       REP(K;M;A) si =1 repere global,  si =2 repere local
@@ -546,69 +531,67 @@ CINFDI   = PhysicalQuantity(type='R',
               uniquement sur les matrices de raideurs
       TYDI  : Type du discret
 
-""")
+""",
+)
 
 
-CODE_I   = PhysicalQuantity(type='I',
-    components=(
-       'IRET',
-    ),
+CODE_I = PhysicalQuantity(
+    type="I",
+    components=("IRET",),
     comment="""  CODE_I Type:I
        IRET :
-""")
+""",
+)
 
 
-COEH_F   = PhysicalQuantity(type='K8',
-    components=(
-       'H',
-       'H_INF',
-       'H_SUP',
-    ),
+COEH_F = PhysicalQuantity(
+    type="K8",
+    components=("H", "H_INF", "H_SUP"),
     comment="""  COEH_F Type:K8 Coefficient d'echange thermique (fonction) PHI = h*(Text - T)
        H : coefficient d'echange (probleme continu)
        H_INF : coefficient d'echange sur la face inferieure d'une coque
        H_SUP : coefficient d'echange sur la face superieure d'une coque
-""")
+""",
+)
 
 
-COEH_R   = PhysicalQuantity(type='R',
-    components=(
-       'H',
-       'H_INF',
-       'H_SUP',
-    ),
+COEH_R = PhysicalQuantity(
+    type="R",
+    components=("H", "H_INF", "H_SUP"),
     comment="""  COEH_R Type:R Coefficient d'echange thermique (reel) PHI = h *(Text - T)
        H : coefficient d'echange (probleme continu)
        H_INF : coefficient d'echange sur la face inferieure d'une coque
        H_SUP : coefficient d'echange sur la face superieure d'une coque
-""")
+""",
+)
 
 
-COMPOR   = PhysicalQuantity(type='K16',
+COMPOR = PhysicalQuantity(
+    type="K16",
     components=(
-       'RELCOM',
-       'NBVARI',
-       'DEFORM',
-       'INCELA',
-       'C_PLAN',
-       'NUME_LC',
-       'MULTCOMP',
-       'POSTITER',
-       'KIT1NAME',
-       'KIT2NAME',
-       'KIT3NAME',
-       'KIT4NAME',
-       'KIT1NUME',
-       'KIT2NUME',
-       'KIT3NUME',
-       'KIT4NUME',
-       'KIT1NVAR',
-       'KIT2NVAR',
-       'KIT3NVAR',
-       'KIT4NVAR',
-       'DEFO_LDC',
-       'RIGIGEOM',
-       'REGUVISC',
+        "RELCOM",
+        "NBVARI",
+        "DEFORM",
+        "INCELA",
+        "C_PLAN",
+        "NUME_LC",
+        "MULTCOMP",
+        "POSTITER",
+        "KIT1NAME",
+        "KIT2NAME",
+        "KIT3NAME",
+        "KIT4NAME",
+        "KIT1NUME",
+        "KIT2NUME",
+        "KIT3NUME",
+        "KIT4NUME",
+        "KIT1NVAR",
+        "KIT2NVAR",
+        "KIT3NVAR",
+        "KIT4NVAR",
+        "DEFO_LDC",
+        "RIGIGEOM",
+        "REGUVISC",
     ),
     comment="""  COMPOR Type:K16 Comportement materiel
        RELCOM : relation de comportement : 'ELAS' , 'VMIS_ISOT_LINE' , ...
@@ -634,74 +617,71 @@ COMPOR   = PhysicalQuantity(type='K16',
        DEFO_LDC : deformation en entrée de la ldc : 'TOTALE' ou 'MECANIQUE'
        RIGIGEOM : travail sur geometrie deformee
        REGUVISC : régularisation visqueuse
-""")
+""",
+)
 
 
-CONT_R   = PhysicalQuantity(type='R',
-    components=(
-       'COEF_C',
-       'COEF_F',
-    ),
+CONT_R = PhysicalQuantity(
+    type="R",
+    components=("COEF_C", "COEF_F"),
     comment="""  CONT_R  Type:R Coefficient pour le contact-frottement
        COEF_C : coefficient pour le contact
        COEF_F : coefficient pour le frottement
-""")
+""",
+)
 
-CORR_R   = PhysicalQuantity(type='R',
-    components=(
-       'CORR',
-    ),
+CORR_R = PhysicalQuantity(
+    type="R",
+    components=("CORR",),
     comment="""  CORR_R Type:R Corrosion
        COOR :
-""")
+""",
+)
 
 
-DCEL_I   = PhysicalQuantity(type='I',
-    components=(
-       'NPG_DYN',
-       'NCMP_DYN',
-    ),
+DCEL_I = PhysicalQuantity(
+    type="I",
+    components=("NPG_DYN", "NCMP_DYN"),
     comment="""  DCEL_I Type:I
        NPG_DYN  : Nombre de sous-points pour un cham_elem a sous-points
        NCMP_DYN : Nombre reel de CMPS pour la grandeur VARI_R
-""")
+""",
+)
 
 
-DDLI_C   = PhysicalQuantity(type='C',
-    components=(
-       'C',
-    ),
+DDLI_C = PhysicalQuantity(
+    type="C",
+    components=("C",),
     comment="""  DDLI_C Type:C Valeur (complexe) imposee a 1 ddl (ou a 1 relation
     lineaire) : Somme des alpha_i*ui = C
        C : Second membre de type complexe de la relation
-""")
+""",
+)
 
 
-DDLI_F   = PhysicalQuantity(type='K24',
-    components=(
-       'C',
-    ),
+DDLI_F = PhysicalQuantity(
+    type="K24",
+    components=("C",),
     comment="""  DDLI_F Type:K8 Valeur (fonction) imposee a 1 ddl (ou a 1 relation
     lineaire) : Somme des alpha_i*ui = C
        C : Second membre de type fonction de la relation
-""")
+""",
+)
 
 
-DDLI_R   = PhysicalQuantity(type='R',
-    components=(
-       'C',
-    ),
+DDLI_R = PhysicalQuantity(
+    type="R",
+    components=("C",),
     comment="""  DDLI_R Type:R Valeur (reelle) imposee a 1 ddl (ou a 1 relation
     lineaire) : Somme des alpha_i*ui = C
        C : Second membre de type reel de la relation
-""")
+""",
+)
 
 
-DDLM_C   = PhysicalQuantity(type='C',
-    components=(
-       'A[3]',
-       'B[3]',
-    ),
+DDLM_C = PhysicalQuantity(
+    type="C",
+    components=("A[3]", "B[3]"),
     comment="""  DDLM_C Type:C Coefficients (complexe) pour un noeud d'une relation
     lineaire : mecanique : A1.UX + A2.UY + ... + B3.DRZ = C
        A(1) : coefficient complexe pour le ddl Ux
@@ -710,14 +690,13 @@ DDLM_C   = PhysicalQuantity(type='C',
        B(1) : coefficient complexe pour le ddl DRx
        B(2) : coefficient complexe pour le ddl DRy
        B(3) : coefficient complexe pour le ddl DRz
-""")
+""",
+)
 
 
-DDLM_R   = PhysicalQuantity(type='R',
-    components=(
-       'A[3]',
-       'B[3]',
-    ),
+DDLM_R = PhysicalQuantity(
+    type="R",
+    components=("A[3]", "B[3]"),
     comment="""  DDLM_R Type:R Coefficients (reels) pour un noeud d'une relation
     lineaire : mecanique : A1.UX + A2.UY+...+B3.DRZ = C
     thermique : A1.T + A2 Tinf + A3 Tsup = C pour les elements de
@@ -731,40 +710,146 @@ DDLM_R   = PhysicalQuantity(type='R',
        B(1) Mecanique: coefficient reel pour le ddl DRX
        B(2) Mecanique: coefficient reel pour le ddl DRY
        B(3) Mecanique: coefficient reel pour le ddl DRZ
-""")
+""",
+)
 
-#------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 # Il est tres important que les 3 grandeurs DEPL_R, DEPL_C et DEPL_F aient les memes
 # composantes (et dans le meme ordre) :
-list_cmp_depl=(
-  'DX',         'DY',         'DZ',         'DRX',        'DRY',        'DRZ',
-  'GRX',        'GLIS',       'PRES',       'PRE[2]',     'TEMP',       'PHI',
-  'DH',         'H1X',        'H1Y',        'H1Z',        'H1PRE1',     'H2X',
-  'H2Y',        'H2Z',        'H2PRE1',     'H3X',        'H3Y',        'H3Z',
-  'H3PRE1',     'H4X',        'H4Y',        'H4Z',        'LAGR',       'K1',
-  'K2',         'K3',         'PRE_FLU',
-  'LAG_FLI',    'LAG_FLS',    'LAGS_C',     'LAGS_F[2]',  'LAG2_C',     'LAG2_F[2]',
-  'LAG3_C',     'LAG3_F[2]',  'PR2_FLU',    'LA2_FLI',    'LA2_FLS',
-  'D1X',        'D1Y',        'D1Z',        'D2X',        'D2Y',        'D2Z',
-  'D3X',        'D3Y',        'D3Z',
-  'PR3_FLU',    'LA3_FLI',    'LA3_FLS',
-  'LAG4_C',     'LAG4_F[2]',  'UI2',        'VI2',
-  'WI2',        'UI3',        'VI3',        'WI3',        'UI4',        'VI4',
-  'WI4',        'UI5',        'VI5',        'WI5',        'UI6',        'VI6',
-  'WI6',        'UO2',        'VO2',        'WO2',        'UO3',        'VO3',
-  'WO3',        'UO4',        'VO4',        'WO4',        'UO5',        'VO5',
-  'WO5',        'UO6',        'VO6',        'WO6',        'WO',         'WI1',
-  'WO1',        'GONF',       'EPXX',       'EPYY',       'EPZZ',       'EPXY',
-  'EPXZ',       'EPYZ',       'D1',
-  'D2',         'D3',
-  'VARI',       'LAG_GV',     'V1[3]',      'V2[3]',
-  'V3[3]',      'PRES1[3]',   'PRES2[3]',   'PRES3[3]',   'SIGN',       'SITX',
-  'SITY',       'LH1',        'SIXX',       'SIYY',       'SIZZ',       'SIXY',
-  'DAMG',       'PTOT',       'PIX',        'PIY',        'PIZ',
-  'DRGX',       'DRGY',       'DRGZ',
-  'HHO_C[60]',    'HHO_U[6]',   'HHO_V[6]',   'HHO_W[6]',   'PINCH',       'PSI'
+list_cmp_depl = (
+    "DX",
+    "DY",
+    "DZ",
+    "DRX",
+    "DRY",
+    "DRZ",
+    "GRX",
+    "GLIS",
+    "PRES",
+    "PRE[2]",
+    "TEMP",
+    "PHI",
+    "DH",
+    "H1X",
+    "H1Y",
+    "H1Z",
+    "H1PRE1",
+    "H2X",
+    "H2Y",
+    "H2Z",
+    "H2PRE1",
+    "H3X",
+    "H3Y",
+    "H3Z",
+    "H3PRE1",
+    "H4X",
+    "H4Y",
+    "H4Z",
+    "LAGR",
+    "K1",
+    "K2",
+    "K3",
+    "PRE_FLU",
+    "LAG_FLI",
+    "LAG_FLS",
+    "LAGS_C",
+    "LAGS_F[2]",
+    "LAG2_C",
+    "LAG2_F[2]",
+    "LAG3_C",
+    "LAG3_F[2]",
+    "PR2_FLU",
+    "LA2_FLI",
+    "LA2_FLS",
+    "D1X",
+    "D1Y",
+    "D1Z",
+    "D2X",
+    "D2Y",
+    "D2Z",
+    "D3X",
+    "D3Y",
+    "D3Z",
+    "PR3_FLU",
+    "LA3_FLI",
+    "LA3_FLS",
+    "LAG4_C",
+    "LAG4_F[2]",
+    "UI2",
+    "VI2",
+    "WI2",
+    "UI3",
+    "VI3",
+    "WI3",
+    "UI4",
+    "VI4",
+    "WI4",
+    "UI5",
+    "VI5",
+    "WI5",
+    "UI6",
+    "VI6",
+    "WI6",
+    "UO2",
+    "VO2",
+    "WO2",
+    "UO3",
+    "VO3",
+    "WO3",
+    "UO4",
+    "VO4",
+    "WO4",
+    "UO5",
+    "VO5",
+    "WO5",
+    "UO6",
+    "VO6",
+    "WO6",
+    "WO",
+    "WI1",
+    "WO1",
+    "GONF",
+    "EPXX",
+    "EPYY",
+    "EPZZ",
+    "EPXY",
+    "EPXZ",
+    "EPYZ",
+    "D1",
+    "D2",
+    "D3",
+    "VARI",
+    "LAG_GV",
+    "V1[3]",
+    "V2[3]",
+    "V3[3]",
+    "PRES1[3]",
+    "PRES2[3]",
+    "PRES3[3]",
+    "SIGN",
+    "SITX",
+    "SITY",
+    "LH1",
+    "SIXX",
+    "SIYY",
+    "SIZZ",
+    "SIXY",
+    "DAMG",
+    "PTOT",
+    "PIX",
+    "PIY",
+    "PIZ",
+    "DRGX",
+    "DRGY",
+    "DRGZ",
+    "HHO_C[60]",
+    "HHO_U[6]",
+    "HHO_V[6]",
+    "HHO_W[6]",
+    "PINCH",
+    "PSI",
 )
-comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
+comment_depl = """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repere global)
        GLIS    : translation relative suivante tangente (repere local)
@@ -839,34 +924,29 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        PSI   : potentiel de vitesse de deplacement du fluid
 """
 
-DEPL_R   = PhysicalQuantity(type='R',
-    components= list_cmp_depl,
-    comment=comment_depl,)
+DEPL_R = PhysicalQuantity(type="R", components=list_cmp_depl, comment=comment_depl)
 
-DEPL_C   = PhysicalQuantity(type='C',
-    components= list_cmp_depl,
-    comment=comment_depl,)
+DEPL_C = PhysicalQuantity(type="C", components=list_cmp_depl, comment=comment_depl)
 
-DEPL_F   = PhysicalQuantity(type='K8',
-    components= list_cmp_depl,
-    comment=comment_depl,)
-#------------------------------------------------------------------------------------------
+DEPL_F = PhysicalQuantity(type="K8", components=list_cmp_depl, comment=comment_depl)
+# ------------------------------------------------------------------------------------------
 
 
-DERA_R   = PhysicalQuantity(type='R',
+DERA_R = PhysicalQuantity(
+    type="R",
     components=(
-       'DCHA_V',
-       'DCHA_T',
-       'IND_DCHA',
-       'VAL_DCHA',
-       'X11',
-       'X22',
-       'X33',
-       'X12',
-       'X13',
-       'X23',
-       'RADI_V',
-       'ERR_RADI',
+        "DCHA_V",
+        "DCHA_T",
+        "IND_DCHA",
+        "VAL_DCHA",
+        "X11",
+        "X22",
+        "X33",
+        "X12",
+        "X13",
+        "X23",
+        "RADI_V",
+        "ERR_RADI",
     ),
     comment="""  DERA_R Type:R indicateurs locaux de decharge et de perte de radialite
        DCHA_V   : indicateur de decharge sur le deviateur des contraintes
@@ -880,79 +960,78 @@ DERA_R   = PhysicalQuantity(type='R',
        X23      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 23
        RADI_V   : indic. de perte de radialite sur le deviateur des contraintes
        ERR_RADI : indicateur d'erreur d'integration due a la non radialite
-""")
+""",
+)
 
 
-DISS_R   = PhysicalQuantity(type='R',
-    components=(
-       'ENDO',
-    ),
+DISS_R = PhysicalQuantity(
+    type="R",
+    components=("ENDO",),
     comment="""  DISS_R Type:R energie dissipee
        ENDO   : dissipation due a l'endommagement
-""")
+""",
+)
 
 
-DOMA_R   = PhysicalQuantity(type='R',
-    components=(
-       'DOMA',
-    ),
+DOMA_R = PhysicalQuantity(
+    type="R",
+    components=("DOMA",),
     comment="""  DOMA_R Type:R champ de dommage sur une structure
        DOMA     : Valeur du dommage
-""")
+""",
+)
 
 
-DOMMAG   = PhysicalQuantity(type='R',
-    components=(
-       'DOMA',
-    ),
+DOMMAG = PhysicalQuantity(
+    type="R",
+    components=("DOMA",),
     comment="""  DOMMAG Type:R A SUPPRIMER
        DOMA     : Valeur du dommage
-""")
+""",
+)
 
 
-DURT_R   = PhysicalQuantity(type='R',
-    components=(
-       'HV',
-    ),
+DURT_R = PhysicalQuantity(
+    type="R",
+    components=("HV",),
     comment="""  DURT_R Type:R Initialisation du calcul de la durete associe a la metallurgie
        HV : valeur
-""")
+""",
+)
 
 
-ENDO_R   = PhysicalQuantity(type='R',
-    components=(
-       'TRIAX',
-       'SI_ENDO',
-       'COENDO',
-       'DOM_LEM',
-    ),
+ENDO_R = PhysicalQuantity(
+    type="R",
+    components=("TRIAX", "SI_ENDO", "COENDO", "DOM_LEM"),
     comment="""  ENDO_R Type:R champ d'endommagement sur une structure
        TRIAX    : Taux de triaxialite
        SI_ENDO  : Contrainte equivalente d'endommagement
        COENDO   : Contrainte equivalente d'endommagement normalisee
        DOM_LEM  : Endommagement de Lemaitre
-""")
+""",
+)
 
 
-ENER_R   = PhysicalQuantity(type='R',
+ENER_R = PhysicalQuantity(
+    type="R",
     components=(
-       'TOTALE',
-       'TRAC_COM',
-       'TORSION',
-       'MEMBRANE',
-       'FLEXION',
-       'FLEX_Y',
-       'FLEX_Z',
-       'PLAN_XY',
-       'PLAN_XZ',
-       'DX',
-       'DY',
-       'DZ',
-       'DRX',
-       'DRY',
-       'DRZ',
-       'CISAILLE',
-       'COUPL_MF',
+        "TOTALE",
+        "TRAC_COM",
+        "TORSION",
+        "MEMBRANE",
+        "FLEXION",
+        "FLEX_Y",
+        "FLEX_Z",
+        "PLAN_XY",
+        "PLAN_XZ",
+        "DX",
+        "DY",
+        "DZ",
+        "DRX",
+        "DRY",
+        "DRZ",
+        "CISAILLE",
+        "COUPL_MF",
     ),
     comment="""  ENER_R Type:R Energie
        TOTALE : energie totale de l'element
@@ -972,106 +1051,110 @@ ENER_R   = PhysicalQuantity(type='R',
        DRZ : energie suivant DRZ
        CISAILLE : energie en cisaillement
        COUPL_MF : energie en couplage membrane-flexion
-""")
+""",
+)
 
 
-EPSI_C   = PhysicalQuantity(type='C',
+EPSI_C = PhysicalQuantity(
+    type="C",
     components=(
-       'EPXX',
-       'EPYY',
-       'EPZZ',
-       'EPXY',
-       'EPXZ',
-       'EPYZ',
-       'EXX',
-       'EYY',
-       'EXY',
-       'KXX',
-       'KYY',
-       'KXY',
-       'EPX',
-       'GAXY',
-       'GAXZ',
-       'GAT',
-       'KY',
-       'KZ',
-       'GAX',
-       'GAY',
-       'INVA_2',
-       'PRIN_[3]',
-       'INVA_2SG',
-       'PRE1',
-       'P1DX',
-       'P1DY',
-       'P1DZ',
-       'PRE2',
-       'P2DX',
-       'P2DY',
-       'P2DZ',
-       'TEMP',
-       'TEDX',
-       'TEDY',
-       'TEDZ',
-       'DX',
-       'DY',
-       'DZ',
-       'VECT_1_X',
-       'VECT_1_Y',
-       'VECT_1_Z',
-       'VECT_2_X',
-       'VECT_2_Y',
-       'VECT_2_Z',
-       'VECT_3_X',
-       'VECT_3_Y',
-       'VECT_3_Z',
-       'EPTHER_L',
-       'EPTHER_T',
-       'EPTHER_N',
-       'EPSECH',
-       'EPHYDR',
-       'DEPV',
-       'DGONFX[3]',
-       'DEPV1[3]',
-       'DEPV2[3]',
-       'DEPV3[3]',
-       'DV11X[3]',
-       'DV12X[3]',
-       'DV13X[3]',
-       'DV21X[3]',
-       'DV22X[3]',
-       'DV23X[3]',
-       'DV31X[3]',
-       'DV32X[3]',
-       'DV33X[3]',
-       'PRES',
-       'PRES1[3]',
-       'PRES2[3]',
-       'PRES3[3]',
-       'EPPTOT',
-       'DIVU',
+        "EPXX",
+        "EPYY",
+        "EPZZ",
+        "EPXY",
+        "EPXZ",
+        "EPYZ",
+        "EXX",
+        "EYY",
+        "EXY",
+        "KXX",
+        "KYY",
+        "KXY",
+        "EPX",
+        "GAXY",
+        "GAXZ",
+        "GAT",
+        "KY",
+        "KZ",
+        "GAX",
+        "GAY",
+        "INVA_2",
+        "PRIN_[3]",
+        "INVA_2SG",
+        "PRE1",
+        "P1DX",
+        "P1DY",
+        "P1DZ",
+        "PRE2",
+        "P2DX",
+        "P2DY",
+        "P2DZ",
+        "TEMP",
+        "TEDX",
+        "TEDY",
+        "TEDZ",
+        "DX",
+        "DY",
+        "DZ",
+        "VECT_1_X",
+        "VECT_1_Y",
+        "VECT_1_Z",
+        "VECT_2_X",
+        "VECT_2_Y",
+        "VECT_2_Z",
+        "VECT_3_X",
+        "VECT_3_Y",
+        "VECT_3_Z",
+        "EPTHER_L",
+        "EPTHER_T",
+        "EPTHER_N",
+        "EPSECH",
+        "EPHYDR",
+        "DEPV",
+        "DGONFX[3]",
+        "DEPV1[3]",
+        "DEPV2[3]",
+        "DEPV3[3]",
+        "DV11X[3]",
+        "DV12X[3]",
+        "DV13X[3]",
+        "DV21X[3]",
+        "DV22X[3]",
+        "DV23X[3]",
+        "DV31X[3]",
+        "DV32X[3]",
+        "DV33X[3]",
+        "PRES",
+        "PRES1[3]",
+        "PRES2[3]",
+        "PRES3[3]",
+        "EPPTOT",
+        "DIVU",
     ),
     comment=""" EPSI_C Type:C
-""")
+""",
+)
 
 
-EPSI_F   = PhysicalQuantity(type='K8',
+EPSI_F = PhysicalQuantity(
+    type="K8",
     components=(
-       'EPXX',
-       'EPYY',
-       'EPZZ',
-       'EPXY',
-       'EPXZ',
-       'EPYZ',
-       'DIVU',
-       'EXX',
-       'EYY',
-       'EXY',
-       'KXX',
-       'KYY',
-       'KXY',
-       'EPX',
-       'KY',
-       'KZ',
+        "EPXX",
+        "EPYY",
+        "EPZZ",
+        "EPXY",
+        "EPXZ",
+        "EPYZ",
+        "DIVU",
+        "EXX",
+        "EYY",
+        "EXY",
+        "KXX",
+        "KYY",
+        "KXY",
+        "EPX",
+        "KY",
+        "KZ",
     ),
     comment="""  EPSI_F Type:K8 Deformation (fonction)
        EPXX : epsilon_xx deformation d'un milieu continu
@@ -1090,83 +1173,85 @@ EPSI_F   = PhysicalQuantity(type='K8',
        EPX Poutre: elongation selon l'axe de la poutre
        KY Poutre: courbure selon l'axe Y
        KZ Poutre: courbure selon l'axe Z
-""")
+""",
+)
 
 
-EPSI_R   = PhysicalQuantity(type='R',
+EPSI_R = PhysicalQuantity(
+    type="R",
     components=(
-       'EPXX',
-       'EPYY',
-       'EPZZ',
-       'EPXY',
-       'EPXZ',
-       'EPYZ',
-       'EXX',
-       'EYY',
-       'EXY',
-       'KXX',
-       'KYY',
-       'KXY',
-       'EPX',
-       'GAXY',
-       'GAXZ',
-       'GAT',
-       'KY',
-       'KZ',
-       'GAX',
-       'GAY',
-       'INVA_2',
-       'PRIN_[3]',
-       'INVA_2SG',
-       'PRE1',
-       'P1DX',
-       'P1DY',
-       'P1DZ',
-       'PRE2',
-       'P2DX',
-       'P2DY',
-       'P2DZ',
-       'TEMP',
-       'TEDX',
-       'TEDY',
-       'TEDZ',
-       'DX',
-       'DY',
-       'DZ',
-       'VECT_1_X',
-       'VECT_1_Y',
-       'VECT_1_Z',
-       'VECT_2_X',
-       'VECT_2_Y',
-       'VECT_2_Z',
-       'VECT_3_X',
-       'VECT_3_Y',
-       'VECT_3_Z',
-       'EPTHER_L',
-       'EPTHER_T',
-       'EPTHER_N',
-       'EPSECH',
-       'EPHYDR',
-       'DEPV',
-       'DGONFX[3]',
-       'DEPV1[3]',
-       'DEPV2[3]',
-       'DEPV3[3]',
-       'DV11X[3]',
-       'DV12X[3]',
-       'DV13X[3]',
-       'DV21X[3]',
-       'DV22X[3]',
-       'DV23X[3]',
-       'DV31X[3]',
-       'DV32X[3]',
-       'DV33X[3]',
-       'PRES',
-       'PRES1[3]',
-       'PRES2[3]',
-       'PRES3[3]',
-       'EPPTOT',
-       'DIVU',
+        "EPXX",
+        "EPYY",
+        "EPZZ",
+        "EPXY",
+        "EPXZ",
+        "EPYZ",
+        "EXX",
+        "EYY",
+        "EXY",
+        "KXX",
+        "KYY",
+        "KXY",
+        "EPX",
+        "GAXY",
+        "GAXZ",
+        "GAT",
+        "KY",
+        "KZ",
+        "GAX",
+        "GAY",
+        "INVA_2",
+        "PRIN_[3]",
+        "INVA_2SG",
+        "PRE1",
+        "P1DX",
+        "P1DY",
+        "P1DZ",
+        "PRE2",
+        "P2DX",
+        "P2DY",
+        "P2DZ",
+        "TEMP",
+        "TEDX",
+        "TEDY",
+        "TEDZ",
+        "DX",
+        "DY",
+        "DZ",
+        "VECT_1_X",
+        "VECT_1_Y",
+        "VECT_1_Z",
+        "VECT_2_X",
+        "VECT_2_Y",
+        "VECT_2_Z",
+        "VECT_3_X",
+        "VECT_3_Y",
+        "VECT_3_Z",
+        "EPTHER_L",
+        "EPTHER_T",
+        "EPTHER_N",
+        "EPSECH",
+        "EPHYDR",
+        "DEPV",
+        "DGONFX[3]",
+        "DEPV1[3]",
+        "DEPV2[3]",
+        "DEPV3[3]",
+        "DV11X[3]",
+        "DV12X[3]",
+        "DV13X[3]",
+        "DV21X[3]",
+        "DV22X[3]",
+        "DV23X[3]",
+        "DV31X[3]",
+        "DV32X[3]",
+        "DV33X[3]",
+        "PRES",
+        "PRES1[3]",
+        "PRES2[3]",
+        "PRES3[3]",
+        "EPPTOT",
+        "DIVU",
     ),
     comment="""  EPSI_R Type:R Deformation
        EPXX : epsilon_xx deformation d'un milieu continu
@@ -1252,41 +1337,43 @@ EPSI_R   = PhysicalQuantity(type='R',
        PRES33 :
        EPPTOT : deformation liee a la variable de commande ptot en chainage HM
        DIVU   : dilatation volumique (chainage HM mecanique vers hydraulique)
-""")
+""",
+)
 
 
-ERRE_R   = PhysicalQuantity(type='R',
+ERRE_R = PhysicalQuantity(
+    type="R",
     components=(
-       'ERREST',
-       'NUEST',
-       'SIGCAL',
-       'TERMRE',
-       'TERMR2',
-       'ERTABS',
-       'ERTREL',
-       'TERMNO',
-       'TERMN2',
-       'TERMVO',
-       'TERMV2',
-       'TERMV1',
-       'TERMSA',
-       'TERMS2',
-       'TERMS1',
-       'TERMFL',
-       'TERMF2',
-       'TERMF1',
-       'TERMEC',
-       'TERME2',
-       'TERME1',
-       'ESTERG[2]',
-       'ERHMME_L',
-       'ERHMMEDL',
-       'ERHMHY_L',
-       'ERHMME_G',
-       'ERHMMEDG',
-       'ERHMHY_G',
-       'ERRETPS',
-       'TAILLE',
+        "ERREST",
+        "NUEST",
+        "SIGCAL",
+        "TERMRE",
+        "TERMR2",
+        "ERTABS",
+        "ERTREL",
+        "TERMNO",
+        "TERMN2",
+        "TERMVO",
+        "TERMV2",
+        "TERMV1",
+        "TERMSA",
+        "TERMS2",
+        "TERMS1",
+        "TERMFL",
+        "TERMF2",
+        "TERMF1",
+        "TERMEC",
+        "TERME2",
+        "TERME1",
+        "ESTERG[2]",
+        "ERHMME_L",
+        "ERHMMEDL",
+        "ERHMHY_L",
+        "ERHMME_G",
+        "ERHMMEDG",
+        "ERHMHY_G",
+        "ERRETPS",
+        "TAILLE",
     ),
     comment="""  EERREUR Type:R Calcul de l'erreur avec la methode des residus
        ERREST : erreur absolue estimee sur l'element
@@ -1330,35 +1417,37 @@ ERRE_R   = PhysicalQuantity(type='R',
                   Pour le stationnaire - indicateur booste
        ERRETPS  : ERreur en REsidu en TemPS
        TAILLE   : taille des mailles selon la definition de la routine uthk.f
-""")
+""",
+)
 
 
-FACY_R   = PhysicalQuantity(type='R',
+FACY_R = PhysicalQuantity(
+    type="R",
     components=(
-       'DTAUM1',
-       'VNM1X',
-       'VNM1Y',
-       'VNM1Z',
-       'SINMAX1',
-       'SINMOY1',
-       'EPNMAX1',
-       'EPNMOY1',
-       'SIGEQ1',
-       'NBRUP1',
-       'ENDO1',
-       'DTAUM2',
-       'VNM2X',
-       'VNM2Y',
-       'VNM2Z',
-       'SINMAX2',
-       'SINMOY2',
-       'EPNMAX2',
-       'EPNMOY2',
-       'SIGEQ2',
-       'NBRUP2',
-       'ENDO2',
-       'VMIS',
-       'TRESCA',
+        "DTAUM1",
+        "VNM1X",
+        "VNM1Y",
+        "VNM1Z",
+        "SINMAX1",
+        "SINMOY1",
+        "EPNMAX1",
+        "EPNMOY1",
+        "SIGEQ1",
+        "NBRUP1",
+        "ENDO1",
+        "DTAUM2",
+        "VNM2X",
+        "VNM2Y",
+        "VNM2Z",
+        "SINMAX2",
+        "SINMOY2",
+        "EPNMAX2",
+        "EPNMOY2",
+        "SIGEQ2",
+        "NBRUP2",
+        "ENDO2",
+        "VMIS",
+        "TRESCA",
     ),
     comment="""  FACY_R  Type:R Grandeur liee a la fatigue a grand nombre de cycles sous
        chargement multiaxial
@@ -1404,19 +1493,13 @@ FACY_R   = PhysicalQuantity(type='R',
        ENDO2 : Endommagement associe a NBRUP2 (ENDO2=1/NBRUP2)
        VMIS : mesure d'amplitude de contrainte selon le critere de VON MISES
        TRESCA : mesure d'amplitude de contrainte selon le critere de TRESCA
-""")
+""",
+)
 
 
-FLAP_R   = PhysicalQuantity(type='R',
-    components=(
-       'X1',
-       'Y1',
-       'Z1',
-       'X2',
-       'Y2',
-       'Z2',
-       'CODE',
-    ),
+FLAP_R = PhysicalQuantity(
+    type="R",
+    components=("X1", "Y1", "Z1", "X2", "Y2", "Z2", "CODE"),
     comment="""  FLAP_R Type:R Application de la force de Laplace ( FORCE_ELEC )
        X1 : coordonnee X d'un point du conducteur 1
        Y1 : coordonnee Y d'un point du conducteur 1
@@ -1429,100 +1512,99 @@ FLAP_R   = PhysicalQuantity(type='R',
             = 12 : DIST
             = 2 : INFI
             = 3 : FINI
-""")
+""",
+)
 
 
-FER1_R   = PhysicalQuantity(type='R',
+FER1_R = PhysicalQuantity(
+    type="R",
     components=(
-        'TYPCOMB',
-        'CODIF',
-        'TYPSTRU',
-        'FERRSYME',
-        'SLSYME',
-        'FERRCOMP',
-        'EPUCISA',
-        'FERRMIN',
-        'RHOLMIN',
-        'RHOTMIN',
-        'COMPRESS',
-        'CEQUI',
-        'ENROBI',
-        'ENROBS',
-        'ENROBYI',
-        'ENROBYS',
-        'ENROBZI',
-        'ENROBZS',
-        'SIGS',
-        'SIGCI',
-        'SIGCS',
-        'SIGCYI',
-        'SIGCYS',
-        'SIGCZI',
-        'SIGCZS',
-        'ALPHACC',
-        'GAMMAS',
-        'GAMMAC',
-        'FACIER',
-        'EYS',
-        'TYPDIAG',
-        'FBETON',
-        'CLACIER',
-        'UC',
-        'UM',
-        'RHOACIER',
-        'AREINF',
-        'ASHEAR',
-        'ASTIRR',
-        'RHOCRIT',
-        'DATCRIT',
-        'LCRIT',
-        'WMAXI',
-        'WMAXS',
-        'WMAXYI',
-        'WMAXYS',
-        'WMAXZI',
-        'WMAXZS',
-        'SIGELSQP',
-        'KT',
-        'PHIXI',
-        'PHIXS',
-        'PHIYI',
-        'PHIYS',
-        'PHIZI',
-        'PHIZS',
+        "TYPCOMB",
+        "CODIF",
+        "TYPSTRU",
+        "FERRSYME",
+        "SLSYME",
+        "FERRCOMP",
+        "EPUCISA",
+        "FERRMIN",
+        "RHOLMIN",
+        "RHOTMIN",
+        "COMPRESS",
+        "CEQUI",
+        "ENROBI",
+        "ENROBS",
+        "ENROBYI",
+        "ENROBYS",
+        "ENROBZI",
+        "ENROBZS",
+        "SIGS",
+        "SIGCI",
+        "SIGCS",
+        "SIGCYI",
+        "SIGCYS",
+        "SIGCZI",
+        "SIGCZS",
+        "ALPHACC",
+        "GAMMAS",
+        "GAMMAC",
+        "FACIER",
+        "EYS",
+        "TYPDIAG",
+        "FBETON",
+        "CLACIER",
+        "UC",
+        "UM",
+        "RHOACIER",
+        "AREINF",
+        "ASHEAR",
+        "ASTIRR",
+        "RHOCRIT",
+        "DATCRIT",
+        "LCRIT",
+        "WMAXI",
+        "WMAXS",
+        "WMAXYI",
+        "WMAXYS",
+        "WMAXZI",
+        "WMAXZS",
+        "SIGELSQP",
+        "KT",
+        "PHIXI",
+        "PHIXS",
+        "PHIYI",
+        "PHIYS",
+        "PHIZI",
+        "PHIZS",
     ),
     comment=""" FER1_R et FER2_R : 2 grandeurs utilisees par CALC_FERRAILLAGE
-""")
+""",
+)
 
 
-FER2_R   = PhysicalQuantity(type='R',
+FER2_R = PhysicalQuantity(
+    type="R",
     components=(
-       'DNSXI',
-       'DNSXS',
-       'DNSYI',
-       'DNSYS',
-       'DNSXT',
-       'DNSYT',
-       'AYI',
-       'AYS',
-       'AZI',
-       'AZS',
-       'AST',
-       'ATOT',
-       'DNSVOL',
-       'CONSTRUC',
-    ),)
-
-
-FISS_R   = PhysicalQuantity(type='R',
-    components=(
-       'XA',
-       'YA',
-       'XTAN',
-       'YTAN',
-       'XNORM',
-       'YNORM',
+        "DNSXI",
+        "DNSXS",
+        "DNSYI",
+        "DNSYS",
+        "DNSXT",
+        "DNSYT",
+        "AYI",
+        "AYS",
+        "AZI",
+        "AZS",
+        "AST",
+        "ATOT",
+        "DNSVOL",
+        "CONSTRUC",
     ),
+)
+
+
+FISS_R = PhysicalQuantity(
+    type="R",
+    components=("XA", "YA", "XTAN", "YTAN", "XNORM", "YNORM"),
     comment="""  FISS_R Type:R Noeud du fond de fissure et sa normale
     (calcul du K1, K2 en 2D)
        XA : coordonnee 1 du noeud du fond de fissure
@@ -1531,86 +1613,80 @@ FISS_R   = PhysicalQuantity(type='R',
        YTAN : composante 2 de la tangente a la fissure
        XNORM : composante 1 de la normale a la fissure
        YNORM : composante 2 de la normale a la fissure
-""")
+""",
+)
 
 
-FLAPLA   = PhysicalQuantity(type='K24',
-    components=(
-       'NOMAIL',
-       'NOGEOM',
-    ),
+FLAPLA = PhysicalQuantity(
+    type="K24",
+    components=("NOMAIL", "NOGEOM"),
     comment="""  FLAPLA Type:K24 Inductance mutuelle entre 2 circuits filaires
        NOMAIL : nom du maillage
        NOGEOM : champ de geometrie
-""")
+""",
+)
 
 
-FLHN_R   = PhysicalQuantity(type='R',
-    components=(
-       'FH1[2]',
-       'FH2[2]',
-    ),
+FLHN_R = PhysicalQuantity(
+    type="R",
+    components=("FH1[2]", "FH2[2]"),
     comment="""  FLHN_R Type:R Flux hydraulique sortant par unite de surface
        FH11 : valeur du flux sortant
        FH12 : valeur du flux sortant
        FH21 : valeur du flux sortant
        FH22 : valeur du flux sortant
-""")
+""",
+)
 
 
-FLUN_F   = PhysicalQuantity(type='K8',
-    components=(
-       'FLUN',
-       'FLUN_INF',
-       'FLUN_SUP',
-    ),
+FLUN_F = PhysicalQuantity(
+    type="K8",
+    components=("FLUN", "FLUN_INF", "FLUN_SUP"),
     comment="""  FLUN_F Type:K8 Flux de chaleur sortant par unite de surface
     PHI = (-lambda.laplacien(T)).n (c'est un scalaire)
        FLUN : valeur du flux sortant
        FLUN_INF : valeur du flux sortant par la face inferieure d'une coque
        FLUN_SUP : valeur du flux sortant par la face superieure d'une coque
-""")
+""",
+)
 
 
-FLUN_R   = PhysicalQuantity(type='R',
-    components=(
-       'FLUN',
-       'FLUN_INF',
-       'FLUN_SUP',
-    ),
+FLUN_R = PhysicalQuantity(
+    type="R",
+    components=("FLUN", "FLUN_INF", "FLUN_SUP"),
     comment="""  FLUN_R Type:R Flux de chaleur sortant par unite de surface
     PHI = (-lambda.laplacien(T)).n  (c'est un scalaire)
        FLUN : valeur du flux sortant
        FLUN_INF : valeur du flux sortant par la face inferieure d'une coque
        FLUN_SUP : valeur du flux sortant par la face superieure d'une coque
-""")
+""",
+)
 
 
-FLUX_F   = PhysicalQuantity(type='K8',
-    components=(
-       'FLUX',
-       'FLUY',
-       'FLUZ',
-    ),
+FLUX_F = PhysicalQuantity(
+    type="K8",
+    components=("FLUX", "FLUY", "FLUZ"),
     comment="""  FLUX_F Type:K8 Flux vectoriel de chaleur en un point materiel du
     domaine continu : PHI = -lambda.laplacien(T)
        FLUX : composante suivante OX de PHI
        FLUY : composante suivante OY de PHI
        FLUZ : composante suivante OZ de PHI
-""")
+""",
+)
 
 
-FLUX_R   = PhysicalQuantity(type='R',
+FLUX_R = PhysicalQuantity(
+    type="R",
     components=(
-       'FLUX',
-       'FLUY',
-       'FLUZ',
-       'FLUX_INF',
-       'FLUY_INF',
-       'FLUZ_INF',
-       'FLUX_SUP',
-       'FLUY_SUP',
-       'FLUZ_SUP',
+        "FLUX",
+        "FLUY",
+        "FLUZ",
+        "FLUX_INF",
+        "FLUY_INF",
+        "FLUZ_INF",
+        "FLUX_SUP",
+        "FLUY_SUP",
+        "FLUZ_SUP",
     ),
     comment=""" FLUX_R Type:R Flux vectoriel de chaleur en un point materiel du
    domaine continu : PHI = -lambda.laplacien(T).n
@@ -1623,26 +1699,28 @@ FLUX_R   = PhysicalQuantity(type='R',
       FLUX_SUP : flux sur un point de la face superieure des coques
       FLUY_SUP : flux sur un point de la face superieure des coques
       FLUZ_SUP : flux sur un point de la face superieure des coques
-""")
+""",
+)
 
 
-FORC_C   = PhysicalQuantity(type='C',
+FORC_C = PhysicalQuantity(
+    type="C",
     components=(
-       'FX',
-       'FY',
-       'FZ',
-       'MX',
-       'MY',
-       'MZ',
-       'BX',
-       'REP',
-       'ALPHA',
-       'BETA',
-       'GAMMA',
-       'PLAN',
-       'MGX',
-       'MGY',
-       'MGZ',
+        "FX",
+        "FY",
+        "FZ",
+        "MX",
+        "MY",
+        "MZ",
+        "BX",
+        "REP",
+        "ALPHA",
+        "BETA",
+        "GAMMA",
+        "PLAN",
+        "MGX",
+        "MGY",
+        "MGZ",
     ),
     comment="""  FORC_C Type:C Force complexe (ponctuelle, lineique, surfacique ou
     volumique) appliquee sur un modele mecanique
@@ -1662,26 +1740,28 @@ FORC_C   = PhysicalQuantity(type='C',
        MGX : moment grille suivant OX
        MGY : moment grille suivant OY
        MGZ : moment grille suivant OZ
-""")
+""",
+)
 
 
-FORC_F   = PhysicalQuantity(type='K8',
+FORC_F = PhysicalQuantity(
+    type="K8",
     components=(
-       'FX',
-       'FY',
-       'FZ',
-       'MX',
-       'MY',
-       'MZ',
-       'BX',
-       'REP',
-       'ALPHA',
-       'BETA',
-       'GAMMA',
-       'PLAN',
-       'MGX',
-       'MGY',
-       'MGZ',
+        "FX",
+        "FY",
+        "FZ",
+        "MX",
+        "MY",
+        "MZ",
+        "BX",
+        "REP",
+        "ALPHA",
+        "BETA",
+        "GAMMA",
+        "PLAN",
+        "MGX",
+        "MGY",
+        "MGZ",
     ),
     comment="""  FORC_F Type:K8 Force (ponctuelle, lineique, surfacique ou volumique)
     appliquee sur un modele mecanique
@@ -1701,26 +1781,28 @@ FORC_F   = PhysicalQuantity(type='K8',
        MGX : moment grille suivant OX
        MGY : moment grille suivant OY
        MGZ : moment grille suivant OZ
-""")
+""",
+)
 
 
-FORC_R   = PhysicalQuantity(type='R',
+FORC_R = PhysicalQuantity(
+    type="R",
     components=(
-       'FX',
-       'FY',
-       'FZ',
-       'MX',
-       'MY',
-       'MZ',
-       'BX',
-       'REP',
-       'ALPHA',
-       'BETA',
-       'GAMMA',
-       'PLAN',
-       'MGX',
-       'MGY',
-       'MGZ',
+        "FX",
+        "FY",
+        "FZ",
+        "MX",
+        "MY",
+        "MZ",
+        "BX",
+        "REP",
+        "ALPHA",
+        "BETA",
+        "GAMMA",
+        "PLAN",
+        "MGX",
+        "MGY",
+        "MGZ",
     ),
     comment="""  FORC_R Type:R Force (ponctuelle, lineique, surfacique ou volumique)
     appliquee sur un modele mecanique
@@ -1740,84 +1822,74 @@ FORC_R   = PhysicalQuantity(type='R',
        MGX : moment grille suivant OX
        MGY : moment grille suivant OY
        MGZ : moment grille suivant OZ
-""")
+""",
+)
 
-REAC_R   = PhysicalQuantity(type='R',
-    components=(
-       'DX',
-       'DY',
-       'DZ',
-    ),
+REAC_R = PhysicalQuantity(
+    type="R",
+    components=("DX", "DY", "DZ"),
     comment="""  REAC_R Type:R Reaction (ponctuelle, lineique, surfacique ou volumique)
     appliquee sur un modele mecanique
        DX : composante suivant OX de la reaction
        DY : composante suivant OY de la reaction
        DZ : composante suivant OZ de la reaction
-""")
+""",
+)
 
 
-FREQ_R   = PhysicalQuantity(type='R',
-    components=(
-       'FREQ',
-    ),
+FREQ_R = PhysicalQuantity(
+    type="R",
+    components=("FREQ",),
     comment="""  FREQ_R Type:R Frequence (reelle)
        FREQ : valeur de la frequence
-""")
+""",
+)
 
 
-FTHM_F   = PhysicalQuantity(type='K8',
-    components=(
-       'PFLU[2]',
-       'PTHER',
-       'PFLUF',
-    ),
+FTHM_F = PhysicalQuantity(
+    type="K8",
+    components=("PFLU[2]", "PTHER", "PFLUF"),
     comment="""  FTHM_F Type:K8 Flux thermo-hydraulique (modelisation THM)
        PFLU1 :
        PFLU2 :
        PTHER : fonction du flux de chaleur
        PFLUF : fonction du flux de fluide dans une fracture
 
-""")
+""",
+)
 
 
-FTHM_R   = PhysicalQuantity(type='R',
-    components=(
-       'PFLU[2]',
-       'PTHER',
-    ),
+FTHM_R = PhysicalQuantity(
+    type="R",
+    components=("PFLU[2]", "PTHER"),
     comment="""  FTHM_R Type:R Flux thermo-hydraulique (modelisation THM)
        PFLU1 :
        PFLU2 :
        PTHER : fonction du flux de chaleur
-""")
+""",
+)
 
-ETHM_R   = PhysicalQuantity(type='R',
-    components=(
-       'COEF[4]',
-       'PRE[2]',
-    ),
+ETHM_R = PhysicalQuantity(
+    type="R",
+    components=("COEF[4]", "PRE[2]"),
     comment="""  ETHM_R Type:R Coef Echange (modelisation THM)
        COEF :C11 C12 C21 C22
        PRE : PRE1 ext et PRE2 ext
 
-""")
-ETHM_F   = PhysicalQuantity(type='K8',
-    components=(
-       'COEF[4]',
-       'PRE[2]',
-    ),
+""",
+)
+ETHM_F = PhysicalQuantity(
+    type="K8",
+    components=("COEF[4]", "PRE[2]"),
     comment="""  ETHM_F Type:F Coef Echange (modelisation THM)
        COEF :C11 C12 C21 C22
        PRE : PRE1 ext et PRE2 ext
 
-""")
-G        = PhysicalQuantity(type='R',
-    components=(
-       'GTHETA',
-       'FIC[3]',
-       'K[3]',
-       'BETA',
-    ),
+""",
+)
+G = PhysicalQuantity(
+    type="R",
+    components=("GTHETA", "FIC[3]", "K[3]", "BETA"),
     comment="""  G Type:R Taux de restitution de l'energie et coefficient d'intensite
     de contraintes
        GTHETA : Taux de restitution d'energie
@@ -1828,35 +1900,34 @@ G        = PhysicalQuantity(type='R',
        K2 : Coefficient de contraintes K2
        K3 : Coefficient de contraintes K3
        BETA :
-""")
+""",
+)
 
 
-GEOM_R   = PhysicalQuantity(type='R',
-    components=(
-       'X',
-       'Y',
-       'Z',
-       'W',
-    ),
+GEOM_R = PhysicalQuantity(
+    type="R",
+    components=("X", "Y", "Z", "W"),
     comment="""  GEOM_R Type:R Geometrie (d'un noeud)
        X : coordonnee suivant OX
        Y : coordonnee suivant OY
        Z : coordonnee suivant OZ (0. Si le modele est 2D)
        W : weight of the point when used in a numerical quadrature
-""")
+""",
+)
 
 
-G_DEPL_R = PhysicalQuantity(type='R',
+G_DEPL_R = PhysicalQuantity(
+    type="R",
     components=(
-       'D_DX_X',
-       'D_DX_Y',
-       'D_DX_Z',
-       'D_DY_X',
-       'D_DY_Y',
-       'D_DY_Z',
-       'D_DZ_X',
-       'D_DZ_Y',
-       'D_DZ_Z',
+        "D_DX_X",
+        "D_DX_Y",
+        "D_DX_Z",
+        "D_DY_X",
+        "D_DY_Y",
+        "D_DY_Z",
+        "D_DZ_X",
+        "D_DZ_Y",
+        "D_DZ_Z",
     ),
     comment="""  G_DEPL_R Type:R
         D_DX_X :
@@ -1868,100 +1939,101 @@ G_DEPL_R = PhysicalQuantity(type='R',
         D_DZ_X :
         D_DZ_Y :
         D_DZ_Z :
-""")
+""",
+)
 
 
-HARMON   = PhysicalQuantity(type='I',
-    components=(
-       'NH',
-    ),
+HARMON = PhysicalQuantity(
+    type="I",
+    components=("NH",),
     comment="""  HARMON Type:I Harmonique de Fourier
        NH numero d'harmonique de Fourier
-""")
+""",
+)
 
 
-HYDR_R   = PhysicalQuantity(type='R',
-    components=(
-       'HYDR',
-    ),
+HYDR_R = PhysicalQuantity(
+    type="R",
+    components=("HYDR",),
     comment="""  HYDR_R Type:R
        HYDR :
-""")
+""",
+)
 
 
-IMPE_C   = PhysicalQuantity(type='C',
-    components=(
-       'IMPE',
-    ),
+IMPE_C = PhysicalQuantity(
+    type="C",
+    components=("IMPE",),
     comment="""  IMPE_C Type:C Impedance
        IMPE : valeur complexe de l'impedance
-""")
+""",
+)
 
 
-IMPE_F   = PhysicalQuantity(type='K8',
-    components=(
-       'IMPE',
-    ),
+IMPE_F = PhysicalQuantity(
+    type="K8",
+    components=("IMPE",),
     comment="""  IMPE_F Type:K8 Impedance
        IMPE : fonction de l'impedance
-""")
+""",
+)
 
 
-IMPE_R   = PhysicalQuantity(type='R',
-    components=(
-       'IMPE',
-    ),
+IMPE_R = PhysicalQuantity(
+    type="R",
+    components=("IMPE",),
     comment="""  IMPE_R Type:R Impedance
        IMPE : valeur reelle de l'impedance
-""")
+""",
+)
 
 
-INDL_R   = PhysicalQuantity(type='R',
-    components=(
-       'INDICE',
-       'DIR[4]',
-    ),
+INDL_R = PhysicalQuantity(
+    type="R",
+    components=("INDICE", "DIR[4]"),
     comment="""  INDL_R type:R Indicateur de localisation
         INDICE : indicateur de contact
         DIR1   : premiere direction de localisation
         DIR2   : deuxieme direction de localisation
         DIR3   : troisieme direction de localisation
         DIR4   : quatrieme direction de localisation
-""")
+""",
+)
 
 
-INFC_R   = PhysicalQuantity(type='R',
+INFC_R = PhysicalQuantity(
+    type="R",
     components=(
-       'CONT',
-       'JEU',
-       'RN',
-       'RNX',
-       'RNY',
-       'RNZ',
-       'GLIX',
-       'GLIY',
-       'GLI',
-       'RTAX',
-       'RTAY',
-       'RTAZ',
-       'RTGX',
-       'RTGY',
-       'RTGZ',
-       'RX',
-       'RY',
-       'RZ',
-       'R',
-       'HN',
-       'I',
-       'IX',
-       'IY',
-       'IZ',
-       'PT_X',
-       'PT_Y',
-       'PT_Z',
-       'PROJ_X',
-       'PROJ_Y',
-       'PROJ_Z',
+        "CONT",
+        "JEU",
+        "RN",
+        "RNX",
+        "RNY",
+        "RNZ",
+        "GLIX",
+        "GLIY",
+        "GLI",
+        "RTAX",
+        "RTAY",
+        "RTAZ",
+        "RTGX",
+        "RTGY",
+        "RTGZ",
+        "RX",
+        "RY",
+        "RZ",
+        "R",
+        "HN",
+        "I",
+        "IX",
+        "IY",
+        "IZ",
+        "PT_X",
+        "PT_Y",
+        "PT_Z",
+        "PROJ_X",
+        "PROJ_Y",
+        "PROJ_Z",
     ),
     comment="""  INFC_R Type:R Informations relatives au contact
        CONT   : indicateur de contact
@@ -1994,18 +2066,13 @@ INFC_R   = PhysicalQuantity(type='R',
        PROJ_X   : coordonnee suivant x du projete du point de contact
        PROJ_Y   : coordonnee suivant y du projete du point de contact
        PROJ_Z   : coordonnee suivant z du projete du point de contact
-""")
+""",
+)
 
 
-INST_R   = PhysicalQuantity(type='R',
-    components=(
-       'INST',
-       'DELTAT',
-       'THETA',
-       'KHI',
-       'R',
-       'RHO',
-    ),
+INST_R = PhysicalQuantity(
+    type="R",
+    components=("INST", "DELTAT", "THETA", "KHI", "R", "RHO"),
     comment="""  INST_R Type:R Instant de calcul pour une evolution temporelle
        INST : valeur du temps (instant)
        DELTAT : increment de temps pour un calcul par ''pas de temps''
@@ -2014,65 +2081,58 @@ INST_R   = PhysicalQuantity(type='R',
        KHI : indicateur pour le calcul stationnaire ou transitoire
        R : parametre du lagrangien augmente
        RHO : parametre du lagrangien augmente
-""")
+""",
+)
 
 
-INTE_R   = PhysicalQuantity(type='R',
-    components=(
-       'INTX_R',
-       'INTY_R',
-       'INTZ_R',
-       'INTX_I',
-       'INTY_I',
-       'INTZ_I',
-    ),
+INTE_R = PhysicalQuantity(
+    type="R",
+    components=("INTX_R", "INTY_R", "INTZ_R", "INTX_I", "INTY_I", "INTZ_I"),
     comment="""  INTE_R Type:R Intensite acoustique
        INTX_R : partie reelle selon OX
        INTY_R : partie imaginaire selon OY
        ...
        INTZ_I : partie imaginaire selon OZ
-""")
+""",
+)
 
 
-IRRA_R   = PhysicalQuantity(type='R',
-    components=(
-       'IRRA',
-    ),
+IRRA_R = PhysicalQuantity(
+    type="R",
+    components=("IRRA",),
     comment="""  IRRA_R Type:R
        IRRA :
-""")
+""",
+)
 
 
-J        = PhysicalQuantity(type='R',
-    components=(
-       'JINT',
-       'JEXT',
-       'JTH',
-       'JAX',
-       'JPR',
-    ),
+J = PhysicalQuantity(
+    type="R",
+    components=("JINT", "JEXT", "JTH", "JAX", "JPR"),
     comment="""  J Type:R
        JINT :
        JEXT :
        JTH :
        JAX :
        JPR :
-""")
+""",
+)
 
-MASS_R   = PhysicalQuantity(type='R',
+MASS_R = PhysicalQuantity(
+    type="R",
     components=(
-       'M',
-       'CDGX',
-       'CDGY',
-       'CDGZ',
-       'IXX',
-       'IYY',
-       'IZZ',
-       'IXY',
-       'IXZ',
-       'IYZ',
-       'IXR2',
-       'IYR2',
+        "M",
+        "CDGX",
+        "CDGY",
+        "CDGZ",
+        "IXX",
+        "IYY",
+        "IZZ",
+        "IXY",
+        "IXZ",
+        "IYZ",
+        "IXR2",
+        "IYR2",
     ),
     comment="""MASS_R Type:R Caracteristiques
      M : masse de l'element
@@ -2088,20 +2148,12 @@ MASS_R   = PhysicalQuantity(type='R',
      EX : moment d'inertie principal X
      EY : moment d'inertie principal Y
      EZ : moment d'inertie principal Z
-""")
+""",
+)
 
-MATE_R   = PhysicalQuantity(type='R',
-    components=(
-       'X',
-       'Y',
-       'Z',
-       'E',
-       'NU',
-       'RHO',
-       'ALPHA',
-       'LAMBDA',
-       'RHO_CP',
-    ),
+MATE_R = PhysicalQuantity(
+    type="R",
+    components=("X", "Y", "Z", "E", "NU", "RHO", "ALPHA", "LAMBDA", "RHO_CP"),
     comment="""  MATE_R Type:R Paramètres matériaux
        X      : Coordonné X Gauss
        Y      : Coordonné Y Gauss
@@ -2112,31 +2164,30 @@ MATE_R   = PhysicalQuantity(type='R',
        ALPHA  : Coef. de dilatation
        LAMBDA : Conductivité thermique isotrope
        RHO_CP : Chaleur volumique à pression constante
-""")
+""",
+)
 
 
-
-MATE_F   = PhysicalQuantity(type='K8',
-    components=(
-       'MATE',
-    ),
+MATE_F = PhysicalQuantity(
+    type="K8",
+    components=("MATE",),
     comment="""  MATE_F Type:K8 Materiau
        MATE : nom du materiau affecte a une maille
-""")
+""",
+)
 
-MULTCOMP = PhysicalQuantity(type='K16',
-    components=(
-       'SD_COMP',
-    ),
+MULTCOMP = PhysicalQuantity(
+    type="K16",
+    components=("SD_COMP",),
     comment=""" Comportement pour *CRISTAL
        SD_COMP : nom de la SD issue de DEFI_COMPOR (MONOCRISTAL,..)
-""")
+""",
+)
 
 
-N120_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[120]',
-    ),
+N120_I = PhysicalQuantity(
+    type="I",
+    components=("X[120]",),
     comment="""  N120_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2144,13 +2195,13 @@ N120_I   = PhysicalQuantity(type='I',
        X(1)   : composante 1
        ...
        X(120) : composante 120
-""")
+""",
+)
 
 
-N120_R   = PhysicalQuantity(type='R',
-    components=(
-       'X[120]',
-    ),
+N120_R = PhysicalQuantity(
+    type="R",
+    components=("X[120]",),
     comment="""  N120_R Type:R Grandeur ''neutre'' de type reel
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2158,13 +2209,13 @@ N120_R   = PhysicalQuantity(type='R',
        X(1)  : composante 1
        ...
        X(120) : composante 120
-""")
+""",
+)
 
 
-N1280I   = PhysicalQuantity(type='I',
-    components=(
-       'X[1280]',
-    ),
+N1280I = PhysicalQuantity(
+    type="I",
+    components=("X[1280]",),
     comment="""  N1280I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2172,13 +2223,13 @@ N1280I   = PhysicalQuantity(type='I',
        X(1)   : composante 1
        ...
        X(1280) : composante 1280
-""")
+""",
+)
 
 
-N132_R   = PhysicalQuantity(type='R',
-    components=(
-       'X[132]',
-    ),
+N132_R = PhysicalQuantity(
+    type="R",
+    components=("X[132]",),
     comment="""  N132_R Type:R Grandeur ''neutre'' de type reel
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2186,41 +2237,26 @@ N132_R   = PhysicalQuantity(type='R',
        X(1)  : composante 1
        ...
        X(132) : composante 132
-""")
+""",
+)
 
 
-N1360R   = PhysicalQuantity(type='R',
-    components=(
-       'X[1360]',
-    ),)
+N1360R = PhysicalQuantity(type="R", components=("X[1360]",))
 
 
-N1920R   = PhysicalQuantity(type='R',
-    components=(
-       'X[1920]',
-    ),)
+N1920R = PhysicalQuantity(type="R", components=("X[1920]",))
 
 
-N240_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[240]',
-    ),)
+N240_I = PhysicalQuantity(type="I", components=("X[240]",))
 
 
-N2448R   = PhysicalQuantity(type='R',
-    components=(
-       'X[2448]',
-    ),)
+N2448R = PhysicalQuantity(type="R", components=("X[2448]",))
 
-N3240R   = PhysicalQuantity(type='R',
-    components=(
-       'X[6480]',
-    ),)
+N3240R = PhysicalQuantity(type="R", components=("X[6480]",))
 
-N480_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[480]',
-    ),
+N480_I = PhysicalQuantity(
+    type="I",
+    components=("X[480]",),
     comment="""  N480_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2228,13 +2264,13 @@ N480_I   = PhysicalQuantity(type='I',
        X(1)   : composante 1
        ...
        X(480) : composante 480
-""")
+""",
+)
 
 
-N480_R   = PhysicalQuantity(type='R',
-    components=(
-       'X[480]',
-    ),
+N480_R = PhysicalQuantity(
+    type="R",
+    components=("X[480]",),
     comment="""  N480_R Type:R Grandeur ''neutre'' de type reel
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2242,13 +2278,13 @@ N480_R   = PhysicalQuantity(type='R',
        X(1)  : composante 1
        ...
        X(480) : composante 480
-""")
+""",
+)
 
 
-N512_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[512]',
-    ),
+N512_I = PhysicalQuantity(
+    type="I",
+    components=("X[512]",),
     comment="""  N512_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2256,31 +2292,22 @@ N512_I   = PhysicalQuantity(type='I',
        X(1)   : composante 1
        ...
        X(512) : composante 512
-""")
+""",
+)
 
 
-N720_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[720]',
-    ),)
+N720_I = PhysicalQuantity(type="I", components=("X[720]",))
 
 
-N792_R   = PhysicalQuantity(type='R',
-    components=(
-       'X[792]',
-    ),)
+N792_R = PhysicalQuantity(type="R", components=("X[792]",))
 
 
-N816_R   = PhysicalQuantity(type='R',
-    components=(
-       'X[816]',
-    ),)
+N816_R = PhysicalQuantity(type="R", components=("X[816]",))
 
 
-N960_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[960]',
-    ),
+N960_I = PhysicalQuantity(
+    type="I",
+    components=("X[960]",),
     comment="""  N960_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2288,18 +2315,20 @@ N960_I   = PhysicalQuantity(type='I',
        X(1)   : composante 1
        ...
        X(960) : composante 960
-""")
+""",
+)
 
-NBSP_I   = PhysicalQuantity(type='I',
+NBSP_I = PhysicalQuantity(
+    type="I",
     components=(
-       'NBFIBR',
-       'COQ_NCOU',
-       'TUY_NCOU',
-       'TUY_NSEC',
-       'NBGRFI',
-       'TYGRFI',
-       'NBCARMAX',
-       'NUG[10]',
+        "NBFIBR",
+        "COQ_NCOU",
+        "TUY_NCOU",
+        "TUY_NSEC",
+        "NBGRFI",
+        "TYGRFI",
+        "NBCARMAX",
+        "NUG[10]",
     ),
     comment="""  NBSP_I Type:I Caracteristiques des elements de structure a sous-points
         COQ_NCOU : nombre de couches (COQUE)
@@ -2310,13 +2339,13 @@ NBSP_I   = PhysicalQuantity(type='I',
         TYGRFI   : type du groupe de fibres
         NBCARMAX : nombre de caracteristique maximum pour une fibre
         NUG1,..  : numeros des groupes de fibres (DE 1 A 10)
-""")
+""",
+)
 
 
-NEUT_F   = PhysicalQuantity(type='K8',
-    components=(
-       'X[30]',
-    ),
+NEUT_F = PhysicalQuantity(
+    type="K8",
+    components=("X[30]",),
     comment="""  NEUT_F Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2324,13 +2353,13 @@ NEUT_F   = PhysicalQuantity(type='K8',
        X(1)  : composante 1
        ...
        X(30) : composante 30   !!! meme nombre d'entiers codes que NEUT_R
-""")
+""",
+)
 
 
-NEUT_I   = PhysicalQuantity(type='I',
-    components=(
-       'X[30]',
-    ),
+NEUT_I = PhysicalQuantity(
+    type="I",
+    components=("X[30]",),
     comment="""  NEUT_I Type:I Grandeur ''neutre'' de type I
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2338,13 +2367,13 @@ NEUT_I   = PhysicalQuantity(type='I',
        X(1)   : composante 1
        ...
        X(30) : composante 30
-""")
+""",
+)
 
 
-NEUT_K16 = PhysicalQuantity(type='K16',
-    components=(
-       'Z[30]',
-    ),
+NEUT_K16 = PhysicalQuantity(
+    type="K16",
+    components=("Z[30]",),
     comment="""  NEUT_K16 Type:K16 Grandeur ''neutre'' de type K16
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2352,13 +2381,13 @@ NEUT_K16 = PhysicalQuantity(type='K16',
        Z(1)  : composante 1
        ...
        Z(30) : composante 30
-""")
+""",
+)
 
 
-NEUT_K24 = PhysicalQuantity(type='K24',
-    components=(
-       'Z[30]',
-    ),
+NEUT_K24 = PhysicalQuantity(
+    type="K24",
+    components=("Z[30]",),
     comment="""  NEUT_K24 Type:K24 Grandeur ''neutre'' de type K24.
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2366,13 +2395,13 @@ NEUT_K24 = PhysicalQuantity(type='K24',
        Z(1)  : composante 1
        ...
        Z(30) : composante 30
-""")
+""",
+)
 
 
-NEUT_K8  = PhysicalQuantity(type='K8',
-    components=(
-       'Z[30]',
-    ),
+NEUT_K8 = PhysicalQuantity(
+    type="K8",
+    components=("Z[30]",),
     comment="""  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2380,12 +2409,12 @@ NEUT_K8  = PhysicalQuantity(type='K8',
        Z(1)  : composante 1
        ...
        Z(30) : composante 30
-""")
+""",
+)
 
-N120_K8  = PhysicalQuantity(type='K8',
-    components=(
-       'Z[120]',
-    ),
+N120_K8 = PhysicalQuantity(
+    type="K8",
+    components=("Z[120]",),
     comment="""  NEUT_K8 Type:K8 Grandeur ''neutre'' de type K8
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2393,13 +2422,13 @@ N120_K8  = PhysicalQuantity(type='K8',
        Z(1)  : composante 1
        ...
        Z(120) : composante 120
-""")
+""",
+)
 
 
-NEUT_R   = PhysicalQuantity(type='R',
-    components=(
-       'X[30]',
-    ),
+NEUT_R = PhysicalQuantity(
+    type="R",
+    components=("X[30]",),
     comment="""  NEUT_R Type:R Grandeur ''neutre'' de type reel
        La signification des composantes varie d'une option a l'autre. Cette
        grandeur ''passe-partout'' ne sert qu'a eviter l'introduction de
@@ -2407,15 +2436,13 @@ NEUT_R   = PhysicalQuantity(type='R',
        X(1)  : composante 1
        ...
        X(30) : composante 30
-""")
+""",
+)
 
 
-NOMMATER = PhysicalQuantity(type='K8',
-    components=(
-       'MAT[26]',
-       'LREF',
-       'VREF[3]',
-    ),
+NOMMATER = PhysicalQuantity(
+    type="K8",
+    components=("MAT[26]", "LREF", "VREF[3]"),
     comment="""  NOMMATER Type:K8 Nom des materiaux
        MAT1  : nom du materiau 1
        ...
@@ -2423,65 +2450,60 @@ NOMMATER = PhysicalQuantity(type='K8',
        LREF  : Toujours egal a 'TREF=>'
        VREF1, VREF2, VREF3 : 3 K8 qui, concatenes, donne la valeur de TREF
                              (reel code sur 3 K8 au format '1PE22.15')
-""")
+""",
+)
 
 
-NUMC_I   = PhysicalQuantity(type='I',
-    components=(
-       'NUMC',
-       'ORDO',
-       'ANGL',
-    ),
+NUMC_I = PhysicalQuantity(
+    type="I",
+    components=("NUMC", "ORDO", "ANGL"),
     comment="""  NUMC_I Type:I Pour les coques multi-couches
        NUMC : Numero de la couche
        ORDO : Niveau de la couche (SUP=1, MOY=0, INF=-1)
        ANGL :
-""")
+""",
+)
 
 
-NUMMOD   = PhysicalQuantity(type='I',
-    components=(
-       'NUM',
-    ),
+NUMMOD = PhysicalQuantity(
+    type="I",
+    components=("NUM",),
     comment="""  NUMMOD Type:I
        NUM : numero du mode
-""")
+""",
+)
 
 
-OME2_R   = PhysicalQuantity(type='R',
-    components=(
-       'OMEG2',
-    ),
+OME2_R = PhysicalQuantity(
+    type="R",
+    components=("OMEG2",),
     comment="""  OME2_R Type:R Pulsation (reelle)
        OMEG2 : valeur de la pulsation au carre (Rappel : omega = 2*Pi*freq)
-""")
+""",
+)
 
-ONDE_R   = PhysicalQuantity(type='R',
-    components=(
-       'PRES',
-    ),
+ONDE_R = PhysicalQuantity(
+    type="R",
+    components=("PRES",),
     comment="""  ONDE_R Type:R Terme d'amortissement en onde incidente imposee sur une face
     d'element
        PRES Valeur de l'onde de type reel
-""")
+""",
+)
 
 
-PDIL_R   = PhysicalQuantity(type='R',
-    components=(
-       'A1_LC2',
-    ),
+PDIL_R = PhysicalQuantity(
+    type="R",
+    components=("A1_LC2",),
     comment="""  PDIL_R type:R module de Rigidite de micro-dilatation
         A1_LC2 : Module de rigidite de micro-dilatation
-""")
+""",
+)
 
 
-PESA_R   = PhysicalQuantity(type='R',
-    components=(
-       'G',
-       'AG',
-       'BG',
-       'CG',
-    ),
+PESA_R = PhysicalQuantity(
+    type="R",
+    components=("G", "AG", "BG", "CG"),
     comment="""  PESA_R Type:R Caracteristiques d'un chargement de pesanteur : intensite et
     direction
        G : valeur de l'acceleration de la pesanteur
@@ -2491,70 +2513,68 @@ PESA_R   = PhysicalQuantity(type='R',
        pesanteur
        CG : composante suivant OZ du vecteur unitaire donnant la direction de la
        pesanteur
-""")
+""",
+)
 
 
-PILO_K   = PhysicalQuantity(type='K16',
-    components=(
-       'TYPE',
-    ),
+PILO_K = PhysicalQuantity(
+    type="K16",
+    components=("TYPE",),
     comment="""  PILO_K Type:K16
        TYPE :
-""")
+""",
+)
 
 
-PILO_R   = PhysicalQuantity(type='R',
-    components=(
-       'A0',
-       'A[3]',
-       'ETA',
-    ),
+PILO_R = PhysicalQuantity(
+    type="R",
+    components=("A0", "A[3]", "ETA"),
     comment="""  PILO_R Type:R
        A0 :
        A1 :
        A2 :
        A3 :
        ETA :
-""")
+""",
+)
 
 
-POSI     = PhysicalQuantity(type='I',
-    components=(
-       'POS',
-    ),
+POSI = PhysicalQuantity(
+    type="I",
+    components=("POS",),
     comment="""  POSI Type:I Option de calcul de la matrice de Masse
        POS = 1 , option MASS_MECA
            = 0 , option MASS_MECA_DIAG
-""")
+""",
+)
 
 
-PRAC_R   = PhysicalQuantity(type='R',
-    components=(
-       'PRES_R',
-       'PRES_I',
-       'DB',
-    ),
+PRAC_R = PhysicalQuantity(
+    type="R",
+    components=("PRES_R", "PRES_I", "DB"),
     comment="""  PRAC_R Type:R Pression acoustique (phenomene Acoustique)
        PRES_R  partie reelle de la pression
        PRES_I  partie imaginaire de la pression
        DB      decibel
-""")
+""",
+)
 
 
-PREC     = PhysicalQuantity(type='R',
+PREC = PhysicalQuantity(
+    type="R",
     components=(
-       'PREC',
-       'SIGM',
-       'EPSI',
-       'FHYDR[2]',
-       'FTHERM',
-       'VARI',
-       'EFFORT',
-       'MOMENT',
-       'DEPL',
-       'LAG_GV',
-       'DAMG',
-       'PI',
+        "PREC",
+        "SIGM",
+        "EPSI",
+        "FHYDR[2]",
+        "FTHERM",
+        "VARI",
+        "EFFORT",
+        "MOMENT",
+        "DEPL",
+        "LAG_GV",
+        "DAMG",
+        "PI",
     ),
     comment="""  PREC Type:R precision
        PREC : valeur de la precision
@@ -2570,18 +2590,13 @@ PREC     = PhysicalQuantity(type='R',
        LAG_GV :
        DAMG
        PI     :
-""")
+""",
+)
 
 
-PRES_C   = PhysicalQuantity(type='C',
-    components=(
-       'PRES',
-       'CISA',
-       'VX',
-       'VY',
-       'VZ',
-       'LAGR',
-    ),
+PRES_C = PhysicalQuantity(
+    type="C",
+    components=("PRES", "CISA", "VX", "VY", "VZ", "LAGR"),
     comment="""  PRES_C Type:C Chargement surfacique applique a un modele mecanique
    (PRES,CISA)
     Inconnue d'un probleme d'acoustique : (pression, vitesse du fluide)
@@ -2592,16 +2607,13 @@ PRES_C   = PhysicalQuantity(type='C',
        VZ : vitesse du fluide suivant OZ
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
-""")
+""",
+)
 
 
-PRES_F   = PhysicalQuantity(type='K8',
-    components=(
-       'PRES',
-       'CISA',
-       'PINF',
-       'PSUP',
-    ),
+PRES_F = PhysicalQuantity(
+    type="K8",
+    components=("PRES", "CISA", "PINF", "PSUP"),
     comment="""  PRES_F Type:K8 Chargement surfacique applique a un modele mecanique
     (PRES,CISA)
      inconnue d'un probleme d'acoustique : (pression, vitesse du fluide)
@@ -2609,20 +2621,13 @@ PRES_F   = PhysicalQuantity(type='K8',
        CISA : cisaillement applique sur le bord d'un modele 2D
        PINF: pression inférieure pour pincement solid-shell
        PSUP: pression supérieure pour pincement solid-shell
-""")
+""",
+)
 
 
-PRES_R   = PhysicalQuantity(type='R',
-    components=(
-       'PRES',
-       'CISA',
-       'PINF',
-       'PSUP',
-       'VX',
-       'VY',
-       'VZ',
-       'LAGR',
-    ),
+PRES_R = PhysicalQuantity(
+    type="R",
+    components=("PRES", "CISA", "PINF", "PSUP", "VX", "VY", "VZ", "LAGR"),
     comment="""  PRES_R Type:R Chargement surfacique applique a un modele mecanique
    (PRES,CISA)
     Inconnue d'un probleme d'acoustique : (pression, vitesse du fluide)
@@ -2635,77 +2640,74 @@ PRES_R   = PhysicalQuantity(type='R',
        VZ : vitesse du fluide suivant OZ
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
-""")
+""",
+)
 
 
-PRME_R   = PhysicalQuantity(type='R',
-    components=(
-       'DB',
-    ),
+PRME_R = PhysicalQuantity(
+    type="R",
+    components=("DB",),
     comment="""  PRME_R Type:R Pression acoustique (phenomene Mecanique)
        DB decibel
-""")
+""",
+)
 
 
-RAYO_F   = PhysicalQuantity(type='K8',
-    components=(
-       'SIGMA',
-       'EPSIL',
-       'TPINF',
-    ),
+RAYO_F = PhysicalQuantity(
+    type="K8",
+    components=("SIGMA", "EPSIL", "TPINF"),
     comment="""  RAYO_F Type:K8
        SIGMA :
        EPSIL :
        TPINF :
-""")
+""",
+)
 
 
-RAYO_R   = PhysicalQuantity(type='R',
-    components=(
-       'SIGMA',
-       'EPSIL',
-       'TPINF',
-    ),
+RAYO_R = PhysicalQuantity(
+    type="R",
+    components=("SIGMA", "EPSIL", "TPINF"),
     comment="""  RAYO_R Type:R
        SIGMA :
        EPSIL :
        TPINF :
-""")
+""",
+)
 
 
-RCCM_K   = PhysicalQuantity(type='K24',
-    components=(
-       'TB_TEMP',
-       'TB_MOYE',
-    ),
+RCCM_K = PhysicalQuantity(
+    type="K24",
+    components=("TB_TEMP", "TB_MOYE"),
     comment="""  RCCM_K Type:K24 Grandeur pour le RCCM B3600
        TB_TEMP : table de releve de temperature
        TB_MOYE : table de releve de la moyenne
-""")
+""",
+)
 
 
-RCCM_R   = PhysicalQuantity(type='R',
+RCCM_R = PhysicalQuantity(
+    type="R",
     components=(
-       'C[3]',
-       'K[3]',
-       'TYPE',
-       'E',
-       'E_AMBI',
-       'NU',
-       'ALPHA',
-       'E_REFE',
-       'SM',
-       'M_KE',
-       'N_KE',
-       'IY',
-       'IZ',
-       'D',
-       'EP',
-       'SN',
-       'SN_3SM',
-       'SALT',
-       'U_TOTAL',
-       'TYPEKE',
+        "C[3]",
+        "K[3]",
+        "TYPE",
+        "E",
+        "E_AMBI",
+        "NU",
+        "ALPHA",
+        "E_REFE",
+        "SM",
+        "M_KE",
+        "N_KE",
+        "IY",
+        "IZ",
+        "D",
+        "EP",
+        "SN",
+        "SN_3SM",
+        "SALT",
+        "U_TOTAL",
+        "TYPEKE",
     ),
     comment="""  RCCM_R Type:R Grandeurs pour le RCCM B3600
        C1 : valeur indice de contraintes
@@ -2732,41 +2734,39 @@ RCCM_R   = PhysicalQuantity(type='R',
        SALT : amplitude de la contrainte
        U_TOTAL : facteur d'usage
        TYPEKE : type de calcul de KE: soit KE_MECA, soit KE_MIXTE
-""")
+""",
+)
 
 
-RICE_TRA = PhysicalQuantity(type='R',
-    components=(
-       'TRIAX',
-       'RSR0',
-       'VOLU',
-       'NUMEMA',
-       'DEPSEQ',
-    ),
+RICE_TRA = PhysicalQuantity(
+    type="R",
+    components=("TRIAX", "RSR0", "VOLU", "NUMEMA", "DEPSEQ"),
     comment=""" RICE_TRA Type:R CHAM_ELEM de RICE_TRACEY
       TRIAX : taux de triaxialite sur la maille
       RSRO : taux de croissance sur la maille a l'instant courant
       VOLU : volume pris en compte
       NUMEMA : numero de la maille
       DEPSEQ : variation de la deformation plastique equivalente
-""")
+""",
+)
 
-ROCH_R   = PhysicalQuantity(type='R',
+ROCH_R = PhysicalQuantity(
+    type="R",
     components=(
-       'E',
-       'K_FACT',
-       'N_EXPO',
-       'RP02_MIN',
-       'RM_MIN',
-       'RP02_MOY',
-       'COEF',
-       'A',
-       'I',
-       'R',
-       'EP',
-       'I2',
-       'R2',
-       'EP2',
+        "E",
+        "K_FACT",
+        "N_EXPO",
+        "RP02_MIN",
+        "RM_MIN",
+        "RP02_MOY",
+        "COEF",
+        "A",
+        "I",
+        "R",
+        "EP",
+        "I2",
+        "R2",
+        "EP2",
     ),
     comment="""  ROCH_R Type:R Paramètres matériaux et de poutre pour POST_ROCHE
        E   : module d'Young
@@ -2783,18 +2783,12 @@ ROCH_R   = PhysicalQuantity(type='R',
        I2 : Inertie de la section de l'autre noeud de la maille
        R2 : Rayon extérieur de la section de l'autre noeud de la maille
        EP2 : Epaisseur de la section de l'autre noeud de la maille
-""")
+""",
+)
 
-ROTA_R   = PhysicalQuantity(type='R',
-    components=(
-       'OME',
-       'AR',
-       'BR',
-       'CR',
-       'X',
-       'Y',
-       'Z',
-    ),
+ROTA_R = PhysicalQuantity(
+    type="R",
+    components=("OME", "AR", "BR", "CR", "X", "Y", "Z"),
     comment="""  ROTA_R Type:R Caracteristiques d'un chargement de rotation :
     vitesse et axe
        OME : vitesse angulaire
@@ -2804,21 +2798,13 @@ ROTA_R   = PhysicalQuantity(type='R',
        X :
        Y :
        Z :
-""")
+""",
+)
 
 
-SECTION  = PhysicalQuantity(type='R',
-    components=(
-       'AIRE',
-       'XG',
-       'YG',
-       'ALPHA',
-       'IX',
-       'IY',
-       'XC',
-       'YC',
-       'CF',
-    ),
+SECTION = PhysicalQuantity(
+    type="R",
+    components=("AIRE", "XG", "YG", "ALPHA", "IX", "IY", "XC", "YC", "CF"),
     comment="""  SECTION Type:R Caracteristiques d'une section de poutre
        AIRE : aire de la section
        XG : abscisse du centre de gravite (repere OXY du maillage de la section)
@@ -2829,195 +2815,195 @@ SECTION  = PhysicalQuantity(type='R',
        XC : abscisse du centre de torsion (repere GXY d'inertie)
        YC : ordonnee du centre de torsion (repere GXY d'inertie)
        CF : ...
-""")
+""",
+)
 
 
-SIEFMX_C = PhysicalQuantity(type='C',
-    components=(
-       'SIXXMIN',
-       'SIXXMAX',
-    ),
+SIEFMX_C = PhysicalQuantity(
+    type="C",
+    components=("SIXXMIN", "SIXXMAX"),
     comment="""  SIEFMX_C Type:C contraintes min et max sur section
        SIXXMIN : contrainte minimale
        SIXXMAX : contrainte maximale
-""")
+""",
+)
 
 
-SIEFMX_R = PhysicalQuantity(type='R',
-    components=(
-       'SIXXMIN',
-       'SIXXMAX',
-    ),
+SIEFMX_R = PhysicalQuantity(
+    type="R",
+    components=("SIXXMIN", "SIXXMAX"),
     comment="""  SIEFMX_R Type:R contraintes min et max sur section
        SIXXMIN : contrainte minimale
        SIXXMAX : contrainte maximale
-""")
+""",
+)
 
 
-SIEF_C   = PhysicalQuantity(type='C',
+SIEF_C = PhysicalQuantity(
+    type="C",
     components=(
-       'SIXX',
-       'SIYY',
-       'SIZZ',
-       'SIXY',
-       'SIXZ',
-       'SIYZ',
-       'N',
-       'VY',
-       'VZ',
-       'MT',
-       'MFY',
-       'MFZ',
-       'BX',
-       'MEQ',
-       'NXX',
-       'NYY',
-       'NXY',
-       'MXX',
-       'MYY',
-       'MXY',
-       'QX',
-       'QY',
-       'FX',
-       'FY',
-       'FZ',
-       'MX',
-       'MY',
-       'MZ',
-       'SIGN',
-       'SITX',
-       'SITY',
-       'SITZ',
-       'VMIS',
-       'TRESCA',
-       'PRIN_[3]',
-       'VMIS_SG',
-       'SN',
-       'SVY',
-       'SVZ',
-       'SMT',
-       'SMFY',
-       'SMFZ',
-       'MASF',
-       'ENTR',
-       'DISS',
-       'FLHX',
-       'FLHY',
-       'FLHZ',
-       'FLUX',
-       'FLUY',
-       'FLUZ',
-       'PM',
-       'PMPB',
-       'SIGONF',
-       'SIP',
-       'SIPXX',
-       'SIPYY',
-       'SIPZZ',
-       'SIPXY',
-       'SIPXZ',
-       'SIPYZ',
-       'M11',
-       'FH11',
-       'FH11X',
-       'FH11Y',
-       'FH11Z',
-       'ENT11',
-       'M12',
-       'FH12',
-       'FH12X',
-       'FH12Y',
-       'FH12Z',
-       'ENT12',
-       'M21',
-       'FH21',
-       'FH21X',
-       'FH21Y',
-       'FH21Z',
-       'ENT21',
-       'M22',
-       'FH22',
-       'FH22X',
-       'FH22Y',
-       'FH22Z',
-       'ENT22',
-       'QPRIM',
-       'FHTX',
-       'FHTY',
-       'FHTZ',
-       'QXX',
-       'QXY',
-       'QYX',
-       'QYY',
-       'QZX',
-       'QZY',
-       'Q2XX',
-       'Q2XY',
-       'Q2YX',
-       'Q2YY',
-       'Q2ZX',
-       'Q2ZY',
-       'VECT_1_X',
-       'VECT_1_Y',
-       'VECT_1_Z',
-       'VECT_2_X',
-       'VECT_2_Y',
-       'VECT_2_Z',
-       'VECT_3_X',
-       'VECT_3_Y',
-       'VECT_3_Z',
-       'PRES',
-       'PRES1[3]',
-       'PRES2[3]',
-       'PRES3[3]',
-       'SIG[3]',
-       'SIG11[3]',
-       'SIG12[3]',
-       'SIG13[3]',
-       'SIG21[3]',
-       'SIG22[3]',
-       'SIG23[3]',
-       'SIG31[3]',
-       'SIG32[3]',
-       'SIG33[3]',
-       'DEPV',
-       'DEPV1[3]',
-       'DEPV2[3]',
-       'DEPV3[3]',
-       'TRSIG',
-       'CONT_X',
-       'CONT_Y',
-       'CONT_Z',
-       'SIG_NX',
-       'SIG_NY',
-       'SIG_NZ',
-       'SIG_N',
-       'SIG_TX',
-       'SIG_TY',
-       'SIG_TZ',
-       'SIG_T1X',
-       'SIG_T1Y',
-       'SIG_T1Z',
-       'SIG_T1',
-       'SIG_T2X',
-       'SIG_T2Y',
-       'SIG_T2Z',
-       'SIG_T2',
-       'SIG_TN',
-       'LH1P',
-       'LH1M',
-       'DPRE1P',
-       'DPRE1M',
-       'TRIAX',
-       'FSTAB[72]',
-       'SIGV_A',
-       'SIGV_L',
-       'SIGV_GX',
-       'SIGV_GY',
-       'SIGV_GZ',
-       'MGX',
-       'MGY',
-       'MGZ',
+        "SIXX",
+        "SIYY",
+        "SIZZ",
+        "SIXY",
+        "SIXZ",
+        "SIYZ",
+        "N",
+        "VY",
+        "VZ",
+        "MT",
+        "MFY",
+        "MFZ",
+        "BX",
+        "MEQ",
+        "NXX",
+        "NYY",
+        "NXY",
+        "MXX",
+        "MYY",
+        "MXY",
+        "QX",
+        "QY",
+        "FX",
+        "FY",
+        "FZ",
+        "MX",
+        "MY",
+        "MZ",
+        "SIGN",
+        "SITX",
+        "SITY",
+        "SITZ",
+        "VMIS",
+        "TRESCA",
+        "PRIN_[3]",
+        "VMIS_SG",
+        "SN",
+        "SVY",
+        "SVZ",
+        "SMT",
+        "SMFY",
+        "SMFZ",
+        "MASF",
+        "ENTR",
+        "DISS",
+        "FLHX",
+        "FLHY",
+        "FLHZ",
+        "FLUX",
+        "FLUY",
+        "FLUZ",
+        "PM",
+        "PMPB",
+        "SIGONF",
+        "SIP",
+        "SIPXX",
+        "SIPYY",
+        "SIPZZ",
+        "SIPXY",
+        "SIPXZ",
+        "SIPYZ",
+        "M11",
+        "FH11",
+        "FH11X",
+        "FH11Y",
+        "FH11Z",
+        "ENT11",
+        "M12",
+        "FH12",
+        "FH12X",
+        "FH12Y",
+        "FH12Z",
+        "ENT12",
+        "M21",
+        "FH21",
+        "FH21X",
+        "FH21Y",
+        "FH21Z",
+        "ENT21",
+        "M22",
+        "FH22",
+        "FH22X",
+        "FH22Y",
+        "FH22Z",
+        "ENT22",
+        "QPRIM",
+        "FHTX",
+        "FHTY",
+        "FHTZ",
+        "QXX",
+        "QXY",
+        "QYX",
+        "QYY",
+        "QZX",
+        "QZY",
+        "Q2XX",
+        "Q2XY",
+        "Q2YX",
+        "Q2YY",
+        "Q2ZX",
+        "Q2ZY",
+        "VECT_1_X",
+        "VECT_1_Y",
+        "VECT_1_Z",
+        "VECT_2_X",
+        "VECT_2_Y",
+        "VECT_2_Z",
+        "VECT_3_X",
+        "VECT_3_Y",
+        "VECT_3_Z",
+        "PRES",
+        "PRES1[3]",
+        "PRES2[3]",
+        "PRES3[3]",
+        "SIG[3]",
+        "SIG11[3]",
+        "SIG12[3]",
+        "SIG13[3]",
+        "SIG21[3]",
+        "SIG22[3]",
+        "SIG23[3]",
+        "SIG31[3]",
+        "SIG32[3]",
+        "SIG33[3]",
+        "DEPV",
+        "DEPV1[3]",
+        "DEPV2[3]",
+        "DEPV3[3]",
+        "TRSIG",
+        "CONT_X",
+        "CONT_Y",
+        "CONT_Z",
+        "SIG_NX",
+        "SIG_NY",
+        "SIG_NZ",
+        "SIG_N",
+        "SIG_TX",
+        "SIG_TY",
+        "SIG_TZ",
+        "SIG_T1X",
+        "SIG_T1Y",
+        "SIG_T1Z",
+        "SIG_T1",
+        "SIG_T2X",
+        "SIG_T2Y",
+        "SIG_T2Z",
+        "SIG_T2",
+        "SIG_TN",
+        "LH1P",
+        "LH1M",
+        "DPRE1P",
+        "DPRE1M",
+        "TRIAX",
+        "FSTAB[72]",
+        "SIGV_A",
+        "SIGV_L",
+        "SIGV_GX",
+        "SIGV_GY",
+        "SIGV_GZ",
+        "MGX",
+        "MGY",
+        "MGZ",
     ),
     comment="""  SIEF_C Type:C Etat de contrainte (ou d'effort interne)
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -3192,173 +3178,175 @@ SIEF_C   = PhysicalQuantity(type='C',
        DPRE1M :
        TRIAX  : Taux de triaxialite
        FSTAB[72]  : Forces de stabilisation
-""")
+""",
+)
 
 
-SIEF_R   = PhysicalQuantity(type='R',
+SIEF_R = PhysicalQuantity(
+    type="R",
     components=(
-       'SIXX',
-       'SIYY',
-       'SIZZ',
-       'SIXY',
-       'SIXZ',
-       'SIYZ',
-       'N',
-       'VY',
-       'VZ',
-       'MT',
-       'MFY',
-       'MFZ',
-       'BX',
-       'MEQ',
-       'NXX',
-       'NYY',
-       'NXY',
-       'MXX',
-       'MYY',
-       'MXY',
-       'QX',
-       'QY',
-       'FX',
-       'FY',
-       'FZ',
-       'MX',
-       'MY',
-       'MZ',
-       'SIGN',
-       'SITX',
-       'SITY',
-       'SITZ',
-       'VMIS',
-       'TRESCA',
-       'PRIN_[3]',
-       'VMIS_SG',
-       'SN',
-       'SVY',
-       'SVZ',
-       'SMT',
-       'SMFY',
-       'SMFZ',
-       'MASF',
-       'ENTR',
-       'DISS',
-       'FLHX',
-       'FLHY',
-       'FLHZ',
-       'FLUX',
-       'FLUY',
-       'FLUZ',
-       'PM',
-       'PMPB',
-       'SIGONF',
-       'SIP',
-       'SIPXX',
-       'SIPYY',
-       'SIPZZ',
-       'SIPXY',
-       'SIPXZ',
-       'SIPYZ',
-       'M11',
-       'FH11',
-       'FH11X',
-       'FH11Y',
-       'FH11Z',
-       'ENT11',
-       'M12',
-       'FH12',
-       'FH12X',
-       'FH12Y',
-       'FH12Z',
-       'ENT12',
-       'M21',
-       'FH21',
-       'FH21X',
-       'FH21Y',
-       'FH21Z',
-       'ENT21',
-       'M22',
-       'FH22',
-       'FH22X',
-       'FH22Y',
-       'FH22Z',
-       'ENT22',
-       'QPRIM',
-       'FHTX',
-       'FHTY',
-       'FHTZ',
-       'QXX',
-       'QXY',
-       'QYX',
-       'QYY',
-       'QZX',
-       'QZY',
-       'Q2XX',
-       'Q2XY',
-       'Q2YX',
-       'Q2YY',
-       'Q2ZX',
-       'Q2ZY',
-       'VECT_1_X',
-       'VECT_1_Y',
-       'VECT_1_Z',
-       'VECT_2_X',
-       'VECT_2_Y',
-       'VECT_2_Z',
-       'VECT_3_X',
-       'VECT_3_Y',
-       'VECT_3_Z',
-       'PRES',
-       'PRES1[3]',
-       'PRES2[3]',
-       'PRES3[3]',
-       'SIG[3]',
-       'SIG11[3]',
-       'SIG12[3]',
-       'SIG13[3]',
-       'SIG21[3]',
-       'SIG22[3]',
-       'SIG23[3]',
-       'SIG31[3]',
-       'SIG32[3]',
-       'SIG33[3]',
-       'DEPV',
-       'DEPV1[3]',
-       'DEPV2[3]',
-       'DEPV3[3]',
-       'TRSIG',
-       'CONT_X',
-       'CONT_Y',
-       'CONT_Z',
-       'SIG_NX',
-       'SIG_NY',
-       'SIG_NZ',
-       'SIG_N',
-       'SIG_TX',
-       'SIG_TY',
-       'SIG_TZ',
-       'SIG_T1X',
-       'SIG_T1Y',
-       'SIG_T1Z',
-       'SIG_T1',
-       'SIG_T2X',
-       'SIG_T2Y',
-       'SIG_T2Z',
-       'SIG_T2',
-       'SIG_TN',
-       'LH1P',
-       'LH1M',
-       'DPRE1P',
-       'DPRE1M',
-       'TRIAX',
-       'FSTAB[72]',
-       'SIGV_A',
-       'SIGV_L',
-       'SIGV_GX',
-       'SIGV_GY',
-       'SIGV_GZ',
-       'MGX',
-       'MGY',
-       'MGZ',
+        "SIXX",
+        "SIYY",
+        "SIZZ",
+        "SIXY",
+        "SIXZ",
+        "SIYZ",
+        "N",
+        "VY",
+        "VZ",
+        "MT",
+        "MFY",
+        "MFZ",
+        "BX",
+        "MEQ",
+        "NXX",
+        "NYY",
+        "NXY",
+        "MXX",
+        "MYY",
+        "MXY",
+        "QX",
+        "QY",
+        "FX",
+        "FY",
+        "FZ",
+        "MX",
+        "MY",
+        "MZ",
+        "SIGN",
+        "SITX",
+        "SITY",
+        "SITZ",
+        "VMIS",
+        "TRESCA",
+        "PRIN_[3]",
+        "VMIS_SG",
+        "SN",
+        "SVY",
+        "SVZ",
+        "SMT",
+        "SMFY",
+        "SMFZ",
+        "MASF",
+        "ENTR",
+        "DISS",
+        "FLHX",
+        "FLHY",
+        "FLHZ",
+        "FLUX",
+        "FLUY",
+        "FLUZ",
+        "PM",
+        "PMPB",
+        "SIGONF",
+        "SIP",
+        "SIPXX",
+        "SIPYY",
+        "SIPZZ",
+        "SIPXY",
+        "SIPXZ",
+        "SIPYZ",
+        "M11",
+        "FH11",
+        "FH11X",
+        "FH11Y",
+        "FH11Z",
+        "ENT11",
+        "M12",
+        "FH12",
+        "FH12X",
+        "FH12Y",
+        "FH12Z",
+        "ENT12",
+        "M21",
+        "FH21",
+        "FH21X",
+        "FH21Y",
+        "FH21Z",
+        "ENT21",
+        "M22",
+        "FH22",
+        "FH22X",
+        "FH22Y",
+        "FH22Z",
+        "ENT22",
+        "QPRIM",
+        "FHTX",
+        "FHTY",
+        "FHTZ",
+        "QXX",
+        "QXY",
+        "QYX",
+        "QYY",
+        "QZX",
+        "QZY",
+        "Q2XX",
+        "Q2XY",
+        "Q2YX",
+        "Q2YY",
+        "Q2ZX",
+        "Q2ZY",
+        "VECT_1_X",
+        "VECT_1_Y",
+        "VECT_1_Z",
+        "VECT_2_X",
+        "VECT_2_Y",
+        "VECT_2_Z",
+        "VECT_3_X",
+        "VECT_3_Y",
+        "VECT_3_Z",
+        "PRES",
+        "PRES1[3]",
+        "PRES2[3]",
+        "PRES3[3]",
+        "SIG[3]",
+        "SIG11[3]",
+        "SIG12[3]",
+        "SIG13[3]",
+        "SIG21[3]",
+        "SIG22[3]",
+        "SIG23[3]",
+        "SIG31[3]",
+        "SIG32[3]",
+        "SIG33[3]",
+        "DEPV",
+        "DEPV1[3]",
+        "DEPV2[3]",
+        "DEPV3[3]",
+        "TRSIG",
+        "CONT_X",
+        "CONT_Y",
+        "CONT_Z",
+        "SIG_NX",
+        "SIG_NY",
+        "SIG_NZ",
+        "SIG_N",
+        "SIG_TX",
+        "SIG_TY",
+        "SIG_TZ",
+        "SIG_T1X",
+        "SIG_T1Y",
+        "SIG_T1Z",
+        "SIG_T1",
+        "SIG_T2X",
+        "SIG_T2Y",
+        "SIG_T2Z",
+        "SIG_T2",
+        "SIG_TN",
+        "LH1P",
+        "LH1M",
+        "DPRE1P",
+        "DPRE1M",
+        "TRIAX",
+        "FSTAB[72]",
+        "SIGV_A",
+        "SIGV_L",
+        "SIGV_GX",
+        "SIGV_GY",
+        "SIGV_GZ",
+        "MGX",
+        "MGY",
+        "MGZ",
     ),
     comment="""  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U2.01.04))
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -3484,61 +3472,54 @@ SIEF_R   = PhysicalQuantity(type='R',
        SIGV_GY: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Y
        SIGV_GZ: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Z
        SIG_NX, SIG_NY, SIG_NZ, ...  ,SIG_T2Z, SIG_T2 : contraintes de "rosette"
-""")
+""",
+)
 
 
-SING_R   = PhysicalQuantity(type='R',
-    components=(
-       'DEGRE',
-       'RAPPORT',
-       'TAILLE',
-    ),
+SING_R = PhysicalQuantity(
+    type="R",
+    components=("DEGRE", "RAPPORT", "TAILLE"),
     comment="""  SING_R Type:R grandeurs liee au calcul de carte de taille
        DEGRE : ordre de la singularite
        RAPPORT : rapport de modification de taille
        TAILLE : nouvelle taille des elements
-""")
+""",
+)
 
 
-SIZZ_R   = PhysicalQuantity(type='R',
-    components=(
-       'SIZZ',
-    ),
+SIZZ_R = PhysicalQuantity(
+    type="R",
+    components=("SIZZ",),
     comment="""  SIZZ_R Type:R Grandeur simple servant a construire les grandeurs
     elementaires MSIZ_R et VSIZ_R pour le calcul de l'estimateur ZZ1
        SIZZ : coefficient de la matrice ou du vecteur
-""")
+""",
+)
 
 
-SOUR_F   = PhysicalQuantity(type='K8',
-    components=(
-       'SOUR',
-    ),
+SOUR_F = PhysicalQuantity(
+    type="K8",
+    components=("SOUR",),
     comment="""  SOUR_F Type:K8 Source volumique de type fonction
        SOUR : valeur de la source volumique appliquee a une maille
        mot cle SOURCE de la commande AFFE_CHAR_THER_F
-""")
+""",
+)
 
 
-SOUR_R   = PhysicalQuantity(type='R',
-    components=(
-       'SOUR',
-    ),
+SOUR_R = PhysicalQuantity(
+    type="R",
+    components=("SOUR",),
     comment="""  SOUR_R Type:R Source volumique de type reel
        SOUR : valeur de la source volumique appliquee a une maille
        mot cle SOURCE de la commande AFFE_CHAR_THER
-""")
+""",
+)
 
 
-SPMX_R   = PhysicalQuantity(type='R',
-    components=(
-       'VAL',
-       'NUCOU',
-       'NUSECT',
-       'NUFIBR',
-       'POSIC',
-       'POSIS',
-    ),
+SPMX_R = PhysicalQuantity(
+    type="R",
+    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
     comment="""  SPMX_R Type:R
        VAL    :   valeur "min/max" trouvee
        NUCOU  :   numero de la couche ou le "min/max" a ete atteint
@@ -3546,46 +3527,46 @@ SPMX_R   = PhysicalQuantity(type='R',
        NUFIBR :   numero de la fibre ou le "min/max" a ete atteint
        POSIC  :   position dans la couche  (-1 : INF, 0: MOY, 1: SUP)
        POSIS  :   position dans le secteur (-1 : INF, 0: MOY, 1: SUP)
-""")
+""",
+)
 
 
-STAOUDYN = PhysicalQuantity(type='R',
-    components=(
-       'STAOUDYN',
-       'ALFNMK',
-       'DELNMK',
-    ),
+STAOUDYN = PhysicalQuantity(
+    type="R",
+    components=("STAOUDYN", "ALFNMK", "DELNMK"),
     comment="""  STAOUDYN Type:R Parametres de Newmark si calcul dynamique
        STAOUDYN = 0 : statique
                 = 1 : dynamique
        ALFNMK : parametre de Newmark ALPHA
        DELNMK : parametre de Newmark DELTA
-""")
+""",
+)
 
 
-STRX_R   = PhysicalQuantity(type='R',
+STRX_R = PhysicalQuantity(
+    type="R",
     components=(
-       'N',
-       'VY',
-       'VZ',
-       'MT',
-       'MFY',
-       'MFZ',
-       'BX',
-       'EPXX',
-       'GAXY',
-       'GAXZ',
-       'GAT',
-       'KY',
-       'KZ',
-       'GAX',
-       'DXINT',
-       'ALPHA',
-       'BETA',
-       'GAMMA',
-       'MGX',
-       'MGY',
-       'MGZ',
+        "N",
+        "VY",
+        "VZ",
+        "MT",
+        "MFY",
+        "MFZ",
+        "BX",
+        "EPXX",
+        "GAXY",
+        "GAXZ",
+        "GAT",
+        "KY",
+        "KZ",
+        "GAX",
+        "DXINT",
+        "ALPHA",
+        "BETA",
+        "GAMMA",
+        "MGX",
+        "MGY",
+        "MGZ",
     ),
     comment="""  STRX_R  Type:R Champs special pour les elements de structure
        N : effort normal
@@ -3607,17 +3588,13 @@ STRX_R   = PhysicalQuantity(type='R',
        BETA  : deuxieme angle nautique reactualise
        GAMMA : troisieme angle nautique reactualise
 
-""")
+""",
+)
 
 
-TEMP_C   = PhysicalQuantity(type='C',
-    components=(
-       'TEMP',
-       'TEMP_MIL',
-       'TEMP_INF',
-       'TEMP_SUP',
-       'LAGR',
-    ),
+TEMP_C = PhysicalQuantity(
+    type="C",
+    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR"),
     comment="""  TEMP_C Type:C Temperature inconnue du phenomene thermique
        TEMP : temperature
        TEMP_MIL : temperature sur le feuillet moyen  (coques)
@@ -3625,17 +3602,13 @@ TEMP_C   = PhysicalQuantity(type='C',
        TEMP_SUP : temperature sur la face superieure (coques)
        LAGR : parametre de lagrange du a la dualisation des conditions aux
        limites
-""")
+""",
+)
 
 
-TEMP_F   = PhysicalQuantity(type='K8',
-    components=(
-       'TEMP',
-       'TEMP_MIL',
-       'TEMP_INF',
-       'TEMP_SUP',
-       'LAGR',
-    ),
+TEMP_F = PhysicalQuantity(
+    type="K8",
+    components=("TEMP", "TEMP_MIL", "TEMP_INF", "TEMP_SUP", "LAGR"),
     comment="""  TEMP_F Type:K8 Temperature inconnue du phenomene thermique
        TEMP : temperature
        TEMP_MIL : temperature sur le feuillet moyen  (coques)
@@ -3643,23 +3616,25 @@ TEMP_F   = PhysicalQuantity(type='K8',
        TEMP_SUP : temperature sur la face superieure (coques)
        LAGR : parametre de lagrange du a la dualisation des
        conditions aux limites
-""")
+""",
+)
 
 
-TEMP_R   = PhysicalQuantity(type='R',
+TEMP_R = PhysicalQuantity(
+    type="R",
     components=(
-       'TEMP',
-       'TEMP_MIL',
-       'TEMP_INF',
-       'TEMP_SUP',
-       'LAGR',
-       'H1',
-       'E1',
-       'DTX',
-       'DTY',
-       'DTZ',
-       'HHO_F[6]',
-       'HHO_C[10]',
+        "TEMP",
+        "TEMP_MIL",
+        "TEMP_INF",
+        "TEMP_SUP",
+        "LAGR",
+        "H1",
+        "E1",
+        "DTX",
+        "DTY",
+        "DTZ",
+        "HHO_F[6]",
+        "HHO_C[10]",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3676,17 +3651,12 @@ TEMP_R   = PhysicalQuantity(type='R',
        HHO_C   : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
        HHO_F   : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face)
 
-""")
+""",
+)
 
-THET_R   = PhysicalQuantity(type='R',
-    components=(
-       'MODULE',
-       'DIR_X',
-       'DIR_Y',
-       'DIR_Z',
-       'ABSC_CUR',
-       'LONG',
-    ),
+THET_R = PhysicalQuantity(
+    type="R",
+    components=("MODULE", "DIR_X", "DIR_Y", "DIR_Z", "ABSC_CUR", "LONG"),
     comment="""  THETA Type:R Champ THETA pour la mecanique de la rupture
        MODULE : norme du champ theta
        DIR_X : projection du champ theta dans la direction X
@@ -3694,48 +3664,38 @@ THET_R   = PhysicalQuantity(type='R',
        DIR_Z : projection du champ theta dans la direction Z
        ABSC_CUR : abscisse curviligne du point projeté
        LONG : longueur de la fissure
-""")
+""",
+)
 
 
-VALO_R   = PhysicalQuantity(type='R',
-    components=(
-       'VALEUR',
-       'GRAD_X',
-       'GRAD_Y',
-       'GRAD_Z',
-    ),
+VALO_R = PhysicalQuantity(
+    type="R",
+    components=("VALEUR", "GRAD_X", "GRAD_Y", "GRAD_Z"),
     comment="""  VALO_R Type:R
        VALEUR :
        GRAD_X :
        GRAD_Y :
        GRAD_Z :
-""")
+""",
+)
 
 
-VAR2_R   = PhysicalQuantity(type='R',
-    components=(
-       'V[200]',
-    ),
+VAR2_R = PhysicalQuantity(
+    type="R",
+    components=("V[200]",),
     comment="""  VAR2_R Type:R Composantes du CHAM_NO de type variables internes
     (passage d'un CHAM_ELEM a un CHAM_NO )
        V(1) variable interne 1
        V(2) variable interne 2
        V(3) variable interne 3
        ...
-""")
+""",
+)
 
 
-VARC_R   = PhysicalQuantity(type='R',
-    components=(
-       'TEMP',
-       'HYDR',
-       'SECH',
-       'IRRA',
-       'CORR',
-       'PTOT',
-       'DIVU',
-       'NEUT[2]',
-    ),
+VARC_R = PhysicalQuantity(
+    type="R",
+    components=("TEMP", "HYDR", "SECH", "IRRA", "CORR", "PTOT", "DIVU", "NEUT[2]"),
     comment="""  VARC_R Type:R Variables de commande (nommees) :
        TEMP : temperature
        HYDR : hydratation
@@ -3746,13 +3706,13 @@ VARC_R   = PhysicalQuantity(type='R',
        DIVU : dilatation volumique (chainage HM)
        NEUT1 : "neutre 1" (definie par l'utilisateur)
        NEUT2 : "neutre 2" (definie par l'utilisateur)
-""")
+""",
+)
 
 
-VARI_R   = PhysicalQuantity(type='R',
-    components=(
-       'VARI',
-    ),
+VARI_R = PhysicalQuantity(
+    type="R",
+    components=("VARI",),
     comment="""  VARI_R Type:R Variables internes pour les lois de comportement
     non-lineaires
     Attention : le nombre de variables interne pouvant varier fortement selon
@@ -3760,75 +3720,60 @@ VARI_R   = PhysicalQuantity(type='R',
     pas les composantes de cette grandeur. Le nombre reel de composantes
     est donne en dehors des catalogues.
        VARI : nom conventionnel des composantes : VARI_1 , VARI_2 , ...
-""")
+""",
+)
 
 
-VENTCX_F = PhysicalQuantity(type='K8',
-    components=(
-       'FCXP',
-    ),
+VENTCX_F = PhysicalQuantity(
+    type="K8",
+    components=("FCXP",),
     comment="""  VENTCX_F Type:K8
        FCXP :
-""")
+""",
+)
 
-VFAC_R   = PhysicalQuantity(type='R',
-    components=(
-       'VITE',
-       'INDC',
-       'DIRX',
-       'DIRY',
-       'DIRZ',
-    ),
+VFAC_R = PhysicalQuantity(
+    type="R",
+    components=("VITE", "INDC", "DIRX", "DIRY", "DIRZ"),
     comment="""  Vitesse appliquee a une face de maille
        VITE : valeur de la norme de la vitesse
        INDC : flag if direction has been given
        DIRX : direction of speed along X axis
        DIRY : direction of speed along Y axis
        DIRZ : direction of speed along Z axis
-""")
+""",
+)
 
 
-VFAC_C   = PhysicalQuantity(type='C',
-    components=(
-       'VITE',
-       'INDC',
-       'DIRX',
-       'DIRY',
-       'DIRZ',
-    ),
+VFAC_C = PhysicalQuantity(
+    type="C",
+    components=("VITE", "INDC", "DIRX", "DIRY", "DIRZ"),
     comment="""  Vitesse appliquee a une face de maille
        VITE : valeur de la norme de la vitesse
        INDC : flag if direction has been given
        DIRX : direction of speed along X axis
        DIRY : direction of speed along Y axis
        DIRZ : direction of speed along Z axis
-""")
+""",
+)
 
 
-VFAC_F   = PhysicalQuantity(type='K8',
-    components=(
-       'VITE',
-       'INDC',
-       'DIRX',
-       'DIRY',
-       'DIRZ',
-    ),
+VFAC_F = PhysicalQuantity(
+    type="K8",
+    components=("VITE", "INDC", "DIRX", "DIRY", "DIRZ"),
     comment="""  Vitesse appliquee a une face de maille
        VITE : valeur de la norme de la vitesse
        INDC : flag if direction has been given
        DIRX : direction of speed along X axis
        DIRY : direction of speed along Y axis
        DIRZ : direction of speed along Z axis
-""")
+""",
+)
 
 
-VOISIN   = PhysicalQuantity(type='I',
-    components=(
-       'V0',
-       'V[6]',
-       'T0',
-       'T[6]',
-    ),
+VOISIN = PhysicalQuantity(
+    type="I",
+    components=("V0", "V[6]", "T0", "T[6]"),
     comment="""  VOISIN Type:I Elements voisins et leurs types pour l'estimateur d'erreur
        V0 : numero de l'element voisin 1
        V1 : numero de l'element voisin 2
@@ -3844,30 +3789,32 @@ VOISIN   = PhysicalQuantity(type='I',
        T4 : type de l'element voisin 5
        T5 : type de l'element voisin 6
        T6 : type de l'element voisin 7
-""")
+""",
+)
 
 
-WEIBULL  = PhysicalQuantity(type='R',
-    components=(
-       'DSIGWB',
-    ),
+WEIBULL = PhysicalQuantity(
+    type="R",
+    components=("DSIGWB",),
     comment="""  WEIBULL Type:R Contrainte de Weibull
        DSIGWB : valeur de la contrainte
-""")
+""",
+)
 
 
-XCONTAC  = PhysicalQuantity(type='R',
+XCONTAC = PhysicalQuantity(
+    type="R",
     components=(
-       'RHON',
-       'MU',
-       'RHOTK',
-       'INTEG',
-       'COECH',
-       'COSTCO',
-       'COSTFR',
-       'COPECO',
-       'COPEFR',
-       'RELA',
+        "RHON",
+        "MU",
+        "RHOTK",
+        "INTEG",
+        "COECH",
+        "COSTCO",
+        "COSTFR",
+        "COPECO",
+        "COPEFR",
+        "RELA",
     ),
     comment="""  XCONTAC Type:R Contact avec X-FEM
        RHON   : COEF_REGU_CONT
@@ -3882,57 +3829,53 @@ XCONTAC  = PhysicalQuantity(type='R',
        CPECO  : coefficient de penalisation du contact, COEF_PENA_CONT
        CPEFR  : coefficient de penalisation du frottement, COEF_PENA_CONT
        RELA   : gere l''activation des lois cohesives avec X-FEM
-""")
+""",
+)
 
 
-CLAC_R = PhysicalQuantity(type='R',
-    components=(
-        'PRES',
-        'JEU',
-        'CONT',
-        'COEFSURF',
-        'PRESCOOR',
-    ),
+CLAC_R = PhysicalQuantity(
+    type="R",
+    components=("PRES", "JEU", "CONT", "COEFSURF", "PRESCOOR"),
     comment="""  CLAC_R Type:R Contact LAC
         PRES        : Pression de contact
         JEU           : Gap intégré au sens LAC
         CONT          : Indicateur de contact
         COEFSURF      : Poids d'intersection
         PRESCOOR      : Poids d'intersection*Pression de contact
-""")
+""",
+)
 
-CGAP_R = PhysicalQuantity(type='R',
-    components=(
-        'GAP',
-    ),
+CGAP_R = PhysicalQuantity(
+    type="R",
+    components=("GAP",),
     comment="""  CGAP_R Type:R Contact MORTAR
         GAP        : Gap nodal
-""")
+""",
+)
 
-CSTA_R = PhysicalQuantity(type='R',
-    components=(
-        'APPA',
-    ),
+CSTA_R = PhysicalQuantity(
+    type="R",
+    components=("APPA",),
     comment="""  CSTA_R Type:R Contact MORTAR
         APPA        : le noeud est appareille
-""")
+""",
+)
 
 # Elementary Quantities
-MDEP_C   = ArrayOfQuantities(elem='MS', phys= DEPL_C)
-MDEP_R   = ArrayOfQuantities(elem='MS', phys= DEPL_R)
-MDNS_R   = ArrayOfQuantities(elem='MR', phys= DEPL_R)
-MPRE_C   = ArrayOfQuantities(elem='MS', phys= PRES_C)
-MSIZ_R   = ArrayOfQuantities(elem='MS', phys= SIZZ_R)
-MTEM_R   = ArrayOfQuantities(elem='MS', phys= TEMP_R)
-MTNS_R   = ArrayOfQuantities(elem='MR', phys= TEMP_R)
-MZNS_R   = ArrayOfQuantities(elem='MR', phys= NEUT_R)
-VDEP_C   = ArrayOfQuantities(elem='V', phys= DEPL_C)
-VDEP_R   = ArrayOfQuantities(elem='V', phys= DEPL_R)
-VPRE_C   = ArrayOfQuantities(elem='V', phys= PRES_C)
-VSIZ_R   = ArrayOfQuantities(elem='V', phys= SIZZ_R)
-VTEM_R   = ArrayOfQuantities(elem='V', phys= TEMP_R)
-VNEU_R   = ArrayOfQuantities(elem='V', phys= NEUT_R)
-
+MDEP_C = ArrayOfQuantities(elem="MS", phys=DEPL_C)
+MDEP_R = ArrayOfQuantities(elem="MS", phys=DEPL_R)
+MDNS_R = ArrayOfQuantities(elem="MR", phys=DEPL_R)
+MPRE_C = ArrayOfQuantities(elem="MS", phys=PRES_C)
+MSIZ_R = ArrayOfQuantities(elem="MS", phys=SIZZ_R)
+MTEM_R = ArrayOfQuantities(elem="MS", phys=TEMP_R)
+MTNS_R = ArrayOfQuantities(elem="MR", phys=TEMP_R)
+MZNS_R = ArrayOfQuantities(elem="MR", phys=NEUT_R)
+VDEP_C = ArrayOfQuantities(elem="V", phys=DEPL_C)
+VDEP_R = ArrayOfQuantities(elem="V", phys=DEPL_R)
+VPRE_C = ArrayOfQuantities(elem="V", phys=PRES_C)
+VSIZ_R = ArrayOfQuantities(elem="V", phys=SIZZ_R)
+VTEM_R = ArrayOfQuantities(elem="V", phys=TEMP_R)
+VNEU_R = ArrayOfQuantities(elem="V", phys=NEUT_R)
 
 
 # store all PhysicalQuantity & ElementaryQuantity objects

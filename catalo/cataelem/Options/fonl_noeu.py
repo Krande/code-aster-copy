@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,39 +20,34 @@
 # person_in_charge: Georges-cc.devesa at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  PCOMPOR : COMPORTEMENT """)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment="""  PCOMPOR : COMPORTEMENT """)
-
-
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
 FONL_NOEU = Option(
     para_in=(
         SP.PCADISK,
-           PCAORIE,
+        PCAORIE,
         SP.PCINFDI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PGEOMER,
         SP.PMATERC,
     ),
-    para_out=(
-        SP.PVECTUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
-    ),
+    para_out=(SP.PVECTUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.DISCRET, "OUI"))),),
     comment="""  FONL_NOEU : CALCUL DES FORCES NODALES NONLIN """,
 )

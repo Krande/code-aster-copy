@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,16 +37,13 @@ PTHETAR = InputParameter(phys=PHY.THET_R)
 PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
-#PCONTRR = InputParameter(phys=PHY.SIEF_R)
-
+# PCONTRR = InputParameter(phys=PHY.SIEF_R)
 
 
 PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 
-
 PLSN = InputParameter(phys=PHY.NEUT_R)
-
 
 
 PLST = InputParameter(phys=PHY.NEUT_R)
@@ -83,12 +80,10 @@ CALC_K_G = Option(
         PDEG,
         PLAG,
     ),
-    para_out=(
-        SP.PGTHETA,
-    ),
+    para_out=(SP.PGTHETA,),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "-1"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.DISCRET, "OUI"))),
     ),
 )

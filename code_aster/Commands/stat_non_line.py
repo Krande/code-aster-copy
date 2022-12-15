@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class NonLinearStaticAnalysis(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.NonLinearResult`.
-    """
+    """Command that defines :class:`~code_aster.Objects.NonLinearResult`."""
+
     command_name = "STAT_NON_LINE"
 
     def create_result(self, keywords):
@@ -55,14 +55,14 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         if contact is not None:
             self._result.setContact(contact)
 
-        if self.exception and self.exception.id_message in ("MECANONLINE5_2", ):
+        if self.exception and self.exception.id_message in ("MECANONLINE5_2",):
             return
 
         feds = []
         fnds = []
         if "ETAT_INIT" in keywords:
             etat = keywords["ETAT_INIT"]
-            fields = ["DEPL", 'VITE', "ACCE"]
+            fields = ["DEPL", "VITE", "ACCE"]
             for field in fields:
                 if field in etat:
                     if etat[field].getDescription() is not None:
@@ -89,9 +89,11 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "RESULTAT")
-        self.remove_dependencies(keywords, "ETAT_INIT",
-                                 ("DEPL", "SIGM", "VARI", "STRX", "COHE",
-                                  "VITE", "ACCE", "EVOL_NOLI"))
+        self.remove_dependencies(
+            keywords,
+            "ETAT_INIT",
+            ("DEPL", "SIGM", "VARI", "STRX", "COHE", "VITE", "ACCE", "EVOL_NOLI"),
+        )
 
 
 STAT_NON_LINE = NonLinearStaticAnalysis.run

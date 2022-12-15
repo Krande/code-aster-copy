@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class DeplInterne(ExecuteCommand):
-    """Command DEPL_INTERNE
-    """
+    """Command DEPL_INTERNE"""
+
     command_name = "DEPL_INTERNE"
 
     def create_result(self, keywords):
@@ -34,9 +34,10 @@ class DeplInterne(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        if keywords['DEPL_GLOBAL'] == "MODE_MECA":
+        if keywords["DEPL_GLOBAL"] == "MODE_MECA":
             self._result = ModeResult()
         else:
-            self._result = type(keywords['DEPL_GLOBAL'])()
+            self._result = type(keywords["DEPL_GLOBAL"])()
+
 
 DEPL_INTERNE = DeplInterne.run

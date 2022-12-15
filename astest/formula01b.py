@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,15 +32,14 @@ n = 100000
 # valx = DEFI_LIST_REEL(DEBUT=0,
 #                       INTERVALLE=_F(JUSQU_A=2. * pi,
 #                                     NOMBRE=6 * n,),)
-valx = numpy.arange(0., 2. * pi, 2. * pi / (6 * n))
+valx = numpy.arange(0.0, 2.0 * pi, 2.0 * pi / (6 * n))
 
-fsin = FORMULE(NOM_PARA='INST', VALE='sin(INST)')
+fsin = FORMULE(NOM_PARA="INST", VALE="sin(INST)")
 
-ftest = CALC_FONC_INTERP(FONCTION=fsin,
-                         VALE_PARA=valx)
+ftest = CALC_FONC_INTERP(FONCTION=fsin, VALE_PARA=valx)
 
-test.assertEqual(ftest(0.), 0.)
-test.assertAlmostEqual(ftest(pi / 6.), 0.5)
-test.assertEqual(ftest(pi / 2.), 1.)
+test.assertEqual(ftest(0.0), 0.0)
+test.assertAlmostEqual(ftest(pi / 6.0), 0.5)
+test.assertEqual(ftest(pi / 2.0), 1.0)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,13 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-INCLUDE=MACRO(nom="INCLUDE",
-              op=None,
-              fr=tr("Débranchement vers un fichier de commandes secondaires"),
-              regles=(UN_PARMI('UNITE', 'DONNEE')),
-         UNITE=SIMP(statut='f', typ=UnitType(), inout='in',
-                      fr=tr("Unité logique à inclure")),
-         DONNEE=SIMP(statut='f', typ='TXM',
-                       fr=tr("Nom du fichier de données à inclure")),
-         ALARME=SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-         INFO=SIMP(statut='f', typ='I', defaut=1, into=(0, 1, 2)),
-);
+INCLUDE = MACRO(
+    nom="INCLUDE",
+    op=None,
+    fr=tr("Débranchement vers un fichier de commandes secondaires"),
+    regles=(UN_PARMI("UNITE", "DONNEE")),
+    UNITE=SIMP(statut="f", typ=UnitType(), inout="in", fr=tr("Unité logique à inclure")),
+    DONNEE=SIMP(statut="f", typ="TXM", fr=tr("Nom du fichier de données à inclure")),
+    ALARME=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(0, 1, 2)),
+)

@@ -27,9 +27,7 @@
 # VECT_Y ET VECT_Z PARCEQUE LES DIRECTIONS
 # DE GLISSEMENT SONT CONSTRUITES AUTOMATIQUEMENT
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-IGNORE_ALARM='MODELE1_63',DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM="MODELE1_63", DEBUG=_F(SDVERI="OUI"))
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD"
 #  QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
@@ -37,157 +35,153 @@ IGNORE_ALARM='MODELE1_63',DEBUG=_F(SDVERI='OUI'))
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D HEXA8
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',)
+MA = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF="OUI"), FORMAT="MED")
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='SCONTA',
-                                NOM='NCONTA',),
-                             _F(UNION=('PPSZ','PPS',),
-                                NOM='PP',),
-                             _F(GROUP_MA='VPLAQ',
-                                NOM='NPLAQ',),
-                             _F(DIFFE=('NPLAQ','NCONTA',),
-                                NOM='NBLOCZ',),
-                             _F(GROUP_MA='SBATI',
-                                NOM='NENCA',
-                                CRIT_NOEUD='SOMMET',),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="SCONTA", NOM="NCONTA"),
+        _F(UNION=("PPSZ", "PPS"), NOM="PP"),
+        _F(GROUP_MA="VPLAQ", NOM="NPLAQ"),
+        _F(DIFFE=("NPLAQ", "NCONTA"), NOM="NBLOCZ"),
+        _F(GROUP_MA="SBATI", NOM="NENCA", CRIT_NOEUD="SOMMET"),
+    ),
+)
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),)
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-MA=MODI_MAILLAGE(reuse =MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU=(_F(GROUP_MA_PEAU='SPRESV',),
-                               _F(GROUP_MA_PEAU='SPRESH',),),)
+MA = MODI_MAILLAGE(
+    reuse=MA, MAILLAGE=MA, ORIE_PEAU=(_F(GROUP_MA_PEAU="SPRESV"), _F(GROUP_MA_PEAU="SPRESH"))
+)
 
-MATPLA=DEFI_MATERIAU(ELAS=_F(E=1.3E11,
-                             NU=0.2,),)
+MATPLA = DEFI_MATERIAU(ELAS=_F(E=1.3e11, NU=0.2))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MATPLA,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATPLA))
 
-CHA1=DEFI_CONTACT(MODELE=MO,
-                  FORMULATION='CONTINUE',
-                  FROTTEMENT='COULOMB',
-                    ALGO_RESO_CONT = 'POINT_FIXE',
-                    ALGO_RESO_GEOM = 'POINT_FIXE',
-                    #ALGO_RESO_FROT = 'POINT_FIXE',
-                    ##ADAPT_COEF     = 'OUI',
-                  RESI_FROT=10.E-1,RESI_GEOM=1.0,
-                  ZONE=_F(GROUP_MA_MAIT='SBATI',
-                          GROUP_MA_ESCL='SCONTA',
-                          CONTACT_INIT='INTERPENETRE',
-                          COULOMB=1.0,
-                          #ADAPTATION = 'CYCLAGE',
-                          ADAPTATION = 'NON',
-                          #ALGO_CONT = 'PENALISATION',
-                          #ALGO_FROT = 'STANDARD',
-                          #COEF_FROT     = 1.E6,
-                          SANS_GROUP_NO_FR='PP',
-                          #DIRE_EXCL_FROT=(1,0,0),
-                          ),)
+CHA1 = DEFI_CONTACT(
+    MODELE=MO,
+    FORMULATION="CONTINUE",
+    FROTTEMENT="COULOMB",
+    ALGO_RESO_CONT="POINT_FIXE",
+    ALGO_RESO_GEOM="POINT_FIXE",
+    # ALGO_RESO_FROT = 'POINT_FIXE',
+    ##ADAPT_COEF     = 'OUI',
+    RESI_FROT=10.0e-1,
+    RESI_GEOM=1.0,
+    ZONE=_F(
+        GROUP_MA_MAIT="SBATI",
+        GROUP_MA_ESCL="SCONTA",
+        CONTACT_INIT="INTERPENETRE",
+        COULOMB=1.0,
+        # ADAPTATION = 'CYCLAGE',
+        ADAPTATION="NON",
+        # ALGO_CONT = 'PENALISATION',
+        # ALGO_FROT = 'STANDARD',
+        # COEF_FROT     = 1.E6,
+        SANS_GROUP_NO_FR="PP",
+        # DIRE_EXCL_FROT=(1,0,0),
+    ),
+)
 
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='NENCA',
-                                 DX=0.,
-                                 DY=0.,
-                                 DZ=0.,),
-                              _F(GROUP_MA='SBLOCX',
-                                 DX=0.,),
-                              _F(GROUP_NO='NBLOCZ',
-                                 DZ=0.,),),
-                    PRES_REP=(_F(GROUP_MA='SPRESV',
-                                 PRES=5.E07,),
-                              _F(GROUP_MA='SPRESH',
-                                 PRES=15.E07,),),)
+CHA2 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="NENCA", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_MA="SBLOCX", DX=0.0),
+        _F(GROUP_NO="NBLOCZ", DZ=0.0),
+    ),
+    PRES_REP=(_F(GROUP_MA="SPRESV", PRES=5.0e07), _F(GROUP_MA="SPRESH", PRES=15.0e07)),
+)
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                          1.0,1.0,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',)
+RAMPE = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE"
+)
 
-LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),)
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-L_INST=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=LINST,),
-                      ECHEC=_F(EVENEMENT='ERREUR',
-                              ACTION='DECOUPE',
-                              SUBD_METHODE = 'MANUEL',
-                              SUBD_PAS=5,
-                              SUBD_NIVEAU=5,),)
+L_INST = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=LINST),
+    ECHEC=_F(
+        EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=5, SUBD_NIVEAU=5
+    ),
+)
 
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 
-U2M=STAT_NON_LINE(MODELE=MO,INFO=1,
-                  CHAM_MATER=CHMAT,
-                  EXCIT=_F(CHARGE=CHA2,
-                           FONC_MULT=RAMPE,),
-                  CONTACT=CHA1,
-                  COMPORTEMENT=_F(RELATION='ELAS',),
-                  INCREMENT=_F(LIST_INST=L_INST,),
-                  NEWTON=_F(REAC_ITER=1,),SOLVEUR=_F(METHODE='MULT_FRONT',),
-                  CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-2,
-                                 ITER_GLOB_MAXI=40,
-                                 ARRET='OUI',),)
+U2M = STAT_NON_LINE(
+    MODELE=MO,
+    INFO=1,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHA2, FONC_MULT=RAMPE),
+    CONTACT=CHA1,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(REAC_ITER=1),
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-2, ITER_GLOB_MAXI=40, ARRET="OUI"),
+)
 
-TEST_RESU(RESU=(
-                _F(GROUP_NO='PPA',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=2.96388335948E-05,
-                   VALE_REFE=2.8600000000000001E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPB',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=2.81670867313E-05,
-                   VALE_REFE=2.72E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPC',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=2.35951821368E-05,
-                   VALE_REFE=2.2799999999999999E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPD',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=2.05419985624E-05,
-                   VALE_REFE=1.98E-05,
-                   PRECISION=0.050000000000000003,
-                   ),
-                _F(GROUP_NO='PPE',
-                   INST=1.0,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=1.61874703852E-05,
-                   VALE_REFE=1.5E-05,
-                   PRECISION=0.150000000000000003,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PPA",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U2M,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=2.96388335948e-05,
+            VALE_REFE=2.8600000000000001e-05,
+            PRECISION=0.050000000000000003,
+        ),
+        _F(
+            GROUP_NO="PPB",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U2M,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=2.81670867313e-05,
+            VALE_REFE=2.72e-05,
+            PRECISION=0.050000000000000003,
+        ),
+        _F(
+            GROUP_NO="PPC",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U2M,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=2.35951821368e-05,
+            VALE_REFE=2.2799999999999999e-05,
+            PRECISION=0.050000000000000003,
+        ),
+        _F(
+            GROUP_NO="PPD",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U2M,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=2.05419985624e-05,
+            VALE_REFE=1.98e-05,
+            PRECISION=0.050000000000000003,
+        ),
+        _F(
+            GROUP_NO="PPE",
+            INST=1.0,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U2M,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=1.61874703852e-05,
+            VALE_REFE=1.5e-05,
+            PRECISION=0.150000000000000003,
+        ),
+    )
+)
 
 # Rappel du pb : ssnv128r donne deux résultats differents à 1.E-3% avec ou sans dbgjeveux.
 # Explications : Perte d'unicité en frottement
@@ -217,7 +211,7 @@ TEST_RESU(RESU=(
 # valeurs avec ou sans dbgjeveux. La programmation liée à ADAPTATION='CYCLAGE' n'est donc pas en
 # cause.
 # A noter qu'avec ce réglage, on est à 15% d'erreurs au lieu de 2% par rapport à la solution de
-#référence source_externe.
+# référence source_externe.
 # Comportement vérifié également en 13.4 et sur les machines c9+eole.
 
 # ADAPTATION = 'TOUT' ('CYCLAGE'+'ADAPT_COEF')

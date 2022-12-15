@@ -474,7 +474,7 @@ local_map = mesh.getLocalToGlobalMapping()
 global_map = mesh.getGlobalToLocalMapping()
 
 for i in range(len(local_map)):
-    test.assertEqual(i, global_map[local_map[i]] )
+    test.assertEqual(i, global_map[local_map[i]])
 
 new_mesh = mesh.refine(2)
 

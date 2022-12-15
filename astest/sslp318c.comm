@@ -19,161 +19,130 @@
 
 # person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#***********************************
+# ***********************************
 # MAILLAGE ET MODELE
-#***********************************
+# ***********************************
 
-MaiPlate=LIRE_MAILLAGE(FORMAT='MED',
-                       INFO_MED=1,)
+MaiPlate = LIRE_MAILLAGE(FORMAT="MED", INFO_MED=1)
 
-MaiPlate=MODI_MAILLAGE(reuse =MaiPlate,
-                       MAILLAGE=MaiPlate,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU='force',),)
+MaiPlate = MODI_MAILLAGE(reuse=MaiPlate, MAILLAGE=MaiPlate, ORIE_PEAU=_F(GROUP_MA_PEAU="force"))
 
-plate=AFFE_MODELE(MAILLAGE=MaiPlate,
-                   AFFE=(_F(GROUP_MA=('All',),
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),
-                        _F(GROUP_MA=('force',),
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),),)
+plate = AFFE_MODELE(
+    MAILLAGE=MaiPlate,
+    AFFE=(
+        _F(GROUP_MA=("All",), PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"),
+        _F(GROUP_MA=("force",), PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"),
+    ),
+)
 
-#***********************************
+# ***********************************
 # MATERIAU
-#***********************************
+# ***********************************
 
-steel=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
-                            NU=0.33,),)
+steel = DEFI_MATERIAU(ELAS=_F(E=2.06e11, NU=0.33))
 
-champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
-                      AFFE=_F(TOUT='OUI',
-                              MATER=steel,),)
+champma = AFFE_MATERIAU(MAILLAGE=MaiPlate, AFFE=_F(TOUT="OUI", MATER=steel))
 
-#***********************************
+# ***********************************
 # DEFINITION DE LA FISSURE
-#***********************************
+# ***********************************
 
 # LONGUEUR DE DEMI FISSURE INITIALE
 a0 = 150
 
 # DEFINITION DES LEVEL SETS
-LN = FORMULE(VALE='Y',
-             NOM_PARA='Y',)
+LN = FORMULE(VALE="Y", NOM_PARA="Y")
 
-LT = FORMULE(VALE='abs(X)-a0',
-             a0=a0,
-             NOM_PARA='X',)
+LT = FORMULE(VALE="abs(X)-a0", a0=a0, NOM_PARA="X")
 
 # NOMBRE DE PROPAGATIONS
 NPS = 3
-NPS = NPS+2
+NPS = NPS + 2
 
-Fiss = [None]*NPS
+Fiss = [None] * NPS
 
-Fiss[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
-                       DEFI_FISS=_F(FONC_LT=LT,
-                                    FONC_LN=LN,),)
+Fiss[1] = DEFI_FISS_XFEM(MAILLAGE=MaiPlate, DEFI_FISS=_F(FONC_LT=LT, FONC_LN=LN))
 
 # FUNCTION POUR AJOUTER LA COLONNE NUME_ORDRE
 # A LA TABLE ISSUE PAR CALC_G
-FOND1 = FORMULE(VALE='0*NUME_ORDRE+1',
-                NOM_PARA='NUME_ORDRE',)
-FOND2 = FORMULE(VALE='0*NUME_ORDRE+2',
-                NOM_PARA='NUME_ORDRE',)
+FOND1 = FORMULE(VALE="0*NUME_ORDRE+1", NOM_PARA="NUME_ORDRE")
+FOND2 = FORMULE(VALE="0*NUME_ORDRE+2", NOM_PARA="NUME_ORDRE")
 
-#****************************
+# ****************************
 # PROPAGATION DE LA FISSURE
-#****************************
+# ****************************
 
-force = [None]*NPS
-vinc = [None]*NPS
-ModX = [None]*NPS
-ChgX = [None]*NPS
-ResX = [None]*NPS
-SIFR = [None]*NPS
-SIFL = [None]*NPS
-SIF = [None]*NPS
+force = [None] * NPS
+vinc = [None] * NPS
+ModX = [None] * NPS
+ChgX = [None] * NPS
+ResX = [None] * NPS
+SIFR = [None] * NPS
+SIFL = [None] * NPS
+SIF = [None] * NPS
 
-RI = 2*25.
-RS = 2*RI
+RI = 2 * 25.0
+RS = 2 * RI
 
 # AVANCE DE LA FISSURE A CHAQUE ITERATION
-da_fiss = 30.
+da_fiss = 30.0
 
-for i in range(1,NPS-1) :
+for i in range(1, NPS - 1):
 
-    ModX[i]=MODI_MODELE_XFEM(MODELE_IN=plate,
-                         FISSURE=Fiss[i])
+    ModX[i] = MODI_MODELE_XFEM(MODELE_IN=plate, FISSURE=Fiss[i])
 
-    vinc[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
-                           DDL_IMPO=(_F(GROUP_NO='incastro',
-                                        DX=0,
-                                        DY=0,),
-                                     _F(GROUP_NO='carrello',
-                                        DY=0,),),)
+    vinc[i] = AFFE_CHAR_MECA(
+        MODELE=ModX[i],
+        DDL_IMPO=(_F(GROUP_NO="incastro", DX=0, DY=0), _F(GROUP_NO="carrello", DY=0)),
+    )
 
-    force[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
-                            PRES_REP=_F(GROUP_MA='force',
-                                        PRES=-1E6,),)
+    force[i] = AFFE_CHAR_MECA(MODELE=ModX[i], PRES_REP=_F(GROUP_MA="force", PRES=-1e6))
 
+    ResX[i] = MECA_STATIQUE(
+        MODELE=ModX[i],
+        CHAM_MATER=champma,
+        EXCIT=(_F(CHARGE=force[i]), _F(CHARGE=vinc[i])),
+        INST=1.0,
+    )
 
-    ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
-                         CHAM_MATER=champma,
-                         EXCIT=(_F(CHARGE=force[i],),
-                                _F(CHARGE=vinc[i],),
-                                ),
-                         INST=1.,)
+    #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
+    #   DE FISSURE A GAUCHE
+    SIFL[i] = CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i]), RESULTAT=ResX[i], OPTION="CALC_K_G")
 
-#   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
-#   DE FISSURE A GAUCHE
-    SIFL[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],),
-                   RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',)
+    #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
+    #   DE FISSURE A DROITE
+    SIFR[i] = CALC_G_XFEM(
+        THETA=_F(FISSURE=Fiss[i], NUME_FOND=2), RESULTAT=ResX[i], OPTION="CALC_K_G"
+    )
 
-#   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
-#   DE FISSURE A DROITE
-    SIFR[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],
-                            NUME_FOND=2,),
-                   RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',)
+    #   ON MODIFIE LA TABLE DES SIF POUR AJOUTER LA COLONNE NUME_FISS QUI EST
+    #   NECESSAIRE POUR PROPA_FISS (VOIR DOCUMENTATION). EN PLUS, ON FAIT L'UNION
+    #   DE LES DEUX TABLES.
+    SIF[i] = CALC_TABLE(
+        TABLE=SIFR[i],
+        ACTION=(_F(OPERATION="COMB", TABLE=SIFL[i], NOM_PARA=("NUME_ORDRE", "NUME_FOND")),),
+    )
 
-#   ON MODIFIE LA TABLE DES SIF POUR AJOUTER LA COLONNE NUME_FISS QUI EST
-#   NECESSAIRE POUR PROPA_FISS (VOIR DOCUMENTATION). EN PLUS, ON FAIT L'UNION
-#   DE LES DEUX TABLES.
-    SIF[i]=CALC_TABLE(TABLE=SIFR[i],
-                      ACTION=(_F(OPERATION='COMB',
-                                TABLE=SIFL[i],
-                                NOM_PARA=('NUME_ORDRE','NUME_FOND'),),
-                             ),
-                      )
+    #    IMPR_TABLE(TABLE=SIF[i],)
 
-#    IMPR_TABLE(TABLE=SIF[i],)
+    if i != NPS:
+        Fiss[i + 1] = CO("Fiss_%d" % (i + 1))
+        PROPA_FISS(
+            MODELE=ModX[i],
+            FISSURE=(_F(FISS_ACTUELLE=Fiss[i], FISS_PROPAGEE=Fiss[i + 1], TABLE=SIF[i]),),
+            DA_MAX=da_fiss,
+            METHODE_PROPA="GEOMETRIQUE",
+            LOI_PROPA=_F(LOI="PARIS", C=1.0, M=1.0, MATER=steel),
+            COMP_LINE=_F(COEF_MULT_MINI=0.0, COEF_MULT_MAXI=1.0),
+            RAYON=RS,
+            INFO=0,
+        )
 
-    if ( i != NPS ) :
-      Fiss[i+1]=CO('Fiss_%d'%(i+1))
-      PROPA_FISS(MODELE=ModX[i],
-                 FISSURE=(_F(FISS_ACTUELLE=Fiss[i],
-                             FISS_PROPAGEE=Fiss[i+1],
-                             TABLE=SIF[i],
-                            ),
-                          ),
-                 DA_MAX=da_fiss,
-                 METHODE_PROPA='GEOMETRIQUE',
-                 LOI_PROPA=_F(LOI='PARIS',
-                              C=1.,
-                              M=1.,
-                              MATER=steel),
-                 COMP_LINE=_F(COEF_MULT_MINI=0.,
-                              COEF_MULT_MAXI=1.,
-                             ),
-                 RAYON=RS,
-                 INFO=0,)
-
-#----------------------------------------------
+# ----------------------------------------------
 #         VERIFICATION DES RESULTATS
-#----------------------------------------------
+# ----------------------------------------------
 
 
 # TOLERANCE SUR KII. LA VALEUR ANALYTIQUE EST ZERO CAR LA FISSURE
@@ -182,127 +151,130 @@ for i in range(1,NPS-1) :
 # ELLE EST EGAL A 1% DE LA VALEUR DE KI.
 
 
-W=1000
-sigma=1E6
-#==================================
-#Propa 1
-#==================================
-i=1
-a=a0+da_fiss*(i-1)
-KI_broek=sigma*sqrt(pi*a/cos(pi*a/W))
-TOL_K2=0.01*KI_broek
+W = 1000
+sigma = 1e6
+# ==================================
+# Propa 1
+# ==================================
+i = 1
+a = a0 + da_fiss * (i - 1)
+KI_broek = sigma * sqrt(pi * a / cos(pi * a / W))
+TOL_K2 = 0.01 * KI_broek
 
-#TEST sur KI
-TEST_TABLE(TABLE=SIF[1],
-           NOM_PARA='K1',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=22870811.7146,
-           TYPE_TEST='MAX',
-           VALE_REFE=KI_broek,
-           PRECISION=0.05,
-           CRITERE='RELATIF',)
+# TEST sur KI
+TEST_TABLE(
+    TABLE=SIF[1],
+    NOM_PARA="K1",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=22870811.7146,
+    TYPE_TEST="MAX",
+    VALE_REFE=KI_broek,
+    PRECISION=0.05,
+    CRITERE="RELATIF",
+)
 
-#TEST ABSOLU sur KII
-TEST_TABLE(TABLE=SIF[1],
-           NOM_PARA='K2',
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           TYPE_TEST='MAX',
-           VALE_REFE=(0.0, ),
-           PRECISION=TOL_K2,)
+# TEST ABSOLU sur KII
+TEST_TABLE(
+    TABLE=SIF[1],
+    NOM_PARA="K2",
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0.0,
+    TYPE_TEST="MAX",
+    VALE_REFE=(0.0,),
+    PRECISION=TOL_K2,
+)
 
-IMPR_TABLE(TABLE=SIF[1],
-           FORMAT_R='E20.13')
+IMPR_TABLE(TABLE=SIF[1], FORMAT_R="E20.13")
 
-#==================================
-#Propa 2
-#==================================
-i=2
-a=a0+da_fiss*(i-1)
-KI_broek=sigma*sqrt(pi*a/cos(pi*a/W))
-TOL_K2=0.01*KI_broek
+# ==================================
+# Propa 2
+# ==================================
+i = 2
+a = a0 + da_fiss * (i - 1)
+KI_broek = sigma * sqrt(pi * a / cos(pi * a / W))
+TOL_K2 = 0.01 * KI_broek
 
-#TEST sur KI
-TEST_TABLE(TABLE=SIF[2],
-           NOM_PARA='K1',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=25819168.8221,
-           TYPE_TEST='MAX',
-           VALE_REFE=KI_broek,
-           PRECISION=0.05,
-           CRITERE='RELATIF',)
+# TEST sur KI
+TEST_TABLE(
+    TABLE=SIF[2],
+    NOM_PARA="K1",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=25819168.8221,
+    TYPE_TEST="MAX",
+    VALE_REFE=KI_broek,
+    PRECISION=0.05,
+    CRITERE="RELATIF",
+)
 
-#TEST ABSOLU sur KII
-TEST_TABLE(TABLE=SIF[2],
-           NOM_PARA='K2',
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           TYPE_TEST='MAX',
-           VALE_REFE=(0.0, ),
-           PRECISION=TOL_K2,)
+# TEST ABSOLU sur KII
+TEST_TABLE(
+    TABLE=SIF[2],
+    NOM_PARA="K2",
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0.0,
+    TYPE_TEST="MAX",
+    VALE_REFE=(0.0,),
+    PRECISION=TOL_K2,
+)
 
-IMPR_TABLE(TABLE=SIF[2],
-           FORMAT_R='E20.13')
+IMPR_TABLE(TABLE=SIF[2], FORMAT_R="E20.13")
 
-#==================================
-#Propa 3
-#==================================
-i=3
-a=a0+da_fiss*(i-1)
-KI_broek=sigma*sqrt(pi*a/cos(pi*a/W))
-TOL_K2=0.01*KI_broek
+# ==================================
+# Propa 3
+# ==================================
+i = 3
+a = a0 + da_fiss * (i - 1)
+KI_broek = sigma * sqrt(pi * a / cos(pi * a / W))
+TOL_K2 = 0.01 * KI_broek
 
-#TEST sur KI
-TEST_TABLE(TABLE=SIF[3],
-           NOM_PARA='K1',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=28733993.6364,
-           TYPE_TEST='MAX',
-           VALE_REFE=KI_broek,
-           PRECISION=0.05,
-           CRITERE='RELATIF',)
+# TEST sur KI
+TEST_TABLE(
+    TABLE=SIF[3],
+    NOM_PARA="K1",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=28733993.6364,
+    TYPE_TEST="MAX",
+    VALE_REFE=KI_broek,
+    PRECISION=0.05,
+    CRITERE="RELATIF",
+)
 
-#TEST ABSOLU sur KII
-TEST_TABLE(TABLE=SIF[3],
-           NOM_PARA='K2',
-           CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.,
-           TYPE_TEST='MAX',
-           VALE_REFE=(0.0, ),
-           PRECISION=TOL_K2,)
+# TEST ABSOLU sur KII
+TEST_TABLE(
+    TABLE=SIF[3],
+    NOM_PARA="K2",
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=0.0,
+    TYPE_TEST="MAX",
+    VALE_REFE=(0.0,),
+    PRECISION=TOL_K2,
+)
 
-IMPR_TABLE(TABLE=SIF[3],
-           FORMAT_R='E20.13')
+IMPR_TABLE(TABLE=SIF[3], FORMAT_R="E20.13")
 
-#----------------------------------------------
+# ----------------------------------------------
 #         EDITION DE FICHIERS MED
-#----------------------------------------------
+# ----------------------------------------------
 
-MAXFM = [None]*NPS
-MOVIS = [None]*NPS
-DEPL = [None]*NPS
+MAXFM = [None] * NPS
+MOVIS = [None] * NPS
+DEPL = [None] * NPS
 
 
-for i in range(1,NPS-1) :
-   MAXFM[i]=POST_MAIL_XFEM(MODELE=ModX[i])
+for i in range(1, NPS - 1):
+    MAXFM[i] = POST_MAIL_XFEM(MODELE=ModX[i])
 
-   MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFM[i],
-                         AFFE=_F(TOUT='OUI',
-                                 PHENOMENE='MECANIQUE',
-                                 MODELISATION='C_PLAN',),)
+    MOVIS[i] = AFFE_MODELE(
+        MAILLAGE=MAXFM[i], AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")
+    )
 
-   DEPL[i]=POST_CHAM_XFEM(
-                          MODELE_VISU   = MOVIS[i],
-                          RESULTAT=ResX[i],
-                          )
+    DEPL[i] = POST_CHAM_XFEM(MODELE_VISU=MOVIS[i], RESULTAT=ResX[i])
 
-   DEFI_FICHIER(UNITE=31,TYPE = 'BINARY')
-   IMPR_RESU(FORMAT='MED',
-             UNITE=31,
-             RESU=_F(RESULTAT=DEPL[i],),)
+    DEFI_FICHIER(UNITE=31, TYPE="BINARY")
+    IMPR_RESU(FORMAT="MED", UNITE=31, RESU=_F(RESULTAT=DEPL[i]))
 
 
 FIN()

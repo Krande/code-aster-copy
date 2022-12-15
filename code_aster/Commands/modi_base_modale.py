@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class ModiBaseModale(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.ModeResult`.
-    """
+    """Command that defines :class:`~code_aster.Objects.ModeResult`."""
+
     command_name = "MODI_BASE_MODALE"
 
     def create_result(self, keywords):
@@ -35,5 +35,6 @@ class ModiBaseModale(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = ModeResult()
+
 
 MODI_BASE_MODALE = ModiBaseModale.run

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,26 +23,22 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = OutputParameter(
+    phys=PHY.VARI_R, type="ELGA", comment="""  PVARCPR : VARIABLES DE COMMANDE POUR LE MATERIAU """
+)
 
-
-PVARCPR  = OutputParameter(phys=PHY.VARI_R, type='ELGA',
-comment="""  PVARCPR : VARIABLES DE COMMANDE POUR LE MATERIAU """)
-
-PVARCNO  = OutputParameter(phys=PHY.VARI_R, type='ELNO',
-comment="""  PVARCNO : VARIABLES DE COMMANDE POUR LE MATERIAU """)
+PVARCNO = OutputParameter(
+    phys=PHY.VARI_R, type="ELNO", comment="""  PVARCNO : VARIABLES DE COMMANDE POUR LE MATERIAU """
+)
 
 INIT_VARC = Option(
-    para_in=(
-    ),
-    para_out=(
-           PVARCPR,
-           PVARCNO,
-    ),
+    para_in=(),
+    para_out=(PVARCPR, PVARCNO),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD_ISO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.FLUIDE,'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD_ISO, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"))),
     ),
     comment=""" OPTION NE CALCULANT RIEN.
    ELLE SERT A ALLOUER LES CHAMPS DE VARIABLES DE COMMANDE POUR LE MATERIAU.

@@ -25,6 +25,7 @@ class sd_char_frot(AsBase):
     #   Nom des objets préfixé par le nom du concept (8 premiers caractères)
     nomj = SDNom(fin=8)
 
+
 # -------------------------------------------------------------------------------------------------#
 
 

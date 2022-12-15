@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,8 +23,8 @@ from ..Supervis import ExecuteCommand
 
 
 class CalcMeta(ExecuteCommand):
-    """Command CALC_META
-    """
+    """Command CALC_META"""
+
     command_name = "CALC_META"
 
     def create_result(self, keywords):
@@ -53,5 +53,6 @@ class CalcMeta(ExecuteCommand):
         if modele is not None:
             self._result.setModel(modele)
             self._result.build()
+
 
 CALC_META = CalcMeta.run

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,154 +24,130 @@
 #    DE FLEXION A UNE EXTREMITE. CALCUL DES CHARGES CRITIQUES
 #    CONDUISANT AU FLAMBEMENT ELASTIQUE PAR DEVERSEMENT D'UNE POUTRE
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_3D'(QUAD9)
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 #
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
 #
-MAIL=CREA_MAILLAGE(     MAILLAGE=MA,
-                       MODI_MAILLE=_F( TOUT = 'OUI',
-                                    OPTION = 'QUAD8_9',
-                                    )
-                     )
+MAIL = CREA_MAILLAGE(MAILLAGE=MA, MODI_MAILLE=_F(TOUT="OUI", OPTION="QUAD8_9"))
 
 #
-MOEL=AFFE_MODELE(   MAILLAGE=MAIL,
-                          AFFE=_F( TOUT = 'OUI',
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = 'COQUE_3D',
-                                )
-                    )
+MOEL = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="COQUE_3D")
+)
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #
-CAEL=AFFE_CARA_ELEM(   MODELE=MOEL,COQUE=(
-                          _F( GROUP_MA = 'SEMELLES',
-                                 EPAIS = 0.0113,
-                                 A_CIS = 5650.,
-                                 ),
-                          _F( GROUP_MA = 'AME',
-                                 EPAIS = 0.0075,
-                                 A_CIS = 3750.,
-                                 ANGL_REP = (90., 0.,),
-                                 ))
-                       )
+CAEL = AFFE_CARA_ELEM(
+    MODELE=MOEL,
+    COQUE=(
+        _F(GROUP_MA="SEMELLES", EPAIS=0.0113, A_CIS=5650.0),
+        _F(GROUP_MA="AME", EPAIS=0.0075, A_CIS=3750.0, ANGL_REP=(90.0, 0.0)),
+    ),
+)
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #
-MATERIAU=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
-                                  NU = 0.3,
-                                  )
-                          )
+MATERIAU = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3))
 
 #
-CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                                AFFE=_F( TOUT = 'OUI',   MATER = MATERIAU,  )
-                          )
+CHAM_MAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERIAU))
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                     CHARGEMENTS
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #
-CON_LI=AFFE_CHAR_MECA(        MODELE=MOEL,
-                              DDL_IMPO=_F( GROUP_NO = 'ENCASTRE',
-                                        DX = 0.,    DY = 0.,    DZ = 0.,
-                                        DRX = 0.,   DRY = 0.,   DRZ = 0.,
-                                        )
-                         )
+CON_LI = AFFE_CHAR_MECA(
+    MODELE=MOEL, DDL_IMPO=_F(GROUP_NO="ENCASTRE", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)
+)
 
 #
-CHARGE=AFFE_CHAR_MECA(         MODELE=MOEL,
-                           FORCE_NODALE=_F( GROUP_NO = 'P',
-                                         FY = -1.,
-                                         )
-                         )
+CHARGE = AFFE_CHAR_MECA(MODELE=MOEL, FORCE_NODALE=_F(GROUP_NO="P", FY=-1.0))
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        RESOLUTION
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #
-RES=MECA_STATIQUE(      MODELE=MOEL, SOLVEUR=_F(POSTTRAITEMENTS='MINI'),
-                      CHAM_MATER=CHAM_MAT,
-                       CARA_ELEM=CAEL,EXCIT=(
-                           _F( CHARGE = CON_LI,  ),
-                           _F( CHARGE = CHARGE,  )),
-                    )
+RES = MECA_STATIQUE(
+    MODELE=MOEL,
+    SOLVEUR=_F(POSTTRAITEMENTS="MINI"),
+    CHAM_MATER=CHAM_MAT,
+    CARA_ELEM=CAEL,
+    EXCIT=(_F(CHARGE=CON_LI), _F(CHARGE=CHARGE)),
+)
 
 #
-SIGMA=CREA_CHAMP(   RESULTAT=RES,
-                      NOM_CHAM='SIEF_ELGA',
-                     OPERATION='EXTR',
-                     TYPE_CHAM='ELGA_SIEF_R',
-                     TYPE_MAXI='MINI',
-                     TYPE_RESU='VALE'
-                   )
+SIGMA = CREA_CHAMP(
+    RESULTAT=RES,
+    NOM_CHAM="SIEF_ELGA",
+    OPERATION="EXTR",
+    TYPE_CHAM="ELGA_SIEF_R",
+    TYPE_MAXI="MINI",
+    TYPE_RESU="VALE",
+)
 
 #
-MEL_RI_G=CALC_MATR_ELEM(     OPTION='RIGI_GEOM',
-                               MODELE=MOEL,
-                            CARA_ELEM=CAEL,
-                            SIEF_ELGA=SIGMA
-                          )
+MEL_RI_G = CALC_MATR_ELEM(OPTION="RIGI_GEOM", MODELE=MOEL, CARA_ELEM=CAEL, SIEF_ELGA=SIGMA)
 
 #
-MEL_RI_M=CALC_MATR_ELEM(      OPTION='RIGI_MECA',
-                                MODELE=MOEL,
-                            CHAM_MATER=CHAM_MAT,
-                             CARA_ELEM=CAEL,
-                                CHARGE=(CHARGE, CON_LI,)
-                          )
+MEL_RI_M = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", MODELE=MOEL, CHAM_MATER=CHAM_MAT, CARA_ELEM=CAEL, CHARGE=(CHARGE, CON_LI)
+)
 
 #
-NUM=NUME_DDL(   MATR_RIGI=MEL_RI_M)
+NUM = NUME_DDL(MATR_RIGI=MEL_RI_M)
 
 #
-MAS_RI_M=ASSE_MATRICE(   MATR_ELEM=MEL_RI_M,   NUME_DDL=NUM)
+MAS_RI_M = ASSE_MATRICE(MATR_ELEM=MEL_RI_M, NUME_DDL=NUM)
 
 #
-MAS_RI_G=ASSE_MATRICE(   MATR_ELEM=MEL_RI_G,   NUME_DDL=NUM)
+MAS_RI_G = ASSE_MATRICE(MATR_ELEM=MEL_RI_G, NUME_DDL=NUM)
 
 #
-RESULT=CALC_MODES(MATR_RIGI=MAS_RI_M,
-                  OPTION='PLUS_PETITE',
-                  MATR_RIGI_GEOM=MAS_RI_G,
-                  TYPE_RESU='MODE_FLAMB',
-                  )
+RESULT = CALC_MODES(
+    MATR_RIGI=MAS_RI_M, OPTION="PLUS_PETITE", MATR_RIGI_GEOM=MAS_RI_G, TYPE_RESU="MODE_FLAMB"
+)
 
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #
-TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
-                   NUME_MODE=6,
-                   RESULTAT=RESULT,
-                   VALE_CALC=9.76364015E+04,
-                   VALE_REFE=1.0479782000000001E5,
-                   REFERENCE='NON_DEFINI',
-                   CRITERE='RELATIF',
-                   PRECISION=0.070000000000000007,),
-                _F(PARA='CHAR_CRIT',
-                   NUME_MODE=5,
-                   RESULTAT=RESULT,
-                   VALE_CALC= -9.76363946E+04,
-                   VALE_REFE=-1.0479782000000001E5,
-                   REFERENCE='NON_DEFINI',
-                   CRITERE='RELATIF',
-                   PRECISION=0.070000000000000007,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            PARA="CHAR_CRIT",
+            NUME_MODE=6,
+            RESULTAT=RESULT,
+            VALE_CALC=9.76364015e04,
+            VALE_REFE=1.0479782000000001e5,
+            REFERENCE="NON_DEFINI",
+            CRITERE="RELATIF",
+            PRECISION=0.070000000000000007,
+        ),
+        _F(
+            PARA="CHAR_CRIT",
+            NUME_MODE=5,
+            RESULTAT=RESULT,
+            VALE_CALC=-9.76363946e04,
+            VALE_REFE=-1.0479782000000001e5,
+            REFERENCE="NON_DEFINI",
+            CRITERE="RELATIF",
+            PRECISION=0.070000000000000007,
+        ),
+    )
+)
 
 FIN()
 #

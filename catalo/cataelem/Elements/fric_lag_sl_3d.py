@@ -34,125 +34,120 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-                             components=(
-                                 ('EN1', ('DX', 'DY', 'DZ',
-                                  'LAGS_C', 'LAGS_F1', 'LAGS_F2',)),
-                                 ('EN2', ('DX', 'DY', 'DZ',)),))
+DDL_MECA = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(
+        ("EN1", ("DX", "DY", "DZ", "LAGS_C", "LAGS_F1", "LAGS_F2")),
+        ("EN2", ("DX", "DY", "DZ")),
+    ),
+)
 
-ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_C',)),
-                               ('EN2', ()),)
-                           )
+ECCONT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_C",)), ("EN2", ()))
+)
 
-ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_F',)),
-                               ('EN2', ()),)
-                           )
+ECFROT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_F",)), ("EN2", ()))
+)
 
 # ------------------------------------------------------------
 
 
 class FMT33D(Element):
     """
-      THE FMT33D CLASS ELEMENT :
-      DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE FMT33D CLASS ELEMENT :
+    DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.TRIA3
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)),)
     calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT), ),
-                      ),
-
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )
+
 
 # ------------------------------------------------------------
 
 
 class FMT63D(FMT33D):
     """
-      THE FMT63D CLASS ELEMENT :
-      DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE FMT63D CLASS ELEMENT :
+    DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.TRIA6
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3)),
-        SetOfNodes('EN2', (4, 5, 6)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", (4, 5, 6)))
+
 
 # ------------------------------------------------------------
 
 
 class FMQ93D(FMT33D):
     """
-      THE FMQ93D CLASS ELEMENT :
-      DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE FMQ93D CLASS ELEMENT :
+    DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.QUAD9
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4,)),
-        SetOfNodes('EN2', (5, 6, 7, 8, 9)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7, 8, 9)))
 
 
 # ------------------------------------------------------------
 class FMQ83D(FMT33D):
     """
-      THE FMQ93D CLASS ELEMENT :
-      DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE FMQ93D CLASS ELEMENT :
+    DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.QUAD8
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4)),
-        SetOfNodes('EN2', (5, 6, 7, 8)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)), SetOfNodes("EN2", (5, 6, 7, 8)))
 
 
 # ------------------------------------------------------------
 class FMQ43D(FMT33D):
     """
-      THE FMQ93D CLASS ELEMENT :
-      DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE FMQ93D CLASS ELEMENT :
+    DEFI_CONTACT / LAGRANGIAN / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.QUAD4
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)),)

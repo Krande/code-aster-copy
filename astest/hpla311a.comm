@@ -21,76 +21,53 @@
 #        A/B = 0.4
 #
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-                           CREA_GROUP_NO=_F(
-                         GROUP_MA = ( 'LPOP11',  'LP11PC1',  'C1',
-                                      'LP8P9',   'LP9PC2',   'LPOP8',
-                                         ))
-                       )
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=_F(GROUP_MA=("LPOP11", "LP11PC1", "C1", "LP8P9", "LP9PC2", "LPOP8")),
+)
 
 #
 # -------------------------------------------------------------------
 #                    DEBUT DU THERMIQUE
 # -------------------------------------------------------------------
-MOTH=AFFE_MODELE(        MAILLAGE=MA,
-                                    AFFE=_F( TOUT = 'OUI',
-                          PHENOMENE = 'THERMIQUE',
-                          MODELISATION = 'AXIS')
-                        )
+MOTH = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="AXIS"))
 
 #
-MATH=DEFI_MATERIAU(    THER=_F( RHO_CP = 0.,
-                                    LAMBDA = 1.)
-                          )
+MATH = DEFI_MATERIAU(THER=_F(RHO_CP=0.0, LAMBDA=1.0))
 
 #
-CMTH=AFFE_MATERIAU(        MAILLAGE=MA,
-                                      AFFE=_F(  TOUT = 'OUI',
-                                             MATER = MATH)
-                          )
+CMTH = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATH))
 
 #
-CHTH=AFFE_CHAR_THER(      MODELE=MOTH,TEMP_IMPO=(
-                              _F( GROUP_NO = 'C1',    TEMP = 0.),
-                              _F( GROUP_NO = 'LPOP8', TEMP = -100.))
-                           )
+CHTH = AFFE_CHAR_THER(
+    MODELE=MOTH, TEMP_IMPO=(_F(GROUP_NO="C1", TEMP=0.0), _F(GROUP_NO="LPOP8", TEMP=-100.0))
+)
 
 #
-METH=CALC_MATR_ELEM(        MODELE=MOTH,
-                                   CHARGE=CHTH,
-                               CHAM_MATER=CMTH,
-                                   OPTION='RIGI_THER'
-                           )
+METH = CALC_MATR_ELEM(MODELE=MOTH, CHARGE=CHTH, CHAM_MATER=CMTH, OPTION="RIGI_THER")
 
 #
-VETH=CALC_VECT_ELEM(        CHARGE=CHTH,
-                                   OPTION='CHAR_THER'
-                           )
+VETH = CALC_VECT_ELEM(CHARGE=CHTH, OPTION="CHAR_THER")
 
 #
-NUTH=NUME_DDL(          MATR_RIGI=METH )
+NUTH = NUME_DDL(MATR_RIGI=METH)
 
 #
-KTH=ASSE_MATRICE(      MATR_ELEM=METH,
-                                NUME_DDL=NUTH
-                           )
+KTH = ASSE_MATRICE(MATR_ELEM=METH, NUME_DDL=NUTH)
 
 #
-FTH=ASSE_VECTEUR(      VECT_ELEM=VETH,
-                                NUME_DDL=NUTH
-                           )
+FTH = ASSE_VECTEUR(VECT_ELEM=VETH, NUME_DDL=NUTH)
 
 #
-KTH=FACTORISER(      reuse=KTH,   MATR_ASSE=KTH )
+KTH = FACTORISER(reuse=KTH, MATR_ASSE=KTH)
 
 #
-TEMP=RESOUDRE(         MATR=KTH,
-                                 CHAM_NO=FTH
-                           )
+TEMP = RESOUDRE(MATR=KTH, CHAM_NO=FTH)
 
 #
 # -------------------------------------------------------------------
@@ -98,280 +75,259 @@ TEMP=RESOUDRE(         MATR=KTH,
 # -------------------------------------------------------------------
 #
 #
-MO=AFFE_MODELE( MAILLAGE=MA,
-                             AFFE=_F( TOUT = 'OUI',
-                                   PHENOMENE = 'MECANIQUE',
-                                   MODELISATION = 'AXIS')
-                       )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
 #
-E_T=DEFI_CONSTANTE(VALE=2.E11,)
-NU_T=DEFI_CONSTANTE(VALE=0.3,)
-ALPHA_T=DEFI_CONSTANTE(VALE=1.2E-5,)
+E_T = DEFI_CONSTANTE(VALE=2.0e11)
+NU_T = DEFI_CONSTANTE(VALE=0.3)
+ALPHA_T = DEFI_CONSTANTE(VALE=1.2e-5)
 
-MAT=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_T,
-                                 NU = NU_T,
-                                 TEMP_DEF_ALPHA=20,
-                                 ALPHA = ALPHA_T)
-                         )
+MAT = DEFI_MATERIAU(ELAS_FO=_F(E=E_T, NU=NU_T, TEMP_DEF_ALPHA=20, ALPHA=ALPHA_T))
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                                AFFE=_F( TOUT = 'OUI',
-                                      MATER = MAT),
-                                AFFE_VARC=_F( TOUT='OUI',CHAM_GD=TEMP,VALE_REF=0.,
-                                      NOM_VARC='TEMP',),)
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=MAT),
+    AFFE_VARC=_F(TOUT="OUI", CHAM_GD=TEMP, VALE_REF=0.0, NOM_VARC="TEMP"),
+)
 
 #
-CH=AFFE_CHAR_MECA(           MODELE=MO,
-                              DDL_IMPO=(
-                                   _F(  GROUP_NO = 'LP8P9',
-                                              DX = 0.),
-                                            _F(  GROUP_NO = 'LP9PC2',
-                                              DX = 0.),
-                                            _F(  GROUP_NO = 'LPOP11',
-                                              DY = 0.),
-                                            _F(  GROUP_NO = 'LP11PC1',
-                                              DY = 0.))
-                           )
+CH = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="LP8P9", DX=0.0),
+        _F(GROUP_NO="LP9PC2", DX=0.0),
+        _F(GROUP_NO="LPOP11", DY=0.0),
+        _F(GROUP_NO="LP11PC1", DY=0.0),
+    ),
+)
 
 #
-RIGI_ELE=CALC_MATR_ELEM(        MODELE=MO,
-                               CHAM_MATER=CHMAT,
-                                   CHARGE=CH,
-                                   OPTION='RIGI_MECA'
-                           )
+RIGI_ELE = CALC_MATR_ELEM(MODELE=MO, CHAM_MATER=CHMAT, CHARGE=CH, OPTION="RIGI_MECA")
 
 # prise en compte des variables de commande
 
-LIST1=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=1,),)
+LIST1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
-            MODELE=MO,
-            CHAM_MATER=CHMAT,
-            INCREMENT=_F(LIST_INST=LIST1,
-                         NUME_ORDRE=1),
-            EXCIT=_F(CHARGE=CH),
-            COMPORTEMENT=_F(RELATION='ELAS',),
-            )
+CONT1 = CALCUL(
+    OPTION=("FORC_VARC_ELEM_P"),
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    INCREMENT=_F(LIST_INST=LIST1, NUME_ORDRE=1),
+    EXCIT=_F(CHARGE=CH),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+)
 
-VECT_ELE=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
-                 TABLE=CONT1,
-                 NOM_PARA='NOM_SD',
-                 FILTRE=_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='FORC_VARC_ELEM_P'),)
+VECT_ELE = EXTR_TABLE(
+    TYPE_RESU="VECT_ELEM_DEPL_R",
+    TABLE=CONT1,
+    NOM_PARA="NOM_SD",
+    FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="FORC_VARC_ELEM_P"),
+)
 
-
-#
-NUMEDDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
 
 #
-RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUMEDDL
-                        )
+NUMEDDL = NUME_DDL(MATR_RIGI=RIGI_ELE)
 
 #
-FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
-                              NUME_DDL=NUMEDDL
-                         )
+RIGIDITE = ASSE_MATRICE(MATR_ELEM=RIGI_ELE, NUME_DDL=NUMEDDL)
 
 #
-RIGIDITE=FACTORISER(    reuse=RIGIDITE,  MATR_ASSE=RIGIDITE)
+FORCE = ASSE_VECTEUR(VECT_ELEM=VECT_ELE, NUME_DDL=NUMEDDL)
 
 #
-DEP=RESOUDRE(   MATR=RIGIDITE,
-                            CHAM_NO=FORCE
-                       )
+RIGIDITE = FACTORISER(reuse=RIGIDITE, MATR_ASSE=RIGIDITE)
 
-RESU=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',    NOM_CHAM='DEPL',
-                      AFFE=_F(  CHAM_GD = DEP,
-                                INST=0.,
-                                MODELE=MO,
-                                CHAM_MATER = CHMAT)     )
-FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
-                        FOND_FISS=_F( GROUP_NO = ('P0',)),
-                        SYME='OUI',
-                        LEVRE_SUP=_F(GROUP_MA=('M570')),
-                      )
+#
+DEP = RESOUDRE(MATR=RIGIDITE, CHAM_NO=FORCE)
+
+RESU = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=DEP, INST=0.0, MODELE=MO, CHAM_MATER=CHMAT),
+)
+FOND = DEFI_FOND_FISS(
+    MAILLAGE=MA, FOND_FISS=_F(GROUP_NO=("P0",)), SYME="OUI", LEVRE_SUP=_F(GROUP_MA=("M570"))
+)
 
 # CALCUL DE G AVEC CALC_G / OPTION G_EPSI
 
 #
-G00=CALC_G(
-                      RESULTAT=RESU,
-                      THETA=_F(
-                               R_INF=1.E-6,
-                               FISSURE=FOND,
-                               R_SUP=2.5E-5,),
-                      #~ EXCIT=_F(CHARGE=CH,),
-                      OPTION='G_EPSI',
-             )
+G00 = CALC_G(
+    RESULTAT=RESU,
+    THETA=_F(R_INF=1.0e-6, FISSURE=FOND, R_SUP=2.5e-5),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    OPTION="G_EPSI",
+)
 
 #
-G01=CALC_G(
-                 RESULTAT=RESU,
-                 THETA=_F(FISSURE=FOND,
-                          R_INF = 2.5E-5, R_SUP = 5.E-5,
-                         ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-                      OPTION='G_EPSI',
-             )
+G01 = CALC_G(
+    RESULTAT=RESU,
+    THETA=_F(FISSURE=FOND, R_INF=2.5e-5, R_SUP=5.0e-5),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    OPTION="G_EPSI",
+)
 
 #
-G02=CALC_G(
-                RESULTAT=RESU,
-                THETA=_F(FISSURE=FOND,
-                          R_INF = 5.E-5, R_SUP = 7.5E-5,
-                         ),
-                #~ EXCIT=_F(CHARGE=CH,),
-                      OPTION='G_EPSI',
-            )
+G02 = CALC_G(
+    RESULTAT=RESU,
+    THETA=_F(FISSURE=FOND, R_INF=5.0e-5, R_SUP=7.5e-5),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    OPTION="G_EPSI",
+)
 
 #
-G03=CALC_G(
-                 RESULTAT=RESU,
-                 THETA=_F(FISSURE=FOND,
-                          R_INF = 7.5E-5, R_SUP = 1.E-4,
-                         ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-                      OPTION='G_EPSI',
-            )
+G03 = CALC_G(
+    RESULTAT=RESU,
+    THETA=_F(FISSURE=FOND, R_INF=7.5e-5, R_SUP=1.0e-4),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    OPTION="G_EPSI",
+)
 
 #
-G04=CALC_G(
-                 RESULTAT=RESU,
-                 THETA=_F(FISSURE=FOND,
-                          ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-                      OPTION='G_EPSI',
-            )
+G04 = CALC_G(
+    RESULTAT=RESU,
+    THETA=_F(FISSURE=FOND),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    OPTION="G_EPSI",
+)
 
 #
 # LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
 # LA VALEUR A TESTER POUR L OPTION CALC_G VAUT 102.31*1.E-3=1.0231E-1
 #
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.059999999999999998,
-           VALE_CALC=97.027992348,
-           VALE_REFE=102.31,
-           NOM_PARA='G_EPSI',
-           TABLE=G00,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.059999999999999998,
+    VALE_CALC=97.027992348,
+    VALE_REFE=102.31,
+    NOM_PARA="G_EPSI",
+    TABLE=G00,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=100.522778978,
-           VALE_REFE=102.31,
-           NOM_PARA='G_EPSI',
-           TABLE=G01,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=100.522778978,
+    VALE_REFE=102.31,
+    NOM_PARA="G_EPSI",
+    TABLE=G01,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=100.55388419,
-           VALE_REFE=102.31,
-           NOM_PARA='G_EPSI',
-           TABLE=G02,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=100.55388419,
+    VALE_REFE=102.31,
+    NOM_PARA="G_EPSI",
+    TABLE=G02,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=100.558353545,
-           VALE_REFE=102.31,
-           NOM_PARA='G_EPSI',
-           TABLE=G03,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=100.558353545,
+    VALE_REFE=102.31,
+    NOM_PARA="G_EPSI",
+    TABLE=G03,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=100.556041419,
-           VALE_REFE=102.31,
-           NOM_PARA='G_EPSI',
-           TABLE=G04,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=100.556041419,
+    VALE_REFE=102.31,
+    NOM_PARA="G_EPSI",
+    TABLE=G04,
+)
 
 # CALCUL DE K ET G AVEC CALC_G / OPTION K
-KG00=CALC_G(
-                 RESULTAT=RESU,
-                 OPTION='K',
-                 THETA=_F(FISSURE=FOND,
-                          R_INF = 1.E-6, R_SUP = 2.5E-5,
-                          ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-             )
-KG01=CALC_G(
-                 RESULTAT=RESU,
-                 OPTION='K',
-                 THETA=_F(FISSURE=FOND,
-                          R_INF = 2.5E-5, R_SUP = 5.E-5,
-                          ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-             )
-KG02=CALC_G(
-                RESULTAT=RESU,
-                 OPTION='K',
-                THETA=_F(FISSURE=FOND,
-                          R_INF = 5.E-5, R_SUP = 7.5E-5,
-                          ),
-                #~ EXCIT=_F(CHARGE=CH,),
-            )
+KG00 = CALC_G(
+    RESULTAT=RESU,
+    OPTION="K",
+    THETA=_F(FISSURE=FOND, R_INF=1.0e-6, R_SUP=2.5e-5),
+    # ~ EXCIT=_F(CHARGE=CH,),
+)
+KG01 = CALC_G(
+    RESULTAT=RESU,
+    OPTION="K",
+    THETA=_F(FISSURE=FOND, R_INF=2.5e-5, R_SUP=5.0e-5),
+    # ~ EXCIT=_F(CHARGE=CH,),
+)
+KG02 = CALC_G(
+    RESULTAT=RESU,
+    OPTION="K",
+    THETA=_F(FISSURE=FOND, R_INF=5.0e-5, R_SUP=7.5e-5),
+    # ~ EXCIT=_F(CHARGE=CH,),
+)
 
-KG03=CALC_G(
-                 RESULTAT=RESU,
-                 OPTION='K',
-                 THETA=_F(FISSURE=FOND,
-                          R_INF = 7.5E-5,R_SUP = 1.E-4,
-                          ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-                 INFO=2,
-            )
-IMPR_TABLE(       TABLE=KG03,)
+KG03 = CALC_G(
+    RESULTAT=RESU,
+    OPTION="K",
+    THETA=_F(FISSURE=FOND, R_INF=7.5e-5, R_SUP=1.0e-4),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    INFO=2,
+)
+IMPR_TABLE(TABLE=KG03)
 
-KG04=CALC_G(
-                 RESULTAT=RESU,
-                 OPTION='K',
-                 THETA=_F(FISSURE=FOND,
-                          ),
-                 #~ EXCIT=_F(CHARGE=CH,),
-                 INFO=2,
-            )
-IMPR_TABLE(       TABLE=KG04,)
+KG04 = CALC_G(
+    RESULTAT=RESU,
+    OPTION="K",
+    THETA=_F(FISSURE=FOND),
+    # ~ EXCIT=_F(CHARGE=CH,),
+    INFO=2,
+)
+IMPR_TABLE(TABLE=KG04)
 
 #
 # LA VALEUR A TESTER POUR L OPTION K EST DIRECTEMENT LA VALEUR DE REFERENCE
 #
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.080000000000000002,
-           VALE_CALC=4509233.96093,
-           VALE_REFE=4.741900E6,
-           NOM_PARA='K1',
-           TABLE=KG00,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.080000000000000002,
+    VALE_CALC=4509233.96093,
+    VALE_REFE=4.741900e6,
+    NOM_PARA="K1",
+    TABLE=KG00,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=4759870.10139,
-           VALE_REFE=4.741900E6,
-           NOM_PARA='K1',
-           TABLE=KG01,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=4759870.10139,
+    VALE_REFE=4.741900e6,
+    NOM_PARA="K1",
+    TABLE=KG01,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=4794468.72892,
-           VALE_REFE=4.741900E6,
-           NOM_PARA='K1',
-           TABLE=KG02,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=4794468.72892,
+    VALE_REFE=4.741900e6,
+    NOM_PARA="K1",
+    TABLE=KG02,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=4827537.49717,
-           VALE_REFE=4.741900E6,
-           NOM_PARA='K1',
-           TABLE=KG03,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=4827537.49717,
+    VALE_REFE=4.741900e6,
+    NOM_PARA="K1",
+    TABLE=KG03,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=4811318.41436,
-           VALE_REFE=4.741900E6,
-           NOM_PARA='K1',
-           TABLE=KG04,)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=4811318.41436,
+    VALE_REFE=4.741900e6,
+    NOM_PARA="K1",
+    TABLE=KG04,
+)
 
 FIN()
 #

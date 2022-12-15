@@ -19,290 +19,257 @@
 
 #  TEST LOI FLUA_PORO_BETON
 # -----------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
-M=LIRE_MAILLAGE(FORMAT='MED',)
+M = LIRE_MAILLAGE(FORMAT="MED")
 
-M = DEFI_GROUP( reuse = M, MAILLAGE = M,
-                      CREA_GROUP_MA= (
-                                        _F( NOM = 'M1', MAILLE = 'M1'),
-                                     ),
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N7', NOEUD = 'N7'),
-                                     ),
-         )
-
-mod=AFFE_MODELE(MAILLAGE=M,
-                AFFE=_F(TOUT='OUI',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),)
-
-youn1=44700.
-nu1=0.3
-
-E=DEFI_CONSTANTE(VALE=youn1,)
-
-Nu=DEFI_CONSTANTE(VALE=nu1,)
-
-ALPHA=DEFI_CONSTANTE(VALE=0.0,)
-HYDR1=DEFI_CONSTANTE(VALE = 1.,)
-PORO=DEFI_CONSTANTE(VALE = 0.3,)
-CNAD=DEFI_CONSTANTE(VALE = 0.,)
-
-RHOF=DEFI_CONSTANTE(VALE = 2300.,)
-mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
-                                   NU    = Nu,
-                                   TEMP_DEF_ALPHA=20.,
-                                   ALPHA   =ALPHA,
-                                   K_DESSIC=0.,
-                                   B_ENDOGE=0.,RHO=RHOF),
-                                 RGI_BETON=_F(
-                     HYDR            = HYDR1,
-                     HYDS            = 0.2,
-                     PORO            =  PORO,
-                     BSHR            =  0.3,
-                     MSHR            =  10.,
-                     MVGN            =  0.5,
-                     SFLD            =  32,
-                     RT              =  1.,
-                     EPT             =  1.0e-4,
-                     RC              =  120.,
-                     EPC             =  2.0e-3,
-                     DELT            =  1.5,
-                     BETA            =  0.1,
-                     REF             =  18.,
-                     EKDC            =  1.e-2,
-                     GFT             =  1.0e-3,
-                     GFR             =  1.0e-4,
-                     DT80            =  0.,
-                     TSTH            =  80.,
-                     TREF            =  38.,
-                     TAUK            =  250.,
-                     YKSY            =  1.,
-                     TAUM            =  250.,
-                     EKFL            =  0.000001,
-                     XFLU            =  5.,
-                     NRJM            =  200000.,
-                     DFMX            =  0.,
-                     VVRG            =  0.02e-2,
-                     HPEV            = 1.0,
-                     ALAT            = 0.1,
-                     KGEL            = 7000.,
-                     KRGI            =  0.5,
-                     HRGI            =  0.3,
-                     EKRG            =  3.e-2,
-                     VRAG            =  5.e-2,
-                     TAUG            =  300.,
-                     SRSG            =  0.02,
-                     NRJG            =  20000,
-                     TRAG            =  12.,
-                     TDEF            =  0.,
-                     NRJP            =  0.,
-                     VDEF            =  0.,
-                     SRSD            =  0.,
-                     CNAD            =  CNAD,
-                     SSAD            =  10.,
-                     CNAK            =  0.1,
-                     CNAB            =  0.1,
-                     EXND            =  0.1,
-                     EXMD            =  0.1,
-                     TTDD            =  150,
-                     TDID            =  0.1,
-                     TFID            =  0.1,
-                     NRJD            =  250000.,
-                     TTRD            =  20.,
-                     DIM3            = 3.,),)
-
-HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='HYDR',
-                         VALE=1.0,),)
-
-HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='HYDR',
-                         VALE=1.0,),)
-
-HYDR=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_VARC',
-               NOM_CHAM='HYDR_NOEU',
-               AFFE=(
-               _F(CHAM_GD=HYDRI,
-                  INST=0.0,),
-               _F(CHAM_GD=HYDRF,
-                  INST=350.,),),)
-
-SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=0.25,),)
-
-SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=0.25,),)
-
-SECH=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_THER',
-               NOM_CHAM='TEMP',
-               AFFE=(
-               _F(CHAM_GD=SECHI,
-                  INST=0.0,),
-               _F(CHAM_GD=SECHF,
-                  INST=350.0,),),)
-
-TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=20,),)
-
-TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=20,),)
-
-TEMP=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_THER',
-               NOM_CHAM='TEMP',
-               AFFE=(
-               _F(CHAM_GD=TEMPI,
-                  INST=0.0,),
-               _F(CHAM_GD=TEMPF,
-                  INST=350.,),),)
-
-afmat=AFFE_MATERIAU(MAILLAGE=M,
-                      AFFE=_F(TOUT='OUI',
-                              MATER=mat,),
-                      AFFE_VARC=(
-                                  # _F(TOUT='OUI',
-                                    # NOM_VARC='HYDR',
-                                    # EVOL=HYDR,
-                                    # NOM_CHAM='HYDR_NOEU',),
-                                 _F(TOUT='OUI',
-                                    NOM_VARC='SECH',
-                                    EVOL=SECH,
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=0.,),
-                                 _F(TOUT='OUI',
-                                    NOM_VARC='TEMP',
-                                    EVOL=TEMP,
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=20.,),
-                                ),
-                                    )
-
-Fonc1=DEFI_FONCTION(
-                      NOM_PARA='INST',
-                     VALE=(0.0,0.,
-                          0.1,1.,350.,1.0,
-                          ),
-                    PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='EXCLU',)
-
-char1=AFFE_CHAR_MECA(MODELE=mod,
-                      PRES_REP=_F(GROUP_MA='SXY1',
-                                  PRES=1.,),)
-
-CL=AFFE_CHAR_MECA(MODELE=mod,
-                  DDL_IMPO=(_F(GROUP_NO='sxz0no',
-                               DY=0,),
-                            _F(GROUP_NO='sxy0no',
-                               DZ=0,),
-                            _F(GROUP_NO='syz0no',
-                               DX=0,),),
+M = DEFI_GROUP(
+    reuse=M,
+    MAILLAGE=M,
+    CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1"),),
+    CREA_GROUP_NO=(_F(NOM="N7", NOEUD="N7"),),
 )
 
-litps=DEFI_LIST_REEL(DEBUT=0,
-                     INTERVALLE=(_F(JUSQU_A=0.2,
-                                    PAS=0.025),
-                                 _F(JUSQU_A=10,
-                                    PAS=0.2),
-                                 _F(JUSQU_A=150,
-                                    PAS=0.25),
-                                 ),)
+mod = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-liarc=DEFI_LIST_REEL(DEBUT=0,
-                     INTERVALLE=(_F(JUSQU_A=0.2,
-                                    PAS=0.025),
-                                 _F(JUSQU_A=10,
-                                    PAS=0.2),
-                                 _F(JUSQU_A=150,
-                                    PAS=2.),
-                                 ),)
+youn1 = 44700.0
+nu1 = 0.3
 
-RESU=STAT_NON_LINE(MODELE=mod,
-                   CHAM_MATER=afmat,
-                   EXCIT=(_F(CHARGE=char1,
-                               FONC_MULT=Fonc1,),
-                          _F(CHARGE=CL,),),
-                   COMPORTEMENT=_F(RELATION ='RGI_BETON'),
-                   INCREMENT=_F(LIST_INST=litps,
-                                INST_INIT=0,),
-                   NEWTON=_F(PREDICTION='EXTRAPOLE',
-                             MATRICE='TANGENTE',),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=100,
-                                 ARRET='OUI',
-                                 RESI_GLOB_RELA=1.E-6),
-                  ARCHIVAGE=_F(LIST_INST = liarc),)
+E = DEFI_CONSTANTE(VALE=youn1)
 
-RESU=CALC_CHAMP(reuse =RESU,
-                 MODELE=mod,
-                 RESULTAT=RESU,
-                 TOUT='OUI',
-                 CONTRAINTE='SIEF_ELNO',
-                 DEFORMATION='EPSI_ELNO',)
+Nu = DEFI_CONSTANTE(VALE=nu1)
 
-IMPR_RESU(FORMAT='RESULTAT',
-          UNITE=80,
-          RESU=_F(RESULTAT=RESU,
-                  NOM_CHAM='DEPL',),)
+ALPHA = DEFI_CONSTANTE(VALE=0.0)
+HYDR1 = DEFI_CONSTANTE(VALE=1.0)
+PORO = DEFI_CONSTANTE(VALE=0.3)
+CNAD = DEFI_CONSTANTE(VALE=0.0)
 
+RHOF = DEFI_CONSTANTE(VALE=2300.0)
+mat = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E, NU=Nu, TEMP_DEF_ALPHA=20.0, ALPHA=ALPHA, K_DESSIC=0.0, B_ENDOGE=0.0, RHO=RHOF),
+    RGI_BETON=_F(
+        HYDR=HYDR1,
+        HYDS=0.2,
+        PORO=PORO,
+        BSHR=0.3,
+        MSHR=10.0,
+        MVGN=0.5,
+        SFLD=32,
+        RT=1.0,
+        EPT=1.0e-4,
+        RC=120.0,
+        EPC=2.0e-3,
+        DELT=1.5,
+        BETA=0.1,
+        REF=18.0,
+        EKDC=1.0e-2,
+        GFT=1.0e-3,
+        GFR=1.0e-4,
+        DT80=0.0,
+        TSTH=80.0,
+        TREF=38.0,
+        TAUK=250.0,
+        YKSY=1.0,
+        TAUM=250.0,
+        EKFL=0.000001,
+        XFLU=5.0,
+        NRJM=200000.0,
+        DFMX=0.0,
+        VVRG=0.02e-2,
+        HPEV=1.0,
+        ALAT=0.1,
+        KGEL=7000.0,
+        KRGI=0.5,
+        HRGI=0.3,
+        EKRG=3.0e-2,
+        VRAG=5.0e-2,
+        TAUG=300.0,
+        SRSG=0.02,
+        NRJG=20000,
+        TRAG=12.0,
+        TDEF=0.0,
+        NRJP=0.0,
+        VDEF=0.0,
+        SRSD=0.0,
+        CNAD=CNAD,
+        SSAD=10.0,
+        CNAK=0.1,
+        CNAB=0.1,
+        EXND=0.1,
+        EXMD=0.1,
+        TTDD=150,
+        TDID=0.1,
+        TFID=0.1,
+        NRJD=250000.0,
+        TTRD=20.0,
+        DIM3=3.0,
+    ),
+)
+
+HYDRI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_HYDR_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="HYDR", VALE=1.0),
+)
+
+HYDRF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_HYDR_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="HYDR", VALE=1.0),
+)
+
+HYDR = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_VARC",
+    NOM_CHAM="HYDR_NOEU",
+    AFFE=(_F(CHAM_GD=HYDRI, INST=0.0), _F(CHAM_GD=HYDRF, INST=350.0)),
+)
+
+SECHI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.25),
+)
+
+SECHF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.25),
+)
+
+SECH = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=SECHI, INST=0.0), _F(CHAM_GD=SECHF, INST=350.0)),
+)
+
+TEMPI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20),
+)
+
+TEMPF = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20),
+)
+
+TEMP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=TEMPI, INST=0.0), _F(CHAM_GD=TEMPF, INST=350.0)),
+)
+
+afmat = AFFE_MATERIAU(
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", MATER=mat),
+    AFFE_VARC=(
+        # _F(TOUT='OUI',
+        # NOM_VARC='HYDR',
+        # EVOL=HYDR,
+        # NOM_CHAM='HYDR_NOEU',),
+        _F(TOUT="OUI", NOM_VARC="SECH", EVOL=SECH, NOM_CHAM="TEMP", VALE_REF=0.0),
+        _F(TOUT="OUI", NOM_VARC="TEMP", EVOL=TEMP, NOM_CHAM="TEMP", VALE_REF=20.0),
+    ),
+)
+
+Fonc1 = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 0.1, 1.0, 350.0, 1.0), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
+)
+
+char1 = AFFE_CHAR_MECA(MODELE=mod, PRES_REP=_F(GROUP_MA="SXY1", PRES=1.0))
+
+CL = AFFE_CHAR_MECA(
+    MODELE=mod,
+    DDL_IMPO=(
+        _F(GROUP_NO="sxz0no", DY=0),
+        _F(GROUP_NO="sxy0no", DZ=0),
+        _F(GROUP_NO="syz0no", DX=0),
+    ),
+)
+
+litps = DEFI_LIST_REEL(
+    DEBUT=0,
+    INTERVALLE=(_F(JUSQU_A=0.2, PAS=0.025), _F(JUSQU_A=10, PAS=0.2), _F(JUSQU_A=150, PAS=0.25)),
+)
+
+liarc = DEFI_LIST_REEL(
+    DEBUT=0,
+    INTERVALLE=(_F(JUSQU_A=0.2, PAS=0.025), _F(JUSQU_A=10, PAS=0.2), _F(JUSQU_A=150, PAS=2.0)),
+)
+
+RESU = STAT_NON_LINE(
+    MODELE=mod,
+    CHAM_MATER=afmat,
+    EXCIT=(_F(CHARGE=char1, FONC_MULT=Fonc1), _F(CHARGE=CL)),
+    COMPORTEMENT=_F(RELATION="RGI_BETON"),
+    INCREMENT=_F(LIST_INST=litps, INST_INIT=0),
+    NEWTON=_F(PREDICTION="EXTRAPOLE", MATRICE="TANGENTE"),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=100, ARRET="OUI", RESI_GLOB_RELA=1.0e-6),
+    ARCHIVAGE=_F(LIST_INST=liarc),
+)
+
+RESU = CALC_CHAMP(
+    reuse=RESU,
+    MODELE=mod,
+    RESULTAT=RESU,
+    TOUT="OUI",
+    CONTRAINTE="SIEF_ELNO",
+    DEFORMATION="EPSI_ELNO",
+)
+
+IMPR_RESU(FORMAT="RESULTAT", UNITE=80, RESU=_F(RESULTAT=RESU, NOM_CHAM="DEPL"))
 
 
 # VALEURS DE NON REGRESSION
-TEST_RESU(RESU=(_F(INST=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N7',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-3.72905847783979E-05,
-                   GROUP_MA='M1',),
-                #Instant 50 removed for different
-                #convergence behavior in GAIA
-                # _F(INST=50,
-                  # RESULTAT=RESU,
-                  # NOM_CHAM='DEPL',
-                  # GROUP_NO='N7',
-                  # NOM_CMP='DZ',
-                  # VALE_CALC=8.20304582429925E-06,
-                  # GROUP_MA='M1',),
-                _F(INST=100,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N7',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.0015484102258774607,
-                   GROUP_MA='M1',),
-                _F(INST=150,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N7',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.0028194798619024294,
-                   GROUP_MA='M1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N7",
+            NOM_CMP="DZ",
+            VALE_CALC=-3.72905847783979e-05,
+            GROUP_MA="M1",
+        ),
+        # Instant 50 removed for different
+        # convergence behavior in GAIA
+        # _F(INST=50,
+        # RESULTAT=RESU,
+        # NOM_CHAM='DEPL',
+        # GROUP_NO='N7',
+        # NOM_CMP='DZ',
+        # VALE_CALC=8.20304582429925E-06,
+        # GROUP_MA='M1',),
+        _F(
+            INST=100,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N7",
+            NOM_CMP="DZ",
+            VALE_CALC=0.0015484102258774607,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=150,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N7",
+            NOM_CMP="DZ",
+            VALE_CALC=0.0028194798619024294,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 FIN()

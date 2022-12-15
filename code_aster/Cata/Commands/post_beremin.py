@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,17 +30,27 @@ POST_BEREMIN = MACRO(
     docu="UX.YZ.AB",
     reentrant="n",
     fr=tr("Post-traitement de Beremin"),
-
     RESULTAT=SIMP(statut="o", typ=evol_noli, fr=tr("Résultat mecanique")),
-    GROUP_MA=SIMP(statut="o", typ=grma, max="**", fr=tr(
-        "Groupe de mailles sur lequel effectuer le post-traitement")),
-    DEFORMATION=SIMP(statut="o", typ="TXM", into=("PETIT", "PETIT_REAC",
-                                                  "GDEF_LOG"),
-                     fr=tr("Type de déformation du résultat mécanique")),
-    FILTRE_SIGM=SIMP(statut="o", typ="TXM", into=("SIGM_ELGA", "SIGM_ELMOY"),
-                     fr=tr("Option de moyennation des contraintes")),
-    COEF_MULT=SIMP(statut="f", typ="R", defaut=1., fr=tr(
-        "Coefficient à renseigner selon u4.81.22")),
-    UNITE   =SIMP(statut='f',typ=UnitType(), inout='out',),
-
+    GROUP_MA=SIMP(
+        statut="o",
+        typ=grma,
+        max="**",
+        fr=tr("Groupe de mailles sur lequel effectuer le post-traitement"),
+    ),
+    DEFORMATION=SIMP(
+        statut="o",
+        typ="TXM",
+        into=("PETIT", "PETIT_REAC", "GDEF_LOG"),
+        fr=tr("Type de déformation du résultat mécanique"),
+    ),
+    FILTRE_SIGM=SIMP(
+        statut="o",
+        typ="TXM",
+        into=("SIGM_ELGA", "SIGM_ELMOY"),
+        fr=tr("Option de moyennation des contraintes"),
+    ),
+    COEF_MULT=SIMP(
+        statut="f", typ="R", defaut=1.0, fr=tr("Coefficient à renseigner selon u4.81.22")
+    ),
+    UNITE=SIMP(statut="f", typ=UnitType(), inout="out"),
 )

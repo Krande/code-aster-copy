@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,262 +19,261 @@
 
 # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 #       (3D ET FORCE_INTERNE_F)
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 #
 # DEFINITION DES GROUPES DE NOEUDS
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
-                       _F(  GROUP_MA = 'ENCAST'),
-                       _F(  GROUP_MA = 'CONT_PR'),
-                       _F(  GROUP_MA = ( 'B',  'SECT_MED', )))
-                   )
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_NO=(_F(GROUP_MA="ENCAST"), _F(GROUP_MA="CONT_PR"), _F(GROUP_MA=("B", "SECT_MED"))),
+)
 
 #
 # DEFINITION DU MODELE
-MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
-                         AFFE=_F(  TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'AXIS_FOURIER')  )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_FOURIER")
+)
 
 #
 # DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
-                                 ALPHA = 1.E-5,  RHO = 7800.)
-                      )
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, ALPHA=1.0e-5, RHO=7800.0))
 
 #
 # ATTRIBUTION DU MATERIAU
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                          AFFE=_F(  TOUT = 'OUI',
-                                 MATER = ACIER)  )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-F_Y=DEFI_FONCTION(    NOM_PARA='Y',
-                        VALE=( 0.,     10000.,
-                               0.24,   10000., )
-                    )
+F_Y = DEFI_FONCTION(NOM_PARA="Y", VALE=(0.0, 10000.0, 0.24, 10000.0))
 
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
-CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
-                            DDL_IMPO=_F(  GROUP_NO = 'ENCAST',
-                                       DX = 0.,  DY = 0.,  DZ = 0.)  )
+CLIM = AFFE_CHAR_MECA(MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="ENCAST", DX=0.0, DY=0.0, DZ=0.0))
 
 #   GRAVITE
-GRAD_R=DEFI_FONCTION(    NOM_PARA='X',
-                           VALE=( 0.,        76518.,
-                                  0.006,     76518., )
-                        )
+GRAD_R = DEFI_FONCTION(NOM_PARA="X", VALE=(0.0, 76518.0, 0.006, 76518.0))
 
-GCIR_Y=DEFI_FONCTION(    NOM_PARA='Y',
-                           VALE=( 0.,       76518.,
-                                  0.24,     76518., )
-                       )
+GCIR_Y = DEFI_FONCTION(NOM_PARA="Y", VALE=(0.0, 76518.0, 0.24, 76518.0))
 
-CHAR_GR=AFFE_CHAR_MECA_F(    MODELE=MODELE,
-                               FORCE_INTERNE=_F(  TOUT = 'OUI',
-                                               FX = GRAD_R, FZ = GCIR_Y)
-                          )
+CHAR_GR = AFFE_CHAR_MECA_F(MODELE=MODELE, FORCE_INTERNE=_F(TOUT="OUI", FX=GRAD_R, FZ=GCIR_Y))
 
 #   PRESSION
-CHAR_PR=AFFE_CHAR_MECA_F(   MODELE=MODELE,
-                              PRES_REP=_F(  GROUP_MA = 'CONT_PR',
-                                         PRES = F_Y)
-                          )
+CHAR_PR = AFFE_CHAR_MECA_F(MODELE=MODELE, PRES_REP=_F(GROUP_MA="CONT_PR", PRES=F_Y))
 
-DEF0=MACRO_ELAS_MULT(        MODELE=MODELE,
-                             CHAM_MATER=CHMAT,
-                             CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
-                             _F(MODE_FOURIER = 1,
-                                TYPE_MODE = 'SYME',
-                                CHAR_MECA = CHAR_GR,
-                                OPTION = 'SANS' ),
-                             _F(MODE_FOURIER = 1,
-                                TYPE_MODE = 'SYME',
-                                CHAR_MECA = CHAR_PR,
-                                OPTION = 'SANS' ))
-                     )
+DEF0 = MACRO_ELAS_MULT(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CHAR_MECA_GLOBAL=CLIM,
+    CAS_CHARGE=(
+        _F(MODE_FOURIER=1, TYPE_MODE="SYME", CHAR_MECA=CHAR_GR, OPTION="SANS"),
+        _F(MODE_FOURIER=1, TYPE_MODE="SYME", CHAR_MECA=CHAR_PR, OPTION="SANS"),
+    ),
+)
 
-U0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF0,
-                    NUME_ORDRE=1
-                  )
+U0_GR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", NOM_CHAM="DEPL", RESULTAT=DEF0, NUME_ORDRE=1
+)
 
-U0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF0,
-                    NUME_ORDRE=2
-                  )
+U0_PR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", NOM_CHAM="DEPL", RESULTAT=DEF0, NUME_ORDRE=2
+)
 
 #
 # CALCUL DES CONTRAINTES
 
-DEF0=CALC_CHAMP(reuse=DEF0,RESULTAT=DEF0,CONTRAINTE=('SIGM_ELNO'))
+DEF0 = CALC_CHAMP(reuse=DEF0, RESULTAT=DEF0, CONTRAINTE=("SIGM_ELNO"))
 
 
-SIG0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                      RESULTAT=DEF0,
-                      NUME_ORDRE=1,
-                      NOM_CHAM='SIGM_ELNO'
-                  )
+SIG0_GR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=DEF0, NUME_ORDRE=1, NOM_CHAM="SIGM_ELNO"
+)
 
-SIG0_PR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                      RESULTAT=DEF0,
-                      NUME_ORDRE=2,
-                      NOM_CHAM='SIGM_ELNO'
-                  )
+SIG0_PR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=DEF0, NUME_ORDRE=2, NOM_CHAM="SIGM_ELNO"
+)
 # RECOMBINAISONS DE FOURIER EN DEPLACEMENTS ET CONTRAINTES
 # POUR TETA = 0. (GRAVITE) ET TETA = 0. (PRESSION)
 
-RU0_GR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='DEPL',
-           AFFE=_F( CHAM_GD=U0_GR,NUME_MODE=1,TYPE_MODE='SYME'),)
+RU0_GR = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="FOURIER_ELAS",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=U0_GR, NUME_MODE=1, TYPE_MODE="SYME"),
+)
 
-RU0_PR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='DEPL',
-           AFFE=_F( CHAM_GD=U0_PR,NUME_MODE=1,TYPE_MODE='SYME'),)
+RU0_PR = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="FOURIER_ELAS",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=U0_PR, NUME_MODE=1, TYPE_MODE="SYME"),
+)
 
-RSIG0_GR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='SIGM_ELNO',
-           AFFE=_F( CHAM_GD=SIG0_GR,NUME_MODE=1,TYPE_MODE='SYME'),)
+RSIG0_GR = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="FOURIER_ELAS",
+    NOM_CHAM="SIGM_ELNO",
+    AFFE=_F(CHAM_GD=SIG0_GR, NUME_MODE=1, TYPE_MODE="SYME"),
+)
 
-RSIG0_PR=CREA_RESU(OPERATION='AFFE',TYPE_RESU='FOURIER_ELAS',NOM_CHAM='SIGM_ELNO',
-           AFFE=_F( CHAM_GD=SIG0_PR,NUME_MODE=1,TYPE_MODE='SYME'),)
+RSIG0_PR = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="FOURIER_ELAS",
+    NOM_CHAM="SIGM_ELNO",
+    AFFE=_F(CHAM_GD=SIG0_PR, NUME_MODE=1, TYPE_MODE="SYME"),
+)
 
-CO_FOUR1=COMB_FOURIER(   RESULTAT=RU0_GR,
-                         NOM_CHAM=( 'DEPL',),
-                         ANGLE=( 0., ),
-                        )
+CO_FOUR1 = COMB_FOURIER(RESULTAT=RU0_GR, NOM_CHAM=("DEPL",), ANGLE=(0.0,))
 
-CO_FOUR2=COMB_FOURIER(   RESULTAT=RU0_PR,
-                         NOM_CHAM=( 'DEPL',),
-                         ANGLE=( 0., ),
-                        )
+CO_FOUR2 = COMB_FOURIER(RESULTAT=RU0_PR, NOM_CHAM=("DEPL",), ANGLE=(0.0,))
 
-CO_FOUR3=COMB_FOURIER(   RESULTAT=RSIG0_GR,
-                         NOM_CHAM=( 'SIGM_ELNO',),
-                         ANGLE=( 0., ),
-                        )
+CO_FOUR3 = COMB_FOURIER(RESULTAT=RSIG0_GR, NOM_CHAM=("SIGM_ELNO",), ANGLE=(0.0,))
 
-CO_FOUR4=COMB_FOURIER(   RESULTAT=RSIG0_PR,
-                         NOM_CHAM=( 'SIGM_ELNO',),
-                         ANGLE=( 0., ),
-                        )
+CO_FOUR4 = COMB_FOURIER(RESULTAT=RSIG0_PR, NOM_CHAM=("SIGM_ELNO",), ANGLE=(0.0,))
 
-U_GR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
-             RESULTAT=CO_FOUR1,ANGLE=0.,NOM_CHAM='DEPL')
+U_GR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=CO_FOUR1, ANGLE=0.0, NOM_CHAM="DEPL"
+)
 
-U_PR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
-             RESULTAT=CO_FOUR2,ANGLE=0.,NOM_CHAM='DEPL')
+U_PR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=CO_FOUR2, ANGLE=0.0, NOM_CHAM="DEPL"
+)
 
-SIG_GR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
-             RESULTAT=CO_FOUR3,ANGLE=0.,NOM_CHAM='SIGM_ELNO')
+SIG_GR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=CO_FOUR3, ANGLE=0.0, NOM_CHAM="SIGM_ELNO"
+)
 
-SIG_PR=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
-             RESULTAT=CO_FOUR4,ANGLE=0.,NOM_CHAM='SIGM_ELNO')
+SIG_PR = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=CO_FOUR4, ANGLE=0.0, NOM_CHAM="SIGM_ELNO"
+)
 #
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='N249',
-                      NOM_CMP='DX',
-                      PRECISION=7.0000000000000001E-3,
-                      CHAM_GD=U_GR,
-                      VALE_CALC= 3.54116502E-07,
-                      VALE_REFE=3.566E-07,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(GROUP_NO='N87',
-                      NOM_CMP='DX',
-                      PRECISION=8.9999999999999993E-3,
-                      CHAM_GD=U_GR,
-                      VALE_CALC= 3.53595278E-07,
-                      VALE_REFE=3.566E-07,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(GROUP_NO='N249',
-                      CRITERE='ABSOLU',
-                      NOM_CMP='DY',
-                      CHAM_GD=U_GR,
-                      REFERENCE='ANALYTIQUE',
-                      VALE_REFE=0.0,
-                      VALE_CALC=0.0,),
-                   _F(GROUP_NO='N87',
-                      CRITERE='ABSOLU',
-                      NOM_CMP='DY',
-                      CHAM_GD=U_GR,
-                      REFERENCE='ANALYTIQUE',
-                      VALE_REFE=0.0,
-                      VALE_CALC=0.0,),
-                   ),
-          )
-
-#
-T1=POST_RELEVE_T(    ACTION=_F(  GROUP_NO = ( 'B', ),
-                                INTITULE = 'SIG',
-                                CHAM_GD = SIG_GR,
-                                NOM_CMP = ('SIXX', 'SIYY', 'SIZZ',),
-                                OPERATION = 'EXTRACTION')
-                   )
-
-#
-TEST_TABLE(PRECISION=0.042000000000000003,
-           VALE_CALC=-2.59996102E+05,
-           VALE_REFE=-2.49600E5,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='SIYY',
-           TABLE=T1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
-           )
-
-#
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='N249',
-                      NOM_CMP='DX',
-                      PRECISION=0.014,
-                      CHAM_GD=U_PR,
-                      VALE_CALC=-7.71291488E-06,
-                      VALE_REFE=-7.8199999999999997E-06,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(GROUP_NO='N87',
-                      NOM_CMP='DX',
-                      PRECISION=0.016,
-                      CHAM_GD=U_PR,
-                      VALE_CALC=-7.70163391E-06,
-                      VALE_REFE=-7.8199999999999997E-06,
-                      REFERENCE='ANALYTIQUE',),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="N249",
+            NOM_CMP="DX",
+            PRECISION=7.0000000000000001e-3,
+            CHAM_GD=U_GR,
+            VALE_CALC=3.54116502e-07,
+            VALE_REFE=3.566e-07,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N87",
+            NOM_CMP="DX",
+            PRECISION=8.9999999999999993e-3,
+            CHAM_GD=U_GR,
+            VALE_CALC=3.53595278e-07,
+            VALE_REFE=3.566e-07,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N249",
+            CRITERE="ABSOLU",
+            NOM_CMP="DY",
+            CHAM_GD=U_GR,
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+        _F(
+            GROUP_NO="N87",
+            CRITERE="ABSOLU",
+            NOM_CMP="DY",
+            CHAM_GD=U_GR,
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+        ),
+    )
+)
 
 #
-T2=POST_RELEVE_T(    ACTION=_F(  GROUP_NO = ( 'B', ),
-                                INTITULE = 'SIG',
-                                CHAM_GD = SIG_PR,
-                                NOM_CMP = ('SIXX', 'SIYY', 'SIZZ',),
-                                OPERATION = 'EXTRACTION')
-                   )
+T1 = POST_RELEVE_T(
+    ACTION=_F(
+        GROUP_NO=("B",),
+        INTITULE="SIG",
+        CHAM_GD=SIG_GR,
+        NOM_CMP=("SIXX", "SIYY", "SIZZ"),
+        OPERATION="EXTRACTION",
+    )
+)
 
 #
-TEST_TABLE(PRECISION=0.185,
-           VALE_CALC= 1.41066817E+06,
-           VALE_REFE=1.730000E6,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='SIXX',
-           TABLE=T2,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
-           )
+TEST_TABLE(
+    PRECISION=0.042000000000000003,
+    VALE_CALC=-2.59996102e05,
+    VALE_REFE=-2.49600e5,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="SIYY",
+    TABLE=T1,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2"),
+)
 
-TEST_TABLE(PRECISION=0.017999999999999999,
-           VALE_CALC= 5.65797968E+06,
-           VALE_REFE=5.560000E6,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='SIYY',
-           TABLE=T2,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
-           )
+#
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="N249",
+            NOM_CMP="DX",
+            PRECISION=0.014,
+            CHAM_GD=U_PR,
+            VALE_CALC=-7.71291488e-06,
+            VALE_REFE=-7.8199999999999997e-06,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N87",
+            NOM_CMP="DX",
+            PRECISION=0.016,
+            CHAM_GD=U_PR,
+            VALE_CALC=-7.70163391e-06,
+            VALE_REFE=-7.8199999999999997e-06,
+            REFERENCE="ANALYTIQUE",
+        ),
+    )
+)
 
-TEST_TABLE(PRECISION=0.087999999999999995,
-           VALE_CALC= 1.89206164E+06,
-           VALE_REFE=1.740000E6,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='SIZZ',
-           TABLE=T2,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N2',),
-           )
+#
+T2 = POST_RELEVE_T(
+    ACTION=_F(
+        GROUP_NO=("B",),
+        INTITULE="SIG",
+        CHAM_GD=SIG_PR,
+        NOM_CMP=("SIXX", "SIYY", "SIZZ"),
+        OPERATION="EXTRACTION",
+    )
+)
+
+#
+TEST_TABLE(
+    PRECISION=0.185,
+    VALE_CALC=1.41066817e06,
+    VALE_REFE=1.730000e6,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="SIXX",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2"),
+)
+
+TEST_TABLE(
+    PRECISION=0.017999999999999999,
+    VALE_CALC=5.65797968e06,
+    VALE_REFE=5.560000e6,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="SIYY",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2"),
+)
+
+TEST_TABLE(
+    PRECISION=0.087999999999999995,
+    VALE_CALC=1.89206164e06,
+    VALE_REFE=1.740000e6,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="SIZZ",
+    TABLE=T2,
+    FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2"),
+)
 
 FIN()
 #

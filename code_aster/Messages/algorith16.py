@@ -20,29 +20,33 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    2 : _("""
+    2: _(
+        """
  -------------------- PARAMÈTRES DE CHOC --------------------
  Informations sur les noeuds de choc
  lieu de choc   :  %(i1)d
  noeud de choc  :  %(k1)s
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
  sous-structure : %(k1)s
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
  coordonnées    : x :  %(r1)f
                   y :  %(r2)f
                   z :  %(r3)f
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  noeud de choc  : %(k1)s
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
  amortissement tangent utilise :  %(r1)f
 
  origine choc x : %(r2)f
@@ -56,14 +60,16 @@ cata_msg = {
 
  ANGL_VRILLE : sin(gamma) : %(r9)f
                cos(gamma) : %(r10)f
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
  jeu initial :  %(r1)f
  ----------------------------------------------------------
-"""),
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
 Pour l'occurrence numéro %(i1)d du mot-clé facteur COMPORTEMENT (DIS_CHOC),
 RIGI_TAN est renseigné mais pas AMOR_TAN.
 
@@ -80,88 +86,98 @@ caractéristiques modales suivantes :
 > L'amortissement modal réduit est égale à      : %(r4)f
 > La rigidité tangentielle du choc est égale à  : %(r5)f
 
-"""),
-
-    14 : _("""
+"""
+    ),
+    14: _(
+        """
  pas de temps utilisateur trop grand :   %(r1)e
  pas de temps nécessaire pour le calcul: %(r2)e
  risques de problèmes de précision
 
-"""),
-
-    15 : _("""
+"""
+    ),
+    15: _(
+        """
  pas de temps utilisateur trop grand :   %(r1)e
  pas de temps nécessaire pour le calcul: %(r2)e
  paramètres de calcul dans ce cas
  nombre de pas de calcul :  %(i1)d
 
-"""),
-
-    16 : _("""
+"""
+    ),
+    16: _(
+        """
  pas de temps utilisateur trop grand   : %(r1)e
  pas de temps nécessaire pour le calcul: %(r2)e
-"""),
-
-    17 : _("""
+"""
+    ),
+    17: _(
+        """
  paramètres de calcul dans ce cas
  nombre de pas de calcul :  %(i1)d
 
-"""),
-
-    18 : _("""
+"""
+    ),
+    18: _(
+        """
  le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d
  et le nombre de coefficients :  %(i2)d
  on ne garde donc que les  %(i3)d
    %(k1)s
 
-"""),
-
-    19 : _("""
+"""
+    ),
+    19: _(
+        """
  le nombre d'amortissements réduits est insuffisant il en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
  amortissements réduits avec la valeur du dernier mode propre
 
-"""),
-
-    20 : _("""
+"""
+    ),
+    20: _(
+        """
  mode dynamique           :  %(i1)d
  amortissement trop grand :  %(r1)f
  amortissement critique   :  %(r2)f
  problèmes de convergence possibles %(k1)s
 
-"""),
-
-
-    21 : _("""
+"""
+    ),
+    21: _(
+        """
  taux de souplesse négligée : %(r1)f
-"""),
-
-
-    22 : _("""
+"""
+    ),
+    22: _(
+        """
  La matrice de masse fournie est singulière, un pivot nul a été détecté, au moins pour le mode numéro %(i1)d.
  Le calcul va poursuivre avec l'extrait diagonal de la matrice de masse. La dynamique associée aux modes
  sans masses sera artificiellement supprimée en imposant une valeur critique de l'amortissement.
-"""),
-
-    44 : _("""
+"""
+    ),
+    44: _(
+        """
  les interfaces de la liaison n'ont pas la même longueur
   sous-structure 1 -->  %(k1)s
   interface 1      -->  %(k2)s
   sous-structure 2 -->  %(k3)s
   interface 2      -->  %(k4)s
 
-"""),
-
-    45 : _("""
+"""
+    ),
+    45: _(
+        """
  conflit dans les VIS_A_VIS des noeuds le noeud  %(k1)s
  est le vis-à-vis des noeuds  %(k2)s
  et  %(k3)s
 
-"""),
-
-    46 : _("""
+"""
+    ),
+    46: _(
+        """
  Le critère de vérification ne peut être relatif dans votre cas,
  la longueur caractéristique de l'interface de la sous-structure étant nulle.
   sous-structure 1 -->  %(k1)s
@@ -169,95 +185,107 @@ caractéristiques modales suivantes :
   sous-structure 2 -->  %(k3)s
   interface 2      -->  %(k4)s
 
-"""),
-
-    47 : _("""
+"""
+    ),
+    47: _(
+        """
  les interfaces ne sont pas compatibles sous-structure 1 -->  %(k1)s
   interface 1      -->  %(k2)s
   sous-structure 2 -->  %(k3)s
   interface 2      -->  %(k4)s
 
-"""),
-
-    48 : _("""
+"""
+    ),
+    48: _(
+        """
  les interfaces ne sont pas compatibles sous-structure 1 -->  %(k1)s
   interface 1      -->  %(k2)s
   sous-structure 2 -->  %(k3)s
   interface 2      -->  %(k4)s
 
-"""),
-
-
-    50 : _("""
+"""
+    ),
+    50: _(
+        """
  les deux interfaces ont pas même nombre de noeuds
  nombre noeuds interface droite -->  %(i1)d
  nombre noeuds interface gauche -->  %(i2)d
 
-"""),
-
-    51 : _("""
+"""
+    ),
+    51: _(
+        """
  conflit dans les VIS_A_VIS des noeuds
  le noeud  %(k1)s
  est le vis-à-vis des noeuds  %(k2)s et  %(k3)s
 
-"""),
-
-    52 : _("""
+"""
+    ),
+    52: _(
+        """
  axe de symétrie cyclique différent de Oz
  numéro du couple de noeuds :  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
-"""),
-
-    53 : _("""
+"""
+    ),
+    53: _(
+        """
   problème de rayon droite gauche différents
   numéro du couple de noeuds :  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
-"""),
-
-    54 : _("""
+"""
+    ),
+    54: _(
+        """
  problème signe angle entre droite et gauche
  numéro du couple de noeuds:  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
-"""),
-
-    55 : _("""
+"""
+    ),
+    55: _(
+        """
  problème valeur angle répétitivité cyclique
  numéro du couple de noeuds:  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
-"""),
-
-    56 : _("""
+"""
+    ),
+    56: _(
+        """
   vérification répétitivité : aucune erreur détectée
-"""),
-
-    57 : _("""
+"""
+    ),
+    57: _(
+        """
  les noeuds des interfaces ne sont pas alignés en vis-à-vis
  les noeuds ont été réordonnés
 
-"""),
-
-    58 : _("""
+"""
+    ),
+    58: _(
+        """
   arrêt sur problème répétitivité cyclique
   tentative de diagnostic:  %(k1)s
-"""),
-
-    60 : _("""
+"""
+    ),
+    60: _(
+        """
  VISCOCHAB : erreur d'intégration
   - Essai d'intégration numéro :  %(i1)d
   - Convergence vers une solution non conforme,
   - Incrément de déformation cumulée négative = %(r1)f,
   - Changer la taille d'incrément.
-"""),
-
-    72 : _("""
+"""
+    ),
+    72: _(
+        """
 Erreur utilisateur :
   On veut déplacer "au quart" les noeuds milieux des arêtes près du fond de fissure
   (MODI_MAILLAGE / MODI_MAILLE / OPTION='NOEUD_QUART') pour obtenir des éléments de Barsoum.
@@ -269,47 +297,45 @@ Risques & conseils :
   * Si votre maillage est linéaire et que vous souhaitez une solution précise
     grâce aux éléments de Barsoum, vous devez au préalable utiliser la commande :
       CREA_MAILLAGE / LINE_QUAD  pour rendre le maillage quadratique.
- """),
-
-    73 : _("""
+ """
+    ),
+    73: _(
+        """
 Erreur utilisateur :
   Dans la liste de noeuds fournie (MODI_MAILLAGE / MODI_MAILLE / OPTION='NOEUD_QUART')
   pour définir le fond de fissure, il manque %(i1)d noeud(s) milieu.
   Ces noeuds sont nécessaires au bon fonctionnement de cette commande.
- """),
- 
-    74 : _("""
+ """
+    ),
+    74: _(
+        """
 Erreur utilisateur :
   La liste de noeuds fournie (MODI_MAILLAGE / MODI_MAILLE / OPTION='NOEUD_QUART')
   contient moins de 2 noeuds. Pour un maillage en 3 dimensions, cette liste doit
   contenir au moins 2 noeuds.
- """),
-
-
-    77 : _("""
+ """
+    ),
+    77: _(
+        """
    Arrêt par manque de temps CPU au numéro d'ordre : %(i1)d
      - Dernier instant archivé :      %(r1)f
      - Numéro d'ordre correspondant : %(i2)d
      - Temps moyen par pas de temps : %(r2)f
      - Temps restant     :            %(r3)f
-  """),
-
-    89 : _("""
+  """
+    ),
+    89: _(
+        """
    On passe outre car VERI_PAS = NON
-  """),
-
-
-
-
-    97 : _("""
+  """
+    ),
+    97: _(
+        """
  Comportement unidirectionnel activé :
  Le coefficient de frottement est nul suivant l'axe X local.
  En repère global cet axe correspond à :  x :  %(r1)f
                                           y :  %(r2)f
                                           z :  %(r3)f
-"""),
-
-
-
-
+"""
+    ),
 }

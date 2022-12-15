@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,195 +34,237 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
       YACS : Émetteur inconnu
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
       YACS : Nom de variable inconnu
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
       YACS : Variable ne devant pas être lue mais écrite
-"""),
-
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
       YACS : Type de variable inconnu
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
       YACS : Type de variable différent de celui déclaré
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
       YACS : Mode de dépendance inconnu
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
       YACS : Mode de dépendance différent de celui déclaré
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
       YACS : Requête non autorisée
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
       YACS : Type de déconnexion incorrect
-"""),
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
        YACS : Directive de déconnexion incorrecte
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
        YACS : Nom de code inconnu
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
        YACS : Nom d'instance inconnue
-"""),
-
-    13 : _("""
+"""
+    ),
+    13: _(
+        """
       YACS : Requête en attente
-"""),
-
-    14 : _("""
+"""
+    ),
+    14: _(
+        """
       YACS : Message de service
-"""),
-
-    15 : _("""
+"""
+    ),
+    15: _(
+        """
       YACS : Nombre de valeurs transmises nul
-"""),
-
-    16 : _("""
+"""
+    ),
+    16: _(
+        """
        YACS : Dimension de tableau récepteur insuffisante
-"""),
-
-    17 : _("""
+"""
+    ),
+    17: _(
+        """
       YACS : Blocage
-"""),
-
-    18 : _("""
+"""
+    ),
+    18: _(
+        """
       YACS : Arrêt anormal d'une instance
-"""),
-
-    19 : _("""
+"""
+    ),
+    19: _(
+        """
       YACS : Coupleur absent...
-"""),
-
-    20 : _("""
+"""
+    ),
+    20: _(
+        """
       YACS : Variable ne figurant dans aucun lien
-"""),
-
-    21 : _("""
+"""
+    ),
+    21: _(
+        """
       YACS : Nombre de pas de calcul égal à zéro
-"""),
-
-    22 : _("""
+"""
+    ),
+    22: _(
+        """
       YACS : Machine non déclarée
-"""),
-
-    23 : _("""
+"""
+    ),
+    23: _(
+        """
       YACS : Erreur variable d'environnement COUPLAGE_GROUPE non positionnée
-"""),
-
-    24 : _("""
+"""
+    ),
+    24: _(
+        """
 =      YACS : Variable d'environnement COUPLAGE_GROUPE inconnue
-"""),
-
-    25 : _("""
+"""
+    ),
+    25: _(
+        """
       YACS : Valeur d'information non utilisée
-"""),
-
-    26 : _("""
+"""
+    ),
+    26: _(
+        """
       YACS : Erreur de format dans le fichier de couplage
-"""),
-
-    27 : _("""
+"""
+    ),
+    27: _(
+        """
       YACS : Requête annulée à cause du passage en mode normal
-"""),
-
-    28 : _("""
+"""
+    ),
+    28: _(
+        """
       YACS : Coupleur en mode d'exécution normal
-"""),
-
-    29 : _("""
+"""
+    ),
+    29: _(
+        """
       YACS : Option inconnue
-"""),
-
-    30 : _("""
+"""
+    ),
+    30: _(
+        """
       YACS : Valeur d'option incorrecte
-"""),
-
-    31 : _("""
+"""
+    ),
+    31: _(
+        """
       YACS : Écriture d'une variable dont l'effacement est demandé
-"""),
-
-    32 : _("""
+"""
+    ),
+    32: _(
+        """
       YACS : Lecture d'une variable incorrectement connectée
-"""),
-
-    33 : _("""
+"""
+    ),
+    33: _(
+        """
       YACS : Valeur d'information non utilisée
-"""),
-
-    34 : _("""
+"""
+    ),
+    34: _(
+        """
       YACS : Valeur d'information non utilisée
-"""),
-
-    35 : _("""
+"""
+    ),
+    35: _(
+        """
       YACS : Erreur dans la chaîne de déclaration
-"""),
-
-    36 : _("""
+"""
+    ),
+    36: _(
+        """
       YACS : Erreur dans le lancement dynamique d'une instance
-"""),
-
-    37 : _("""
+"""
+    ),
+    37: _(
+        """
       YACS : Erreur de communication
-"""),
-
-    38 : _("""
+"""
+    ),
+    38: _(
+        """
       YACS : Valeur d'information non utilisée
-"""),
-
-    39 : _("""
+"""
+    ),
+    39: _(
+        """
       YACS : Mode d'exécution non défini
-"""),
-
-    40 : _("""
+"""
+    ),
+    40: _(
+        """
       YACS : Instance déconnectée
-"""),
-
-
-    41 : _("""
+"""
+    ),
+    41: _(
+        """
  Avertissement YACS (gravité faible) :
        Dans le SSP %(k1)s la variable %(k2)s a une valeur différente
        de celle envoyée
-"""),
-
-    42 : _("""
+"""
+    ),
+    42: _(
+        """
  Erreur YACS :
        Problème dans le SSP  : %(k1)s
        Pour la variable      : %(k2)s
        A l'itération numéro  : %(i1)d
-"""),
-
-    43 : _("""
+"""
+    ),
+    43: _(
+        """
       Attention, le nombre maximal de palier est 20
-"""),
-
-    45 : _("""
+"""
+    ),
+    45: _(
+        """
       Non convergence du code EDYOS
-"""),
-
-    49 : _("""
+"""
+    ),
+    49: _(
+        """
       Erreur de syntaxe pour le couplage avec EDYOS :
       Pour le mot-clé PALIERS_EDYOS dans le cas où l'on utilise TYPE_EDYOS,
       il faut donner à chaque occurrence soit le GROUP_NO du palier, soit son NOEUD.
 
-"""),
-
+"""
+    ),
 }

@@ -19,299 +19,290 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   MAILLAGE
-#----------------------------------------------
+# ----------------------------------------------
 
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='ASTER')
+MAILLAG1 = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE  = MAILLAG1,
-                       LINE_QUAD = _F(TOUT='OUI'),
-                      )
+MAILLAG2 = CREA_MAILLAGE(MAILLAGE=MAILLAG1, LINE_QUAD=_F(TOUT="OUI"))
 
 
-MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
-               AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='3D'),
-              )
+MO = AFFE_MODELE(MAILLAGE=MAILLAG2, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 
-LN = FORMULE(VALE='(X+4/3)**2+(Y+4/3)**2+(Z+5/6)**2-249/36',
-             NOM_PARA=['X', 'Y', 'Z'],)
+LN = FORMULE(VALE="(X+4/3)**2+(Y+4/3)**2+(Z+5/6)**2-249/36", NOM_PARA=["X", "Y", "Z"])
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
-                    TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN),
-                    INFO=1)
+FISS = DEFI_FISS_XFEM(
+    MAILLAGE=MAILLAG2, TYPE_DISCONTINUITE="INTERFACE", DEFI_FISS=_F(FONC_LN=LN), INFO=1
+)
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
-                         FISSURE=FISS,
-                         INFO=1)
+MODELEK = MODI_MODELE_XFEM(MODELE_IN=MO, FISSURE=FISS, INFO=1)
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
+MA_XFEM = POST_MAIL_XFEM(MODELE=MODELEK)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE = MA_XFEM))
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE = MA_XFEM))
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE = MA_XFEM))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(MAILLAGE=MA_XFEM))
 
 
-CHXN =CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-      NOM_CHAM='GEOMETRIE', MAILLAGE=MA_XFEM )
+CHXN = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=MA_XFEM)
 
-POSX1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM1',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSX1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM1", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.774851773446,
-           VALE_REFE=0.77485177,
-           NOM_PARA='COOR_X',
-           TYPE_TEST='MIN',
-           TABLE=POSX1,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.774851773446,
+    VALE_REFE=0.77485177,
+    NOM_PARA="COOR_X",
+    TYPE_TEST="MIN",
+    TABLE=POSX1,
+)
 
-POSY1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM1',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSY1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM1", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_Y',
-           TYPE_TEST='MIN',
-           TABLE=POSY1,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_Y",
+    TYPE_TEST="MIN",
+    TABLE=POSY1,
+)
 
-POSZ1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM1',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSZ1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM1", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_Z',
-           TYPE_TEST='MIN',
-           TABLE=POSZ1,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_Z",
+    TYPE_TEST="MIN",
+    TABLE=POSZ1,
+)
 
-POSX2=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMB',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSX2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NMB", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.5,
-           VALE_REFE=0.5E0,
-           NOM_PARA='COOR_X',
-           TYPE_TEST='MIN',
-           TABLE=POSX2,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.5,
+    VALE_REFE=0.5e0,
+    NOM_PARA="COOR_X",
+    TYPE_TEST="MIN",
+    TABLE=POSX2,
+)
 
-POSY2=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMB',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSY2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NMB", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_Y',
-           TYPE_TEST='MIN',
-           TABLE=POSY2,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_Y",
+    TYPE_TEST="MIN",
+    TABLE=POSY2,
+)
 
-POSZ2=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMB',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSZ2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NMB", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.5,
-           VALE_REFE=0.5E0,
-           NOM_PARA='COOR_Z',
-           TYPE_TEST='MIN',
-           TABLE=POSZ2,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.5,
+    VALE_REFE=0.5e0,
+    NOM_PARA="COOR_Z",
+    TYPE_TEST="MIN",
+    TABLE=POSZ2,
+)
 
-POSX3=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM4',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSX3 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM4", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_X',
-           TYPE_TEST='MIN',
-           TABLE=POSX3,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_X",
+    TYPE_TEST="MIN",
+    TABLE=POSX3,
+)
 
-POSY3=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM4',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSY3 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM4", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_Y',
-           TYPE_TEST='MIN',
-           TABLE=POSY3,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_Y",
+    TYPE_TEST="MIN",
+    TABLE=POSY3,
+)
 
-POSZ3=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM4',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSZ3 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM4", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=1.0,
-           VALE_REFE=1.0E0,
-           NOM_PARA='COOR_Z',
-           TYPE_TEST='MIN',
-           TABLE=POSZ3,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=1.0,
+    VALE_REFE=1.0e0,
+    NOM_PARA="COOR_Z",
+    TYPE_TEST="MIN",
+    TABLE=POSZ3,
+)
 
-POSX4=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM2',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSX4 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM2", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_X',
-           TYPE_TEST='MIN',
-           TABLE=POSX4,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_X",
+    TYPE_TEST="MIN",
+    TABLE=POSX4,
+)
 
-POSY4=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM2',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSY4 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM2", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.5,
-           VALE_REFE=0.5E0,
-           NOM_PARA='COOR_Y',
-           TYPE_TEST='MIN',
-           TABLE=POSY4,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.5,
+    VALE_REFE=0.5e0,
+    NOM_PARA="COOR_Y",
+    TYPE_TEST="MIN",
+    TABLE=POSY4,
+)
 
-POSZ4=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM2',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSZ4 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM2", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.5,
-           VALE_REFE=0.5E0,
-           NOM_PARA='COOR_Z',
-           TYPE_TEST='MIN',
-           TABLE=POSZ4,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.5,
+    VALE_REFE=0.5e0,
+    NOM_PARA="COOR_Z",
+    TYPE_TEST="MIN",
+    TABLE=POSZ4,
+)
 
-POSX5=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM3',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSX5 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM3", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_X',
-           TYPE_TEST='MIN',
-           TABLE=POSX5,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_X",
+    TYPE_TEST="MIN",
+    TABLE=POSX5,
+)
 
-POSY5=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM3',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSY5 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM3", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.774851773446,
-           VALE_REFE=0.77485177,
-           NOM_PARA='COOR_Y',
-           TYPE_TEST='MIN',
-           TABLE=POSY5,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.774851773446,
+    VALE_REFE=0.77485177,
+    NOM_PARA="COOR_Y",
+    TYPE_TEST="MIN",
+    TABLE=POSY5,
+)
 
-POSZ5=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NM3',
-                             CHAM_GD= CHXN ,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+POSZ5 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="POSITION", NOEUD="NM3", CHAM_GD=CHXN, TOUT_CMP="OUI", OPERATION="EXTRACTION"
+    )
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-6,
-           VALE_CALC=0.,
-           VALE_REFE=0.0E0,
-           NOM_PARA='COOR_Z',
-           TYPE_TEST='MIN',
-           TABLE=POSZ5,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-6,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0e0,
+    NOM_PARA="COOR_Z",
+    TYPE_TEST="MIN",
+    TABLE=POSZ5,
+)
 
 FIN()

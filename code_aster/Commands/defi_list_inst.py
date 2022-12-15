@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class DefiListInst(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.TimeStepper`.
-    """
+    """Command that defines :class:`~code_aster.Objects.TimeStepper`."""
+
     command_name = "DEFI_LIST_INST"
 
     def create_result(self, keywords):
@@ -35,5 +35,6 @@ class DefiListInst(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = TimeStepper()
+
 
 DEFI_LIST_INST = DefiListInst.run

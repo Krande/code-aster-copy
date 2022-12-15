@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,53 +20,57 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVOISIN = InputParameter(phys=PHY.VOISIN, comment="""  PVOISIN : VOISINS DE L ELEMENT  """)
 
 
-PVOISIN  = InputParameter(phys=PHY.VOISIN,
-comment="""  PVOISIN : VOISINS DE L ELEMENT  """)
+PPINTTO = InputParameter(phys=PHY.N132_R, comment="""  PPINTTO : XFEM, POINTS D INTERSECTION  """)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R,
-comment="""  PPINTTO : XFEM, POINTS D INTERSECTION  """)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PCVOISX = InputParameter(
+    phys=PHY.N120_I, comment="""  PCVOISX : XFEM, SD VOISIN POUR LES SOUS-ELEMENTS  """
+)
 
 
-PCVOISX  = InputParameter(phys=PHY.N120_I,
-comment="""  PCVOISX : XFEM, SD VOISIN POUR LES SOUS-ELEMENTS  """)
+PCONTSER = InputParameter(
+    phys=PHY.N1920R, comment="""  PCONTSER : XFEM, CONTRAINTES AUX NOEUDS DES SOUS-ELEMENTS  """
+)
 
 
-PCONTSER = InputParameter(phys=PHY.N1920R,
-comment="""  PCONTSER : XFEM, CONTRAINTES AUX NOEUDS DES SOUS-ELEMENTS  """)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
-
-
-PERREUR  = OutputParameter(phys=PHY.ERRE_R, type='ELEM',
-comment="""  PERREUR : ESTIMATEUR D ERREUR  """)
+PERREUR = OutputParameter(
+    phys=PHY.ERRE_R, type="ELEM", comment="""  PERREUR : ESTIMATEUR D ERREUR  """
+)
 
 
 ERME_ELEM = Option(
     para_in=(
-           PCNSETO,
+        PCNSETO,
         SP.PCONTNM,
         SP.PCONTNO,
-           PCONTSER,
-           PCVOISX,
+        PCONTSER,
+        PCVOISX,
         SP.PDEPLAR,
         SP.PDEPLMR,
         SP.PERREM,
@@ -75,22 +79,18 @@ ERME_ELEM = Option(
         SP.PFRVOLU,
         SP.PGEOMER,
         SP.PGRDCA,
-           PLONCHA,
+        PLONCHA,
         SP.PMATERC,
         SP.PPESANR,
-           PPINTTO,
-           PPMILTO,
+        PPINTTO,
+        PPMILTO,
         SP.PPRESS,
         SP.PROTATR,
         SP.PTEMPSR,
-           PVOISIN,
+        PVOISIN,
     ),
-    para_out=(
-           PERREUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PERREUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  ERME_ELEM :
     ESTIMATEUR D ERREUR EN RESIDU
     PRODUIT UN CHAMP PAR ELEMENT  """,

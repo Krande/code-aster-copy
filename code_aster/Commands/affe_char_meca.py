@@ -20,25 +20,63 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
-from ..Objects import (MechanicalLoadReal, ParallelMechanicalLoadReal,
-                       ConnectionMesh, Model)
+from ..Objects import MechanicalLoadReal, ParallelMechanicalLoadReal, ConnectionMesh, Model
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
 
 
 class MechanicalLoadDefinition(ExecuteCommand):
 
-    """Command that defines :class:`~code_aster.Objects.MechanicalLoadReal`.
-    """
+    """Command that defines :class:`~code_aster.Objects.MechanicalLoadReal`."""
+
     command_name = "AFFE_CHAR_MECA"
-    neumannLoads = ['PESANTEUR', 'ROTATION', 'FORCE_FACE', 'FORCE_ARETE', 'FORCE_CONTOUR', \
-                    'FORCE_INTERNE', 'PRE_SIGM', 'PRES_REP', 'EFFE_FOND', 'PRE_EPSI', 'FORCE_POUTRE', \
-                    'FORCE_TUYAU', 'FORCE_COQUE', 'FORCE_ELEC', 'INTE_ELEC', 'VITE_FACE', \
-                    'ONDE_FLUI', 'ONDE_PLANE', 'FLUX_THM_REP', 'FORCE_SOL', 'FORCE_NODALE', \
-                    'EVOL_CHAR', 'VECT_ASSE']
-    dirichletLoads = ['DDL_IMPO', 'DDL_POUTRE', 'FACE_IMPO', 'CHAMNO_IMPO', 'ARETE_IMPO', 'LIAISON_DDL', 'LIAISON_OBLIQUE', 'LIAISON_GROUP', 'LIAISON_MAIL', 'LIAISON_PROJ', \
-                      'LIAISON_CYCL', 'LIAISON_SOLIDE', 'LIAISON_ELEM', 'LIAISON_UNIF', 'LIAISON_CHAMNO', 'LIAISON_RBE3', 'LIAISON_INTERF', 'LIAISON_COQUE', \
-                      'RELA_CINE_BP', 'IMPE_FACE']
+    neumannLoads = [
+        "PESANTEUR",
+        "ROTATION",
+        "FORCE_FACE",
+        "FORCE_ARETE",
+        "FORCE_CONTOUR",
+        "FORCE_INTERNE",
+        "PRE_SIGM",
+        "PRES_REP",
+        "EFFE_FOND",
+        "PRE_EPSI",
+        "FORCE_POUTRE",
+        "FORCE_TUYAU",
+        "FORCE_COQUE",
+        "FORCE_ELEC",
+        "INTE_ELEC",
+        "VITE_FACE",
+        "ONDE_FLUI",
+        "ONDE_PLANE",
+        "FLUX_THM_REP",
+        "FORCE_SOL",
+        "FORCE_NODALE",
+        "EVOL_CHAR",
+        "VECT_ASSE",
+    ]
+    dirichletLoads = [
+        "DDL_IMPO",
+        "DDL_POUTRE",
+        "FACE_IMPO",
+        "CHAMNO_IMPO",
+        "ARETE_IMPO",
+        "LIAISON_DDL",
+        "LIAISON_OBLIQUE",
+        "LIAISON_GROUP",
+        "LIAISON_MAIL",
+        "LIAISON_PROJ",
+        "LIAISON_CYCL",
+        "LIAISON_SOLIDE",
+        "LIAISON_ELEM",
+        "LIAISON_UNIF",
+        "LIAISON_CHAMNO",
+        "LIAISON_RBE3",
+        "LIAISON_INTERF",
+        "LIAISON_COQUE",
+        "RELA_CINE_BP",
+        "IMPE_FACE",
+    ]
 
     @classmethod
     def _hasDirichletLoadings(cls, keywords):
@@ -58,15 +96,14 @@ class MechanicalLoadDefinition(ExecuteCommand):
 
     @classmethod
     def _hasOnlyDDL_IMPO(cls, keywords):
-        """ No need to create ConnectionMesh for DDL_IMPO"""
+        """No need to create ConnectionMesh for DDL_IMPO"""
         for key in cls.dirichletLoads:
             mc = keywords.get(key)
-            if mc and key != "DDL_IMPO" :
+            if mc and key != "DDL_IMPO":
                 return False
         # Not enabled for the moment
         return False
         # return True
-
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -79,20 +116,20 @@ class MechanicalLoadDefinition(ExecuteCommand):
         l_diri = self._hasDirichletLoadings(keywords)
         if not model.getMesh().isParallel():
             self._result = MechanicalLoadReal(model)
-        else :
+        else:
             if l_neum:
                 if l_diri:
-                    raise TypeError("Not allowed to mix up Dirichlet and Neumann \
-                        loadings in the same parallel AFFE_CHAR_MECA")
+                    raise TypeError(
+                        "Not allowed to mix up Dirichlet and Neumann \
+                        loadings in the same parallel AFFE_CHAR_MECA"
+                    )
                 else:
                     self._result = MechanicalLoadReal(model)
             if self._hasOnlyDDL_IMPO(keywords):
                 self._result = MechanicalLoadReal(model)
 
-
     def exec_(self, keywords):
-        """Override default _exec in case of parallel load
-        """
+        """Override default _exec in case of parallel load"""
         if isinstance(self._result, MechanicalLoadReal):
             super(MechanicalLoadDefinition, self).exec_(keywords)
         else:
@@ -100,8 +137,8 @@ class MechanicalLoadDefinition(ExecuteCommand):
             nodeGroups, cellGroups = _getGroups(self._cata, keywords)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
-            connectionModel = Model( connectionMesh )
-            connectionModel.setFrom( model )
+            connectionModel = Model(connectionMesh)
+            connectionModel.setFrom(model)
 
             keywords["MODELE"] = connectionModel
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
@@ -126,6 +163,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "MODELE")
 
+
 AFFE_CHAR_MECA = MechanicalLoadDefinition.run
 
 
@@ -135,20 +173,31 @@ def _addGroup(mcf, groups, keys):
         if mc:
             groups.update(force_list(mc))
 
+
 def _excludeGroup(mcf, keys):
     for name in keys:
         if mcf.get(name):
-            raise RuntimeError("Keyword %s not accepted in parallel AFFE_CHAR_MECA"%name)
+            raise RuntimeError("Keyword %s not accepted in parallel AFFE_CHAR_MECA" % name)
+
 
 def _getGroups(cata, keywords):
-    """for parallel load, return all node and cells groups present in AFFE_CHAR_MECA, in order to define the connection mesh
-    """
-    load_types = [key for key in list(cata.keywords.keys()) if isinstance(cata.keywords[key], FactorKeyword)]
+    """for parallel load, return all node and cells groups present in AFFE_CHAR_MECA, in order to define the connection mesh"""
+    load_types = [
+        key for key in list(cata.keywords.keys()) if isinstance(cata.keywords[key], FactorKeyword)
+    ]
     nodeGroups = set()
     cellGroups = set()
     for key in list(keywords.keys()):
-        if key in ("LIAISON_DDL", "DDL_IMPO", "LIAISON_OBLIQUE", "LIAISON_UNIF", \
-                        "LIAISON_SOLIDE", "DDL_POUTRE", "FACE_IMPO", "ARETE_IMPO"):
+        if key in (
+            "LIAISON_DDL",
+            "DDL_IMPO",
+            "LIAISON_OBLIQUE",
+            "LIAISON_UNIF",
+            "LIAISON_SOLIDE",
+            "DDL_POUTRE",
+            "FACE_IMPO",
+            "ARETE_IMPO",
+        ):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO", "SANS_GROUP_NO"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA", "SANS_GROUP_MA"))
@@ -157,13 +206,14 @@ def _getGroups(cata, keywords):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_1", "GROUP_NO_2", "SANS_GROUP_NO"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_1", "GROUP_MA_2"))
-                _excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD",))
+                _excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD"))
         elif key in ("LIAISON_RBE3", "LIAISON_MAIL"):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO_MAIT", "GROUP_NO_ESCL"))
                 _addGroup(mcf, cellGroups, ("GROUP_MA_MAIT", "GROUP_MA_ESCL"))
         elif key in load_types:
-            raise NotImplementedError("Type of load {0!r} not yet "
-                                    "implemented in parallel".format(key))
+            raise NotImplementedError(
+                "Type of load {0!r} not yet " "implemented in parallel".format(key)
+            )
     # must be sorted to be identical on all procs
     return sorted(list(nodeGroups)), sorted(list(cellGroups))

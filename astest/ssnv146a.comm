@@ -19,112 +19,94 @@
 from code_aster import ConvergenceError, NonLinearResult
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      ERREUR=_F(ERREUR_F='EXCEPTION'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="EXCEPTION"))
 
-MA = LIRE_MAILLAGE(FORMAT='MED',
-                   UNITE=20)
+MA = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
-MA = DEFI_GROUP(reuse=MA,
-              CREA_GROUP_NO=_F(NOEUD=('NO2', 'NO112', 'NO3', 'NO113', 'NO5'),
-                                NOM='BORD_INF'),
-               MAILLAGE=MA)
+MA = DEFI_GROUP(
+    reuse=MA,
+    CREA_GROUP_NO=_F(NOEUD=("NO2", "NO112", "NO3", "NO113", "NO5"), NOM="BORD_INF"),
+    MAILLAGE=MA,
+)
 
-MA = DEFI_GROUP(reuse=MA,
-                CREA_GROUP_MA=_F(NOM='MATIERE',
-                                 TOUT='OUI'),
-                CREA_GROUP_NO=_F(CRIT_NOEUD='SOMMET',
-                                 GROUP_MA='MATIERE',
-                                 NOM='SOMMETS'),
-                MAILLAGE=MA)
+MA = DEFI_GROUP(
+    reuse=MA,
+    CREA_GROUP_MA=_F(NOM="MATIERE", TOUT="OUI"),
+    CREA_GROUP_NO=_F(CRIT_NOEUD="SOMMET", GROUP_MA="MATIERE", NOM="SOMMETS"),
+    MAILLAGE=MA,
+)
 
 # ------------DEFINITION DU MODELE -----------------------------
-MO = AFFE_MODELE(AFFE=_F(MODELISATION='AXIS_INCO_UPG',
-                         PHENOMENE='MECANIQUE',
-                         TOUT='OUI'),
-                 MAILLAGE=MA)
+MO = AFFE_MODELE(
+    AFFE=_F(MODELISATION="AXIS_INCO_UPG", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MA
+)
 
 # ------------ DEFINITION DU MATERIAU -------------
-MATPLAQ = DEFI_MATERIAU(    ECRO_LINE=_F(D_SIGM_EPSI=0,
-                                     SY=100))
+MATPLAQ = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0, SY=100))
 
-CHMAT = AFFE_MATERIAU(AFFE=_F(MATER=MATPLAQ,
-                              TOUT='OUI'),
-                      MAILLAGE=MA)
+CHMAT = AFFE_MATERIAU(AFFE=_F(MATER=MATPLAQ, TOUT="OUI"), MAILLAGE=MA)
 
 # ------------ CALCUL  AVEC LA LOI DE NORTON-HOFF ------
-L_INST = DEFI_LIST_REEL(DEBUT=0.0,
-  INTERVALLE = (
-                _F(JUSQU_A = 1,     NOMBRE = 1),
-                _F(JUSQU_A = 2,     NOMBRE = 1),
-                _F(JUSQU_A = 3,     NOMBRE = 1),
-#               _F(JUSQU_A = 2.491361694, NOMBRE = 1),
-#               _F(JUSQU_A = 2.707570176, NOMBRE = 1),
-#               _F(JUSQU_A = 2.851258349, NOMBRE = 1),
-#               _F(JUSQU_A = 3.004321374, NOMBRE = 1)
-                ))
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1, NOMBRE=1),
+        _F(JUSQU_A=2, NOMBRE=1),
+        _F(JUSQU_A=3, NOMBRE=1),
+        #               _F(JUSQU_A = 2.491361694, NOMBRE = 1),
+        #               _F(JUSQU_A = 2.707570176, NOMBRE = 1),
+        #               _F(JUSQU_A = 2.851258349, NOMBRE = 1),
+        #               _F(JUSQU_A = 3.004321374, NOMBRE = 1)
+    ),
+)
 
-times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST),
-                       ECHEC=_F(ACTION='DECOUPE',
-                                EVENEMENT='ERREUR',
-                                SUBD_PAS=4,
-                                SUBD_PAS_MINI=1e-06),
-                       METHODE='AUTO')
+times = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_PAS=4, SUBD_PAS_MINI=1e-06),
+    METHODE="AUTO",
+)
 
-INCOMP = AFFE_CHAR_MECA(DDL_IMPO=_F(GONF=0,
-                                    GROUP_NO='SOMMETS'),
-                        MODELE=MO)
+INCOMP = AFFE_CHAR_MECA(DDL_IMPO=_F(GONF=0, GROUP_NO="SOMMETS"), MODELE=MO)
 
 # ----------- CONDITIONS AUX LIMITES ---------------------------
-CONDLIM = AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0.0,
-                                     GROUP_NO='BORD_INF'),
-                         MODELE=MO)
+CONDLIM = AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0.0, GROUP_NO="BORD_INF"), MODELE=MO)
 
 # ---------- CHARGEMENT A PILOTER ------------------------------
-CH1 = AFFE_CHAR_MECA(MODELE=MO,
-                     PRES_REP=_F(GROUP_MA='B_D',
-                                 PRES=1.0))
+CH1 = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=_F(GROUP_MA="B_D", PRES=1.0))
 try:
-    RESU1 = STAT_NON_LINE(CHAM_MATER=CHMAT,
-                      COMPORTEMENT=_F(RELATION='NORTON_HOFF'),
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=15,
-                                     RESI_GLOB_MAXI=0.005),
-                      EXCIT=(_F(CHARGE=CONDLIM),
-                             _F(CHARGE=INCOMP),
-                             _F(CHARGE=CH1,
-                                TYPE_CHARGE='FIXE_PILO')),
-                      INCREMENT=_F(LIST_INST=times),
-                      MODELE=MO,
-                      NEWTON=_F(MATRICE='TANGENTE',
-                                REAC_ITER=1),
-                      PILOTAGE=_F(TYPE='ANA_LIM'),
-                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=50,
-                                       METHODE='PILOTAGE'),
-                      SOLVEUR=_F(METHODE='LDLT',
-                                 NPREC=12))
+    RESU1 = STAT_NON_LINE(
+        CHAM_MATER=CHMAT,
+        COMPORTEMENT=_F(RELATION="NORTON_HOFF"),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=15, RESI_GLOB_MAXI=0.005),
+        EXCIT=(_F(CHARGE=CONDLIM), _F(CHARGE=INCOMP), _F(CHARGE=CH1, TYPE_CHARGE="FIXE_PILO")),
+        INCREMENT=_F(LIST_INST=times),
+        MODELE=MO,
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        PILOTAGE=_F(TYPE="ANA_LIM"),
+        RECH_LINEAIRE=_F(ITER_LINE_MAXI=50, METHODE="PILOTAGE"),
+        SOLVEUR=_F(METHODE="LDLT", NPREC=12),
+    )
 
 except ConvergenceError as err:
     pass
 
-ECHL1 = POST_ELEM(CHAR_LIMITE=_F(),
-                  RESULTAT=RESU1)
+ECHL1 = POST_ELEM(CHAR_LIMITE=_F(), RESULTAT=RESU1)
 
-IMPR_TABLE(FORMAT='TABLEAU',
-           TABLE=ECHL1,
-           UNITE=8)
+IMPR_TABLE(FORMAT="TABLEAU", TABLE=ECHL1, UNITE=8)
 
 # --------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE
 #  COMPARAISON AVEC LES VALEURS DE l UNIVERSITE DE LIEGE
 # --------------------------------------------------------------
-TEST_TABLE(FILTRE=_F(NOM_PARA='INST',
-                     VALE=2.0),
-           NOM_PARA='CHAR_LIMI_SUP',
-           PRECISION=0.01,
-           REFERENCE='SOURCE_EXTERNE',
-           TABLE=ECHL1,
-           VALE_CALC=3.94863,
-           CRITERE='RELATIF',
-           VALE_REFE=3.931)
+TEST_TABLE(
+    FILTRE=_F(NOM_PARA="INST", VALE=2.0),
+    NOM_PARA="CHAR_LIMI_SUP",
+    PRECISION=0.01,
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=ECHL1,
+    VALE_CALC=3.94863,
+    CRITERE="RELATIF",
+    VALE_REFE=3.931,
+)
 
 FIN()

@@ -19,7 +19,7 @@
 
 
 class TimeStepper:
-    """"Basic time stepper.
+    """ "Basic time stepper.
 
     Arguments:
         times (list[float]): List of time steps.
@@ -27,12 +27,12 @@ class TimeStepper:
 
     @property
     def null_increment(self):
-        return -1.e150
+        return -1.0e150
 
     def __init__(self, times):
         self.current = 0
         self.level = 0
-        assert(sorted(times) == times)
+        assert sorted(times) == times
         self.times = list(times)
 
     def setInitialStep(self, time, prec=1e-6):
@@ -83,10 +83,10 @@ class TimeStepper:
         Returns:
             float: Previous time value.
         """
-        if self.hasFinished() or self.current-1 < 0:
+        if self.hasFinished() or self.current - 1 < 0:
             raise IndexError
 
-        return self.times[self.current-1]
+        return self.times[self.current - 1]
 
     def getNext(self):
         """Returns the next step to be calculated.
@@ -109,7 +109,7 @@ class TimeStepper:
         if self.current == 0:
             return self.null_increment
 
-        return self.times[self.current] - self.times[self.current-1]
+        return self.times[self.current] - self.times[self.current - 1]
 
     def completed(self):
         """Register the current step as completed successfully."""
@@ -125,14 +125,14 @@ class TimeStepper:
         # for example, step back to the previous step
         assert nb_step > 1 and self.level < 20
 
-        time_prev = self.times[self.current-1]
+        time_prev = self.times[self.current - 1]
         time_next = self.getNext()
         time_step = (time_next - time_prev) / float(nb_step)
 
         self.level += 1
 
         time_add = time_next
-        for i in range(max(0, nb_step-1)):
+        for i in range(max(0, nb_step - 1)):
             time_add -= time_step
             self.insertStep(self.current, time_add)
 
@@ -149,17 +149,17 @@ class TimeStepper:
 
 
 if __name__ == "__main__":
-    stepper = TimeStepper([1., 2., 3.])
+    stepper = TimeStepper([1.0, 2.0, 3.0])
     assert not stepper.hasFinished()
     step = stepper.getNext()
-    assert step == 1., step
+    assert step == 1.0, step
     step = stepper.getNext()
-    assert step == 1., step
+    assert step == 1.0, step
     stepper.completed()
     step = stepper.getNext()
-    assert step == 2., step
+    assert step == 2.0, step
     step = stepper.getNext()
-    assert step == 2., step
+    assert step == 2.0, step
     try:
         stepper.raiseError(ValueError())
         assert False
@@ -167,12 +167,12 @@ if __name__ == "__main__":
         pass
     assert not stepper.hasFinished()
     step = stepper.getNext()
-    assert step == 1., step
+    assert step == 1.0, step
     stepper.completed()
     step = stepper.getNext()
-    assert step == 2., step
+    assert step == 2.0, step
     stepper.completed()
     step = stepper.getNext()
-    assert step == 3., step
+    assert step == 3.0, step
     step = stepper.getNext()
-    assert step == 3., step
+    assert step == 3.0, step

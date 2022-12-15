@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ from .sd_prof_vgen import sd_prof_vgen
 
 class sd_nume_elim(sd_prof_vgen):
     nomj = SDNom(fin=19)
-    BASE = AsVR(SDNom(debut=19),)
-    TAIL = AsVI(SDNom(debut=19),)
-    NOMS = AsVK8(SDNom(debut=19),)
+    BASE = AsVR(SDNom(debut=19))
+    TAIL = AsVI(SDNom(debut=19))
+    NOMS = AsVK8(SDNom(debut=19))

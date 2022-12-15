@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,36 +21,44 @@
 #ifndef ASTER_EXCEPTIONS_H_
 #define ASTER_EXCEPTIONS_H_
 
-#include <setjmp.h>
 #include "aster.h"
-#include "asterc_debug.h"
 #include "aster_module.h"
+#include "asterc_debug.h"
+
 #include "Supervis/Exceptions.h"
 
-#define FatalError 18   /* kept for backward compatibility only */
-#define EOFError   19
+#include <setjmp.h>
+
+#define FatalError 18 /* kept for backward compatibility only */
+#define EOFError 19
 #define AsterError 1
 
-#define NIVMAX     10
+#define NIVMAX 10
 
-#define try                 _new_try(); DEBUG_EXCEPT("try: level=%d", gExcLvl); \
-                            if ((gExcNumb = setjmp(gExcEnv[gExcLvl])) == 0)
-#define interruptTry(val)   if(gExcLvl > 0) { \
-                                DEBUG_EXCEPT("interruptTry: level=%d", gExcLvl); \
-                                longjmp(gExcEnv[gExcLvl], val); } \
-                            else { printf("Exception raised out of Code_Aster commands.\n"); \
-                                _raiseException(); }
-#define except(val)         else if (gExcNumb == val)
-#define exceptAll           else
-#define endTry()            _end_try(); DEBUG_EXCEPT("endTry: level=%d", gExcLvl);
-#define raiseException()    _end_try(); \
-                            DEBUG_EXCEPT("raiseException: level=%d", gExcLvl); \
-                            _raiseException(); \
-                            return NULL
-#define raiseExceptionString(exc, args) \
-                            _end_try(); \
-                            PyErr_SetString(exc, args); \
-                            return NULL
+#define try _new_try(); DEBUG_EXCEPT( "try: level=%d", gExcLvl );                                  \
+    if ( ( gExcNumb = setjmp( gExcEnv[gExcLvl] ) ) == 0 )
+#define interruptTry( val )                                                                        \
+    if ( gExcLvl > 0 ) {                                                                           \
+        DEBUG_EXCEPT( "interruptTry: level=%d", gExcLvl );                                         \
+        longjmp( gExcEnv[gExcLvl], val );                                                          \
+    } else {                                                                                       \
+        printf( "Exception raised out of Code_Aster commands.\n" );                                \
+        _raiseException();                                                                         \
+    }
+#define except( val ) else if ( gExcNumb == val )
+#define exceptAll else
+#define endTry()                                                                                   \
+    _end_try();                                                                                    \
+    DEBUG_EXCEPT( "endTry: level=%d", gExcLvl );
+#define raiseException()                                                                           \
+    _end_try();                                                                                    \
+    DEBUG_EXCEPT( "raiseException: level=%d", gExcLvl );                                           \
+    _raiseException();                                                                             \
+    return NULL
+#define raiseExceptionString( exc, args )                                                          \
+    _end_try();                                                                                    \
+    PyErr_SetString( exc, args );                                                                  \
+    return NULL
 
 /*
  *   PUBLIC ATTRS
@@ -58,7 +66,7 @@
  */
 extern int gExcLvl;
 extern int gExcNumb;
-extern jmp_buf gExcEnv[NIVMAX+1];
+extern jmp_buf gExcEnv[NIVMAX + 1];
 
 /*
  *   PRIVATE/HIDDEN FUNCTIONS

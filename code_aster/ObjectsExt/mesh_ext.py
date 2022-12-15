@@ -33,9 +33,9 @@ from ..Utilities import injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
 
+
 class MeshStateBuilder(InternalStateBuilder):
     """Class that returns the internal state of a *Mesh*."""
-
 
     def restore(self, mesh):
         """Restore the *DataStructure* content from the previously saved internal
@@ -47,6 +47,7 @@ class MeshStateBuilder(InternalStateBuilder):
         super().restore(mesh)
         mesh.build()
 
+
 @injector(Mesh)
 class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
@@ -56,8 +57,7 @@ class ExtendedMesh:
     buildDisk = classmethod(mesh_builder.buildDisk)
     buildCube = classmethod(mesh_builder.buildCube)
     buildCylinder = classmethod(mesh_builder.buildCylinder)
-    createFromMedCouplingMesh = classmethod(
-        mesh_builder.createFromMedCouplingMesh)
+    createFromMedCouplingMesh = classmethod(mesh_builder.createFromMedCouplingMesh)
 
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
@@ -75,8 +75,7 @@ class ExtendedMesh:
         dic_gpma = self.sdj.GROUPEMA.get()
         if dic_gpma is None:
             return []
-        dimama = [catama[ltyma[ma - 1].ljust(24)][0]
-                  for ma in self.sdj.TYPMAIL.get()]
+        dimama = [catama[ltyma[ma - 1].ljust(24)][0] for ma in self.sdj.TYPMAIL.get()]
         ngpma = []
         for grp in list(dic_gpma.keys()):
             dim = max([dimama[ma - 1] for ma in dic_gpma[grp]])
@@ -94,10 +93,9 @@ class ExtendedMesh:
             Mesh: the refined mesh.
         """
 
-        new_mesh = CREA_MAILLAGE(MAILLAGE=self,
-                                 RAFFINEMENT=_F(TOUT="OUI",
-                                                NIVEAU=ntimes),
-                                 INFO=info,)
+        new_mesh = CREA_MAILLAGE(
+            MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes), INFO=info
+        )
         return new_mesh
 
     def createMedCouplingMesh(self):
@@ -110,37 +108,33 @@ class ExtendedMesh:
         return convertMesh2MedCoupling(self)
 
     def getNodes(self, group_name="", localNumbering=True, same_rank=None):
-        """ Return the list of the indexes of the nodes that belong to a group of nodes.
+        """Return the list of the indexes of the nodes that belong to a group of nodes.
 
-            Arguments:
-                group_name (str): Name of the group (default: "").
-                localNumbering (bool): not used (for compatibilty with ParallelMesh)
-                same_rank (bool): not used (for compatibilty with ParallelMesh)
+        Arguments:
+            group_name (str): Name of the group (default: "").
+            localNumbering (bool): not used (for compatibilty with ParallelMesh)
+            same_rank (bool): not used (for compatibilty with ParallelMesh)
 
-            Returns:
-                list[int]: Indexes of the nodes of the group.
+        Returns:
+            list[int]: Indexes of the nodes of the group.
         """
 
-        val = {None: PythonBool.NONE,
-               True: PythonBool.TRUE,
-               False: PythonBool.FALSE}
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodes(group_name, localNumbering, val[same_rank])
 
     def getNodesFromCells(self, group_name, localNumbering=True, same_rank=None):
-        """ Returns the nodes indexes of a group of cells.
+        """Returns the nodes indexes of a group of cells.
 
-            Arguments:
-                group_name (str): Name of the group.
-                localNumbering (bool): not used (for compatibilty with ParallelMesh)
-                same_rank (bool): not used (for compatibilty with ParallelMesh)
+        Arguments:
+            group_name (str): Name of the group.
+            localNumbering (bool): not used (for compatibilty with ParallelMesh)
+            same_rank (bool): not used (for compatibilty with ParallelMesh)
 
-            Returns:
-                list[int]: Indexes of the nodes of the group.
+        Returns:
+            list[int]: Indexes of the nodes of the group.
         """
 
-        val = {None: PythonBool.NONE,
-               True: PythonBool.TRUE,
-               False: PythonBool.FALSE}
+        val = {None: PythonBool.NONE, True: PythonBool.TRUE, False: PythonBool.FALSE}
 
         return self._getNodesFromCells(group_name, localNumbering, val[same_rank])

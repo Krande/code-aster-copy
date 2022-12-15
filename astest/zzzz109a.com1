@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI', )
+POURSUITE(CODE="OUI")
 
 import numpy as np
 
@@ -25,7 +25,7 @@ import numpy as np
 matr_dense = GOM.EXTR_MATR()
 
 # extract as sparse matrix
-data, row, col, dim = GOM.EXTR_MATR(sparse='True')
+data, row, col, dim = GOM.EXTR_MATR(sparse="True")
 
 matr_sparse = np.zeros((dim, dim))
 for i, j, value in zip(row, col, data):
@@ -34,13 +34,8 @@ for i, j, value in zip(row, col, data):
 # check equality
 equal = np.allclose(matr_dense, matr_sparse)
 
-tab = CREA_TABLE(LISTE=_F(PARA='EQUAL',
-                          LISTE_I=int(equal)))
+tab = CREA_TABLE(LISTE=_F(PARA="EQUAL", LISTE_I=int(equal)))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-            VALE_CALC_I=1,
-            VALE_REFE_I=1,
-            NOM_PARA='EQUAL',
-            TABLE=tab,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="EQUAL", TABLE=tab)
 
 FIN()

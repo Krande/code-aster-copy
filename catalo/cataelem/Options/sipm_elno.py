@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,30 +20,37 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU,
+           ISSUE DE AFFE_CARA_ELEM MOT CLE ORIENTATION """,
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU,
-           ISSUE DE AFFE_CARA_ELEM MOT CLE ORIENTATION """)
+PSIEFNOR = InputParameter(
+    phys=PHY.SIEF_R,
+    container="RESU!SIEF_ELNO!N",
+    comment="""  PPSIEFNOR : ETAT DE CONTRAINTE AUX NOEUDS """,
+)
 
 
-PSIEFNOR = InputParameter(phys=PHY.SIEF_R, container='RESU!SIEF_ELNO!N',
-comment="""  PPSIEFNOR : ETAT DE CONTRAINTE AUX NOEUDS """)
-
-
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS """
+)
 
 
 SIPM_ELNO = Option(
@@ -51,7 +58,7 @@ SIPM_ELNO = Option(
         SP.PCAARPO,
         SP.PCAGEPO,
         SP.PCAGNPO,
-           PCAORIE,
+        PCAORIE,
         SP.PCHDYNR,
         SP.PCOEFFC,
         SP.PCOEFFR,
@@ -60,21 +67,16 @@ SIPM_ELNO = Option(
         SP.PFR1D1D,
         SP.PGEOMER,
         SP.PMATERC,
-           PNBSP_I,
+        PNBSP_I,
         SP.PPESANR,
-           PSIEFNOR,
+        PSIEFNOR,
         SP.PSUROPT,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
     ),
-    para_out=(
-        SP.PSIMXRC,
-        SP.PSIMXRR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.DIM_TOPO_MODELI,'1'),)),
-    ),
+    para_out=(SP.PSIMXRC, SP.PSIMXRR),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.DIM_TOPO_MODELI, "1"))),),
     comment="""  SIPM_ELNO : CALCUL DES CONTRAINTES (COMP SIXX) MAXI ET MINI AUX NOEUDS
            DANS LA SECTION DE POUTRE A PARTIR DES EFFORTS GENERALISES.
            LICITE EN LINEAIRE SEULEMENT. """,

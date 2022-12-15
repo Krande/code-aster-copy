@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class BehaviourDefinitionOperator(ExecuteCommand):
     """Execute legacy operator DEFI_COMPOR."""
+
     command_name = "DEFI_COMPOR"
 
     def create_result(self, keywords):
@@ -34,5 +35,6 @@ class BehaviourDefinitionOperator(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = BehaviourDefinition()
+
 
 DEFI_COMPOR = BehaviourDefinitionOperator.run

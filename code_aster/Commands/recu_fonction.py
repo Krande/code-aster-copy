@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ from ..Supervis import ExecuteCommand
 
 class ExtractFunction(ExecuteCommand):
     """Execute legacy operator RECU_FONCTION."""
+
     command_name = "RECU_FONCTION"
 
     def create_result(self, keywords):
@@ -42,13 +43,19 @@ class ExtractFunction(ExecuteCommand):
             if "NUME_ORDRE_J" in keywords and keywords["NUME_ORDRE_I"] != keywords["NUME_ORDRE_J"]:
                 self._result = FunctionComplex()
                 return
-            if ("NOEUD_J" in keywords and keywords["NOEUD_I"] != keywords["NOEUD_J"]) or \
-                    "NOM_CMP_J" in keywords and keywords["NOM_CMP_I"] != keywords["NOM_CMP_J"]:
+            if (
+                ("NOEUD_J" in keywords and keywords["NOEUD_I"] != keywords["NOEUD_J"])
+                or "NOM_CMP_J" in keywords
+                and keywords["NOM_CMP_I"] != keywords["NOM_CMP_J"]
+            ):
                 self._result = FunctionComplex()
                 return
-        if "TABLE" in keywords and (keywords.get("NOM_PARA_TABL") == "FONCTION_C" or keywords.get("PARA_Y") == "VALE_C"):
+        if "TABLE" in keywords and (
+            keywords.get("NOM_PARA_TABL") == "FONCTION_C" or keywords.get("PARA_Y") == "VALE_C"
+        ):
             self._result = FunctionComplex()
             return
         self._result = Function()
+
 
 RECU_FONCTION = ExtractFunction.run

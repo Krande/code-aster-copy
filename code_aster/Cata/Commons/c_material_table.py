@@ -25,11 +25,4 @@ from ..Language.Syntax import *
 
 def C_MATERIALS_FROM_TABLE():
     """Retourne la liste des matériaux que on peut lire depuis une table"""
-    return (
-        "ELAS_FO",
-        "ELAS_ORTH_FO",
-        "ELAS_COQUE_FO",
-        "THER_FO",
-        "THER_NL",
-        "THER_NL_ORTH"
-    )
+    return ("ELAS_FO", "ELAS_ORTH_FO", "ELAS_COQUE_FO", "THER_FO", "THER_NL", "THER_NL_ORTH")

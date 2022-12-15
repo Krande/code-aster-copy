@@ -469,14 +469,14 @@ class AssemblageAFAXL(Assemblage):
         )
 
         self.definition(
-            S_TG_C=pi * (self.RAY1GU**2 - (self.RAY1GU - self.EP1GU) ** 2),
-            I_TG_C=pi / 4 * (self.RAY1GU**4 - (self.RAY1GU - self.EP1GU) ** 4),
-            S_TG_R=pi * (self.RAY2GU**2 - (self.RAY2GU - self.EP2GU) ** 2),
-            I_TG_R=pi / 4 * (self.RAY2GU**4 - (self.RAY2GU - self.EP2GU) ** 4),
-            S_TG_B=pi * (self.RAY2GU**2 - (self.RAY2GU - self.EPMOY) ** 2),
-            I_TG_B=pi / 4 * (self.RAY2GU**4 - (self.RAY2GU - self.EPMOY) ** 4),
-            S_CR=pi * (self.RAYCRA**2 - (self.RAYCRA - self.EPCRA) ** 2),
-            I_CR=pi / 4 * (self.RAYCRA**4 - (self.RAYCRA - self.EPCRA) ** 4),
+            S_TG_C=pi * (self.RAY1GU ** 2 - (self.RAY1GU - self.EP1GU) ** 2),
+            I_TG_C=pi / 4 * (self.RAY1GU ** 4 - (self.RAY1GU - self.EP1GU) ** 4),
+            S_TG_R=pi * (self.RAY2GU ** 2 - (self.RAY2GU - self.EP2GU) ** 2),
+            I_TG_R=pi / 4 * (self.RAY2GU ** 4 - (self.RAY2GU - self.EP2GU) ** 4),
+            S_TG_B=pi * (self.RAY2GU ** 2 - (self.RAY2GU - self.EPMOY) ** 2),
+            I_TG_B=pi / 4 * (self.RAY2GU ** 4 - (self.RAY2GU - self.EPMOY) ** 4),
+            S_CR=pi * (self.RAYCRA ** 2 - (self.RAYCRA - self.EPCRA) ** 2),
+            I_CR=pi / 4 * (self.RAYCRA ** 4 - (self.RAYCRA - self.EPCRA) ** 4),
         )
 
 

@@ -68,6 +68,7 @@ class AssemblyMatrixStateBuilder(InternalStateBuilder):
 
 class BaseAssemblyMatrix:
     """Base object for AssemblyMatrix."""
+
     cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
     internalStateBuilder = AssemblyMatrixStateBuilder
 
@@ -82,6 +83,7 @@ class BaseAssemblyMatrix:
             return assemblyMatrixToPetsc(self)
         else:
             raise NotImplementedError("Type not supported by Petsc")
+
 
 class BaseAssemblyMatrixReal(BaseAssemblyMatrix):
     """Base object for real AssemblyMatrix."""
@@ -110,9 +112,7 @@ class BaseAssemblyMatrixReal(BaseAssemblyMatrix):
         smhc = smos.SMHC.get()
         smdi = smos.SMDI.get()
         ccid = self.sdj.cine.CCID.get()
-        ccid = (
-            ccid[:-1] if ccid else None
-        )  # suppress last entry containing number of bc
+        ccid = ccid[:-1] if ccid else None  # suppress last entry containing number of bc
         sym = refa[8].strip() == "MS"
         dim = len(smdi)
         nnz = len(smhc)
@@ -177,9 +177,7 @@ class BaseAssemblyMatrixReal(BaseAssemblyMatrix):
             # apply kinematic boundary conditions
             if ccid:
                 elim = NP.where(NP.array(ccid) == 1)[0]
-                keep = NP.isin(rows, elim, invert=True) & NP.isin(
-                    cols, elim, invert=True
-                )
+                keep = NP.isin(rows, elim, invert=True) & NP.isin(cols, elim, invert=True)
                 data = data[keep]
                 rows = rows[keep]
                 cols = cols[keep]
@@ -232,9 +230,7 @@ class BaseAssemblyMatrixComplex(BaseAssemblyMatrix):
         smhc = smos.SMHC.get()
         smdi = smos.SMDI.get()
         ccid = self.sdj.cine.CCID.get()
-        ccid = (
-            ccid[:-1] if ccid else None
-        )  # suppress last entry containing number of bc
+        ccid = ccid[:-1] if ccid else None  # suppress last entry containing number of bc
         sym = refa[8].strip() == "MS"
         dim = len(smdi)
         nnz = len(smhc)
@@ -299,9 +295,7 @@ class BaseAssemblyMatrixComplex(BaseAssemblyMatrix):
             # apply kinematic boundary conditions
             if ccid:
                 elim = NP.where(NP.array(ccid) == 1)[0]
-                keep = NP.isin(rows, elim, invert=True) & NP.isin(
-                    cols, elim, invert=True
-                )
+                keep = NP.isin(rows, elim, invert=True) & NP.isin(cols, elim, invert=True)
                 data = data[keep]
                 rows = rows[keep]
                 cols = cols[keep]

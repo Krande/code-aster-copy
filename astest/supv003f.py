@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,15 +29,16 @@ test = code_aster.TestCase()
 DEBUT()
 
 from code_aster.Utilities.ExecutionParameter import ExecutionParameter
+
 params = ExecutionParameter()
 
-test.assertEqual( params.get_option('hostname'), platform.node())
+test.assertEqual(params.get_option("hostname"), platform.node())
 # GreaterEqual because of multiplicative factor running testcases
 # timelimit = 123. - 10% (default time saved)
-test.assertGreaterEqual( params.get_option('tpmax'), 123 * 0.9)
+test.assertGreaterEqual(params.get_option("tpmax"), 123 * 0.9)
 
-params.set_option('tpmax', 60.)
-test.assertEqual( params.get_option('tpmax'), 60)
+params.set_option("tpmax", 60.0)
+test.assertEqual(params.get_option("tpmax"), 60)
 
 # FIN does nothing: done when libaster is lost
 FIN()

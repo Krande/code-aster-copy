@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,219 +19,240 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-TITRE='THERMO-PLASTICITE EN TRACTION SIMPLE'
+TITRE = "THERMO-PLASTICITE EN TRACTION SIMPLE"
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER", )
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
-      AFFE=_F( TOUT = 'OUI', MODELISATION = 'TUYAU_3M',
-            PHENOMENE = 'MECANIQUE'))
-
-YOUNG=200000.
-
-POISSON=0.3
-
-DILAT=10.0E-6
-
-PENTE=DEFI_CONSTANTE( VALE=50000. )
-
-SIGY=DEFI_FONCTION(     NOM_PARA='TEMP',
-                           PROL_DROITE='LINEAIRE',
-                                  VALE=(  0.,  400.,
-                                         50.,  200.,  )
-                         )
-
-EP=0.01
-
-REXT=2.
-
-RINT=REXT - EP
-
-CAREL=AFFE_CARA_ELEM(   MODELE=MOMECA,
-           POUTRE=_F(
-       GROUP_MA = 'TOUT',
-  SECTION = 'CERCLE',TUYAU_NCOU=1,
-          CARA = (   'R', 'EP',  ), VALE = (  REXT, EP, ))
+MOMECA = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="TUYAU_3M", PHENOMENE="MECANIQUE")
 )
 
-SURF=pi* (REXT*REXT-RINT*RINT)
+YOUNG = 200000.0
 
-MAT=DEFI_MATERIAU(
-          ELAS=_F( E = YOUNG, NU = POISSON, ALPHA = DILAT),
-           ECRO_LINE_FO=_F(  D_SIGM_EPSI = PENTE, SY = SIGY)
-                        )
+POISSON = 0.3
 
+DILAT = 10.0e-6
 
-TIMPVAR=DEFI_FONCTION(    NOM_PARA='INST',  NOM_RESU='TEMP',
-           VALE=(  0.E0,  0.E0, 100.E0, 100.E0,)
-                                                )
+PENTE = DEFI_CONSTANTE(VALE=50000.0)
 
-CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
-MAILLAGE=MAIL,
-               AFFE=_F(  TOUT = 'OUI',
-                      NOM_CMP = ('TEMP',),
-                      VALE_F = (TIMPVAR,))
-                        )
+SIGY = DEFI_FONCTION(NOM_PARA="TEMP", PROL_DROITE="LINEAIRE", VALE=(0.0, 400.0, 50.0, 200.0))
 
-L_INST=DEFI_LIST_REEL(
-                       DEBUT=0.,
-                       INTERVALLE=( _F( JUSQU_A = 66.666E0,   NOMBRE = 1),
-                                    _F( JUSQU_A = 80.000E0,   NOMBRE = 20),
-                                    _F( JUSQU_A = 90.000E0,   NOMBRE = 20))
-         )
+EP = 0.01
 
-TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                          NOM_CHAM='TEMP',
-                           AFFE=_F(  LIST_INST = L_INST,
-                                     CHAM_GD = CHP_TEMP)
-                     )
+REXT = 2.0
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MAT),
-          AFFE_VARC=_F(NOM_VARC='TEMP',EVOL=TEMPE,VALE_REF=0.),
-                                                )
+RINT = REXT - EP
 
-CHMECA=AFFE_CHAR_MECA(    MODELE=MOMECA,DDL_IMPO=(
- _F( GROUP_NO = 'GRNO1', BLOCAGE = ('DEPLACEMENT','ROTATION')),
-           _F( GROUP_NO = 'GRNO2',  DY = 0.)),    )
+CAREL = AFFE_CARA_ELEM(
+    MODELE=MOMECA,
+    POUTRE=_F(GROUP_MA="TOUT", SECTION="CERCLE", TUYAU_NCOU=1, CARA=("R", "EP"), VALE=(REXT, EP)),
+)
 
-U=STAT_NON_LINE( MODELE=MOMECA,
-                 CHAM_MATER=CM,
-                 EXCIT=_F( CHARGE = CHMECA),
-                 CARA_ELEM=CAREL,
-                 COMPORTEMENT=_F(   RELATION = 'VMIS_ISOT_LINE' ),
-                 INCREMENT=_F(   LIST_INST = L_INST),
-                 NEWTON=_F(      REAC_ITER = 1),
-                 CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-5,
-                                 ITER_GLOB_MAXI = 10)
-              )
+SURF = pi * (REXT * REXT - RINT * RINT)
 
-U=CALC_CHAMP(reuse=U,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
+MAT = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=DILAT), ECRO_LINE_FO=_F(D_SIGM_EPSI=PENTE, SY=SIGY)
+)
 
 
-U=CALC_CHAMP(reuse=U,
-          FORCE='FORC_NODA',
-            RESULTAT=U
-         )
+TIMPVAR = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TEMP", VALE=(0.0e0, 0.0e0, 100.0e0, 100.0e0))
 
-F66=133.333*SURF
+CHP_TEMP = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_F",
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("TEMP",), VALE_F=(TIMPVAR,)),
+)
 
-F80=100.*SURF
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=66.666e0, NOMBRE=1),
+        _F(JUSQU_A=80.000e0, NOMBRE=20),
+        _F(JUSQU_A=90.000e0, NOMBRE=20),
+    ),
+)
 
-F90=75.*SURF
+TEMPE = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=_F(LIST_INST=L_INST, CHAM_GD=CHP_TEMP),
+)
 
-N66=-133.333*SURF
+CM = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=MAT),
+    AFFE_VARC=_F(NOM_VARC="TEMP", EVOL=TEMPE, VALE_REF=0.0),
+)
 
-N80=-100.*SURF
+CHMECA = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    DDL_IMPO=(
+        _F(GROUP_NO="GRNO1", BLOCAGE=("DEPLACEMENT", "ROTATION")),
+        _F(GROUP_NO="GRNO2", DY=0.0),
+    ),
+)
 
-N90=-75.*SURF
+U = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CM,
+    EXCIT=_F(CHARGE=CHMECA),
+    CARA_ELEM=CAREL,
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=10),
+)
 
-TEST_RESU(RESU=(_F(INST=90.0,
-                   RESULTAT=TEMPE,
-                   NOM_CHAM='TEMP',
-                   GROUP_NO='N1',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=90.0,),
-                _F(INST=66.665999999999997,
-                   POINT=1,
-                   SOUS_POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-133.332000000,
-                   VALE_REFE=-133.333,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=2.E-3,
-                   GROUP_MA='M1',),
-                _F(INST=80.0,
-                   SOUS_POINT=3,
-                   RESULTAT=U,
-                   NOM_CHAM='VARI_ELNO',
-                   GROUP_NO='N2',
-                   NOM_CMP='V1',
-                   VALE_CALC= 2.99999590E-04,
-                   VALE_REFE=2.9999999999999997E-4,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=2.E-3,
-                   GROUP_MA='M1',),
-                _F(INST=80.0,
-                   POINT=1,
-                   SOUS_POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-100.000245598,
-                   VALE_REFE=-100.0,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=2.E-3,
-                   GROUP_MA='M1',),
-                _F(INST=90.0,
-                   SOUS_POINT=3,
-                   RESULTAT=U,
-                   NOM_CHAM='VARI_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='V1',
-                   VALE_CALC= 5.24999693E-04,
-                   VALE_REFE=5.2499999999999997E-4,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=2.E-3,
-                   GROUP_MA='M1',),
-                _F(INST=90.0,
-                   POINT=1,
-                   SOUS_POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-75.000184172,
-                   VALE_REFE=-75.0,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=3.0000000000000001E-3,
-                   GROUP_MA='M1',),
-                _F(INST=66.665999999999997,
-                   RESULTAT=U,
-                   NOM_CHAM='FORC_NODA',
-                   GROUP_NO='N1',
-                   NOM_CMP='DY',
-                   VALE_CALC=16.713105784369,),
-                _F(INST=80.0,
-                   RESULTAT=U,
-                   NOM_CHAM='FORC_NODA',
-                   GROUP_NO='N1',
-                   NOM_CMP='DY',
-                   VALE_CALC=12.534985473411,),
-                _F(INST=90.0,
-                   RESULTAT=U,
-                   NOM_CHAM='FORC_NODA',
-                   GROUP_NO='N1',
-                   NOM_CMP='DY',
-                   VALE_CALC=9.4012391017103,),
-                _F(INST=66.665999999999997,
-                   RESULTAT=U,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N2',
-                   NOM_CMP='N',
-                   VALE_CALC=-16.713105784369,
-                   GROUP_MA='M1',),
-                _F(INST=80.0,
-                   RESULTAT=U,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N2',
-                   NOM_CMP='N',
-                   VALE_CALC=-12.534985473411,
-                   GROUP_MA='M1',),
-                _F(INST=90.0,
-                   RESULTAT=U,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='N',
-                   VALE_CALC=-9.4012391017103,
-                   GROUP_MA='M1',),
-                ),
-          )
+U = CALC_CHAMP(reuse=U, CONTRAINTE=("EFGE_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U)
+
+
+U = CALC_CHAMP(reuse=U, FORCE="FORC_NODA", RESULTAT=U)
+
+F66 = 133.333 * SURF
+
+F80 = 100.0 * SURF
+
+F90 = 75.0 * SURF
+
+N66 = -133.333 * SURF
+
+N80 = -100.0 * SURF
+
+N90 = -75.0 * SURF
+
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=90.0,
+            RESULTAT=TEMPE,
+            NOM_CHAM="TEMP",
+            GROUP_NO="N1",
+            NOM_CMP="TEMP",
+            VALE_CALC=90.0,
+        ),
+        _F(
+            INST=66.665999999999997,
+            POINT=1,
+            SOUS_POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-133.332000000,
+            VALE_REFE=-133.333,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=80.0,
+            SOUS_POINT=3,
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELNO",
+            GROUP_NO="N2",
+            NOM_CMP="V1",
+            VALE_CALC=2.99999590e-04,
+            VALE_REFE=2.9999999999999997e-4,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=80.0,
+            POINT=1,
+            SOUS_POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-100.000245598,
+            VALE_REFE=-100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=90.0,
+            SOUS_POINT=3,
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="V1",
+            VALE_CALC=5.24999693e-04,
+            VALE_REFE=5.2499999999999997e-4,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=2.0e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=90.0,
+            POINT=1,
+            SOUS_POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-75.000184172,
+            VALE_REFE=-75.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=3.0000000000000001e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=66.665999999999997,
+            RESULTAT=U,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N1",
+            NOM_CMP="DY",
+            VALE_CALC=16.713105784369,
+        ),
+        _F(
+            INST=80.0,
+            RESULTAT=U,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N1",
+            NOM_CMP="DY",
+            VALE_CALC=12.534985473411,
+        ),
+        _F(
+            INST=90.0,
+            RESULTAT=U,
+            NOM_CHAM="FORC_NODA",
+            GROUP_NO="N1",
+            NOM_CMP="DY",
+            VALE_CALC=9.4012391017103,
+        ),
+        _F(
+            INST=66.665999999999997,
+            RESULTAT=U,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N2",
+            NOM_CMP="N",
+            VALE_CALC=-16.713105784369,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=80.0,
+            RESULTAT=U,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N2",
+            NOM_CMP="N",
+            VALE_CALC=-12.534985473411,
+            GROUP_MA="M1",
+        ),
+        _F(
+            INST=90.0,
+            RESULTAT=U,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="N",
+            VALE_CALC=-9.4012391017103,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 FIN()

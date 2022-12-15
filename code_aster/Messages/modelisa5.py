@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,93 +20,110 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  erreur fortran de dimensionnement de tableau
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 Il manque les coordonnées !
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Il manque les mailles !
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
  transcodage : le noeud  %(k1)s  déclaré dans la connectivité de la maille  %(k2)s  n'existe pas dans les coordonnées
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  transcodage : le noeud  %(k1)s  déclare dans le GROUP_NO:  %(k2)s  n'existe pas dans les coordonnées
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
  le noeud :  %(k1)s  est en double dans le GROUP_NO:  %(k2)s . on élimine les doublons
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
 La maille  %(k1)s  déclaré dans le GROUP_MA %(k2)s  n'existe pas dans les connectivités
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
 La maille  %(k1)s  est en double dans le GROUP_MA  %(k2)s . On élimine les doublons
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
 Une incohérence a été détectée entre les déclarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivités
-"""),
-
-
-    36 : _("""
+"""
+    ),
+    36: _(
+        """
  un GROUP_MA n'a pas de nom, suppression de ce groupe.
-"""),
-
-    37 : _("""
+"""
+    ),
+    37: _(
+        """
  un GROUP_NO n'a pas de nom, suppression de ce groupe.
-"""),
-
-    40 : _("""
+"""
+    ),
+    40: _(
+        """
  absence de convergence
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    41 : _("""
+"""
+    ),
+    41: _(
+        """
  absence de convergence
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    42 : _("""
+"""
+    ),
+    42: _(
+        """
  pas de convergence
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    44 : _("""
+"""
+    ),
+    44: _(
+        """
  paramètre matériau BETA non trouvé
-"""),
-
-    45 : _("""
+"""
+    ),
+    45: _(
+        """
  paramètre matériau LAMBDA non trouvé
-"""),
-
-   46 : _("""
+"""
+    ),
+    46: _(
+        """
  paramètre matériau %(k1)s (conductivité orthotrope) non trouvé
-"""),
-
-    47 : _("""
+"""
+    ),
+    47: _(
+        """
  paramètre matériau AFFINITE non trouvé
-"""),
-
-    51 : _("""
+"""
+    ),
+    51: _(
+        """
 DEFI_CABLE_BP : Échec de projection du noeud de câble %(k1)s.
 
 La projection du noeud %(k1)s devrait très certainement être faite sur
@@ -115,16 +132,18 @@ entre le noeud et la maille n'est pas compatible avec l'épaisseur
 et l'excentricité de la maille.
 Cette distance (orientée) doit être comprise entre %(r3)f et %(r2)f, or
 la valeur calculée est %(r1)f.
-"""),
-
-    52 : _("""
+"""
+    ),
+    52: _(
+        """
 La première maille du groupe %(k1)s sur lequel des caractéristiques de poutre
 à section circulaire et homothétique sont affectés n'est pas correctement orientée.
 
 Solution : réorienter les mailles du groupe avec MODI_MAILLAGE/ORIE_LIGNE.
-"""),
-
-    53 : _("""
+"""
+    ),
+    53: _(
+        """
 La maille numéro %(i1)d du groupe %(k1)s sur lequel des caractéristiques de poutre
 à section circulaire et homothétique sont affectés n'est pas connectée à la maille
 précédente ou n'est pas orientée de la même manière.
@@ -133,157 +152,189 @@ Conseil et solution :
     - vérifier que les mailles sont correctement ordonnées dans le groupe
     définissant la poutre
     - réorienter les mailles du groupe avec MODI_MAILLAGE/ORIE_LIGNE.
-"""),
-
-    54 : _("""
+"""
+    ),
+    54: _(
+        """
 Poutre circulaire à section homothétique :
 La présence de la caractéristique %(k1)s est obligatoire.
-"""),
-
-    56 : _("""
+"""
+    ),
+    56: _(
+        """
  il manque le mot clé facteur POUTRE.
-"""),
-
-    57 : _("""
+"""
+    ),
+    57: _(
+        """
  erreur(s) rencontrée(s) lors de la vérification des affectations.
-"""),
-
-    59 : _("""
+"""
+    ),
+    59: _(
+        """
  une erreur d affectation a été détectée : certaines mailles demandées possèdent un type élément incompatible avec les données a affecter
-"""),
-
-    60 : _("""
+"""
+    ),
+    60: _(
+        """
  des poutres ne sont pas affectées
-"""),
-
-    61 : _("""
+"""
+    ),
+    61: _(
+        """
  des barres ne sont pas affectées
-"""),
-
-    62 : _("""
+"""
+    ),
+    62: _(
+        """
  des câbles ne sont pas affectés
-"""),
-
-    63 : _("""
+"""
+    ),
+    63: _(
+        """
  le paramètre "RHO" n'est pas défini pour toutes les couches.
-"""),
-
-    64 : _("""
+"""
+    ),
+    64: _(
+        """
  Il ne faut qu'un comportement élastique.
-"""),
-
-    65 : _("""
+"""
+    ),
+    65: _(
+        """
  <FAISCEAU_TRANS> deux zones d excitation du fluide ont même nom
-"""),
-
-    66 : _("""
+"""
+    ),
+    66: _(
+        """
  SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour NATURE, ANGLE et NOEUD (ou GROUP_NO)
-"""),
-
-    67 : _("""
+"""
+    ),
+    67: _(
+        """
  %(k1)s : On doit fournir un unique noeud , il y en a : %(i1)d
-"""),
-
-    68 : _("""
+"""
+    ),
+    68: _(
+        """
  SPEC_FONC_FORME : le nombre de fonctions fournies doit être égal a la dimension de la matrice interspectrale
-"""),
-
-    69 : _("""
+"""
+    ),
+    69: _(
+        """
  SPEC_EXCI_POINT : le nombre d arguments pour NATURE, ANGLE et NOEUD (ou GROUP_NO) doit être égal a la dimension de la matrice interspectrale
-"""),
-
-    70 : _("""
+"""
+    ),
+    70: _(
+        """
  mauvaise définition de la plage  de fréquence.
-"""),
-
-    71 : _("""
+"""
+    ),
+    71: _(
+        """
  mauvaise définition de la plage de fréquence. les modèles ne tolèrent pas des valeurs négatives ou nulles.
-"""),
-
-    72 : _("""
+"""
+    ),
+    72: _(
+        """
  le nombre de points pour la discrétisation fréquentielle doit être une puissance de 2.
-"""),
-
-    73 : _("""
+"""
+    ),
+    73: _(
+        """
  les spectres de type "longueur de corrélation"  ne peuvent être combines avec des spectres d un autre type.
-"""),
-
-    74 : _("""
+"""
+    ),
+    74: _(
+        """
  le spectre de nom  %(k1)s  est associe a la zone  %(k2)s  qui n existe pas dans le concept  %(k3)s
-"""),
-
-    75 : _("""
+"""
+    ),
+    75: _(
+        """
  le spectre de nom  %(k1)s  est associe a la zone de nom  %(k2)s
-"""),
-
-    76 : _("""
+"""
+    ),
+    76: _(
+        """
  deux spectres sont identiques
-"""),
-
-    77 : _("""
+"""
+    ),
+    77: _(
+        """
  les spectres de noms  %(k1)s  et  %(k2)s  sont associes au même profil de vitesse, de nom  %(k3)s
-"""),
-
-    78 : _("""
+"""
+    ),
+    78: _(
+        """
  pas le bon numéro de mode
-"""),
-
-    79 : _("""
+"""
+    ),
+    79: _(
+        """
  le calcul de tous les interspectres de réponse modale n est pas possible car seuls les auto spectres d excitation ont été calcules.
-"""),
-
-    80 : _("""
+"""
+    ),
+    80: _(
+        """
  la composante sélectionnée pour la restitution en base physique des interspectres est différente de celle choisie pour le couplage fluide-structure.
-"""),
-
-    81 : _("""
+"""
+    ),
+    81: _(
+        """
  la table de réponse modale ne contient que des auto spectres. le calcul demande n est donc pas réalisable.
-"""),
-
-    82 : _("""
+"""
+    ),
+    82: _(
+        """
  mot-clé <DEFI_CABLE>, occurrence no  %(i1)d :
     soit le noeud de câble  %(k1)s n'appartient pas au béton (modélisé en coque),
     soit les mailles de béton autour de ce noeud sont trop déformées.
-"""),
-
-
-
-    91 : _("""
+"""
+    ),
+    91: _(
+        """
  problème pour déterminer le rang de la composante de la grandeur
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    92 : _("""
+"""
+    ),
+    92: _(
+        """
  Erreur de mise en données :
  Le mot clé ORIE_LIGNE ne traite que les mailles linéiques.
  Or, des mailles surfaciques ont été fournies.
-"""),
-
-    93 : _("""
+"""
+    ),
+    93: _(
+        """
  Erreur de mise en données :
  Le mot clé ORIE_LIGNE ne traite que les mailles linéiques.
  La maille %(k1)s est de type %(k2)s.
-"""),
-
-    94 : _("""
+"""
+    ),
+    94: _(
+        """
  impossibilité, la maille  %(k1)s  doit être une maille de peau, i.e. de type "QUAD" ou "tria" en 3d ou de type "SEG" en 2d, et elle est de type :  %(k2)s
-"""),
-
-    97 : _("""
+"""
+    ),
+    97: _(
+        """
  erreur données : le noeud  %(k1)s  n'existe pas
-"""),
-
-    98 : _("""
+"""
+    ),
+    98: _(
+        """
  impossibilité de mélanger des "SEG" et des "TRIA" ou "QUAD" !
-"""),
-
-    99 : _("""
+"""
+    ),
+    99: _(
+        """
  Lors de la vérification automatique de l'orientation des mailles de bord, une erreur a été rencontrée : les groupes de mailles de bord ne forment pas un ensemble connexe.
 
  Conseils :
  - Commencez par vérifier que les groupes de mailles de bord fournies sont correctement définis.
  - Si ces groupes de mailles ont des raisons d'être non connexes, vous pouvez désactiver la vérification automatique en renseignant VERI_NORM='NON'.
-"""),
-
+"""
+    ),
 }

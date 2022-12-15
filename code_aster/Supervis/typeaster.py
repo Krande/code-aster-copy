@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ def typeaster(cata_type):
     if isinstance(cata_type, (list, tuple)):
         return [typeaster(i) for i in cata_type]
 
-    dtyp = {'R': 'R8', 'C': 'C8', 'I': 'IS', 'TXM': 'TX'}
+    dtyp = {"R": "R8", "C": "C8", "I": "IS", "TXM": "TX"}
     name = dtyp.get(cata_type)
     if not name:
         name = cata_type.getType()
-        if name == 'entier':
-            name = 'IS'
-        elif name == 'reel':
-            name = 'R8'
+        if name == "entier":
+            name = "IS"
+        elif name == "reel":
+            name = "R8"
     return name

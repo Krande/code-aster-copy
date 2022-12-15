@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -32,12 +32,11 @@
 extern "C" {
 #endif
 
-#define CALL_ASMPI_CHECK(a) CALLP(ASMPI_CHECK,asmpi_check,a)
-extern void DEFP(ASMPI_CHECK,asmpi_check,ASTERINTEGER *);
+#define CALL_ASMPI_CHECK( a ) CALLP( ASMPI_CHECK, asmpi_check, a )
+extern void DEFP( ASMPI_CHECK, asmpi_check, ASTERINTEGER * );
 
-#define CALL_ASMPI_WARN(a) CALLP(ASMPI_WARN,asmpi_warn,a)
-extern void DEFP(ASMPI_WARN,asmpi_warn,ASTERINTEGER *);
-
+#define CALL_ASMPI_WARN( a ) CALLP( ASMPI_WARN, asmpi_warn, a )
+extern void DEFP( ASMPI_WARN, asmpi_warn, ASTERINTEGER * );
 
 #ifdef __cplusplus
 }

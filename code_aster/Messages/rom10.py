@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,9 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""La base contient des champs de type %(k1)s."""),
-
-    2 : _("""Un mode contient %(i1)d équations."""),
-
-   10 : _("""On ne peut définir des modes que sur des maillages tridimensionnels."""),
-
-   11 : _("""Le modèle doit être le même sur tous les modes."""),
-
-   12 : _("""On ne peut définir des modes que sur des modèles tridimensionnels."""),
+    1: _("""La base contient des champs de type %(k1)s."""),
+    2: _("""Un mode contient %(i1)d équations."""),
+    10: _("""On ne peut définir des modes que sur des maillages tridimensionnels."""),
+    11: _("""Le modèle doit être le même sur tous les modes."""),
+    12: _("""On ne peut définir des modes que sur des modèles tridimensionnels."""),
 }

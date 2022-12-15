@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,34 +20,38 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-    1: _("""
+    1: _(
+        """
   Degré de liberté physique associé au noeud %(k1)s et à la composante %(k2)s.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
   Degré de liberté de Lagrange associé au blocage du noeud %(k1)s et de la composante %(k2)s.
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
   Degré de liberté de Lagrange associé à une relation linéaire entre plusieurs degrés de liberté.
   La relation linéaire a été définie par la commande ayant produit le concept de nom %(k1)s.
   La liste des noeuds impliqués dans cette relation linéaire est la suivante:
-"""),
-
+"""
+    ),
     4: _("""    Noeud %(k1)s"""),
-
-    5: _("""
+    5: _(
+        """
   Degré de liberté d'un système généralisé pour le macro-élément %(k1)s et l'équation %(i1)d.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
   Degré de liberté d'un système généralisé pour la liaison %(i1)d et l'équation %(i2)d.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
   En mode calcul haute performance, la composante n'est pas fournie. 
 Développement à réaliser si nécessaire.
-"""),
+"""
+    ),
 }

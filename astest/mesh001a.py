@@ -37,47 +37,44 @@ test.assertEqual(mesh.getNumberOfNodes(), 27)
 test.assertEqual(mesh.getNumberOfCells(), 56)
 
 # test dimension
-TABG = RECU_TABLE(CO=mesh, NOM_TABLE='CARA_GEOM',)
-test.assertAlmostEqual(TABG['X_MIN', 1], 0.0)
-test.assertAlmostEqual(TABG['X_MAX', 1], 1.0)
-test.assertAlmostEqual(TABG['Y_MIN', 1], 0.0)
-test.assertAlmostEqual(TABG['Y_MAX', 1], 1.0)
-test.assertAlmostEqual(TABG['Z_MIN', 1], 0.0)
-test.assertAlmostEqual(TABG['Z_MAX', 1], 1.0)
-test.assertAlmostEqual(TABG['AR_MIN', 1], 0.5)
-test.assertAlmostEqual(TABG['AR_MAX', 1], 0.5)
+TABG = RECU_TABLE(CO=mesh, NOM_TABLE="CARA_GEOM")
+test.assertAlmostEqual(TABG["X_MIN", 1], 0.0)
+test.assertAlmostEqual(TABG["X_MAX", 1], 1.0)
+test.assertAlmostEqual(TABG["Y_MIN", 1], 0.0)
+test.assertAlmostEqual(TABG["Y_MAX", 1], 1.0)
+test.assertAlmostEqual(TABG["Z_MIN", 1], 0.0)
+test.assertAlmostEqual(TABG["Z_MAX", 1], 1.0)
+test.assertAlmostEqual(TABG["AR_MIN", 1], 0.5)
+test.assertAlmostEqual(TABG["AR_MAX", 1], 0.5)
 
 # test groups
 # do the same thing (compatibily with ParallelMesh)
-test.assertSequenceEqual(sorted(mesh.getGroupsOfNodes()),
-                         ['A', 'B', 'Bas', 'C', 'D', 'E', 'F', 'G', 'H', 'Haut'])
-test.assertSequenceEqual(sorted(mesh.getGroupsOfNodes()),
-                         sorted(mesh.getGroupsOfNodes(True)))
-test.assertSequenceEqual(sorted(mesh.getGroupsOfNodes()),
-                         sorted(mesh.getGroupsOfNodes(False)))
+test.assertSequenceEqual(
+    sorted(mesh.getGroupsOfNodes()), ["A", "B", "Bas", "C", "D", "E", "F", "G", "H", "Haut"]
+)
+test.assertSequenceEqual(sorted(mesh.getGroupsOfNodes()), sorted(mesh.getGroupsOfNodes(True)))
+test.assertSequenceEqual(sorted(mesh.getGroupsOfNodes()), sorted(mesh.getGroupsOfNodes(False)))
 # do the same thing (compatibily with ParallelMesh)
-test.assertTrue(mesh.hasGroupOfNodes('A'))
-test.assertTrue(mesh.hasGroupOfNodes('A', True))
-test.assertTrue(mesh.hasGroupOfNodes('A', False))
-test.assertFalse(mesh.hasGroupOfNodes('AA'))
-test.assertFalse(mesh.hasGroupOfNodes('AA', True))
-test.assertFalse(mesh.hasGroupOfNodes('AA', False))
+test.assertTrue(mesh.hasGroupOfNodes("A"))
+test.assertTrue(mesh.hasGroupOfNodes("A", True))
+test.assertTrue(mesh.hasGroupOfNodes("A", False))
+test.assertFalse(mesh.hasGroupOfNodes("AA"))
+test.assertFalse(mesh.hasGroupOfNodes("AA", True))
+test.assertFalse(mesh.hasGroupOfNodes("AA", False))
 
 
 # do the same thing (compatibily with ParallelMesh)
-test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), ['Bas', 'Haut'])
-test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()),
-                         sorted(mesh.getGroupsOfCells(False)))
-test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()),
-                         sorted(mesh.getGroupsOfCells(True)))
+test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), ["Bas", "Haut"])
+test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), sorted(mesh.getGroupsOfCells(False)))
+test.assertSequenceEqual(sorted(mesh.getGroupsOfCells()), sorted(mesh.getGroupsOfCells(True)))
 
 # do the same thing (compatibily with ParallelMesh)
-test.assertTrue(mesh.hasGroupOfCells('Bas'))
-test.assertTrue(mesh.hasGroupOfCells('Bas', True))
-test.assertTrue(mesh.hasGroupOfCells('Bas', False))
-test.assertFalse(mesh.hasGroupOfCells('Droit'))
-test.assertFalse(mesh.hasGroupOfCells('Droit', True))
-test.assertFalse(mesh.hasGroupOfCells('Droit', False))
+test.assertTrue(mesh.hasGroupOfCells("Bas"))
+test.assertTrue(mesh.hasGroupOfCells("Bas", True))
+test.assertTrue(mesh.hasGroupOfCells("Bas", False))
+test.assertFalse(mesh.hasGroupOfCells("Droit"))
+test.assertFalse(mesh.hasGroupOfCells("Droit", True))
+test.assertFalse(mesh.hasGroupOfCells("Droit", False))
 
 # test coordiantes
 coord = mesh.getCoordinates()
@@ -86,23 +83,17 @@ values = coord.getValues()
 test.assertEqual(len(values), 27 * 3)
 
 connect = mesh.getConnectivity()
-cellsHaut = mesh.getCells('Haut')
+cellsHaut = mesh.getCells("Haut")
 test.assertSequenceEqual(cellsHaut, [44, 45, 46, 47])
-nodesHaut = mesh.getNodes('Haut')
+nodesHaut = mesh.getNodes("Haut")
 test.assertSequenceEqual(nodesHaut, [0, 2, 4, 6, 9, 13, 17, 19, 25])
 # do the same thing (compatibily with ParallelMesh)
-test.assertSequenceEqual(mesh.getNodes('Haut', True), [
-                         0, 2, 4, 6, 9, 13, 17, 19, 25])
-test.assertSequenceEqual(mesh.getNodes('Haut', True, True), [
-                         0, 2, 4, 6, 9, 13, 17, 19, 25])
-test.assertSequenceEqual(mesh.getNodes('Haut', False), [
-                         0, 2, 4, 6, 9, 13, 17, 19, 25])
-test.assertSequenceEqual(mesh.getNodes('Haut', False, False), [
-                         0, 2, 4, 6, 9, 13, 17, 19, 25])
-test.assertSequenceEqual(mesh.getNodes('Haut', True, False), [
-                         0, 2, 4, 6, 9, 13, 17, 19, 25])
-test.assertSequenceEqual(mesh.getNodes('Haut', False, True), [
-                         0, 2, 4, 6, 9, 13, 17, 19, 25])
+test.assertSequenceEqual(mesh.getNodes("Haut", True), [0, 2, 4, 6, 9, 13, 17, 19, 25])
+test.assertSequenceEqual(mesh.getNodes("Haut", True, True), [0, 2, 4, 6, 9, 13, 17, 19, 25])
+test.assertSequenceEqual(mesh.getNodes("Haut", False), [0, 2, 4, 6, 9, 13, 17, 19, 25])
+test.assertSequenceEqual(mesh.getNodes("Haut", False, False), [0, 2, 4, 6, 9, 13, 17, 19, 25])
+test.assertSequenceEqual(mesh.getNodes("Haut", True, False), [0, 2, 4, 6, 9, 13, 17, 19, 25])
+test.assertSequenceEqual(mesh.getNodes("Haut", False, True), [0, 2, 4, 6, 9, 13, 17, 19, 25])
 
 # test different variant
 test.assertEqual(mesh.getNumberOfNodes(), len(mesh.getNodes()))
@@ -112,18 +103,20 @@ test.assertSequenceEqual(mesh.getNodes(), range(0, mesh.getNumberOfNodes()))
 test.assertSequenceEqual(mesh.getCells(), range(0, mesh.getNumberOfCells()))
 
 # do the same thing (compatibily with ParallelMesh)
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
-    mesh.getNodes(localNumbering=True)))
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
-    mesh.getNodes(localNumbering=True, same_rank=True)))
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
-    mesh.getNodes(localNumbering=False)))
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
-    mesh.getNodes(localNumbering=False, same_rank=True)))
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
-    mesh.getNodes(localNumbering=False, same_rank=False)))
-test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(
-    mesh.getNodes(localNumbering=True, same_rank=False)))
+test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(mesh.getNodes(localNumbering=True)))
+test.assertSequenceEqual(
+    sorted(mesh.getNodes()), sorted(mesh.getNodes(localNumbering=True, same_rank=True))
+)
+test.assertSequenceEqual(sorted(mesh.getNodes()), sorted(mesh.getNodes(localNumbering=False)))
+test.assertSequenceEqual(
+    sorted(mesh.getNodes()), sorted(mesh.getNodes(localNumbering=False, same_rank=True))
+)
+test.assertSequenceEqual(
+    sorted(mesh.getNodes()), sorted(mesh.getNodes(localNumbering=False, same_rank=False))
+)
+test.assertSequenceEqual(
+    sorted(mesh.getNodes()), sorted(mesh.getNodes(localNumbering=True, same_rank=False))
+)
 
 medconn = mesh.getMedConnectivity()
 medtypes = np.array(mesh.getMedCellsTypes())
@@ -139,8 +132,8 @@ test.assertTrue((medtypes[49:] == 308).all())
 quad47 = connect[47 - 1]
 test.assertSequenceEqual(quad47, [10, 1, 18, 26])
 test.assertSequenceEqual(medconn[47 - 1], [10, 1, 18, 26])
-test.assertEqual("M47", mesh.getCellName(47-1))
-test.assertEqual("N10", mesh.getNodeName(10-1))
+test.assertEqual("M47", mesh.getCellName(47 - 1))
+test.assertEqual("N10", mesh.getNodeName(10 - 1))
 
 # always 3 coordinates, even if 'getDimension() == 2'
 npcoord = np.array(values).reshape((-1, 3))
@@ -158,8 +151,8 @@ test.assertSequenceEqual(connect[49 - 1], conn_ast)
 test.assertSequenceEqual(medconn[49 - 1], conn_med)
 
 # boundingbox of mesh: (0, 0, 0) -> (1, 1, 1)
-test.assertEqual(npcoord.min(), 0.)
-test.assertEqual(npcoord.max(), 1.)
+test.assertEqual(npcoord.min(), 0.0)
+test.assertEqual(npcoord.max(), 1.0)
 
 # test ass new group
 mesh.setGroupOfCells("TEST_GMA", [0, 1])
@@ -181,8 +174,35 @@ test.assertTrue(mail.isQuadratic())
 
 m1, m2, m3 = mail.getConnectivity()
 # reference connectivities from '.mail' file
-ast27 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-         21, 22, 23, 24, 25, 26, 27]
+ast27 = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+]
 ast20 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 ast08 = [1, 2, 3, 4, 5, 6, 7, 8]
 test.assertSequenceEqual(m1, ast27)
@@ -191,8 +211,35 @@ test.assertSequenceEqual(m3, ast08)
 
 m1, m2, m3 = mail.getMedConnectivity()
 # reference connectivities from IMPR_RESU/MED + mdump
-med27 = [1, 4, 3, 2, 5, 8, 7, 6, 12, 11, 10, 9, 20, 19, 18, 17, 13, 16, 15, 14,
-         21, 25, 24, 23, 22, 26, 27]
+med27 = [
+    1,
+    4,
+    3,
+    2,
+    5,
+    8,
+    7,
+    6,
+    12,
+    11,
+    10,
+    9,
+    20,
+    19,
+    18,
+    17,
+    13,
+    16,
+    15,
+    14,
+    21,
+    25,
+    24,
+    23,
+    22,
+    26,
+    27,
+]
 med20 = [1, 4, 3, 2, 5, 8, 7, 6, 12, 11, 10, 9, 20, 19, 18, 17, 13, 16, 15, 14]
 med08 = [1, 4, 3, 2, 5, 8, 7, 6]
 test.assertSequenceEqual(m1, med27)
@@ -207,12 +254,34 @@ test.assertFalse(mail.isParallel())
 test.assertEqual(mail.getDimension(), 3)
 test.assertEqual(mail.getNumberOfNodes(), 22)
 test.assertEqual(mail.getNumberOfCells(), 6)
-test.assertSequenceEqual(mail.getGroupsOfNodes(),
-                         ['NO5', 'NO6', 'NO11', 'NO3', 'NO16', 'NO18', 'NO8', 'NO12',
-                          'NO2', 'NO17', 'NO20', 'NO4', 'NO14', 'NO7', 'NO21', 'NO19',
-                                 'NO15', 'NO9', 'NO10', 'NO1'])
-test.assertSequenceEqual(sorted(mail.getGroupsOfCells()),
-                         ['BAS', 'DROITE', 'GAUCHE', 'HAUT', 'PENT2'])
+test.assertSequenceEqual(
+    mail.getGroupsOfNodes(),
+    [
+        "NO5",
+        "NO6",
+        "NO11",
+        "NO3",
+        "NO16",
+        "NO18",
+        "NO8",
+        "NO12",
+        "NO2",
+        "NO17",
+        "NO20",
+        "NO4",
+        "NO14",
+        "NO7",
+        "NO21",
+        "NO19",
+        "NO15",
+        "NO9",
+        "NO10",
+        "NO1",
+    ],
+)
+test.assertSequenceEqual(
+    sorted(mail.getGroupsOfCells()), ["BAS", "DROITE", "GAUCHE", "HAUT", "PENT2"]
+)
 coord = mail.getCoordinates()
 test.assertEqual(coord[3], 1.0)
 values = coord.getValues()
@@ -230,10 +299,8 @@ test.assertFalse(gmsh.isParallel())
 test.assertEqual(gmsh.getDimension(), 2)
 test.assertEqual(gmsh.getNumberOfNodes(), 132)
 test.assertEqual(gmsh.getNumberOfCells(), 207)
-test.assertSequenceEqual(gmsh.getGroupsOfNodes(),
-                         ['GM5'])
-test.assertSequenceEqual(sorted(gmsh.getGroupsOfCells()),
-                         ['GM1', 'GM3', 'GM4', 'GM5', 'GM6'])
+test.assertSequenceEqual(gmsh.getGroupsOfNodes(), ["GM5"])
+test.assertSequenceEqual(sorted(gmsh.getGroupsOfCells()), ["GM1", "GM3", "GM4", "GM5", "GM6"])
 coord = gmsh.getCoordinates()
 test.assertEqual(coord[3], 1.0)
 values = coord.getValues()
@@ -247,10 +314,8 @@ test.assertFalse(gibi.isParallel())
 test.assertEqual(gibi.getDimension(), 3)
 test.assertEqual(gibi.getNumberOfNodes(), 125)
 test.assertEqual(gibi.getNumberOfCells(), 84)
-test.assertSequenceEqual(sorted(gibi.getGroupsOfNodes()),
-                         ['A', 'B', 'C'])
-test.assertSequenceEqual(sorted(gibi.getGroupsOfCells()),
-                         ['AB', 'BASE1', 'CUBE1'])
+test.assertSequenceEqual(sorted(gibi.getGroupsOfNodes()), ["A", "B", "C"])
+test.assertSequenceEqual(sorted(gibi.getGroupsOfCells()), ["AB", "BASE1", "CUBE1"])
 coord = gibi.getCoordinates()
 test.assertEqual(coord[3], 10.0)
 values = coord.getValues()
@@ -262,16 +327,36 @@ test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 3)
 test.assertEqual(builder.getNumberOfNodes(), 729)
 test.assertEqual(builder.getNumberOfCells(), 992)
-test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
-                         ['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8'])
-test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
-                         ['BACK', 'BOTTOM', 'FRONT', 'LEFT', 'RIGHT', 'S13', 'S21',
-                             'S24', 'S26', 'S34', 'S37', 'S51', 'S56', 'S68', 'S75',
-                          'S78', 'S84', 'TOP', 'VOLUME'])
+test.assertSequenceEqual(
+    sorted(builder.getGroupsOfNodes()), ["N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8"]
+)
+test.assertSequenceEqual(
+    sorted(builder.getGroupsOfCells()),
+    [
+        "BACK",
+        "BOTTOM",
+        "FRONT",
+        "LEFT",
+        "RIGHT",
+        "S13",
+        "S21",
+        "S24",
+        "S26",
+        "S34",
+        "S37",
+        "S51",
+        "S56",
+        "S68",
+        "S75",
+        "S78",
+        "S84",
+        "TOP",
+        "VOLUME",
+    ],
+)
 test.assertEqual(code_aster.Mesh.buildCube(refine=2).getNumberOfNodes(), 125)
 builder = code_aster.Mesh.buildCube()
-test.assertSequenceEqual(builder.getNodesFromCells('VOLUME'),
-                         [0, 1, 2, 3, 4, 5, 6, 7])
+test.assertSequenceEqual(builder.getNodesFromCells("VOLUME"), [0, 1, 2, 3, 4, 5, 6, 7])
 
 # from mesh builder - Cylinder
 builder = code_aster.Mesh.buildCylinder(refine=3)
@@ -279,15 +364,14 @@ test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 3)
 test.assertEqual(builder.getNumberOfNodes(), 13617)
 test.assertEqual(builder.getNumberOfCells(), 16384)
-test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
-                         [])
-test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
-                         ['BOTTOM', 'SURFEXT', 'TOP', 'VOLUME'])
-test.assertEqual(code_aster.Mesh.buildCylinder(
-    refine=2).getNumberOfNodes(), 1881)
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), [])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["BOTTOM", "SURFEXT", "TOP", "VOLUME"])
+test.assertEqual(code_aster.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1881)
 builder = code_aster.Mesh.buildCylinder()
-test.assertSequenceEqual(builder.getNodesFromCells('BOTTOM'),
-                         [0, 3, 4, 7, 9, 10, 13, 14, 19, 23, 24, 26, 29, 34, 35, 39, 44])
+test.assertSequenceEqual(
+    builder.getNodesFromCells("BOTTOM"),
+    [0, 3, 4, 7, 9, 10, 13, 14, 19, 23, 24, 26, 29, 34, 35, 39, 44],
+)
 
 # from mesh builder -Square
 builder = code_aster.Mesh.buildSquare(refine=3)
@@ -295,12 +379,11 @@ test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 2)
 test.assertEqual(builder.getNumberOfNodes(), 81)
 test.assertEqual(builder.getNumberOfCells(), 96)
-test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
-                         ['N1', 'N2', 'N3', 'N4'])
-test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
-                         ['BOTTOM', 'LEFT', 'RIGHT', 'SURFACE', 'TOP'])
-test.assertSequenceEqual(builder.getNodesFromCells('BOTTOM'),
-                         [2, 3, 5, 14, 20, 41, 48, 58, 67])
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), ["N1", "N2", "N3", "N4"])
+test.assertSequenceEqual(
+    sorted(builder.getGroupsOfCells()), ["BOTTOM", "LEFT", "RIGHT", "SURFACE", "TOP"]
+)
+test.assertSequenceEqual(builder.getNodesFromCells("BOTTOM"), [2, 3, 5, 14, 20, 41, 48, 58, 67])
 test.assertEqual(code_aster.Mesh.buildSquare(refine=2).getNumberOfNodes(), 25)
 
 # from mesh builder -  Disk
@@ -309,14 +392,77 @@ test.assertFalse(builder.isParallel())
 test.assertEqual(builder.getDimension(), 2)
 test.assertEqual(builder.getNumberOfNodes(), 801)
 test.assertEqual(builder.getNumberOfCells(), 832)
-test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
-                         [])
-test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
-                         ['CIRCLE', 'SURFACE'])
-test.assertSequenceEqual(builder.getNodesFromCells('CIRCLE'),
-                          [4, 5, 6, 7, 12, 13, 14, 15, 29, 30, 31, 32, 33, 34, 35, 36, 69, 70, 72, 73, 75, 76, 78, 79, 97,
-                          98, 100, 101, 103, 104, 106, 107, 221, 222, 224, 225, 227, 228, 230, 231, 249, 250, 252, 253, 255,
-                          256, 258, 259, 313, 314, 316, 317, 319, 320, 322, 323, 325, 326, 328, 329, 331, 332, 334, 335])
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()), [])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()), ["CIRCLE", "SURFACE"])
+test.assertSequenceEqual(
+    builder.getNodesFromCells("CIRCLE"),
+    [
+        4,
+        5,
+        6,
+        7,
+        12,
+        13,
+        14,
+        15,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        69,
+        70,
+        72,
+        73,
+        75,
+        76,
+        78,
+        79,
+        97,
+        98,
+        100,
+        101,
+        103,
+        104,
+        106,
+        107,
+        221,
+        222,
+        224,
+        225,
+        227,
+        228,
+        230,
+        231,
+        249,
+        250,
+        252,
+        253,
+        255,
+        256,
+        258,
+        259,
+        313,
+        314,
+        316,
+        317,
+        319,
+        320,
+        322,
+        323,
+        325,
+        326,
+        328,
+        329,
+        331,
+        332,
+        334,
+        335,
+    ],
+)
 test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 209)
 
 test.printSummary()

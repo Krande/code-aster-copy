@@ -17,22 +17,24 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI',
-          DEBUG=_F(SDVERI='OUI'),)
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 # -- Validation des resultats
 
-TEST_RESU(RESU=_F(GROUP_NO='C1',
-                  INST=1.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=STNL,
-                  NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIYY',
-                  VALE_CALC=-2921.761645238016,
-                  VALE_REFE=-2798.3286697476105,
-                  CRITERE='RELATIF',
-                  PRECISION=6.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO="C1",
+        INST=1.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=STNL,
+        NOM_CHAM="SIEF_NOEU",
+        NOM_CMP="SIYY",
+        VALE_CALC=-2921.761645238016,
+        VALE_REFE=-2798.3286697476105,
+        CRITERE="RELATIF",
+        PRECISION=6.0e-2,
+    )
+)
 
 FIN()

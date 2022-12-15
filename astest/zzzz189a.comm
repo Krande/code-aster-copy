@@ -42,242 +42,217 @@
 import numpy as NP
 
 
-def crossprod(x,y):
-   z=NP.ones(3)
-   z[0]=x[1]*y[2]-x[2]*y[1]
-   z[1]=x[2]*y[0]-x[0]*y[2]
-   z[2]=x[0]*y[1]-x[1]*y[0]
-   return z
+def crossprod(x, y):
+    z = NP.ones(3)
+    z[0] = x[1] * y[2] - x[2] * y[1]
+    z[1] = x[2] * y[0] - x[0] * y[2]
+    z[2] = x[0] * y[1] - x[1] * y[0]
+    return z
+
 
 def norm(x):
-   tmp = NP.sqrt(NP.dot(x,x))
-   return tmp
+    tmp = NP.sqrt(NP.dot(x, x))
+    return tmp
 
 
-def LIST_CARA_CIRCONF(GROUP_MA,VECT_2,MAILLAGE,**args):
+def LIST_CARA_CIRCONF(GROUP_MA, VECT_2, MAILLAGE, **args):
 
+    """
+    Produit une liste de commandes pour orienter circonferentiellement un groupe de mailles par AFFE_CARA_ELEM
+    """
 
-  """
-     Produit une liste de commandes pour orienter circonferentiellement un groupe de mailles par AFFE_CARA_ELEM
-  """
+    import copy
 
-  import copy
+    # On recupere la connectivite, les noms des mailles,
+    # les coordonnees et le groupes de mailles GROUP_MA
+    coordo = MAILLAGE.getCoordinates().getValues()
+    connex = MAILLAGE.sdj.CONNEX.get()
+    nommai = MAILLAGE.sdj.NOMMAI.get()
+    groupma = MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]
 
-  # On recupere la connectivite, les noms des mailles,
-  # les coordonnees et le groupes de mailles GROUP_MA
-  coordo=MAILLAGE.getCoordinates().getValues()
-  connex=MAILLAGE.sdj.CONNEX.get()
-  nommai=MAILLAGE.sdj.NOMMAI.get()
-  groupma=MAILLAGE.sdj.GROUPEMA.get()[GROUP_MA.ljust(24)]
+    # On met en forme les coordonnees : matrice 3 colonnes
+    coordo = NP.reshape(coordo, [len(coordo) // 3, 3])
+    # On recupere chacune des coordonnees
+    X = coordo[:, 0]
+    Y = coordo[:, 1]
+    Z = coordo[:, 2]
 
-  # On met en forme les coordonnees : matrice 3 colonnes
-  coordo=NP.reshape(coordo,[len(coordo)//3,3])
-  # On recupere chacune des coordonnees
-  X=coordo[:,0]
-  Y=coordo[:,1]
-  Z=coordo[:,2]
+    n1n2 = NP.ones(3)
+    n1n3 = NP.ones(3)
+    vecX = NP.array([1.0, 0.0, 0.0])
+    vecY = NP.array([0.0, 1.0, 0.0])
+    vecAxe = NP.array(VECT_2)
+    normale = NP.ones(3)
+    vrep = NP.ones(3)
 
-  n1n2=NP.ones(3)
-  n1n3=NP.ones(3)
-  vecX=NP.array([1.,0.,0.])
-  vecY=NP.array([0.,1.,0.])
-  vecAxe=NP.array(VECT_2)
-  normale=NP.ones(3)
-  vrep=NP.ones(3)
+    LISTE_CARA = []
+    # On boucle sur les mailles du groupe de mailles GROUP_MA
 
+    for ima in groupma:
+        lnoeu = connex[ima]
+        # On ne traite les elements que s'ils sont des triangles!
+        if len(lnoeu) == 3:
+            # ATTENTION : dans Python, les tableaux commencent a 0
+            # mais dans la connectivite, les noeuds commencent a 1!
+            n1 = lnoeu[0] - 1
+            n2 = lnoeu[1] - 1
+            n3 = lnoeu[2] - 1
+            n1n2[0] = X[n2] - X[n1]
+            n1n2[1] = Y[n2] - Y[n1]
+            n1n2[2] = Z[n2] - Z[n1]
+            n1n3[0] = X[n3] - X[n1]
+            n1n3[1] = Y[n3] - Y[n1]
+            n1n3[2] = Z[n3] - Z[n1]
+            # On calcule la nomale a l'element
+            normale = crossprod(n1n2, n1n3)
+            # On calcule le vecteur donnant l'axe des armatures
+            vecV = crossprod(normale, vecAxe)
+            # On fait une copie de ce vecteur pour y mettre une composante a 0
+            vecX1 = copy.copy(vecV)
+            vecX1[2] = 0.0
 
-  LISTE_CARA=[]
-  # On boucle sur les mailles du groupe de mailles GROUP_MA
+            # On calcule les angles de ANGL_REP_1 pour obtenir le vecteur vecV
+            alpha = NP.arctan2(vecX1[1], vecX1[0]) * 180.0 / NP.pi
+            beta = -NP.arctan2(vecV[2], norm(vecX1)) * 180.0 / NP.pi
 
-  for ima in groupma:
-     lnoeu=connex[ima]
-     # On ne traite les elements que s'ils sont des triangles!
-     if (len(lnoeu)==3) :
-         # ATTENTION : dans Python, les tableaux commencent a 0
-         # mais dans la connectivite, les noeuds commencent a 1!
-         n1=lnoeu[0]-1
-         n2=lnoeu[1]-1
-         n3=lnoeu[2]-1
-         n1n2[0]=X[n2]-X[n1]
-         n1n2[1]=Y[n2]-Y[n1]
-         n1n2[2]=Z[n2]-Z[n1]
-         n1n3[0]=X[n3]-X[n1]
-         n1n3[1]=Y[n3]-Y[n1]
-         n1n3[2]=Z[n3]-Z[n1]
-         # On calcule la nomale a l'element
-         normale=crossprod(n1n2,n1n3)
-         # On calcule le vecteur donnant l'axe des armatures
-         vecV=crossprod(normale,vecAxe)
-         # On fait une copie de ce vecteur pour y mettre une composante a 0
-         vecX1=copy.copy(vecV)
-         vecX1[2]=0.
+            # Meme remarque que precedemment sur les listes Python
+            nom_maille = nommai[ima - 1]
 
-         # On calcule les angles de ANGL_REP_1 pour obtenir le vecteur vecV
-         alpha=NP.arctan2(vecX1[1],vecX1[0])*180./NP.pi
-         beta=-NP.arctan2(vecV[2],norm(vecX1))*180./NP.pi
+            # On boucle sur les arguments de la fonction pour
+            # creer une liste de mots-cle facteurs que l'on va
+            # retourner pour l'utiliser dans AFFE_CARA_ELEM
+            # Noter que comme GRILLE est un mot-cle facteur, il
+            # contient un dictionnaire
+            mon_dico = {}
+            for cle in list(args["GRILLE"].keys()):
+                mon_dico[cle] = args["GRILLE"][cle]
+            mon_dico["MAILLE"] = nom_maille
+            mon_dico["ANGL_REP_1"] = (alpha, beta)
 
-         # Meme remarque que precedemment sur les listes Python
-         nom_maille=nommai[ima-1]
+            LISTE_CARA.append(mon_dico)
 
-         # On boucle sur les arguments de la fonction pour
-         # creer une liste de mots-cle facteurs que l'on va
-         # retourner pour l'utiliser dans AFFE_CARA_ELEM
-         # Noter que comme GRILLE est un mot-cle facteur, il
-         # contient un dictionnaire
-         mon_dico={}
-         for cle in list(args["GRILLE"].keys()):
-            mon_dico[cle]=args["GRILLE"][cle]
-         mon_dico["MAILLE"]=nom_maille
-         mon_dico["ANGL_REP_1"]=(alpha,beta)
+    return LISTE_CARA
 
-         LISTE_CARA.append(mon_dico)
-
-  return LISTE_CARA
 
 # ==================================================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 #
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                            NU=0.3,),)
+MATER = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
 
-MAIL1=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL1 = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL1=DEFI_GROUP(reuse =MAIL1,
-                 MAILLAGE=MAIL1,
-                 CREA_GROUP_MA=(_F(NOM='PLAQUE',
-                                   TOUT='OUI',))
-       )
+MAIL1 = DEFI_GROUP(reuse=MAIL1, MAILLAGE=MAIL1, CREA_GROUP_MA=(_F(NOM="PLAQUE", TOUT="OUI")))
 
-MAILL=CREA_MAILLAGE(MAILLAGE= MAIL1,
-                    CREA_MAILLE=_F(NOM='GRILLE',
-                                            GROUP_MA='PLAQUE',
-                                            PREF_MAILLE='B'))
+MAILL = CREA_MAILLAGE(
+    MAILLAGE=MAIL1, CREA_MAILLE=_F(NOM="GRILLE", GROUP_MA="PLAQUE", PREF_MAILLE="B")
+)
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MATER,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
-MODEL=AFFE_MODELE(MAILLAGE=MAILL,
-
-                  AFFE=(_F(GROUP_MA='PLAQUE',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),
-                        _F(GROUP_MA='GRILLE',
-                           PHENOMENE = 'MECANIQUE',
-                           MODELISATION = 'GRILLE_MEMBRANE',),
-                        )
-              )
+MODEL = AFFE_MODELE(
+    MAILLAGE=MAILL,
+    AFFE=(
+        _F(GROUP_MA="PLAQUE", PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA="GRILLE", PHENOMENE="MECANIQUE", MODELISATION="GRILLE_MEMBRANE"),
+    ),
+)
 
 # On cree les caracteristiques
-LIST_GRI=LIST_CARA_CIRCONF(GROUP_MA='GRILLE',
-                           VECT_2=(0.,0.,1.),
-                     #    MODELE=MODEL,
-                         MAILLAGE=MAILL,
-                           GRILLE=_F(SECTION=20.,EXCENTREMENT=0.,))
+LIST_GRI = LIST_CARA_CIRCONF(
+    GROUP_MA="GRILLE",
+    VECT_2=(0.0, 0.0, 1.0),
+    #    MODELE=MODEL,
+    MAILLAGE=MAILL,
+    GRILLE=_F(SECTION=20.0, EXCENTREMENT=0.0),
+)
 
 
-CARA_COQ=AFFE_CARA_ELEM(MODELE=MODEL,
-                     COQUE=_F(GROUP_MA='PLAQUE',
-                              EPAIS=40.,
-                              COEF_RIGI_DRZ=0.,),
-                     GRILLE=LIST_GRI,
-                             )
+CARA_COQ = AFFE_CARA_ELEM(
+    MODELE=MODEL, COQUE=_F(GROUP_MA="PLAQUE", EPAIS=40.0, COEF_RIGI_DRZ=0.0), GRILLE=LIST_GRI
+)
 
 
-CHARGE=AFFE_CHAR_MECA(MODELE=MODEL,
-                      DDL_IMPO=(_F(GROUP_NO='BCSANSBC',
-                                   DX=0.0,
-                                   DRY=0.0,
-                                   DRZ=0.0,),
-                                _F(GROUP_NO='ACSANSAC',
-                                   DY=0.0,
-                                   DRX=0.0,
-                                   DRZ=0.0,),
-                                _F(GROUP_NO='A',
-                                   DY=0.0,
-                                   DRX=0.0,
-                                   DRZ=0.0,),
-                                _F(GROUP_NO='B',
-                                   DX=0.0,
-                                   DRY=0.0,
-                                   DRZ=0.0,),
-                                _F(GROUP_NO='C',
-                                   DX=0.0,
-                                   DY=0.0,
-                                   DZ=0.0,
-                                   DRX=0.0,
-                                   DRY=0.0,
-                                   DRZ=0.0,),),
-                                   )
+CHARGE = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(
+        _F(GROUP_NO="BCSANSBC", DX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="ACSANSAC", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="A", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="B", DX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="C", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+)
 
-FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
-                     FORCE_COQUE=_F(TOUT='OUI',
-                                    PRES=10.))
+FORCE = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_COQUE=_F(TOUT="OUI", PRES=10.0))
 
 
+TEMPS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-TEMPS1=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(  JUSQU_A = 1.0, NOMBRE = 1))
-
-RESU=STAT_NON_LINE(MODELE=MODEL,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARA_COQ,
-                   EXCIT=(_F( CHARGE = CHARGE),
-                          _F( CHARGE = FORCE),
-                          ),
-                   COMPORTEMENT=_F(RELATION = 'ELAS',
-                               ),
-                   INCREMENT=_F(LIST_INST = TEMPS1)
-              )
+RESU = STAT_NON_LINE(
+    MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARA_COQ,
+    EXCIT=(_F(CHARGE=CHARGE), _F(CHARGE=FORCE)),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=TEMPS1),
+)
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO30',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
-                   ),
-                _F(INST=1.0,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO30',
-                   NOM_CMP='DY',
-                   VALE_CALC=3.1392917360525E-05,
-                   ),
-                _F(INST=1.0,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO30',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.5355877623485E-05,
-                   ),
-                _F(INST=1.0,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO700',
-                   NOM_CMP='DX',
-                   VALE_CALC=4.4875270668052E-06,
-                   ),
-                _F(INST=1.0,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO700',
-                   NOM_CMP='DY',
-                   VALE_CALC=3.3210379052661E-05,
-                   ),
-                _F(INST=1.0,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO700',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.5154673198415E-05,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO30",
+            NOM_CMP="DX",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO30",
+            NOM_CMP="DY",
+            VALE_CALC=3.1392917360525e-05,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO30",
+            NOM_CMP="DZ",
+            VALE_CALC=1.5355877623485e-05,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO700",
+            NOM_CMP="DX",
+            VALE_CALC=4.4875270668052e-06,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO700",
+            NOM_CMP="DY",
+            VALE_CALC=3.3210379052661e-05,
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO700",
+            NOM_CMP="DZ",
+            VALE_CALC=1.5154673198415e-05,
+        ),
+    )
+)
 
 FIN()

@@ -31,371 +31,427 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-M=LIRE_MAILLAGE(FORMAT="ASTER",)
+M = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MO=AFFE_MODELE(        MAILLAGE=M,
-                                AFFE=_F(  TOUT = 'OUI',
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = 'AXIS_FOURIER', ))
+MO = AFFE_MODELE(
+    MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_FOURIER")
+)
 
-MA=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 144.,    E_T = 144.,     E_N = 72.,
-                                 NU_LT = 0.3,   NU_LN = 0.3,   NU_TN = 0.3,
-                                 G_LT = 10.,
-                                 G_LN = 55.384615,
-                                 G_TN = 10.,   )
-                      )
+MA = DEFI_MATERIAU(
+    ELAS_ORTH=_F(
+        E_L=144.0,
+        E_T=144.0,
+        E_N=72.0,
+        NU_LT=0.3,
+        NU_LN=0.3,
+        NU_TN=0.3,
+        G_LT=10.0,
+        G_LN=55.384615,
+        G_TN=10.0,
+    )
+)
 
-P=DEFI_FONCTION(      NOM_PARA='X',
-           VALE=(0.,0., .5, .5, 1., 1.,) )
+P = DEFI_FONCTION(NOM_PARA="X", VALE=(0.0, 0.0, 0.5, 0.5, 1.0, 1.0))
 
-U0=DEFI_CONSTANTE(    VALE=0. )
+U0 = DEFI_CONSTANTE(VALE=0.0)
 
-CM=AFFE_MATERIAU(      MAILLAGE=M,
-                                AFFE=_F(  TOUT = 'OUI',
-                                       MATER = MA,                      ))
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=MA))
 
-BLOQU=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
-               _F(  GROUP_NO = 'N1',           DX = U0,   DY = U0,    DZ = U0,   ),
-                        _F(  GROUP_NO = 'N2',           DY = U0,   ),
-                        _F(  GROUP_NO = 'N3',           DY = U0,   ),),)
+BLOQU = AFFE_CHAR_MECA_F(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="N1", DX=U0, DY=U0, DZ=U0),
+        _F(GROUP_NO="N2", DY=U0),
+        _F(GROUP_NO="N3", DY=U0),
+    ),
+)
 
-CH=AFFE_CHAR_MECA_F( MODELE=MO, PRES_REP=_F(  GROUP_MA = 'BOUT', PRES =P,  ),)
-
-
-
-RESU=MACRO_ELAS_MULT(      MODELE=MO,
-                             CHAM_MATER=CM,
-                           CHAR_MECA_GLOBAL=BLOQU,
-                           CAS_CHARGE=_F(
-                                 MODE_FOURIER = 1,
-                                 TYPE_MODE = 'SYME',
-                                 CHAR_MECA = CH,
-                                 SOUS_TITRE = 'MODE FOURIER 1 SYME'
-                                 )
-                          )
-
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
+CH = AFFE_CHAR_MECA_F(MODELE=MO, PRES_REP=_F(GROUP_MA="BOUT", PRES=P))
 
 
+RESU = MACRO_ELAS_MULT(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    CHAR_MECA_GLOBAL=BLOQU,
+    CAS_CHARGE=_F(MODE_FOURIER=1, TYPE_MODE="SYME", CHAR_MECA=CH, SOUS_TITRE="MODE FOURIER 1 SYME"),
+)
 
-TEST_RESU(RESU=(_F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DX',
-                   VALE_CALC=2.6041666666581E-04,
-                   VALE_REFE=2.6041666666666E-4,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N2',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-2.6041666666584E-04,
-                   VALE_REFE=-2.6041666666666E-4,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N4',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.031249999999878,
-                   VALE_REFE=0.03125,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N4',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.031249999999878,
-                   VALE_REFE=0.03125,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N7',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.12499999999955,
-                   VALE_REFE=0.125,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N7',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.12499999999955,
-                   VALE_REFE=0.125,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N9',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.041666666666535,
-                   VALE_REFE=-0.041666666666499999,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N10',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.28124999999907,
-                   VALE_REFE=0.28125,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N10',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.28124999999907,
-                   VALE_REFE=0.28125,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N12',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.062499999999845,
-                   VALE_REFE=-0.0625,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N13',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.49999999999858,
-                   VALE_REFE=0.5,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N13',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.49999999999858,
-                   VALE_REFE=0.5,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N14',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.041666666666588,
-                   VALE_REFE=-0.041666666666499999,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N15',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.083333333333176,
-                   VALE_REFE=-0.083333333333333329,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=3.3119340603349E-14,
-                   VALE_REFE=0.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M1',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-0.99999999999637,
-                   VALE_REFE=-1.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   GROUP_MA='M1',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N7',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-1.0591527654924E-13,
-                   VALE_REFE=0.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M1',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N7',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=8.9775409328752E-14,
-                   VALE_REFE=0.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M2',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N9',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-0.99999999999738,
-                   VALE_REFE=-1.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   GROUP_MA='M1',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N9',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-0.99999999999836,
-                   VALE_REFE=-1.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   GROUP_MA='M2',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N13',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=6.8341166059582E-14,
-                   VALE_REFE=0.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M2',),
-                _F(NUME_MODE=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N15',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-1.0000000000004,
-                   VALE_REFE=-1.0,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='RELATIF',
-                   GROUP_MA='M2',),
-                ),
-          )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIGM_ELNO"))
 
-#---------------------------------------------------------------------------------------------------
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DX",
+            VALE_CALC=2.6041666666581e-04,
+            VALE_REFE=2.6041666666666e-4,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N2",
+            NOM_CMP="DZ",
+            VALE_CALC=-2.6041666666584e-04,
+            VALE_REFE=-2.6041666666666e-4,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N4",
+            NOM_CMP="DX",
+            VALE_CALC=0.031249999999878,
+            VALE_REFE=0.03125,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N4",
+            NOM_CMP="DZ",
+            VALE_CALC=0.031249999999878,
+            VALE_REFE=0.03125,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N7",
+            NOM_CMP="DX",
+            VALE_CALC=0.12499999999955,
+            VALE_REFE=0.125,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N7",
+            NOM_CMP="DZ",
+            VALE_CALC=0.12499999999955,
+            VALE_REFE=0.125,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N9",
+            NOM_CMP="DY",
+            VALE_CALC=-0.041666666666535,
+            VALE_REFE=-0.041666666666499999,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N10",
+            NOM_CMP="DX",
+            VALE_CALC=0.28124999999907,
+            VALE_REFE=0.28125,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N10",
+            NOM_CMP="DZ",
+            VALE_CALC=0.28124999999907,
+            VALE_REFE=0.28125,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N12",
+            NOM_CMP="DY",
+            VALE_CALC=-0.062499999999845,
+            VALE_REFE=-0.0625,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N13",
+            NOM_CMP="DX",
+            VALE_CALC=0.49999999999858,
+            VALE_REFE=0.5,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N13",
+            NOM_CMP="DZ",
+            VALE_CALC=0.49999999999858,
+            VALE_REFE=0.5,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N14",
+            NOM_CMP="DY",
+            VALE_CALC=-0.041666666666588,
+            VALE_REFE=-0.041666666666499999,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N15",
+            NOM_CMP="DY",
+            VALE_CALC=-0.083333333333176,
+            VALE_REFE=-0.083333333333333329,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="SIYY",
+            VALE_CALC=3.3119340603349e-14,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N3",
+            NOM_CMP="SIYY",
+            VALE_CALC=-0.99999999999637,
+            VALE_REFE=-1.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N7",
+            NOM_CMP="SIYY",
+            VALE_CALC=-1.0591527654924e-13,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N7",
+            NOM_CMP="SIYY",
+            VALE_CALC=8.9775409328752e-14,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N9",
+            NOM_CMP="SIYY",
+            VALE_CALC=-0.99999999999738,
+            VALE_REFE=-1.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N9",
+            NOM_CMP="SIYY",
+            VALE_CALC=-0.99999999999836,
+            VALE_REFE=-1.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N13",
+            NOM_CMP="SIYY",
+            VALE_CALC=6.8341166059582e-14,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M2",
+        ),
+        _F(
+            NUME_MODE=1,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N15",
+            NOM_CMP="SIYY",
+            VALE_CALC=-1.0000000000004,
+            VALE_REFE=-1.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            GROUP_MA="M2",
+        ),
+    )
+)
+
+# ---------------------------------------------------------------------------------------------------
 # Pour valider la possibilite d'un cas de charge de type VECT_ASSE pour MACRO_ELAS_MULT :
-#----------------------------------------------------------------------------------------
-VASS2 = CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', MAILLAGE=M,
-                   AFFE=(_F( TOUT = 'OUI', NOM_CMP = 'DX', VALE = 7. ),
-                         _F( TOUT = 'OUI', NOM_CMP = 'DY', VALE = 11. ),
-                         _F( TOUT = 'OUI', NOM_CMP = 'DZ', VALE = 0. )))
+# ----------------------------------------------------------------------------------------
+VASS2 = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MAILLAGE=M,
+    AFFE=(
+        _F(TOUT="OUI", NOM_CMP="DX", VALE=7.0),
+        _F(TOUT="OUI", NOM_CMP="DY", VALE=11.0),
+        _F(TOUT="OUI", NOM_CMP="DZ", VALE=0.0),
+    ),
+)
 
-CH2=AFFE_CHAR_MECA(MODELE=MO, VECT_ASSE=VASS2, )
+CH2 = AFFE_CHAR_MECA(MODELE=MO, VECT_ASSE=VASS2)
 
-RESU2=MACRO_ELAS_MULT( MODELE=MO, CHAM_MATER=CM, CHAR_MECA_GLOBAL=BLOQU,
-                       CAS_CHARGE=_F( MODE_FOURIER = 1, TYPE_MODE = 'SYME',
-                                 CHAR_MECA = CH2, SOUS_TITRE = 'MODE FOURIER 1 SYME' ))
+RESU2 = MACRO_ELAS_MULT(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    CHAR_MECA_GLOBAL=BLOQU,
+    CAS_CHARGE=_F(
+        MODE_FOURIER=1, TYPE_MODE="SYME", CHAR_MECA=CH2, SOUS_TITRE="MODE FOURIER 1 SYME"
+    ),
+)
 
-TEST_RESU(RESU=_F(NUME_MODE=1,
-                  RESULTAT=RESU2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N12',
-                  NOM_CMP='DY',
-                  VALE_CALC=-57.02195377042,
-                  VALE_REFE=-57.021953770986997,
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_MODE=1,
+        RESULTAT=RESU2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N12",
+        NOM_CMP="DY",
+        VALE_CALC=-57.02195377042,
+        VALE_REFE=-57.021953770986997,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="RELATIF",
+    )
+)
 
-#---------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------
 
-#---------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------
 # Pour valider la possibilite d'un cas de charge de type PRE_SIGM
-#---------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------
 
-SIG_CART=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
-                  OPERATION='AFFE',
-                  MODELE=MO,
-                  AFFE=_F(TOUT='OUI',
-                          NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                          VALE=(0.,0.,200.,0.,0.,0.),),)
-
-
-SIG_CHAM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                  OPERATION='AFFE',
-                  MODELE=MO,
-                  AFFE=_F(TOUT='OUI',
-                          NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                          VALE=(0.,0.,-200.,0.,0.,0.),),)
-
-
-CHA_CART=AFFE_CHAR_MECA(MODELE=MO,
-                        PRE_SIGM=_F(SIGM=SIG_CART),
-                                    )
-
-CHA_CHAM=AFFE_CHAR_MECA(MODELE=MO,
-                        PRE_SIGM=_F(SIGM=SIG_CHAM),
-                                    )
-
-RESU3=MACRO_ELAS_MULT(MODELE=MO,
-                      CHAM_MATER=CM,
-                      CHAR_MECA_GLOBAL=BLOQU,
-                       CAS_CHARGE=_F( MODE_FOURIER = 1, TYPE_MODE = 'SYME',
-                                 CHAR_MECA = (CHA_CART, CHA_CHAM, CH2), SOUS_TITRE = 'MODE FOURIER 1 SYME' ))
-
-RESU3=CALC_CHAMP(reuse=RESU3,
-                RESULTAT=RESU3,
-                FORCE=('FORC_NODA','REAC_NODA',)
+SIG_CART = CREA_CHAMP(
+    TYPE_CHAM="CART_SIEF_R",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=_F(
+        TOUT="OUI",
+        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
+        VALE=(0.0, 0.0, 200.0, 0.0, 0.0, 0.0),
+    ),
 )
 
 
+SIG_CHAM = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="AFFE",
+    MODELE=MO,
+    AFFE=_F(
+        TOUT="OUI",
+        NOM_CMP=("SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"),
+        VALE=(0.0, 0.0, -200.0, 0.0, 0.0, 0.0),
+    ),
+)
+
+
+CHA_CART = AFFE_CHAR_MECA(MODELE=MO, PRE_SIGM=_F(SIGM=SIG_CART))
+
+CHA_CHAM = AFFE_CHAR_MECA(MODELE=MO, PRE_SIGM=_F(SIGM=SIG_CHAM))
+
+RESU3 = MACRO_ELAS_MULT(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    CHAR_MECA_GLOBAL=BLOQU,
+    CAS_CHARGE=_F(
+        MODE_FOURIER=1,
+        TYPE_MODE="SYME",
+        CHAR_MECA=(CHA_CART, CHA_CHAM, CH2),
+        SOUS_TITRE="MODE FOURIER 1 SYME",
+    ),
+)
+
+RESU3 = CALC_CHAMP(reuse=RESU3, RESULTAT=RESU3, FORCE=("FORC_NODA", "REAC_NODA"))
+
+
 # Reference: RESU2
-TEST_RESU(RESU=_F(NUME_MODE=1,
-                  RESULTAT=RESU3,
-                  NOM_CHAM='REAC_NODA',
-                  GROUP_NO='N12',
-                  NOM_CMP='DY',
-                  VALE_CALC=-11.0,
-                  VALE_REFE=-11.0,
-                  REFERENCE='AUTRE_ASTER',
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_MODE=1,
+        RESULTAT=RESU3,
+        NOM_CHAM="REAC_NODA",
+        GROUP_NO="N12",
+        NOM_CMP="DY",
+        VALE_CALC=-11.0,
+        VALE_REFE=-11.0,
+        REFERENCE="AUTRE_ASTER",
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_MODE=1,
-                  RESULTAT=RESU3,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N12',
-                  NOM_CMP='DY',
-                  VALE_CALC=-57.02195377042,
-                  VALE_REFE=-57.021953770986997,
-                  REFERENCE='ANALYTIQUE',
-                  CRITERE='RELATIF',
-                  ),
-          )
-
+TEST_RESU(
+    RESU=_F(
+        NUME_MODE=1,
+        RESULTAT=RESU3,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N12",
+        NOM_CMP="DY",
+        VALE_CALC=-57.02195377042,
+        VALE_REFE=-57.021953770986997,
+        REFERENCE="ANALYTIQUE",
+        CRITERE="RELATIF",
+    )
+)
 
 
 FIN()

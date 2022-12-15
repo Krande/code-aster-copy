@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,34 +20,19 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 
 CHAR_MECA_PTOT_R = Option(
-    para_in=(
-        SP.PCAMASS,
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PTEMPSR,
-           PVARCPR,
-        SP.PVARCRR,
-    ),
-    para_out=(
-        SP.PVECTUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.DIM_COOR_MODELI,'2'),)),
-    ),
+    para_in=(SP.PCAMASS, SP.PGEOMER, SP.PMATERC, SP.PTEMPSR, PVARCPR, SP.PVARCRR),
+    para_out=(SP.PVECTUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.DIM_COOR_MODELI, "2"))),),
     comment=""" CHAR_MECA_PTOT_R : CALCUL DU SECOND
            MEMBRE CORRESPONDANT A UN CHAMP DE PRESSION DE FLUIDE POUR LA THM""",
 )

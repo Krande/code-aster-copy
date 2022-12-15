@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ code_aster.init("--test", "--abort", "--debug")
 
 test = code_aster.TestCase()
 
+
 class FakeDS(object):
     """Fake DataStructure object for unittests."""
 
@@ -47,9 +48,9 @@ obj1 = FakeDS("object1")
 obj2 = FakeDS("object2")
 
 keywords = {
-    'MATR_MASS': obj1,
-    'MATR_RIGI': obj2,
-    'PSEUDO_MODE': {'DIRECTION': (0.0, 1.0, 0.0), 'NOM_DIR': 'toto'}
+    "MATR_MASS": obj1,
+    "MATR_RIGI": obj2,
+    "PSEUDO_MODE": {"DIRECTION": (0.0, 1.0, 0.0), "NOM_DIR": "toto"},
 }
 
 text = command_text("MODE_STATIQUE", keywords)
@@ -58,7 +59,7 @@ test.assertIn("PSEUDO_MODE=_F(", text)
 test.assertIn("NOM_DIR='toto'", text)
 test.assertEqual(len(text.splitlines()), 4)
 
-keywords['PSEUDO_MODE'] = [keywords['PSEUDO_MODE'], {'TOUT': 'OUI'}]
+keywords["PSEUDO_MODE"] = [keywords["PSEUDO_MODE"], {"TOUT": "OUI"}]
 text = command_text("MODE_STATIQUE", keywords)
 print(text)
 test.assertIn("PSEUDO_MODE=(_F(", text)

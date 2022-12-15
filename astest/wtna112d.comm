@@ -17,255 +17,261 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA = LIRE_MAILLAGE(FORMAT='ASTER',)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MA = MODI_MAILLAGE(reuse        = MA,
-                   MAILLAGE     = MA,
-                   ORIE_PEAU = _F(GROUP_MA_PEAU=('DROITE','HAUT','BAS'),),)
-T1     = 3600
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("DROITE", "HAUT", "BAS")))
+T1 = 3600
 NORDRE = 10
 
-INST1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F( JUSQU_A=T1,NOMBRE=NORDRE,),)
+INST1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=T1, NOMBRE=NORDRE))
 
 # Affectation du modele de calcul
-MODELE=AFFE_MODELE(MAILLAGE=MA,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_THMS',),)
-K0 = 4200*1.e6
-G  = 1140*1.e6
-E0 = 9.*K0*G /(3.*K0+G)
-NU0= (3.*K0-2.*G) /(6.*K0+2.*G)
+MODELE = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS_THMS")
+)
+K0 = 4200 * 1.0e6
+G = 1140 * 1.0e6
+E0 = 9.0 * K0 * G / (3.0 * K0 + G)
+NU0 = (3.0 * K0 - 2.0 * G) / (6.0 * K0 + 2.0 * G)
 
 # E0 = 3,14 GPa
 # NU = 0.375
 RHO = 2390
 
-INV_K_EAU = 5.E-10
+INV_K_EAU = 5.0e-10
 
-VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 )
+VISCOLIQ = DEFI_CONSTANTE(VALE=0.001)
 
-DVISCOL  = DEFI_CONSTANTE(VALE=0.0   )
+DVISCOL = DEFI_CONSTANTE(VALE=0.0)
 
-KINT     = DEFI_CONSTANTE(VALE=1.E-21)
+KINT = DEFI_CONSTANTE(VALE=1.0e-21)
 
-ALPHA    = DEFI_CONSTANTE(VALE=1.E-04)
+ALPHA = DEFI_CONSTANTE(VALE=1.0e-04)
 
 # LAMB1 = PORO * LAMBLIQ = 0.18 * 0.6
-LAMB1=DEFI_CONSTANTE(VALE=0.108,)
+LAMB1 = DEFI_CONSTANTE(VALE=0.108)
 
 # LAMB2 = (1-PORO) * LAMBS = (1-0.18) * 1,83
 
-LAMB2=1.51
+LAMB2 = 1.51
 
-UN=DEFI_CONSTANTE(VALE=1.0,)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 # ARGILITE
 BIOTARG = 0.6
 
 # MOHR-COULOMB Parameter
 PHI = 25
-Coh = 100.E9
+Coh = 100.0e9
 PSI = 10
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E    =E0,
-                           NU   =NU0,
-                           RHO  =RHO,
-                           ALPHA=1.E-05,),
-
-                   RANKINE=_F(SIGMA_T = 10.,),
-
-                   MOHR_COULOMB=_F(PHI     = PHI,
-                                   ANGDIL  = PSI,
-                                   COHESION= Coh,),
-
-                   COMP_THM = 'LIQU_SATU',
-
-                   THM_LIQU=_F(RHO=1000.0,
-                               UN_SUR_K=INV_K_EAU,
-                               ALPHA=ALPHA,
-                               CP=4180.0,
-                               VISC=VISCOLIQ,
-                               D_VISC_TEMP=DVISCOL,),
-
-                   THM_INIT=_F(TEMP=273.0,
-                               PRE1=0.0,
-                               PORO=0.18,
-                               DEGR_SATU=1.0,),
-
-                   THM_DIFFU=_F(RHO=2410.0,
-                                CP=1065.0,
-                                BIOT_COEF=BIOTARG,
-                                SATU_PRES=UN,
-                                D_SATU_PRES=ZERO,
-                                PESA_X=0.0,
-                                PESA_Y=0.0,
-                                PESA_Z=0.0,
-                                PERM_IN=KINT,
-                                PERM_LIQU=UN,
-                                D_PERM_LIQU_SATU=ZERO,
-                                LAMB_T=LAMB1,
-                                LAMB_CT=LAMB2,),)
+MAT1 = DEFI_MATERIAU(
+    ELAS=_F(E=E0, NU=NU0, RHO=RHO, ALPHA=1.0e-05),
+    RANKINE=_F(SIGMA_T=10.0),
+    MOHR_COULOMB=_F(PHI=PHI, ANGDIL=PSI, COHESION=Coh),
+    COMP_THM="LIQU_SATU",
+    THM_LIQU=_F(
+        RHO=1000.0, UN_SUR_K=INV_K_EAU, ALPHA=ALPHA, CP=4180.0, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL
+    ),
+    THM_INIT=_F(TEMP=273.0, PRE1=0.0, PORO=0.18, DEGR_SATU=1.0),
+    THM_DIFFU=_F(
+        RHO=2410.0,
+        CP=1065.0,
+        BIOT_COEF=BIOTARG,
+        SATU_PRES=UN,
+        D_SATU_PRES=ZERO,
+        PESA_X=0.0,
+        PESA_Y=0.0,
+        PESA_Z=0.0,
+        PERM_IN=KINT,
+        PERM_LIQU=UN,
+        D_PERM_LIQU_SATU=ZERO,
+        LAMB_T=LAMB1,
+        LAMB_CT=LAMB2,
+    ),
+)
 # affectation du materiaux
-CHMAT0=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MAT1,),)
+CHMAT0 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT1))
 
 # Definition des conditions aux limites
 # Condition  de confinement (contrainte totale imposee):
-PCONF = 12.E6
-PINI  = 4.E6
-PRHAUT = AFFE_CHAR_MECA(MODELE  = MODELE,
-                       PRES_REP = _F(GROUP_MA = ('HAUT', 'DROITE'),
-                                     PRES     = PCONF),)
+PCONF = 12.0e6
+PINI = 4.0e6
+PRHAUT = AFFE_CHAR_MECA(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("HAUT", "DROITE"), PRES=PCONF))
 #
 # CONDITION DE SYMETRIE
-CLFMEC=AFFE_CHAR_CINE(MODELE=MODELE,
-                       MECA_IMPO=(_F(GROUP_MA='BAS',   DY=0.0,),
-                                  _F(GROUP_MA='GAUCHE',DX=0.0,),),)
+CLFMEC = AFFE_CHAR_CINE(
+    MODELE=MODELE, MECA_IMPO=(_F(GROUP_MA="BAS", DY=0.0), _F(GROUP_MA="GAUCHE", DX=0.0))
+)
 
 # Chargement thermique sur la surface droite et superieur
-DTEMP = 40.
-CLFT=AFFE_CHAR_CINE(MODELE=MODELE,
-                    MECA_IMPO=_F(GROUP_MA=('HAUT','DROITE'),
-                                 TEMP=1.,),)
+DTEMP = 40.0
+CLFT = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=_F(GROUP_MA=("HAUT", "DROITE"), TEMP=1.0))
 
-EV_THER=DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(0.0, 20.,
-                             T1, 20.+DTEMP,),)
+EV_THER = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(0.0, 20.0, T1, 20.0 + DTEMP))
 
 # etat initial de Contrainte
-DDL_INIT= CREA_CHAMP(MAILLAGE = MA,
-                     OPERATION = 'AFFE',
-                     TYPE_CHAM = 'NOEU_DEPL_R',
-                     AFFE=(
-                     _F(TOUT = 'OUI', NOM_CMP = ('DX','DY'),  VALE = (0.,0.),),
-                     _F(TOUT = 'OUI', NOM_CMP = 'PRE1',  VALE = PINI,),
-                     _F(TOUT = 'OUI', NOM_CMP = 'TEMP',  VALE = 20.,),),)
+DDL_INIT = CREA_CHAMP(
+    MAILLAGE=MA,
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    AFFE=(
+        _F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(0.0, 0.0)),
+        _F(TOUT="OUI", NOM_CMP="PRE1", VALE=PINI),
+        _F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+    ),
+)
 
 SIPAG0 = -BIOTARG * PINI
 SIEFF0 = -PCONF - SIPAG0
 
-ENT1 = PINI/1000.
+ENT1 = PINI / 1000.0
 
-SIGINIT=CREA_CHAMP(MODELE=MODELE,
-                   OPERATION='AFFE',
-                   TYPE_CHAM='CART_SIEF_R',
-                   AFFE=_F(GROUP_MA='COX',
-                            NOM_CMP =(
-                     'SIXX','SIYY','SIZZ',
-                     'SIXY','SIYZ','SIXZ',
-                     'SIPXX','SIPYY','SIPZZ',
-                     'SIPXY','SIPXZ','SIPYZ',
-                     'M11','FH11X','FH11Y',
-                     'FH11Z','ENT11',
-                     'QPRIM','FHTX','FHTY',),
-                            VALE=(
-                     SIEFF0,SIEFF0,SIEFF0,
-                     0.0, 0.0, 0.0,
-                     SIPAG0,SIPAG0,SIPAG0,
-                     0.0, 0.0, 0.0,
-                     0.0,0.0,0.0,0.0,ENT1,
-                     0.0,0.0,0.0,),),)
+SIGINIT = CREA_CHAMP(
+    MODELE=MODELE,
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_SIEF_R",
+    AFFE=_F(
+        GROUP_MA="COX",
+        NOM_CMP=(
+            "SIXX",
+            "SIYY",
+            "SIZZ",
+            "SIXY",
+            "SIYZ",
+            "SIXZ",
+            "SIPXX",
+            "SIPYY",
+            "SIPZZ",
+            "SIPXY",
+            "SIPXZ",
+            "SIPYZ",
+            "M11",
+            "FH11X",
+            "FH11Y",
+            "FH11Z",
+            "ENT11",
+            "QPRIM",
+            "FHTX",
+            "FHTY",
+        ),
+        VALE=(
+            SIEFF0,
+            SIEFF0,
+            SIEFF0,
+            0.0,
+            0.0,
+            0.0,
+            SIPAG0,
+            SIPAG0,
+            SIPAG0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            ENT1,
+            0.0,
+            0.0,
+            0.0,
+        ),
+    ),
+)
 
-U0=STAT_NON_LINE(MODELE=MODELE,
-                 CHAM_MATER=CHMAT0,
+U0 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT0,
+    EXCIT=(_F(CHARGE=CLFMEC), _F(CHARGE=PRHAUT), _F(CHARGE=CLFT, FONC_MULT=EV_THER)),
+    COMPORTEMENT=_F(
+        RELATION="KIT_THM", PARM_THETA=1.0, RELATION_KIT=("MOHR_COULOMB", "LIQU_SATU", "HYDR_UTIL")
+    ),
+    INCREMENT=_F(LIST_INST=INST1, INST_FIN=T1),
+    ETAT_INIT=_F(SIGM=SIGINIT, DEPL=DDL_INIT),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+    ARCHIVAGE=_F(LIST_INST=INST1),
+)
 
-                 EXCIT=(_F(CHARGE=CLFMEC,),
-                        _F(CHARGE=PRHAUT,),
-                        _F(CHARGE=CLFT, FONC_MULT=EV_THER,),),
+PREF = PINI + DTEMP * 2.25e05
 
-                 COMPORTEMENT=_F(RELATION    ='KIT_THM',
-                                 PARM_THETA  =1.,
-                                 RELATION_KIT=('MOHR_COULOMB','LIQU_SATU','HYDR_UTIL'),),
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=U0,
+        NUME_ORDRE=NORDRE,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRE1",
+        GROUP_NO="N1",
+        VALE_REFE=PREF,
+        VALE_CALC=12982632.3855,
+        CRITERE="RELATIF",
+        PRECISION=0.01,
+        REFERENCE="ANALYTIQUE",
+    )
+)
 
-                 INCREMENT=_F(LIST_INST=INST1,
-                              INST_FIN =T1,),
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=U0,
+        NUME_ORDRE=NORDRE,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRE1",
+        GROUP_NO="N2",
+        VALE_REFE=PREF,
+        VALE_CALC=12990493.7268,
+        CRITERE="RELATIF",
+        PRECISION=0.01,
+        REFERENCE="ANALYTIQUE",
+    )
+)
 
-                 ETAT_INIT =_F(SIGM=SIGINIT,
-                               DEPL=DDL_INIT),
+U1 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT0,
+    EXCIT=(_F(CHARGE=CLFMEC), _F(CHARGE=PRHAUT), _F(CHARGE=CLFT, FONC_MULT=EV_THER)),
+    COMPORTEMENT=_F(
+        RELATION="KIT_THM", PARM_THETA=1.0, RELATION_KIT=("RANKINE", "LIQU_SATU", "HYDR_UTIL")
+    ),
+    INCREMENT=_F(LIST_INST=INST1, INST_FIN=T1),
+    ETAT_INIT=_F(SIGM=SIGINIT, DEPL=DDL_INIT),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+    ARCHIVAGE=_F(LIST_INST=INST1),
+)
 
-                 NEWTON=_F(MATRICE  ='TANGENTE',
-                           REAC_ITER=1,),
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=U1,
+        NUME_ORDRE=NORDRE,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRE1",
+        GROUP_NO="N1",
+        VALE_REFE=PREF,
+        VALE_CALC=12982632.3855,
+        CRITERE="RELATIF",
+        PRECISION=0.01,
+        REFERENCE="ANALYTIQUE",
+    )
+)
 
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-
-                 ARCHIVAGE  =_F(LIST_INST=INST1,),)
-
-PREF = PINI + DTEMP*2.25E05
-
-TEST_RESU(RESU=_F(RESULTAT = U0,
-          NUME_ORDRE = NORDRE,
-          NOM_CHAM = 'DEPL',
-          NOM_CMP = 'PRE1',
-          GROUP_NO = 'N1',
-          VALE_REFE = PREF,
-          VALE_CALC = 12982632.3855,
-          CRITERE = 'RELATIF',
-          PRECISION = 0.01,
-          REFERENCE='ANALYTIQUE',))
-
-TEST_RESU(RESU=_F(RESULTAT = U0,
-          NUME_ORDRE = NORDRE,
-          NOM_CHAM = 'DEPL',
-          NOM_CMP = 'PRE1',
-          GROUP_NO = 'N2',
-          VALE_REFE = PREF,
-          VALE_CALC = 12990493.7268,
-          CRITERE = 'RELATIF',
-          PRECISION = 0.01,
-          REFERENCE='ANALYTIQUE',),)
-
-U1=STAT_NON_LINE(MODELE=MODELE,
-                 CHAM_MATER=CHMAT0,
-
-                 EXCIT=(_F(CHARGE=CLFMEC,),
-                        _F(CHARGE=PRHAUT,),
-                        _F(CHARGE=CLFT, FONC_MULT=EV_THER,),),
-
-                 COMPORTEMENT=_F(RELATION    ='KIT_THM',
-                                 PARM_THETA  =1.,
-                                 RELATION_KIT=('RANKINE','LIQU_SATU','HYDR_UTIL'),),
-
-                 INCREMENT=_F(LIST_INST=INST1,
-                              INST_FIN =T1,),
-
-                 ETAT_INIT =_F(SIGM=SIGINIT,
-                               DEPL=DDL_INIT),
-
-                 NEWTON=_F(MATRICE  ='TANGENTE',
-                           REAC_ITER=1,),
-
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-
-                 ARCHIVAGE  =_F(LIST_INST=INST1,),)
-
-TEST_RESU(RESU=_F(RESULTAT = U1,
-          NUME_ORDRE = NORDRE,
-          NOM_CHAM = 'DEPL',
-          NOM_CMP = 'PRE1',
-          GROUP_NO = 'N1',
-          VALE_REFE = PREF,
-          VALE_CALC = 12982632.3855,
-          CRITERE = 'RELATIF',
-          PRECISION = 0.01,
-          REFERENCE='ANALYTIQUE',))
-
-TEST_RESU(RESU=_F(RESULTAT = U1,
-          NUME_ORDRE = NORDRE,
-          NOM_CHAM = 'DEPL',
-          NOM_CMP = 'PRE1',
-          GROUP_NO = 'N2',
-          VALE_REFE = PREF,
-          VALE_CALC = 12990493.7268,
-          CRITERE = 'RELATIF',
-          PRECISION = 0.01,
-          REFERENCE='ANALYTIQUE',),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=U1,
+        NUME_ORDRE=NORDRE,
+        NOM_CHAM="DEPL",
+        NOM_CMP="PRE1",
+        GROUP_NO="N2",
+        VALE_REFE=PREF,
+        VALE_CALC=12990493.7268,
+        CRITERE="RELATIF",
+        PRECISION=0.01,
+        REFERENCE="ANALYTIQUE",
+    )
+)
 
 FIN()

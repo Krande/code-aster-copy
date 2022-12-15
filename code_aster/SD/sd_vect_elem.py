@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,7 @@ from .sd_matr_elem import sd_matr_elem
 
 class sd_vect_elem(sd_matr_elem):
     nomj = SDNom(fin=19)
-    RELC = Facultatif(
-        AsColl(acces='NO', stockage='CONTIG', modelong='CONSTANT', type='I', ))
+    RELC = Facultatif(AsColl(acces="NO", stockage="CONTIG", modelong="CONSTANT", type="I"))
 
     def check_RELC(self, checker):
         if not self.RELC.exists:

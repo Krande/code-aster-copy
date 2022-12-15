@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MAJ_CATA=PROC(nom="MAJ_CATA",op=20,
-              fr=tr("Compilation des catalogues d'éléments et couverture des calculs élémentaires"),
-              regles=(UN_PARMI('ELEMENT','TYPE_ELEM', ),),
-
-              ELEMENT     =FACT(statut='f',),
-
-              UNITE       =SIMP(statut='f',typ=UnitType(),defaut=8, inout='out'),
-              TYPE_ELEM   =FACT(statut='f',),
-);
+MAJ_CATA = PROC(
+    nom="MAJ_CATA",
+    op=20,
+    fr=tr("Compilation des catalogues d'éléments et couverture des calculs élémentaires"),
+    regles=(UN_PARMI("ELEMENT", "TYPE_ELEM"),),
+    ELEMENT=FACT(statut="f"),
+    UNITE=SIMP(statut="f", typ=UnitType(), defaut=8, inout="out"),
+    TYPE_ELEM=FACT(statut="f"),
+)

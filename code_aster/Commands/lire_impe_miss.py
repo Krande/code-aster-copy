@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -26,6 +26,7 @@ from ..Supervis import ExecuteCommand
 class MissImpedanceReader(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.GeneralizedAssemblyMatrixComplex` by assigning
     finite elements on a :class:`~code_aster.Objects.GeneralizedAssemblyMatrixComplex`."""
+
     command_name = "LIRE_IMPE_MISS"
 
     def create_result(self, keywords):

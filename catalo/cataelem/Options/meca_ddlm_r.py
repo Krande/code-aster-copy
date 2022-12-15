@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,23 +20,14 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 MECA_DDLM_R = Option(
-    para_in=(
-        SP.PDDLMUR,
-    ),
-    para_out=(
-        SP.PMATUUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.CL_DUAL,'OUI'),)),
-    ),
+    para_in=(SP.PDDLMUR,),
+    para_out=(SP.PMATUUR,),
+    condition=(CondCalcul("+", ((AT.CL_DUAL, "OUI"),)),),
 )

@@ -19,63 +19,60 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-pilote=''
-#pilote='INTERACTIF'
+pilote = ""
+# pilote='INTERACTIF'
 
-ACIER=[None]*2
+ACIER = [None] * 2
 # parametres du materiau (304l)
 
-YOUNG=184000.
-POISSON=0.33
+YOUNG = 184000.0
+POISSON = 0.33
 
 # valeurs recalees sur FRI15 a 0.1Hz
-delta1__=0.00306184445749
-delta2__=0.0154637840366
+delta1__ = 0.00306184445749
+delta2__ = 0.0154637840366
 
-ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
-                  CIN2_CHAB=_F(R_0=97.83,
-
-                               R_I=97.830+270.5,
-                               B=51.3,
-                               C1_I=182392,
-                               C2_I=16678.,
-                               G1_0=3079.,
-                               G2_0=178.7,
-                               A_I=0.5818,
-                               ),
-
-                  CIN2_NRAD=_F(
-                               DELTA1=delta1__,
-                               DELTA2=delta2__,
-                               ),
-                   MEMO_ECRO=_F(
-                                  MU = 10.,
-                                  Q_M = 270.5,
-                                  Q_0 = -86.2,
-                                  ETA = 0.135,
-                                ),
-                   LEMAITRE=_F(N=6.84,
-                               UN_SUR_K=1/156.9,
-                               UN_SUR_M = 0.),
-
-                               )
+ACIER[0] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON),
+    CIN2_CHAB=_F(
+        R_0=97.83,
+        R_I=97.830 + 270.5,
+        B=51.3,
+        C1_I=182392,
+        C2_I=16678.0,
+        G1_0=3079.0,
+        G2_0=178.7,
+        A_I=0.5818,
+    ),
+    CIN2_NRAD=_F(DELTA1=delta1__, DELTA2=delta2__),
+    MEMO_ECRO=_F(MU=10.0, Q_M=270.5, Q_0=-86.2, ETA=0.135),
+    LEMAITRE=_F(N=6.84, UN_SUR_K=1 / 156.9, UN_SUR_M=0.0),
+)
 
 
-ncal=1
-typcal= [None]*ncal
-typcal[0]=['VISC_MEMO_NRAD','BRENT',0]
-#typcal[1]=['VISC_CIN2_NRAD','BRENT',0]
-#typcal[2]=['VMIS_MEMO_NRAD','BRENT',0]
+ncal = 1
+typcal = [None] * ncal
+typcal[0] = ["VISC_MEMO_NRAD", "BRENT", 0]
+# typcal[1]=['VISC_CIN2_NRAD','BRENT',0]
+# typcal[2]=['VMIS_MEMO_NRAD','BRENT',0]
 
-delta= [None]*2
-delta[0]=[delta1__,delta2__]
-delta[1]=[1,1]
+delta = [None] * 2
+delta[0] = [delta1__, delta2__]
+delta[1] = [1, 1]
 
-legende= [None]*ncal
-for index,ical in enumerate(typcal) :
-   legende[index]=ical[0]+'_'+ical[1]+'_delta1='+str( int(delta[ical[2]][0]*10000.)/10000.)+'_delta2='+str( int(delta[ical[2]][0]*10000.)/10000.)
-print('legende=',legende)
+legende = [None] * ncal
+for index, ical in enumerate(typcal):
+    legende[index] = (
+        ical[0]
+        + "_"
+        + ical[1]
+        + "_delta1="
+        + str(int(delta[ical[2]][0] * 10000.0) / 10000.0)
+        + "_delta2="
+        + str(int(delta[ical[2]][0] * 10000.0) / 10000.0)
+    )
+print("legende=", legende)
 
 FIN()

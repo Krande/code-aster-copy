@@ -20,23 +20,25 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PVARCPR = InputParameter(phys=PHY.VARI_R,
-    comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-    comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS  """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS  """
+)
 
-PCAORIE = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE, TUYAU ...  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE, TUYAU ...  """,
+)
 
 
 CHAR_MECA_HYDR_R = Option(
@@ -53,18 +55,16 @@ CHAR_MECA_HYDR_R = Option(
         PNBSP_I,
         SP.PVARCRR,
     ),
-    para_out=(
-        SP.PVECTUR,
-    ),
+    para_out=(SP.PVECTUR,),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.ABSO,'OUI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.INTERFACE, 'OUI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.FLUIDE, 'OUI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, '3FI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'AFI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'PFI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'D2D'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.ABSO, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "3FI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "AFI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "PFI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
     ),
     comment=""" CHAR_MECA_HYDR_R (mot-cle: HYDR_CALCULEE) : calcul du second
            membre correspondant a un champ d hydratation et de temperature""",

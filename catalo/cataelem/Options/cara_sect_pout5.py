@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -31,24 +30,10 @@ PCAORIE = InputParameter(phys=PHY.GEOM_R)
 
 
 CARA_SECT_POUT5 = Option(
-    para_in=(
-        SP.PCACOQU,
-        PCAORIE,
-        SP.PGEOMER,
-        SP.PNUMMOD,
-        SP.PORIGFI,
-        SP.PORIGIN,
-    ),
-    para_out=(
-        SP.PVECTU1,
-        SP.PVECTU2,
-        SP.PVECTU3,
-        SP.PVECTU4,
-        SP.PVECTU5,
-        SP.PVECTU6,
-    ),
+    para_in=(SP.PCACOQU, PCAORIE, SP.PGEOMER, SP.PNUMMOD, SP.PORIGFI, SP.PORIGIN),
+    para_out=(SP.PVECTU1, SP.PVECTU2, SP.PVECTU3, SP.PVECTU4, SP.PVECTU5, SP.PVECTU6),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI,'SSH'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "-1"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "SSH"))),
     ),
 )

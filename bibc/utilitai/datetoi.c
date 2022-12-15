@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -18,20 +18,18 @@
 
 #include "aster.h"
 
-void DEFP(DATETOI, datetoi, ASTERINTEGER itab[6])
-{
+void DEFP( DATETOI, datetoi, ASTERINTEGER itab[6] ) {
     time_t ltime;
     struct tm *today;
 
     time( &ltime );
-    today = localtime(&ltime);
+    today = localtime( &ltime );
 
     itab[0] = today->tm_year;
     itab[1] = today->tm_mon + 1;
     itab[2] = today->tm_mday;
 
-    itab[3] = today->tm_hour ;
-    itab[4] = today->tm_min  ;
-    itab[5] = today->tm_sec  ;
-
+    itab[3] = today->tm_hour;
+    itab[4] = today->tm_min;
+    itab[5] = today->tm_sec;
 }

@@ -22,8 +22,8 @@ from ...Messages import UTMESS
 
 
 class LoggingManager:
-    """Object that decides about the logging.
-    """
+    """Object that decides about the logging."""
+
     columns = None
     length_col = 16
     __setattr__ = no_new_attributes(object.__setattr__)
@@ -40,7 +40,7 @@ class LoggingManager:
         left = diff // 2
         right = diff - left
 
-        return " "*left + word + " "*right
+        return " " * left + word + " " * right
 
     def addConvTableColumn(self, column):
         """Add a colum to the table
@@ -64,11 +64,10 @@ class LoggingManager:
 
     def printConvTableSeparator(self):
         """Print separator."""
-        logger.info("-"*(len(self.columns)*(self.length_col+1)+1))
+        logger.info("-" * (len(self.columns) * (self.length_col + 1) + 1))
 
     def printConvTableEntries(self):
-        """Print titles of colums
-        """
+        """Print titles of colums"""
 
         nb_row = 0
         for key in self.columns:
@@ -89,8 +88,7 @@ class LoggingManager:
         self.printConvTableSeparator()
 
     def printConvTableRow(self, values):
-        """Print values of colums
-        """
+        """Print values of colums"""
 
         row = "|"
         for val in values:

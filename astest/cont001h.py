@@ -37,22 +37,16 @@ Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 
 Mail = MODI_MAILLAGE(
-    reuse=Mail,
-    MAILLAGE=Mail,
-    ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS",)),
+    reuse=Mail, MAILLAGE=Mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS"))
 )
 
 
-MODI = AFFE_MODELE(MAILLAGE=Mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
+MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
 # Slave side - CONT_BAS
 DEFICO_BAS = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -67,8 +61,7 @@ DEFICO_BAS = DEFI_CONT(
 
 # Dfeinition checks
 zone = DEFICO_BAS.getContactZone(0)
-test.assertSequenceEqual(zone.getSlaveNodes(), [
-                         7, 10, 57, 58, 59, 174, 175, 176, 177])
+test.assertSequenceEqual(zone.getSlaveNodes(), [7, 10, 57, 58, 59, 174, 175, 176, 177])
 test.assertSequenceEqual(zone.getSlaveCells(), [60, 61, 62, 63])
 
 
@@ -86,11 +79,19 @@ nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 3)
-test.assertSequenceEqual(nema, [[58, 59, 176, 14, 13, 116, 104], [58, 59, 176, 13, 1, 115, 104],
-                                [59, 60, 177, 14, 13, 116, 104],
-                                [59, 60, 177, 15, 14, 117, 104],
-                                [60, 8, 178, 15, 14, 117, 104],
-                                [60, 8, 178, 2, 15, 118, 104], [11, 72], [175, 72]])
+test.assertSequenceEqual(
+    nema,
+    [
+        [58, 59, 176, 14, 13, 116, 104],
+        [58, 59, 176, 13, 1, 115, 104],
+        [59, 60, 177, 14, 13, 116, 104],
+        [59, 60, 177, 15, 14, 117, 104],
+        [60, 8, 178, 15, 14, 117, 104],
+        [60, 8, 178, 2, 15, 118, 104],
+        [11, 72],
+        [175, 72],
+    ],
+)
 
 gap, i_gap = CD.geometricGap(pair)
 test.assertEqual(gap.size(), 9)
@@ -102,16 +103,25 @@ val[2] = None
 val[5] = None
 val[6] = None
 test.assertSequenceEqual(
-    val, [0.0, None, None, 29.289473354380323, 5.826021843917718,
-          None, None, 14.332331358070887, 1.385304082040041])
-test.assertSequenceEqual(
-    i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0])
+    val,
+    [
+        0.0,
+        None,
+        None,
+        29.289473354380323,
+        5.826021843917718,
+        None,
+        None,
+        14.332331358070887,
+        1.385304082040041,
+    ],
+)
+test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0])
 
 # Slave side - CONT_HAUT
 DEFICO_HAUT = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -126,8 +136,7 @@ DEFICO_HAUT = DEFI_CONT(
 
 # Dfeinition checks
 zone = DEFICO_HAUT.getContactZone(0)
-test.assertSequenceEqual(zone.getSlaveNodes(), [
-                         0, 1, 12, 13, 14, 114, 115, 116, 117])
+test.assertSequenceEqual(zone.getSlaveNodes(), [0, 1, 12, 13, 14, 114, 115, 116, 117])
 test.assertSequenceEqual(zone.getSlaveCells(), [0, 1, 2, 3])
 
 
@@ -145,10 +154,18 @@ nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 3)
-test.assertSequenceEqual(nema, [[14, 13, 116, 58, 59, 176, 104], [14, 13, 116, 11, 58, 175, 104],
-                                [15, 14, 117, 59, 60, 177, 104], [
-                                    15, 14, 117, 60, 8, 178, 104],
-                                [2, 15, 118, 60, 8, 178, 104], [1, 72], [115, 72]])
+test.assertSequenceEqual(
+    nema,
+    [
+        [14, 13, 116, 58, 59, 176, 104],
+        [14, 13, 116, 11, 58, 175, 104],
+        [15, 14, 117, 59, 60, 177, 104],
+        [15, 14, 117, 60, 8, 178, 104],
+        [2, 15, 118, 60, 8, 178, 104],
+        [1, 72],
+        [115, 72],
+    ],
+)
 
 gap, i_gap = CD.geometricGap(pair)
 val = gap.getValues()
@@ -160,11 +177,21 @@ test.assertEqual(gap.size(), 9)
 test.assertEqual(i_gap.size(), 9)
 
 test.assertSequenceEqual(
-    val, [None, 0.0, None, 20.710678118654712, 4.5697741425361,
-          None, 37.64434717161166, 10.763140746059044, 1.1137435169388767])
-test.assertSequenceEqual(
-    i_gap.getValues(), [0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0])
+    val,
+    [
+        None,
+        0.0,
+        None,
+        20.710678118654712,
+        4.5697741425361,
+        None,
+        37.64434717161166,
+        10.763140746059044,
+        1.1137435169388767,
+    ],
+)
+test.assertSequenceEqual(i_gap.getValues(), [0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0])
 
-IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap,)))
+IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap)))
 
 FIN()

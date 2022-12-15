@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #   TEST MODELE ENDO_ISOT_BETON
 #   EN DEPLACEMENT IMPOSE
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #                ELEMENT 3D CUBE A 8 NOEUDS
 #              ETAT HOMOGENE CONTRAINTE DEFORMATION
 #       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
@@ -47,99 +47,103 @@
 #
 #
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-CUBE=LIRE_MAILLAGE(FORMAT="ASTER",    )
+CUBE = LIRE_MAILLAGE(FORMAT="ASTER")
 
-TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
-                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
-                                            MODELISATION = '3D',
-                                            GROUP_MA = 'ma1'))
+TROISD = AFFE_MODELE(
+    MAILLAGE=CUBE, AFFE=_F(PHENOMENE="MECANIQUE", MODELISATION="3D", GROUP_MA="ma1")
+)
 
-BETON=DEFI_MATERIAU(         ELAS=_F( E = 30000.0E6,
-                                      NU = 0.2),
+BETON = DEFI_MATERIAU(
+    ELAS=_F(E=30000.0e6, NU=0.2), BETON_ECRO_LINE=_F(SYT=3.0e6, D_SIGM_EPSI=-6000.0e6, SYC=11.225e6)
+)
 
-                BETON_ECRO_LINE=_F( SYT = 3.0E6,
-                                    D_SIGM_EPSI = -6000.E6,
-                                    SYC = 11.225E6)
-                   )
+MATBET = AFFE_MATERIAU(MAILLAGE=CUBE, AFFE=_F(GROUP_MA="ma1", MATER=BETON))
 
-MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
-                                    AFFE=_F(  GROUP_MA = 'ma1',
-                                           MATER = BETON)
-                         )
+COND_LIM = AFFE_CHAR_MECA(
+    MODELE=TROISD,
+    DDL_IMPO=(
+        _F(GROUP_NO="facexyn", DZ=0.0),
+        _F(GROUP_NO="faceyzn", DX=0.0),
+        _F(GROUP_NO="n1", DY=0.0),
+        _F(GROUP_NO="n5", DY=0.0),
+    ),
+)
 
-COND_LIM=AFFE_CHAR_MECA(
-                      MODELE=TROISD,DDL_IMPO=(
-                    _F(  GROUP_NO = 'facexyn',   DZ = 0.),
-                    _F(  GROUP_NO = 'faceyzn',   DX = 0.),
-                    _F(  GROUP_NO = 'n1',  DY = 0.),
-                    _F(  GROUP_NO = 'n5',  DY = 0.))
-               )
+TRAC = AFFE_CHAR_MECA(
+    MODELE=TROISD,
+    DDL_IMPO=(_F(GROUP_NO="faceyzp", DX=1.0), _F(GROUP_NO="n2", DY=0.0), _F(GROUP_NO="n6", DY=0.0)),
+)
 
-TRAC=AFFE_CHAR_MECA(
-                      MODELE=TROISD,DDL_IMPO=(
-                    _F(  GROUP_NO = 'faceyzp',  DX = 1.),
-                    _F(  GROUP_NO = 'n2',  DY = 0.),
-                    _F(  GROUP_NO = 'n6',  DY = 0.))
-                            )
+LINST1 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=0.5, NOMBRE=1),
+        _F(JUSQU_A=1.0, NOMBRE=10),
+        _F(JUSQU_A=2.0, NOMBRE=2),
+        _F(JUSQU_A=3.0, NOMBRE=10),
+    ),
+)
 
-LINST1=DEFI_LIST_REEL(             DEBUT=0.,INTERVALLE=(
+COEF1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        0.0,
+        0.0,
+        1.0,
+        2.0e-6,
+        2.0,
+        -1.0e-8,
+        #                                           3.,  -1.1E-5,
+        3.0,
+        -2.0e-5,
+    ),
+)
 
-                            _F( JUSQU_A = 0.5,  NOMBRE = 1),
-                            _F( JUSQU_A = 1.,  NOMBRE = 10),
-                            _F( JUSQU_A = 2.,  NOMBRE = 2),
-                            _F( JUSQU_A = 3.,  NOMBRE = 10))
-                         )
+SOLNL2 = STAT_NON_LINE(
+    TITRE="TEST LOI ENDO_ISOT_BETON",
+    MODELE=TROISD,
+    EXCIT=(_F(CHARGE=COND_LIM), _F(CHARGE=TRAC, FONC_MULT=COEF1)),
+    INCREMENT=_F(LIST_INST=LINST1),
+    CHAM_MATER=MATBET,
+    COMPORTEMENT=_F(RELATION="ENDO_ISOT_BETON"),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=100),
+)
 
-COEF1=DEFI_FONCTION(
-                              NOM_PARA='INST',
-                                  VALE=(   0.,   0.,
-                                           1.,  2.E-6,
-                                           2.,  -1.E-8,
-#                                           3.,  -1.1E-5,
-                                           3.,  -2.E-5,
-                                       )
-                        )
-
-SOLNL2=STAT_NON_LINE(TITRE='TEST LOI ENDO_ISOT_BETON',
-                     MODELE=TROISD,
-                     EXCIT=( _F(CHARGE = COND_LIM),
-                             _F(CHARGE = TRAC,
-                                FONC_MULT = COEF1)),
-                INCREMENT=_F(LIST_INST = LINST1),
-                CHAM_MATER=MATBET,
-                COMPORTEMENT=_F(RELATION = 'ENDO_ISOT_BETON'),
-                NEWTON=_F(MATRICE = 'TANGENTE',
-                          REAC_INCR = 1,
-                          REAC_ITER = 1),
-                CONVERGENCE=_F(ITER_GLOB_MAXI = 100)
-               )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=17,
-                   RESULTAT=SOLNL2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='n2',
-                   NOM_CMP='DX',
-                   VALE_CALC=-8.006E-06,),
-                _F(NUME_ORDRE=17,
-                   POINT=1,
-                   RESULTAT=SOLNL2,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-2.0362854317491E7,
-                   GROUP_MA='ma1',),
-                _F(NUME_ORDRE=17,
-                   POINT=1,
-                   RESULTAT=SOLNL2,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V1',
-                   VALE_CALC=0.81406453783811,
-                   GROUP_MA='ma1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=17,
+            RESULTAT=SOLNL2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="n2",
+            NOM_CMP="DX",
+            VALE_CALC=-8.006e-06,
+        ),
+        _F(
+            NUME_ORDRE=17,
+            POINT=1,
+            RESULTAT=SOLNL2,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            VALE_CALC=-2.0362854317491e7,
+            GROUP_MA="ma1",
+        ),
+        _F(
+            NUME_ORDRE=17,
+            POINT=1,
+            RESULTAT=SOLNL2,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V1",
+            VALE_CALC=0.81406453783811,
+            GROUP_MA="ma1",
+        ),
+    )
+)
 
 FIN()
 #

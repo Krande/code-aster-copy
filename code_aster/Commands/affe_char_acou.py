@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class AffeCharAcou(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.AcousticLoadComplex`.
-    """
+    """Command that defines :class:`~code_aster.Objects.AcousticLoadComplex`."""
+
     command_name = "AFFE_CHAR_ACOU"
 
     def create_result(self, keywords):
@@ -53,5 +53,6 @@ class AffeCharAcou(ExecuteCommand):
         """
         super().add_dependencies(keywords)
         self.remove_dependencies(keywords, "MODELE")
+
 
 AFFE_CHAR_ACOU = AffeCharAcou.run

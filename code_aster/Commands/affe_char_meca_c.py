@@ -26,6 +26,7 @@ from ..Supervis import ExecuteCommand
 class MechanicalLoadComplexDefinition(ExecuteCommand):
     """Command that creates the
     :class:`~code_aster.Objects.MechanicalLoadComplex`"""
+
     command_name = "AFFE_CHAR_MECA_C"
 
     def create_result(self, keywords):

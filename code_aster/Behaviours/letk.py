@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,22 +22,31 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'LETK',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement pour la modélisation élasto visco plastique des roches suivant le modèle de Laigle et Kleine, cf. [R7.01.24].
-   L'opérateur relatif à la prédiction élastique est celui de l'élasticité non linéaire spécifique à la loi."""              ,
-    num_lc         = 35,
-    nb_vari        = 9,
-    nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL',
-        'INDIVISC','INDIPLAS','DOMAINE','INDIC',),
-    mc_mater       = ('ELAS','LETK',),
-    modelisation   = ('3D','AXIS','D_PLAN','THM',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('NEWTON','NEWTON_PERT','SPECIFIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('No',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="LETK",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement pour la modélisation élasto visco plastique des roches suivant le modèle de Laigle et Kleine, cf. [R7.01.24].
+   L'opérateur relatif à la prédiction élastique est celui de l'élasticité non linéaire spécifique à la loi.""",
+    num_lc=35,
+    nb_vari=9,
+    nom_vari=(
+        "XIP",
+        "GAMMAP",
+        "XIVP",
+        "GAMMAVP",
+        "INDICDIL",
+        "INDIVISC",
+        "INDIPLAS",
+        "DOMAINE",
+        "INDIC",
+    ),
+    mc_mater=("ELAS", "LETK"),
+    modelisation=("3D", "AXIS", "D_PLAN", "THM"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("NEWTON", "NEWTON_PERT", "SPECIFIQUE"),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("No",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

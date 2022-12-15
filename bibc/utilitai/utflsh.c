@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -20,14 +20,13 @@
 
 #include <stdio.h>
 
-void DEFP(UTFLSH, utflsh, ASTERINTEGER *codret)
-{
+void DEFP( UTFLSH, utflsh, ASTERINTEGER *codret ) {
 #ifdef ASTER_PLATFORM_POSIX
-  *codret = fflush(0) ;
+    *codret = fflush( 0 );
 
 #else
-  _flushall() ;
-  *codret = 0 ;
+    _flushall();
+    *codret = 0;
 
 #endif
 }

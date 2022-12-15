@@ -32,64 +32,63 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-                             components=(
-                                 ('EN1', ('DX', 'DY', 'LAGS_C', 'LAGS_F1', )),
-                                 ('EN2', ('DX', 'DY',)),))
+DDL_MECA = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("DX", "DY", "LAGS_C", "LAGS_F1")), ("EN2", ("DX", "DY"))),
+)
 
-ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_C',)),
-                               ('EN2', ()),)
-                           )
+ECCONT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_C",)), ("EN2", ()))
+)
 
-ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_F',)),
-                               ('EN2', ()),)
-                           )
+ECFROT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_F",)), ("EN2", ()))
+)
 # ------------------------------------------------------------
 
 
 class FMS22D(Element):
     """
-      THE FMS22D CLASS ELEMENT : SEG2/SEG2
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
+    THE FMS22D CLASS ELEMENT : SEG2/SEG2
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
-    meshType = MT.SEG2
-    nodes = (
-        SetOfNodes('EN1', (1, 2)),
-    )
-    calculs = (
 
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT), ),
-                      ),
+    meshType = MT.SEG2
+    nodes = (SetOfNodes("EN1", (1, 2)),)
+    calculs = (
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )
+
 
 # ------------------------------------------------------------
 
 
 class FMS32D(FMS22D):
     """
-      THE FMS22D CLASS ELEMENT : SEG2/SEG2
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
+    THE FMS22D CLASS ELEMENT : SEG2/SEG2
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.SEG3
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)),)

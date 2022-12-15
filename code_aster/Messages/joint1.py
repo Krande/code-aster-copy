@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 from ..Utilities import _
 
 cata_msg = {
-
-     2: _(u"""La déformation de type %(k1)s n'est pas disponible pour l'élément d'interface."""),
-
-    47: _(u"""Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE de AFFE_CARA_ELEM pour les modélisations 3D_INTERFACE, PLAN_INTERFACE ou AXIS_INTERFACE."""),
+    2: _(u"""La déformation de type %(k1)s n'est pas disponible pour l'élément d'interface."""),
+    47: _(
+        u"""Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE de AFFE_CARA_ELEM pour les modélisations 3D_INTERFACE, PLAN_INTERFACE ou AXIS_INTERFACE."""
+    ),
 }

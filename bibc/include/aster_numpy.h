@@ -26,6 +26,7 @@
 #define PY_ARRAY_UNIQUE_SYMBOL CODEASTER_ARRAY_API
 
 #include "Python.h"
+
 #include <numpy/numpyconfig.h>
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>

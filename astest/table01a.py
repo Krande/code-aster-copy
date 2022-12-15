@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,20 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-tab = CREA_TABLE(LISTE=_F(PARA='X', LISTE_I=(1, 2, 3)),
-                 TITRE='test title')
+tab = CREA_TABLE(LISTE=_F(PARA="X", LISTE_I=(1, 2, 3)), TITRE="test title")
 
-test.assertEqual(tab['X', 2], 2)
+test.assertEqual(tab["X", 2], 2)
 
 with test.assertRaises(RuntimeError):
     tab[8]
 
 with test.assertRaises(KeyError):
-    tab['U', 55]
+    tab["U", 55]
 
-test.assertEqual(tab.get_nom_para(), ['X'])
+test.assertEqual(tab.get_nom_para(), ["X"])
 
 title = tab.TITRE()
-test.assertEqual(tab.TITRE().strip(), 'test title')
+test.assertEqual(tab.TITRE().strip(), "test title")
 
 pytab = tab.EXTR_TABLE()
 test.assertEqual(len(pytab), 3)

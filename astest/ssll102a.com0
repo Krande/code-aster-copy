@@ -23,214 +23,248 @@
 #
 #       VALIDATION DE DDL_POUTRE
 #
-#======================================================================
+# ======================================================================
 
 
-POURSUITE( CODE='OUI')
-
-# ------ TRACTION SIMPLE GX : ------------------------------------------
-
-
-CHARG1B=AFFE_CHAR_MECA(  MODELE=MO,
-      DDL_IMPO  =_F( GROUP_NO = 'A',  DX = 0.,  DY = 0.,  DZ = 0.,
-                                      DRX = 0., DRY = 0., DRZ = 0.),
-      DDL_POUTRE=_F( GROUP_NO = 'N3',  DX = 5.00000E-10,
-                     VECT_Y = ( 0., 1., 0., ) ,),
-                     )
-
-MEST1B=MECA_STATIQUE(  MODELE=MO,
-                       CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
-                       EXCIT=_F( CHARGE = CHARG1B)   )
-
-MEST1B=CALC_CHAMP(reuse=MEST1B,RESULTAT=MEST1B,CONTRAINTE=('EFGE_ELNO',))
-
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.88675135E-10,
-                   VALE_REFE=2.8867513999999999E-10,
-                   CRITERE='RELATIF',
-                   PRECISION=9.9999999999999995E-07,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DY',
-                   VALE_CALC= 2.8867513459481E-10,
-                   VALE_REFE=2.8867513999999999E-10,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 2.8867513459481E-10,
-                   VALE_REFE=2.8867513999999999E-10,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DRX',
-                   VALE_CALC=-3.0587230639324E-24,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DRY',
-                   VALE_CALC= 2.9444324838118E-24,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DRZ',
-                   VALE_CALC=-1.5672630186927E-24,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                ),
-          )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='N',
-                   VALE_CALC=1.0,
-                   VALE_REFE=1.0,
-                   GROUP_MA='S11',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1B,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N3',
-                   NOM_CMP='N',
-                   VALE_CALC=1.0,
-                   VALE_REFE=1.0,
-                   GROUP_MA='S12',),
-                ),
-          )
-
+POURSUITE(CODE="OUI")
 
 # ------ TRACTION SIMPLE GX : ------------------------------------------
 
 
-CHARG1T=AFFE_CHAR_MECA(  MODELE=MO,
-      DDL_IMPO  =_F( GROUP_NO = 'A',  DX = 0.,  DY = 0.,  DZ = 0.,
-                                      DRX = 0., DRY = 0., DRZ = 0.),
-      DDL_POUTRE=_F( GROUP_NO = 'N3',  DX = 5.00000E-10,
-                     ANGL_VRIL = 0., ),
-                     )
+CHARG1B = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=_F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    DDL_POUTRE=_F(GROUP_NO="N3", DX=5.00000e-10, VECT_Y=(0.0, 1.0, 0.0)),
+)
 
-MEST1T=MECA_STATIQUE(  MODELE=MO,
-                       CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
-                       EXCIT=_F( CHARGE = CHARG1T)   )
+MEST1B = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, CARA_ELEM=CAREL, EXCIT=_F(CHARGE=CHARG1B))
 
-MEST1T=CALC_CHAMP(reuse=MEST1T,RESULTAT=MEST1T,CONTRAINTE=('EFGE_ELNO',))
+MEST1B = CALC_CHAMP(reuse=MEST1B, RESULTAT=MEST1B, CONTRAINTE=("EFGE_ELNO",))
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DX',
-                   VALE_CALC= 2.88675135E-10,
-                   VALE_REFE=2.8867513999999999E-10,
-                   CRITERE='RELATIF',
-                   PRECISION=9.9999999999999995E-07,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DY',
-                   VALE_CALC= 2.8867513459481E-10,
-                   VALE_REFE=2.8867513999999999E-10,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DZ',
-                   VALE_CALC= 2.8867513459481E-10,
-                   VALE_REFE=2.8867513999999999E-10,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DRX',
-                   VALE_CALC= 2.2436888114071E-24,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DRY',
-                   VALE_CALC=-1.4191992777741E-24,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N3',
-                   NOM_CMP='DRZ',
-                   VALE_CALC=-1.2913169887308E-24,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-13,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DX",
+            VALE_CALC=2.88675135e-10,
+            VALE_REFE=2.8867513999999999e-10,
+            CRITERE="RELATIF",
+            PRECISION=9.9999999999999995e-07,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DY",
+            VALE_CALC=2.8867513459481e-10,
+            VALE_REFE=2.8867513999999999e-10,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DZ",
+            VALE_CALC=2.8867513459481e-10,
+            VALE_REFE=2.8867513999999999e-10,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DRX",
+            VALE_CALC=-3.0587230639324e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DRY",
+            VALE_CALC=2.9444324838118e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DRZ",
+            VALE_CALC=-1.5672630186927e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='N',
-                   VALE_CALC=1.000000000,
-                   VALE_REFE=1.0,
-                   GROUP_MA='S11',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=MEST1T,
-                   NOM_CHAM='EFGE_ELNO',
-                   GROUP_NO='N3',
-                   NOM_CMP='N',
-                   VALE_CALC=1.000000000,
-                   VALE_REFE=1.0,
-                   GROUP_MA='S12',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="N",
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            GROUP_MA="S11",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1B,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N3",
+            NOM_CMP="N",
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            GROUP_MA="S12",
+        ),
+    )
+)
 
 
-FIN( )
+# ------ TRACTION SIMPLE GX : ------------------------------------------
+
+
+CHARG1T = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=_F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    DDL_POUTRE=_F(GROUP_NO="N3", DX=5.00000e-10, ANGL_VRIL=0.0),
+)
+
+MEST1T = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, CARA_ELEM=CAREL, EXCIT=_F(CHARGE=CHARG1T))
+
+MEST1T = CALC_CHAMP(reuse=MEST1T, RESULTAT=MEST1T, CONTRAINTE=("EFGE_ELNO",))
+
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DX",
+            VALE_CALC=2.88675135e-10,
+            VALE_REFE=2.8867513999999999e-10,
+            CRITERE="RELATIF",
+            PRECISION=9.9999999999999995e-07,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DY",
+            VALE_CALC=2.8867513459481e-10,
+            VALE_REFE=2.8867513999999999e-10,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DZ",
+            VALE_CALC=2.8867513459481e-10,
+            VALE_REFE=2.8867513999999999e-10,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DRX",
+            VALE_CALC=2.2436888114071e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DRY",
+            VALE_CALC=-1.4191992777741e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N3",
+            NOM_CMP="DRZ",
+            VALE_CALC=-1.2913169887308e-24,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-13,
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="N",
+            VALE_CALC=1.000000000,
+            VALE_REFE=1.0,
+            GROUP_MA="S11",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MEST1T,
+            NOM_CHAM="EFGE_ELNO",
+            GROUP_NO="N3",
+            NOM_CMP="N",
+            VALE_CALC=1.000000000,
+            VALE_REFE=1.0,
+            GROUP_MA="S12",
+        ),
+    )
+)
+
+
+FIN()
 #

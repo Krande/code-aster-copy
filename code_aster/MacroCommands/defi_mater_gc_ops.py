@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ def FaitMessage(Dico):
     cpt = 1
     for xk, xv in Dico.items():
         message += " %s = %15.8E," % (xk, xv)
-        if (len(message) > 80 * cpt):
+        if len(message) > 80 * cpt:
             message += "\n  "
             cpt += 1
     return message
@@ -39,43 +39,39 @@ def FaitMessage(Dico):
 def BetonEC2(Classe):
     Dico = {}
     # Décodage de la classe
-    sfck, sfckc = Classe[1:].split('/')
+    sfck, sfckc = Classe[1:].split("/")
     #
-    Dico['fck'] = float(sfck)
-    Dico['fckc'] = float(sfckc)
+    Dico["fck"] = float(sfck)
+    Dico["fckc"] = float(sfckc)
     # Contrainte en MPa et déformation en ‰
-    Dico['fcm'] = Dico['fck'] + 8.0
-    Dico['nu'] = 0.20
+    Dico["fcm"] = Dico["fck"] + 8.0
+    Dico["nu"] = 0.20
     #
-    if (Dico['fck'] <= 50.0):
-        Dico['fctm'] = 0.30 * NP.power(Dico['fck'], 2.0 / 3.0)
+    if Dico["fck"] <= 50.0:
+        Dico["fctm"] = 0.30 * NP.power(Dico["fck"], 2.0 / 3.0)
     else:
-        Dico['fctm'] = 2.12 * NP.log(1.0 + Dico['fcm'] / 10.0)
+        Dico["fctm"] = 2.12 * NP.log(1.0 + Dico["fcm"] / 10.0)
     #
-    Dico['ecm'] = 22.0E+03 * NP.power(Dico['fcm'] / 10.0, 0.3)
+    Dico["ecm"] = 22.0e03 * NP.power(Dico["fcm"] / 10.0, 0.3)
     #
-    Dico['epsi_c1'] = 0.7 * NP.power(Dico['fcm'], 0.31)
-    if (Dico['epsi_c1'] >= 2.8):
-        Dico['epsi_c1'] = 2.8
+    Dico["epsi_c1"] = 0.7 * NP.power(Dico["fcm"], 0.31)
+    if Dico["epsi_c1"] >= 2.8:
+        Dico["epsi_c1"] = 2.8
     #
-    if (Dico['fck'] > 50.0):
-        Dico['epsi_cu1'] = 2.80 + 27.000 * \
-            NP.power((98.0 - Dico['fcm']) / 100.0, 4.0)
-        Dico['epsi_c2'] = 2.00 + 0.085 * NP.power(Dico['fck'] - 50.0, 0.53)
-        Dico['epsi_cu2'] = 2.60 + 35.000 * \
-            NP.power((90.0 - Dico['fck']) / 100.0, 4.0)
-        Dico['n']        = 1.40 + 23.400 * \
-            NP.power((90.0 - Dico['fck']) / 100.0, 4.0)
-        Dico['epsi_c3'] = 1.75 + 0.550 * (Dico['fck'] - 50.0) / 40.0
-        Dico['epsi_cu3'] = 2.60 + 35.000 * \
-            NP.power((90.0 - Dico['fck']) / 100.0, 4.0)
+    if Dico["fck"] > 50.0:
+        Dico["epsi_cu1"] = 2.80 + 27.000 * NP.power((98.0 - Dico["fcm"]) / 100.0, 4.0)
+        Dico["epsi_c2"] = 2.00 + 0.085 * NP.power(Dico["fck"] - 50.0, 0.53)
+        Dico["epsi_cu2"] = 2.60 + 35.000 * NP.power((90.0 - Dico["fck"]) / 100.0, 4.0)
+        Dico["n"] = 1.40 + 23.400 * NP.power((90.0 - Dico["fck"]) / 100.0, 4.0)
+        Dico["epsi_c3"] = 1.75 + 0.550 * (Dico["fck"] - 50.0) / 40.0
+        Dico["epsi_cu3"] = 2.60 + 35.000 * NP.power((90.0 - Dico["fck"]) / 100.0, 4.0)
     else:
-        Dico['epsi_cu1'] = 3.50
-        Dico['epsi_c2'] = 2.00
-        Dico['epsi_cu2'] = 3.50
-        Dico['n'] = 2.00
-        Dico['epsi_c3'] = 1.75
-        Dico['epsi_cu3'] = 3.50
+        Dico["epsi_cu1"] = 3.50
+        Dico["epsi_c2"] = 2.00
+        Dico["epsi_cu2"] = 3.50
+        Dico["n"] = 2.00
+        Dico["epsi_c3"] = 1.75
+        Dico["epsi_cu3"] = 3.50
     #
     return Dico
 
@@ -83,12 +79,12 @@ def BetonEC2(Classe):
 def BetonBAEL91(fcj):
     Dico = {}
     # Contrainte en MPa
-    Dico['fcj'] = fcj
+    Dico["fcj"] = fcj
     #
-    Dico['eij'] = 11000.0 * NP.power(Dico['fcj'], 0.333333)
-    Dico['ftj'] = 0.60 + 0.06 * Dico['fcj']
-    Dico['epsi_c'] = 0.620E-3 * NP.power(Dico['fcj'], 0.333333)
-    Dico['nu'] = 0.20
+    Dico["eij"] = 11000.0 * NP.power(Dico["fcj"], 0.333333)
+    Dico["ftj"] = 0.60 + 0.06 * Dico["fcj"]
+    Dico["epsi_c"] = 0.620e-3 * NP.power(Dico["fcj"], 0.333333)
+    Dico["nu"] = 0.20
     #
     return Dico
 
@@ -122,97 +118,104 @@ def Mazars_Unil(DMATER, args):
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
     #
     # Obligatoire : Règlement de codification
-    Regle = MATER['CODIFICATION']
+    Regle = MATER["CODIFICATION"]
     # Liste des paramètres matériaux facultatifs mais nécessaires pour calculer
     # les valeurs des paramètres de MAZARS
-    listepara = ['NU', 'EPSD0', 'K', 'BT',
-                 'AT', 'BC', 'AC', 'SIGM_LIM', 'EPSI_LIM']
+    listepara = ["NU", "EPSD0", "K", "BT", "AT", "BC", "AC", "SIGM_LIM", "EPSI_LIM"]
     #
-    if (Regle == 'BAEL91'):
+    if Regle == "BAEL91":
         # Obligatoire : FCJ UNITE_CONTRAINTE
-        if (MATER['UNITE_CONTRAINTE'] == "MPa"):
+        if MATER["UNITE_CONTRAINTE"] == "MPa":
             coeff = 1.0
-        elif (MATER['UNITE_CONTRAINTE'] == "Pa"):
-            coeff = 1.0E+06
-        beton = BetonBAEL91(MATER['FCJ'] / coeff)
+        elif MATER["UNITE_CONTRAINTE"] == "Pa":
+            coeff = 1.0e06
+        beton = BetonBAEL91(MATER["FCJ"] / coeff)
         #
-        FCJ = beton['fcj'] * coeff
-        EIJ = beton['eij'] * coeff
-        FTJ = beton['ftj'] * coeff
-        EPSI_C = beton['epsi_c']
-        NU = beton['nu']
+        FCJ = beton["fcj"] * coeff
+        EIJ = beton["eij"] * coeff
+        FTJ = beton["ftj"] * coeff
+        EPSI_C = beton["epsi_c"]
+        NU = beton["nu"]
         SIGM_LIM = 0.6 * FCJ
         EPSI_LIM = 3.5 / 1000.0
         #
         for xx in listepara:
             MATER[xx] = None
         #
-    elif (Regle == 'EC2'):
+    elif Regle == "EC2":
         # Obligatoire CLASSE UNITE_CONTRAINTE
-        if (MATER['UNITE_CONTRAINTE'] == "MPa"):
+        if MATER["UNITE_CONTRAINTE"] == "MPa":
             coeff = 1.0
-        elif (MATER['UNITE_CONTRAINTE'] == "Pa"):
-            coeff = 1.0E+06
-        beton = BetonEC2(MATER['CLASSE'])
+        elif MATER["UNITE_CONTRAINTE"] == "Pa":
+            coeff = 1.0e06
+        beton = BetonEC2(MATER["CLASSE"])
         #
-        FCJ = beton['fcm'] * coeff
-        EIJ = beton['ecm'] * coeff
-        FTJ = beton['fctm'] * coeff
-        EPSI_C = beton['epsi_c1'] / 1000.0
-        NU = beton['nu']
+        FCJ = beton["fcm"] * coeff
+        EIJ = beton["ecm"] * coeff
+        FTJ = beton["fctm"] * coeff
+        EPSI_C = beton["epsi_c1"] / 1000.0
+        NU = beton["nu"]
         SIGM_LIM = 0.6 * FCJ
-        EPSI_LIM = beton['epsi_cu1']
+        EPSI_LIM = beton["epsi_cu1"]
         #
         for xx in listepara:
             MATER[xx] = None
         #
-    elif (Regle == 'ESSAI'):
+    elif Regle == "ESSAI":
         # Obligatoire FCJ , EIJ, FTJ, EPSI_C
-        FCJ = MATER['FCJ']
-        EIJ = MATER['EIJ']
-        FTJ = MATER['FTJ']
-        EPSI_C = MATER['EPSI_C']
-        MATER['UNITE_CONTRAINTE'] = ''
+        FCJ = MATER["FCJ"]
+        EIJ = MATER["EIJ"]
+        FTJ = MATER["FTJ"]
+        EPSI_C = MATER["EPSI_C"]
+        MATER["UNITE_CONTRAINTE"] = ""
     # L'ordre dans la liste est important à cause des dépendances des relations
     # Les coefficients FCJ , EIJ, FTJ, EPSI_C doivent déjà être définis
     # Optional keywords
     def mater_value(name, default):
         return MATER[name] if MATER.get(name) is not None else default
 
-    NU = mater_value('NU', 0.2)
-    EPSD0 = mater_value('EPSD0', FTJ / EIJ)
-    K = mater_value('K', 0.7)
-    BT = mater_value('BT', EIJ / FTJ)
-    AT = mater_value('AT', 0.90)
-    BC = mater_value('BC', 1.0 / (NU * (2.0 ** 0.5) * EPSI_C))
+    NU = mater_value("NU", 0.2)
+    EPSD0 = mater_value("EPSD0", FTJ / EIJ)
+    K = mater_value("K", 0.7)
+    BT = mater_value("BT", EIJ / FTJ)
+    AT = mater_value("AT", 0.90)
+    BC = mater_value("BC", 1.0 / (NU * (2.0 ** 0.5) * EPSI_C))
     NUB = NU * (2.0 ** 0.5)
     ECNUB = EPSI_C * NUB
-    AC = mater_value('AC',
-        (FCJ * NUB / EIJ - EPSD0) /
-            (ECNUB * NP.exp(BC * EPSD0 - BC * ECNUB) - EPSD0))
-    SIGM_LIM = mater_value('SIGM_LIM', 0.6 * FCJ)
-    EPSI_LIM = mater_value('EPSI_LIM', 3.5 / 1000.0)
+    AC = mater_value(
+        "AC", (FCJ * NUB / EIJ - EPSD0) / (ECNUB * NP.exp(BC * EPSD0 - BC * ECNUB) - EPSD0)
+    )
+    SIGM_LIM = mater_value("SIGM_LIM", 0.6 * FCJ)
+    EPSI_LIM = mater_value("EPSI_LIM", 3.5 / 1000.0)
 
     # Mot clef MATER
     mclef = elastic_properties(EIJ, NU, args)
-    mclef['MAZARS'] = {
-        'K': K, 'EPSD0': EPSD0, 'AC': AC, 'AT': AT, 'BC': BC, 'BT': BT,
-        'SIGM_LIM': SIGM_LIM, 'EPSI_LIM': EPSI_LIM}
+    mclef["MAZARS"] = {
+        "K": K,
+        "EPSD0": EPSD0,
+        "AC": AC,
+        "AT": AT,
+        "BC": BC,
+        "BT": BT,
+        "SIGM_LIM": SIGM_LIM,
+        "EPSI_LIM": EPSI_LIM,
+    }
     #
     # On affiche dans tous les cas
-    if (len(MATER['UNITE_CONTRAINTE']) > 0):
-        message0 = "MAZARS [%s]" % MATER['UNITE_CONTRAINTE']
+    if len(MATER["UNITE_CONTRAINTE"]) > 0:
+        message0 = "MAZARS [%s]" % MATER["UNITE_CONTRAINTE"]
     else:
         message0 = "MAZARS"
     #
-    message1 = FaitMessage(mclef['ELAS'])
-    message2 = FaitMessage(mclef['MAZARS'])
-    Dico = {'FCJ': FCJ, 'FTJ': FTJ, 'EPSI_C': EPSI_C}
+    message1 = FaitMessage(mclef["ELAS"])
+    message2 = FaitMessage(mclef["MAZARS"])
+    Dico = {"FCJ": FCJ, "FTJ": FTJ, "EPSI_C": EPSI_C}
     message3 = FaitMessage(Dico)
     #
-    UTMESS('I', 'COMPOR1_75', valk=(message0, message1, message2, message3))
+    UTMESS("I", "COMPOR1_75", valk=(message0, message1, message2, message3))
     #
     return mclef
+
 
 def Beton_GLRC(DMATER, args):
     """
@@ -229,50 +232,48 @@ def Beton_GLRC(DMATER, args):
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
     #
     # Obligatoire : Règlement de codification
-    Regle = MATER['CODIFICATION']
+    Regle = MATER["CODIFICATION"]
 
-    if (Regle == 'EC2'):
+    if Regle == "EC2":
         # Obligatoire CLASSE UNITE_CONTRAINTE
-        if (MATER['UNITE_CONTRAINTE'] == "MPa"):
+        if MATER["UNITE_CONTRAINTE"] == "MPa":
             coeff = 1.0
-        elif (MATER['UNITE_CONTRAINTE'] == "Pa"):
-            coeff = 1.0E+06
-        beton = BetonEC2(MATER['CLASSE'])
+        elif MATER["UNITE_CONTRAINTE"] == "Pa":
+            coeff = 1.0e06
+        beton = BetonEC2(MATER["CLASSE"])
         #
-        FCJ = beton['fcm'] * coeff
-        EIJ = beton['ecm'] * coeff
-        FTJ = beton['fctm'] * coeff
-        EPSI_C = beton['epsi_c1'] / 1000.0
-        NU = beton['nu']
+        FCJ = beton["fcm"] * coeff
+        EIJ = beton["ecm"] * coeff
+        FTJ = beton["fctm"] * coeff
+        EPSI_C = beton["epsi_c1"] / 1000.0
+        NU = beton["nu"]
 
-    elif (Regle == 'ESSAI'):
+    elif Regle == "ESSAI":
         # Obligatoire FCJ , EIJ, FTJ, EPSI_C
-        FCJ = MATER['FCJ']
-        EIJ = MATER['EIJ']
-        FTJ = MATER['FTJ']
-        EPSI_C = MATER['EPSI_C']
-        NU = MATER['NU'] # 0.2 par defaut dans le catalogue
-        MATER['UNITE_CONTRAINTE'] = ''
+        FCJ = MATER["FCJ"]
+        EIJ = MATER["EIJ"]
+        FTJ = MATER["FTJ"]
+        EPSI_C = MATER["EPSI_C"]
+        NU = MATER["NU"]  # 0.2 par defaut dans le catalogue
+        MATER["UNITE_CONTRAINTE"] = ""
 
     # Mot clef MATER
     # voir si ELAS est necessaire
     mclef = elastic_properties(EIJ, NU, args)
-    mclef[
-        'BETON_GLRC'] = {'FCJ': FCJ, 'FTJ': FTJ,
-                         'EPSI_C': EPSI_C,}
+    mclef["BETON_GLRC"] = {"FCJ": FCJ, "FTJ": FTJ, "EPSI_C": EPSI_C}
     #
     # On affiche dans tous les cas
-    if (len(MATER['UNITE_CONTRAINTE']) > 0):
-        message0 = "BETON_GLRC [%s]" % MATER['UNITE_CONTRAINTE']
+    if len(MATER["UNITE_CONTRAINTE"]) > 0:
+        message0 = "BETON_GLRC [%s]" % MATER["UNITE_CONTRAINTE"]
     else:
         message0 = "BETON_GLRC"
     #
-    message1 = FaitMessage(mclef['ELAS'])
-    message2 = FaitMessage(mclef['BETON_GLRC'])
-    #Dico = {'FCJ': FCJ, 'FTJ': FTJ, 'EPSI_C': EPSI_C}
-    #message3 = FaitMessage(Dico)
+    message1 = FaitMessage(mclef["ELAS"])
+    message2 = FaitMessage(mclef["BETON_GLRC"])
+    # Dico = {'FCJ': FCJ, 'FTJ': FTJ, 'EPSI_C': EPSI_C}
+    # message3 = FaitMessage(Dico)
     #
-    UTMESS('I', 'COMPOR1_75', valk=(message0, message1, message2))
+    UTMESS("I", "COMPOR1_75", valk=(message0, message1, message2))
     #
     return mclef
 
@@ -296,64 +297,68 @@ def Acier_Cine_Line(DMATER, args):
     #
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
     # Obligatoire E
-    E = MATER['E']
+    E = MATER["E"]
     # Obligatoire SY
-    SY = MATER['SY']
+    SY = MATER["SY"]
     # Optional keywords
     def mater_value(name, default):
         return MATER[name] if MATER.get(name) is not None else default
 
-    NU = mater_value('NU', 0.3)
-    D_SIGM_EPSI = mater_value('D_SIGM_EPSI', E / 1.0E+04)
-    SIGM_LIM = mater_value('SIGM_LIM', SY / 1.1)
-    EPSI_LIM = mater_value('EPSI_LIM', 10.0 / 1000.0)
+    NU = mater_value("NU", 0.3)
+    D_SIGM_EPSI = mater_value("D_SIGM_EPSI", E / 1.0e04)
+    SIGM_LIM = mater_value("SIGM_LIM", SY / 1.1)
+    EPSI_LIM = mater_value("EPSI_LIM", 10.0 / 1000.0)
 
     # Mot clef MATER
     mclef = elastic_properties(E, NU, args)
-    mclef['ECRO_LINE'] = {'D_SIGM_EPSI': D_SIGM_EPSI, 'SY': SY,
-                          'SIGM_LIM': SIGM_LIM, 'EPSI_LIM': EPSI_LIM}
+    mclef["ECRO_LINE"] = {
+        "D_SIGM_EPSI": D_SIGM_EPSI,
+        "SY": SY,
+        "SIGM_LIM": SIGM_LIM,
+        "EPSI_LIM": EPSI_LIM,
+    }
     # On affiche dans tous les cas
-    message1 = FaitMessage(mclef['ELAS'])
-    message2 = FaitMessage(mclef['ECRO_LINE'])
-    Dico = {'EPSI_ELAS': SY / E}
+    message1 = FaitMessage(mclef["ELAS"])
+    message2 = FaitMessage(mclef["ECRO_LINE"])
+    Dico = {"EPSI_ELAS": SY / E}
     message3 = FaitMessage(Dico)
     #
-    UTMESS('I', 'COMPOR1_75',
-           valk=("ECRO_LINE", message1, message2, message3))
+    UTMESS("I", "COMPOR1_75", valk=("ECRO_LINE", message1, message2, message3))
     #
     return mclef
 
 
-def Ident_Endo_Fiss_Exp(ft, fc, beta, prec=1E-10, itemax=100):
+def Ident_Endo_Fiss_Exp(ft, fc, beta, prec=1e-10, itemax=100):
     # Estimation initiale
     A = (2.0 / 3.0 + 3 * beta ** 2) ** 0.5
     r = fc / ft
     C = 3 ** 0.5
     L = A * (r - 1)
     p0 = 2 * (1 - C)
-    pp = (1 - L)
+    pp = 1 - L
     delta = pp ** 2 - p0
     x = -pp + delta ** 0.5
 
     # Resolution de l'equation par methode de Newton
     for i in range(itemax):
-        f  = L * x + \
-            (2 + NP.exp(-2 * r * x)) ** 0.5 - (2 + NP.exp(2 * x)) ** 0.5
+        f = L * x + (2 + NP.exp(-2 * r * x)) ** 0.5 - (2 + NP.exp(2 * x)) ** 0.5
         if abs(f) < prec:
             break
-        df = L - r * \
-            NP.exp(-2 * r * x) / (2 + NP.exp(-2 * r * x)) ** 0.5 - \
-            NP.exp(2 * x) / (2 + NP.exp(2 * x)) ** 0.5
+        df = (
+            L
+            - r * NP.exp(-2 * r * x) / (2 + NP.exp(-2 * r * x)) ** 0.5
+            - NP.exp(2 * x) / (2 + NP.exp(2 * x)) ** 0.5
+        )
         x = x - f / df
     else:
-        UTMESS('F', 'COMPOR1_87')
+        UTMESS("F", "COMPOR1_87")
     #
     tau = A * x + (2 + NP.exp(2 * x)) ** 0.5
     sig0 = ft / x
     return (sig0, tau)
 
 
-def ConfinedTension(nu, sig0, tau, beta, prec=1E-10, itemax=100):
+def ConfinedTension(nu, sig0, tau, beta, prec=1e-10, itemax=100):
     # Initialisation
     s = NP.array((1 - nu, nu, nu))
     L = (2.0 / 3.0 * (1 - 2 * nu) ** 2 + 3 * beta ** 2 * (1 + nu) ** 2) ** 0.5
@@ -371,7 +376,7 @@ def ConfinedTension(nu, sig0, tau, beta, prec=1E-10, itemax=100):
         df = L + NP.add.reduce(ep * ep * s) / epr
         x = x - f / df
     else:
-        UTMESS('F', 'COMPOR1_87')
+        UTMESS("F", "COMPOR1_87")
     #
     sig1 = x * sig0 * (1 - nu)
     return sig1
@@ -395,36 +400,35 @@ def Endo_Fiss_Exp(DMATER, args):
     #
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
     # Lecture et interprétation des paramètres utilisateurs
-    E = float(MATER['E'])
-    NU = float(MATER['NU'])
-    GF = float(MATER['GF'])
-    FT = float(MATER['FT'])
-    FC = float(MATER['FC'])
-    CRM = float(MATER['COEF_RIGI_MINI'])
-    D = float(MATER['LARG_BANDE'] / 2.0)
-    rrc = float(MATER['REST_RIGI_FC'])
+    E = float(MATER["E"])
+    NU = float(MATER["NU"])
+    GF = float(MATER["GF"])
+    FT = float(MATER["FT"])
+    FC = float(MATER["FC"])
+    CRM = float(MATER["COEF_RIGI_MINI"])
+    D = float(MATER["LARG_BANDE"] / 2.0)
+    rrc = float(MATER["REST_RIGI_FC"])
     # Valeur par défaut
     beta = 0.1
     # Paramètres de la fonction seuil
     if FC / FT < 5.83:
-        UTMESS('F', 'COMPOR1_86', valr=(float(FC) / float(FT),))
+        UTMESS("F", "COMPOR1_86", valr=(float(FC) / float(FT),))
     (sig0, tau) = Ident_Endo_Fiss_Exp(FT, FC, beta)
     sigc = ConfinedTension(NU, sig0, tau, beta)
     # Paramètres de la fonction d'adoucissement
-    if MATER['P'] is not None:
-        P = float(MATER['P'])
+    if MATER["P"] is not None:
+        P = float(MATER["P"])
     else:
-        G1 = float(MATER['G_INIT'])
+        G1 = float(MATER["G_INIT"])
         P = ((3 * NP.pi * GF) / (4 * G1)) ** (2.0 / 3.0) - 2
         if P < 1:
-            UTMESS('F', 'COMPOR1_93')
+            UTMESS("F", "COMPOR1_93")
     #
-    if MATER['Q'] is not None:
-        Q = float(MATER['Q'])
-    elif MATER['Q_REL'] is not None:
-        qmax = (1.11375 + 0.565239 * P - 0.003322 * P ** 2) * \
-            (1 - NP.exp(-1.98935 * P)) - 0.01
-        Q = qmax * float(MATER['Q_REL'])
+    if MATER["Q"] is not None:
+        Q = float(MATER["Q"])
+    elif MATER["Q_REL"] is not None:
+        qmax = (1.11375 + 0.565239 * P - 0.003322 * P ** 2) * (1 - NP.exp(-1.98935 * P)) - 0.01
+        Q = qmax * float(MATER["Q_REL"])
     else:
         Q = 0.0
     #
@@ -435,7 +439,7 @@ def Endo_Fiss_Exp(DMATER, args):
     M = 1.5 * rig * GF / (D * sigc ** 2)
     #
     if M < P + 2:
-        UTMESS('F', 'COMPOR1_94', valr=(float(M), float(P)))
+        UTMESS("F", "COMPOR1_94", valr=(float(M), float(P)))
     # Restauration de rigidité
     if rrc == 0.0:
         gamma = 0
@@ -444,12 +448,22 @@ def Endo_Fiss_Exp(DMATER, args):
 
     # Paramètres pour DEFI_MATERIAU
     mclef = elastic_properties(E, NU, args)
-    mclef.update({
-        'ENDO_FISS_EXP': {'M': M, 'P': P, 'Q': Q, 'K': K, 'TAU': tau,
-                          'SIG0': sig0, 'BETA': beta, 'COEF_RIGI_MINI': CRM,
-                          'REST_RIGIDITE': gamma},
-        'NON_LOCAL': {'C_GRAD_VARI': C, 'PENA_LAGR': 1.E3 * K},
-    })
+    mclef.update(
+        {
+            "ENDO_FISS_EXP": {
+                "M": M,
+                "P": P,
+                "Q": Q,
+                "K": K,
+                "TAU": tau,
+                "SIG0": sig0,
+                "BETA": beta,
+                "COEF_RIGI_MINI": CRM,
+                "REST_RIGIDITE": gamma,
+            },
+            "NON_LOCAL": {"C_GRAD_VARI": C, "PENA_LAGR": 1.0e3 * K},
+        }
+    )
 
     return mclef
 
@@ -470,50 +484,52 @@ def Endo_Loca_Exp(DMATER, args):
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
 
     # Lecture et interprétation des paramètres utilisateurs
-    E   = float(MATER['E'])
-    NU  = float(MATER['NU'])
-    GF  = float(MATER['GF'])
-    FT  = float(MATER['FT'])
-    FC  = float(MATER['FC'])
-    P   = float(MATER['P'])
-    D   = float(MATER['DIST_FISSURE'])
-    rrc = float(MATER['REST_RIGI_FC'])
-    
+    E = float(MATER["E"])
+    NU = float(MATER["NU"])
+    GF = float(MATER["GF"])
+    FT = float(MATER["FT"])
+    FC = float(MATER["FC"])
+    P = float(MATER["P"])
+    D = float(MATER["DIST_FISSURE"])
+    rrc = float(MATER["REST_RIGI_FC"])
+
     # Valeur par défaut
     beta = 0.1
-    
+
     # Paramètres de la fonction seuil
     if FC / FT < 5.83:
-        UTMESS('F', 'COMPOR1_86', valr=(float(FC) / float(FT),))
+        UTMESS("F", "COMPOR1_86", valr=(float(FC) / float(FT),))
     (sig0, tau) = Ident_Endo_Fiss_Exp(FT, FC, beta)
     sigc = ConfinedTension(NU, sig0, tau, beta)
 
     # Paramètres internes au modèle
     Ec = E * (1 - NU) / ((1 + NU) * (1 - 2 * NU))
-    wc = sigc**2/(2*Ec)
-    kappa = GF/(D*wc)
+    wc = sigc ** 2 / (2 * Ec)
+    kappa = GF / (D * wc)
     if rrc == 0.0:
         gamma = 0
     else:
-        gamma = E/(FC*2.0*(1-rrc))
+        gamma = E / (FC * 2.0 * (1 - rrc))
 
     # Controle de la distance inter-fissure
-    Dc = 0.75*NP.pi*GF/wc*(P+2.0)**(-1.5)
+    Dc = 0.75 * NP.pi * GF / wc * (P + 2.0) ** (-1.5)
     if D > Dc:
-        UTMESS('F', 'COMPOR1_97', valr=(Dc,))
-        
+        UTMESS("F", "COMPOR1_97", valr=(Dc,))
+
     # Paramètres pour DEFI_MATERIAU
     mclef = elastic_properties(E, NU, args)
-    mclef.update({
-        'ENDO_LOCA_EXP': {
-            'SIGC'          : sigc, 
-            'SIG0'          : sig0, 
-            'KAPPA'         : kappa, 
-            'P'             : P, 
-            'BETA0'         : beta, 
-            'REST_RIGIDITE' : gamma,
-            },
-        })
+    mclef.update(
+        {
+            "ENDO_LOCA_EXP": {
+                "SIGC": sigc,
+                "SIG0": sig0,
+                "KAPPA": kappa,
+                "P": P,
+                "BETA0": beta,
+                "REST_RIGIDITE": gamma,
+            }
+        }
+    )
 
     return mclef
 
@@ -529,18 +545,17 @@ def elastic_properties(E, NU, args):
     Returns:
         dict: Updated `mclef` dict.
     """
-    mclef = {
-        'INFO': args.get('INFO', 1),
-        'ELAS': {'E': E, 'NU': NU},
-    }
-    list_para = ['RHO', 'ALPHA', 'AMOR_ALPHA', 'AMOR_BETA', 'AMOR_HYST']
+    mclef = {"INFO": args.get("INFO", 1), "ELAS": {"E": E, "NU": NU}}
+    list_para = ["RHO", "ALPHA", "AMOR_ALPHA", "AMOR_BETA", "AMOR_HYST"]
     for para in list_para:
         if args.get(para) is not None:
-            mclef['ELAS'][para] = args[para]
+            mclef["ELAS"][para] = args[para]
     return mclef
 
 
-def defi_mater_gc_ops(self, MAZARS=None, ACIER=None, ENDO_FISS_EXP=None, ENDO_LOCA_EXP=None, BETON_GLRC=None, **args):
+def defi_mater_gc_ops(
+    self, MAZARS=None, ACIER=None, ENDO_FISS_EXP=None, ENDO_LOCA_EXP=None, BETON_GLRC=None, **args
+):
     """
     C'est : un parmi : ACIER  MAZARS  ENDO_FISS_EXP, ENDO_LOCA_EXP, BETON_GLRC
     """

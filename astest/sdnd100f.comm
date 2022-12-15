@@ -21,192 +21,182 @@
 #   FICHIER DE COMMANDE ASTER DU CAS-TEST DE FROTTEMENT A 1 DDL
 #   LIAISON CHOC A DEUX NOEUDS
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 #
 
-M=1.
+M = 1.0
 
-K=1.E+04
+K = 1.0e04
 
-G=10.
+G = 10.0
 
-U0=0.85E-03
+U0 = 0.85e-03
 
-COULOMB=0.1
+COULOMB = 0.1
 
-ANG=cos( pi / 4. )
-
-#
-
-POUTRE=LIRE_MAILLAGE(FORMAT="ASTER", )
-
-POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+ANG = cos(pi / 4.0)
 
 #
 
-MODELE=AFFE_MODELE(   MAILLAGE=POUTRE,
-                         AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                        MODELISATION = 'DIS_T'))
+POUTRE = LIRE_MAILLAGE(FORMAT="ASTER")
+
+POUTRE = DEFI_GROUP(reuse=POUTRE, MAILLAGE=POUTRE, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
 #
-CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                _F(  GROUP_MA = 'TOUT',
-                          CARA = 'K_T_D_N', VALE = ( K, K, K, )),
-                        _F(  GROUP_MA = 'TOUT',  CARA = 'M_T_D_N', VALE = M))
-                         )
+
+MODELE = AFFE_MODELE(
+    MAILLAGE=POUTRE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
+)
 
 #
-mANG=-ANG
-CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-             _F(  TOUT = 'OUI',  DZ = 0.0),
-             _F(  GROUP_NO = 'NO2',  DX = 0.0, DY = 0.0)),
-             LIAISON_DDL=_F(  GROUP_NO = (  'NO1',   'NO1', ),
-                           DDL = ( 'DX',  'DY', ),
-                           COEF_MULT = (  ANG,  mANG, ),
-                           COEF_IMPO = 0.))
+CHAMPCAR = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    DISCRET=(
+        _F(GROUP_MA="TOUT", CARA="K_T_D_N", VALE=(K, K, K)),
+        _F(GROUP_MA="TOUT", CARA="M_T_D_N", VALE=M),
+    ),
+)
 
 #
-FORCE=AFFE_CHAR_MECA(  MODELE=MODELE,
-                     FORCE_NODALE=_F( GROUP_NO = 'NO1',  FX = 1.)
-                       )
+mANG = -ANG
+CHARGE = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(_F(TOUT="OUI", DZ=0.0), _F(GROUP_NO="NO2", DX=0.0, DY=0.0)),
+    LIAISON_DDL=_F(GROUP_NO=("NO1", "NO1"), DDL=("DX", "DY"), COEF_MULT=(ANG, mANG), COEF_IMPO=0.0),
+)
 
 #
-RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,  CHARGE=CHARGE,
-                         CARA_ELEM=CHAMPCAR,
-                         OPTION='RIGI_MECA')
+FORCE = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="NO1", FX=1.0))
 
 #
-MASSELEM=CALC_MATR_ELEM(  MODELE=MODELE,  CHARGE=CHARGE,
-                         CARA_ELEM=CHAMPCAR,
-                         OPTION='MASS_MECA')
+RIGIELEM = CALC_MATR_ELEM(MODELE=MODELE, CHARGE=CHARGE, CARA_ELEM=CHAMPCAR, OPTION="RIGI_MECA")
 
 #
-VECTELEM=CALC_VECT_ELEM(   CHARGE=CHARGE,  OPTION='CHAR_MECA')
-
-VECTEL1=CALC_VECT_ELEM(   CHARGE=FORCE,   OPTION='CHAR_MECA')
+MASSELEM = CALC_MATR_ELEM(MODELE=MODELE, CHARGE=CHARGE, CARA_ELEM=CHAMPCAR, OPTION="MASS_MECA")
 
 #
-#
-NUMEROTA=NUME_DDL(   MATR_RIGI=RIGIELEM )
+VECTELEM = CALC_VECT_ELEM(CHARGE=CHARGE, OPTION="CHAR_MECA")
+
+VECTEL1 = CALC_VECT_ELEM(CHARGE=FORCE, OPTION="CHAR_MECA")
 
 #
-MATRRIGI=ASSE_MATRICE(MATR_ELEM=RIGIELEM,NUME_DDL=NUMEROTA)
+#
+NUMEROTA = NUME_DDL(MATR_RIGI=RIGIELEM)
 
 #
-MATRMASS=ASSE_MATRICE(MATR_ELEM=MASSELEM,NUME_DDL=NUMEROTA)
+MATRRIGI = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMEROTA)
 
 #
-VECTASS=ASSE_VECTEUR(   VECT_ELEM=VECTEL1,  NUME_DDL=NUMEROTA)
+MATRMASS = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEROTA)
 
 #
-MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
-                 OPTION='PROCHE', SOLVEUR=_F(METHODE='MULT_FRONT'),
-                 CALC_FREQ=_F(NMAX_FREQ=1,
-                              FREQ=( 15.,),
-                              ),
-                 MATR_MASS=MATRMASS,
-                 )
+VECTASS = ASSE_VECTEUR(VECT_ELEM=VECTEL1, NUME_DDL=NUMEROTA)
+
+#
+MODES = CALC_MODES(
+    MATR_RIGI=MATRRIGI,
+    OPTION="PROCHE",
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CALC_FREQ=_F(NMAX_FREQ=1, FREQ=(15.0,)),
+    MATR_MASS=MATRMASS,
+)
 
 
 #
 
-U1=U0 * ANG
+U1 = U0 * ANG
 
-DEPLPHYS=CREA_CHAMP( OPERATION='AFFE', PROL_ZERO='OUI', TYPE_CHAM='NOEU_DEPL_R',
-MAILLAGE=POUTRE,
-                             CHAM_NO=VECTASS,
-                            AFFE=_F(  TOUT = 'OUI',
-                                   NOM_CMP = ( 'DX', 'DY', ),
-                                   VALE = (  U1,   U1,  ))
-                           )
-
-#
-PROJ_BASE(  BASE=MODES,
-            STOCKAGE='DIAG',
-            MATR_ASSE_GENE=(
-              _F(  MATRICE = CO("MASSEGEN"),
-                               MATR_ASSE = MATRMASS),
-              _F(  MATRICE = CO("RIGIDGEN"),
-                               MATR_ASSE = MATRRIGI)),
-              VECT_ASSE_GENE=_F(  VECTEUR = CO("DEPINI"),
-                               TYPE_VECT = 'DEPL',
-                               VECT_ASSE = DEPLPHYS)
-          )
+DEPLPHYS = CREA_CHAMP(
+    OPERATION="AFFE",
+    PROL_ZERO="OUI",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MAILLAGE=POUTRE,
+    CHAM_NO=VECTASS,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY"), VALE=(U1, U1)),
+)
 
 #
-#
-PLANZ=DEFI_OBSTACLE(   TYPE='BI_PLAN_Z' )
+PROJ_BASE(
+    BASE=MODES,
+    STOCKAGE="DIAG",
+    MATR_ASSE_GENE=(
+        _F(MATRICE=CO("MASSEGEN"), MATR_ASSE=MATRMASS),
+        _F(MATRICE=CO("RIGIDGEN"), MATR_ASSE=MATRRIGI),
+    ),
+    VECT_ASSE_GENE=_F(VECTEUR=CO("DEPINI"), TYPE_VECT="DEPL", VECT_ASSE=DEPLPHYS),
+)
 
-PLANY=DEFI_OBSTACLE(   TYPE='BI_PLAN_Y' )
+#
+#
+PLANZ = DEFI_OBSTACLE(TYPE="BI_PLAN_Z")
+
+PLANY = DEFI_OBSTACLE(TYPE="BI_PLAN_Y")
 
 #
 import numpy as np
-W0=( K / M ) ** 0.5
 
-C=COULOMB*np.sqrt(2.)/2. * M * G / K
+W0 = (K / M) ** 0.5
 
-T1=pi / W0
+C = COULOMB * np.sqrt(2.0) / 2.0 * M * G / K
 
-R1=( ( 2. * C ) - U0 ) * ANG
+T1 = pi / W0
 
-T2=2. * pi / W0
+R1 = ((2.0 * C) - U0) * ANG
 
-R2=( U0 - ( 4. * C ) ) * ANG
+T2 = 2.0 * pi / W0
 
-T3=3. * pi / W0
+R2 = (U0 - (4.0 * C)) * ANG
 
-R3=( ( 6. * C ) - U0 ) * ANG
+T3 = 3.0 * pi / W0
 
-T4=4. * pi / W0
+R3 = ((6.0 * C) - U0) * ANG
 
-R4=( U0 - ( 8. * C ) ) * ANG
+T4 = 4.0 * pi / W0
 
-print('Valeurs theoriques :')
+R4 = (U0 - (8.0 * C)) * ANG
+
+print("Valeurs theoriques :")
 print(R1)
 print(R2)
 print(R3)
 print(R4)
 #
-DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                             SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', TOLERANCE=1.E-8, PAS_MAXI=0.0005),
-                             MATR_MASS=MASSEGEN,
-                             MATR_RIGI=RIGIDGEN,
-                             AMOR_MODAL=_F(AMOR_REDUIT=0.01,),
-                             ETAT_INIT=_F( DEPL = DEPINI),
-                             INCREMENT=_F( INST_INIT = 0.,
-                                        INST_FIN = 0.3,
-                                        PAS = 1E-6),
-                            COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                                   GROUP_NO_1 = 'NO1',
-                                   GROUP_NO_2 = 'NO2',
-                                   INTITULE = 'LIAISON',
-                                   OBSTACLE = PLANZ,
-                                   NORM_OBST = (0., 1., 0.,),
-                                   DIST_1 = 0.250,
-                                   DIST_2 = 0.250,
-                                   RIGI_NOR = 20.,
-                                   RIGI_TAN = 400000.,
-                                   FROTTEMENT='COULOMB',
-                                   UNIDIRECTIONNEL='OUI',
-                                   COULOMB = COULOMB),
-                            #ARCHIVAGE =_F(PAS_ARCH = 1000,),
-                            ARCHIVAGE=_F(INST=( T1, T2, T3, T4, ),),
-                          )
+DYNAMODA = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="GENE",
+    SCHEMA_TEMPS=_F(SCHEMA="DEVOGE", TOLERANCE=1.0e-8, PAS_MAXI=0.0005),
+    MATR_MASS=MASSEGEN,
+    MATR_RIGI=RIGIDGEN,
+    AMOR_MODAL=_F(AMOR_REDUIT=0.01),
+    ETAT_INIT=_F(DEPL=DEPINI),
+    INCREMENT=_F(INST_INIT=0.0, INST_FIN=0.3, PAS=1e-6),
+    COMPORTEMENT=_F(
+        RELATION="DIS_CHOC",
+        GROUP_NO_1="NO1",
+        GROUP_NO_2="NO2",
+        INTITULE="LIAISON",
+        OBSTACLE=PLANZ,
+        NORM_OBST=(0.0, 1.0, 0.0),
+        DIST_1=0.250,
+        DIST_2=0.250,
+        RIGI_NOR=20.0,
+        RIGI_TAN=400000.0,
+        FROTTEMENT="COULOMB",
+        UNIDIRECTIONNEL="OUI",
+        COULOMB=COULOMB,
+    ),
+    # ARCHIVAGE =_F(PAS_ARCH = 1000,),
+    ARCHIVAGE=_F(INST=(T1, T2, T3, T4)),
+)
 
 #
 
-LISTEIMP=DEFI_LIST_REEL(  DEBUT=0.,
-                     INTERVALLE=_F(  JUSQU_A = 0.299, PAS = 5.E-4))
+LISTEIMP = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.299, PAS=5.0e-4))
 
 
-
-
-DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
-                               NOM_CHAM='DEPL',
-                               INTERPOL='LIN',
-                               INST=( T1, T2, T3, T4, )
-                           )
+DYNATRA1 = REST_GENE_PHYS(
+    RESU_GENE=DYNAMODA, NOM_CHAM="DEPL", INTERPOL="LIN", INST=(T1, T2, T3, T4)
+)
 
 # t1=RECU_FONCTION(RESULTAT=DYNATRA1,
 #                    INST=T1,
@@ -253,45 +243,51 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
 # print(np.array(t4.Ordo()))
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=DYNATRA1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DY',
-#                   VALE_REFE=R1,
-                   VALE_CALC=-0.0004839984335835559,
-#                   REFERENCE='ANALYTIQUE',
-                   ),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=DYNATRA1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DY',
-#                  VALE_REFE=R2,
-                   VALE_CALC=0.00037058423338897446,
-#                   REFERENCE='ANALYTIQUE',
-                   ),
-                _F(NUME_ORDRE=3,
-                   RESULTAT=DYNATRA1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DY',
-#                   VALE_REFE=R3,
-                   VALE_CALC=-0.0002606802712058347,
-#                   REFERENCE='ANALYTIQUE',
-                   ),
-                _F(NUME_ORDRE=4,
-                   RESULTAT=DYNATRA1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DY',
-#                   VALE_REFE=R4,
-                   VALE_CALC=0.00015418169719420954,
-#                   REFERENCE='ANALYTIQUE',
-),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=DYNATRA1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DY",
+            #                   VALE_REFE=R1,
+            VALE_CALC=-0.0004839984335835559,
+            #                   REFERENCE='ANALYTIQUE',
+        ),
+        _F(
+            NUME_ORDRE=2,
+            RESULTAT=DYNATRA1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DY",
+            #                  VALE_REFE=R2,
+            VALE_CALC=0.00037058423338897446,
+            #                   REFERENCE='ANALYTIQUE',
+        ),
+        _F(
+            NUME_ORDRE=3,
+            RESULTAT=DYNATRA1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DY",
+            #                   VALE_REFE=R3,
+            VALE_CALC=-0.0002606802712058347,
+            #                   REFERENCE='ANALYTIQUE',
+        ),
+        _F(
+            NUME_ORDRE=4,
+            RESULTAT=DYNATRA1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NO1",
+            NOM_CMP="DY",
+            #                   VALE_REFE=R4,
+            VALE_CALC=0.00015418169719420954,
+            #                   REFERENCE='ANALYTIQUE',
+        ),
+    )
+)
 
 
-FIN( )
+FIN()
 #

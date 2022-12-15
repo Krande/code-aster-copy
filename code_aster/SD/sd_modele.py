@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,19 +25,19 @@ from .sd_xfem import sd_modele_xfem
 
 
 class sd_modele(AsBase):
-#-----------------------------
+    # -----------------------------
     nomj = SDNom(fin=8)
 
     MODELE = sd_ligrel()
     MAILLE = Facultatif(AsVI())
-    PARTSD = Facultatif(sd_partition(SDNom='.PARTSD'))
+    PARTSD = Facultatif(sd_partition(SDNom=".PARTSD"))
 
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs
     # caractéristiques de l'étude :
-    lt = Facultatif(sd_l_table(SDNom(nomj='')))
+    lt = Facultatif(sd_l_table(SDNom(nomj="")))
 
     # Si le modèle vient de MODI_MODELE_XFEM :
-    xfem = Facultatif(sd_modele_xfem(SDNom(nomj='')))
+    xfem = Facultatif(sd_modele_xfem(SDNom(nomj="")))
 
     def check_existence(self, _):
         exi_liel = self.MODELE.LIEL.exists

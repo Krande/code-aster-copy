@@ -21,446 +21,503 @@
 #  GUIDE D'ONDE ACOUSTIQUE EN E.F. CLASSIQUES
 #  IDEM AHLV100A SAUF CELE_C COMPLEXE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-F=500.
+F = 500.0
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED', )
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-AIR=DEFI_MATERIAU( FLUIDE=_F( RHO = 1.3, CELE_C = ('RI',343.,10.,)))
+AIR = DEFI_MATERIAU(FLUIDE=_F(RHO=1.3, CELE_C=("RI", 343.0, 10.0)))
 
-CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
-                                 AFFE=_F( TOUT = 'OUI',  MATER = AIR) )
+CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=AIR))
 
-GUIDE=AFFE_MODELE(  MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI', MODELISATION = '3D',
-                                     PHENOMENE = 'ACOUSTIQUE') )
+GUIDE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="ACOUSTIQUE"))
 
-CHARACOU=AFFE_CHAR_ACOU(      MODELE=GUIDE,
-                 VITE_FACE=_F( GROUP_MA = 'ENTREE', VNOR = ('RI',0.014,0.,)))
+CHARACOU = AFFE_CHAR_ACOU(MODELE=GUIDE, VITE_FACE=_F(GROUP_MA="ENTREE", VNOR=("RI", 0.014, 0.0)))
 
-IMPEACOU=AFFE_CHAR_ACOU(      MODELE=GUIDE,
-                 IMPE_FACE=_F( GROUP_MA = 'SORTIE', IMPE = ('RI',445.9,0.,)))
+IMPEACOU = AFFE_CHAR_ACOU(MODELE=GUIDE, IMPE_FACE=_F(GROUP_MA="SORTIE", IMPE=("RI", 445.9, 0.0)))
 
 ASSEMBLAGE(
-                      MODELE=GUIDE,         CHARGE=IMPEACOU,
-                      CHAM_MATER=CHAMPMAT,
-                      NUME_DDL=CO("NUM"),MATR_ASSE=(
-                      _F(  MATRICE = CO("MATASK"), OPTION = 'RIGI_ACOU'),
-                                _F(  MATRICE = CO("MATASM"), OPTION = 'MASS_ACOU'),
-                                _F(  MATRICE = CO("MATASI"), OPTION = 'AMOR_ACOU')),
-                      VECT_ASSE=(_F(VECTEUR=CO("VECTASS"),OPTION='CHAR_ACOU',CHARGE=CHARACOU)),
-                   )
+    MODELE=GUIDE,
+    CHARGE=IMPEACOU,
+    CHAM_MATER=CHAMPMAT,
+    NUME_DDL=CO("NUM"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATASK"), OPTION="RIGI_ACOU"),
+        _F(MATRICE=CO("MATASM"), OPTION="MASS_ACOU"),
+        _F(MATRICE=CO("MATASI"), OPTION="AMOR_ACOU"),
+    ),
+    VECT_ASSE=(_F(VECTEUR=CO("VECTASS"), OPTION="CHAR_ACOU", CHARGE=CHARACOU)),
+)
 
 #
 #  ____________________CALCUL DES MODES_________________________________
 #
 
-MATASKR=COMB_MATR_ASSE(    COMB_R=_F( MATR_ASSE = MATASK,  PARTIE = 'REEL', COEF_R = 1.))
+MATASKR = COMB_MATR_ASSE(COMB_R=_F(MATR_ASSE=MATASK, PARTIE="REEL", COEF_R=1.0))
 
-MATASMR=COMB_MATR_ASSE(    COMB_R=_F( MATR_ASSE = MATASM,  PARTIE = 'REEL', COEF_R = 1.))
+MATASMR = COMB_MATR_ASSE(COMB_R=_F(MATR_ASSE=MATASM, PARTIE="REEL", COEF_R=1.0))
 
 #
 
-MODES=CALC_MODES(MATR_RIGI=MATASKR,
-                 OPTION='BANDE',
-                 CALC_FREQ=_F(FREQ=( 1.,1000.,),
-                              ),
-                 MATR_MASS=MATASMR,
-                 )
+MODES = CALC_MODES(
+    MATR_RIGI=MATASKR, OPTION="BANDE", CALC_FREQ=_F(FREQ=(1.0, 1000.0)), MATR_MASS=MATASMR
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=171.71899772715,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=343.44480755601,
-                   ),
-                _F(NUME_ORDRE=3,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=515.21093376858,
-                   ),
-                _F(NUME_ORDRE=4,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=687.10176202157,
-                   ),
-                _F(NUME_ORDRE=5,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=859.27242792474,
-                   ),
-                _F(NUME_ORDRE=6,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=861.81711508411,
-                   ),
-                _F(NUME_ORDRE=7,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=878.75959011716,
-                   ),
-                _F(NUME_ORDRE=8,
-                   PARA='FREQ',
-                   RESULTAT=MODES,
-                   VALE_CALC=927.74987351971,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=MODES, VALE_CALC=171.71899772715),
+        _F(NUME_ORDRE=2, PARA="FREQ", RESULTAT=MODES, VALE_CALC=343.44480755601),
+        _F(NUME_ORDRE=3, PARA="FREQ", RESULTAT=MODES, VALE_CALC=515.21093376858),
+        _F(NUME_ORDRE=4, PARA="FREQ", RESULTAT=MODES, VALE_CALC=687.10176202157),
+        _F(NUME_ORDRE=5, PARA="FREQ", RESULTAT=MODES, VALE_CALC=859.27242792474),
+        _F(NUME_ORDRE=6, PARA="FREQ", RESULTAT=MODES, VALE_CALC=861.81711508411),
+        _F(NUME_ORDRE=7, PARA="FREQ", RESULTAT=MODES, VALE_CALC=878.75959011716),
+        _F(NUME_ORDRE=8, PARA="FREQ", RESULTAT=MODES, VALE_CALC=927.74987351971),
+    )
+)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MODES,NUME_ORDRE=2),)
-IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODES,NUME_ORDRE=2),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=MODES, NUME_ORDRE=2))
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=MODES, NUME_ORDRE=2))
 
 
 #  ----------------------CALCUL DECOMPOSE-------------------------------
 #
 
-MATRES=COMB_MATR_ASSE( COMB_C=(   _F( MATR_ASSE = MATASK,
-                                        COEF_R = 1.),
-                                       _F( MATR_ASSE = MATASM,
-                                        COEF_R = -9869604.4),
-                                       _F( MATR_ASSE = MATASI,
-                                        COEF_C = ('RI',0.,3141.5926,)))
-                            )
+MATRES = COMB_MATR_ASSE(
+    COMB_C=(
+        _F(MATR_ASSE=MATASK, COEF_R=1.0),
+        _F(MATR_ASSE=MATASM, COEF_R=-9869604.4),
+        _F(MATR_ASSE=MATASI, COEF_C=("RI", 0.0, 3141.5926)),
+    )
+)
 
 
-
-VECRES=CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='NOEU_PRES_C',MODELE=GUIDE,NUME_DDL=NUM ,
-              ASSE=_F(CHAM_GD=VECTASS,CUMUL='NON',TOUT='OUI',COEF_C=('RI',0.,-3141.5926,)))
-
-
-MATRES=FACTORISER( reuse=MATRES,  MATR_ASSE=MATRES )
-
-VECRES=RESOUDRE( INFO=2,reuse=VECRES,  MATR=MATRES,
-                             CHAM_NO=VECRES
-                        )
-
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='NO1',
-                      VALE_CALC_C=('RI', -6.2988924832869, -0.091098299075749),
-                      NOM_CMP='PRES',
-                      CHAM_GD=VECRES,),
-                   _F(GROUP_NO='NO780',
-                      VALE_CALC_C=('RI', -6.2988925025661, -0.091098230584278),
-                      NOM_CMP='PRES',
-                      CHAM_GD=VECRES,),
-                   _F(GROUP_NO='NO751',
-                      VALE_CALC_C=('RI', 4.6145141475064, 1.334153874052),
-                      NOM_CMP='PRES',
-                      CHAM_GD=VECRES,),
-                   _F(GROUP_NO='NO763',
-                      VALE_CALC_C=('RI', 4.6145140916648, 1.3341538367595),
-                      NOM_CMP='PRES',
-                      CHAM_GD=VECRES,),
-                   ),
-          )
-
-CHPRAC=CALC_CHAM_ELEM(      MODELE=GUIDE,
-                               PRES=VECRES,  OPTION='PRAC_ELNO' )
-
-TEST_RESU(CHAM_ELEM=(_F(GROUP_NO='NO1',
-                        NOM_CMP='DB',
-                        GROUP_MA='MA1',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=109.96559229788,
-                        ),
-                     _F(GROUP_NO='NO780',
-                        NOM_CMP='DB',
-                        GROUP_MA='MA1',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=109.96559232309,
-                        ),
-                     _F(GROUP_NO='NO751',
-                        NOM_CMP='DB',
-                        GROUP_MA='MA57',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=107.6105738924,
-                        ),
-                     _F(GROUP_NO='NO763',
-                        NOM_CMP='DB',
-                        GROUP_MA='MA57',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=107.61057377667,
-                        ),
-                     ),
-          )
-
-TEST_RESU(CHAM_ELEM=(_F(GROUP_NO='NO1',
-                        NOM_CMP='PRES_R',
-                        GROUP_MA='MA1',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=-6.2988924832869,
-                        ),
-                     _F(GROUP_NO='NO780',
-                        NOM_CMP='PRES_R',
-                        GROUP_MA='MA1',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=-6.2988925025661,
-                        ),
-                     _F(GROUP_NO='NO751',
-                        NOM_CMP='PRES_R',
-                        GROUP_MA='MA57',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=4.6145141475064,
-                        ),
-                     _F(GROUP_NO='NO763',
-                        NOM_CMP='PRES_R',
-                        GROUP_MA='MA57',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=4.6145140916648,
-                        ),
-                     ),
-          )
-
-TEST_RESU(CHAM_ELEM=(_F(GROUP_NO='NO1',
-                        CRITERE='ABSOLU',
-                        NOM_CMP='PRES_I',
-                        GROUP_MA='MA1',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=-0.091098299075749,
-                        ),
-                     _F(GROUP_NO='NO780',
-                        CRITERE='ABSOLU',
-                        NOM_CMP='PRES_I',
-                        GROUP_MA='MA1',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=-0.091098230584278,
-                        ),
-                     _F(GROUP_NO='NO751',
-                        NOM_CMP='PRES_I',
-                        GROUP_MA='MA57',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=1.334153874052,
-                        ),
-                     _F(GROUP_NO='NO763',
-                        NOM_CMP='PRES_I',
-                        GROUP_MA='MA57',
-                        CHAM_GD=CHPRAC,
-                        VALE_CALC=1.3341538367595,
-                        ),
-                     ),
-          )
-
-#-----------------------CALCUL HARMONIQUE-------------------------------
+VECRES = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_PRES_C",
+    MODELE=GUIDE,
+    NUME_DDL=NUM,
+    ASSE=_F(CHAM_GD=VECTASS, CUMUL="NON", TOUT="OUI", COEF_C=("RI", 0.0, -3141.5926)),
+)
 
 
-PRESHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
-                             MATR_MASS=MATASM,  MATR_RIGI=MATASK,
-                             MATR_AMOR=MATASI,
-                             FREQ=F,
-                             EXCIT=_F( VECT_ASSE = VECTASS,  COEF_MULT = -1.,
-                                    PUIS_PULS = 1,  PHAS_DEG = 90.))
+MATRES = FACTORISER(reuse=MATRES, MATR_ASSE=MATRES)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   VALE_CALC_C=('RI', -6.2988925371429, -0.091098267033657),
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='NO1',
-                   NOM_CMP='PRES',),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=('RI', -6.298892556422, -0.091098198542178),
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='NO780',
-                   NOM_CMP='PRES',),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=('RI', 4.6145141710985, 1.3341538648043),
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='NO751',
-                   NOM_CMP='PRES',),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=('RI', 4.6145141152569, 1.3341538275118),
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='NO763',
-                   NOM_CMP='PRES',),
-                ),
-          )
+VECRES = RESOUDRE(INFO=2, reuse=VECRES, MATR=MATRES, CHAM_NO=VECRES)
 
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,NOM_CMP = 'PRES',
-                  ),)
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="NO1",
+            VALE_CALC_C=("RI", -6.2988924832869, -0.091098299075749),
+            NOM_CMP="PRES",
+            CHAM_GD=VECRES,
+        ),
+        _F(
+            GROUP_NO="NO780",
+            VALE_CALC_C=("RI", -6.2988925025661, -0.091098230584278),
+            NOM_CMP="PRES",
+            CHAM_GD=VECRES,
+        ),
+        _F(
+            GROUP_NO="NO751",
+            VALE_CALC_C=("RI", 4.6145141475064, 1.334153874052),
+            NOM_CMP="PRES",
+            CHAM_GD=VECRES,
+        ),
+        _F(
+            GROUP_NO="NO763",
+            VALE_CALC_C=("RI", 4.6145140916648, 1.3341538367595),
+            NOM_CMP="PRES",
+            CHAM_GD=VECRES,
+        ),
+    )
+)
 
-IMPR_RESU(FORMAT='MED',
-          RESU=(_F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,
-                  PARTIE='REEL',NOM_CMP='PRES',NOM_CHAM_MED='PRESHARM_DEPL_PRES_REEL'),
-                _F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,
-                  PARTIE='IMAG',NOM_CMP='PRES',NOM_CHAM_MED='PRESHARM_DEPL_PRES_IMAG'),),)
+CHPRAC = CALC_CHAM_ELEM(MODELE=GUIDE, PRES=VECRES, OPTION="PRAC_ELNO")
+
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(GROUP_NO="NO1", NOM_CMP="DB", GROUP_MA="MA1", CHAM_GD=CHPRAC, VALE_CALC=109.96559229788),
+        _F(
+            GROUP_NO="NO780",
+            NOM_CMP="DB",
+            GROUP_MA="MA1",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=109.96559232309,
+        ),
+        _F(
+            GROUP_NO="NO751",
+            NOM_CMP="DB",
+            GROUP_MA="MA57",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=107.6105738924,
+        ),
+        _F(
+            GROUP_NO="NO763",
+            NOM_CMP="DB",
+            GROUP_MA="MA57",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=107.61057377667,
+        ),
+    )
+)
+
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            GROUP_NO="NO1",
+            NOM_CMP="PRES_R",
+            GROUP_MA="MA1",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=-6.2988924832869,
+        ),
+        _F(
+            GROUP_NO="NO780",
+            NOM_CMP="PRES_R",
+            GROUP_MA="MA1",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=-6.2988925025661,
+        ),
+        _F(
+            GROUP_NO="NO751",
+            NOM_CMP="PRES_R",
+            GROUP_MA="MA57",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=4.6145141475064,
+        ),
+        _F(
+            GROUP_NO="NO763",
+            NOM_CMP="PRES_R",
+            GROUP_MA="MA57",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=4.6145140916648,
+        ),
+    )
+)
+
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            GROUP_NO="NO1",
+            CRITERE="ABSOLU",
+            NOM_CMP="PRES_I",
+            GROUP_MA="MA1",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=-0.091098299075749,
+        ),
+        _F(
+            GROUP_NO="NO780",
+            CRITERE="ABSOLU",
+            NOM_CMP="PRES_I",
+            GROUP_MA="MA1",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=-0.091098230584278,
+        ),
+        _F(
+            GROUP_NO="NO751",
+            NOM_CMP="PRES_I",
+            GROUP_MA="MA57",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=1.334153874052,
+        ),
+        _F(
+            GROUP_NO="NO763",
+            NOM_CMP="PRES_I",
+            GROUP_MA="MA57",
+            CHAM_GD=CHPRAC,
+            VALE_CALC=1.3341538367595,
+        ),
+    )
+)
+
+# -----------------------CALCUL HARMONIQUE-------------------------------
 
 
-PRESHARM=CALC_CHAMP( reuse=PRESHARM,
-                            TOUT_ORDRE='OUI',
-                             RESULTAT=PRESHARM,
-                                ACOUSTIQUE=('INTE_ELNO')
-           )
+PRESHARM = DYNA_VIBRA(
+    TYPE_CALCUL="HARM",
+    BASE_CALCUL="PHYS",
+    MATR_MASS=MATASM,
+    MATR_RIGI=MATASK,
+    MATR_AMOR=MATASI,
+    FREQ=F,
+    EXCIT=_F(VECT_ASSE=VECTASS, COEF_MULT=-1.0, PUIS_PULS=1, PHAS_DEG=90.0),
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.045361515457599,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO780',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.045361512700732,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO751',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.026662736020298,
-                   GROUP_MA='MA57',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO763',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.026662734952373,
-                   GROUP_MA='MA57',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=1.0561592212629E-03,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO780',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=1.056157406448E-03,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO751',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=-1.470457675855E-04,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='MA57',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='NO763',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=-1.4704547075965E-04,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='MA57',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=("RI", -6.2988925371429, -0.091098267033657),
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRES",
+            GROUP_NO="NO1",
+            NOM_CMP="PRES",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=("RI", -6.298892556422, -0.091098198542178),
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRES",
+            GROUP_NO="NO780",
+            NOM_CMP="PRES",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=("RI", 4.6145141710985, 1.3341538648043),
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRES",
+            GROUP_NO="NO751",
+            NOM_CMP="PRES",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=("RI", 4.6145141152569, 1.3341538275118),
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRES",
+            GROUP_NO="NO763",
+            NOM_CMP="PRES",
+        ),
+    )
+)
 
-PRESHARM=CALC_CHAMP( reuse=PRESHARM,
-                            TOUT_ORDRE='OUI',
-                             RESULTAT=PRESHARM,
-                                ACOUSTIQUE=('PRAC_ELNO')
-           )
+IMPR_RESU(
+    FORMAT="RESULTAT", RESU=_F(RESULTAT=PRESHARM, NOM_CHAM="PRES", NUME_ORDRE=1, NOM_CMP="PRES")
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='DB',
-                   VALE_CALC=109.96559237149,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO780',
-                   NOM_CMP='DB',
-                   VALE_CALC=109.9655923967,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO751',
-                   NOM_CMP='DB',
-                   VALE_CALC=107.61057392873,
-                   GROUP_MA='MA57',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO763',
-                   NOM_CMP='DB',
-                   VALE_CALC=107.610573813,
-                   GROUP_MA='MA57',),
-                ),
-          )
+IMPR_RESU(
+    FORMAT="MED",
+    RESU=(
+        _F(
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRES",
+            NUME_ORDRE=1,
+            PARTIE="REEL",
+            NOM_CMP="PRES",
+            NOM_CHAM_MED="PRESHARM_DEPL_PRES_REEL",
+        ),
+        _F(
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRES",
+            NUME_ORDRE=1,
+            PARTIE="IMAG",
+            NOM_CMP="PRES",
+            NOM_CHAM_MED="PRESHARM_DEPL_PRES_IMAG",
+        ),
+    ),
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='PRES_R',
-                   VALE_CALC=-6.2988925371429,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO780',
-                   NOM_CMP='PRES_R',
-                   VALE_CALC=-6.298892556422,
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO751',
-                   NOM_CMP='PRES_R',
-                   VALE_CALC=4.6145141710985,
-                   GROUP_MA='MA57',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO763',
-                   NOM_CMP='PRES_R',
-                   VALE_CALC=4.6145141152569,
-                   GROUP_MA='MA57',),
-                ),
-          )
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='PRES_I',
-                   VALE_CALC=-0.091098267033657,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO780',
-                   NOM_CMP='PRES_I',
-                   VALE_CALC=-0.091098198542178,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='MA1',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO751',
-                   NOM_CMP='PRES_I',
-                   VALE_CALC=1.3341538648043,
-                   GROUP_MA='MA57',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=PRESHARM,
-                   NOM_CHAM='PRAC_ELNO',
-                   GROUP_NO='NO763',
-                   NOM_CMP='PRES_I',
-                   VALE_CALC=1.3341538275118,
-                   GROUP_MA='MA57',),
-                ),
-          )
+PRESHARM = CALC_CHAMP(reuse=PRESHARM, TOUT_ORDRE="OUI", RESULTAT=PRESHARM, ACOUSTIQUE=("INTE_ELNO"))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.045361515457599,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO780",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.045361512700732,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO751",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.026662736020298,
+            GROUP_MA="MA57",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO763",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.026662734952373,
+            GROUP_MA="MA57",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="INTX_I",
+            VALE_CALC=1.0561592212629e-03,
+            CRITERE="ABSOLU",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO780",
+            NOM_CMP="INTX_I",
+            VALE_CALC=1.056157406448e-03,
+            CRITERE="ABSOLU",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO751",
+            NOM_CMP="INTX_I",
+            VALE_CALC=-1.470457675855e-04,
+            CRITERE="ABSOLU",
+            GROUP_MA="MA57",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="NO763",
+            NOM_CMP="INTX_I",
+            VALE_CALC=-1.4704547075965e-04,
+            CRITERE="ABSOLU",
+            GROUP_MA="MA57",
+        ),
+    )
+)
+
+PRESHARM = CALC_CHAMP(reuse=PRESHARM, TOUT_ORDRE="OUI", RESULTAT=PRESHARM, ACOUSTIQUE=("PRAC_ELNO"))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="DB",
+            VALE_CALC=109.96559237149,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO780",
+            NOM_CMP="DB",
+            VALE_CALC=109.9655923967,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO751",
+            NOM_CMP="DB",
+            VALE_CALC=107.61057392873,
+            GROUP_MA="MA57",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO763",
+            NOM_CMP="DB",
+            VALE_CALC=107.610573813,
+            GROUP_MA="MA57",
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="PRES_R",
+            VALE_CALC=-6.2988925371429,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO780",
+            NOM_CMP="PRES_R",
+            VALE_CALC=-6.298892556422,
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO751",
+            NOM_CMP="PRES_R",
+            VALE_CALC=4.6145141710985,
+            GROUP_MA="MA57",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO763",
+            NOM_CMP="PRES_R",
+            VALE_CALC=4.6145141152569,
+            GROUP_MA="MA57",
+        ),
+    )
+)
+
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="PRES_I",
+            VALE_CALC=-0.091098267033657,
+            CRITERE="ABSOLU",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO780",
+            NOM_CMP="PRES_I",
+            VALE_CALC=-0.091098198542178,
+            CRITERE="ABSOLU",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO751",
+            NOM_CMP="PRES_I",
+            VALE_CALC=1.3341538648043,
+            GROUP_MA="MA57",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=PRESHARM,
+            NOM_CHAM="PRAC_ELNO",
+            GROUP_NO="NO763",
+            NOM_CMP="PRES_I",
+            VALE_CALC=1.3341538275118,
+            GROUP_MA="MA57",
+        ),
+    )
+)
 
 FIN()
 #

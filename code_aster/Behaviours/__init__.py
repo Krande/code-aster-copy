@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,15 +34,12 @@ def _init_cata(debug):
     """Import de tous les comportements"""
     pkgdir = osp.dirname(__file__)
     pkg = osp.basename(pkgdir)
-    l_mod = [osp.splitext(osp.basename(modname))[0]
-             for modname in glob(osp.join(pkgdir, '*.py'))]
-    l_mod = [modname for modname in l_mod
-             if modname not in ('__init__', 'cata_comportement')]
+    l_mod = [osp.splitext(osp.basename(modname))[0] for modname in glob(osp.join(pkgdir, "*.py"))]
+    l_mod = [modname for modname in l_mod if modname not in ("__init__", "cata_comportement")]
     all_vari = set()
     for modname in l_mod:
         try:
-            mod = __import__('code_aster.%s.%s' %
-                             (pkg, modname), globals(), locals(), [modname])
+            mod = __import__("code_aster.%s.%s" % (pkg, modname), globals(), locals(), [modname])
             # liste des lois de comportements définies dans le module
             for objname in dir(mod):
                 obj = getattr(mod, objname)
@@ -60,9 +57,9 @@ def _init_cata(debug):
     unused = list(set(DICT_NOM_VARI.keys()).difference(all_vari))
     if unused:
         unused.sort()
-        msg = "Variables déclarées dans cata_vari mais non utilisées: %s" \
-            % ', '.join(unused)
+        msg = "Variables déclarées dans cata_vari mais non utilisées: %s" % ", ".join(unused)
         raise CataComportementError(msg)
+
 
 _init_cata(debug=False)
 del _init_cata

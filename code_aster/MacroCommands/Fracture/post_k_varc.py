@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,20 @@ from ...Objects import FieldOnNodesReal
 from ...Supervis import ExecuteCommand
 
 POST_K_VARC_CATA = OPER(
-    nom="POST_K_VARC", op=48, sd_prod=cham_no_sdaster, reentrant='n',
+    nom="POST_K_VARC",
+    op=48,
+    sd_prod=cham_no_sdaster,
+    reentrant="n",
     fr="Récuperation d'un champ de variable de commande a un instant donné à partir d'un résultat",
-
-    RESULTAT=SIMP(statut='o', typ=(evol_elas,evol_noli)),
-    INST=SIMP(statut='o',typ='R'),
-    NOM_VARC=SIMP(statut='o',typ='TXM',into=("TEMP","NEUT1")),
+    RESULTAT=SIMP(statut="o", typ=(evol_elas, evol_noli)),
+    INST=SIMP(statut="o", typ="R"),
+    NOM_VARC=SIMP(statut="o", typ="TXM", into=("TEMP", "NEUT1")),
 )
 
+
 class PostKVarc(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "POST_K_VARC"
     command_cata = POST_K_VARC_CATA
 
@@ -56,5 +59,6 @@ class PostKVarc(ExecuteCommand):
         """
 
         self._result.build()
+
 
 POST_K_VARC = PostKVarc.run

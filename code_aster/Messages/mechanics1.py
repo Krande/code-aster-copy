@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,8 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-    39 : _("""
+    39: _(
+        """
 Le modèle contient des éléments de structure, il faut probablement utiliser le
 mot-clé CARA_ELEM.
 
@@ -32,14 +31,16 @@ Risque & Conseil :
     Ce message peut aider à comprendre un éventuel problème ultérieur lors de calculs élémentaires
     nécessitant des caractéristiques pour les éléments de structure.
     Vérifiez si votre modélisation nécessite un CARA_ELEM.
-"""),
-
-    40 : _("""
+"""
+    ),
+    40: _(
+        """
 Il se peut que le modèle ait besoin d'un champ de matériau (mot-clé CHAM_MATER).
 
 Risque & Conseil :
     Ce message peut aider à comprendre un éventuel problème ultérieur lors de
     calculs élémentaires nécessitant des caractéristiques matérielles.
     Vérifiez si votre modélisation nécessite un CHAM_MATER.
-"""),
+"""
+    ),
 }

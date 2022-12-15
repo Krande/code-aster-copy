@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class Copier(ExecuteCommand):
-    """Command COPIER
-    """
+    """Command COPIER"""
+
     command_name = "COPIER"
 
     def create_result(self, keywords):
@@ -34,12 +34,11 @@ class Copier(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        other = keywords['CONCEPT']
+        other = keywords["CONCEPT"]
         if isinstance(other, PrestressingCable):
             self._result = PrestressingCable(
-                other.getModel(),
-                other.getMaterialField(),
-                other.getElementaryCharacteristics())
+                other.getModel(), other.getMaterialField(), other.getElementaryCharacteristics()
+            )
         elif isinstance(other, Result):
             # do not support several models
             mesh = other.getModel().getMesh()
@@ -56,7 +55,7 @@ class Copier(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        other = keywords['CONCEPT']
+        other = keywords["CONCEPT"]
 
         if isinstance(other, Result):
             indexes = other.getIndexes()
@@ -67,7 +66,8 @@ class Copier(ExecuteCommand):
                     self._result.setMaterialField(other.getMaterialField(i), i)
                 if other.hasElementaryCharacteristics(i):
                     self._result.setElementaryCharacteristics(
-                        other.getElementaryCharacteristics(i), i)
+                        other.getElementaryCharacteristics(i), i
+                    )
                 if other.hasListOfLoads(i):
                     self._result.setListOfLoads(other.getListOfLoads(i), i)
 

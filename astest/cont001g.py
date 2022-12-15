@@ -25,33 +25,23 @@ from libaster import ContactPairing, ContactComputation
 import numpy
 
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    DEBUG=_F(SDVERI='OUI',),
-    INFO=1,
-)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = code_aster.TestCase()
 
 Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 Mail = MODI_MAILLAGE(
-    reuse=Mail,
-    MAILLAGE=Mail,
-    ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS",)),
+    reuse=Mail, MAILLAGE=Mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS"))
 )
 
 
-MODI = AFFE_MODELE(MAILLAGE=Mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
+MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
 # Slave side - CONT_BAS
 DEFICO_BAS = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -69,33 +59,97 @@ pair = ContactPairing(DEFICO_BAS)
 pair.compute()
 
 
-test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [
-                         (18, 3), (18, 4), (19, 4), (19, 5)])
-ref = [[-0.7333333333333334, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-       [-1.0, -0.7333333333333334, 0.0, 0.0, 0.0, 0.0, 0.0,
-           0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-       [-0.06666666666666686, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-       [-1.0, -0.06666666666666686, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [(18, 3), (18, 4), (19, 4), (19, 5)])
+ref = [
+    [
+        -0.7333333333333334,
+        0.6,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+    [
+        -1.0,
+        -0.7333333333333334,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+    [
+        -0.06666666666666686,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+    [
+        -1.0,
+        -0.06666666666666686,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+]
 
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
 test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
 
 
-MailQ = CREA_MAILLAGE(MAILLAGE=Mail,
-                      LINE_QUAD=_F(TOUT='OUI'),)
+MailQ = CREA_MAILLAGE(MAILLAGE=Mail, LINE_QUAD=_F(TOUT="OUI"))
 
 
-MODIQ = AFFE_MODELE(MAILLAGE=MailQ,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN',),)
+MODIQ = AFFE_MODELE(
+    MAILLAGE=MailQ, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
 # Slave side - CONT_BAS
 DEFICOQ_BAS = DEFI_CONT(
     MODELE=MODIQ,
     INFO=2,
-
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -113,16 +167,81 @@ pair = ContactPairing(DEFICOQ_BAS)
 pair.compute()
 
 
-test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [
-                         (18, 3), (18, 4), (19, 4), (19, 5)])
-ref = [[-0.7333333333333334, 0.6000000000000001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-       [-1.0, -0.7333333333333334, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-       0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-       [-0.06666666666666686, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-       0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-       [-1.0, -0.06666666666666686, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-       0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [(18, 3), (18, 4), (19, 4), (19, 5)])
+ref = [
+    [
+        -0.7333333333333334,
+        0.6000000000000001,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+    [
+        -1.0,
+        -0.7333333333333334,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+    [
+        -0.06666666666666686,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+    [
+        -1.0,
+        -0.06666666666666686,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
+]
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)[0]), 16)
 test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)

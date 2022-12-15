@@ -27,22 +27,21 @@ test = code_aster.TestCase()
 
 pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
-model = AFFE_MODELE(MAILLAGE=pMesh,
-                    AFFE=_F(MODELISATION='3D', PHENOMENE='MECANIQUE', TOUT='OUI'),)
+model = AFFE_MODELE(MAILLAGE=pMesh, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 if nbproc == 2:
     localGrpNodes = [tuple("SOURCE"), tuple()]
-    localGrpCells = [tuple("ENTREE"),tuple("SORTIE")]
+    localGrpCells = [tuple("ENTREE"), tuple("SORTIE")]
 
 test.assertEqual(pMesh.getDimension(), 3)
 test.assertEqual(pMesh.getNumberOfNodes(), 261)
 test.assertEqual(pMesh.getNumberOfCells(), 36)
 test.assertTrue(pMesh.isParallel())
 test.assertTrue(pMesh.getGroupsOfNodes(False), tuple("SOURCE"))
-test.assertTrue(pMesh.getGroupsOfCells(False), sorted(["ENTREE","SORTIE"]))
+test.assertTrue(pMesh.getGroupsOfCells(False), sorted(["ENTREE", "SORTIE"]))
 test.assertTrue(pMesh.getGroupsOfNodes(), localGrpNodes[rank])
 test.assertTrue(pMesh.getGroupsOfCells(), localGrpCells[rank])
 

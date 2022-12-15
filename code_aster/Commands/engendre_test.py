@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,8 +23,9 @@ from ..Supervis import ExecuteCommand
 
 
 class EngendreTest(ExecuteCommand):
-    """Command ENGENDRE_TEST
-    """
+    """Command ENGENDRE_TEST"""
+
     command_name = "ENGENDRE_TEST"
+
 
 ENGENDRE_TEST = EngendreTest.run

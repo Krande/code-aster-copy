@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,27 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEFI_LIST_REEL=OPER(nom="DEFI_LIST_REEL",op=24,sd_prod=listr8_sdaster,
-                    fr=tr("Définir une liste de réels strictement croissante"),
-                    reentrant='n',
-         regles=(UN_PARMI('VALE','DEBUT',),
-                 EXCLUS('VALE','INTERVALLE'),
-                 ENSEMBLE('DEBUT','INTERVALLE')),
-         VALE            =SIMP(statut='f',typ='R',max='**'),
-         DEBUT           =SIMP(statut='f',typ='R'),
-         INTERVALLE      =FACT(statut='f',max='**',
-           regles=(UN_PARMI('NOMBRE','PAS'),),
-           JUSQU_A         =SIMP(statut='o',typ='R'),
-           NOMBRE          =SIMP(statut='f',typ='I'),
-           PAS             =SIMP(statut='f',typ='R'),
-         ),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
+DEFI_LIST_REEL = OPER(
+    nom="DEFI_LIST_REEL",
+    op=24,
+    sd_prod=listr8_sdaster,
+    fr=tr("Définir une liste de réels strictement croissante"),
+    reentrant="n",
+    regles=(
+        UN_PARMI("VALE", "DEBUT"),
+        EXCLUS("VALE", "INTERVALLE"),
+        ENSEMBLE("DEBUT", "INTERVALLE"),
+    ),
+    VALE=SIMP(statut="f", typ="R", max="**"),
+    DEBUT=SIMP(statut="f", typ="R"),
+    INTERVALLE=FACT(
+        statut="f",
+        max="**",
+        regles=(UN_PARMI("NOMBRE", "PAS"),),
+        JUSQU_A=SIMP(statut="o", typ="R"),
+        NOMBRE=SIMP(statut="f", typ="I"),
+        PAS=SIMP(statut="f", typ="R"),
+    ),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

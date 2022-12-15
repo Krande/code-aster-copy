@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,11 @@ from .sd_util import *
 
 class sd_cham_no(sd_titre):
     nomj = SDNom(fin=19)
-    VALE = AsVect(ltyp=Parmi(4, 8, 16, 24), type=Parmi(
-        'C', 'I', 'K', 'R'), docu=Parmi('', '2', '3'), )
+    VALE = AsVect(
+        ltyp=Parmi(4, 8, 16, 24), type=Parmi("C", "I", "K", "R"), docu=Parmi("", "2", "3")
+    )
     REFE = AsVK24(lonmax=4)
-    DESC = AsVI(docu='CHNO', )
+    DESC = AsVI(docu="CHNO")
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
@@ -48,12 +49,13 @@ class sd_cham_no(sd_titre):
         refe = self.REFE.get_stripped()
         mail = refe[0]
         prof_chno = refe[1]
-        assert refe[2] == '', refe
-        assert refe[3] == '', refe
+        assert refe[2] == "", refe
+        assert refe[3] == "", refe
         return mail, prof_chno
 
     def check_cham_no_i_REFE(self, checker):
         from .sd_maillage import sd_maillage
+
         if not self.exists():
             return
         if self.REFE in checker.names:
@@ -67,8 +69,8 @@ class sd_cham_no(sd_titre):
         #  - cela pose un problème "import circulaire" avec sd_maillage -> sd_cham_no => import ici
         sd2 = sd_maillage(mail)
         sd2.check(checker)
-        if prof_chno and num > 0 :
-            if prof_chno[:14] + '.NUME.PRNO' in checker.names:
+        if prof_chno and num > 0:
+            if prof_chno[:14] + ".NUME.PRNO" in checker.names:
                 return
             sd2 = sd_prof_chno(prof_chno)
             sd2.check(checker)
@@ -80,7 +82,7 @@ class sd_cham_no(sd_titre):
             return
 
         gd, num = self.u_desc()
-        if (num < 0):
+        if num < 0:
             nb_ec = sdu_nb_ec(gd)
             assert self.DESC.lonmax == 2 + nb_ec
         else:

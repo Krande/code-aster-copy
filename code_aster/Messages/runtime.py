@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,18 +20,19 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
 La variable d'environnement %(k1)s n'est pas définie.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 Le chemin d'accès aux bibliothèques est trop long. Il doit être inférieur
 à %(i1)d caractères. Il est défini par la variable d'environnement '%(k1)s'.
 
 Conseil :
     Installer Code_Aster dans un chemin plus accessible, ou bien, créer
     un lien symbolique pour réduire la longueur du chemin.
-"""),
-
+"""
+    ),
 }

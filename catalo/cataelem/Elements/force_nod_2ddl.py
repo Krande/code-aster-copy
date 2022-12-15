@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,46 +25,44 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY',))
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 
-MFORCEF  = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
-    components=('FX','FY','REP','ALPHA','BETA',
-          'GAMMA',))
+MFORCEF = LocatedComponents(
+    phys=PHY.FORC_F, type="ELEM", components=("FX", "FY", "REP", "ALPHA", "BETA", "GAMMA")
+)
 
 
-MFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELEM',
-    components=('FX','FY','REP','ALPHA','BETA',
-          'GAMMA',))
+MFORCER = LocatedComponents(
+    phys=PHY.FORC_R, type="ELEM", components=("FX", "FY", "REP", "ALPHA", "BETA", "GAMMA")
+)
 
 
-MGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y','Z',))
+MGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class FORCE_NOD_2DDL(Element):
     """Please document this element"""
+
     meshType = MT.POI1
 
     calculs = (
-        OP.CHAR_MECA_FORC_F(te=1,
-        para_in=((SP.PFORNOF, MFORCEF), (SP.PGEOMER, MGEOMER),
-                 (SP.PTEMPSR, LC.MTEMPSR), ),
-        para_out=((SP.PVECTUR, MVECTUR), ),
+        OP.CHAR_MECA_FORC_F(
+            te=1,
+            para_in=((SP.PFORNOF, MFORCEF), (SP.PGEOMER, MGEOMER), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.CHAR_MECA_FORC_R(te=1,
-        para_in=((SP.PFORNOR, MFORCER), (SP.PGEOMER, MGEOMER),
-                 ),
-        para_out=((SP.PVECTUR, MVECTUR), ),
+        OP.CHAR_MECA_FORC_R(
+            te=1,
+            para_in=((SP.PFORNOR, MFORCER), (SP.PGEOMER, MGEOMER)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
     )

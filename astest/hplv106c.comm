@@ -19,13 +19,12 @@
 
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), IMPR_MACRO='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
 
 ### Cellule Hexagonale
 ### Ratio fibres/matrice = 0.6
 
-MA = LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED')
+MA = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 UN = DEFI_CONSTANTE(VALE=1)
 
@@ -35,54 +34,53 @@ NU_FIBRE = DEFI_CONSTANTE(VALE=0.22)
 E_MATRICE = DEFI_CONSTANTE(VALE=3500)
 NU_MATRICE = DEFI_CONSTANTE(VALE=0.35)
 
-VERRE = DEFI_MATERIAU(ELAS_FO=_F(E=E_FIBRE,
-                                  NU=NU_FIBRE),
-                      THER_FO=_F(LAMBDA=UN))
+VERRE = DEFI_MATERIAU(ELAS_FO=_F(E=E_FIBRE, NU=NU_FIBRE), THER_FO=_F(LAMBDA=UN))
 
-RESINE = DEFI_MATERIAU(ELAS_FO=_F(E=E_MATRICE,
-                                  NU=NU_MATRICE),
-                       THER_FO=_F(LAMBDA=UN))
+RESINE = DEFI_MATERIAU(ELAS_FO=_F(E=E_MATRICE, NU=NU_MATRICE), THER_FO=_F(LAMBDA=UN))
 
-TAB_HOMO = CALC_MATE_HOMO(MAILLAGE=MA,
-                          AFFE=(_F(TOUT='OUI',
-                                   MATER=RESINE),
-                                _F(GROUP_MA=('tube0', 'tube1'),
-                                   MATER=VERRE)),
-                          VARC=_F(NOM_VARC='TEMP',
-                                  VALE=20),
-                          TYPE_HOMO='MASSIF',
-                          UNITE=80)
+TAB_HOMO = CALC_MATE_HOMO(
+    MAILLAGE=MA,
+    AFFE=(_F(TOUT="OUI", MATER=RESINE), _F(GROUP_MA=("tube0", "tube1"), MATER=VERRE)),
+    VARC=_F(NOM_VARC="TEMP", VALE=20),
+    TYPE_HOMO="MASSIF",
+    UNITE=80,
+)
 
-VALE_REFE = {'E_N' : 43418,
-             'E_T' : 12123,
-             'G_TN' : 4468,
-             'NU_NT' : 0.265,
-             'NU_TL' : 0.401}
+VALE_REFE = {"E_N": 43418, "E_T": 12123, "G_TN": 4468, "NU_NT": 0.265, "NU_TL": 0.401}
 
-VALE_CALC = {'E_N': 43417.62297672322,
-             'E_T': 12123.263930185361,
-             'G_TN': 4461.718124676437,
-             'NU_NT': 0.2646939954293169,
-             'NU_TL': 0.4009351781823851}
+VALE_CALC = {
+    "E_N": 43417.62297672322,
+    "E_T": 12123.263930185361,
+    "G_TN": 4461.718124676437,
+    "NU_NT": 0.2646939954293169,
+    "NU_TL": 0.4009351781823851,
+}
 
 for para in VALE_REFE:
-    TEST_TABLE(TABLE=TAB_HOMO,
-               NOM_PARA=para,
-               PRECISION=1.E-2,
-               REFERENCE='SOURCE_EXTERNE',
-               VALE_CALC=VALE_CALC[para],
-               VALE_REFE=VALE_REFE[para])
+    TEST_TABLE(
+        TABLE=TAB_HOMO,
+        NOM_PARA=para,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+        VALE_CALC=VALE_CALC[para],
+        VALE_REFE=VALE_REFE[para],
+    )
 
-TEST_TABLE(TABLE=TAB_HOMO,
-           NOM_PARA='ISOTRANS',
-           ORDRE_GRANDEUR=1.E3,
-           REFERENCE='ANALYTIQUE',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.0,
-           VALE_REFE=0.0)
+TEST_TABLE(
+    TABLE=TAB_HOMO,
+    NOM_PARA="ISOTRANS",
+    ORDRE_GRANDEUR=1.0e3,
+    REFERENCE="ANALYTIQUE",
+    CRITERE="ABSOLU",
+    VALE_CALC=0.0,
+    VALE_REFE=0.0,
+)
 
-tab_values = {para : items for para, items in TAB_HOMO.EXTR_TABLE().values().items()
-              if all(abs(i)>1.E-12 for i in items)}
-vale_calc = {para : tab_values[para][0] for para in VALE_REFE.keys()}
+tab_values = {
+    para: items
+    for para, items in TAB_HOMO.EXTR_TABLE().values().items()
+    if all(abs(i) > 1.0e-12 for i in items)
+}
+vale_calc = {para: tab_values[para][0] for para in VALE_REFE.keys()}
 
 FIN()

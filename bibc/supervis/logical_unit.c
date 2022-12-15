@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -22,58 +22,55 @@
  * C interface to LogicalUnitFile.
  */
 
- #include <stdlib.h>
-
 #include "Python.h"
 #include "aster.h"
 #include "aster_core_module.h"
 #include "aster_module.h"
 #include "shared_vars.h"
 
+#include <stdlib.h>
 
 /*
  * Functions based on JDC object.
  */
-int openLogicalUnitFile(const char* name, const int type, const int access)
-{
+int openLogicalUnitFile( const char *name, const int type, const int access ) {
     /*
      * Open and reserve a logical unit.
      */
     PyObject *pylu, *res, *unit;
     int number;
 
-    pylu = GetJdcAttr("logical_unit");
-    res = PyObject_CallMethod(pylu, "open", "sll", name, type, access);
-    if (res == NULL) {
-        MYABORT("Error calling `LogicalUnitFile.open`.");
+    pylu = GetJdcAttr( "logical_unit" );
+    res = PyObject_CallMethod( pylu, "open", "sll", name, type, access );
+    if ( res == NULL ) {
+        MYABORT( "Error calling `LogicalUnitFile.open`." );
     }
-    unit = PyObject_GetAttrString(res, "unit");
-    if (PyLong_Check(unit)) {
-        number = (int)PyLong_AsLong(unit);
+    unit = PyObject_GetAttrString( res, "unit" );
+    if ( PyLong_Check( unit ) ) {
+        number = (int)PyLong_AsLong( unit );
     } else {
         number = -1;
     }
 
-    Py_XDECREF(res);
-    Py_XDECREF(pylu);
-    Py_XDECREF(unit);
+    Py_XDECREF( res );
+    Py_XDECREF( pylu );
+    Py_XDECREF( unit );
     return number;
 }
 
-void releaseLogicalUnitFile(const int logicalUnit)
-{
+void releaseLogicalUnitFile( const int logicalUnit ) {
     /*
      * Release a logical unit.
      */
     PyObject *pylu, *res;
 
-    pylu = GetJdcAttr("logical_unit");
-    res = PyObject_CallMethod(pylu, "release_from_number", "l", logicalUnit);
-    if (res == NULL) {
-        MYABORT("Error calling `LogicalUnitFile.release_from_number`.");
+    pylu = GetJdcAttr( "logical_unit" );
+    res = PyObject_CallMethod( pylu, "release_from_number", "l", logicalUnit );
+    if ( res == NULL ) {
+        MYABORT( "Error calling `LogicalUnitFile.release_from_number`." );
     }
 
-    Py_XDECREF(res);
-    Py_XDECREF(pylu);
+    Py_XDECREF( res );
+    Py_XDECREF( pylu );
     return;
 }

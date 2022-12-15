@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -33,86 +33,86 @@
 #include "asterc_config.h"
 
 /* test required value */
-#if (! defined ASTER_PLATFORM_POSIX) && (! defined ASTER_PLATFORM_WINDOWS)
-#   error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS is required
+#if ( !defined ASTER_PLATFORM_POSIX ) && ( !defined ASTER_PLATFORM_WINDOWS )
+#error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS is required
 #endif
-#if (defined ASTER_PLATFORM_POSIX) && (defined ASTER_PLATFORM_WINDOWS)
-#   error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS, not both
+#if ( defined ASTER_PLATFORM_POSIX ) && ( defined ASTER_PLATFORM_WINDOWS )
+#error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS, not both
 #endif
 
 #ifdef ASTER_PLATFORM_LINUX64
-#   define ASTER_PLATFORM_LINUX
+#define ASTER_PLATFORM_LINUX
 #endif
 
 #ifdef ASTER_PLATFORM_DARWIN64
-#   define ASTER_PLATFORM_DARWIN
+#define ASTER_PLATFORM_DARWIN
 #endif
 
-#if (defined ASTER_PLATFORM_FREEBSD64) || (defined __FreeBSD__)
-#   define ASTER_PLATFORM_FREEBSD
+#if ( defined ASTER_PLATFORM_FREEBSD64 ) || ( defined __FreeBSD__ )
+#define ASTER_PLATFORM_FREEBSD
 #endif
 
 #ifdef ASTER_PLATFORM_SOLARIS64
-#   define ASTER_PLATFORM_SOLARIS
+#define ASTER_PLATFORM_SOLARIS
 #endif
 
 /* MS Windows platforms */
 #ifdef ASTER_PLATFORM_WINDOWS
 
 /* win64 - use LLP64 model */
-#   ifdef ASTER_HAVE_64_BITS
-#       define ASTER_STRLEN_AT_END
-#       define ASTER_HAVE_LONG_LONG
-#       define ASTER_INT_SIZE       8
-#       define ASTER_REAL8_SIZE     8
-#       define ASTER_C_FORTRAN_INT   long long
-#   endif
+#ifdef ASTER_HAVE_64_BITS
+#define ASTER_STRLEN_AT_END
+#define ASTER_HAVE_LONG_LONG
+#define ASTER_INT_SIZE 8
+#define ASTER_REAL8_SIZE 8
+#define ASTER_C_FORTRAN_INT long long
+#endif
 
 /* stdcall must be defined explicitly because it does not seem required anywhere */
-#   define ASTER_STRLEN_AT_END
+#define ASTER_STRLEN_AT_END
 
 #else
 /* Linux & Unix platforms */
-#   define ASTER_STRLEN_AT_END
+#define ASTER_STRLEN_AT_END
 
 /* end platforms type */
 #endif
 
 #ifdef ASTER_HAVE_64_BITS
-#   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
-#   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
+#define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
+#define REAL_NB_CHIFFRES_SIGNIFICATIFS 16
 #else
-#   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS  9
-#   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
+#define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 9
+#define REAL_NB_CHIFFRES_SIGNIFICATIFS 16
 #endif
 
-#define STRING_SIZE         ASTER_C_STRING_SIZE
-typedef ASTER_C_FORTRAN_INT4        ASTERINTEGER4;
-typedef ASTER_C_FORTRAN_INT         ASTERINTEGER;
-typedef ASTER_C_FORTRAN_REAL8       ASTERDOUBLE;
-typedef ASTER_C_FORTRAN_REAL4       ASTERFLOAT;
-typedef ASTER_C_FORTRAN_LOGICAL     ASTERLOGICAL;
+#define STRING_SIZE ASTER_C_STRING_SIZE
+typedef ASTER_C_FORTRAN_INT4 ASTERINTEGER4;
+typedef ASTER_C_FORTRAN_INT ASTERINTEGER;
+typedef ASTER_C_FORTRAN_REAL8 ASTERDOUBLE;
+typedef ASTER_C_FORTRAN_REAL4 ASTERFLOAT;
+typedef ASTER_C_FORTRAN_LOGICAL ASTERLOGICAL;
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */
 #ifdef ASTER_HAVE_64_BITS
-#   define ASTER_MULT_FRONT_BLOCK_SIZE__ 96
+#define ASTER_MULT_FRONT_BLOCK_SIZE__ 96
 #else
-#   define ASTER_MULT_FRONT_BLOCK_SIZE__ 32
+#define ASTER_MULT_FRONT_BLOCK_SIZE__ 32
 #endif
 
 #ifndef ASTER_MULT_FRONT_BLOCK_SIZE
-#   define ASTER_MULT_FRONT_BLOCK_SIZE ASTER_MULT_FRONT_BLOCK_SIZE__
+#define ASTER_MULT_FRONT_BLOCK_SIZE ASTER_MULT_FRONT_BLOCK_SIZE__
 #endif
 
 /* Comportement par défaut des FPE dans matfpe pour les blas/lapack */
 /* On non GNU/Linux systems, FPE are always enabled */
 #ifdef ASTER_PLATFORM_LINUX
-#   ifndef ASTER_HAVE_SUPPORT_FPE
-#       define ASTER_HAVE_SUPPORT_FPE
-#   endif
+#ifndef ASTER_HAVE_SUPPORT_FPE
+#define ASTER_HAVE_SUPPORT_FPE
+#endif
 #else
-#   undef ASTER_HAVE_SUPPORT_FPE
+#undef ASTER_HAVE_SUPPORT_FPE
 #endif
 
 #endif

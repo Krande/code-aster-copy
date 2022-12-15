@@ -383,18 +383,9 @@ def calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args):
                 aster.affiche("MESSAGE", 72 * "-")
             else:
                 # Message similaire a ALGELINE5_24 pour le FORTRAN
-                if stop_erreur == "OUI":
-                    UTMESS("F", "MODAL_5",
-                           valr=(freq_ini, freq_fin, precshift),
-                           vali=(nbmodesg, nbmodeth),
-                    )
-                elif stop_erreur == "NON":
-                    UTMESS("A", "MODAL_5",
-                           valr=(freq_ini, freq_fin, precshift),
-                           vali=(nbmodesg, nbmodeth),
-                    )
-                else:
-                    assert False  # Pb parametrage VERI_MODE
+                aorf = "A" if stop_erreur == "NON" else "F"
+                valargs = _F(valr=(freq_ini, freq_fin, precshift), vali=(nbmodesg, nbmodeth))
+                UTMESS(aorf, "MODAL_5", **valargs)
 
         # La bande globale est vide
         else:

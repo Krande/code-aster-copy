@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,20 +21,21 @@
 from html.parser import HTMLParser
 
 from code_aster.Commands import *
+
 #
 from code_aster.Objects.table_py import Table
 
-POURSUITE(CODE='OUI', )
+POURSUITE(CODE="OUI")
 
 
-t=Table()
-t.append({'AAA':5, 'BBB':7})
-t.append({'AAA':3, 'BBB':9, 'CCC':1})
-t.append({'AAA':3, 'CCC':0})
+t = Table()
+t.append({"AAA": 5, "BBB": 7})
+t.append({"AAA": 3, "BBB": 9, "CCC": 1})
+t.append({"AAA": 3, "CCC": 0})
 print(t)
 
-p = 'AAA'
-print('<<< TRI sur %s >>>' % p)
+p = "AAA"
+print("<<< TRI sur %s >>>" % p)
 t.sort(p)
 print(t)
 print(t.rows)
@@ -42,8 +43,8 @@ assert t.rows[0][p] == 3
 assert t.rows[1][p] == 3
 assert t.rows[2][p] == 5
 
-p = 'BBB'
-print('<<< TRI sur %s >>>' % p)
+p = "BBB"
+print("<<< TRI sur %s >>>" % p)
 t.sort(p)
 print(t)
 print(t.rows)
@@ -51,8 +52,8 @@ assert t.rows[0].get(p) is None
 assert t.rows[1][p] == 7
 assert t.rows[2][p] == 9
 
-p = 'AAA'
-print('<<< TRI sur %s >>>' % p)
+p = "AAA"
+print("<<< TRI sur %s >>>" % p)
 t.sort(p)
 print(t)
 print(t.rows)
@@ -61,28 +62,29 @@ assert t.rows[1][p] == 3
 assert t.rows[2][p] == 5
 
 # vérification de l'impression en utilisant les formats de customisation
-IMPR_TABLE(TABLE=tp7,
-           DEBUT_TABLE='<table>',
-           FIN_TABLE='</table>',
-           DEBUT_LIGNE='<tr><td>',
-           FIN_LIGNE='</td></tr>\n',
-           SEPARATEUR='</td><td>',
-           COMMENTAIRE='',
-           UNITE=88)
+IMPR_TABLE(
+    TABLE=tp7,
+    DEBUT_TABLE="<table>",
+    FIN_TABLE="</table>",
+    DEBUT_LIGNE="<tr><td>",
+    FIN_LIGNE="</td></tr>\n",
+    SEPARATEUR="</td><td>",
+    COMMENTAIRE="",
+    UNITE=88,
+)
 
 
-
-class MyHTMLParser( HTMLParser ):
+class MyHTMLParser(HTMLParser):
     """Minimal html code checker"""
 
-    def __init__( self ):
+    def __init__(self):
         """Constructor - store a stack of opened tags"""
         HTMLParser.__init__(self)
         self._stack = []
 
-    def handle_starttag( self, tag, attrs ):
+    def handle_starttag(self, tag, attrs):
         """Store the new opened tag"""
-        self._stack.append( tag )
+        self._stack.append(tag)
 
     def handle_endtag(self, tag):
         """Check that the closed tag is the last opened"""
@@ -92,12 +94,12 @@ class MyHTMLParser( HTMLParser ):
 
 parser = MyHTMLParser()
 
-with open('fort.88', 'r') as fobj:
+with open("fort.88", "r") as fobj:
     code = fobj.read()
 
-print("Checking the html code written by IMPR_TABLE... ", end=' ')
+print("Checking the html code written by IMPR_TABLE... ", end=" ")
 try:
-    parser.feed( code )
+    parser.feed(code)
     print("ok")
 except AssertionError:
     print("error")

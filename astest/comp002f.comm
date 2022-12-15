@@ -18,84 +18,77 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: david.haboussa at edf.fr
-#......................................................................
+# ......................................................................
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-#parametres vitesse de sollicitation
-vitesse = 1.e-5
+# parametres vitesse de sollicitation
+vitesse = 1.0e-5
 
-t_0 = 5.e-2/(8.0*vitesse)
+t_0 = 5.0e-2 / (8.0 * vitesse)
 
-larch = [t_0*i for i in range(9)]
+larch = [t_0 * i for i in range(9)]
 
 # liste d'archivage
-temps_ar=DEFI_LIST_REEL( VALE = larch,)
+temps_ar = DEFI_LIST_REEL(VALE=larch)
 
 
-
-#parmetres elastiques
+# parmetres elastiques
 YOUNG = 200000.0
 POISSON = 0.3
 
 
-#parametres loi ISOT_LINE
+# parametres loi ISOT_LINE
 SY = 437.0
 pente = 2024.74690664
 
-#parametres viscosite
-SIGM_0=6176.
-EPSI_0=3.31131121483e13
-M=6.76
+# parametres viscosite
+SIGM_0 = 6176.0
+EPSI_0 = 3.31131121483e13
+M = 6.76
 
 
 # def des materiaux
-ACIER = [None]*2
-#unite en Pa
-C_Pa = 1.e+6
+ACIER = [None] * 2
+# unite en Pa
+C_Pa = 1.0e6
 YOUNG_Pa = YOUNG * C_Pa
 pente_Pa = pente * C_Pa
 SY_Pa = SY * C_Pa
-SIGM_0_Pa=SIGM_0 * C_Pa
+SIGM_0_Pa = SIGM_0 * C_Pa
 
 
-ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
-                               NU=POISSON,
-                               ALPHA=11.8e-6),
-                    ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa,
-                                 SY=SY_Pa,),
-                     VISC_SINH=_F(
-                                   SIGM_0 = SIGM_0_Pa,
-                                   EPSI_0 = EPSI_0,
-                                   M      = M),
-                                 )
-#unite en MPa
-ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                               NU=POISSON,
-                               ALPHA=11.8e-6),
-                     VISC_SINH=_F(
-                                   SIGM_0 = SIGM_0,
-                                   EPSI_0 = EPSI_0,
-                                   M      = M),
-                    ECRO_LINE=_F(D_SIGM_EPSI=pente,
-                                 SY=SY,),)
+ACIER[0] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG_Pa, NU=POISSON, ALPHA=11.8e-6),
+    ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa, SY=SY_Pa),
+    VISC_SINH=_F(SIGM_0=SIGM_0_Pa, EPSI_0=EPSI_0, M=M),
+)
+# unite en MPa
+ACIER[1] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=11.8e-6),
+    VISC_SINH=_F(SIGM_0=SIGM_0, EPSI_0=EPSI_0, M=M),
+    ECRO_LINE=_F(D_SIGM_EPSI=pente, SY=SY),
+)
 
 
-compor='VISC_ISOT_LINE'
+compor = "VISC_ISOT_LINE"
 
-tabresu=TEST_COMPOR(OPTION='MECA',
-
-                   COMPORTEMENT=_F(RELATION=compor,DEFORMATION='SIMO_MIEHE',RESI_INTE_RELA=1.E-07,RESI_CPLAN_RELA=1.E-07),
-                   SUPPORT='ELEMENT',
-                  # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
-              NEWTON=_F(REAC_ITER=1),
-              LIST_MATER=ACIER,
-              LIST_NPAS=4*[1] + [1, 5, 25],
-              VARI_TEST=('V1','VMIS','TRACE'),
-              PREC_ZERO=(1E-10, 1E-10, 2E-10),
-              LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-5]  ,
-              YOUNG=YOUNG,POISSON=POISSON,
-              )
+tabresu = TEST_COMPOR(
+    OPTION="MECA",
+    COMPORTEMENT=_F(
+        RELATION=compor, DEFORMATION="SIMO_MIEHE", RESI_INTE_RELA=1.0e-07, RESI_CPLAN_RELA=1.0e-07
+    ),
+    SUPPORT="ELEMENT",
+    # RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
+    NEWTON=_F(REAC_ITER=1),
+    LIST_MATER=ACIER,
+    LIST_NPAS=4 * [1] + [1, 5, 25],
+    VARI_TEST=("V1", "VMIS", "TRACE"),
+    PREC_ZERO=(1e-10, 1e-10, 2e-10),
+    LIST_TOLE=4 * [1.0e-10] + [1.0e-1] + 2 * [1.0e-2] + [1.0e-5],
+    YOUNG=YOUNG,
+    POISSON=POISSON,
+)
 
 IMPR_TABLE(TABLE=tabresu)
 

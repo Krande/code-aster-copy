@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#CAS_TEST__: SSLV100D
+# CAS_TEST__: SSLV100D
 # ----------------------------------------------------------------------
 # SSLV100D                  COMMANDES                          8/06/92
 # CYLINDRE CREUX EN DEFORMATIONS PLANES
@@ -30,200 +30,219 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-M=LIRE_MAILLAGE(FORMAT='MED',)
+M = LIRE_MAILLAGE(FORMAT="MED")
 
-M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+M = DEFI_GROUP(reuse=M, MAILLAGE=M, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MO=AFFE_MODELE(            MAILLAGE=M,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         PHENOMENE = 'MECANIQUE',
-                                         MODELISATION = 'D_PLAN'))
+MO = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
-MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
-                                         NU = 0.3,
-                                         ALPHA = 0.)
-                       )
+MA = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3, ALPHA=0.0))
 
-MA0=DEFI_MATERIAU(          ELAS_ORTH=_F(  E_L = 200000.,
-          E_T = 200000.,  E_N = 200000.,
-     G_LT = 76923.0769231, G_LN = 76923.0769231, G_TN = 76923.0769231,
-          NU_LT = 0.3, NU_LN = 0.3, NU_TN = 0.3,
-          ALPHA_L = 0.,  ALPHA_T = 0., ALPHA_N = 0.)
-                         )
+MA0 = DEFI_MATERIAU(
+    ELAS_ORTH=_F(
+        E_L=200000.0,
+        E_T=200000.0,
+        E_N=200000.0,
+        G_LT=76923.0769231,
+        G_LN=76923.0769231,
+        G_TN=76923.0769231,
+        NU_LT=0.3,
+        NU_LN=0.3,
+        NU_TN=0.3,
+        ALPHA_L=0.0,
+        ALPHA_T=0.0,
+        ALPHA_N=0.0,
+    )
+)
 
-CM=AFFE_MATERIAU(        MAILLAGE=M,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MA))
+CM = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=MA))
 
-CM0=AFFE_MATERIAU(        MAILLAGE=M,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MA0))
+CM0 = AFFE_MATERIAU(MAILLAGE=M, AFFE=_F(TOUT="OUI", MATER=MA0))
 
-ESSAI=AFFE_CARA_ELEM(MODELE=MO,
-                MASSIF=_F(
+ESSAI = AFFE_CARA_ELEM(MODELE=MO, MASSIF=_F(GROUP_MA="TOUT", ANGL_REP=(0.0,)))
 
-       GROUP_MA = 'TOUT',
+ESSAI0 = AFFE_CARA_ELEM(MODELE=MO, MASSIF=_F(GROUP_MA="TOUT", ANGL_REP=(23.0,)))
 
-                ANGL_REP = (0., )))
+CH = AFFE_CHAR_MECA(
+    MODELE=MO,
+    FACE_IMPO=(_F(GROUP_MA="FACEEF", DNOR=0.0), _F(GROUP_MA="FACEAE", DNOR=-5.72e-5)),
+    DDL_IMPO=_F(GROUP_NO="BORDAB", DY=0.0),
+)
 
-ESSAI0=AFFE_CARA_ELEM(MODELE=MO,
-                MASSIF=_F(
-                GROUP_MA = 'TOUT',
-                ANGL_REP = (23., )))
+DEPLA = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CM, EXCIT=_F(CHARGE=CH))
 
-CH=AFFE_CHAR_MECA(       MODELE=MO,FACE_IMPO=(
-          _F( GROUP_MA = 'FACEEF',  DNOR = 0.),
-          _F( GROUP_MA = 'FACEAE', DNOR = -5.72E-5)),
-           DDL_IMPO=_F( GROUP_NO = 'BORDAB',  DY = 0.))
-
-DEPLA=MECA_STATIQUE(   MODELE=MO,
-                           CHAM_MATER=CM, EXCIT=_F(  CHARGE = CH) )
-
-LISTE=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=5,),)
+LISTE = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=5))
 
 
-DEPLA0=STAT_NON_LINE(   MODELE=MO,  COMPORTEMENT=_F(RELATION='ELAS'),INCREMENT=_F(LIST_INST=LISTE),
-             CARA_ELEM=ESSAI0,   CHAM_MATER=CM0, EXCIT=_F(  CHARGE = CH) )
+DEPLA0 = STAT_NON_LINE(
+    MODELE=MO,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LISTE),
+    CARA_ELEM=ESSAI0,
+    CHAM_MATER=CM0,
+    EXCIT=_F(CHARGE=CH),
+)
 
-DEPLA=CALC_CHAMP( reuse=DEPLA,   RESULTAT=DEPLA,
-               FORCE='REAC_NODA',
-                     )
+DEPLA = CALC_CHAMP(reuse=DEPLA, RESULTAT=DEPLA, FORCE="REAC_NODA")
 
-DEPLA0=CALC_CHAMP( reuse=DEPLA0,   RESULTAT=DEPLA0,
-                FORCE='REAC_NODA',
-                )
+DEPLA0 = CALC_CHAMP(reuse=DEPLA0, RESULTAT=DEPLA0, FORCE="REAC_NODA")
 
-#-----------------------------------------------------------------------
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N391',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.140678131,
-                   VALE_REFE=0.13600000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=0.035000000000000003,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N391',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.058270794,
-                   VALE_REFE=0.056000000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=0.041000000000000002,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N92',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.136042844,
-                   VALE_REFE=0.14685999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=0.073999999999999996,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N92',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.010037133,
-                   VALE_REFE=0.010800000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=0.070999999999999994,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N447',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.114000205,
-                   VALE_REFE=0.1138,
-                   CRITERE='RELATIF',
-                   PRECISION=2.E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N447',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.093557071,
-                   VALE_REFE=0.092999999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,),
-                ),
-          )
+# -----------------------------------------------------------------------
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N391",
+            NOM_CMP="DX",
+            VALE_CALC=0.140678131,
+            VALE_REFE=0.13600000000000001,
+            CRITERE="RELATIF",
+            PRECISION=0.035000000000000003,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N391",
+            NOM_CMP="DY",
+            VALE_CALC=0.058270794,
+            VALE_REFE=0.056000000000000001,
+            CRITERE="RELATIF",
+            PRECISION=0.041000000000000002,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N92",
+            NOM_CMP="DX",
+            VALE_CALC=0.136042844,
+            VALE_REFE=0.14685999999999999,
+            CRITERE="RELATIF",
+            PRECISION=0.073999999999999996,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N92",
+            NOM_CMP="DY",
+            VALE_CALC=0.010037133,
+            VALE_REFE=0.010800000000000001,
+            CRITERE="RELATIF",
+            PRECISION=0.070999999999999994,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N447",
+            NOM_CMP="DX",
+            VALE_CALC=0.114000205,
+            VALE_REFE=0.1138,
+            CRITERE="RELATIF",
+            PRECISION=2.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N447",
+            NOM_CMP="DY",
+            VALE_CALC=0.093557071,
+            VALE_REFE=0.092999999999999999,
+            CRITERE="RELATIF",
+            PRECISION=7.0000000000000001e-3,
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA0,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N391',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.140678131,
-                   VALE_REFE=0.13600000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=0.035000000000000003,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA0,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N391',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.058270794,
-                   VALE_REFE=0.056000000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=0.041000000000000002,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA0,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N92',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.136042844,
-                   VALE_REFE=0.14685999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=0.073999999999999996,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA0,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N92',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.010037133,
-                   VALE_REFE=0.010800000000000001,
-                   CRITERE='RELATIF',
-                   PRECISION=0.070999999999999994,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA0,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N447',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.114000205,
-                   VALE_REFE=0.1138,
-                   CRITERE='RELATIF',
-                   PRECISION=2.E-3,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='NON_DEFINI',
-                   RESULTAT=DEPLA0,
-                   NOM_CHAM='REAC_NODA',
-                   GROUP_NO='N447',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.093557071,
-                   VALE_REFE=0.092999999999999999,
-                   CRITERE='RELATIF',
-                   PRECISION=7.0000000000000001E-3,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA0,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N391",
+            NOM_CMP="DX",
+            VALE_CALC=0.140678131,
+            VALE_REFE=0.13600000000000001,
+            CRITERE="RELATIF",
+            PRECISION=0.035000000000000003,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA0,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N391",
+            NOM_CMP="DY",
+            VALE_CALC=0.058270794,
+            VALE_REFE=0.056000000000000001,
+            CRITERE="RELATIF",
+            PRECISION=0.041000000000000002,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA0,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N92",
+            NOM_CMP="DX",
+            VALE_CALC=0.136042844,
+            VALE_REFE=0.14685999999999999,
+            CRITERE="RELATIF",
+            PRECISION=0.073999999999999996,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA0,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N92",
+            NOM_CMP="DY",
+            VALE_CALC=0.010037133,
+            VALE_REFE=0.010800000000000001,
+            CRITERE="RELATIF",
+            PRECISION=0.070999999999999994,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA0,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N447",
+            NOM_CMP="DX",
+            VALE_CALC=0.114000205,
+            VALE_REFE=0.1138,
+            CRITERE="RELATIF",
+            PRECISION=2.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="NON_DEFINI",
+            RESULTAT=DEPLA0,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO="N447",
+            NOM_CMP="DY",
+            VALE_CALC=0.093557071,
+            VALE_REFE=0.092999999999999999,
+            CRITERE="RELATIF",
+            PRECISION=7.0000000000000001e-3,
+        ),
+    )
+)
 
-FIN( )
+FIN()
 #

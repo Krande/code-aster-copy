@@ -28,32 +28,30 @@ extern "C" {
 #endif
 
 STRING_SIZE FStrlen( const char *, const STRING_SIZE );
-char * MakeCStrFromFStr( const char *, const STRING_SIZE );
-char * MakeFStrFromCStr( const char *, const STRING_SIZE );
-void   CopyCStrToFStr( char *, const char *, const STRING_SIZE );
-char * MakeTabFStr( const int, const STRING_SIZE );
-void   SetTabFStr( char *, const int, const char *, const STRING_SIZE );
-void   BlankStr( char *, const STRING_SIZE );
-char * MakeBlankFStr( const STRING_SIZE );
-void   FreeStr( char * );
+char *MakeCStrFromFStr( const char *, const STRING_SIZE );
+char *MakeFStrFromCStr( const char *, const STRING_SIZE );
+void CopyCStrToFStr( char *, const char *, const STRING_SIZE );
+char *MakeTabFStr( const int, const STRING_SIZE );
+void SetTabFStr( char *, const int, const char *, const STRING_SIZE );
+void BlankStr( char *, const STRING_SIZE );
+char *MakeBlankFStr( const STRING_SIZE );
+void FreeStr( char * );
 
 void _check_string_length( const STRING_SIZE );
 
+extern void convc8( _IN const int, _IN PyObject *, _OUT ASTERDOUBLE * );
+extern int conv_un_c8( _IN PyObject *, _OUT ASTERDOUBLE * );
+extern void convr8( _IN const int, _IN PyObject *, _OUT ASTERDOUBLE * );
+extern void convert( _IN const int, _IN PyObject *, _OUT ASTERINTEGER * );
+extern void convertxt( _IN const int, _IN PyObject *, _OUT char *, _IN STRING_SIZE );
+extern void converltx( _IN const int, _IN PyObject *, _OUT char *, _IN STRING_SIZE );
 
-extern void convc8( _IN const int, _IN PyObject *, _OUT ASTERDOUBLE *);
-extern int conv_un_c8( _IN PyObject *, _OUT ASTERDOUBLE *);
-extern void convr8( _IN const int, _IN PyObject *, _OUT ASTERDOUBLE *);
-extern void convert( _IN const int, _IN PyObject *, _OUT ASTERINTEGER *);
-extern void convertxt( _IN const int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
-extern void converltx( _IN const int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
-
-
-extern PyObject * MakeTupleString(long, char *, STRING_SIZE, ASTERINTEGER *);
-extern PyObject * MakeListString(long, char *, STRING_SIZE);
-extern PyObject * MakeTupleInt(long, ASTERINTEGER *);
-extern PyObject * MakeListInt(long, ASTERINTEGER *);
-extern PyObject * MakeTupleFloat(long, ASTERDOUBLE *);
-extern PyObject * MakeListFloat(long, ASTERDOUBLE *);
+extern PyObject *MakeTupleString( long, char *, STRING_SIZE, ASTERINTEGER * );
+extern PyObject *MakeListString( long, char *, STRING_SIZE );
+extern PyObject *MakeTupleInt( long, ASTERINTEGER * );
+extern PyObject *MakeListInt( long, ASTERINTEGER * );
+extern PyObject *MakeTupleFloat( long, ASTERDOUBLE * );
+extern PyObject *MakeListFloat( long, ASTERDOUBLE * );
 
 #ifdef __cplusplus
 }

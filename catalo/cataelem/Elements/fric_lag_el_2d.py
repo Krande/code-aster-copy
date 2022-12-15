@@ -40,46 +40,51 @@ from cataelem.Options.options import OP
 # ----------------
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-                             components=(
-                                 # Slave nodes with LAG_C
-                                 ('EN1', ('DX', 'DY', 'LAGS_C', 'LAGS_F1',)),
-                                 # Slave nodes without LAG_C
-                                 ('EN2', ('DX', 'DY',)),
-                                 # Master nodes
-                                 ('EN3', ('DX', 'DY',)),))
+DDL_MECA = LocatedComponents(
+    phys=PHY.DEPL_R,
+    type="ELNO",
+    diff=True,
+    components=(
+        # Slave nodes with LAG_C
+        ("EN1", ("DX", "DY", "LAGS_C", "LAGS_F1")),
+        # Slave nodes without LAG_C
+        ("EN2", ("DX", "DY")),
+        # Master nodes
+        ("EN3", ("DX", "DY")),
+    ),
+)
 
-CGAPR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
-                          components=(
-                              ('EN1', ('X1',)),
-                              ('EN2', ('X1',)),
-                              ('EN3', ()),))
+CGAPR = LocatedComponents(
+    phys=PHY.NEUT_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X1",)), ("EN2", ("X1",)), ("EN3", ())),
+)
 
-CSTATR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO', diff=True,
-                           components=(
-                               ('EN1', ('X1',)),
-                               ('EN2', ('X1',)),
-                               ('EN3', ()),))
+CSTATR = LocatedComponents(
+    phys=PHY.NEUT_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("X1",)), ("EN2", ("X1",)), ("EN3", ())),
+)
 
-ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_C',)),
-                               ('EN2', ()),
-                               ('EN3', ()),)
-                           )
+ECCONT = LocatedComponents(
+    phys=PHY.CONT_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("COEF_C",)), ("EN2", ()), ("EN3", ())),
+)
 
-ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_F',)),
-                               ('EN2', ()),
-                               ('EN3', ()),)
-                           )
+ECFROT = LocatedComponents(
+    phys=PHY.CONT_R,
+    type="ELNO",
+    diff=True,
+    components=(("EN1", ("COEF_F",)), ("EN2", ()), ("EN3", ())),
+)
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-                            components=('X', 'Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
-CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-                            components=('INST',))
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST",))
 
 MVECGAP = ArrayOfComponents(phys=PHY.VNEU_R, locatedComponents=CGAPR)
 
@@ -96,408 +101,367 @@ MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 # ------------------------------------------------------------
 class FMS2S2(Element):
     """
-      THE FMS2S2 CLASS ELEMENT : SEG2/SEG2
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG2 SLAVE  ELEMENT : 1-2 (DX,DY,LAGS_C)
-          SEG2 MASTER ELEMENT : 3-4 (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    THE FMS2S2 CLASS ELEMENT : SEG2/SEG2
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG2 SLAVE  ELEMENT : 1-2 (DX,DY,LAGS_C)
+        SEG2 MASTER ELEMENT : 3-4 (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG22
-    nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (3, 4,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (3, 4)))
     calculs = (
-
-        OP.GAP_GEOM(te=425,
-                    para_in=((SP.PGEOMCR, NGEOMER), ),
-                    para_out=((OP.GAP_GEOM.PVECGAP, MVECGAP),
-                              (OP.GAP_GEOM.PVEIGAP, MVEIGAP), ),
-                    ),
-
-        OP.CHAR_MECA_CONT(te=355,
-                          para_in=((SP.PCONFR, LC.CCONFR),
-                                   (SP.PDEPL_M, DDL_MECA),
-                                   (SP.PDEPL_P, DDL_MECA),
-                                   (SP.PINSTMR, CTEMPSR),
-                                   (SP.PINSTPR, CTEMPSR),
-                                   (SP.PGEOMER, NGEOMER),
-                                   (SP.PGEOMCR, NGEOMER),
-                                   (SP.PCCONTR, ECCONT),
-                                   (SP.PCFROTR, ECFROT),),
-                          para_out=((SP.PVECTCR, MVECTUR),
-                                    (SP.PVECTFR, MVECTUR),),
-                          ),
-
-        OP.RIGI_CONT(te=355,
-                     para_in=((SP.PCONFR, LC.CCONFR),
-                              (SP.PDEPL_M, DDL_MECA),
-                              (SP.PDEPL_P, DDL_MECA),
-                              (SP.PINSTMR, CTEMPSR),
-                              (SP.PINSTPR, CTEMPSR),
-                              (SP.PGEOMER, NGEOMER),
-                              (SP.PGEOMCR, NGEOMER),
-                              (SP.PCCONTR, ECCONT),
-                              (SP.PCFROTR, ECFROT), ),
-                     para_out=((SP.PMATUUR, MMATUUR),
-                               (SP.PMATUNS, MMATUNS),
-                               ),
-                     ),
-
-        OP.TOU_INI_ELEM(te=99,
-                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), ),
-                        ),
-
-
-        OP.TOU_INI_ELNO(te=99,
-                        para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-                        ),
-
+        OP.GAP_GEOM(
+            te=425,
+            para_in=((SP.PGEOMCR, NGEOMER),),
+            para_out=((OP.GAP_GEOM.PVECGAP, MVECGAP), (OP.GAP_GEOM.PVEIGAP, MVEIGAP)),
+        ),
+        OP.CHAR_MECA_CONT(
+            te=355,
+            para_in=(
+                (SP.PCONFR, LC.CCONFR),
+                (SP.PDEPL_M, DDL_MECA),
+                (SP.PDEPL_P, DDL_MECA),
+                (SP.PINSTMR, CTEMPSR),
+                (SP.PINSTPR, CTEMPSR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMCR, NGEOMER),
+                (SP.PCCONTR, ECCONT),
+                (SP.PCFROTR, ECFROT),
+            ),
+            para_out=((SP.PVECTCR, MVECTUR), (SP.PVECTFR, MVECTUR)),
+        ),
+        OP.RIGI_CONT(
+            te=355,
+            para_in=(
+                (SP.PCONFR, LC.CCONFR),
+                (SP.PDEPL_M, DDL_MECA),
+                (SP.PDEPL_P, DDL_MECA),
+                (SP.PINSTMR, CTEMPSR),
+                (SP.PINSTPR, CTEMPSR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PGEOMCR, NGEOMER),
+                (SP.PCCONTR, ECCONT),
+                (SP.PCFROTR, ECFROT),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR), (SP.PMATUNS, MMATUNS)),
+        ),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
     )
 
 
 # ------------------------------------------------------------
 class FMS3S3(FMS2S2):
     """
-      FMS3S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT  : SEG3/SEG3
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG3 SLAVE  ELEMENT : 4-5-6 (DX,DY,LAGS_C)
-          SEG3 MASTER ELEMENT : 1-2-3 (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT  : SEG3/SEG3
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG3 SLAVE  ELEMENT : 4-5-6 (DX,DY,LAGS_C)
+        SEG3 MASTER ELEMENT : 1-2-3 (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG33
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (4, 5, 6,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (4, 5, 6)))
 
 
 # ------------------------------------------------------------
 class FMS2S3(FMS2S2):
     """
-      FMS2S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG2/SEG3
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG2 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C)
-          SEG3 MASTER ELEMENT : 3-4-5 (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS2S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG2/SEG3
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG2 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C)
+        SEG3 MASTER ELEMENT : 3-4-5 (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG23
-    nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (3, 4, 5,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (3, 4, 5)))
 
 
 # ------------------------------------------------------------
 class FMS3S2(FMS2S2):
     """
-      FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG3/SEG2
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG3 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C) / 3 (DX,DY)
-          SEG2 MASTER ELEMENT : 4-5     (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG3/SEG2
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG3 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C) / 3 (DX,DY)
+        SEG2 MASTER ELEMENT : 4-5     (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG32
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (4, 5,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (4, 5)))
 
 
 # ------------------------------------------------------------
 class FMS2S2A(FMS2S2):
     """
-      FMS2S2A DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG2/SEG2 (AXIS)
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG2 SLAVE  ELEMENT : 1-2  (DX,DY,LAGS_C)
-          SEG2 MASTER ELEMENT : 3-4  (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS2S2A DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG2/SEG2 (AXIS)
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG2 SLAVE  ELEMENT : 1-2  (DX,DY,LAGS_C)
+        SEG2 MASTER ELEMENT : 3-4  (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG22
-    nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (3, 4,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (3, 4)))
 
 
 # ------------------------------------------------------------
 class FMS3S3A(FMS2S2):
     """
-      FMS3S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT  : SEG3/SEG3 (AXIS)
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG3 SLAVE  ELEMENT : 4-5-6 (DX,DY,LAGS_C)
-          SEG3 MASTER ELEMENT : 1-2-3 (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT  : SEG3/SEG3 (AXIS)
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG3 SLAVE  ELEMENT : 4-5-6 (DX,DY,LAGS_C)
+        SEG3 MASTER ELEMENT : 1-2-3 (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG33
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (4, 5, 6,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (4, 5, 6)))
 
 
 # ------------------------------------------------------------
 class FMS2S3A(FMS2S2):
     """
-      FMS2S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG2/SEG3 (AXIS)
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG2 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C)
-          SEG3 MASTER ELEMENT : 3-4-5 (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS2S3 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG2/SEG3 (AXIS)
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG2 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C)
+        SEG3 MASTER ELEMENT : 3-4-5 (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG23
-    nodes = (
-        SetOfNodes('EN1', (1, 2,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (3, 4, 5,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (3, 4, 5)))
 
 
 # ------------------------------------------------------------
 class FMS3S2A(FMS2S2):
     """
-      FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG3/SEG2 (AXIS)
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          SEG3 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C) / 3 - (DX,DY)
-          SEG2 MASTER ELEMENT : 4-5     (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : SEG3/SEG2 (AXIS)
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        SEG3 SLAVE  ELEMENT : 1-2   (DX,DY,LAGS_C) / 3 - (DX,DY)
+        SEG2 MASTER ELEMENT : 4-5     (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.SEG32
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', (4, 5,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)), SetOfNodes("EN2", ()), SetOfNodes("EN3", (4, 5)))
+
 
 # ------------------------------------------------------------
 
 
 class FMP1L2(FMS2S2):
     """
-      FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
-      This element is for nodes that have Lagrange and are not pairing
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          POI1 SLAVE  ELEMENT : 1   (DX,DY,LAGS_C)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
+    This element is for nodes that have Lagrange and are not pairing
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        POI1 SLAVE  ELEMENT : 1   (DX,DY,LAGS_C)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.POI1
-    nodes = (
-        SetOfNodes('EN1', (1,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', ()),
-    )
+    nodes = (SetOfNodes("EN1", (1,)), SetOfNodes("EN2", ()), SetOfNodes("EN3", ()))
+
 
 # ------------------------------------------------------------
 
 
 class FMP1N2(FMS2S2):
     """
-      FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
-      This element is for nodes that have no Lagrange and are not pairing
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          POI1 SLAVE  ELEMENT : 1   (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
+    This element is for nodes that have no Lagrange and are not pairing
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        POI1 SLAVE  ELEMENT : 1   (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.POI1
-    nodes = (
-        SetOfNodes('EN1', ()),
-        SetOfNodes('EN2', (1,)),
-        SetOfNodes('EN3', ()),
-    )
+    nodes = (SetOfNodes("EN1", ()), SetOfNodes("EN2", (1,)), SetOfNodes("EN3", ()))
 
 
 # ------------------------------------------------------------
 class FMP1L2A(FMS2S2):
     """
-      FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
-      This element is for nodes that have Lagrange and are not pairing
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          POI1 SLAVE  ELEMENT : 1   (DX,DY,LAGS_C)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
+    This element is for nodes that have Lagrange and are not pairing
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        POI1 SLAVE  ELEMENT : 1   (DX,DY,LAGS_C)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.POI1
-    nodes = (
-        SetOfNodes('EN1', (1,)),
-        SetOfNodes('EN2', ()),
-        SetOfNodes('EN3', ()),
-    )
+    nodes = (SetOfNodes("EN1", (1,)), SetOfNodes("EN2", ()), SetOfNodes("EN3", ()))
+
 
 # ------------------------------------------------------------
 
 
 class FMP1N2A(FMS2S2):
     """
-      FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
-      This element is for nodes that have no Lagrange and are not pairing
-      DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
-          Slave frictionless Contact Element in 2D : elementary treatments
-      Local Numerotation :
-          POI1 SLAVE  ELEMENT : 1   (DX,DY)
-      Input parameters :
-          PACCE_M - ACCELERATION at T-
-          PVITE_M - VELOCITY at T-
-          PDEPL_M - DISPL. at T-
-          PVITE_P - VELOCITY at T+
-          PDEPL_P - DISPL. at T+
-          PGEOMER - CURRENT GEOMETRY
-          PCONFR - FRICTIONAL CONTACT PARAMETERS
-      Output parameters :
-          PMATUNS : NON SYMMETRIC MATRIX (te=356)
-          PMMATUR : SYMMETRIC MATRIX (te=356)
-          PMMATUR : VECTOR OF CONTACT LOAD (te=355)
+    FMS3S2 DERIVED FROM THE FMS2S2 CLASS ELEMENT : POINT1.
+    This element is for nodes that have no Lagrange and are not pairing
+    DEFI_CONTACT / MORTAR / SEGMENT-TO-SEGMENT
+        Slave frictionless Contact Element in 2D : elementary treatments
+    Local Numerotation :
+        POI1 SLAVE  ELEMENT : 1   (DX,DY)
+    Input parameters :
+        PACCE_M - ACCELERATION at T-
+        PVITE_M - VELOCITY at T-
+        PDEPL_M - DISPL. at T-
+        PVITE_P - VELOCITY at T+
+        PDEPL_P - DISPL. at T+
+        PGEOMER - CURRENT GEOMETRY
+        PCONFR - FRICTIONAL CONTACT PARAMETERS
+    Output parameters :
+        PMATUNS : NON SYMMETRIC MATRIX (te=356)
+        PMMATUR : SYMMETRIC MATRIX (te=356)
+        PMMATUR : VECTOR OF CONTACT LOAD (te=355)
     """
+
     meshType = MT.POI1
-    nodes = (
-        SetOfNodes('EN1', ()),
-        SetOfNodes('EN2', (1,)),
-        SetOfNodes('EN3', ()),
-    )
+    nodes = (SetOfNodes("EN1", ()), SetOfNodes("EN2", (1,)), SetOfNodes("EN3", ()))

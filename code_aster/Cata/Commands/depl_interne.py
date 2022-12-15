@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,22 +24,34 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def depl_interne_prod(DEPL_GLOBAL,**args ):
-    if args.get('__all__'):
-        return (cham_no_sdaster, evol_elas, dyna_trans, dyna_harmo,
-                mode_meca, mode_meca_c)
+def depl_interne_prod(DEPL_GLOBAL, **args):
+    if args.get("__all__"):
+        return (cham_no_sdaster, evol_elas, dyna_trans, dyna_harmo, mode_meca, mode_meca_c)
 
-    if AsType(DEPL_GLOBAL)     == cham_no_sdaster: return cham_no_sdaster
-    if AsType(DEPL_GLOBAL)     == evol_elas      : return evol_elas
-    if AsType(DEPL_GLOBAL)     == dyna_trans     : return dyna_trans
-    if AsType(DEPL_GLOBAL)     == dyna_harmo     : return dyna_harmo
-    if AsType(DEPL_GLOBAL)     == mode_meca      : return mode_meca
-    if AsType(DEPL_GLOBAL)     == mode_meca_c    : return mode_meca_c
+    if AsType(DEPL_GLOBAL) == cham_no_sdaster:
+        return cham_no_sdaster
+    if AsType(DEPL_GLOBAL) == evol_elas:
+        return evol_elas
+    if AsType(DEPL_GLOBAL) == dyna_trans:
+        return dyna_trans
+    if AsType(DEPL_GLOBAL) == dyna_harmo:
+        return dyna_harmo
+    if AsType(DEPL_GLOBAL) == mode_meca:
+        return mode_meca
+    if AsType(DEPL_GLOBAL) == mode_meca_c:
+        return mode_meca_c
     raise AsException("type de concept resultat non prevu")
 
-DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=depl_interne_prod,reentrant='n',
-                  fr=tr("Calculer le champ de déplacement à l'intérieur d'une sous-structure statique"),
-         DEPL_GLOBAL     =SIMP(statut='o',typ=(cham_no_sdaster,mode_meca,mode_meca_c,evol_elas,dyna_trans,dyna_harmo),),
-         SUPER_MAILLE    =SIMP(statut='o',typ=ma,),
-         NOM_CAS         =SIMP(statut='f',typ='TXM',defaut=" "),
-)  ;
+
+DEPL_INTERNE = OPER(
+    nom="DEPL_INTERNE",
+    op=89,
+    sd_prod=depl_interne_prod,
+    reentrant="n",
+    fr=tr("Calculer le champ de déplacement à l'intérieur d'une sous-structure statique"),
+    DEPL_GLOBAL=SIMP(
+        statut="o", typ=(cham_no_sdaster, mode_meca, mode_meca_c, evol_elas, dyna_trans, dyna_harmo)
+    ),
+    SUPER_MAILLE=SIMP(statut="o", typ=ma),
+    NOM_CAS=SIMP(statut="f", typ="TXM", defaut=" "),
+)

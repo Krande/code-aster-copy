@@ -19,82 +19,77 @@
 
 # person_in_charge: marina.bottoni at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 import numpy as N
 
 
-#-----------------------------------------------------#
+# -----------------------------------------------------#
 # DEFINITION MATERIAUX
-#-----------------------------------------------------#
+# -----------------------------------------------------#
 
-TREF = 20.
-T0   = TREF
-Tmax = 500.
+TREF = 20.0
+T0 = TREF
+Tmax = 500.0
 
-tmax = 1.
+tmax = 1.0
 NCAL = 20
 
-ZERO = DEFI_CONSTANTE(VALE = 0.0)
-UN   = DEFI_CONSTANTE(VALE = 1.0)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
 nu = 0.02
-POISSON = DEFI_CONSTANTE(VALE = nu)
+POISSON = DEFI_CONSTANTE(VALE=nu)
 
-YOUN = DEFI_FONCTION(NOM_PARA = 'TEMP',VALE = (  0., 30000.0E6,
-                                               500., 20000.0E6, ),)
+YOUN = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 30000.0e6, 500.0, 20000.0e6))
 
-ALPH = DEFI_FONCTION(NOM_PARA = 'TEMP',VALE = (  0., 1.E-5,
-                                               500., 2.E-5, ),)
+ALPH = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(0.0, 1.0e-5, 500.0, 2.0e-5))
 
-syt = 3.0E6
-syc = 2.0E8
-dsigdeps = -6000.0E6
+syt = 3.0e6
+syc = 2.0e8
+dsigdeps = -6000.0e6
 
-MATER = DEFI_MATERIAU(ELAS_FO = _F(E  = YOUN,
-                                   NU = POISSON,
-                                   TEMP_DEF_ALPHA = TREF,
-                                   ALPHA = ALPH,),
-              BETON_ECRO_LINE = _F( SYT         =  syt,
-                                    D_SIGM_EPSI =  dsigdeps,
-                                    SYC         =  syc),)
+MATER = DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUN, NU=POISSON, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    BETON_ECRO_LINE=_F(SYT=syt, D_SIGM_EPSI=dsigdeps, SYC=syc),
+)
 
-LMAT2 = [None]*(NCAL)
-time  = 0.
-tfin  = 1.
+LMAT2 = [None] * (NCAL)
+time = 0.0
+tfin = 1.0
 
-for i in range(NCAL) :
+for i in range(NCAL):
     timem = time
-    time  = timem + tfin/NCAL
-    Ti = TREF + time/tfin  * (Tmax - TREF)
-    Tm = TREF + timem/tfin * (Tmax - TREF)
+    time = timem + tfin / NCAL
+    Ti = TREF + time / tfin * (Tmax - TREF)
+    Tm = TREF + timem / tfin * (Tmax - TREF)
 
-    LMAT2[i] = DEFI_MATERIAU(ELAS = _F(E     = YOUN(Ti),
-                                       NU    = nu,
-                                       ALPHA = 0.,),
-                  BETON_ECRO_LINE = _F(SYT         = syt,
-                                       D_SIGM_EPSI = dsigdeps,
-                                       SYC         = syc), )
+    LMAT2[i] = DEFI_MATERIAU(
+        ELAS=_F(E=YOUN(Ti), NU=nu, ALPHA=0.0),
+        BETON_ECRO_LINE=_F(SYT=syt, D_SIGM_EPSI=dsigdeps, SYC=syc),
+    )
 
 
-#-----------------------------------------------------#
+# -----------------------------------------------------#
 # TEST DU COMPORTEMENT A LA TEMPERATURE
-#-----------------------------------------------------#
+# -----------------------------------------------------#
 
-compor = 'ENDO_ISOT_BETON'
+compor = "ENDO_ISOT_BETON"
 Nbvari = 2
 
-tabresu = TEST_COMPOR( MATER      = MATER,
-                       COMPORTEMENT  = _F(RELATION=compor),
-                       LIST_MATER = LMAT2,
-                       ALPHA      = ALPH,
-                       YOUNG      = YOUN,
-                       TEMP_INIT  = TREF,
-                       TEMP_FIN   = Tmax,
-                       NEWTON     = _F(REAC_ITER=1),
-                       NB_VARI    = Nbvari, )
+tabresu = TEST_COMPOR(
+    MATER=MATER,
+    COMPORTEMENT=_F(RELATION=compor),
+    LIST_MATER=LMAT2,
+    ALPHA=ALPH,
+    YOUNG=YOUN,
+    TEMP_INIT=TREF,
+    TEMP_FIN=Tmax,
+    NEWTON=_F(REAC_ITER=1),
+    NB_VARI=Nbvari,
+)
 
-#IMPR_TABLE(TABLE = tabresu)
+# IMPR_TABLE(TABLE = tabresu)
 
 FIN()

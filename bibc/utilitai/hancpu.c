@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -24,10 +24,9 @@
 **  Il n'y a pas de passage d'argument pour minimiser les problemes
 **  d'interfacage FORTRAN/C et reciproquement
 */
-void hancpu(int sig)
-{
-   void DEF0(SIGCPU, sigcpu);
-   
-   CALL0(SIGCPU, sigcpu);
-   exit(sig);
+void hancpu( int sig ) {
+    void DEF0( SIGCPU, sigcpu );
+
+    CALL0( SIGCPU, sigcpu );
+    exit( sig );
 }

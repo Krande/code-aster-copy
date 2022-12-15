@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,14 +33,13 @@ _encoding = None
 
 
 def get_encoding():
-    """Return local encoding
-    """
+    """Return local encoding"""
     global _encoding
     if _encoding is None:
         try:
-            _encoding = locale.getpreferredencoding() or 'ascii'
+            _encoding = locale.getpreferredencoding() or "ascii"
         except locale.Error:
-            _encoding = 'ascii'
+            _encoding = "ascii"
     return _encoding
 
 
@@ -67,16 +66,16 @@ def to_unicode(string):
     elif type(string) is not str:
         return string
     assert type(string) is str, "unsupported object: %s" % string
-    for encoding in ('utf-8', 'iso-8859-15', 'cp1252'):
+    for encoding in ("utf-8", "iso-8859-15", "cp1252"):
         try:
             s = str(string, encoding)
             return s
         except UnicodeDecodeError:
             pass
-    return str(string, 'utf-8', 'replace')
+    return str(string, "utf-8", "replace")
 
 
-def from_unicode(ustring, encoding, errors='replace'):
+def from_unicode(ustring, encoding, errors="replace"):
     """Try to encode a unicode string using encoding.
 
     Arguments:
@@ -95,7 +94,7 @@ def from_unicode(ustring, encoding, errors='replace'):
     return ustring.encode(encoding, errors)
 
 
-def convert(content, encoding=None, errors='replace'):
+def convert(content, encoding=None, errors="replace"):
     """Convert content using encoding or default encoding if *None*.
 
     Arguments:
@@ -140,20 +139,18 @@ def ufmt(uformat, *args):
 
 
 def clean_string(chaine):
-    """Supprime tous les caractères non imprimables.
-    """
-    invalid = '?'
+    """Supprime tous les caractères non imprimables."""
+    invalid = "?"
     txt = []
     for char in chaine:
         if ord(char) != 0:
             txt.append(char)
         else:
             txt.append(invalid)
-    return ''.join(txt)
+    return "".join(txt)
 
 
-def cut_long_lines(txt, maxlen, sep=os.linesep,
-                   l_separ=(' ', ',', ';', '.', ':')):
+def cut_long_lines(txt, maxlen, sep=os.linesep, l_separ=(" ", ",", ";", ".", ":")):
     """Coupe les morceaux de `txt` (isolés avec `sep`) de plus de `maxlen`
     caractères.
     On utilise successivement les séparateurs de `l_separ`.
@@ -186,22 +183,20 @@ def maximize_lines(l_fields, maxlen, sep):
     if len(l_fields) == 0:
         return newlines
     # ceinture
-    assert max([len(f)
-               for f in l_fields]) <= maxlen, 'lignes trop longues : %s' % l_fields
+    assert max([len(f) for f in l_fields]) <= maxlen, "lignes trop longues : %s" % l_fields
     while len(l_fields) > 0:
         cur = []
-        while len(l_fields) > 0 and len(sep.join(cur + [l_fields[0], ])) <= maxlen:
+        while len(l_fields) > 0 and len(sep.join(cur + [l_fields[0]])) <= maxlen:
             cur.append(l_fields.pop(0))
         # bretelle
         assert len(cur) > 0, l_fields
         newlines.append(sep.join(cur))
-    newlines = [l for l in newlines if l != '']
+    newlines = [l for l in newlines if l != ""]
     return newlines
 
 
 def force_split(txt, maxlen):
-    """Force le découpage de la ligne à 'maxlen' caractères.
-    """
+    """Force le découpage de la ligne à 'maxlen' caractères."""
     l_res = []
     while len(txt) > maxlen:
         l_res.append(txt[:maxlen])
@@ -219,6 +214,7 @@ def copy_text_to(text, files):
         text (str): Message to be printed
         files (str|file, list[str|file]): Filename(s) or file-object(s)
     """
+
     def _dump(fobj):
         fobj.write(text)
         fobj.write(os.linesep)
@@ -227,7 +223,7 @@ def copy_text_to(text, files):
     files = force_list(files)
     for f_i in files:
         if isinstance(f_i, str):
-            with open(f_i, 'a') as obj:
+            with open(f_i, "a") as obj:
                 _dump(obj)
         else:
             _dump(f_i)
@@ -247,6 +243,7 @@ def _fixed_length(lines, maxlen, align="<"):
     fmt = "{{0:{1}{0}s}}".format(maxlen, align)
     return [fmt.format(line) for line in lines]
 
+
 def textbox(text, maxlen=90):
     """Format a text into a box to be highlighted.
 
@@ -262,8 +259,8 @@ def textbox(text, maxlen=90):
     upright = chr(0x2557)
     horiz = chr(0x2550)
     vert = chr(0x2551)
-    botleft = chr(0x255a)
-    botright = chr(0x255d)
+    botleft = chr(0x255A)
+    botright = chr(0x255D)
     head = " " + upleft + horiz * (maxlen + 2) + upright
     foot = " " + botleft + horiz * (maxlen + 2) + botright
     fmt = " " + vert + " {0} " + vert
@@ -273,6 +270,7 @@ def textbox(text, maxlen=90):
     lines.extend([fmt.format(line) for line in fixed])
     lines.extend([foot, ""])
     return os.linesep.join(lines)
+
 
 def center(text, maxlen=90):
     """Format a text as centered.

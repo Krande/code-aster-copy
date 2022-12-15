@@ -28,6 +28,7 @@ from ..Objects import ParallelDOFNumbering
 from ..Utilities import injector
 import functools
 
+
 @injector(ParallelDOFNumbering)
 class ExtendedParallelDOFNumbering:
     cata_sdj = "SD.sd_nume_ddl.sd_nume_ddl"
@@ -36,13 +37,11 @@ class ExtendedParallelDOFNumbering:
         """Returns the argument required to reinitialize a
         ParallelDOFNumbering object during unpickling.
         """
-        return (self.getName(), self.getModel(),
-                self.getListOfLoads(), self.getDescription())
+        return (self.getName(), self.getModel(), self.getListOfLoads(), self.getDescription())
 
     @functools.lru_cache()
     def __Components2Rows(self, local=True):
-        """Build the dictionary from the components to the rows.
-        """
+        """Build the dictionary from the components to the rows."""
         ndofs = self.getNumberOfDofs(local=True)  # iterate on the dof of the subdomain
         dict_dof = {}
         for row in range(ndofs):
@@ -54,7 +53,7 @@ class ExtendedParallelDOFNumbering:
                 dict_dof.setdefault(component, []).append(glob_row)
         return dict_dof
 
-    def getRowsAssociatedToComponent(self, component:str, local=True):
+    def getRowsAssociatedToComponent(self, component: str, local=True):
         """Return the rows associated to the input component.
 
         Arguments:
@@ -66,6 +65,5 @@ class ExtendedParallelDOFNumbering:
         return self.__Components2Rows(local)[component]
 
     def getDictComponentsToRows(self, local=True):
-        """Return the dictionary with the available components as keys and the rows as values.
-        """
+        """Return the dictionary with the available components as keys and the rows as values."""
         return self.__Components2Rows(local)

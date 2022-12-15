@@ -83,8 +83,7 @@ class ResultCreator(ExecuteCommand):
             elif typ == "DYNA_HARMO":
                 self._result = FullHarmonicResult()
             else:
-                raise NotImplementedError(
-                    "Type of result {0!r} not yet " "implemented".format(typ))
+                raise NotImplementedError("Type of result {0!r} not yet " "implemented".format(typ))
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -135,20 +134,19 @@ class ResultCreator(ExecuteCommand):
             self._result.setModel(matr_rigi.getModel())
             dofNum = matr_rigi.getDOFNumbering()
             if dofNum:
-                if keywords["TYPE_RESU"]=="DYNA_TRANS":
+                if keywords["TYPE_RESU"] == "DYNA_TRANS":
                     self._result.setDOFNumbering(dofNum)
                 else:
                     fnds.append(dofNum.getDescription())
         if keywords.get("CONV_RESU"):
-            self._result.setModel(
-                keywords["CONV_RESU"]["RESU_INIT"].getModel())
+            self._result.setModel(keywords["CONV_RESU"]["RESU_INIT"].getModel())
             matr_rigi = keywords["CONV_RESU"].get("MATR_RIGI")
             if matr_rigi is not None:
                 dofNum = matr_rigi.getDOFNumbering()
             else:
                 dofNum = keywords["CONV_RESU"]["NUME_DDL"]
             if dofNum:
-                if keywords["TYPE_RESU"]=="DYNA_TRANS":
+                if keywords["TYPE_RESU"] == "DYNA_TRANS":
                     self._result.setDOFNumbering(dofNum)
                 else:
                     fnds.append(dofNum.getDescription())

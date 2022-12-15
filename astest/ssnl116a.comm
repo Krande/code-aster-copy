@@ -19,68 +19,55 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',  )
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MA=DEFI_GROUP( reuse=MA,  MAILLAGE=MA,CREA_GROUP_NO=(
-                   _F( NOM = 'GONAA',
-                                  GROUP_MA = 'GOA'),
-                   _F( NOM = 'GONZZ',
-                                  GROUP_MA = 'GRBAR_V'),
-                   _F( NOM = 'GONXX',
-                                  GROUP_MA = 'GRBAR_T'),
-                   _F( NOM = 'GON',
-                                  GROUP_MA = 'GRBAR_H'))
-                 )
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(NOM="GONAA", GROUP_MA="GOA"),
+        _F(NOM="GONZZ", GROUP_MA="GRBAR_V"),
+        _F(NOM="GONXX", GROUP_MA="GRBAR_T"),
+        _F(NOM="GON", GROUP_MA="GRBAR_H"),
+    ),
+)
 
-MASEC=LIRE_MAILLAGE(UNITE=21,
-                    FORMAT='MED',)
+MASEC = LIRE_MAILLAGE(UNITE=21, FORMAT="MED")
 
-GF=DEFI_GEOM_FIBRE(SECTION=_F(GROUP_FIBRE='TRAN',
-                              TOUT_SECT='OUI',
-                              MAILLAGE_SECT=MASEC,
-                              COOR_AXE_POUTRE=(0.,0.,),),)
+GF = DEFI_GEOM_FIBRE(
+    SECTION=_F(GROUP_FIBRE="TRAN", TOUT_SECT="OUI", MAILLAGE_SECT=MASEC, COOR_AXE_POUTRE=(0.0, 0.0))
+)
 
-MO=AFFE_MODELE(    MAILLAGE=MA,
-     AFFE=(
-     _F(  GROUP_MA = 'GOA',
-     PHENOMENE = 'MECANIQUE',
-     MODELISATION = 'POU_D_EM'),
-     _F(  GROUP_MA = ('GRBAR_T','GRBAR_H','GRBAR_V',),
-     PHENOMENE = 'MECANIQUE',
-     MODELISATION = 'BARRE'))
-     )
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="GOA", PHENOMENE="MECANIQUE", MODELISATION="POU_D_EM"),
+        _F(GROUP_MA=("GRBAR_T", "GRBAR_H", "GRBAR_V"), PHENOMENE="MECANIQUE", MODELISATION="BARRE"),
+    ),
+)
 
-MATA=DEFI_MATERIAU(  ELAS=_F(  E = 7.2E10,
-                     NU = 0.3,
-                     ALPHA = 22.4E-6),
-                     ECRO_LINE=_F(SY=75.E6,D_SIGM_EPSI = 0,),
-                   )
+MATA = DEFI_MATERIAU(
+    ELAS=_F(E=7.2e10, NU=0.3, ALPHA=22.4e-6), ECRO_LINE=_F(SY=75.0e6, D_SIGM_EPSI=0)
+)
 
-CARAP=AFFE_CARA_ELEM(      MODELE=MO,
-      POUTRE=_F( GROUP_MA = 'GOA',
-     SECTION = 'CERCLE',
-     CARA = ('R',  'EP',),
-     VALE = (0.25765,  0.01,)),BARRE=(
-      _F( GROUP_MA = 'GRBAR_T',
-     SECTION = 'RECTANGLE',
-     CARA = 'H',
-     VALE = 1.),
-             _F( GROUP_MA = 'GRBAR_H',
-     SECTION = 'RECTANGLE',
-     CARA = 'H',
-     VALE = 1.),
-               _F( GROUP_MA = 'GRBAR_V',
-     SECTION = 'RECTANGLE',
-     CARA = 'H',
-     VALE = 1.)),
-     GEOM_FIBRE=GF,
-     MULTIFIBRE=_F(GROUP_MA='GOA',
-                   GROUP_FIBRE='TRAN',),
-          )
+CARAP = AFFE_CARA_ELEM(
+    MODELE=MO,
+    POUTRE=_F(GROUP_MA="GOA", SECTION="CERCLE", CARA=("R", "EP"), VALE=(0.25765, 0.01)),
+    BARRE=(
+        _F(GROUP_MA="GRBAR_T", SECTION="RECTANGLE", CARA="H", VALE=1.0),
+        _F(GROUP_MA="GRBAR_H", SECTION="RECTANGLE", CARA="H", VALE=1.0),
+        _F(GROUP_MA="GRBAR_V", SECTION="RECTANGLE", CARA="H", VALE=1.0),
+    ),
+    GEOM_FIBRE=GF,
+    MULTIFIBRE=_F(GROUP_MA="GOA", GROUP_FIBRE="TRAN"),
+)
 
-COMPPMF=DEFI_COMPOR(GEOM_FIBRE= GF,MATER_SECT= MATA,
-                  MULTIFIBRE=(_F(GROUP_FIBRE='TRAN',MATER= MATA, RELATION = 'VMIS_ISOT_LINE'),))
+COMPPMF = DEFI_COMPOR(
+    GEOM_FIBRE=GF,
+    MATER_SECT=MATA,
+    MULTIFIBRE=(_F(GROUP_FIBRE="TRAN", MATER=MATA, RELATION="VMIS_ISOT_LINE"),),
+)
 
 FIN()

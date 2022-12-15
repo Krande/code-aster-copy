@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,22 @@
 
 from .ascheckers import Parmi
 from .asnom import SDNom
-from .asojb import (AsBase, AsColl, AsObject, AsPn, AsVC, AsVect, AsVI, AsVK8,
-                    AsVK16, AsVK24, AsVK32, AsVK80, AsVL, AsVR, AsVS,
-                    Facultatif, OJBVect)
+from .asojb import (
+    AsBase,
+    AsColl,
+    AsObject,
+    AsPn,
+    AsVC,
+    AsVect,
+    AsVI,
+    AsVK8,
+    AsVK16,
+    AsVK24,
+    AsVK32,
+    AsVK80,
+    AsVL,
+    AsVR,
+    AsVS,
+    Facultatif,
+    OJBVect,
+)

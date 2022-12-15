@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,9 @@ import re
 from collections import OrderedDict
 from math import log10
 
-CMDTAG = re.compile(r"\.\. __(?P<orig>run|stg)(?P<stgnum>[0-9]+)_"
-                    r"(?P<loc>cmd|txt)(?P<id>[0-9]+(:[0-9]+)?)")
+CMDTAG = re.compile(
+    r"\.\. __(?P<orig>run|stg)(?P<stgnum>[0-9]+)_" r"(?P<loc>cmd|txt)(?P<id>[0-9]+(:[0-9]+)?)"
+)
 SEPAR = "EXECUTION_CODE_ASTER_EXIT_"
 
 
@@ -47,6 +48,7 @@ def search_msg(text, maxlines=100000):
     Returns:
         dict: Ordered Dict of list of messages, indexed by command identifier.
     """
+
     def run_id(irun, line=1):
         "Return an identifier for Runner messages."
         return "run{0}_txt{1}".format(irun, line)
@@ -54,17 +56,19 @@ def search_msg(text, maxlines=100000):
     separ, _ = _regexp_decoration()
 
     # must be consistent with usage of marker used in code_aster
-    expr = re.compile(r"(^[0-9]+:(?:"
-                      r"\.\. __stg[0-9]+_\w+[0-9]+(:[0-9]+)?|"
-                      r" *![-]{3}[-]*?!.*?![-]{3}[-]*?!|"
-                      r" *" + separ + r".*?" + separ + r"|"
-                      r" *<(?:INFO|A|F)>.*?$|"
-                      r"Traceback \(most recent call last\)|"
-                      r"\w*Error:.*?$|"
-                      r">> JDC.py : DEBUT RAPPORT|"
-                      r" *" + SEPAR + ".*?$"
-                      r"))",
-                      re.M | re.DOTALL)
+    expr = re.compile(
+        r"(^[0-9]+:(?:"
+        r"\.\. __stg[0-9]+_\w+[0-9]+(:[0-9]+)?|"
+        r" *![-]{3}[-]*?!.*?![-]{3}[-]*?!|"
+        r" *" + separ + r".*?" + separ + r"|"
+        r" *<(?:INFO|A|F)>.*?$|"
+        r"Traceback \(most recent call last\)|"
+        r"\w*Error:.*?$|"
+        r">> JDC.py : DEBUT RAPPORT|"
+        r" *" + SEPAR + ".*?$"
+        r"))",
+        re.M | re.DOTALL,
+    )
     outofcmd = re.compile("(>> JDC.py : DEBUT RAPPORT|" + SEPAR + ")", re.M)
 
     # attach first messages to the Runner (also if there is no tag)
@@ -77,8 +81,11 @@ def search_msg(text, maxlines=100000):
     _lines = text.splitlines()
     if len(_lines) > maxlines:
         text = os.linesep.join(_lines[-maxlines:])
-        closure = (1, "<A> Only the messages found in the last "
-                      "{0} lines have been analyzed.".format(maxlines))
+        closure = (
+            1,
+            "<A> Only the messages found in the last "
+            "{0} lines have been analyzed.".format(maxlines),
+        )
 
     # text = remove_mpi_prefix(text) # not needed in '.mess' file
     text = _add_line_numbers(text)
@@ -134,8 +141,8 @@ def _regexp_decoration():
     upright = chr(0x2557)
     horiz = chr(0x2550)
     vert = chr(0x2551)
-    botleft = chr(0x255a)
-    botright = chr(0x255d)
+    botleft = chr(0x255A)
+    botright = chr(0x255D)
     aleft = "[!" + upleft + botleft + "]"
     aright = "[!" + upright + botright + "]"
     ahoriz = "[-" + horiz + "]"
@@ -154,7 +161,7 @@ def _add_line_numbers(text):
     lines = text.splitlines()
     # 0 not an admissible value for the log
     nbl = max(len(lines), 1)
-    fmt = '{{0:0{}d}}:{{1}}'.format(int(log10(nbl)) + 1)
+    fmt = "{{0:0{}d}}:{{1}}".format(int(log10(nbl)) + 1)
     lines = [fmt.format(i + 1, line) for i, line in enumerate(lines)]
     return os.linesep.join(lines)
 

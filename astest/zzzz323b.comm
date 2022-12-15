@@ -17,289 +17,255 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # MODELISATIONS COQUES ET GRILLES LINEAIRES
 
 # Pour vérifier que l'on peut lire et ecrire des noms de groupe de plus 8 caracteres :
-MA1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20)
-IMPR_RESU(RESU=_F(MAILLAGE=MA1),UNITE=21,FORMAT='ASTER',)
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21)
+MA1 = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+IMPR_RESU(RESU=_F(MAILLAGE=MA1), UNITE=21, FORMAT="ASTER")
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
 
 
-MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( GROUP_MA = ('DKT4','DKT3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DKT'
-                            ),
-                          _F( GROUP_MA = ('DST4','DST3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DST'
-                            ),
-                          _F( GROUP_MA = ('Q4G4','Q4G3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'Q4G'
-                            ),
-                          _F( GROUP_MA = ('DKTG4','DKTG3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DKTG'
-                            ),
-                          _F( GROUP_MA = ('Q4GG4','Q4GG3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'Q4GG'
-                            ),
-                          _F( GROUP_MA = ('GREX4','GREX3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'GRILLE_EXCENTRE'
-                            ),
-                          _F( GROUP_MA = ('GRME4','GRME3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'GRILLE_MEMBRANE'
-                            ),
-                          _F( GROUP_MA = ('MEMB4',),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'MEMBRANE'
-                            ),
-                         ),
-                  )
-
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA=("DKT4", "DKT3"), PHENOMENE="MECANIQUE", MODELISATION="DKT"),
+        _F(GROUP_MA=("DST4", "DST3"), PHENOMENE="MECANIQUE", MODELISATION="DST"),
+        _F(GROUP_MA=("Q4G4", "Q4G3"), PHENOMENE="MECANIQUE", MODELISATION="Q4G"),
+        _F(GROUP_MA=("DKTG4", "DKTG3"), PHENOMENE="MECANIQUE", MODELISATION="DKTG"),
+        _F(GROUP_MA=("Q4GG4", "Q4GG3"), PHENOMENE="MECANIQUE", MODELISATION="Q4GG"),
+        _F(GROUP_MA=("GREX4", "GREX3"), PHENOMENE="MECANIQUE", MODELISATION="GRILLE_EXCENTRE"),
+        _F(GROUP_MA=("GRME4", "GRME3"), PHENOMENE="MECANIQUE", MODELISATION="GRILLE_MEMBRANE"),
+        _F(GROUP_MA=("MEMB4",), PHENOMENE="MECANIQUE", MODELISATION="MEMBRANE"),
+    ),
+)
 
 
 #
-EP=6.0E-2
-CARAELEM=AFFE_CARA_ELEM(
-                      MODELE=MODELE,
-                       COQUE=(_F(  GROUP_MA='GROUP_MA_COQUE',
-                                   EPAIS = 0.1,
-                                   ANGL_REP=(45.0,-45.0),
-                                ),
-                               ),
-                       GRILLE=_F(  GROUP_MA='GROUP_MA_GRILLE',
-                                   SECTION = 0.1,
-                                   ANGL_REP_1=(45.0,-45.0),
-                                ),
-                       MEMBRANE=_F(GROUP_MA = 'MEMB4',
-                                   ANGL_REP_1=(45.0,-45.0),
-                                   EPAIS = 0.1,
-                                )
-                         )
+EP = 6.0e-2
+CARAELEM = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    COQUE=(_F(GROUP_MA="GROUP_MA_COQUE", EPAIS=0.1, ANGL_REP=(45.0, -45.0)),),
+    GRILLE=_F(GROUP_MA="GROUP_MA_GRILLE", SECTION=0.1, ANGL_REP_1=(45.0, -45.0)),
+    MEMBRANE=_F(GROUP_MA="MEMB4", ANGL_REP_1=(45.0, -45.0), EPAIS=0.1),
+)
 
 
-IMPR_CONCEPT(FORMAT="RESULTAT",
-            CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='ELEM',MODELE=MODELE
-                      ))
+IMPR_CONCEPT(FORMAT="RESULTAT", CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE))
 
 
-DEFI_FICHIER(UNITE=82, FICHIER='./fort.82', TYPE = 'BINARY')
+DEFI_FICHIER(UNITE=82, FICHIER="./fort.82", TYPE="BINARY")
 
-IMPR_CONCEPT(FORMAT='MED',UNITE=82,
-             CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='ELEM',MODELE=MODELE
-                      ))
+IMPR_CONCEPT(
+    FORMAT="MED", UNITE=82, CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE)
+)
 
 
-DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
+DEFI_FICHIER(UNITE=82, ACTION="LIBERER")
 
 REPLO_1 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000004.REPLO_1',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000004.REPLO_1",
+    NOM_CMP_IDEM="OUI",
+)
 REPLO_2 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000004.REPLO_2',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000004.REPLO_2",
+    NOM_CMP_IDEM="OUI",
+)
 REPLO_3 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000004.REPLO_3',
-                      NOM_CMP_IDEM='OUI',
-                     )
-
-
-
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000004.REPLO_3",
+    NOM_CMP_IDEM="OUI",
+)
 
 
 # VECTEUR x local
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DKT4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.5E0,
-                        VALE_REFE=0.5E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DKT3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.5E0,
-                        VALE_REFE=0.5E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DST4',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                     _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DST3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.5E0,
-                        VALE_REFE=0.5E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='Q4G4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.5E0,
-                        VALE_REFE=0.5E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DKTG4',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                     _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='GRME3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.5E0,
-                        VALE_REFE=0.5E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='Q4GG3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.5E0,
-                        VALE_REFE=0.5E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='GREX4',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='MEMB4',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DKT4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.5e0,
+            VALE_REFE=0.5e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DKT3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.5e0,
+            VALE_REFE=0.5e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DST4",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DST3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.5e0,
+            VALE_REFE=0.5e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="Q4G4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.5e0,
+            VALE_REFE=0.5e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DKTG4",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="GRME3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.5e0,
+            VALE_REFE=0.5e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="Q4GG3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.5e0,
+            VALE_REFE=0.5e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="GREX4",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="MEMB4",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
 # VECTEUR z local
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLO_3,
-                        GROUP_MA='DKT4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_3,
-                        GROUP_MA='DKT3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=-0.707106781186E0,
-                        VALE_REFE=-0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                     _F(
-                        CHAM_GD = REPLO_3,
-                        GROUP_MA='DST3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_3,
-                        GROUP_MA='Q4G4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=-0.707106781186E0,
-                        VALE_REFE=-0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                     _F(
-                        CHAM_GD = REPLO_3,
-                        GROUP_MA='GRME3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_3,
-                        GROUP_MA='Q4GG3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=-0.707106781186E0,
-                        VALE_REFE=-0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLO_3,
+            GROUP_MA="DKT4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_3,
+            GROUP_MA="DKT3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=-0.707106781186e0,
+            VALE_REFE=-0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_3,
+            GROUP_MA="DST3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_3,
+            GROUP_MA="Q4G4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=-0.707106781186e0,
+            VALE_REFE=-0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_3,
+            GROUP_MA="GRME3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_3,
+            GROUP_MA="Q4GG3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=-0.707106781186e0,
+            VALE_REFE=-0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
 FIN()

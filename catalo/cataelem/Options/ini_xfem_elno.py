@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -30,32 +29,23 @@ import cataelem.Commons.attributes as AT
 # Pour que les elements XFEM puissent creer certains CHAM_ELEM :
 
 
-PSTANO   = OutputParameter(phys=PHY.N120_I, type='ELNO')
+PSTANO = OutputParameter(phys=PHY.N120_I, type="ELNO")
 
 
-PLSN     = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
+PLSN = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
 
 
-PLST     = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
+PLST = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
 
 
-PBASLOR  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
+PBASLOR = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
 
 
-PFISNO   = OutputParameter(phys=PHY.NEUT_I, type='ELNO')
+PFISNO = OutputParameter(phys=PHY.NEUT_I, type="ELNO")
 
 
 INI_XFEM_ELNO = Option(
-    para_in=(
-    ),
-    para_out=(
-           PBASLOR,
-           PFISNO,
-           PLSN,
-           PLST,
-           PSTANO,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.LXFEM,'OUI'),)),
-    ),
+    para_in=(),
+    para_out=(PBASLOR, PFISNO, PLSN, PLST, PSTANO),
+    condition=(CondCalcul("+", ((AT.LXFEM, "OUI"),)),),
 )

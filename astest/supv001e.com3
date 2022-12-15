@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,30 +19,25 @@
 
 import code_aster
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 test = code_aster.TestCase()
 
-test.assertEqual(a, 2.)
+test.assertEqual(a, 2.0)
 
-mult6 = FORMULE(NOM_PARA='INST', VALE='INST * a * 3', a=a)
-test.assertEqual(mult6(2.), 12.)
+mult6 = FORMULE(NOM_PARA="INST", VALE="INST * a * 3", a=a)
+test.assertEqual(mult6(2.0), 12.0)
 
-mult12sq = FORMULE(NOM_PARA='INST', VALE='INST * a * mult6(a)',
-                   a=a, mult6=mult6)
-test.assertEqual(mult12sq(2.), 48.)
-test.assertEqual(mult2(2.), 4.)
+mult12sq = FORMULE(NOM_PARA="INST", VALE="INST * a * mult6(a)", a=a, mult6=mult6)
+test.assertEqual(mult12sq(2.0), 48.0)
+test.assertEqual(mult2(2.0), 4.0)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.0,
-                         VALE_PARA=2.0,
-                         NOM_PARA='INST',
-                         FONCTION=mult2,),
-                      _F(VALE_CALC=48.0,
-                         VALE_PARA=2.0,
-                         NOM_PARA='INST',
-                         FONCTION=mult12sq,),
-                      ),
-              )
+TEST_FONCTION(
+    VALEUR=(
+        _F(VALE_CALC=4.0, VALE_PARA=2.0, NOM_PARA="INST", FONCTION=mult2),
+        _F(VALE_CALC=48.0, VALE_PARA=2.0, NOM_PARA="INST", FONCTION=mult12sq),
+    )
+)
 
 test.printSummary()
 

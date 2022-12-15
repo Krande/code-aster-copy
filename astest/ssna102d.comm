@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,32 +24,35 @@
 #########################################
 # METHODE DE CONTACT : CONTINUE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED', )
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 #
 
-MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
-# GROUPES DE NOEUDS POUR LES DEGRES DE LIBERTE IMPOSES
-                        _F(  GROUP_MA = 'LCD1'),
-                        _F(  GROUP_MA = 'LBC4'),
-# GROUPES DE NOEUDS POUR LES CONDITIONS DE CONTACT
-                        _F(  GROUP_MA = 'LAB1S'),
-                        _F(  GROUP_MA = 'CEP2S'),
-                        _F(  GROUP_MA = 'CME2S'),
-                        _F(  GROUP_MA = 'CEP3S'),
-                        _F(  GROUP_MA = 'CME3S'),
-                        _F(  GROUP_MA = 'LCD4S'),
-                        _F(  GROUP_MA = 'LCD4I'),
-# LCD4P EST LCD4 SAUF NOEUD PC4 ENCASTRE (POUR LE POST-TRAITEMENT)
-                        _F(  NOM = 'LCD4P',
-                                        DIFFE = ('LCD4I', 'PC4',)))
-                     )
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_NO=(
+        # GROUPES DE NOEUDS POUR LES DEGRES DE LIBERTE IMPOSES
+        _F(GROUP_MA="LCD1"),
+        _F(GROUP_MA="LBC4"),
+        # GROUPES DE NOEUDS POUR LES CONDITIONS DE CONTACT
+        _F(GROUP_MA="LAB1S"),
+        _F(GROUP_MA="CEP2S"),
+        _F(GROUP_MA="CME2S"),
+        _F(GROUP_MA="CEP3S"),
+        _F(GROUP_MA="CME3S"),
+        _F(GROUP_MA="LCD4S"),
+        _F(GROUP_MA="LCD4I"),
+        # LCD4P EST LCD4 SAUF NOEUD PC4 ENCASTRE (POUR LE POST-TRAITEMENT)
+        _F(NOM="LCD4P", DIFFE=("LCD4I", "PC4")),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -57,12 +60,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
 # --------------------------------------------------------------------
 #
 
-MOD=AFFE_MODELE(
-                       MAILLAGE=MAIL,
-                       AFFE=_F(  TOUT = 'OUI',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'AXIS')
-                    )
+MOD = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
 #
 # --------------------------------------------------------------------
@@ -70,18 +68,11 @@ MOD=AFFE_MODELE(
 # --------------------------------------------------------------------
 #
 
-ELAS=DEFI_MATERIAU(
-                          ELAS=_F(  E = 200000.,
-                                 NU = 0.3)
-                       )
+ELAS = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
 
 #
 
-CHMAT=AFFE_MATERIAU(
-                           MAILLAGE=MAIL,
-                           AFFE=_F(  TOUT = 'OUI',
-                                  MATER = ELAS)
-                        )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ELAS))
 
 #
 # --------------------------------------------------------------------
@@ -89,11 +80,7 @@ CHMAT=AFFE_MATERIAU(
 # --------------------------------------------------------------------
 #
 
-BLOQ=AFFE_CHAR_MECA(
-                           MODELE=MOD,
-                              DDL_IMPO=_F(  GROUP_NO = 'LBC4',
-                                         DX = 0.0,  DY = 0.0)
-                        )
+BLOQ = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_NO="LBC4", DX=0.0, DY=0.0))
 
 #
 # --------------------------------------------------------------------
@@ -101,11 +88,7 @@ BLOQ=AFFE_CHAR_MECA(
 # --------------------------------------------------------------------
 #
 
-DEPL=AFFE_CHAR_MECA(
-                           MODELE=MOD,
-                              DDL_IMPO=_F(  GROUP_NO = 'LCD1',
-                                                  DY = -2.0)
-                       )
+DEPL = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_NO="LCD1", DY=-2.0))
 
 #
 # --------------------------------------------------------------------
@@ -113,21 +96,14 @@ DEPL=AFFE_CHAR_MECA(
 # --------------------------------------------------------------------
 #
 
-LIAI=AFFE_CHAR_MECA(
-                           MODELE=MOD,LIAISON_DDL=(
-                           _F(  GROUP_NO = ('PA1',  'PP2', ),
-                                         DDL = ('DY', 'DY',),
-                                         COEF_MULT = (1., -1.,),
-                                         COEF_IMPO = 0.),
-                           _F(  GROUP_NO = ('PM2',  'PP3', ),
-                                         DDL = ('DY', 'DY',),
-                                         COEF_MULT = (1., -1.,),
-                                         COEF_IMPO = 0.),
-                           _F(  GROUP_NO = ('PM3',  'PD4', ),
-                                         DDL = ('DY', 'DY',),
-                                         COEF_MULT = (1., -1.,),
-                                         COEF_IMPO = 0.))
-                       )
+LIAI = AFFE_CHAR_MECA(
+    MODELE=MOD,
+    LIAISON_DDL=(
+        _F(GROUP_NO=("PA1", "PP2"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("PM2", "PP3"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("PM3", "PD4"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -138,28 +114,17 @@ LIAI=AFFE_CHAR_MECA(
 # LES ZONES DE CONTACT NE CONTIENNENT PAS LES NOEUDS LIES
 # C'EST POURQUOI IL N'EST PAS NECESSAIRE D'UTILISER SANS_GROUP_NO ICI
 
-CONT = DEFI_CONTACT(MODELE         = MOD,
-                    FORMULATION    = 'CONTINUE',
-                    ALGO_RESO_CONT = 'NEWTON',
-                    ALGO_RESO_GEOM = 'NEWTON',
-                    ZONE = (
-                             _F(
-                                 GROUP_MA_MAIT = 'LAB1S',
-                                 GROUP_MA_ESCL = 'CEP2S',
-                                 CONTACT_INIT  = 'NON',
-                               ),
-                             _F(
-                                 GROUP_MA_MAIT = 'CME2S',
-                                 GROUP_MA_ESCL = 'CEP3S',
-                                 CONTACT_INIT  = 'NON',
-                               ),
-                             _F(
-                                 GROUP_MA_MAIT = 'CME3S',
-                                 GROUP_MA_ESCL = 'LCD4S',
-                                 CONTACT_INIT  = 'NON',
-                               ),
-                           ),
-                    )
+CONT = DEFI_CONTACT(
+    MODELE=MOD,
+    FORMULATION="CONTINUE",
+    ALGO_RESO_CONT="NEWTON",
+    ALGO_RESO_GEOM="NEWTON",
+    ZONE=(
+        _F(GROUP_MA_MAIT="LAB1S", GROUP_MA_ESCL="CEP2S", CONTACT_INIT="NON"),
+        _F(GROUP_MA_MAIT="CME2S", GROUP_MA_ESCL="CEP3S", CONTACT_INIT="NON"),
+        _F(GROUP_MA_MAIT="CME3S", GROUP_MA_ESCL="LCD4S", CONTACT_INIT="NON"),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -168,18 +133,11 @@ CONT = DEFI_CONTACT(MODELE         = MOD,
 # --------------------------------------------------------------------
 #
 
-FONC=DEFI_FONCTION(
-                           NOM_PARA='INST',
-                           VALE=( 0.,   0.0,
-                                  1.,   1.0, )
-                        )
+FONC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
 #
 
-LINST=DEFI_LIST_REEL(
-                            DEBUT=0.0,
-                            INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 1)
-                         )
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 #
 # --------------------------------------------------------------------
@@ -187,22 +145,17 @@ LINST=DEFI_LIST_REEL(
 # --------------------------------------------------------------------
 #
 
-RESU=STAT_NON_LINE(
-                          MODELE=MOD,
-                          CHAM_MATER=CHMAT,EXCIT=(
-                          _F(  CHARGE = BLOQ),
-                                _F(  CHARGE = DEPL,   FONC_MULT = FONC),
-                                _F(  CHARGE = LIAI),),
-                          CONTACT  = CONT,
-                          COMPORTEMENT=_F(  RELATION = 'ELAS'),
-                          NEWTON=_F(  MATRICE = 'ELASTIQUE',REAC_ITER=1),
-                          INCREMENT=_F(  LIST_INST = LINST),
-                          CONVERGENCE=_F(
-                                        RESI_GLOB_RELA = 1.E-6,
-                                        ITER_GLOB_MAXI = 50,
-                                        ARRET = 'OUI'),
-                          INFO=1
-                       )
+RESU = STAT_NON_LINE(
+    MODELE=MOD,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=BLOQ), _F(CHARGE=DEPL, FONC_MULT=FONC), _F(CHARGE=LIAI)),
+    CONTACT=CONT,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=LINST),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50, ARRET="OUI"),
+    INFO=1,
+)
 
 #
 # --------------------------------------------------------------------
@@ -210,14 +163,9 @@ RESU=STAT_NON_LINE(
 # --------------------------------------------------------------------
 #
 
-RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIGM_ELNO"))
 
-                        CONTRAINTE=('SIGM_ELNO'),
-                  )
-
-RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
-                     CONTRAINTE='SIGM_NOEU'
-                  )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_NOEU")
 
 #
 # --------------------------------------------------------------------
@@ -226,26 +174,27 @@ RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
 #
 
 
-RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
-                     FORCE='REAC_NODA'
-                  )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="REAC_NODA")
 
 #
 # --------------------------------------------------------------------
 #                COMPARAISON SOURCE EXTRENE
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='PA4',
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.841372709387,
-                  VALE_REFE=-0.81,
-                  CRITERE='RELATIF',
-                  PRECISION=0.04,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="PA4",
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=-0.841372709387,
+        VALE_REFE=-0.81,
+        CRITERE="RELATIF",
+        PRECISION=0.04,
+    )
+)
 
 #
 # --------------------------------------------------------------------
@@ -255,26 +204,30 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 # --------------------------------------------------------------------
 
 
-REACENC=POST_RELEVE_T(
-                 ACTION=_F(  RESULTAT = RESU,
-                          INST = 1.,
-                          INTITULE = 'ENCASTREMENT',
-                          NOM_CHAM = 'REAC_NODA',
-                          REPERE = 'GLOBAL',
-                          OPERATION = 'EXTRACTION',
-                          GROUP_NO = 'LBC4',
-                          RESULTANTE = ('DX', 'DY',))
-              )
+REACENC = POST_RELEVE_T(
+    ACTION=_F(
+        RESULTAT=RESU,
+        INST=1.0,
+        INTITULE="ENCASTREMENT",
+        NOM_CHAM="REAC_NODA",
+        REPERE="GLOBAL",
+        OPERATION="EXTRACTION",
+        GROUP_NO="LBC4",
+        RESULTANTE=("DX", "DY"),
+    )
+)
 
 #
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.016,
-           VALE_CALC=17501.4520347,
-           VALE_REFE=1.7229580000000002E4,
-           NOM_PARA='DY',
-           TABLE=REACENC,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=0.016,
+    VALE_CALC=17501.4520347,
+    VALE_REFE=1.7229580000000002e4,
+    NOM_PARA="DY",
+    TABLE=REACENC,
+)
 
 FIN()
 #

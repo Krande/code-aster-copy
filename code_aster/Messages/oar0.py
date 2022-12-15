@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,30 +20,34 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _("""
+    1: _(
+        """
 Les coupes mécanique et thermique doivent partager les mêmes abscisses.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
 Erreur d'interpolation: %(k1)s
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 Les coupes du revêtement et de la structure doivent partager une abscisse commune.
-"""),
-
-
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 Fonction non implantée.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 Mot clé facteur inconnu.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 Erreur à l'ouverture du fichier.
-"""),
-
+"""
+    ),
 }

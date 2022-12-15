@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,36 +19,26 @@
 
 #
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
-f_amor = DEFI_FONCTION(NOM_PARA='FREQ',
-                       NOM_RESU='AMOR',
-                       VALE=(0., 0.2, 10., 0.1, 40., 0.45))
+f_amor = DEFI_FONCTION(NOM_PARA="FREQ", NOM_RESU="AMOR", VALE=(0.0, 0.2, 10.0, 0.1, 40.0, 0.45))
 
-tab = RECU_TABLE(CO=MODES,
-                 NOM_PARA='FREQ')
+tab = RECU_TABLE(CO=MODES, NOM_PARA="FREQ")
 
-IMPR_TABLE(UNITE=6,
-           TABLE=tab)
+IMPR_TABLE(UNITE=6, TABLE=tab)
 
-g_freq = RECU_FONCTION(TABLE=tab,
-                       PARA_X='FREQ',
-                       PARA_Y='FREQ')
+g_freq = RECU_FONCTION(TABLE=tab, PARA_X="FREQ", PARA_Y="FREQ")
 
 # amor(freq) = g o f(freq) = f_amor( g_freq(freq) )
-amor = CALC_FONCTION(COMPOSE=_F(FONC_PARA=g_freq,
-                                FONC_RESU=f_amor))
+amor = CALC_FONCTION(COMPOSE=_F(FONC_PARA=g_freq, FONC_RESU=f_amor))
 
-IMPR_FONCTION(UNITE=6,
-              COURBE=_F(FONCTION=amor))
+IMPR_FONCTION(UNITE=6, COURBE=_F(FONCTION=amor))
 
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=amor,
-       VALE_PARA=5.52739E+00,
-       VALE_CALC=1.44726E-01),
-    _F(FONCTION=amor,
-       VALE_PARA=3.13474E+01,
-       VALE_CALC=3.49053E-01),
-))
+TEST_FONCTION(
+    VALEUR=(
+        _F(FONCTION=amor, VALE_PARA=5.52739e00, VALE_CALC=1.44726e-01),
+        _F(FONCTION=amor, VALE_PARA=3.13474e01, VALE_CALC=3.49053e-01),
+    )
+)
 
 FIN()

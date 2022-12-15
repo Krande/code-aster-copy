@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,33 +20,30 @@
 # person_in_charge: kyrylo.kazymyrenko at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PCONTMR = InputParameter(phys=PHY.SIEF_R)
 
 
-PCONTMR  = InputParameter(phys=PHY.SIEF_R)
+PVARIMR = InputParameter(phys=PHY.VARI_R)
 
 
-PVARIMR  = InputParameter(phys=PHY.VARI_R)
-
-
-PCOPILO  = OutputParameter(phys=PHY.PILO_R, type='ELGA')
+PCOPILO = OutputParameter(phys=PHY.PILO_R, type="ELGA")
 
 
 PILO_PRED_DEFO = Option(
     para_in=(
         SP.PCDTAU,
-           PCOMPOR,
+        PCOMPOR,
         SP.PCARCRI,
-           PCONTMR,
+        PCONTMR,
         SP.PDDEPLR,
         SP.PDEPL0R,
         SP.PDEPL1R,
@@ -54,12 +51,8 @@ PILO_PRED_DEFO = Option(
         SP.PGEOMER,
         SP.PMATERC,
         SP.PTYPEPI,
-           PVARIMR,
+        PVARIMR,
     ),
-    para_out=(
-           PCOPILO,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PCOPILO,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

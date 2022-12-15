@@ -18,23 +18,23 @@
 
 @Parser Implicit;
 @Behaviour BETON_BURGER;
-@Author         François Hamon (EDF R&D ERMES-T65);
-@Description{
+@Author François Hamon( EDF R &D ERMES - T65 );
+@Description {
 BETON_BURGER model for concrete creep;
 }
 
 @Algorithm NewtonRaphson_NumericalJacobian;
 @Theta 1.;
-@Epsilon 1.E-11 ;
+@Epsilon 1.E-11;
 
-@Includes{
-#include"TFEL/Material/Lame.hxx"
+@Includes {
+#include "TFEL/Material/Lame.hxx"
 }
 
 @MaterialProperty stress young;
-young.setGlossaryName("YoungModulus");
+young.setGlossaryName( "YoungModulus" );
 @MaterialProperty real nu;
-nu.setGlossaryName("PoissonRatio");
+nu.setGlossaryName( "PoissonRatio" );
 
 @MaterialProperty real K_RS;
 @MaterialProperty real ETA_RS;
@@ -47,12 +47,12 @@ nu.setGlossaryName("PoissonRatio");
 @MaterialProperty real TEMP_0_C;
 @MaterialProperty real ETA_FD;
 
-@StateVariable real       ESPHR;
-@StateVariable real       ESPHI;
-@StateVariable real       ELIM;
-@StateVariable Stensor    EDEVR;
-@StateVariable Stensor    EDEVI;
-@StateVariable Stensor    Edess;
+@StateVariable real ESPHR;
+@StateVariable real ESPHI;
+@StateVariable real ELIM;
+@StateVariable Stensor EDEVR;
+@StateVariable Stensor EDEVI;
+@StateVariable Stensor Edess;
 
 @ExternalStateVariable real HYGR;
 @ExternalStateVariable real HYDR;
@@ -60,80 +60,74 @@ nu.setGlossaryName("PoissonRatio");
 
 @AuxiliaryStateVariable Stensor EF;
 
-@LocalVariable real    lambda;
-@LocalVariable real    mu;
-@LocalVariable real    val;
+@LocalVariable real lambda;
+@LocalVariable real mu;
+@LocalVariable real val;
 
 /* Initialize Lame coefficients */
-@InitLocalVariables{
-  using namespace tfel::material::lame;
-  lambda = computeLambda(young,nu);
-  mu = computeMu(young,nu);
+@InitLocalVariables {
+    using namespace tfel::material::lame;
+    lambda = computeLambda( young, nu );
+    mu = computeMu( young, nu );
 }
 
-@TangentOperator{
-  using namespace tfel::material::lame;
-  if((smt==ELASTIC)||(smt==SECANTOPERATOR)){
-    computeAlteredElasticStiffness<hypothesis,Type>::exe(Dt,lambda,mu);
-  } else if(smt==CONSISTENTTANGENTOPERATOR){
-    StiffnessTensor Hooke;
-    Stensor4 Je;
-    computeElasticStiffness<N,Type>::exe(Hooke,lambda,mu);
-    getPartialJacobianInvert(Je);
-    Dt = Hooke*Je;
-  } else {
-    return false;
-  }
+@TangentOperator {
+    using namespace tfel::material::lame;
+    if ( ( smt == ELASTIC ) || ( smt == SECANTOPERATOR ) ) {
+        computeAlteredElasticStiffness< hypothesis, Type >::exe( Dt, lambda, mu );
+    } else if ( smt == CONSISTENTTANGENTOPERATOR ) {
+        StiffnessTensor Hooke;
+        Stensor4 Je;
+        computeElasticStiffness< N, Type >::exe( Hooke, lambda, mu );
+        getPartialJacobianInvert( Je );
+        Dt = Hooke * Je;
+    } else {
+        return false;
+    }
 }
 
-@ComputeStress{
-    sig = lambda*trace(eel)*Stensor::Id()+2*mu*eel;
+@ComputeStress {
+    sig = lambda * trace( eel ) * Stensor::Id() + 2 * mu * eel;
 }
 
-@Integrator{
-    real stresP=trace(sig)/3.;
-    Stensor stresD=sig-stresP*Stensor::Id();
-    real Tmoy=(2.*T+dT)/2.;
-    real Vsech =fabs(dHYGR);
-    real KRS_T=K_RS*exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
-    real KRD_T=K_RD*exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
-    real NRS_T=ETA_RS*exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
-    real NRD_T=ETA_RD*exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
-    real NIS_T=ETA_IS*exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
-    real NID_T=ETA_ID*exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
-    real KAPPA_T=KAPPA/exp(QSR_K*(1./(273.+Tmoy)-1./(273+TEMP_0_C)));
+@Integrator {
+    real stresP = trace( sig ) / 3.;
+    Stensor stresD = sig - stresP * Stensor::Id();
+    real Tmoy = ( 2. * T + dT ) / 2.;
+    real Vsech = fabs( dHYGR );
+    real KRS_T = K_RS * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
+    real KRD_T = K_RD * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
+    real NRS_T = ETA_RS * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
+    real NRD_T = ETA_RD * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
+    real NIS_T = ETA_IS * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
+    real NID_T = ETA_ID * exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
+    real KAPPA_T = KAPPA / exp( QSR_K * ( 1. / ( 273. + Tmoy ) - 1. / ( 273 + TEMP_0_C ) ) );
 
-    real emax=sqrt(((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI))|((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI)));
-    fELIM=ELIM+dELIM-max(ELIM,emax);
+    real emax = sqrt( ( ( ESPHI + dESPHI ) * Stensor::Id() + ( EDEVI + dEDEVI ) ) |
+                      ( ( ESPHI + dESPHI ) * Stensor::Id() + ( EDEVI + dEDEVI ) ) );
+    fELIM = ELIM + dELIM - max( ELIM, emax );
 
-    val = (ELIM+dELIM)/KAPPA_T;
-    if(val < -200)
-    {
+    val = ( ELIM + dELIM ) / KAPPA_T;
+    if ( val < -200 ) {
         val = -200;
-    } else if (val > 200)
-    {
+    } else if ( val > 200 ) {
         val = 200;
     }
 
-    real eexp=exp(val);
-    fESPHR=dESPHR-((HYGR*stresP-KRS_T*(ESPHR+dESPHR))/NRS_T)*dt;
-    fEDEVR=dEDEVR-(HYGR*stresD-KRD_T*(EDEVR+dEDEVR))/NRD_T*dt;
-    fESPHI=dESPHI-(HYGR*stresP/(NIS_T*eexp))*dt;
-    fEDEVI=dEDEVI-(HYGR*stresD/(NID_T*eexp))*dt;
-    if (ETA_FD>0.)
-    {
-    fEdess=dEdess-(1./ETA_FD)*Vsech*sig;
+    real eexp = exp( val );
+    fESPHR = dESPHR - ( ( HYGR * stresP - KRS_T * ( ESPHR + dESPHR ) ) / NRS_T ) * dt;
+    fEDEVR = dEDEVR - ( HYGR * stresD - KRD_T * ( EDEVR + dEDEVR ) ) / NRD_T * dt;
+    fESPHI = dESPHI - ( HYGR * stresP / ( NIS_T * eexp ) ) * dt;
+    fEDEVI = dEDEVI - ( HYGR * stresD / ( NID_T * eexp ) ) * dt;
+    if ( ETA_FD > 0. ) {
+        fEdess = dEdess - ( 1. / ETA_FD ) * Vsech * sig;
+    } else {
+        fEdess = dEdess - 0. * Vsech * sig;
     }
-    else
-    {
-    fEdess=dEdess-0.*Vsech*sig;
-     }
 
-    feel=deel-(deto-dEDEVR-dEDEVI-dEdess-(dESPHR+dESPHI)*Stensor::Id());
-
+    feel = deel - ( deto - dEDEVR - dEDEVI - dEdess - ( dESPHR + dESPHI ) * Stensor::Id() );
 }
-@UpdateAuxiliaryStateVariables{
+@UpdateAuxiliaryStateVariables {
 
-  EF=EF+dEDEVR+dEDEVI+(dESPHR+dESPHI)*Stensor::Id();
-
+    EF = EF + dEDEVR + dEDEVI + ( dESPHR + dESPHI ) * Stensor::Id();
 }

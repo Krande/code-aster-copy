@@ -21,38 +21,46 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEFI_GEOM_FIBRE=OPER(
-    nom="DEFI_GEOM_FIBRE", op=119, sd_prod=gfibre_sdaster,
+DEFI_GEOM_FIBRE = OPER(
+    nom="DEFI_GEOM_FIBRE",
+    op=119,
+    sd_prod=gfibre_sdaster,
     fr=tr("Definition des groupes de fibres pour les elements multifibres"),
-    reentrant='n',
-    regles=(AU_MOINS_UN('SECTION','FIBRE'),),
-    INFO=SIMP(statut='f',typ='I', defaut= 1 ,into=(1,2)),
-# ============================================================================
-    SECTION             =FACT(statut='f',max='**',
-        regles=(AU_MOINS_UN('TOUT_SECT','GROUP_MA_SECT'),
-                PRESENT_ABSENT('TOUT_SECT','GROUP_MA_SECT'),),
-
-        GROUP_FIBRE       =SIMP(statut='o',typ='TXM',min=1,max=1),
-        TOUT_SECT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-        GROUP_MA_SECT     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-
-        MAILLAGE_SECT     =SIMP(statut='o',typ=maillage_sdaster),
-        COOR_AXE_POUTRE   =SIMP(statut='o',typ='R',min=2,max=2),
-        ANGLE             =SIMP(statut='f',typ='R',max=1, defaut= 0.0 ),
+    reentrant="n",
+    regles=(AU_MOINS_UN("SECTION", "FIBRE"),),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    # ============================================================================
+    SECTION=FACT(
+        statut="f",
+        max="**",
+        regles=(
+            AU_MOINS_UN("TOUT_SECT", "GROUP_MA_SECT"),
+            PRESENT_ABSENT("TOUT_SECT", "GROUP_MA_SECT"),
+        ),
+        GROUP_FIBRE=SIMP(statut="o", typ="TXM", min=1, max=1),
+        TOUT_SECT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA_SECT=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        MAILLAGE_SECT=SIMP(statut="o", typ=maillage_sdaster),
+        COOR_AXE_POUTRE=SIMP(statut="o", typ="R", min=2, max=2),
+        ANGLE=SIMP(statut="f", typ="R", max=1, defaut=0.0),
     ),
-# ============================================================================
-    FIBRE               =FACT(statut='f',max='**',
-        GROUP_FIBRE       =SIMP(statut='o',typ='TXM',min=1,max=1),
-        CARA              =SIMP(statut='f',typ='TXM',defaut='SURFACE',into=('SURFACE','DIAMETRE',)),
-        VALE              =SIMP(statut='o',typ='R',max='**'),
-        COOR_AXE_POUTRE   =SIMP(statut='o',typ='R',min=2,max=2),
-        ANGLE             =SIMP(statut='f',typ='R',max=1, defaut= 0.0 ),
+    # ============================================================================
+    FIBRE=FACT(
+        statut="f",
+        max="**",
+        GROUP_FIBRE=SIMP(statut="o", typ="TXM", min=1, max=1),
+        CARA=SIMP(statut="f", typ="TXM", defaut="SURFACE", into=("SURFACE", "DIAMETRE")),
+        VALE=SIMP(statut="o", typ="R", max="**"),
+        COOR_AXE_POUTRE=SIMP(statut="o", typ="R", min=2, max=2),
+        ANGLE=SIMP(statut="f", typ="R", max=1, defaut=0.0),
     ),
-# ============================================================================
-    ASSEMBLAGE_FIBRE    =FACT(statut='f',max='**',
-        GROUP_ASSE_FIBRE  =SIMP(statut='o',typ='TXM',min=1,max=1),
-        GROUP_FIBRE       =SIMP(statut='o',typ='TXM',min=1,max='**'),
-        COOR_GROUP_FIBRE  =SIMP(statut='o',typ='R',  min=2,max='**'),
-        GX_GROUP_FIBRE    =SIMP(statut='o',typ='R',  min=1,max='**'),
+    # ============================================================================
+    ASSEMBLAGE_FIBRE=FACT(
+        statut="f",
+        max="**",
+        GROUP_ASSE_FIBRE=SIMP(statut="o", typ="TXM", min=1, max=1),
+        GROUP_FIBRE=SIMP(statut="o", typ="TXM", min=1, max="**"),
+        COOR_GROUP_FIBRE=SIMP(statut="o", typ="R", min=2, max="**"),
+        GX_GROUP_FIBRE=SIMP(statut="o", typ="R", min=1, max="**"),
     ),
 )

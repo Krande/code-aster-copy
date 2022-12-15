@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,41 +21,33 @@ from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
 
-POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'))
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 mdump = ExecutionParameter().get_option("prog:mdump")
 
 EXEC_LOGICIEL(
-    LOGICIEL=mdump + " fort.80 NODALE FULL_INTERLACE 1 | sed '1,20d'> dump.txt",
-    SHELL='OUI')
-
-TEST_FICHIER(
-    FICHIER="dump.txt",
-    NB_VALE=42909,
-    VALE_CALC=-8.63646007133E+12,
+    LOGICIEL=mdump + " fort.80 NODALE FULL_INTERLACE 1 | sed '1,20d'> dump.txt", SHELL="OUI"
 )
 
+TEST_FICHIER(FICHIER="dump.txt", NB_VALE=42909, VALE_CALC=-8.63646007133e12)
+
 LGroupe = [
-    ('GRaidSurf',    23984, -4.65786935225E+12,),
-    ('GRaidSurfSem',  7817,  6.45420833395E+11,),
-    ('GRaidSurfAme', 17903, -5.30329018512E+12,),
-    ('GBeton',       13877,  2.22184182527E+11,),
-    ('GToleSurf',     7820, -4.63193195493E+12,),
-    ('GAcierLongi',   2436,  4.31157054898E+11,),
+    ("GRaidSurf", 23984, -4.65786935225e12),
+    ("GRaidSurfSem", 7817, 6.45420833395e11),
+    ("GRaidSurfAme", 17903, -5.30329018512e12),
+    ("GBeton", 13877, 2.22184182527e11),
+    ("GToleSurf", 7820, -4.63193195493e12),
+    ("GAcierLongi", 2436, 4.31157054898e11),
 ]
 
 for grp, nbvale, valec in LGroupe:
-    NomFicMed = './REPE_OUT/plancher_scs_%s.med' % grp
+    NomFicMed = "./REPE_OUT/plancher_scs_%s.med" % grp
     EXEC_LOGICIEL(
-        LOGICIEL=mdump + " {0} NODALE FULL_INTERLACE 1 | sed '1,20d'> dump.txt"
-                 .format(NomFicMed),
-        SHELL='OUI')
-
-    TEST_FICHIER(
-        FICHIER="dump.txt",
-        NB_VALE=nbvale,
-        VALE_CALC=valec,
+        LOGICIEL=mdump + " {0} NODALE FULL_INTERLACE 1 | sed '1,20d'> dump.txt".format(NomFicMed),
+        SHELL="OUI",
     )
+
+    TEST_FICHIER(FICHIER="dump.txt", NB_VALE=nbvale, VALE_CALC=valec)
 
 
 FIN()

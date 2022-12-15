@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@
 This module provides helper objects to easily apply changes between elements
 """
 
+
 class CataElemVisitor(object):
 
-    """This class walks the tree of CataElem object.
-    """
+    """This class walks the tree of CataElem object."""
 
     def __init__(self):
         """Initialization."""
@@ -88,6 +88,7 @@ class ChangeComponentsVisitor(CataElemVisitor):
     an element. A new LocatedComponents object is created and replaces the
     existing one.
     This visitor uses the returned value."""
+
     # starts at the Element level
 
     def __init__(self, locCmpName, components):
@@ -102,12 +103,12 @@ class ChangeComponentsVisitor(CataElemVisitor):
         para = []
         for param, locCmp in calcul.para_in:
             new = locCmp.accept(self)
-            para.append( (param, new) )
+            para.append((param, new))
         calcul.setParaIn(para)
         para = []
         for param, locCmp in calcul.para_out:
             new = locCmp.accept(self)
-            para.append( (param, new) )
+            para.append((param, new))
         calcul.setParaOut(para)
 
     def visitArrayOfComponents(self, array):

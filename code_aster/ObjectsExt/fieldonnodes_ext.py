@@ -171,7 +171,7 @@ class ExtendedFieldOnNodesReal:
                     nodes = mesh.getNodes(grMa)
                     lNodes += nodes
                 elif mesh.hasGroupOfCells(grMa):
-                    nodes = [node-1 for cell in mesh.getCells(grMa) for node in connec[cell]]
+                    nodes = [node - 1 for cell in mesh.getCells(grMa) for node in connec[cell]]
                     lNodes += nodes
                 else:
                     raise ValueError("no {} group of cells".format(grMa))
@@ -186,7 +186,7 @@ class ExtendedFieldOnNodesReal:
                     raise ValueError("no {} group of nodes".format(grNo))
         if "NOEUD" in kwargs.keys():
             lNo = kwargs["NOEUD"]
-            lNo = [lNo-1] if isinstance(lNo, int) else [no-1 for no in lNo]
+            lNo = [lNo - 1] if isinstance(lNo, int) else [no - 1 for no in lNo]
             lNodes += lNo
         # keep unique node id
         lNodes = list(set(lNodes))

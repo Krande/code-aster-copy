@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,22 +20,21 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'META_P_CINE_LINE',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi de comportement elastoplastique à écrouissage cinématique linéaire,
+    nom="META_P_CINE_LINE",
+    lc_type=("MECANIQUE",),
+    doc="""Loi de comportement elastoplastique à écrouissage cinématique linéaire,
    prenant en compte la métallurgie""",
-    num_lc         = 0,
-    nb_vari        = 6,
-    nom_vari       = ('XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ',
-        'XCINYZ',),
-    mc_mater       = ('ELAS_META','META_ECRO_LINE',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('SPECIFIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    num_lc=0,
+    nb_vari=6,
+    nom_vari=("XCINXX", "XCINYY", "XCINZZ", "XCINXY", "XCINXZ", "XCINYZ"),
+    mc_mater=("ELAS_META", "META_ECRO_LINE"),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("SPECIFIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

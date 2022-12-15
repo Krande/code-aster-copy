@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class FluidFonctionDefinition(ExecuteCommand):
     """Execute legacy operator DEFI_FONC_FLUI."""
+
     command_name = "DEFI_FONC_FLUI"
 
     def create_result(self, keywords):
@@ -34,5 +35,6 @@ class FluidFonctionDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Function()
+
 
 DEFI_FONC_FLUI = FluidFonctionDefinition.run

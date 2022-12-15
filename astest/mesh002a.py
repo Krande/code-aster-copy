@@ -46,14 +46,14 @@ ms.partitionMesh(True)
 
 # Where to save the mesh in a single folder
 path = os.getcwd()
-path.replace("/proc."+str(MPI.ASTER_COMM_WORLD.Get_rank()), "")
+path.replace("/proc." + str(MPI.ASTER_COMM_WORLD.Get_rank()), "")
 
-meshFolder = path+"/meshFolder"
+meshFolder = path + "/meshFolder"
 
 try:
     os.mkdir(meshFolder)
 except OSError:
-    print ("Creation of the directory %s failed" % meshFolder)
+    print("Creation of the directory %s failed" % meshFolder)
 
 # write the mesh in meshFolder
 ms.writeMesh(meshFolder)
@@ -67,7 +67,7 @@ pMesh1.checkConsistency("ssnv187a.mmed")
 
 # 2) From a folder (need a preliminary partioning )
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile(meshFolder+"/ssnv187a_new_%d.med"%rank, True)
+pMesh2.readMedFile(meshFolder + "/ssnv187a_new_%d.med" % rank, True)
 pMesh2.checkConsistency("ssnv187a.mmed")
 
 # 3) Directely from a file (without preliminary partioning )
@@ -78,12 +78,11 @@ pMesh3.checkConsistency("ssnv187a.mmed")
 # 4) With LIRE_MAILLAGE (internal partitioning)
 pMesh4 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=2)
 
-model = AFFE_MODELE(MAILLAGE=pMesh4,
-                    AFFE=_F(MODELISATION='3D', PHENOMENE='MECANIQUE', TOUT='OUI'),)
+model = AFFE_MODELE(MAILLAGE=pMesh4, AFFE=_F(MODELISATION="3D", PHENOMENE="MECANIQUE", TOUT="OUI"))
 
 
-nbNodes = [79,78]
-nbCells = [161,161]
+nbNodes = [79, 78]
+nbCells = [161, 161]
 
 test.assertEqual(pMesh1.getNumberOfNodes(), nbNodes[rank])
 test.assertEqual(pMesh1.getNumberOfCells(), nbCells[rank])

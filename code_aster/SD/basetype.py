@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ class MetaType(type):
     """Métaclasse d'un type représentant une structure de données.
     Les méthodes spéciales __new__ et __call__ sont réimplémentées
     """
+
     def __new__(mcs, name, bases, classdict):
         """Création d'une nouvelle 'classe' dérivant de Type.
 
@@ -68,7 +69,7 @@ class MetaType(type):
         new_cls = type.__new__(mcs, name, bases, classdict)
         new_cls._subtypes = []
         for b in bases:
-            if hasattr(b, '_subtypes'):
+            if hasattr(b, "_subtypes"):
                 new_cls._subtypes += b._subtypes
         # affecte la classe comme parent des attributs de classe
         # et donne l'occasion aux attributs de se renommer à partir
@@ -145,12 +146,12 @@ class BaseType(object):
         # instanciation future...
         # Supprimer les références remontantes devrait suffir.
         # if delete:
-            # while len(self._subtypes):
-                # nam = self._subtypes.pop(0)
-                # try:
-                    # delattr(self, nam)
-                # except AttributeError:
-                    # pass
+        # while len(self._subtypes):
+        # nam = self._subtypes.pop(0)
+        # try:
+        # delattr(self, nam)
+        # except AttributeError:
+        # pass
 
     def base(self):
         if self._parent is None:

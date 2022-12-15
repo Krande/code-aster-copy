@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ from .sd_util import *
 
 
 class sd_cham_elem_s(AsBase):
-#----------------------------
+    # ----------------------------
     nomj = SDNom(fin=19)
 
     CESK = AsVK8(lonmax=3)
     CESD = AsVI()
     CESC = AsVK8()
-    CESV = AsVect(type=Parmi('C', 'K', 'R', 'I'))
+    CESV = AsVect(type=Parmi("C", "K", "R", "I"))
     CESL = AsVL()
 
     def exists(self):
@@ -41,7 +41,7 @@ class sd_cham_elem_s(AsBase):
         cesk = self.CESK.get_stripped()
         sd2 = sd_maillage(cesk[0])
         sd2.check(checker)
-        assert cesk[2] in ('ELNO', 'ELGA', 'ELEM'), cesk
+        assert cesk[2] in ("ELNO", "ELGA", "ELEM"), cesk
 
     def check_longueurs(self, checker):
         if not self.exists():

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ from .sd_stockage import sd_stockage
 
 
 class sd_nume_ddl_gd(sd_stockage):
-#--------------------------------
+    # --------------------------------
     nomj = SDNom(fin=14)
-    nume = sd_nume_equa(SDNom(nomj='.NUME'))
+    nume = sd_nume_equa(SDNom(nomj=".NUME"))
     FETN = Facultatif(AsVK24())

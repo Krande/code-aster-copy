@@ -44,9 +44,13 @@ failure = [
     # for mesh002s
     "sdll06a.mmed",
     # for mesh002t
-    "ssls134a.med", "ssna107c.mmed", "ssnl121b.mmed", "ssnp05a.mmed", "ssnp107a.mmed",
+    "ssls134a.med",
+    "ssna107c.mmed",
+    "ssnl121b.mmed",
+    "ssnp05a.mmed",
+    "ssnp107a.mmed",
     # for mesh002u
-    "ssnv214a.med"
+    "ssnv214a.med",
 ]
 
 # get list of meshes from .export
@@ -74,9 +78,7 @@ for mesh_file in meshes:
     mesh_vers = mc.MEDFileVersionOfFileStr(mesh_name)
     vers_num = int(mesh_vers.replace(".", ""))
 
-    print(
-        "MESHNAME %d: %s (version: %s)" % (nb_mesh, mesh_name, mesh_vers), flush=True
-    )
+    print("MESHNAME %d: %s (version: %s)" % (nb_mesh, mesh_name, mesh_vers), flush=True)
 
     # convert old med mesh < 3.0.0
     if vers_num < 300:
@@ -84,8 +86,7 @@ for mesh_file in meshes:
         mesh_name = mesh_name.split(".")[0] + "_tmp.med"
         mfd.write(mesh_name, 2)
         print(
-            "Mesh converted: %s (version: %s)"
-            % (mesh_name, mc.MEDFileVersionOfFileStr(mesh_name)),
+            "Mesh converted: %s (version: %s)" % (mesh_name, mc.MEDFileVersionOfFileStr(mesh_name)),
             flush=True,
         )
 
@@ -120,8 +121,7 @@ list_nb_conv_error = {2: 21, 3: 8, 4: 14}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)
-print("Number of conversion error: %s " %
-      (len(conversion_error)), flush=True)
+print("Number of conversion error: %s " % (len(conversion_error)), flush=True)
 print("List files: ", conversion_error)
 
 # all the mesh are partitioned

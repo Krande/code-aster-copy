@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -32,14 +32,14 @@
 #if defined ASTER_PLATFORM_SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
-   void hanfpe (int sig, siginfo_t *sip, ucontext_t *uap)
+void hanfpe( int sig, siginfo_t *sip, ucontext_t *uap )
 #else
-   void hanfpe (int sig)
+void hanfpe( int sig )
 #endif
 {
-   void exit (int status);
-   void DEF0(UTMFPE, utmfpe);
+    void exit( int status );
+    void DEF0( UTMFPE, utmfpe );
 
-   CALL0(UTMFPE, utmfpe);
-   exit(sig);
+    CALL0( UTMFPE, utmfpe );
+    exit( sig );
 }

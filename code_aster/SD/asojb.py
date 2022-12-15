@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,7 @@ class AsBase(Type):
             self.nomj.update(nomj.__getstate__())
 
     def set_name(self, nomj):
-        """Positionne le nomj de self
-        """
+        """Positionne le nomj de self"""
         assert isinstance(self.nomj.nomj, str), "uniquement pour les concepts"
         self.nomj.nomj = nomj
 
@@ -68,17 +67,18 @@ class AsBase(Type):
             if isinstance(v, (OJB, AsBase)):
                 v.check(checker)
         for name in dir(self):
-            if name.startswith('check_'):
+            if name.startswith("check_"):
                 v = getattr(self, name)
                 if callable(v):
                     try:
                         v(checker)
                     except:
-                        mess = [60 * '-',
-                                'Erreur SDVERI (Attention : vérification '
-                                'incomplète)',
-                                traceback.format_exc()]
-                        checker.err(self, '\n'.join(mess))
+                        mess = [
+                            60 * "-",
+                            "Erreur SDVERI (Attention : vérification " "incomplète)",
+                            traceback.format_exc(),
+                        ]
+                        checker.err(self, "\n".join(mess))
 
         checker.optional = optional
         return checker
@@ -97,7 +97,7 @@ class AsBase(Type):
             if isinstance(obj, (AsBase, OJB)):
                 l.append(obj.dump(indent))
         for name in dir(self):
-            if name.startswith('check_'):
+            if name.startswith("check_"):
                 obj = getattr(self, name)
                 if callable(obj) and name.startswith("check_"):
                     checkers.append(obj)
@@ -118,7 +118,7 @@ class AsBase(Type):
             return self.short_repr()
         else:
             self.debugPrint()
-            return ''
+            return ""
 
     def __repr__(self):
         # par défaut, on fait court !
@@ -146,15 +146,14 @@ class JeveuxAttr(object):
         elif val == checker:
             return True
         else:
-            log.err(obj, "Attribut incorrect %s %r != %r" %
-                    (self.name, val, checker))
+            log.err(obj, "Attribut incorrect %s %r != %r" % (self.name, val, checker))
             return False
+
 
 # -----------------------------------------------------------------------------
 
 
 class JeveuxExists(JeveuxAttr):
-
     def __init__(self):
         pass
 
@@ -166,11 +165,11 @@ class JeveuxExists(JeveuxAttr):
             raise AssertionError(repr(nomj))
         return aster.jeveux_exists(nomj.ljust(24))
 
+
 # -----------------------------------------------------------------------------
 
 
 class JeveuxIntAttr(JeveuxAttr):
-
     def __get__(self, obj, klass):
         if obj is None:
             return self
@@ -180,11 +179,11 @@ class JeveuxIntAttr(JeveuxAttr):
         else:
             return None
 
+
 # -----------------------------------------------------------------------------
 
 
 class JeveuxStrAttr(JeveuxAttr):
-
     def __get__(self, obj, klass):
         if obj is None:
             return self
@@ -193,6 +192,7 @@ class JeveuxStrAttr(JeveuxAttr):
             return aster.jeveux_getattr(nomj, self.name)[1].strip()
         else:
             return None
+
 
 # -----------------------------------------------------------------------------
 
@@ -218,7 +218,7 @@ class OJB(AsBase):
     def __init__(self, nomj=None, **attrs):
         super(OJB, self).__init__(nomj, **attrs)
         self.foreachattr(self.setattribute, attrs)
-        self.optional = attrs.get('optional', False)
+        self.optional = attrs.get("optional", False)
 
     def setattribute(self, name, prop, attrs):
         _name = "_" + name
@@ -228,7 +228,7 @@ class OJB(AsBase):
     def get(self):
         nomj = self.nomj()
         if aster.jeveux_exists(nomj):
-            obj_simple = aster.jeveux_getattr(nomj, 'XOUS')[1].strip() == 'S'
+            obj_simple = aster.jeveux_getattr(nomj, "XOUS")[1].strip() == "S"
             if obj_simple:
                 return aster.getvectjev(nomj)
             else:
@@ -236,13 +236,13 @@ class OJB(AsBase):
         else:
             return None
 
-    def changeJeveuxValues(self, nbval, indices, reel, imag, num = 1):
+    def changeJeveuxValues(self, nbval, indices, reel, imag, num=1):
         """Modify values of existing data structures"""
         nomj = self.nomj()
         if aster.jeveux_exists(nomj):
-            obj_simple = aster.jeveux_getattr(nomj, 'XOUS')[1].strip() == 'S'
+            obj_simple = aster.jeveux_getattr(nomj, "XOUS")[1].strip() == "S"
             if obj_simple:
-                assert num==1,"""For vectors last argument must be set to 1"""
+                assert num == 1, """For vectors last argument must be set to 1"""
             # aster.putvectjev can be used for vectors (num=1) and collections
             aster.putvectjev(nomj, nbval, indices, reel, imag, num)
 
@@ -269,8 +269,7 @@ class OJB(AsBase):
             return checker
         checker.visitOJB(self)
         if self.exists:
-            self.foreachattr(lambda k, v, obj, c: v.check(k, obj, c),
-                             self, checker)
+            self.foreachattr(lambda k, v, obj, c: v.check(k, obj, c), self, checker)
         else:
             if not self.optional and not checker.optional:
                 checker.err(self, "n'existe pas (%r)" % self._parent)
@@ -283,12 +282,14 @@ class OJB(AsBase):
             f = "(o)"
         return f + " " + self.nomj() + " " + str(self.exists)
 
+
 # -----------------------------------------------------------------------------
 
 
 def Facultatif(ojb):
     ojb.optional = True
     return ojb
+
 
 # -----------------------------------------------------------------------------
 
@@ -298,6 +299,7 @@ class OJBVect(OJB):
     lonuti = JeveuxIntAttr("LONUTI")
     _xous = "S"
     _genr = "V"
+
 
 # -----------------------------------------------------------------------------
 
@@ -309,6 +311,7 @@ class OJBPtnom(OJB):
     _genr = "N"
     _type = "K"
 
+
 # -----------------------------------------------------------------------------
 
 
@@ -319,11 +322,13 @@ class OJBCollec(OJB):
     modelong = JeveuxStrAttr("MODELONG")
     nmaxoc = JeveuxIntAttr("NMAXOC")
 
+
 # -----------------------------------------------------------------------------
 
 
 class AsVI(OJBVect):
     _type = "I"
+
 
 # -----------------------------------------------------------------------------
 
@@ -331,11 +336,13 @@ class AsVI(OJBVect):
 class AsVS(OJBVect):
     _type = "S"
 
+
 # -----------------------------------------------------------------------------
 
 
 class AsVR(OJBVect):
     _type = "R"
+
 
 # -----------------------------------------------------------------------------
 
@@ -343,11 +350,13 @@ class AsVR(OJBVect):
 class AsVC(OJBVect):
     _type = "C"
 
+
 # -----------------------------------------------------------------------------
 
 
 class AsVL(OJBVect):
     _type = "L"
+
 
 # -----------------------------------------------------------------------------
 
@@ -356,12 +365,14 @@ class AsVK8(OJBVect):
     _type = "K"
     _ltyp = 8
 
+
 # -----------------------------------------------------------------------------
 
 
 class AsVK16(OJBVect):
     _type = "K"
     _ltyp = 16
+
 
 # -----------------------------------------------------------------------------
 
@@ -370,6 +381,7 @@ class AsVK24(OJBVect):
     _type = "K"
     _ltyp = 24
 
+
 # -----------------------------------------------------------------------------
 
 
@@ -377,12 +389,14 @@ class AsVK32(OJBVect):
     _type = "K"
     _ltyp = 32
 
+
 # -----------------------------------------------------------------------------
 
 
 class AsVK80(OJBVect):
     _type = "K"
     _ltyp = 80
+
 
 # Pour compatibilite
 AsObject = OJB

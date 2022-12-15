@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,38 +20,37 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCONTRR = InputParameter(
+    phys=PHY.SIEF_R,
+    container="RESU!SIGM_ELGA!N",
+    comment="""  PCONTRR : CONTRAINTES REELLES AUX POINTS DE GAUSS """,
+)
 
 
-PCONTRR  = InputParameter(phys=PHY.SIEF_R, container='RESU!SIGM_ELGA!N',
-comment="""  PCONTRR : CONTRAINTES REELLES AUX POINTS DE GAUSS """)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  PLONCHA : XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS """,
+)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  PLONCHA : XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS """)
-
-
-PCONTSER = OutputParameter(phys=PHY.N1920R, type='ELEM',
-comment="""  PCONTSER : CONTRAINTES REELLES PAR SOUS-ELEMENT AUX NOEUDS """)
+PCONTSER = OutputParameter(
+    phys=PHY.N1920R,
+    type="ELEM",
+    comment="""  PCONTSER : CONTRAINTES REELLES PAR SOUS-ELEMENT AUX NOEUDS """,
+)
 
 
 SISE_ELNO = Option(
-    para_in=(
-           PCONTRR,
-           PLONCHA,
-    ),
-    para_out=(
-           PCONTSER,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.LXFEM,'OUI'),(AT.BORD,'0'),)),
-    ),
+    para_in=(PCONTRR, PLONCHA),
+    para_out=(PCONTSER,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.LXFEM, "OUI"), (AT.BORD, "0"))),),
     comment="""  SISE_ELNO : CALCUL DES CONTRAINTES ET DES EFFORTS
                        PAR SOUS-ELEMENT AUX NOEUDS """,
 )

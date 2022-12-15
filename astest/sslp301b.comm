@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,87 +17,82 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 #
 # DEFINITION DES GROUPES DE NOEUDS
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
-                       CREA_GROUP_NO=_F(  GROUP_MA = 'ENCAST')
-                   )
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(GROUP_MA="ENCAST"))
 
 #
 # DEFINITION DU MODELE
-MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
-                         AFFE=_F(  TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'C_PLAN')  )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")
+)
 
 #
 # DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
-                                 ALPHA = 1.E-5,  RHO = 7000.)
-                      )
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, ALPHA=1.0e-5, RHO=7000.0))
 
 #
 # ATTRIBUTION DU MATERIAU
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                          AFFE=_F(  TOUT = 'OUI',
-                                 MATER = ACIER)  )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
-CHARGT=AFFE_CHAR_MECA(    MODELE=MODELE,
-                           DDL_IMPO=_F(  GROUP_NO = 'ENCAST',
-                                      DX = 0.,   DY = 0.),
-                           FORCE_INTERNE=_F(  TOUT = 'OUI',
-                                           FY = -68670.)
-                        )
+CHARGT = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=_F(GROUP_NO="ENCAST", DX=0.0, DY=0.0),
+    FORCE_INTERNE=_F(TOUT="OUI", FY=-68670.0),
+)
 
 #
 # RESOLUTION
-DEF=MECA_STATIQUE(    MODELE=MODELE,
-                        CHAM_MATER=CHMAT,
-                        EXCIT=_F(  CHARGE = CHARGT)  )
+DEF = MECA_STATIQUE(MODELE=MODELE, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARGT))
 
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
-U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF,
-                 NUME_ORDRE=1
-                  )
+U = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", NOM_CHAM="DEPL", RESULTAT=DEF, NUME_ORDRE=1
+)
 
 #
 # CALCUL DES CONTRAINTES
 
-DEF=CALC_CHAMP(reuse=DEF,RESULTAT=DEF,CONTRAINTE=('SIGM_ELNO'))
+DEF = CALC_CHAMP(reuse=DEF, RESULTAT=DEF, CONTRAINTE=("SIGM_ELNO"))
 
 #
 # TEST_RESU DU DEPLACEMENT
 #
-TEST_RESU(CHAM_NO=_F(GROUP_NO='N1249',
-                     NOM_CMP='DY',
-                     PRECISION=0.021000000000000001,
-                     CHAM_GD=U,
-                     VALE_CALC=-1.22465868E-05,
-                     VALE_REFE=-1.2E-05,
-                     REFERENCE='ANALYTIQUE',),
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        GROUP_NO="N1249",
+        NOM_CMP="DY",
+        PRECISION=0.021000000000000001,
+        CHAM_GD=U,
+        VALE_CALC=-1.22465868e-05,
+        VALE_REFE=-1.2e-05,
+        REFERENCE="ANALYTIQUE",
+    )
+)
 
 #
 # TEST_RESU DE LA CONTRAINTE
 #
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=DEF,
-                  NOM_CHAM='SIGM_ELNO',
-                  GROUP_NO='N11',
-                  NOM_CMP='SIXY',
-                  VALE_CALC=-1.9906928374271E5,
-                  VALE_REFE=-1.99E5,
-                  REFERENCE='ANALYTIQUE',
-                  GROUP_MA='M19',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=DEF,
+        NOM_CHAM="SIGM_ELNO",
+        GROUP_NO="N11",
+        NOM_CMP="SIXY",
+        VALE_CALC=-1.9906928374271e5,
+        VALE_REFE=-1.99e5,
+        REFERENCE="ANALYTIQUE",
+        GROUP_MA="M19",
+    )
+)
 
 FIN()
 #

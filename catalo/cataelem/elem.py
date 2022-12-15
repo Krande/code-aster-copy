@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,33 +34,30 @@ class CataElem(object):
     """Store of all the objects defined in the catalog:
     physical quantities, options, finite elements..."""
 
-    __slots__ = ('_store', '_cache')
+    __slots__ = ("_store", "_cache")
 
     def __init__(self):
         """Initialisation"""
         self._cache = None
         self._store = {
-            'Phenomenon': OrderedDict(),
-            'Attribute': OrderedDict(),
-            'PhysicalQuantity': OrderedDict(),
-            'ArrayOfQuantities': OrderedDict(),
-            'MeshType': OrderedDict(),
-            'Elrefe': OrderedDict(),
-            'Option': OrderedDict(),
-            'Element': OrderedDict(),
-            'InputParameter': EmptyDict(),
-            'OutputParameter': EmptyDict(),
-            'LocatedComponents': EmptyDict(),
-            'ElemModel': {},
+            "Phenomenon": OrderedDict(),
+            "Attribute": OrderedDict(),
+            "PhysicalQuantity": OrderedDict(),
+            "ArrayOfQuantities": OrderedDict(),
+            "MeshType": OrderedDict(),
+            "Elrefe": OrderedDict(),
+            "Option": OrderedDict(),
+            "Element": OrderedDict(),
+            "InputParameter": EmptyDict(),
+            "OutputParameter": EmptyDict(),
+            "LocatedComponents": EmptyDict(),
+            "ElemModel": {},
         }
         self._initCache()
 
     def _initCache(self):
         """Reinitiliase cached values"""
-        self._cache = {
-            'nbElements': None,
-            'nbLocations': None,
-        }
+        self._cache = {"nbElements": None, "nbLocations": None}
 
     def _getByName(self, klass, name):
         """Return a object by type and name"""
@@ -72,13 +69,21 @@ class CataElem(object):
 
     def _sortByName(self, klass):
         """Sort the store items by names to ease the comparison"""
-        self._store[klass] = OrderedDict(sorted(list(self._store[klass].items()),
-                                         key=lambda i: i[1].name))
+        self._store[klass] = OrderedDict(
+            sorted(list(self._store[klass].items()), key=lambda i: i[1].name)
+        )
 
     def _sortObjects(self):
         """Sort objects by names to ease the comparison"""
-        for klass in ('Attribute', 'PhysicalQuantity', 'ArrayOfQuantities',
-                      'Elrefe', 'Option', 'Element', 'Phenomenon'):
+        for klass in (
+            "Attribute",
+            "PhysicalQuantity",
+            "ArrayOfQuantities",
+            "Elrefe",
+            "Option",
+            "Element",
+            "Phenomenon",
+        ):
             self._sortByName(klass)
 
     def register(self, obj, name):
@@ -86,12 +91,10 @@ class CataElem(object):
         Raise ValueError if it is not possible."""
         klass = obj.__class__.__name__
         if not self._store.get(klass) and issubclass(obj.__class__, Element):
-            klass = 'Element'
-        assert self._store.get(klass) is not None, ("unsupported type: "
-            "'{0}'".format(klass))
+            klass = "Element"
+        assert self._store.get(klass) is not None, "unsupported type: " "'{0}'".format(klass)
         if self._store[klass].get(name) is not None:
-            raise ValueError("name '{0}' already exists for type "
-                             "'{1}'".format(name, klass))
+            raise ValueError("name '{0}' already exists for type " "'{1}'".format(name, klass))
         self._initCache()
         self._store[klass][name] = obj
         # self.msg("DEBUG registering '{0}' {1}".format(name, obj))
@@ -112,86 +115,86 @@ class CataElem(object):
     # XXX "getByName": to remove if not use!
     def phenomenon(self, name):
         """Return a Phenomenon object by name"""
-        return self._getByName('Phenomenon', name)
+        return self._getByName("Phenomenon", name)
 
     def attribute(self, name):
         """Return a Attribute object by name"""
-        return self._getByName('Attribute', name)
+        return self._getByName("Attribute", name)
 
     def physicalQuantity(self, name):
         """Return a PhysicalQuantity object by name"""
-        return self._getByName('PhysicalQuantity', name)
+        return self._getByName("PhysicalQuantity", name)
 
     def meshType(self, name):
         """Return a MeshType object by name"""
-        return self._getByName('MeshType', name)
+        return self._getByName("MeshType", name)
 
     def elrefe(self, name):
         """Return a Elrefe object by name"""
-        return self._getByName('Elrefe', name)
+        return self._getByName("Elrefe", name)
 
     def option(self, name):
         """Return a Option object by name"""
-        return self._getByName('Option', name)
+        return self._getByName("Option", name)
 
     def element(self, name):
         """Return a Element object by name"""
-        return self._getByName('Element', name)
+        return self._getByName("Element", name)
 
     def getPhenomenons(self):
         """Return the ordered list of the phenomenons"""
-        return self._getAll('Phenomenon')
+        return self._getAll("Phenomenon")
 
     def getAttributes(self):
         """Return the ordered list of the attributes"""
-        return self._getAll('Attribute')
+        return self._getAll("Attribute")
 
     def getPhysicalQuantities(self):
         """Return the ordered list of the physical quantities"""
-        return self._getAll('PhysicalQuantity')
+        return self._getAll("PhysicalQuantity")
 
     def getArrayOfQuantities(self):
         """Return the ordered list of the elementary quantities"""
-        return self._getAll('ArrayOfQuantities')
+        return self._getAll("ArrayOfQuantities")
 
     def getMeshTypes(self):
         """Return the ordered list of the mesh types"""
-        return self._getAll('MeshType')
+        return self._getAll("MeshType")
 
     def getElrefe(self):
         """Return the ordered list of the elrefe"""
-        return self._getAll('Elrefe')
+        return self._getAll("Elrefe")
 
     def getOptions(self):
         """Return the ordered list of the options"""
-        return self._getAll('Option')
+        return self._getAll("Option")
 
     def getElements(self):
         """Return the ordered list of the elements"""
-        return self._getAll('Element')
+        return self._getAll("Element")
 
     def getNbElrefe(self):
         """Return the number of Elrefe referenced in elements.
         They are not all different!"""
-        if self._cache['nbElements'] is not None:
-            return self._cache['nbElements']
+        if self._cache["nbElements"] is not None:
+            return self._cache["nbElements"]
         size = 0
         for elt in self.getElements():
             size += len(elt.elrefe)
-        self._cache['nbElements'] = size
+        self._cache["nbElements"] = size
         return size
 
     def getNbLocations(self):
         """Return the number of locations referenced in elements"""
-        if self._cache['nbLocations'] is not None:
-            return self._cache['nbLocations']
+        if self._cache["nbLocations"] is not None:
+            return self._cache["nbLocations"]
         size = 0
         for elt in self.getElements():
             for elrefe in elt.elrefe:
                 size += len(list(elrefe.gauss.keys()))
                 if len(elrefe.mater) > 0:
                     size += 1
-        self._cache['nbLocations'] = size
+        self._cache["nbLocations"] = size
         return size
 
     def build(self):
@@ -203,6 +206,7 @@ class CataElem(object):
         from cataelem.Commons.parameters import INPUTS, OUTPUTS
         from cataelem.Options.options import OP
         from cataelem import __DEBUG_ELEMENTS__
+
         # for registering in Jeveux
         self.registerAll(ATTRS)
         self.registerAll(ELREFS)
@@ -215,14 +219,24 @@ class CataElem(object):
         self.registerAll(OP.getDict())
         # subobjects must have been named
         from cataelem.Elements.elements import EL
+
         self.registerAll(EL.getDict())
         if __DEBUG_ELEMENTS__:
             return
         from cataelem.Commons.phenomenons_modelisations import PHEN
+
         self.registerAll(PHEN)
         # summary
-        for klass in ('Attribute', 'PhysicalQuantity', 'ArrayOfQuantities',
-                      'MeshType', 'Elrefe', 'Option', 'Element', 'Phenomenon'):
+        for klass in (
+            "Attribute",
+            "PhysicalQuantity",
+            "ArrayOfQuantities",
+            "MeshType",
+            "Elrefe",
+            "Option",
+            "Element",
+            "Phenomenon",
+        ):
             self.msg("INFO: {1:6} {0}".format(klass, len(self._store[klass])))
         # to ease debugging objects can be sorted
         self._sortObjects()
@@ -231,7 +245,7 @@ class CataElem(object):
 
     def _buildElemModel(self):
         """Build a dict to return the Modelisations that contain an Element"""
-        delem = self._store['ElemModel']
+        delem = self._store["ElemModel"]
         for pheno in self.getPhenomenons():
             for modname, modeli in list(pheno.modelisations.items()):
                 for mesh, elem in modeli.elements or []:
@@ -239,7 +253,7 @@ class CataElem(object):
 
     def getElemModel(self, element):
         """Return the modelisations using this element"""
-        return self._store['ElemModel'].get(element, [])
+        return self._store["ElemModel"].get(element, [])
 
     def msg(self, string):
         """Print a message"""
@@ -252,6 +266,7 @@ class EmptyDict(dict):
     def __setitem__(self, key, value):
         """Never store anything"""
         pass
+
 
 # singleton object that registers all the objects of the catalog
 cel = CataElem()

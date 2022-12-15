@@ -24,32 +24,35 @@
 #########################################
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
 # --------------------------------------------------------------------
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED', )
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 #
 
-MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
-# GROUPES DE NOEUDS POUR LES DEGRES DE LIBERTE IMPOSES
-                        _F(  GROUP_MA = 'LCD1'),
-                        _F(  GROUP_MA = 'LBC4'),
-# GROUPES DE NOEUDS POUR LES CONDITIONS DE CONTACT
-                        _F(  GROUP_MA = 'LAB1'),
-                        _F(  GROUP_MA = 'CEP2'),
-                        _F(  GROUP_MA = 'CME2'),
-                        _F(  GROUP_MA = 'CEP3'),
-                        _F(  GROUP_MA = 'CME3'),
-                        _F(  GROUP_MA = 'LCD4'),
-                        _F(  GROUP_MA = 'LCD4I'),
-# LCD4P EST LCD4 SAUF NOEUD PC4 ENCASTRE (POUR LE POST-TRAITEMENT)
-                        _F(  NOM = 'LCD4P',
-                                        DIFFE = ('LCD4I', 'PC4',)))
-                     )
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_NO=(
+        # GROUPES DE NOEUDS POUR LES DEGRES DE LIBERTE IMPOSES
+        _F(GROUP_MA="LCD1"),
+        _F(GROUP_MA="LBC4"),
+        # GROUPES DE NOEUDS POUR LES CONDITIONS DE CONTACT
+        _F(GROUP_MA="LAB1"),
+        _F(GROUP_MA="CEP2"),
+        _F(GROUP_MA="CME2"),
+        _F(GROUP_MA="CEP3"),
+        _F(GROUP_MA="CME3"),
+        _F(GROUP_MA="LCD4"),
+        _F(GROUP_MA="LCD4I"),
+        # LCD4P EST LCD4 SAUF NOEUD PC4 ENCASTRE (POUR LE POST-TRAITEMENT)
+        _F(NOM="LCD4P", DIFFE=("LCD4I", "PC4")),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -57,12 +60,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
 # --------------------------------------------------------------------
 #
 
-MOD=AFFE_MODELE(
-                       MAILLAGE=MAIL,
-                       AFFE=_F(  TOUT = 'OUI',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'AXIS')
-                    )
+MOD = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
 #
 # --------------------------------------------------------------------
@@ -70,18 +68,11 @@ MOD=AFFE_MODELE(
 # --------------------------------------------------------------------
 #
 
-ELAS=DEFI_MATERIAU(
-                          ELAS=_F(  E = 200000.,
-                                 NU = 0.3)
-                       )
+ELAS = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
 
 #
 
-CHMAT=AFFE_MATERIAU(
-                           MAILLAGE=MAIL,
-                           AFFE=_F(  TOUT = 'OUI',
-                                  MATER = ELAS)
-                        )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ELAS))
 
 #
 # --------------------------------------------------------------------
@@ -89,11 +80,7 @@ CHMAT=AFFE_MATERIAU(
 # --------------------------------------------------------------------
 #
 
-BLOQ=AFFE_CHAR_MECA(
-                           MODELE=MOD,
-                              DDL_IMPO=_F(  GROUP_NO = 'LBC4',
-                                         DX = 0.0,  DY = 0.0)
-                        )
+BLOQ = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_NO="LBC4", DX=0.0, DY=0.0))
 
 #
 # --------------------------------------------------------------------
@@ -101,11 +88,7 @@ BLOQ=AFFE_CHAR_MECA(
 # --------------------------------------------------------------------
 #
 
-DEPL=AFFE_CHAR_MECA(
-                           MODELE=MOD,
-                              DDL_IMPO=_F(  GROUP_NO = 'LCD1',
-                                                  DY = -2.0)
-                       )
+DEPL = AFFE_CHAR_MECA(MODELE=MOD, DDL_IMPO=_F(GROUP_NO="LCD1", DY=-2.0))
 
 #
 # --------------------------------------------------------------------
@@ -113,42 +96,38 @@ DEPL=AFFE_CHAR_MECA(
 # --------------------------------------------------------------------
 #
 
-LIAI=AFFE_CHAR_MECA(
-                           MODELE=MOD,LIAISON_DDL=(
-                           _F(  GROUP_NO = ('PA1',  'PP2', ),
-                                         DDL = ('DY', 'DY',),
-                                         COEF_MULT = (1., -1.,),
-                                         COEF_IMPO = 0.),
-                           _F(  GROUP_NO = ('PM3',  'PD4', ),
-                                         DDL = ('DY', 'DY',),
-                                         COEF_MULT = (1., -1.,),
-                                         COEF_IMPO = 0.))
-                       )
+LIAI = AFFE_CHAR_MECA(
+    MODELE=MOD,
+    LIAISON_DDL=(
+        _F(GROUP_NO=("PA1", "PP2"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("PM3", "PD4"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
 #      CONTACT UNILATERAL : FORMULATION MAITRE-ESCLAVE (3 ZONES)
 # --------------------------------------------------------------------
 #
-CONT = DEFI_CONTACT(MODELE      = MOD,
-                    FORMULATION = 'DISCRETE',
-                    ZONE=(
-                               _F(  GROUP_MA_MAIT = 'LAB1',
-                                    GROUP_MA_ESCL = 'CEP2',
-                                    SANS_GROUP_NO = ('PA1', 'PP2',),
-                                    APPARIEMENT = 'MAIT_ESCL',
-                                   ),
-                               _F(  GROUP_MA_MAIT = 'CME2',
-                                    GROUP_MA_ESCL = 'CEP3',
-                                    APPARIEMENT = 'MAIT_ESCL',
-                                    ),
-                               _F(  GROUP_MA_MAIT = 'CME3',
-                                    GROUP_MA_ESCL = 'LCD4',
-                                    SANS_GROUP_NO = ('PM3', 'PD4',),
-                                    APPARIEMENT = 'MAIT_ESCL',
-                                    ),
-                          ),
-                     )
+CONT = DEFI_CONTACT(
+    MODELE=MOD,
+    FORMULATION="DISCRETE",
+    ZONE=(
+        _F(
+            GROUP_MA_MAIT="LAB1",
+            GROUP_MA_ESCL="CEP2",
+            SANS_GROUP_NO=("PA1", "PP2"),
+            APPARIEMENT="MAIT_ESCL",
+        ),
+        _F(GROUP_MA_MAIT="CME2", GROUP_MA_ESCL="CEP3", APPARIEMENT="MAIT_ESCL"),
+        _F(
+            GROUP_MA_MAIT="CME3",
+            GROUP_MA_ESCL="LCD4",
+            SANS_GROUP_NO=("PM3", "PD4"),
+            APPARIEMENT="MAIT_ESCL",
+        ),
+    ),
+)
 
 #
 # --------------------------------------------------------------------
@@ -157,18 +136,11 @@ CONT = DEFI_CONTACT(MODELE      = MOD,
 # --------------------------------------------------------------------
 #
 
-FONC=DEFI_FONCTION(
-                           NOM_PARA='INST',
-                           VALE=( 0.,   0.0,
-                                  1.,   1.0, )
-                        )
+FONC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
 #
 
-LINST=DEFI_LIST_REEL(
-                            DEBUT=0.0,
-                            INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 2)
-                         )
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 
 #
 # --------------------------------------------------------------------
@@ -176,23 +148,18 @@ LINST=DEFI_LIST_REEL(
 # --------------------------------------------------------------------
 #
 
-RESU=STAT_NON_LINE(
-SOLVEUR=_F(),
-                          MODELE=MOD,
-                          CHAM_MATER=CHMAT,EXCIT=(
-                          _F(  CHARGE = BLOQ),
-                                _F(  CHARGE = DEPL,   FONC_MULT = FONC),
-                                _F(  CHARGE = LIAI),),
-                          CONTACT  = CONT,
-                          COMPORTEMENT=_F(  RELATION = 'ELAS'),
-                          NEWTON=_F(  MATRICE = 'ELASTIQUE'),
-                          INCREMENT=_F(  LIST_INST = LINST),
-                          CONVERGENCE=_F(
-                                        RESI_GLOB_RELA = 1.E-6,
-                                        ITER_GLOB_MAXI = 50,
-                                        ARRET = 'OUI'),
-                          INFO=1
-                       )
+RESU = STAT_NON_LINE(
+    SOLVEUR=_F(),
+    MODELE=MOD,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=BLOQ), _F(CHARGE=DEPL, FONC_MULT=FONC), _F(CHARGE=LIAI)),
+    CONTACT=CONT,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(MATRICE="ELASTIQUE"),
+    INCREMENT=_F(LIST_INST=LINST),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=50, ARRET="OUI"),
+    INFO=1,
+)
 
 #
 # --------------------------------------------------------------------
@@ -200,13 +167,9 @@ SOLVEUR=_F(),
 # --------------------------------------------------------------------
 #
 
-RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
-                        CONTRAINTE=('SIGM_ELNO'),
-                  )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIGM_ELNO"))
 
-RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
-                     CONTRAINTE='SIGM_NOEU'
-                  )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_NOEU")
 
 #
 # --------------------------------------------------------------------
@@ -215,26 +178,27 @@ RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
 #
 
 
-RESU=CALC_CHAMP( reuse=RESU,  RESULTAT=RESU,
-                     FORCE='REAC_NODA'
-                  )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE="REAC_NODA")
 
 #
 # --------------------------------------------------------------------
 #                COMPARAISON SOURCE EXTRENE
 # --------------------------------------------------------------------
 
-TEST_RESU(RESU=_F(GROUP_NO='PA4',
-                  INST=1.0,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  VALE_CALC=-0.841383056679,
-                  VALE_REFE=-0.81000000000000005,
-                  CRITERE='RELATIF',
-                  PRECISION=0.04,),
-          )
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO="PA4",
+        INST=1.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=-0.841383056679,
+        VALE_REFE=-0.81000000000000005,
+        CRITERE="RELATIF",
+        PRECISION=0.04,
+    )
+)
 
 #
 # --------------------------------------------------------------------
@@ -244,26 +208,30 @@ TEST_RESU(RESU=_F(GROUP_NO='PA4',
 # --------------------------------------------------------------------
 
 
-REACENC=POST_RELEVE_T(
-                 ACTION=_F(  RESULTAT = RESU,
-                          INST = 1.,
-                          INTITULE = 'ENCASTREMENT',
-                          NOM_CHAM = 'REAC_NODA',
-                          REPERE = 'GLOBAL',
-                          OPERATION = 'EXTRACTION',
-                          GROUP_NO = 'LBC4',
-                          RESULTANTE = ('DX', 'DY',))
-              )
+REACENC = POST_RELEVE_T(
+    ACTION=_F(
+        RESULTAT=RESU,
+        INST=1.0,
+        INTITULE="ENCASTREMENT",
+        NOM_CHAM="REAC_NODA",
+        REPERE="GLOBAL",
+        OPERATION="EXTRACTION",
+        GROUP_NO="LBC4",
+        RESULTANTE=("DX", "DY"),
+    )
+)
 
 #
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.016,
-           VALE_CALC=17503.1563274,
-           VALE_REFE=1.7229580000000002E4,
-           NOM_PARA='DY',
-           TABLE=REACENC,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="SOURCE_EXTERNE",
+    PRECISION=0.016,
+    VALE_CALC=17503.1563274,
+    VALE_REFE=1.7229580000000002e4,
+    NOM_PARA="DY",
+    TABLE=REACENC,
+)
 
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@
 from .cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-    nom            = 'META_LEMA_ANI',
-    symbol_mfront  = 'astermeta_lema_ani',
-    lc_type        = None,
-    doc            =   """Loi de comportement viscoplastique anisotrope prenant en compte la métallurgie,
-            pour le Zirconium uniquement R4.04.04 et R4.04.05"""              ,
-    num_lc         = 58,
-    nb_vari        = 0,
-    nom_vari       = None,
-    mc_mater       = None,
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','GDEF_LOG',),
-    algo_inte      = ('NEWTON_PERT',),
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('TOTALE'),
+    nom="META_LEMA_ANI",
+    symbol_mfront="astermeta_lema_ani",
+    lc_type=None,
+    doc="""Loi de comportement viscoplastique anisotrope prenant en compte la métallurgie,
+            pour le Zirconium uniquement R4.04.04 et R4.04.05""",
+    num_lc=58,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=None,
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP", "GDEF_LOG"),
+    algo_inte=("NEWTON_PERT",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("TOTALE"),
 )

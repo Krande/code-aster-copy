@@ -32,8 +32,11 @@
 #
 # ====================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELE1_63','MODELE1_64'))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM=("MODELE1_63", "MODELE1_64"),
+)
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 # <MODELE1_64> : DANS UN MODELE, IL N'Y A AUCUN ELEMENT AVEC AVEC RIGIDITE
@@ -67,51 +70,42 @@ ficgmsh = 0
 #
 # --------
 # A.1
-mail08=LIRE_MAILLAGE(UNITE=19,FORMAT='MED')
+mail08 = LIRE_MAILLAGE(UNITE=19, FORMAT="MED")
 # A.2
-mode08=AFFE_MODELE(
-  MAILLAGE=mail08,
-  AFFE=_F(TOUT='OUI',
-          PHENOMENE='THERMIQUE',
-          MODELISATION='3D',),
-)
+mode08 = AFFE_MODELE(MAILLAGE=mail08, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
 # A.3
-monmat=DEFI_MATERIAU(
-#  ELAS=_F(E=2.0E+11, NU=0.3, RHO=7800.0, ALPHA=2e-05,),
-#  THER=_F(LAMBDA=15.0, RHO_CP=4000000.0,),
-  THER=_F(LAMBDA=15.0),
+monmat = DEFI_MATERIAU(
+    #  ELAS=_F(E=2.0E+11, NU=0.3, RHO=7800.0, ALPHA=2e-05,),
+    #  THER=_F(LAMBDA=15.0, RHO_CP=4000000.0,),
+    THER=_F(LAMBDA=15.0)
 )
-mater08=AFFE_MATERIAU(
-  MAILLAGE=mail08,
-  AFFE=_F(TOUT='OUI', MATER=monmat),
-)
+mater08 = AFFE_MATERIAU(MAILLAGE=mail08, AFFE=_F(TOUT="OUI", MATER=monmat))
 # A.4
-chther08=AFFE_CHAR_THER(
-  MODELE=mode08,
-  TEMP_IMPO=(_F(GROUP_MA='SURFDEB',TEMP=250.0,),
-             _F(GROUP_MA='SURFFIN',TEMP=160.0,),),
-  FLUX_REP =(_F(GROUP_MA='SSUP1',  FLUN= 10.0,),
-             _F(GROUP_MA='SSUP3',  FLUN= 30.0,),
-             _F(GROUP_MA='SFOND',  FLUN=  0.0,),),
-  ECHANGE  =(_F(GROUP_MA='SRAY1',  COEF_H=350.0, TEMP_EXT=300.0,),
-             _F(GROUP_MA='SRAY4',  COEF_H=600.0, TEMP_EXT=310.0,),
-             _F(GROUP_MA=('SRAY2','SSUP2','SRAY3',),
-                COEF_H=400.0, TEMP_EXT=275.0,),),
+chther08 = AFFE_CHAR_THER(
+    MODELE=mode08,
+    TEMP_IMPO=(_F(GROUP_MA="SURFDEB", TEMP=250.0), _F(GROUP_MA="SURFFIN", TEMP=160.0)),
+    FLUX_REP=(
+        _F(GROUP_MA="SSUP1", FLUN=10.0),
+        _F(GROUP_MA="SSUP3", FLUN=30.0),
+        _F(GROUP_MA="SFOND", FLUN=0.0),
+    ),
+    ECHANGE=(
+        _F(GROUP_MA="SRAY1", COEF_H=350.0, TEMP_EXT=300.0),
+        _F(GROUP_MA="SRAY4", COEF_H=600.0, TEMP_EXT=310.0),
+        _F(GROUP_MA=("SRAY2", "SSUP2", "SRAY3"), COEF_H=400.0, TEMP_EXT=275.0),
+    ),
 )
 
 LI = DEFI_LIST_REEL(VALE=0.0)
 # A.5
-rther08=THER_LINEAIRE(
-  MODELE=mode08,
-  CHAM_MATER=mater08,
-  EXCIT=_F(CHARGE=chther08,),
-  INCREMENT=_F(LIST_INST=LI,),
+rther08 = THER_LINEAIRE(
+    MODELE=mode08, CHAM_MATER=mater08, EXCIT=_F(CHARGE=chther08), INCREMENT=_F(LIST_INST=LI)
 )
 # A.6
-IMPR_RESU( FORMAT='MED', UNITE=81,
-           RESU=_F( MAILLAGE=mail08,
-                    RESULTAT=rther08,
-                    NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=81,
+    RESU=_F(MAILLAGE=mail08, RESULTAT=rther08, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
 )
 
 
@@ -145,134 +139,124 @@ IMPR_RESU( FORMAT='MED', UNITE=81,
 #
 # --------
 # B.1.a
-mamed01=LIRE_MAILLAGE( UNITE=81, FORMAT='MED',)
+mamed01 = LIRE_MAILLAGE(UNITE=81, FORMAT="MED")
 # B.1.b
-dmed01=LIRE_CHAMP(
-   MAILLAGE=mamed01, FORMAT='MED',UNITE=81,
-   NOM_MED='rther08_TEMP',
-   NOM_CMP_IDEM='OUI',
-   NUME_ORDRE=0, NUME_PT=0,
-   TYPE_CHAM='NOEU_TEMP_R',
+dmed01 = LIRE_CHAMP(
+    MAILLAGE=mamed01,
+    FORMAT="MED",
+    UNITE=81,
+    NOM_MED="rther08_TEMP",
+    NOM_CMP_IDEM="OUI",
+    NUME_ORDRE=0,
+    NUME_PT=0,
+    TYPE_CHAM="NOEU_TEMP_R",
 )
 # B.1.c
-resrep1=CREA_RESU(
-   OPERATION='AFFE',
-   TYPE_RESU='EVOL_THER',
-   NOM_CHAM='TEMP',
-   AFFE=(_F(CHAM_GD=dmed01, INST=1.0,),),
+resrep1 = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=dmed01, INST=1.0),)
 )
 # B.1.d
-momed01=AFFE_MODELE(
-   MAILLAGE=mamed01,
-   AFFE=_F(GROUP_MA='VOLUME',
-           PHENOMENE='THERMIQUE',
-           MODELISATION='3D',),
+momed01 = AFFE_MODELE(
+    MAILLAGE=mamed01, AFFE=_F(GROUP_MA="VOLUME", PHENOMENE="THERMIQUE", MODELISATION="3D")
 )
 # --------
 # B.2.a
-momedsy=AFFE_MODELE(
-   MAILLAGE=mamed01,
-   AFFE=_F(GROUP_MA='SURFFIN',
-           PHENOMENE='THERMIQUE',
-           MODELISATION='3D',),
+momedsy = AFFE_MODELE(
+    MAILLAGE=mamed01, AFFE=_F(GROUP_MA="SURFFIN", PHENOMENE="THERMIQUE", MODELISATION="3D")
 )
 # --------
 # B.3.a
-mamed02=LIRE_MAILLAGE( UNITE=81, FORMAT='MED',)
+mamed02 = LIRE_MAILLAGE(UNITE=81, FORMAT="MED")
 # B.3.b
-mamed02=MODI_MAILLAGE(
-  reuse   =mamed02,
-  MAILLAGE=mamed02,
-  SYMETRIE=_F(POINT = ( 0.0,  0.0,  0.0,),
-              AXE_1 = ( 1.0,  1.0,  0.0,),
-              AXE_2 = ( 0.0,  0.0, -1.0,),
-             ),
+mamed02 = MODI_MAILLAGE(
+    reuse=mamed02,
+    MAILLAGE=mamed02,
+    SYMETRIE=_F(POINT=(0.0, 0.0, 0.0), AXE_1=(1.0, 1.0, 0.0), AXE_2=(0.0, 0.0, -1.0)),
 )
 # B.3.c
-dmed02=LIRE_CHAMP(
-   MAILLAGE=mamed02, FORMAT='MED', UNITE=81,
-   NOM_MED='rther08_TEMP',
-   NOM_CMP_IDEM='OUI',
-   NUME_ORDRE=0, NUME_PT=0,
-   TYPE_CHAM='NOEU_TEMP_R',
+dmed02 = LIRE_CHAMP(
+    MAILLAGE=mamed02,
+    FORMAT="MED",
+    UNITE=81,
+    NOM_MED="rther08_TEMP",
+    NOM_CMP_IDEM="OUI",
+    NUME_ORDRE=0,
+    NUME_PT=0,
+    TYPE_CHAM="NOEU_TEMP_R",
 )
 # B.3.d
-resrep2=CREA_RESU(
-   OPERATION='AFFE',
-   TYPE_RESU='EVOL_THER',
-   NOM_CHAM='TEMP',
-   AFFE=(_F(CHAM_GD=dmed02, INST=1.0,),),
+resrep2 = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=dmed02, INST=1.0),)
 )
 # B.3.e
-momed02=AFFE_MODELE(
-   MAILLAGE=mamed02,
-   AFFE=_F(GROUP_MA='VOLUME',
-           PHENOMENE='THERMIQUE',
-           MODELISATION='3D',),
+momed02 = AFFE_MODELE(
+    MAILLAGE=mamed02, AFFE=_F(GROUP_MA="VOLUME", PHENOMENE="THERMIQUE", MODELISATION="3D")
 )
 # --------
 # B.4.a
-mail04=LIRE_MAILLAGE(UNITE=21,FORMAT='MED')
+mail04 = LIRE_MAILLAGE(UNITE=21, FORMAT="MED")
 # B.4.b
-mode04=AFFE_MODELE(
-   MAILLAGE=mail04,
-   AFFE=_F(TOUT='OUI',
-           PHENOMENE='THERMIQUE',
-           MODELISATION='3D',),
-)
+mode04 = AFFE_MODELE(MAILLAGE=mail04, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
 # B.4.c
 chp01 = PROJ_CHAMP(
-   METHODE  = 'COLLOCATION',  RESULTAT = resrep1,
-   MODELE_1 = momed01, MODELE_2 = mode04,
-   NOM_CHAM = 'TEMP',  INST     = 1.0,
-   DISTANCE_MAX = 1.0E-3,
+    METHODE="COLLOCATION",
+    RESULTAT=resrep1,
+    MODELE_1=momed01,
+    MODELE_2=mode04,
+    NOM_CHAM="TEMP",
+    INST=1.0,
+    DISTANCE_MAX=1.0e-3,
 )
 chp02 = PROJ_CHAMP(
-   METHODE  = 'COLLOCATION',  RESULTAT = resrep2,
-   MODELE_1 = momed02, MODELE_2 = mode04,
-   NOM_CHAM = 'TEMP',  INST     = 1.0,
-   DISTANCE_MAX = 1.0E-3,
+    METHODE="COLLOCATION",
+    RESULTAT=resrep2,
+    MODELE_1=momed02,
+    MODELE_2=mode04,
+    NOM_CHAM="TEMP",
+    INST=1.0,
+    DISTANCE_MAX=1.0e-3,
 )
-chpsy=PROJ_CHAMP(
-   METHODE  = 'COLLOCATION',  RESULTAT = resrep1,
-   MODELE_1 = momedsy, MODELE_2 = mode04,
-   NOM_CHAM = 'TEMP',  INST     = 1.0,
-   DISTANCE_MAX = 1.0E-3,
+chpsy = PROJ_CHAMP(
+    METHODE="COLLOCATION",
+    RESULTAT=resrep1,
+    MODELE_1=momedsy,
+    MODELE_2=mode04,
+    NOM_CHAM="TEMP",
+    INST=1.0,
+    DISTANCE_MAX=1.0e-3,
 )
 # B.4.d
-chpno01= CREA_CHAMP(
-   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
-   RESULTAT  = chp01, NOM_CHAM  = 'TEMP',
-   INST      = 1.0,
+chpno01 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=chp01, NOM_CHAM="TEMP", INST=1.0
 )
-chpno02= CREA_CHAMP(
-   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
-   RESULTAT  = chp02, NOM_CHAM  = 'TEMP',
-   INST      = 1.0,
+chpno02 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=chp02, NOM_CHAM="TEMP", INST=1.0
 )
-chpnosy= CREA_CHAMP(
-   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
-   RESULTAT  = chpsy, NOM_CHAM  = 'TEMP',
-   INST      = 1.0,
+chpnosy = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=chpsy, NOM_CHAM="TEMP", INST=1.0
 )
 # Creation d'un champ nul
-chpnul=CREA_CHAMP(
-  TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE',
-  MODELE=mode04,
-  AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.0,),
+chpnul = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MODELE=mode04,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=0.0),
 )
 # B.4.e
-chpnotot=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=mode04,
-            ASSE=(_F(CHAM_GD=chpnul, TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),
-                  _F(CHAM_GD=chpno01,TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),
-                  _F(CHAM_GD=chpnosy,TOUT='OUI',CUMUL='OUI',COEF_R=-1.0),
-                  _F(CHAM_GD=chpno02,TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),),
+chpnotot = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MODELE=mode04,
+    ASSE=(
+        _F(CHAM_GD=chpnul, TOUT="OUI", CUMUL="OUI", COEF_R=1.0),
+        _F(CHAM_GD=chpno01, TOUT="OUI", CUMUL="OUI", COEF_R=1.0),
+        _F(CHAM_GD=chpnosy, TOUT="OUI", CUMUL="OUI", COEF_R=-1.0),
+        _F(CHAM_GD=chpno02, TOUT="OUI", CUMUL="OUI", COEF_R=1.0),
+    ),
 )
 # B.4.f
-rprojec=CREA_RESU(
-   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-   NOM_CHAM='TEMP',
-   AFFE=(_F(CHAM_GD=chpnotot, INST=1.0,),),
+rprojec = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=chpnotot, INST=1.0),)
 )
 
 # ==========================================================
@@ -284,30 +268,28 @@ rprojec=CREA_RESU(
 #   3) Calcul
 #
 # C.1
-mater04=AFFE_MATERIAU(
-  MAILLAGE=mail04,
-  AFFE=_F(TOUT='OUI', MATER=monmat),
-)
+mater04 = AFFE_MATERIAU(MAILLAGE=mail04, AFFE=_F(TOUT="OUI", MATER=monmat))
 # C.2
-chther04=AFFE_CHAR_THER(
-  MODELE=mode04,
-  TEMP_IMPO=(_F(GROUP_MA='SURFDEB', TEMP=250.0,),
-             _F(GROUP_MA='SURFI01', TEMP=160.0,),
-             _F(GROUP_MA='SURFFIN', TEMP=250.0,),),
-  FLUX_REP =(_F(GROUP_MA='SSUP1',   FLUN= 10.0,),
-             _F(GROUP_MA='SSUP3',   FLUN= 30.0,),
-             _F(GROUP_MA='SFOND',   FLUN=  0.0,),),
-  ECHANGE  =(_F(GROUP_MA='SRAY1',   COEF_H=350.0, TEMP_EXT=300.0,),
-             _F(GROUP_MA='SRAY4',   COEF_H=600.0, TEMP_EXT=310.0,),
-             _F(GROUP_MA=('SRAY2','SSUP2','SRAY3',),
-                COEF_H=400.0,TEMP_EXT=275.0,),),
+chther04 = AFFE_CHAR_THER(
+    MODELE=mode04,
+    TEMP_IMPO=(
+        _F(GROUP_MA="SURFDEB", TEMP=250.0),
+        _F(GROUP_MA="SURFI01", TEMP=160.0),
+        _F(GROUP_MA="SURFFIN", TEMP=250.0),
+    ),
+    FLUX_REP=(
+        _F(GROUP_MA="SSUP1", FLUN=10.0),
+        _F(GROUP_MA="SSUP3", FLUN=30.0),
+        _F(GROUP_MA="SFOND", FLUN=0.0),
+    ),
+    ECHANGE=(
+        _F(GROUP_MA="SRAY1", COEF_H=350.0, TEMP_EXT=300.0),
+        _F(GROUP_MA="SRAY4", COEF_H=600.0, TEMP_EXT=310.0),
+        _F(GROUP_MA=("SRAY2", "SSUP2", "SRAY3"), COEF_H=400.0, TEMP_EXT=275.0),
+    ),
 )
 # C.3
-rther04=THER_LINEAIRE(
-  MODELE=mode04,
-  CHAM_MATER=mater04,
-  EXCIT=_F(CHARGE=chther04,),
-)
+rther04 = THER_LINEAIRE(MODELE=mode04, CHAM_MATER=mater04, EXCIT=_F(CHARGE=chther04))
 
 # ==========================================================
 # D) Comparaison entre la projection et l'etude
@@ -320,78 +302,79 @@ rther04=THER_LINEAIRE(
 #   5) Tests sur les ecarts mini et maxi
 #
 # D.1
-chpnoprj= CREA_CHAMP(
-   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
-   RESULTAT  = rprojec, NOM_CHAM  = 'TEMP',
-   INST      = 1.0,
+chpnoprj = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=rprojec, NOM_CHAM="TEMP", INST=1.0
 )
 # D.2
-chpnocal= CREA_CHAMP(
-   TYPE_CHAM = 'NOEU_TEMP_R', OPERATION = 'EXTR',
-   RESULTAT  = rther04, NOM_CHAM  = 'TEMP',
-   INST      = 0.0,
+chpnocal = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R", OPERATION="EXTR", RESULTAT=rther04, NOM_CHAM="TEMP", INST=0.0
 )
 # D.3
-chpnodif=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_TEMP_R',MODELE=mode04,
-            ASSE=(_F(CHAM_GD=chpnoprj, TOUT='OUI',CUMUL='OUI',COEF_R= 1.0),
-                  _F(CHAM_GD=chpnocal, TOUT='OUI',CUMUL='OUI',COEF_R= -1.0),),
+chpnodif = CREA_CHAMP(
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MODELE=mode04,
+    ASSE=(
+        _F(CHAM_GD=chpnoprj, TOUT="OUI", CUMUL="OUI", COEF_R=1.0),
+        _F(CHAM_GD=chpnocal, TOUT="OUI", CUMUL="OUI", COEF_R=-1.0),
+    ),
 )
 # D.4
-rdiffer=CREA_RESU(
-   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-   NOM_CHAM='TEMP',
-   AFFE=(_F(CHAM_GD=chpnodif, INST=1.0,),),
+rdiffer = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=chpnodif, INST=1.0),)
 )
 # D.5
-TEST_RESU(RESU=(_F(INST=1.0,
-                   TYPE_TEST='MAX',
-                   RESULTAT=rdiffer,
-                   NOM_CHAM='TEMP',
-                   VALE_CALC=0.,
-                   ORDRE_GRANDEUR=275.,
-                   CRITERE='ABSOLU',
-                   ),
-                _F(INST=1.0,
-                   TYPE_TEST='MIN',
-                   RESULTAT=rdiffer,
-                   NOM_CHAM='TEMP',
-                   VALE_CALC=0.,
-                   VALE_REFE=0.,
-                   # pour tester le fait que le test de non régression est
-                   # ignoré dans ce cas.
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=rdiffer,
+            NOM_CHAM="TEMP",
+            VALE_CALC=0.0,
+            ORDRE_GRANDEUR=275.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=rdiffer,
+            NOM_CHAM="TEMP",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            # pour tester le fait que le test de non régression est
+            # ignoré dans ce cas.
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+        ),
+    )
+)
 
 # ==========================================================
 # Impression au format GMSH
-if ( ficgmsh == 1 ):
-  IMPR_RESU( FORMAT='GMSH', UNITE=55, VERSION=1.2,
-             MODELE=mode08,
-             RESU=_F(MAILLAGE=mail08,
-                     RESULTAT=rther08,
-                     NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-           )
+if ficgmsh == 1:
+    IMPR_RESU(
+        FORMAT="GMSH",
+        UNITE=55,
+        VERSION=1.2,
+        MODELE=mode08,
+        RESU=_F(MAILLAGE=mail08, RESULTAT=rther08, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+    )
 
-  IMPR_RESU( FORMAT='GMSH', UNITE=56, VERSION=1.2,
-             MODELE=mode04,
-             RESU=(_F(MAILLAGE=mail04,
-                      RESULTAT=rprojec,
-                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-                   _F(RESULTAT=rther04,
-                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-                   _F(RESULTAT=rdiffer,
-                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-                   _F(RESULTAT=chp01,
-                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-                   _F(RESULTAT=chp02,
-                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-                   _F(RESULTAT=chpsy,
-                      NOM_CHAM='TEMP', TOUT_ORDRE='OUI',),
-                   ),
-           )
+    IMPR_RESU(
+        FORMAT="GMSH",
+        UNITE=56,
+        VERSION=1.2,
+        MODELE=mode04,
+        RESU=(
+            _F(MAILLAGE=mail04, RESULTAT=rprojec, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+            _F(RESULTAT=rther04, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+            _F(RESULTAT=rdiffer, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+            _F(RESULTAT=chp01, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+            _F(RESULTAT=chp02, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+            _F(RESULTAT=chpsy, NOM_CHAM="TEMP", TOUT_ORDRE="OUI"),
+        ),
+    )
 
 
 FIN()

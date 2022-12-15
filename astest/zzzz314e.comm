@@ -19,59 +19,65 @@
 
 # CAS D'UN FOND EN QUART DE CERCLE DEBOUCHANT
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 import aster
 
-M=LIRE_MAILLAGE(FORMAT='MED',)
+M = LIRE_MAILLAGE(FORMAT="MED")
 
-FISS0=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
-                     FOND_FISS=_F(GROUP_MA = 'LFF1',),
-                     LEVRE_SUP=_F(GROUP_MA = 'LEVINFS'),
-                     LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),
-                    )
+FISS0 = DEFI_FOND_FISS(
+    MAILLAGE=M,
+    SYME="NON",
+    FOND_FISS=_F(GROUP_MA="LFF1"),
+    LEVRE_SUP=_F(GROUP_MA="LEVINFS"),
+    LEVRE_INF=_F(GROUP_MA="LEVINF1"),
+)
 
 import numpy as np
+
 nb_comp_basloc = 9
 basloc = FISS0.sdj.BASLOC.VALE.get()
-basloc = np.array(basloc).reshape((len(basloc)//nb_comp_basloc),nb_comp_basloc)[:,3:]
+basloc = np.array(basloc).reshape((len(basloc) // nb_comp_basloc), nb_comp_basloc)[:, 3:]
 nomnoe = [i.strip() for i in M.sdj.NOMNOE.get()]
 lnoff = FISS0.sdj.FOND_NOEU.get()
-basloc = basloc[[nomnoe.index(item.strip()) for item in lnoff],:]
+basloc = basloc[[nomnoe.index(item.strip()) for item in lnoff], :]
 basloc = basloc.reshape((len(basloc), 2, 3))
 norm = np.linalg.norm(basloc, axis=2)
 norm = norm.reshape((len(basloc), 2, 1))
 norm = np.concatenate((norm, norm, norm), axis=2)
-basefond0 = (basloc/norm).flatten()
+basefond0 = (basloc / norm).flatten()
 
-ndfon=[]
+ndfon = []
 # listes des composantes des vecteurs normaux au plan de la fissure
-vnorX=[]
-vnorY=[]
-vnorZ=[]
+vnorX = []
+vnorY = []
+vnorZ = []
 # listes des composantes des vecteurs de direction de propagation de
 # la fissure
-vdirX=[]
-vdirY=[]
-vdirZ=[]
+vdirX = []
+vdirY = []
+vdirZ = []
 
-for i in range(0,len(basefond0)//6):
-  ndfon.append(i+1)
-  vdirX.append(basefond0[6*i])
-  vdirY.append(basefond0[6*i+1])
-  vdirZ.append(basefond0[6*i+2])
-  vnorX.append(basefond0[6*i+3])
-  vnorY.append(basefond0[6*i+4])
-  vnorZ.append(basefond0[6*i+5])
+for i in range(0, len(basefond0) // 6):
+    ndfon.append(i + 1)
+    vdirX.append(basefond0[6 * i])
+    vdirY.append(basefond0[6 * i + 1])
+    vdirZ.append(basefond0[6 * i + 2])
+    vnorX.append(basefond0[6 * i + 3])
+    vnorY.append(basefond0[6 * i + 4])
+    vnorZ.append(basefond0[6 * i + 5])
 
-TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
-                        _F(LISTE_R=vnorX,PARA='VNORX'),
-                        _F(LISTE_R=vnorY,PARA='VNORY') ,
-                        _F(LISTE_R=vnorZ,PARA='VNORZ'),
-                        _F(LISTE_R=vdirX,PARA='VDIRX'),
-                        _F(LISTE_R=vdirY,PARA='VDIRY') ,
-                        _F(LISTE_R=vdirZ,PARA='VDIRZ'),
-                        ),)
+TABL0 = CREA_TABLE(
+    LISTE=(
+        _F(LISTE_I=ndfon, PARA="ND_FOND"),
+        _F(LISTE_R=vnorX, PARA="VNORX"),
+        _F(LISTE_R=vnorY, PARA="VNORY"),
+        _F(LISTE_R=vnorZ, PARA="VNORZ"),
+        _F(LISTE_R=vdirX, PARA="VDIRX"),
+        _F(LISTE_R=vdirY, PARA="VDIRY"),
+        _F(LISTE_R=vdirZ, PARA="VDIRZ"),
+    )
+)
 
 # Calcul des valeurs analytiques des vecteurs de direction de
 # propagation de fissure :
@@ -79,92 +85,93 @@ TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
 # les valeurs analytiques des vecteurs de direction de
 # propagation de la fissure sont les coordonnees des noeuds du fond
 
-vdirX_ana=[]
-vdirY_ana=[]
-vdirZ_ana=[]
+vdirX_ana = []
+vdirY_ana = []
+vdirZ_ana = []
 
 # Noms des noeuds du maillage
-t_noms_noeuds_maillage = aster.getvectjev(M.getName() + '.NOMNOE')
+t_noms_noeuds_maillage = aster.getvectjev(M.getName() + ".NOMNOE")
 l_noms_noeuds_maillage = list(t_noms_noeuds_maillage)
 
 l_numeros_noeuds_fissure = []
 # Noms des noeuds du fond
-l_noms_noeuds_fissure=FISS0.sdj.FOND_NOEU.get()
+l_noms_noeuds_fissure = FISS0.sdj.FOND_NOEU.get()
 
-for i in range(0,len(ndfon)):
-  nom = l_noms_noeuds_fissure[i]
-  index = l_noms_noeuds_maillage.index(nom)
-  l_numeros_noeuds_fissure.append(index)
+for i in range(0, len(ndfon)):
+    nom = l_noms_noeuds_fissure[i]
+    index = l_noms_noeuds_maillage.index(nom)
+    l_numeros_noeuds_fissure.append(index)
 
-  coor=aster.getvectjev(M.getName() + '.COORDO    .VALE        ',
-                    l_numeros_noeuds_fissure[i]*3,3)
-  norme=sqrt( coor[0]**2+coor[1]**2+coor[2]**2 )
+    coor = aster.getvectjev(
+        M.getName() + ".COORDO    .VALE        ", l_numeros_noeuds_fissure[i] * 3, 3
+    )
+    norme = sqrt(coor[0] ** 2 + coor[1] ** 2 + coor[2] ** 2)
 
-  vdirX_ana.append(coor[0]/norme)
-  vdirY_ana.append(coor[1]/norme)
-  vdirZ_ana.append(coor[2]/norme)
+    vdirX_ana.append(coor[0] / norme)
+    vdirY_ana.append(coor[1] / norme)
+    vdirZ_ana.append(coor[2] / norme)
 
 
-for i in range(0,len(ndfon)):
+for i in range(0, len(ndfon)):
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              VALE_CALC= 0.00000000E+00,
-              VALE_REFE=0.0,
-              NOM_PARA='VNORX',
-              TABLE=TABL0,
-              FILTRE=_F(NOM_PARA='ND_FOND',
-                        VALE_I=i+1,),
-              )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=0.00000000e00,
+        VALE_REFE=0.0,
+        NOM_PARA="VNORX",
+        TABLE=TABL0,
+        FILTRE=_F(NOM_PARA="ND_FOND", VALE_I=i + 1),
+    )
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              VALE_CALC= 0.00000000E+00,
-              VALE_REFE=0.0,
-              NOM_PARA='VNORY',
-              TABLE=TABL0,
-              FILTRE=_F(NOM_PARA='ND_FOND',
-                        VALE_I=i+1,),
-              )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=0.00000000e00,
+        VALE_REFE=0.0,
+        NOM_PARA="VNORY",
+        TABLE=TABL0,
+        FILTRE=_F(NOM_PARA="ND_FOND", VALE_I=i + 1),
+    )
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              VALE_CALC=1.000000000,
-              VALE_REFE=1.0,
-              NOM_PARA='VNORZ',
-              TABLE=TABL0,
-              FILTRE=_F(NOM_PARA='ND_FOND',
-                        VALE_I=i+1,),
-              )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=1.000000000,
+        VALE_REFE=1.0,
+        NOM_PARA="VNORZ",
+        TABLE=TABL0,
+        FILTRE=_F(NOM_PARA="ND_FOND", VALE_I=i + 1),
+    )
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              VALE_CALC=vdirX_ana[i],
-              VALE_REFE=vdirX_ana[i],
-              NOM_PARA='VDIRX',
-              TABLE=TABL0,
-              FILTRE=_F(NOM_PARA='ND_FOND',
-                        VALE_I=i+1,),
-              )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=vdirX_ana[i],
+        VALE_REFE=vdirX_ana[i],
+        NOM_PARA="VDIRX",
+        TABLE=TABL0,
+        FILTRE=_F(NOM_PARA="ND_FOND", VALE_I=i + 1),
+    )
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              VALE_CALC=vdirY_ana[i],
-              VALE_REFE=vdirY_ana[i],
-              NOM_PARA='VDIRY',
-              TABLE=TABL0,
-              FILTRE=_F(NOM_PARA='ND_FOND',
-                        VALE_I=i+1,),
-              )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=vdirY_ana[i],
+        VALE_REFE=vdirY_ana[i],
+        NOM_PARA="VDIRY",
+        TABLE=TABL0,
+        FILTRE=_F(NOM_PARA="ND_FOND", VALE_I=i + 1),
+    )
 
-   TEST_TABLE(CRITERE='ABSOLU',
-              REFERENCE='ANALYTIQUE',
-              VALE_CALC=vdirZ_ana[i],
-              VALE_REFE=vdirZ_ana[i],
-              NOM_PARA='VDIRZ',
-              TABLE=TABL0,
-              FILTRE=_F(NOM_PARA='ND_FOND',
-                        VALE_I=i+1,),
-              )
+    TEST_TABLE(
+        CRITERE="ABSOLU",
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=vdirZ_ana[i],
+        VALE_REFE=vdirZ_ana[i],
+        NOM_PARA="VDIRZ",
+        TABLE=TABL0,
+        FILTRE=_F(NOM_PARA="ND_FOND", VALE_I=i + 1),
+    )
 
 FIN()

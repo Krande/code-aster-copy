@@ -21,18 +21,10 @@
 from ..Utilities import _
 
 cata_msg = {
-
     5: _("""Conversion du champ """),
-
     6: _("""HHO: Calcul des coefficients pour les chargements cinématiques"""),
-
     7: _("""HHO: Préparation du champ des fonctions pour les chargements cinématiques"""),
-
     8: _("""HHO: Initialisations de HHO pour la mécanique non linéaire"""),
-
     9: _("""On n'a le droit qu'à un seul chargement AFFE_CHAR_CINE de type fonction dans HHO."""),
-
     10: _("""HHO: Calcul des déplacements aux noeuds"""),
-
-
 }

@@ -19,15 +19,14 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (FullHarmonicResult,
-                       FullTransientResult, ModeResult,
-                       NonLinearResult)
+from ..Objects import FullHarmonicResult, FullTransientResult, ModeResult, NonLinearResult
 from ..Objects import DOFNumbering
 from ..Supervis import ExecuteCommand
 
 
 class RestSousStrucOper(ExecuteCommand):
     """Command that allows to project fields."""
+
     command_name = "REST_SOUS_STRUC"
 
     def create_result(self, keywords):
@@ -74,8 +73,7 @@ class RestSousStrucOper(ExecuteCommand):
                 modeleGene = geneDofNum.getGeneralizedModel()
                 mesh = None
                 if modeleGene is not None:
-                    macroElem = modeleGene.getDynamicMacroElementFromName(
-                        sousStruc)
+                    macroElem = modeleGene.getDynamicMacroElementFromName(sousStruc)
                     modeMeca = macroElem.getMechanicalMode()
                     self._result.setDOFNumbering(modeMeca.getDOFNumbering())
                     mat = macroElem.getDampingMatrix()
@@ -120,7 +118,7 @@ class RestSousStrucOper(ExecuteCommand):
                         self._result.setMesh(mesh)
 
         elif squelette is not None:
-            dofNum = DOFNumbering(self._result.getName()+".PROFC")
+            dofNum = DOFNumbering(self._result.getName() + ".PROFC")
             self._result.setDOFNumbering(dofNum)
             if modeMeca is not None:
                 dofNum = modeMeca.getDOFNumbering()

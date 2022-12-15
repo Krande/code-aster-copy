@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,17 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MAC_MODES=OPER(nom="MAC_MODES",op=  141,sd_prod=table_sdaster,
-               fr=tr("Critere orthogonalite de modes propres"),
-               reentrant='n',
-               regles=(PRESENT_PRESENT('IERI','MATR_ASSE'),),
-         BASE_1     =SIMP(statut='o',typ=(mode_meca,mode_meca_c,mode_flamb) ),
-         BASE_2     =SIMP(statut='o',typ=(mode_meca,mode_meca_c,mode_flamb) ),
-         MATR_ASSE  =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c) ),
-         IERI       =SIMP(statut='f',typ='TXM',into=("OUI",),),
-         TITRE      =SIMP(statut='f',typ='TXM'),
-         INFO       =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-)  ;
+MAC_MODES = OPER(
+    nom="MAC_MODES",
+    op=141,
+    sd_prod=table_sdaster,
+    fr=tr("Critere orthogonalite de modes propres"),
+    reentrant="n",
+    regles=(PRESENT_PRESENT("IERI", "MATR_ASSE"),),
+    BASE_1=SIMP(statut="o", typ=(mode_meca, mode_meca_c, mode_flamb)),
+    BASE_2=SIMP(statut="o", typ=(mode_meca, mode_meca_c, mode_flamb)),
+    MATR_ASSE=SIMP(statut="f", typ=(matr_asse_depl_r, matr_asse_depl_c)),
+    IERI=SIMP(statut="f", typ="TXM", into=("OUI",)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+)

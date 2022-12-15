@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class PostKBeta(ExecuteCommand):
-    """Command POST_K_BETA
-    """
+    """Command POST_K_BETA"""
+
     command_name = "POST_K_BETA"
 
     def create_result(self, keywords):
@@ -35,5 +35,6 @@ class PostKBeta(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Table()
+
 
 POST_K_BETA = PostKBeta.run

@@ -21,425 +21,295 @@
 #  TEST DE LA LOI DE KICHENIN (3D) - PARTIE PLASTIQUE
 # ---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
 import numpy as np
 
 
-
-Ep   = 4.e2     # module de Young branche plastique
-nup  = 0.40     # coefficient de Poisson branche plastique
-sc   = 8.0      # limite d'elasticite (
-prag = 80.0     # constante de Prager (fictive)
-
+Ep = 4.0e2  # module de Young branche plastique
+nup = 0.40  # coefficient de Poisson branche plastique
+sc = 8.0  # limite d'elasticite (
+prag = 80.0  # constante de Prager (fictive)
 
 
 MATE = DEFI_MATERIAU(
-    ELAS = _F(
-        E  = Ep,
-        NU = nup,
-        ),
-    KICHENIN_NL = _F(
-        SIGC         = sc,
-        PRAGER       = prag,
-        E_VISC       = 0,
-        NU_VISC      = 0,
-        NU_AMOR      = 0,
-        ETA_AMOR     = 4.e3,
-        N_AMOR       = 1,
-        ),
-    ECRO_LINE = _F(
-        SY          = sc,
-        D_SIGM_EPSI = 1/(1/Ep + 2/(3*prag)),
-        ),
-    )
+    ELAS=_F(E=Ep, NU=nup),
+    KICHENIN_NL=_F(SIGC=sc, PRAGER=prag, E_VISC=0, NU_VISC=0, NU_AMOR=0, ETA_AMOR=4.0e3, N_AMOR=1),
+    ECRO_LINE=_F(SY=sc, D_SIGM_EPSI=1 / (1 / Ep + 2 / (3 * prag))),
+)
 
 
-class  SIGMA:
+class SIGMA:
 
     sig1 = (1.0, 0.5, 0.5, 0.0, 0.0, 0.0)
     sig2 = (0.0, 0.0, 0.0, 1.0, 0.5, 0.5)
 
     # parametres internes
-    rac2 = np.array((1,1,1,2**0.5,2**0.5,2**0.5))
-    kron = np.array((1.0,1.0,1.0,0.0,0.0,0.0))
+    rac2 = np.array((1, 1, 1, 2**0.5, 2**0.5, 2**0.5))
+    kron = np.array((1.0, 1.0, 1.0, 0.0, 0.0, 0.0))
 
     sigComp = dict(SIXX=0, SIYY=1, SIZZ=2, SIXY=3, SIXZ=4, SIYZ=5)
 
+    def __init__(self, Npas):
 
-    def __init__(self,Npas):
+        s1 = np.array(self.sig1) * self.rac2
+        d1 = s1 - np.dot(s1, self.kron) / 3.0 * self.kron
+        s1 = s1 / (1.5 * np.dot(d1, d1)) ** 0.5
 
-        s1 = np.array(self.sig1)*self.rac2
-        d1 = s1 - np.dot(s1,self.kron)/3.0*self.kron
-        s1 = s1 / (1.5*np.dot(d1,d1))**0.5
-
-        s2 = np.array(self.sig2)*self.rac2
-        d2 = s2 - np.dot(s2,self.kron)/3.0*self.kron
-        s2 = s2 / (1.5*np.dot(d2,d2))**0.5
+        s2 = np.array(self.sig2) * self.rac2
+        d2 = s2 - np.dot(s2, self.kron) / 3.0 * self.kron
+        s2 = s2 / (1.5 * np.dot(d2, d2)) ** 0.5
 
         self.inst = np.linspace(0.0, 1.0, Npas)
-        a1 = sc*np.sin(1*2*np.pi*self.inst)
-        a2 = sc*np.sin(2*2*np.pi*self.inst)
+        a1 = sc * np.sin(1 * 2 * np.pi * self.inst)
+        a2 = sc * np.sin(2 * 2 * np.pi * self.inst)
 
-        self.sig = np.outer(s1,a1) + np.outer(s2,a2)
+        self.sig = np.outer(s1, a1) + np.outer(s2, a2)
 
+    def GetInst(self):
+        return self.inst.tolist()
 
-    def GetInst(self): return self.inst.tolist()
-    def GetSig(self,nom_cmp): return (self.sig[self.sigComp[nom_cmp],:]/self.rac2[self.sigComp[nom_cmp]]).tolist()
+    def GetSig(self, nom_cmp):
+        return (self.sig[self.sigComp[nom_cmp], :] / self.rac2[self.sigComp[nom_cmp]]).tolist()
 
 
 sig = SIGMA(Npas=100)
 
 
 DEFLIST1 = DEFI_LIST_INST(
-    DEFI_LIST = _F( VALE = sig.GetInst()),
-    ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
-    )
+    DEFI_LIST=_F(VALE=sig.GetInst()), ECHEC=_F(ACTION="DECOUPE", SUBD_PAS=4, SUBD_NIVEAU=2)
+)
 
 
-SIXX = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sig.GetInst(),
-    ORDONNEE    = sig.GetSig(nom_cmp='SIXX'),
-    )
+SIXX = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sig.GetInst(), ORDONNEE=sig.GetSig(nom_cmp="SIXX"))
 
 
-SIYY = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sig.GetInst(),
-    ORDONNEE    = sig.GetSig(nom_cmp='SIYY'),
-    )
+SIYY = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sig.GetInst(), ORDONNEE=sig.GetSig(nom_cmp="SIYY"))
 
 
-SIZZ = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sig.GetInst(),
-    ORDONNEE    = sig.GetSig(nom_cmp='SIZZ'),
-    )
+SIZZ = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sig.GetInst(), ORDONNEE=sig.GetSig(nom_cmp="SIZZ"))
 
 
-SIXY = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sig.GetInst(),
-    ORDONNEE    = sig.GetSig(nom_cmp='SIXY'),
-    )
+SIXY = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sig.GetInst(), ORDONNEE=sig.GetSig(nom_cmp="SIXY"))
 
 
-SIXZ = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sig.GetInst(),
-    ORDONNEE    = sig.GetSig(nom_cmp='SIXZ'),
-    )
+SIXZ = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sig.GetInst(), ORDONNEE=sig.GetSig(nom_cmp="SIXZ"))
 
 
-SIYZ = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sig.GetInst(),
-    ORDONNEE    = sig.GetSig(nom_cmp='SIYZ'),
-    )
+SIYZ = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sig.GetInst(), ORDONNEE=sig.GetSig(nom_cmp="SIYZ"))
 
 
 EVOL_PL = SIMU_POINT_MAT(
-    SUPPORT       = 'ELEMENT',
-    MODELISATION  = '3D',
-    COMPORTEMENT  = _F(
-        RELATION       = 'VMIS_CINE_LINE',
-        ),
-    MATER      = MATE,
-    INCREMENT  = _F( LIST_INST=DEFLIST1,),
-    NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
-    CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    SIGM_IMPOSE= _F(
-        SIXX = SIXX,
-        SIYY = SIYY,
-        SIZZ = SIZZ,
-        SIXY = SIXY,
-        SIXZ = SIXZ,
-        SIYZ = SIYZ,
-        ),
-    )
+    SUPPORT="ELEMENT",
+    MODELISATION="3D",
+    COMPORTEMENT=_F(RELATION="VMIS_CINE_LINE"),
+    MATER=MATE,
+    INCREMENT=_F(LIST_INST=DEFLIST1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=10),
+    SIGM_IMPOSE=_F(SIXX=SIXX, SIYY=SIYY, SIZZ=SIZZ, SIXY=SIXY, SIXZ=SIXZ, SIYZ=SIYZ),
+)
 
 
 EVOL_KI = SIMU_POINT_MAT(
-    SUPPORT       = 'ELEMENT',
-    MODELISATION  = '3D',
-    COMPORTEMENT  = _F(
-        RELATION       = 'KICHENIN_NL',
-        ),
-    MATER      = MATE,
-    INCREMENT  = _F( LIST_INST=DEFLIST1,),
-    NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
-    CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    SIGM_IMPOSE= _F(
-        SIXX = SIXX,
-        SIYY = SIYY,
-        SIZZ = SIZZ,
-        SIXY = SIXY,
-        SIXZ = SIXZ,
-        SIYZ = SIYZ,
-        ),
-    )
+    SUPPORT="ELEMENT",
+    MODELISATION="3D",
+    COMPORTEMENT=_F(RELATION="KICHENIN_NL"),
+    MATER=MATE,
+    INCREMENT=_F(LIST_INST=DEFLIST1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=10),
+    SIGM_IMPOSE=_F(SIXX=SIXX, SIYY=SIYY, SIZZ=SIZZ, SIXY=SIXY, SIXZ=SIXZ, SIYZ=SIYZ),
+)
 
 
-#----------------------------------------------------------------#
+# ----------------------------------------------------------------#
 # TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
-#----------------------------------------------------------------#
+# ----------------------------------------------------------------#
 
 nume = -1
-prec = 1.e-6
+prec = 1.0e-6
 
 
 resu_ref = EVOL_PL.EXTR_TABLE().values()
-t    = resu_ref['INST'][nume]
-epxx = resu_ref['EPXX'][nume]
-epyy = resu_ref['EPYY'][nume]
-epzz = resu_ref['EPZZ'][nume]
-epxy = resu_ref['EPXY'][nume]
-epxz = resu_ref['EPXZ'][nume]
-epyz = resu_ref['EPYZ'][nume]
-plxx = resu_ref['V1'][nume]/prag
-plyy = resu_ref['V2'][nume]/prag
-plzz = resu_ref['V3'][nume]/prag
-plxy = resu_ref['V4'][nume]/prag
-plxz = resu_ref['V5'][nume]/prag
-plyz = resu_ref['V6'][nume]/prag
-
+t = resu_ref["INST"][nume]
+epxx = resu_ref["EPXX"][nume]
+epyy = resu_ref["EPYY"][nume]
+epzz = resu_ref["EPZZ"][nume]
+epxy = resu_ref["EPXY"][nume]
+epxz = resu_ref["EPXZ"][nume]
+epyz = resu_ref["EPYZ"][nume]
+plxx = resu_ref["V1"][nume] / prag
+plyy = resu_ref["V2"][nume] / prag
+plzz = resu_ref["V3"][nume] / prag
+plxy = resu_ref["V4"][nume] / prag
+plxz = resu_ref["V5"][nume] / prag
+plyz = resu_ref["V6"][nume] / prag
 
 
 # Calcul de la deformation plastique cumulee
-lg = len(np.array(resu_ref['INST']))
+lg = len(np.array(resu_ref["INST"]))
 
-pl = np.concatenate((np.array(resu_ref['V1']), np.array(resu_ref['V2']), np.array(resu_ref['V3']), np.array(resu_ref['V4']), np.array(resu_ref['V5']), np.array(resu_ref['V6']))).reshape((6,lg))
-pl[3:,:] = pl[3:,:]*2**0.5
+pl = np.concatenate(
+    (
+        np.array(resu_ref["V1"]),
+        np.array(resu_ref["V2"]),
+        np.array(resu_ref["V3"]),
+        np.array(resu_ref["V4"]),
+        np.array(resu_ref["V5"]),
+        np.array(resu_ref["V6"]),
+    )
+).reshape((6, lg))
+pl[3:, :] = pl[3:, :] * 2**0.5
 pl = pl / prag
-dpl = pl[:,1:] - pl[:,:-1]
-dpleq = (2.0/3.0 * np.sum(dpl*dpl,axis=0))**0.5
+dpl = pl[:, 1:] - pl[:, :-1]
+dpleq = (2.0 / 3.0 * np.sum(dpl * dpl, axis=0)) ** 0.5
 plcum = sum(dpleq)
 
 
-
+TEST_TABLE(
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.02682869177650432,
+    VALE_REFE=epxx,
+    NOM_PARA="EPXX",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.02682869177650432,
-    VALE_REFE = epxx,
-    NOM_PARA  = 'EPXX',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.013414345888252155,
+    VALE_REFE=epyy,
+    NOM_PARA="EPYY",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.013414345888252155,
-    VALE_REFE = epyy,
-    NOM_PARA  = 'EPYY',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.013414345888252162,
+    VALE_REFE=epzz,
+    NOM_PARA="EPZZ",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.013414345888252162,
-    VALE_REFE = epzz,
-    NOM_PARA  = 'EPZZ',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.0025282449119976465,
+    VALE_REFE=epxy,
+    NOM_PARA="EPXY",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.0025282449119976465,
-    VALE_REFE = epxy,
-    NOM_PARA  = 'EPXY',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.0012641224559988163,
+    VALE_REFE=epxz,
+    NOM_PARA="EPXZ",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.0012641224559988163,
-    VALE_REFE = epxz,
-    NOM_PARA  = 'EPXZ',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.0012641224559988176,
+    VALE_REFE=epyz,
+    NOM_PARA="EPYZ",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.0012641224559988176,
-    VALE_REFE = epyz,
-    NOM_PARA  = 'EPYZ',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.026828691776504314,
+    VALE_REFE=plxx,
+    NOM_PARA="V2",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.026828691776504314,
-    VALE_REFE = plxx,
-    NOM_PARA  = 'V2',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.013414345888252157,
+    VALE_REFE=plyy,
+    NOM_PARA="V3",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.013414345888252157,
-    VALE_REFE = plyy,
-    NOM_PARA  = 'V3',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.013414345888252164,
+    VALE_REFE=plzz,
+    NOM_PARA="V4",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.013414345888252164,
-    VALE_REFE = plzz,
-    NOM_PARA  = 'V4',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.00252824491199764,
+    VALE_REFE=plxy,
+    NOM_PARA="V5",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.00252824491199764,
-    VALE_REFE = plxy,
-    NOM_PARA  = 'V5',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.0012641224559988133,
+    VALE_REFE=plxz,
+    NOM_PARA="V6",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.0012641224559988133,
-    VALE_REFE = plxz,
-    NOM_PARA  = 'V6',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.001264122455998814,
+    VALE_REFE=plyz,
+    NOM_PARA="V7",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.001264122455998814,
-    VALE_REFE = plyz,
-    NOM_PARA  = 'V7',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
-
-TEST_TABLE(
-    TABLE     = EVOL_KI,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.11576597286116919,
-    VALE_REFE = plcum,
-    NOM_PARA  = 'V1',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = t,
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+    TABLE=EVOL_KI,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.11576597286116919,
+    VALE_REFE=plcum,
+    NOM_PARA="V1",
+    FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=t, CRITERE="RELATIF", PRECISION=1.0e-08),
+)
 
 
 FIN()

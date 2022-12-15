@@ -23,83 +23,88 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
-
-
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """
+)
 
 PCONTMR = InputParameter(phys=PHY.SIEF_R)
 
-PVARIMR  = InputParameter(phys=PHY.VARI_R)
+PVARIMR = InputParameter(phys=PHY.VARI_R)
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
-
-
-PSTANO   = InputParameter(phys=PHY.N120_I)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PSTANO = InputParameter(phys=PHY.N120_I)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R)
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
+PLSN = InputParameter(phys=PHY.NEUT_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I,
-comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PCACO3D  = OutputParameter(phys=PHY.CACO3D, type='ELEM',
-comment=""" NE SERT QUE POUR COQUE_3D """)
+PFISNO = InputParameter(
+    phys=PHY.NEUT_I, comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """
+)
+
+
+PCACO3D = OutputParameter(phys=PHY.CACO3D, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
 
 
 # For HHO
-PCHHOGT  = InputParameter(phys=PHY.N1920R,
-comment=""" HHO - matrice du gradient local""")
+PCHHOGT = InputParameter(phys=PHY.N1920R, comment=""" HHO - matrice du gradient local""")
 
-PCHHOST  = InputParameter(phys=PHY.N2448R,
-comment=""" HHO - matrice de la stabilisation locale""")
+PCHHOST = InputParameter(phys=PHY.N2448R, comment=""" HHO - matrice de la stabilisation locale""")
 
-PVARIPR  = OutputParameter(phys=PHY.VARI_R, type='ELGA',
-comment=""" VARIABLES INTERNES POUR T+ """)
+PVARIPR = OutputParameter(phys=PHY.VARI_R, type="ELGA", comment=""" VARIABLES INTERNES POUR T+ """)
 
-PCONTPR  = OutputParameter(phys=PHY.SIEF_R, type='ELGA',
-comment=""" VECTEUR DES CONTRAINTES POUR T+ """)
+PCONTPR = OutputParameter(
+    phys=PHY.SIEF_R, type="ELGA", comment=""" VECTEUR DES CONTRAINTES POUR T+ """
+)
 
 
 RIGI_MECA = Option(
     para_in=(
-           PBASLOR,
+        PBASLOR,
         SP.PCAARPO,
         SP.PCACOQU,
         SP.PCADISK,
@@ -108,26 +113,26 @@ RIGI_MECA = Option(
         SP.PCAGNPO,
         SP.PCAMASS,
         SP.PCARCRI,
-           PCAORIE,
+        PCAORIE,
         SP.PCAPOUF,
         SP.PCINFDI,
-           PCNSETO,
-           PCOMPOR,
+        PCNSETO,
+        PCOMPOR,
         SP.PFIBRES,
-           PFISNO,
+        PFISNO,
         SP.PGEOMER,
         SP.PHARMON,
-           PHEAVTO,
-           PHEA_NO,
-           PLONCHA,
-           PLSN,
-           PLST,
+        PHEAVTO,
+        PHEA_NO,
+        PLONCHA,
+        PLSN,
+        PLST,
         SP.PMATERC,
         SP.PMULCOM,
-           PNBSP_I,
-           PPINTTO,
-           PPMILTO,
-           PSTANO,
+        PNBSP_I,
+        PPINTTO,
+        PPMILTO,
+        PSTANO,
         SP.PTEMPSR,
         SP.PITERAT,
         SP.PINSTMR,
@@ -136,26 +141,18 @@ RIGI_MECA = Option(
         SP.PVARCRR,
         SP.PDEPLMR,
         SP.PDEPLPR,
-           PCONTMR,
-           PVARCPR,
-           PVARIMR,
-           PCHHOGT,
-           PCHHOST,
+        PCONTMR,
+        PVARCPR,
+        PVARIMR,
+        PCHHOGT,
+        PCHHOST,
     ),
-    para_out=(
-           PCACO3D,
-        SP.PMATUNS,
-        SP.PMATUUR,
-        SP.PVECTUR,
-        SP.PCODRET,
-           PCONTPR,
-           PVARIPR,
-    ),
+    para_out=(PCACO3D, SP.PMATUNS, SP.PMATUUR, SP.PVECTUR, SP.PCODRET, PCONTPR, PVARIPR),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('+', ((AT.FSI ,'OUI'),(AT.BORD,'-1'),(AT.FORMULATION,'FSI_UP'),)),
-      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.ABSO,'OUI'),)),
-      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.FSI ,'OUI'),(AT.FORMULATION,'FSI_UPPHI'),)),
-      CondCalcul('+', ((AT.POUTRE,'OUI'),(AT.FSI ,'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.FSI, "OUI"), (AT.BORD, "-1"), (AT.FORMULATION, "FSI_UP"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.FSI, "OUI"), (AT.FORMULATION, "FSI_UPPHI"))),
+        CondCalcul("+", ((AT.POUTRE, "OUI"), (AT.FSI, "OUI"))),
     ),
 )

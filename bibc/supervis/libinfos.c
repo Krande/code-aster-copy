@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -29,16 +29,16 @@
 #endif
 #ifdef ASTER_HAVE_SCOTCH
 /* scotch.h may use int64_t without including <sys/types.h> */
-#include <sys/types.h>
 #include "scotch.h"
+
+#include <sys/types.h>
 #endif
 
-void DEFPPP(LIHDFV,lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
-            _OUT ASTERINTEGER *patch )
-{
+void DEFPPP( LIHDFV, lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
+             _OUT ASTERINTEGER *patch ) {
     /* Retourne la version de HDF5 */
     int ier = 0;
-    unsigned int n1=0, n2=0, n3=0;
+    unsigned int n1 = 0, n2 = 0, n3 = 0;
 #ifdef ASTER_HAVE_HDF5
     ier = (int)H5get_libversion( &n1, &n2, &n3 );
 #endif
@@ -48,16 +48,15 @@ void DEFPPP(LIHDFV,lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
     return;
 }
 
-void DEFPPP(LIMEDV,limedv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
-            _OUT ASTERINTEGER *patch )
-{
+void DEFPPP( LIMEDV, limedv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
+             _OUT ASTERINTEGER *patch ) {
     /* Retourne la version de MED */
     int ier = 0;
 #ifdef ASTER_HAVE_MED
-    med_int n1=0, n2=0, n3=0;
+    med_int n1 = 0, n2 = 0, n3 = 0;
     ier = (int)MEDlibraryNumVersion( &n1, &n2, &n3 );
 #else
-    unsigned int n1=0, n2=0, n3=0;
+    unsigned int n1 = 0, n2 = 0, n3 = 0;
 #endif
     *major = (ASTERINTEGER)n1;
     *minor = (ASTERINTEGER)n2;
@@ -65,9 +64,8 @@ void DEFPPP(LIMEDV,limedv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
     return;
 }
 
-void DEFPPP(LISCOV,liscov, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
-            _OUT ASTERINTEGER *patch )
-{
+void DEFPPP( LISCOV, liscov, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
+             _OUT ASTERINTEGER *patch ) {
     /* Retourne la version de SCOTCH */
 #ifdef ASTER_HAVE_SCOTCH
     *major = (ASTERINTEGER)SCOTCH_VERSION;

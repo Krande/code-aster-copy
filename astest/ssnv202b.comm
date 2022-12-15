@@ -23,80 +23,76 @@
 # >>> Oedometric compression test on a 3D HEXA20 element with the KH_CSSM model
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 ### >>>>>>>>
 ### >>> Mesh
 ### <<<<<<<<
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 ### >>>>>>>>>
 ### >>> Model
 ### <<<<<<<<<
 
-MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT = 'OUI',
-                           PHENOMENE = 'MECANIQUE',
-                           MODELISATION = '3D'))
+MODELE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-MAILLAGE=MODI_MAILLAGE(reuse=MAIL,
-                       MAILLAGE=MAIL,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU = ('HAUT', 'DEVANT', 'DROITE')))
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "DEVANT", "DROITE"))
+)
 
-'''
+"""
 MAILLAGE = DEFI_GROUP(reuse= MAILLAGE,
                       MAILLAGE=MAILLAGE,
                       CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI'),
                       CREA_GROUP_NO=_F(GROUP_MA='ROCHE'))
-'''
+"""
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Definition of the material
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-k=100.e6
-g=60.e6
-e=9.*k*g/(3.*k+g)
-nu=(3.*k-2.*g)/2./(3.*k+g)
+k = 100.0e6
+g = 60.0e6
+e = 9.0 * k * g / (3.0 * k + g)
+nu = (3.0 * k - 2.0 * g) / 2.0 / (3.0 * k + g)
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=e,
-                            NU=nu,
-                            ALPHA=0.,),
-                    KH_CSSM=_F(BulkModulus=k,
-                            ShearModulus=g,
-                            SwellingIndex=200.,
-                            InitPreconsPress=10.e6,
-                            InitTensionPress=1.e6,
-                            CamClayCSS=1.,
-                            YieldSurfLinCoef=1.,
-                            YieldSurfCapCoef=2.,
-                            PlastCompIndex=50.,
-                            KHModulus=30.e6,
-                            KHIndex=1.,),)
+MATER = DEFI_MATERIAU(
+    ELAS=_F(E=e, NU=nu, ALPHA=0.0),
+    KH_CSSM=_F(
+        BulkModulus=k,
+        ShearModulus=g,
+        SwellingIndex=200.0,
+        InitPreconsPress=10.0e6,
+        InitTensionPress=1.0e6,
+        CamClayCSS=1.0,
+        YieldSurfLinCoef=1.0,
+        YieldSurfCapCoef=2.0,
+        PlastCompIndex=50.0,
+        KHModulus=30.0e6,
+        KHIndex=1.0,
+    ),
+)
 
-CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
-                  AFFE=_F(TOUT='OUI',
-                          MATER=MATER,),)
+CHM = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
 ### >>>>>>>>>>>>>>
 ### >>> Time steps
 ### <<<<<<<<<<<<<<
 
-LI1=DEFI_LIST_REEL(DEBUT=0.0,
-                   INTERVALLE=(_F(JUSQU_A=1.0,
-                                  NOMBRE=100,),
-                               _F(JUSQU_A=2.0,
-                                  NOMBRE=100,),
-                               _F(JUSQU_A=3.0,
-                                  NOMBRE=100,),
-                               _F(JUSQU_A=4.0,
-                                  NOMBRE=100,),),)
+LI1 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0, NOMBRE=100),
+        _F(JUSQU_A=2.0, NOMBRE=100),
+        _F(JUSQU_A=3.0, NOMBRE=100),
+        _F(JUSQU_A=4.0, NOMBRE=100),
+    ),
+)
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LI1,),
-                         ECHEC=_F(EVENEMENT='ERREUR',
-                                  ACTION='DECOUPE',
-                                  SUBD_METHODE='AUTO',),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+)
 
 ### >>>>>>>>>>>>>>>>>>>>>>
 ### >>> Loading conditions
@@ -104,65 +100,61 @@ DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LI1,),
 
 ### >>>>>> Vertical stress
 
-PRESS2=DEFI_FONCTION(NOM_PARA='INST',
-                     NOM_RESU='PRESSION',
-                     VALE=(0.0,0.000,
-                           1.0,15.e6,
-                           2.0,.01e6,
-                           3.0,30.e6,
-                           4.0,.01e6),
-                     PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='EXCLU',)
+PRESS2 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="PRESSION",
+    VALE=(0.0, 0.000, 1.0, 15.0e6, 2.0, 0.01e6, 3.0, 30.0e6, 4.0, 0.01e6),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="EXCLU",
+)
 
-CHA2=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                      PRES_REP=_F(GROUP_MA=('HAUT'),
-                                  PRES=PRESS2,),
-                                  VERI_NORM='OUI')
+CHA2 = AFFE_CHAR_MECA_F(MODELE=MODELE, PRES_REP=_F(GROUP_MA=("HAUT"), PRES=PRESS2), VERI_NORM="OUI")
 
 ### >>>>>> Displacements
 
-CHA0=AFFE_CHAR_MECA(MODELE=MODELE,
-                        FACE_IMPO=(_F(GROUP_MA = 'DEVANT'  , DX=0.0),
-                                   _F(GROUP_MA = 'DERRIERE', DX=0.0),
-                                   _F(GROUP_MA = 'GAUCHE'  , DY=0.0),
-                                   _F(GROUP_MA = 'DROITE'  , DY=0.0),
-                                   _F(GROUP_MA = 'BAS'     , DZ=0.0)))
+CHA0 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    FACE_IMPO=(
+        _F(GROUP_MA="DEVANT", DX=0.0),
+        _F(GROUP_MA="DERRIERE", DX=0.0),
+        _F(GROUP_MA="GAUCHE", DY=0.0),
+        _F(GROUP_MA="DROITE", DY=0.0),
+        _F(GROUP_MA="BAS", DZ=0.0),
+    ),
+)
 
 ### >>>>>>>>>>>>
 ### >>> Solution
 ### <<<<<<<<<<<<
 
-RESU1=STAT_NON_LINE(MODELE=MODELE,
-                    CHAM_MATER=CHM,
-                    EXCIT=(_F(CHARGE=CHA0,),
-                           _F(CHARGE=CHA2,),),
-                    COMPORTEMENT=_F(RELATION='KH_CSSM',
-                                    RESI_INTE_RELA=1.e-14,
-                                    ITER_INTE_MAXI=100,),
-                    INCREMENT=_F(LIST_INST=DEFLIST,),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-                                   RESI_GLOB_RELA=1.e-10,),
-                    SOLVEUR=_F(METHODE='MUMPS',),)
+RESU1 = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHM,
+    EXCIT=(_F(CHARGE=CHA0), _F(CHARGE=CHA2)),
+    COMPORTEMENT=_F(RELATION="KH_CSSM", RESI_INTE_RELA=1.0e-14, ITER_INTE_MAXI=100),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-10),
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Compute some extra fields
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-RESU1=CALC_CHAMP(reuse=RESU1,
-                 RESULTAT=RESU1,
-                 CONTRAINTE='SIEF_NOEU',
-                 DEFORMATION='EPSI_NOEU',
-                 VARI_INTERNE='VARI_NOEU',)
+RESU1 = CALC_CHAMP(
+    reuse=RESU1,
+    RESULTAT=RESU1,
+    CONTRAINTE="SIEF_NOEU",
+    DEFORMATION="EPSI_NOEU",
+    VARI_INTERNE="VARI_NOEU",
+)
 
 ### >>>>>>>>>>>>>>>
 ### >>> IMPR_RESU()
 ### <<<<<<<<<<<<<<<
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(RESULTAT=RESU1,),)
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=RESU1))
 
 ### >>>>>>>>>
 ### >>> Tests
@@ -170,85 +162,115 @@ IMPR_RESU(FORMAT='MED',
 
 ### >>>>>> INST=1.
 
-TEST_RESU(RESU=_F(INST=1.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='EPSI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='EPZZ',
-                  VALE_REFE=-0.0231999,
-                  VALE_CALC=-0.02319978875608542,),)
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="EPZZ",
+        VALE_REFE=-0.0231999,
+        VALE_CALC=-0.02319978875608542,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='VARI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='V10',
-                  VALE_REFE=-0.0171265,
-                  VALE_CALC=-0.017126255417739055,),)
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="VARI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="V10",
+        VALE_REFE=-0.0171265,
+        VALE_CALC=-0.017126255417739055,
+    )
+)
 
 ### >>>>>> INST=2.
 
-TEST_RESU(RESU=_F(INST=2.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='EPSI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='EPZZ',
-                  VALE_REFE=-0.0130639,
-                  VALE_CALC=-0.013064369581529746,),)
+TEST_RESU(
+    RESU=_F(
+        INST=2.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="EPZZ",
+        VALE_REFE=-0.0130639,
+        VALE_CALC=-0.013064369581529746,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=2.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='VARI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='V10',
-                  VALE_REFE=-0.0142507,
-                  VALE_CALC=-0.014251133790620221,),)
+TEST_RESU(
+    RESU=_F(
+        INST=2.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="VARI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="V10",
+        VALE_REFE=-0.0142507,
+        VALE_CALC=-0.014251133790620221,
+    )
+)
 
 ### >>>>>> INST=3.
 
-TEST_RESU(RESU=_F(INST=3.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='EPSI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='EPZZ',
-                  VALE_REFE=-0.0405272,
-                  VALE_CALC=-0.04052721014270507,),)
+TEST_RESU(
+    RESU=_F(
+        INST=3.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="EPZZ",
+        VALE_REFE=-0.0405272,
+        VALE_CALC=-0.04052721014270507,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=3.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='VARI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='V10',
-          VALE_REFE=-0.0333304,
-                  VALE_CALC=-0.03333038273679197,),)
+TEST_RESU(
+    RESU=_F(
+        INST=3.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="VARI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="V10",
+        VALE_REFE=-0.0333304,
+        VALE_CALC=-0.03333038273679197,
+    )
+)
 
 ### >>>>>> INST=4.
 
-TEST_RESU(RESU=_F(INST=4.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='EPSI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='EPZZ',
-                  VALE_REFE=-0.0296467,
-                  VALE_CALC=-0.029628750950709416,),)
+TEST_RESU(
+    RESU=_F(
+        INST=4.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="EPSI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="EPZZ",
+        VALE_REFE=-0.0296467,
+        VALE_CALC=-0.029628750950709416,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=4.,
-                  REFERENCE='SOURCE_EXTERNE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='VARI_NOEU',
-                  GROUP_NO='NO8',
-                  NOM_CMP='V10',
-                  VALE_REFE=-0.0302677,
-                  VALE_CALC=-0.030250511214872128,),)
+TEST_RESU(
+    RESU=_F(
+        INST=4.0,
+        REFERENCE="SOURCE_EXTERNE",
+        RESULTAT=RESU1,
+        NOM_CHAM="VARI_NOEU",
+        GROUP_NO="NO8",
+        NOM_CMP="V10",
+        VALE_REFE=-0.0302677,
+        VALE_CALC=-0.030250511214872128,
+    )
+)
 
 
-
-
-FIN ()
+FIN()

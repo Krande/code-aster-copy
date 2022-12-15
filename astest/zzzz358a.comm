@@ -17,119 +17,112 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM='MODELISA4_6',
-      DEBUG=_F(SDVERI='OUI'),
-      )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM="MODELISA4_6", DEBUG=_F(SDVERI="OUI"))
 
 # ###################################################
 # Raffinement avec homard -> creation de PYRA5
 # ###################################################
 
-MA0 = LIRE_MAILLAGE(FORMAT = 'MED',)
+MA0 = LIRE_MAILLAGE(FORMAT="MED")
 
-MODBID = AFFE_MODELE(MAILLAGE = MA0,
-                     AFFE = _F(TOUT = 'OUI',
-                               PHENOMENE = 'MECANIQUE',
-                               MODELISATION = '3D',)
-                     )
+MODBID = AFFE_MODELE(MAILLAGE=MA0, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-LN = FORMULE(VALE='Z+0.125',
-             NOM_PARA=['X', 'Y', 'Z'],)
+LN = FORMULE(VALE="Z+0.125", NOM_PARA=["X", "Y", "Z"])
 
-FISBID = DEFI_FISS_XFEM(MAILLAGE = MA0,
-                        TYPE_DISCONTINUITE = 'INTERFACE',
-                        DEFI_FISS = _F(FONC_LN = LN,),
-                        )
+FISBID = DEFI_FISS_XFEM(MAILLAGE=MA0, TYPE_DISCONTINUITE="INTERFACE", DEFI_FISS=_F(FONC_LN=LN))
 
-CHERR= RAFF_XFEM(FISSURE=FISBID)
+CHERR = RAFF_XFEM(FISSURE=FISBID)
 
-MA1 = CO('MA1')
+MA1 = CO("MA1")
 
-MACR_ADAP_MAIL(ADAPTATION = 'RAFFINEMENT',
-               CHAM_GD = CHERR,
-               CRIT_RAFF_PE = 0.05,
-               USAGE_CMP = 'RELATIF',
-               MAILLAGE_N = MA0,
-               MAILLAGE_NP1 = MA1)
+MACR_ADAP_MAIL(
+    ADAPTATION="RAFFINEMENT",
+    CHAM_GD=CHERR,
+    CRIT_RAFF_PE=0.05,
+    USAGE_CMP="RELATIF",
+    MAILLAGE_N=MA0,
+    MAILLAGE_NP1=MA1,
+)
 
-#MA1 = LIRE_MAILLAGE(FORMAT = 'MED',)
+# MA1 = LIRE_MAILLAGE(FORMAT = 'MED',)
 
-MAILLAGE = CREA_MAILLAGE(MAILLAGE = MA1,
-                         CREA_POI1 = (_F(NOM_GROUP_MA = 'POCOUPE1',
-                                         GROUP_NO = 'NORPHHAU',),
-                                      _F(NOM_GROUP_MA = 'POCOUPE2',
-                                         GROUP_NO = 'NORPHBAS',),),)
+MAILLAGE = CREA_MAILLAGE(
+    MAILLAGE=MA1,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA="POCOUPE1", GROUP_NO="NORPHHAU"),
+        _F(NOM_GROUP_MA="POCOUPE2", GROUP_NO="NORPHBAS"),
+    ),
+)
 
 # ###################################################
 # Definition des modeles sains mecanique et thermique
 # ###################################################
 
-MODMES = AFFE_MODELE(MAILLAGE = MAILLAGE,
-                     AFFE = (
-                             _F(GROUP_MA = ('VOLUME','FACE','EDGE',),
-                             #_F(GROUP_MA = ('VOLUME','FACE',),
-                             #_F(GROUP_MA = ('VOLUME',),
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = '3D',),
-                             _F(GROUP_MA = ('POCOUPE1','POCOUPE2',),
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = 'DIS_TR',),
-                             ),)
+MODMES = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(
+            GROUP_MA=("VOLUME", "FACE", "EDGE"),
+            # _F(GROUP_MA = ('VOLUME','FACE',),
+            # _F(GROUP_MA = ('VOLUME',),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D",
+        ),
+        _F(GROUP_MA=("POCOUPE1", "POCOUPE2"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
 
-MODTHS = AFFE_MODELE(MAILLAGE = MAILLAGE,
-                     AFFE = _F(GROUP_MA = ('VOLUME','FACE'),
-                               PHENOMENE = 'THERMIQUE',
-                               MODELISATION = '3D',),)
+MODTHS = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=_F(GROUP_MA=("VOLUME", "FACE"), PHENOMENE="THERMIQUE", MODELISATION="3D"),
+)
 
 # ###################################################
 # Definition des fissures mecanique et thermique
 # ###################################################
 
-D    = 1.0
-cent = D/2
-a    = 0.57
-b    = 0.57
+D = 1.0
+cent = D / 2
+a = 0.57
+b = 0.57
 
-FISS = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                      TYPE_DISCONTINUITE = 'FISSURE',
-                      DEFI_FISS = _F(FORM_FISS = 'ELLIPSE',
-                                     DEMI_GRAND_AXE = a, # suivant x ellipse
-                                     DEMI_PETIT_AXE = b, # suivant y ellipse
-                                     CENTRE = (cent,0.0,0.0),
-                                     VECT_X = (0.1,0.0,0.0),
-                                     VECT_Y = (0.0,1.0,0.0)
-                                     ),
-                      )
+FISS = DEFI_FISS_XFEM(
+    MAILLAGE=MAILLAGE,
+    TYPE_DISCONTINUITE="FISSURE",
+    DEFI_FISS=_F(
+        FORM_FISS="ELLIPSE",
+        DEMI_GRAND_AXE=a,  # suivant x ellipse
+        DEMI_PETIT_AXE=b,  # suivant y ellipse
+        CENTRE=(cent, 0.0, 0.0),
+        VECT_X=(0.1, 0.0, 0.0),
+        VECT_Y=(0.0, 1.0, 0.0),
+    ),
+)
 
-LNHAUT = FORMULE(VALE='Z-0.5',
-                 NOM_PARA=['X', 'Y', 'Z'],)
+LNHAUT = FORMULE(VALE="Z-0.5", NOM_PARA=["X", "Y", "Z"])
 
-INTERF = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'INTERFACE',
-                        DEFI_FISS = _F(FONC_LN = LNHAUT,),)
+INTERF = DEFI_FISS_XFEM(
+    MAILLAGE=MAILLAGE, TYPE_DISCONTINUITE="INTERFACE", DEFI_FISS=_F(FONC_LN=LNHAUT)
+)
 
 # ###################################################
 # Definition des modeles xfem mecanique et thermique
 # -> avec le mot cle FISSURE
 # ###################################################
 
-MODMEX1 = MODI_MODELE_XFEM(MODELE_IN = MODMES,
-                           FISSURE = (FISS,INTERF),)
+MODMEX1 = MODI_MODELE_XFEM(MODELE_IN=MODMES, FISSURE=(FISS, INTERF))
 
-MODTHX1 = MODI_MODELE_XFEM(MODELE_IN = MODTHS,
-                           FISSURE = (FISS,INTERF),)
+MODTHX1 = MODI_MODELE_XFEM(MODELE_IN=MODTHS, FISSURE=(FISS, INTERF))
 
-#MAXF = POST_MAIL_XFEM(MODELE=MODMEX1)
-#IMPR_RESU(FORMAT='MED', RESU=_F(MAILLAGE=MAXF) )
+# MAXF = POST_MAIL_XFEM(MODELE=MODMEX1)
+# IMPR_RESU(FORMAT='MED', RESU=_F(MAILLAGE=MAXF) )
 
 # ###################################################
 # Definition du modele xfem mecanique
 # -> avec le mot cle MODELE_THER
 # ###################################################
 
-MODMEX2 = MODI_MODELE_XFEM(MODELE_IN = MODMES,
-                           MODELE_THER = MODTHX1,)
+MODMEX2 = MODI_MODELE_XFEM(MODELE_IN=MODMES, MODELE_THER=MODTHX1)
 
 # ###################################################
 # Impression du contenu des modeles xfem obtenus :
@@ -138,33 +131,33 @@ MODMEX2 = MODI_MODELE_XFEM(MODELE_IN = MODMES,
 # -> ther, avec mot-cle FISSURE     : MODTHX1
 # ###################################################
 
-DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
-DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
-DEFI_FICHIER(UNITE=41, FICHIER='./fort.41')
+DEFI_FICHIER(UNITE=31, FICHIER="./fort.31")
+DEFI_FICHIER(UNITE=32, FICHIER="./fort.32")
+DEFI_FICHIER(UNITE=41, FICHIER="./fort.41")
 
-IMPR_CO(CONCEPT=_F(NOM=MODMEX1),NIVEAU=-1,UNITE=31,PERMUTATION='NON',)
-IMPR_CO(CONCEPT=_F(NOM=MODMEX2),NIVEAU=-1,UNITE=32,PERMUTATION='NON',)
-IMPR_CO(CONCEPT=_F(NOM=MODTHX1),NIVEAU=-1,UNITE=41,PERMUTATION='NON',)
+IMPR_CO(CONCEPT=_F(NOM=MODMEX1), NIVEAU=-1, UNITE=31, PERMUTATION="NON")
+IMPR_CO(CONCEPT=_F(NOM=MODMEX2), NIVEAU=-1, UNITE=32, PERMUTATION="NON")
+IMPR_CO(CONCEPT=_F(NOM=MODTHX1), NIVEAU=-1, UNITE=41, PERMUTATION="NON")
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
-DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
-DEFI_FICHIER(ACTION='LIBERER',UNITE=41)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=31)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=32)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=41)
 
 # ###################################################
 # "Post-traitements" des fichiers obtenus avec IMPR_CO
 # ###################################################
 
-File31 = open('./fort.31', "r")
-File32 = open('./fort.32', "r")
-File41 = open('./fort.41', "r")
+File31 = open("./fort.31", "r")
+File32 = open("./fort.32", "r")
+File41 = open("./fort.41", "r")
 
 LinesFile31 = File31.readlines()
 LinesFile32 = File32.readlines()
 LinesFile41 = File41.readlines()
 
-LinesFile31 = [line.replace('00000015', '0000015 ') for line in LinesFile31]
-LinesFile32 = [line.replace('00000017', '0000017 ') for line in LinesFile32]
-LinesFile41 = [line.replace('00000016', '0000016 ') for line in LinesFile41]
+LinesFile31 = [line.replace("00000015", "0000015 ") for line in LinesFile31]
+LinesFile32 = [line.replace("00000017", "0000017 ") for line in LinesFile32]
+LinesFile41 = [line.replace("00000016", "0000016 ") for line in LinesFile41]
 
 LinesFile31 = [line.split() for line in LinesFile31]
 LinesFile32 = [line.split() for line in LinesFile32]
@@ -182,46 +175,46 @@ ListM2 = []
 ListT1 = []
 
 for il in range(n31):
-  lF31 = LinesFile31[il]
-  if '&&UTIMSD' in lF31 :
-    ind = lF31.index('0000015')
-    lF31[ind] = ''
-    for char in lF31:
-      if ('.CELV' in char) or ('.VALE' in char):
-        ListM1.append(lF31)
-        break
+    lF31 = LinesFile31[il]
+    if "&&UTIMSD" in lF31:
+        ind = lF31.index("0000015")
+        lF31[ind] = ""
+        for char in lF31:
+            if (".CELV" in char) or (".VALE" in char):
+                ListM1.append(lF31)
+                break
 for il in range(n32):
-  lF32 = LinesFile32[il]
-  if '&&UTIMSD' in lF32 :
-    ind = lF32.index('0000017')
-    lF32[ind] = ''
-    for char in lF32:
-      if ('.CELV' in char) or ('.VALE' in char):
-        ListM2.append(lF32)
-        break
+    lF32 = LinesFile32[il]
+    if "&&UTIMSD" in lF32:
+        ind = lF32.index("0000017")
+        lF32[ind] = ""
+        for char in lF32:
+            if (".CELV" in char) or (".VALE" in char):
+                ListM2.append(lF32)
+                break
 for il in range(n41):
-  lF41 = LinesFile41[il]
-  if '&&UTIMSD' in lF41 :
-    ind = lF41.index('0000016')
-    lF41[ind] = ''
-    for char in lF41:
-      if ('.CELV' in char) or ('.VALE' in char):
-        ListT1.append(lF41)
-        break
+    lF41 = LinesFile41[il]
+    if "&&UTIMSD" in lF41:
+        ind = lF41.index("0000016")
+        lF41[ind] = ""
+        for char in lF41:
+            if (".CELV" in char) or (".VALE" in char):
+                ListT1.append(lF41)
+                break
 
-#assert len(ListM2) == len(ListM1)
-#for i in range(len(ListM2)):
-  #print ListM2[i] == ListM1[i]
-  #print ListM2[i]
-  #print ListM1[i]
-  #print "&&"
+# assert len(ListM2) == len(ListM1)
+# for i in range(len(ListM2)):
+# print ListM2[i] == ListM1[i]
+# print ListM2[i]
+# print ListM1[i]
+# print "&&"
 
-#assert len(ListM2) == len(ListT1)
-#for i in range(len(ListM2)):
-  #print ListM2[i] == ListT1[i]
-  #print ListM2[i]
-  #print ListT1[i]
-  #print "&&"
+# assert len(ListM2) == len(ListT1)
+# for i in range(len(ListM2)):
+# print ListM2[i] == ListT1[i]
+# print ListM2[i]
+# print ListT1[i]
+# print "&&"
 
 # ###################################################
 # Tests une fois les infos extraites de ces fichiers
@@ -243,27 +236,19 @@ n32 -= 1
 
 # -> entre MODMEX2 et MODMEX1
 nobj_ok = 0
-if (n32 == n31) and (n32 > 0) : nobj_ok = 1
-TOBJM2M1 = CREA_TABLE(TITRE = '',
-                      LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
+if (n32 == n31) and (n32 > 0):
+    nobj_ok = 1
+TOBJM2M1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
 
 # -> entre MODMEX2 et MODTHX1
 nobj_ok = 0
-if (n32 == n41) and (n32 > 0) : nobj_ok = 1
-TOBJM2T1 = CREA_TABLE(TITRE = '',
-                      LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
+if (n32 == n41) and (n32 > 0):
+    nobj_ok = 1
+TOBJM2T1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TOBJM2M1,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TOBJM2M1)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TOBJM2T1,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TOBJM2T1)
 
 # -------
 # vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
@@ -274,26 +259,18 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # -> entre MODMEX2 et MODMEX1
 vale_ok = 0
-if (ListM2 == ListM1) and (ListM2 != []) : vale_ok = 1
-TVALM2M1 = CREA_TABLE(TITRE = '',
-                      LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
+if (ListM2 == ListM1) and (ListM2 != []):
+    vale_ok = 1
+TVALM2M1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
 
 # -> entre MODMEX2 et MODTHX1
 vale_ok = 0
-if (ListM2 == ListT1) and (ListM2 != []) : vale_ok = 1
-TVALM2T1 = CREA_TABLE(TITRE = '',
-                      LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
+if (ListM2 == ListT1) and (ListM2 != []):
+    vale_ok = 1
+TVALM2T1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TVALM2M1,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TVALM2M1)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TVALM2T1,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TVALM2T1)
 
 FIN()

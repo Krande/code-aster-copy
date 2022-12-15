@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'CZM_EXP',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi cohésive exponentielle  de type Barenblatt - R7.02.11"""              ,
-    num_lc         = 0,
-    nb_vari        = 7,
-    nom_vari       = ('SAUT_N','SAUT_T1','SEUILDEP','INDIENDO','PCENERDI',
-        'SIGM_N','SIGM_T1',),
-    mc_mater       = ('RUPT_FRAG',),
-    modelisation   = ('3D','PLAN','AXIS','ELEMJOIN',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="CZM_EXP",
+    lc_type=("MECANIQUE",),
+    doc="""Loi cohésive exponentielle  de type Barenblatt - R7.02.11""",
+    num_lc=0,
+    nb_vari=7,
+    nom_vari=("SAUT_N", "SAUT_T1", "SEUILDEP", "INDIENDO", "PCENERDI", "SIGM_N", "SIGM_T1"),
+    mc_mater=("RUPT_FRAG",),
+    modelisation=("3D", "PLAN", "AXIS", "ELEMJOIN"),
+    deformation=("PETIT",),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

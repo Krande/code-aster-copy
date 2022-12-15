@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,49 +20,52 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""Le déplacement fourni est associé à un maillage différent du maillage à déformer.
+    1: _(
+        """Le déplacement fourni est associé à un maillage différent du maillage à déformer.
 Il faut que ces deux maillages soient les mêmes.
 Pour créer un champ de déplacement adapté au maillage, on peut utiliser la commande PROJ_CHAMP.
-"""),
-
-    3 : _("""Pour l'opération DECOUPE_LAC. Groupe de mailles %(i1)d - Nombre de mailles %(i2)d."""),
-
-    4 : _("""Pour le mot clé facteur %(k1)s, vous nous modifiez qu'une partie des mailles du maillage.
-Ceci est dangereux car cela peut produire un maillage non conforme."""),
-
-    7 : _("""L'opération ne traite pas les macro-éléments."""),
-
-    8 : _("""L'opération ne traite pas les ABSC_CURV."""),
-
-    9 : _("""L'opération MODI_MAILLE ne peut traiter qu'une seule occurrence de QUAD_TRIA3."""),
-
-    10: _("""Pour le mot clé facteur QUAD_TRIA3, vous voulez modifier certains quadrangles en TRIA3, mais il existe des TRIA6 dans le maillage.
-Ceci est dangereux car cela peut produire un maillage non conforme."""),
-
-    11: _("""Pour le mot clé facteur %(k1)s, vous voulez transformer certaines mailles en ajoutant des noeuds au centre des faces quadrangulaires.
+"""
+    ),
+    3: _("""Pour l'opération DECOUPE_LAC. Groupe de mailles %(i1)d - Nombre de mailles %(i2)d."""),
+    4: _(
+        """Pour le mot clé facteur %(k1)s, vous nous modifiez qu'une partie des mailles du maillage.
+Ceci est dangereux car cela peut produire un maillage non conforme."""
+    ),
+    7: _("""L'opération ne traite pas les macro-éléments."""),
+    8: _("""L'opération ne traite pas les ABSC_CURV."""),
+    9: _("""L'opération MODI_MAILLE ne peut traiter qu'une seule occurrence de QUAD_TRIA3."""),
+    10: _(
+        """Pour le mot clé facteur QUAD_TRIA3, vous voulez modifier certains quadrangles en TRIA3, mais il existe des TRIA6 dans le maillage.
+Ceci est dangereux car cela peut produire un maillage non conforme."""
+    ),
+    11: _(
+        """Pour le mot clé facteur %(k1)s, vous voulez transformer certaines mailles en ajoutant des noeuds au centre des faces quadrangulaires.
 Mais il existe d'autres mailles ayant des faces quadrangulaires à 8 noeuds qui ne sont pas modifiées.
-Ceci est dangereux car cela peut produire un maillage non conforme."""),
-
-    12: _("""Vous essayez de modifier la topologie du maillage après avoir fait CREA_MAILLAGE/DECOUPE_LAC sur ce même maillage.
+Ceci est dangereux car cela peut produire un maillage non conforme."""
+    ),
+    12: _(
+        """Vous essayez de modifier la topologie du maillage après avoir fait CREA_MAILLAGE/DECOUPE_LAC sur ce même maillage.
 C'est interdit, vous ne pouvez modifier que les coordonnées des noeuds comme dans les mots clés DEFORME et TRANSLATION.
-Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""),
-
-    14: _("""Erreur utilisateur dans CREA_POI1 : on cherche à créer une maille de type POI1 de nom %(k1)s, mais il existe déjà dans le maillage une maille de même nom."""),
-
+Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""
+    ),
+    14: _(
+        """Erreur utilisateur dans CREA_POI1 : on cherche à créer une maille de type POI1 de nom %(k1)s, mais il existe déjà dans le maillage une maille de même nom."""
+    ),
     15: _("""Le mot-clef MAILLAGE est obligatoire."""),
-
-    20: _("""Échec lors de la création du GROUP_MA (%(k1)s), il existe déjà.
+    20: _(
+        """Échec lors de la création du GROUP_MA (%(k1)s), il existe déjà.
 Conseil :
     Si vous souhaitez utiliser un nom de groupe existant, il suffit
-    de le détruire avec DEFI_GROUP / DETR_GROUP_MA."""),
-
-    22: _("""Le maillage utilisé dans la commande CREA_MAILLAGE est de type MAILLAGE_P (maillage parallèle), ce n'est pas possible pour cette commande."""),
-
-    62: _("""Erreur utilisateur dans SYMETRIE : la dimension de POINT et AXE_1 doit être identique."""),
-
+    de le détruire avec DEFI_GROUP / DETR_GROUP_MA."""
+    ),
+    22: _(
+        """Le maillage utilisé dans la commande CREA_MAILLAGE est de type MAILLAGE_P (maillage parallèle), ce n'est pas possible pour cette commande."""
+    ),
+    62: _(
+        """Erreur utilisateur dans SYMETRIE : la dimension de POINT et AXE_1 doit être identique."""
+    ),
     63: _("""Erreur utilisateur dans SYMETRIE : l'AXE_2 est inutile en 2D, il est ignoré."""),
-
-    64: _("""Erreur utilisateur dans SYMETRIE : la dimension de POINT et AXE_2 doit être identique."""),
-
+    64: _(
+        """Erreur utilisateur dans SYMETRIE : la dimension de POINT et AXE_2 doit être identique."""
+    ),
 }

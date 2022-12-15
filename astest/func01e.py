@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ On boucle nb_loop fois et on evalue par paquet de nb_para paramètres,
 long = False
 
 if long:
-# run ~1 min
+    # run ~1 min
     nb_loop = 350
 else:
-# run ~10 s
+    # run ~10 s
     nb_loop = 50
 nb_para = 1000
 # tole set to 2MB ~ 524288 floats
@@ -51,22 +51,16 @@ test = code_aster.TestCase()
 def get_mem():
     """return memory consumption in kB"""
     pid = os.getpid()
-    proc_status_file = "/proc/%d/status"%pid
-    with open(proc_status_file, 'r') as f:
+    proc_status_file = "/proc/%d/status" % pid
+    with open(proc_status_file, "r") as f:
         status = f.read()
-    return int(status[status.index("VmSize"):].split()[1])
-
-fonc  = DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.0, 20.0,
-                            1.0, 30.0,
-                            2.0, 40.0),
-                      VERIF='CROISSANT')
+    return int(status[status.index("VmSize") :].split()[1])
 
 
-form  = FORMULE(NOM_PARA=('INST'),
-                VALE='FONC(INST)',
-                FONC=fonc
-                )
+fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 20.0, 1.0, 30.0, 2.0, 40.0), VERIF="CROISSANT")
+
+
+form = FORMULE(NOM_PARA=("INST"), VALE="FONC(INST)", FONC=fonc)
 
 # ===
 # check there is no memory leak with __call__
@@ -74,54 +68,43 @@ form  = FORMULE(NOM_PARA=('INST'),
 mem_ini = get_mem()
 for i in range(nb_loop):
     for j in range(nb_para):
-        form(2*j/nb_para)
+        form(2 * j / nb_para)
 mem_end = get_mem()
 print(mem_ini, mem_end)
-test.assertTrue(mem_ini+tole>=mem_end)
+test.assertTrue(mem_ini + tole >= mem_end)
 
 # ===
 # check there is no memory leak with ffintf
 
-vale_para = [2*j/nb_para for j in range(nb_para)]
+vale_para = [2 * j / nb_para for j in range(nb_para)]
 
 mem_ini = get_mem()
 for i in range(nb_loop):
-    CALC_FONC_INTERP(FONCTION=form,
-                     NOM_PARA = 'INST',
-                     VALE_PARA=vale_para)
+    CALC_FONC_INTERP(FONCTION=form, NOM_PARA="INST", VALE_PARA=vale_para)
 
 mem_end = get_mem()
 print(mem_ini, mem_end)
-test.assertTrue(mem_ini+tole>=mem_end)
+test.assertTrue(mem_ini + tole >= mem_end)
 
 # ===
 # check there is no memory leak with fointa
 
 nu = DEFI_CONSTANTE(VALE=0.3)
 
-mater = DEFI_MATERIAU(ELAS_FO=_F(E=form,
-                                 NU=nu))
+mater = DEFI_MATERIAU(ELAS_FO=_F(E=form, NU=nu))
 
 mesh = LIRE_MAILLAGE()
 
-model = AFFE_MODELE(MAILLAGE=mesh,
-                    AFFE=_F(TOUT="OUI",
-                              PHENOMENE="MECANIQUE",
-                              MODELISATION="3D"))
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-chmat = AFFE_MATERIAU(MAILLAGE=mesh,
-                      AFFE=_F(TOUT='OUI',
-                              MATER=mater))
+chmat = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=mater))
 
 mem_ini = get_mem()
 for j in range(nb_loop):
-    CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                    MODELE=model,
-                    INST=2*j/nb_para,
-                    CHAM_MATER=chmat)
+    CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=model, INST=2 * j / nb_para, CHAM_MATER=chmat)
 
 mem_end = get_mem()
 print(mem_ini, mem_end)
-test.assertTrue(mem_ini+tole>=mem_end)
+test.assertTrue(mem_ini + tole >= mem_end)
 
 code_aster.close()

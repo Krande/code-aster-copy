@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-POST_FM=MACRO(nom="POST_FM",
-                op=OPS('code_aster.MacroCommands.post_fm_ops.post_fm_ops'),
-                sd_prod=table_sdaster,
-                fr=tr("Opérateur de calcul des facteurs de marge"),
-                reentrant='n',
-        RESULTAT = SIMP(statut='o', min=1, max=1, typ=(evol_elas, evol_noli,)),
-        TABLE_G = SIMP(statut='o', min=1, max=1, typ=(table_sdaster,table_container)),
-        GROUP_NO = SIMP( statut='o',typ=grno, validators=NoRepeat(), min=1, max=1)
+POST_FM = MACRO(
+    nom="POST_FM",
+    op=OPS("code_aster.MacroCommands.post_fm_ops.post_fm_ops"),
+    sd_prod=table_sdaster,
+    fr=tr("Opérateur de calcul des facteurs de marge"),
+    reentrant="n",
+    RESULTAT=SIMP(statut="o", min=1, max=1, typ=(evol_elas, evol_noli)),
+    TABLE_G=SIMP(statut="o", min=1, max=1, typ=(table_sdaster, table_container)),
+    GROUP_NO=SIMP(statut="o", typ=grno, validators=NoRepeat(), min=1, max=1),
 )

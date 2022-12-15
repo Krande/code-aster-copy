@@ -18,73 +18,90 @@
 # --------------------------------------------------------------------
 
 # modifé à partir de zzzz127b
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+MA = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-                   AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'THERMIQUE',
-                          MODELISATION = '3D'))
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D"))
 
-CH0=AFFE_CHAR_THER(INFO=2,  MODELE=MO,TEMP_IMPO=(
-             _F(  GROUP_NO = ('A','A2',),     TEMP = 0.),
-             _F(  GROUP_NO = ('D','D2',),     TEMP = 4.))
-                    )
+CH0 = AFFE_CHAR_THER(
+    INFO=2,
+    MODELE=MO,
+    TEMP_IMPO=(_F(GROUP_NO=("A", "A2"), TEMP=0.0), _F(GROUP_NO=("D", "D2"), TEMP=4.0)),
+)
 
-MAT=DEFI_MATERIAU(    THER=_F( LAMBDA = 10.) )
+MAT = DEFI_MATERIAU(THER=_F(LAMBDA=10.0))
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-      AFFE=_F(  TOUT = 'OUI',  MATER = MAT))
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 # 3-1 AVEC LIAISON_DDL :
 
 # --------------------
 
-CH11=AFFE_CHAR_THER( INFO=2, MODELE=MO,LIAISON_DDL=(
-    _F( GROUP_NO = ('E','D','C',),
-     DDL = ('TEMP','TEMP','TEMP',), COEF_MULT = (1.,-0.5,-0.5,), COEF_IMPO = 0.),
-    _F( GROUP_NO = ('E2','D2','C2',),
-     DDL = ('TEMP','TEMP','TEMP',), COEF_MULT = (1.,-0.5,-0.5,), COEF_IMPO = 0.))
-         )
+CH11 = AFFE_CHAR_THER(
+    INFO=2,
+    MODELE=MO,
+    LIAISON_DDL=(
+        _F(
+            GROUP_NO=("E", "D", "C"),
+            DDL=("TEMP", "TEMP", "TEMP"),
+            COEF_MULT=(1.0, -0.5, -0.5),
+            COEF_IMPO=0.0,
+        ),
+        _F(
+            GROUP_NO=("E2", "D2", "C2"),
+            DDL=("TEMP", "TEMP", "TEMP"),
+            COEF_MULT=(1.0, -0.5, -0.5),
+            COEF_IMPO=0.0,
+        ),
+    ),
+)
 
 # 3-2 AVEC LIAISON_MAIL :
 
 # --------------------
 
-CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
-            LIAISON_MAIL=_F( GROUP_MA_MAIT = ('Q1','Q2',),
-                             GROUP_NO_ESCL = ('E','E2',),
-                             DISTANCE_MAX = 1.E-6 ,
-                             TRAN = ( -5., 0., 0.),
-                             CENTRE = (10., 0., 0.),
-                             ANGL_NAUT = (90., 0., 0.)) )
+CH12 = AFFE_CHAR_THER(
+    MODELE=MO,
+    INFO=2,
+    LIAISON_MAIL=_F(
+        GROUP_MA_MAIT=("Q1", "Q2"),
+        GROUP_NO_ESCL=("E", "E2"),
+        DISTANCE_MAX=1.0e-6,
+        TRAN=(-5.0, 0.0, 0.0),
+        CENTRE=(10.0, 0.0, 0.0),
+        ANGL_NAUT=(90.0, 0.0, 0.0),
+    ),
+)
 
-MEST11=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
-                _F( CHARGE = CH0), _F( CHARGE = CH11)) )
+MEST11 = THER_LINEAIRE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CH0), _F(CHARGE=CH11)))
 
 
+MEST12 = THER_LINEAIRE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CH0), _F(CHARGE=CH12)))
 
-MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
-                _F( CHARGE = CH0), _F( CHARGE = CH12)) )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE = 1,
-                   RESULTAT=MEST11,
-                   NOM_CHAM='TEMP',
-                   GROUP_NO='F',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=2.5,
-                   ),
-                _F(NUME_ORDRE = 1,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MEST12,
-                   NOM_CHAM='TEMP',
-                   GROUP_NO='F',
-                   NOM_CMP='TEMP',
-                   VALE_CALC=2.5000000000000,
-                   VALE_REFE=2.5,
-                   PRECISION=1.E-12,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=MEST11,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=2.5,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=MEST12,
+            NOM_CHAM="TEMP",
+            GROUP_NO="F",
+            NOM_CMP="TEMP",
+            VALE_CALC=2.5000000000000,
+            VALE_REFE=2.5,
+            PRECISION=1.0e-12,
+        ),
+    )
+)
 
 FIN()
 #

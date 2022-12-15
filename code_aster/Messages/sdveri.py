@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,21 +20,23 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  Impossible d'importer le catalogue de la structure de données '%(k1)s'
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
  Arguments incohérents :
       Nom des paramètres : %(k1)s
    Valeur des paramètres : %(k2)s
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
  Arguments invalide
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
+"""
+    ),
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,53 +23,66 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def C_ETAT_INIT( COMMAND, statut ):
+def C_ETAT_INIT(COMMAND, statut):
     """Definition of the keywords common to several commands to describe
     the initial state.
     """
-    assert COMMAND in ('DYNA_NON_LINE', 'STAT_NON_LINE'), (
-        "unsupported command: {0}".format(COMMAND))
+    assert COMMAND in ("DYNA_NON_LINE", "STAT_NON_LINE"), "unsupported command: {0}".format(COMMAND)
 
     kwargs = {}
 
-    kwargs['DEPL']           = SIMP(statut='f',typ=cham_no_sdaster)
-    kwargs['SIGM']           = SIMP(statut='f',typ=(cham_elem,carte_sdaster))
-    kwargs['VARI']           = SIMP(statut='f',typ=cham_elem)
-    kwargs['STRX']           = SIMP(statut='f',typ=cham_elem)
+    kwargs["DEPL"] = SIMP(statut="f", typ=cham_no_sdaster)
+    kwargs["SIGM"] = SIMP(statut="f", typ=(cham_elem, carte_sdaster))
+    kwargs["VARI"] = SIMP(statut="f", typ=cham_elem)
+    kwargs["STRX"] = SIMP(statut="f", typ=cham_elem)
 
-    if COMMAND == 'STAT_NON_LINE':
-        kwargs['COHE']      = SIMP(statut='f',typ=cham_elem)
+    if COMMAND == "STAT_NON_LINE":
+        kwargs["COHE"] = SIMP(statut="f", typ=cham_elem)
 
-    if COMMAND == 'DYNA_NON_LINE':
-        kwargs['VITE']       = SIMP(statut='f',typ=cham_no_sdaster)
-        kwargs['ACCE']       = SIMP(statut='f',typ=cham_no_sdaster)
+    if COMMAND == "DYNA_NON_LINE":
+        kwargs["VITE"] = SIMP(statut="f", typ=cham_no_sdaster)
+        kwargs["ACCE"] = SIMP(statut="f", typ=cham_no_sdaster)
 
-    kwargs['EVOL_NOLI']      = SIMP(statut='f',typ=evol_noli)
-    kwargs['NUME_ORDRE']     = SIMP(statut='f',typ='I')
-    kwargs['INST']           = SIMP(statut='f',typ='R')
-    kwargs['NUME_DIDI']      = SIMP(statut='f',typ='I')
-    kwargs['INST_ETAT_INIT'] = SIMP(statut='f',typ='R')
-    kwargs['CRITERE']        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"))
+    kwargs["EVOL_NOLI"] = SIMP(statut="f", typ=evol_noli)
+    kwargs["NUME_ORDRE"] = SIMP(statut="f", typ="I")
+    kwargs["INST"] = SIMP(statut="f", typ="R")
+    kwargs["NUME_DIDI"] = SIMP(statut="f", typ="I")
+    kwargs["INST_ETAT_INIT"] = SIMP(statut="f", typ="R")
+    kwargs["CRITERE"] = SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU"))
 
-    if COMMAND == 'DYNA_NON_LINE':
-        mcfact = FACT(statut=statut,max=1,
-                  regles=(AU_MOINS_UN('EVOL_NOLI','ACCE','VITE','DEPL','SIGM','VARI',),
-                          EXCLUS('NUME_ORDRE','INST'), ),
-                  b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                                   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-                  b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                                   PRECISION       =SIMP(statut='o',typ='R',),),
-                    **kwargs
-                 )
+    if COMMAND == "DYNA_NON_LINE":
+        mcfact = FACT(
+            statut=statut,
+            max=1,
+            regles=(
+                AU_MOINS_UN("EVOL_NOLI", "ACCE", "VITE", "DEPL", "SIGM", "VARI"),
+                EXCLUS("NUME_ORDRE", "INST"),
+            ),
+            b_prec_rela=BLOC(
+                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            ),
+            b_prec_abso=BLOC(
+                condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+            ),
+            **kwargs
+        )
     else:
-        mcfact = FACT(statut=statut,max=1,
-                  regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI','COHE',),
-                          EXCLUS('NUME_ORDRE','INST'), ),
-                  b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                                   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-                  b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                                   PRECISION       =SIMP(statut='o',typ='R',),),
-                    **kwargs
-                 )
+        mcfact = FACT(
+            statut=statut,
+            max=1,
+            regles=(
+                AU_MOINS_UN("EVOL_NOLI", "DEPL", "SIGM", "VARI", "COHE"),
+                EXCLUS("NUME_ORDRE", "INST"),
+            ),
+            b_prec_rela=BLOC(
+                condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+            ),
+            b_prec_abso=BLOC(
+                condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+            ),
+            **kwargs
+        )
 
     return mcfact

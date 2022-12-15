@@ -243,7 +243,7 @@ def macr_ecrevisse_ops(self, **args):
                 # Definition de l'etat initial
                 motclefs = {}
                 if nume_ordre == 0:
-                    motclefs["ETAT_INIT"] = _F(VALE=TEMP_INIT, )
+                    motclefs["ETAT_INIT"] = _F(VALE=TEMP_INIT)
                     if debug:
                         print("thermique initialise avec tref")
                 else:

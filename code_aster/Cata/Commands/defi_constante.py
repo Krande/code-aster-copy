@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEFI_CONSTANTE=OPER(nom="DEFI_CONSTANTE",
-                    op=None,
-                    sd_prod=fonction_sdaster,
-                    fr=tr("Définir la valeur d'une grandeur invariante"),
-                    reentrant='n',
-         NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),
-         VALE            =SIMP(statut='o',typ='R',),
-         TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
+DEFI_CONSTANTE = OPER(
+    nom="DEFI_CONSTANTE",
+    op=None,
+    sd_prod=fonction_sdaster,
+    fr=tr("Définir la valeur d'une grandeur invariante"),
+    reentrant="n",
+    NOM_RESU=SIMP(statut="f", typ="TXM", defaut="TOUTRESU"),
+    VALE=SIMP(statut="o", typ="R"),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

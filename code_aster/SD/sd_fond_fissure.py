@@ -23,35 +23,35 @@ from .sd_cham_no import sd_cham_no
 
 class sd_fond_fissure(AsBase):
     nomj = SDNom(fin=8)
-#   Vecteur (K8) contenant la liste des mailles de la lèvre inférieure de la fissure.
-    LEVREINF_MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVREINF.MAIL'), ))
-#   Vecteur de trois rééls contenant les composantes de la normale au plan des lèvres d'une fissure plane.
-    NORMALE = Facultatif(AsVR(lonmax=3, ))
-#   Vecteur (K8) contenant la liste des N noeuds ordonnés du fond de fissure.
-    FOND_NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND.NOEU'), ))
-#   Vecteur (K8) contenant la liste des noeuds de la lèvre inférieure sur la direction normale au fond de fissure.
-    INFNORM_NOEU = Facultatif(AsVK8(SDNom(nomj='.INFNORM.NOEU'), ))
-#   Vecteur (K8) contenant la liste des noeuds de la lèvre supérieure sur la direction normale au fond de fissure.
-    SUPNORM_NOEU = Facultatif(AsVK8(SDNom(nomj='.SUPNORM.NOEU'), ))
-#   Vecteur (K8) contenant la liste des noeuds de la lèvre inférieure sur la direction normale au fond de fissure.
-    INFNORM_NOEU2 = Facultatif(AsVK8(SDNom(nomj='.INFNORM.NOEU2'), ))
-#   Vecteur (K8) contenant la liste des noeuds de la lèvre supérieure sur la direction normale au fond de fissure.
-    SUPNORM_NOEU2 = Facultatif(AsVK8(SDNom(nomj='.SUPNORM.NOEU2'), ))
-#   Vecteur (K8) contenant la liste des mailles de la lèvre supérieure de la fissure.
-    LEVRESUP_MAIL = Facultatif(AsVK8(SDNom(nomj='.LEVRESUP.MAIL'), ))
-#   Vecteur (K8) contenant les informations sur la fissure.
-    INFO = AsVK24(SDNom(nomj='.INFO'), lonmax=7, )
-#   Vecteur de réels contenant pour chacun des noeuds du fond, une estimation de la taille suivant la direction radiale, des mailles qui leur sont connectées.
-    FOND_TAILLE_R = Facultatif(AsVR(SDNom(nomj='.FOND.TAILLE_R'),))
-#   Vecteur de réels contenant les abscisses curvilignes des noeuds du fond de fissure.
+    #   Vecteur (K8) contenant la liste des mailles de la lèvre inférieure de la fissure.
+    LEVREINF_MAIL = Facultatif(AsVK8(SDNom(nomj=".LEVREINF.MAIL")))
+    #   Vecteur de trois rééls contenant les composantes de la normale au plan des lèvres d'une fissure plane.
+    NORMALE = Facultatif(AsVR(lonmax=3))
+    #   Vecteur (K8) contenant la liste des N noeuds ordonnés du fond de fissure.
+    FOND_NOEU = Facultatif(AsVK8(SDNom(nomj=".FOND.NOEU")))
+    #   Vecteur (K8) contenant la liste des noeuds de la lèvre inférieure sur la direction normale au fond de fissure.
+    INFNORM_NOEU = Facultatif(AsVK8(SDNom(nomj=".INFNORM.NOEU")))
+    #   Vecteur (K8) contenant la liste des noeuds de la lèvre supérieure sur la direction normale au fond de fissure.
+    SUPNORM_NOEU = Facultatif(AsVK8(SDNom(nomj=".SUPNORM.NOEU")))
+    #   Vecteur (K8) contenant la liste des noeuds de la lèvre inférieure sur la direction normale au fond de fissure.
+    INFNORM_NOEU2 = Facultatif(AsVK8(SDNom(nomj=".INFNORM.NOEU2")))
+    #   Vecteur (K8) contenant la liste des noeuds de la lèvre supérieure sur la direction normale au fond de fissure.
+    SUPNORM_NOEU2 = Facultatif(AsVK8(SDNom(nomj=".SUPNORM.NOEU2")))
+    #   Vecteur (K8) contenant la liste des mailles de la lèvre supérieure de la fissure.
+    LEVRESUP_MAIL = Facultatif(AsVK8(SDNom(nomj=".LEVRESUP.MAIL")))
+    #   Vecteur (K8) contenant les informations sur la fissure.
+    INFO = AsVK24(SDNom(nomj=".INFO"), lonmax=7)
+    #   Vecteur de réels contenant pour chacun des noeuds du fond, une estimation de la taille suivant la direction radiale, des mailles qui leur sont connectées.
+    FOND_TAILLE_R = Facultatif(AsVR(SDNom(nomj=".FOND.TAILLE_R")))
+    #   Vecteur de réels contenant les abscisses curvilignes des noeuds du fond de fissure.
     ABSFON = AsVR()
-#   Vecteur de réels contenant les abscisses curvilignes des projetés de chaque noeud sur le fond de fissure
+    #   Vecteur de réels contenant les abscisses curvilignes des projetés de chaque noeud sur le fond de fissure
     ABSCUR = AsVR()
-#   Champ aux noeuds scalaire qui contient pour chaque noeud du maillage la valeur réelle de la level set normale à la fissure.
+    #   Champ aux noeuds scalaire qui contient pour chaque noeud du maillage la valeur réelle de la level set normale à la fissure.
     LNNO = Facultatif(sd_cham_no())
-#   Champ aux noeuds scalaire qui contient pour chaque noeud du maillage la valeur réelle de la level set tangente à la fissure.
+    #   Champ aux noeuds scalaire qui contient pour chaque noeud du maillage la valeur réelle de la level set tangente à la fissure.
     LTNO = Facultatif(sd_cham_no())
-#   Champ aux noeuds contenant les coordonnées des noeuds projetés sur le fond de fissure ainsi que les bases locales pour tous les noeuds du maillage.
+    #   Champ aux noeuds contenant les coordonnées des noeuds projetés sur le fond de fissure ainsi que les bases locales pour tous les noeuds du maillage.
     BASLOC = Facultatif(sd_cham_no())
 
     def check_config(self, checker):

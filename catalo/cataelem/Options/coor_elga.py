@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,60 +20,63 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I,
+    comment=""" NOMBRE DE SOUS-POINTS (EPAISSEUR COQUES/TUYAUX) ET DE FIBRES (PMF) """,
+)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I,
-comment=""" NOMBRE DE SOUS-POINTS (EPAISSEUR COQUES/TUYAUX) ET DE FIBRES (PMF) """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE, comment=""" ORIENTATION DES REPERES LOCAUX DES POUTRES ET TUYAUX """
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE,
-comment=""" ORIENTATION DES REPERES LOCAUX DES POUTRES ET TUYAUX """)
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
-
-
-PCOORPG  = OutputParameter(phys=PHY.GEOM_R, type='ELGA')
-PCOORSU  = OutputParameter(phys=PHY.GEOM_R, type='ELGA')
+PCOORPG = OutputParameter(phys=PHY.GEOM_R, type="ELGA")
+PCOORSU = OutputParameter(phys=PHY.GEOM_R, type="ELGA")
 
 COOR_ELGA = Option(
     para_in=(
         SP.PCACOQU,
         SP.PCAGEPO,
-           PCAORIE,
-           PCNSETO,
+        PCAORIE,
+        PCNSETO,
         SP.PFIBRES,
         SP.PGEOMER,
-           PLONCHA,
-           PNBSP_I,
-           PPINTTO,
-           PPMILTO,
+        PLONCHA,
+        PNBSP_I,
+        PPINTTO,
+        PPMILTO,
     ),
-    para_out=(
-           PCOORPG,
-           PCOORSU,
-    ),
+    para_out=(PCOORPG, PCOORSU),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),)),
-      CondCalcul('+', ((AT.PHENO,'AC'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"),)),
+        CondCalcul("+", ((AT.PHENO, "TH"),)),
+        CondCalcul("+", ((AT.PHENO, "AC"),)),
     ),
 )

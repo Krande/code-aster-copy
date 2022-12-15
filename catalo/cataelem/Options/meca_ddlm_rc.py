@@ -20,23 +20,14 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 MECA_DDLM_RC = Option(
-    para_in=(
-        SP.PDDLMUR,
-    ),
-    para_out=(
-        SP.PMATUUC,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.CL_DUAL,'OUI'),)),
-    ),
+    para_in=(SP.PDDLMUR,),
+    para_out=(SP.PMATUUC,),
+    condition=(CondCalcul("+", ((AT.CL_DUAL, "OUI"),)),),
 )

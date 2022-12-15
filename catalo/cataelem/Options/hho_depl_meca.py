@@ -24,19 +24,13 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PDEPL_R = OutputParameter(phys=PHY.DEPL_R, type='ELNO',
-                          comment=""" HHO - degres de liberte de la cellule""")
+PDEPL_R = OutputParameter(
+    phys=PHY.DEPL_R, type="ELNO", comment=""" HHO - degres de liberte de la cellule"""
+)
 
 
 HHO_DEPL_MECA = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PDEPLPR,
-    ),
-    para_out=(
-        PDEPL_R,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-    ),
+    para_in=(SP.PGEOMER, SP.PDEPLPR),
+    para_out=(PDEPL_R,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

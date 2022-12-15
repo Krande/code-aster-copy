@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,87 +19,85 @@
 #
 # Une masse qui chuuuuute
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 #
 import numpy as NP
+
 #
-Masse       =   1.0
-Pesanteur   =  10.0
-Jeu         =  -2.0
-V0          =  -1.0
+Masse = 1.0
+Pesanteur = 10.0
+Jeu = -2.0
+V0 = -1.0
 #
-RaidNor     =  1.0E+02
-Raidxyz     =  1.0E+04
+RaidNor = 1.0e02
+Raidxyz = 1.0e04
 #
-BILLE=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20)
-MODELE=AFFE_MODELE(MAILLAGE=BILLE,
-    AFFE=_F(GROUP_MA='EL1', PHENOMENE='MECANIQUE', MODELISATION='DIS_T'),
+BILLE = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
+MODELE = AFFE_MODELE(
+    MAILLAGE=BILLE, AFFE=_F(GROUP_MA="EL1", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
 )
 #
-MATCH=DEFI_MATERIAU(
-    DIS_CONTACT=_F(RIGI_NOR=RaidNor, JEU=-Jeu),
-)
-CHAMPCAR=AFFE_CARA_ELEM(
+MATCH = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=RaidNor, JEU=-Jeu))
+CHAMPCAR = AFFE_CARA_ELEM(
     MODELE=MODELE,
     DISCRET=(
-        _F(GROUP_MA = 'EL1',  CARA = 'K_T_D_N',  VALE = (Raidxyz, Raidxyz, Raidxyz,),),
-        _F(GROUP_MA = 'EL1',  CARA = 'M_T_D_N',  VALE = Masse),
-        _F(GROUP_MA = 'EL1',  CARA = 'A_T_D_N',  VALE = (0.0, 0.0, 0.0), ),
+        _F(GROUP_MA="EL1", CARA="K_T_D_N", VALE=(Raidxyz, Raidxyz, Raidxyz)),
+        _F(GROUP_MA="EL1", CARA="M_T_D_N", VALE=Masse),
+        _F(GROUP_MA="EL1", CARA="A_T_D_N", VALE=(0.0, 0.0, 0.0)),
     ),
-    ORIENTATION=_F(GROUP_MA='EL1', CARA='VECT_X_Y', VALE=(0.0, 0.0, 1.0, 0.0, 1.0, 0.0),),
+    ORIENTATION=_F(GROUP_MA="EL1", CARA="VECT_X_Y", VALE=(0.0, 0.0, 1.0, 0.0, 1.0, 0.0)),
 )
 #
-CHMAT=AFFE_MATERIAU(MAILLAGE=BILLE,
-    AFFE=_F(  GROUP_MA = 'EL1',  MATER = MATCH)
+CHMAT = AFFE_MATERIAU(MAILLAGE=BILLE, AFFE=_F(GROUP_MA="EL1", MATER=MATCH))
+#
+CHARGE = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    PESANTEUR=_F(GROUP_MA="EL1", GRAVITE=Pesanteur, DIRECTION=(0.0, 0.0, -1.0)),
+    DDL_IMPO=_F(GROUP_NO="NO1", DX=0.0, DY=0.0),
 )
 #
-CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
-    PESANTEUR=_F(GROUP_MA='EL1',GRAVITE=Pesanteur,DIRECTION=(0.0,0.0,-1.0),),
-    DDL_IMPO=_F(GROUP_NO='NO1', DX=0.0, DY=0.0),
+Acce0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=MODELE,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 0.0, -Pesanteur)),
 )
-#
-Acce0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
-    AFFE=_F(TOUT='OUI',
-            NOM_CMP=('DX', 'DY', 'DZ',),
-            VALE   =( 0.0,  0.0,  -Pesanteur,),),
-)
-Vite0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',OPERATION='AFFE',MODELE=MODELE,
-    AFFE=_F(TOUT='OUI',
-            NOM_CMP=('DX', 'DY', 'DZ',),
-            VALE   =( 0.0,  0.0,  V0,),),
+Vite0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=MODELE,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(0.0, 0.0, V0)),
 )
 #
 TempsChute = 0.54031242374329
 TempsDecol = 0.88545615307643
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
     INTERVALLE=(
-        _F(JUSQU_A = TempsChute, NOMBRE= 100),
-        _F(JUSQU_A = TempsDecol, NOMBRE= 200),
-        _F(JUSQU_A = 1.0,        NOMBRE=  25),
-        _F(JUSQU_A = 1.1,        NOMBRE=  20),
+        _F(JUSQU_A=TempsChute, NOMBRE=100),
+        _F(JUSQU_A=TempsDecol, NOMBRE=200),
+        _F(JUSQU_A=1.0, NOMBRE=25),
+        _F(JUSQU_A=1.1, NOMBRE=20),
     ),
 )
 
-DEFLIST =DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST =L_INST ),
-    ECHEC=_F(EVENEMENT     = 'ERREUR',
-             ACTION        = 'DECOUPE',
-             SUBD_METHODE  = 'MANUEL',
-             SUBD_PAS      = 4,),
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=4),
 )
 #
-DYNL1=DYNA_NON_LINE(
+DYNL1 = DYNA_NON_LINE(
     MODELE=MODELE,
     CHAM_MATER=CHMAT,
     CARA_ELEM=CHAMPCAR,
-    EXCIT=_F(CHARGE = CHARGE),
+    EXCIT=_F(CHARGE=CHARGE),
     ETAT_INIT=_F(VITE=Vite0, ACCE=Acce0),
-    COMPORTEMENT=_F(RELATION = 'DIS_CONTACT', GROUP_MA = 'EL1', RESI_INTE_RELA=1.0E-04),
-    INCREMENT=_F(LIST_INST = DEFLIST,),
-    SCHEMA_TEMPS=_F(SCHEMA='HHT', FORMULATION='DEPLACEMENT', MODI_EQUI='NON',),
-    #SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', FORMULATION='DEPLACEMENT'),
-    SOLVEUR=_F(METHODE = 'LDLT',),
-    CONVERGENCE=_F(RESI_REFE_RELA=1.0E-05, EFFORT_REFE=1.0),
+    COMPORTEMENT=_F(RELATION="DIS_CONTACT", GROUP_MA="EL1", RESI_INTE_RELA=1.0e-04),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    SCHEMA_TEMPS=_F(SCHEMA="HHT", FORMULATION="DEPLACEMENT", MODI_EQUI="NON"),
+    # SCHEMA_TEMPS=_F(SCHEMA='NEWMARK', FORMULATION='DEPLACEMENT'),
+    SOLVEUR=_F(METHODE="LDLT"),
+    CONVERGENCE=_F(RESI_REFE_RELA=1.0e-05, EFFORT_REFE=1.0),
     ARCHIVAGE=_F(LIST_INST=L_INST),
 )
 
@@ -108,20 +106,28 @@ DYNL1=DYNA_NON_LINE(
 #
 # --------------------------------------------------------------------------------------------------
 #       Inst        Reférence       Calculé             Précision
-Resu1Refe={
- 1 : ( TempsChute, -2.00000,        -2.000000000000044,  1.0e-06, ),
- 2 : ( TempsDecol, -2.00000,        -2.0003798910306614,  1.0e-02, ),
- 3 : (        1.0, -1.332162981855, -1.334898142185521,  1.0e-02, ),
- 4 : (        1.1, -0.856394405035, -0.8611856407223184, 2.0e-02, ),
+Resu1Refe = {
+    1: (TempsChute, -2.00000, -2.000000000000044, 1.0e-06),
+    2: (TempsDecol, -2.00000, -2.0003798910306614, 1.0e-02),
+    3: (1.0, -1.332162981855, -1.334898142185521, 1.0e-02),
+    4: (1.1, -0.856394405035, -0.8611856407223184, 2.0e-02),
 }
 #
 for ii in Resu1Refe.keys():
-    TEST_RESU(RESU=(
-        _F( INST     =Resu1Refe[ii][0], RESULTAT=DYNL1, NOM_CHAM='DEPL', GROUP_NO='NO1', NOM_CMP='DZ',
-            VALE_REFE=Resu1Refe[ii][1], REFERENCE='ANALYTIQUE',
-            VALE_CALC=Resu1Refe[ii][2],
-            PRECISION=Resu1Refe[ii][3],),
-        ),
+    TEST_RESU(
+        RESU=(
+            _F(
+                INST=Resu1Refe[ii][0],
+                RESULTAT=DYNL1,
+                NOM_CHAM="DEPL",
+                GROUP_NO="NO1",
+                NOM_CMP="DZ",
+                VALE_REFE=Resu1Refe[ii][1],
+                REFERENCE="ANALYTIQUE",
+                VALE_CALC=Resu1Refe[ii][2],
+                PRECISION=Resu1Refe[ii][3],
+            ),
+        )
     )
 
 

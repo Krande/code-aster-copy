@@ -37,6 +37,7 @@ import numpy as np
 
 import code_aster
 from code_aster.Commands import *
+
 code_aster.init("--test")
 
 test = code_aster.TestCase()
@@ -48,7 +49,7 @@ test = code_aster.TestCase()
 
 
 mail = code_aster.Mesh()
-mail.readMedFile('sdlv126a.med')
+mail.readMedFile("sdlv126a.med")
 
 
 # ### Declaration du modèle
@@ -56,11 +57,9 @@ mail.readMedFile('sdlv126a.med')
 # In[ ]:
 
 
-model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'),
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='3D')
-                          ),
-                    MAILLAGE=mail)
+model = AFFE_MODELE(
+    AFFE=(_F(GROUP_MA=("3D"), PHENOMENE="MECANIQUE", MODELISATION="3D")), MAILLAGE=mail
+)
 
 
 # ### Déclaration des matériaux
@@ -69,19 +68,19 @@ model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'),
 
 
 # matériau viscoélastique: deltane350
-freq = 100.
+freq = 100.0
 
 G0 = 1400000.0
 Ginf = 540000000.0
 tauG = 5.2e-07
 alphaG = 0.59
 
-G = (G0 + Ginf*(1j*freq*2*np.pi)**alphaG)/(1. + (1j*freq*2*np.pi)**alphaG)
+G = (G0 + Ginf * (1j * freq * 2 * np.pi) ** alphaG) / (1.0 + (1j * freq * 2 * np.pi) ** alphaG)
 nu = 0.3
-Ev = 2*G*(1. + nu)
+Ev = 2 * G * (1.0 + nu)
 
-deltane = DEFI_MATERIAU(ELAS_VISCO=_F(G=G, NU=complex(nu, 0.)))
-deltane_hyst = DEFI_MATERIAU(ELAS=_F(E=Ev.real, NU=0.3, AMOR_HYST=Ev.imag/Ev.real))
+deltane = DEFI_MATERIAU(ELAS_VISCO=_F(G=G, NU=complex(nu, 0.0)))
+deltane_hyst = DEFI_MATERIAU(ELAS=_F(E=Ev.real, NU=0.3, AMOR_HYST=Ev.imag / Ev.real))
 
 
 # ### Affectation des matériaux
@@ -89,15 +88,9 @@ deltane_hyst = DEFI_MATERIAU(ELAS=_F(E=Ev.real, NU=0.3, AMOR_HYST=Ev.imag/Ev.rea
 # In[ ]:
 
 
-mater_vhyst = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'),
-                                     MATER=deltane_hyst
-                                    ),),
-                             MODELE=model)
+mater_vhyst = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("3D"), MATER=deltane_hyst),), MODELE=model)
 
-mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'),
-                                 MATER=deltane
-                                 ),),
-                        MODELE=model)
+mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("3D"), MATER=deltane),), MODELE=model)
 
 
 # ### Construction de la matrice par RIGI_MECA_HYST
@@ -108,23 +101,17 @@ mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('3D'),
 nddl = NUME_DDL(MODELE=model)
 
 # Matrice viscoélastique
-KV_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                         MODELE=model,
-                         CHAM_MATER=mater_v)
-KVc_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
-                         MODELE=model,
-                         CHAM_MATER=mater_v,
-                         RIGI_MECA=KV_elem)
+KV_elem = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=model, CHAM_MATER=mater_v)
+KVc_elem = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA_HYST", MODELE=model, CHAM_MATER=mater_v, RIGI_MECA=KV_elem
+)
 KV = ASSE_MATRICE(MATR_ELEM=KVc_elem, NUME_DDL=nddl)
 
 # Matrice viscoélastique hysteretique
-KVh_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                          MODELE=model,
-                          CHAM_MATER=mater_vhyst)
-KVhc_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
-                          MODELE=model,
-                          CHAM_MATER=mater_vhyst,
-                          RIGI_MECA=KVh_elem)
+KVh_elem = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=model, CHAM_MATER=mater_vhyst)
+KVhc_elem = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA_HYST", MODELE=model, CHAM_MATER=mater_vhyst, RIGI_MECA=KVh_elem
+)
 KVh = ASSE_MATRICE(MATR_ELEM=KVhc_elem, NUME_DDL=nddl)
 
 
@@ -135,11 +122,19 @@ KVh = ASSE_MATRICE(MATR_ELEM=KVhc_elem, NUME_DDL=nddl)
 
 kv = KV.EXTR_MATR()
 kvh = KVh.EXTR_MATR()
-np.savetxt('test.txt', np.real(kv - kvh))
-TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
-np.savetxt('test.txt', np.imag(kv - kvh))
-TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7,
-             CRITERE='ABSOLU', TOLE_MACHINE=1e-5)
+np.savetxt("test.txt", np.real(kv - kvh))
+TEST_FICHIER(
+    FICHIER="test.txt", TYPE_TEST="SOMM_ABS", NB_VALE=576, VALE_CALC=1e-7, CRITERE="ABSOLU"
+)
+np.savetxt("test.txt", np.imag(kv - kvh))
+TEST_FICHIER(
+    FICHIER="test.txt",
+    TYPE_TEST="SOMM_ABS",
+    NB_VALE=576,
+    VALE_CALC=1e-7,
+    CRITERE="ABSOLU",
+    TOLE_MACHINE=1e-5,
+)
 
 
 # In[ ]:

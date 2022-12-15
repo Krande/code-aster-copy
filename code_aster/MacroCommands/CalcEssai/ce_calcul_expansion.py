@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,25 @@ import numpy
 import aster
 from libaster import AsterError
 
-from ...Cata.DataStructure import (dyna_harmo, maillage_sdaster,
-                                   matr_asse_depl_r, mode_meca, modele_sdaster)
+from ...Cata.DataStructure import (
+    dyna_harmo,
+    maillage_sdaster,
+    matr_asse_depl_r,
+    mode_meca,
+    modele_sdaster,
+)
 from ...Cata.Syntax import _F
-from ...Commands import (AFFE_MODELE, CREA_CHAMP, CREA_RESU, DEFI_FICHIER,
-                         IMPR_RESU, INFO_EXEC_ASTER, LIRE_MAILLAGE,
-                         MAC_MODES, MACRO_EXPANS)
+from ...Commands import (
+    AFFE_MODELE,
+    CREA_CHAMP,
+    CREA_RESU,
+    DEFI_FICHIER,
+    IMPR_RESU,
+    INFO_EXEC_ASTER,
+    LIRE_MAILLAGE,
+    MAC_MODES,
+    MACRO_EXPANS,
+)
 from ...Messages import UTMESS
 from ...Messages import MessageLog as mess
 from ...Supervis import CO
@@ -43,8 +56,8 @@ def extract_mac_array(mac_mode, nom_table="MAC"):
 
     /param mac_mode concept Table aster
     """
-    data1 = mac_mode.EXTR_TABLE().Array('NUME_MODE_1', nom_table)
-    data2 = mac_mode.EXTR_TABLE().Array('NUME_MODE_2', nom_table)
+    data1 = mac_mode.EXTR_TABLE().Array("NUME_MODE_1", nom_table)
+    data2 = mac_mode.EXTR_TABLE().Array("NUME_MODE_2", nom_table)
     N = int(numpy.maximum.reduce(data1[:, 0]))
     M = int(numpy.maximum.reduce(data2[:, 0]))
     mac = numpy.zeros((N, M))
@@ -76,8 +89,8 @@ class CalcEssaiExpansion:
         self.norme_exp = None
         self.ce_objects = objects
         self.proj_meth = "SVD"
-        self.proj_param = (1.e-2,)
-        self.concepts = {}       # mapping number -> (name,owned)
+        self.proj_param = (1.0e-2,)
+        self.concepts = {}  # mapping number -> (name,owned)
         self.concepts_names = {}  # mapping name -> number
         self.macro = macro
         self.mess = mess
@@ -98,11 +111,8 @@ class CalcEssaiExpansion:
         on se comporte comme une liste"""
         return self.concepts[n]
 
-    def setup(self, resu_num, mode_num_list,
-              resu_exp, mode_exp_list,
-              param):
-        """  on donne a Aster les donnees numerique spour le calcul d'expansion
-        """
+    def setup(self, resu_num, mode_num_list, resu_exp, mode_exp_list, param):
+        """on donne a Aster les donnees numerique spour le calcul d'expansion"""
         self.resu_num = resu_num
         self.mode_num_list = mode_num_list
         self.resu_exp = resu_exp
@@ -118,28 +128,29 @@ class CalcEssaiExpansion:
 
         # Preparation des donnees de mesure
         nume = None
-        mcfact_mesure = {'MODELE': self.resu_exp.modele.obj,
-                         'MESURE': self.resu_exp.obj,
-                         'NOM_CHAM': self.resu_exp.nom_cham}
+        mcfact_mesure = {
+            "MODELE": self.resu_exp.modele.obj,
+            "MESURE": self.resu_exp.obj,
+            "NOM_CHAM": self.resu_exp.nom_cham,
+        }
         args = {}
 
         # modif : la partie commentee ci-dessus devrait marcher bien comme ca
         if self.mode_exp_list:
             # res_EX est genere que si on a selectionne une partie des modes
             res_EX = CO("EX")
-            args.update({'RESU_EX': res_EX})
-            mcfact_mesure.update({'NUME_ORDRE': tuple(self.mode_exp_list)})
+            args.update({"RESU_EX": res_EX})
+            mcfact_mesure.update({"NUME_ORDRE": tuple(self.mode_exp_list)})
             if self.resu_exp.obj.getType() == "DYNA_HARMO":
                 nume = self.resu_exp.nume_ddl  # aller chercher a la main le nume_ddl
 
         # Preparation des donnees numeriques pour la base d'expansion
-        mcfact_calcul = {'MODELE': self.resu_num.modele.obj,
-                         'BASE': self.resu_num.obj}
+        mcfact_calcul = {"MODELE": self.resu_num.modele.obj, "BASE": self.resu_num.obj}
         if self.mode_num_list:
             # res_NX est genere que si on a selectionne une partie des modes
             res_NX = CO("NX")
-            args.update({'RESU_NX': res_NX})
-            mcfact_calcul.update({'NUME_ORDRE': tuple(self.mode_num_list)})
+            args.update({"RESU_NX": res_NX})
+            mcfact_calcul.update({"NUME_ORDRE": tuple(self.mode_num_list)})
 
         # Parametres de resolution
         parametres = self.param
@@ -159,7 +170,7 @@ class CalcEssaiExpansion:
         except AsterError as err:
             message = "ERREUR ASTER : " + err.message
             self.mess.disp_mess(message)
-            UTMESS('A', 'CALCESSAI0_7')
+            UTMESS("A", "CALCESSAI0_7")
             return
 
         self.mess.disp_mess("Fin de MACRO_EXPANS")
@@ -169,15 +180,12 @@ class CalcEssaiExpansion:
     def calc_mac_mode(self, resu1, resu2, norme):
         """!Calcul de MAC entre deux bases modales compatibles"""
         try:
-            __MAC = MAC_MODES(BASE_1=resu1,
-                              BASE_2=resu2,
-                              MATR_ASSE=norme,
-                              INFO=1)
+            __MAC = MAC_MODES(BASE_1=resu1, BASE_2=resu2, MATR_ASSE=norme, INFO=1)
         except AsterError as err:
             message = "ERREUR ASTER : " + err.message
             self.mess.disp_mess(message)
-            UTMESS('A', 'CALCESSAI0_3')
+            UTMESS("A", "CALCESSAI0_3")
             return
         self.mess.disp_mess(("      "))
-        mac = extract_mac_array(__MAC, 'MAC')
+        mac = extract_mac_array(__MAC, "MAC")
         return mac

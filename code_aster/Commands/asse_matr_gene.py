@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,14 +19,14 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (GeneralizedAssemblyMatrixComplex,
-                       GeneralizedAssemblyMatrixReal)
+from ..Objects import GeneralizedAssemblyMatrixComplex, GeneralizedAssemblyMatrixReal
 from ..Supervis import ExecuteCommand
 
 
 class GeneralizedMatrixBuilder(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.GeneralizedAssemblyMatrixReal`
     and `~code_aster.Objects.GeneralizedAssemblyMatrixComplex`"""
+
     command_name = "ASSE_MATR_GENE"
 
     def create_result(self, keywords):
@@ -38,7 +38,7 @@ class GeneralizedMatrixBuilder(ExecuteCommand):
 
         if keywords["METHODE"] == "INITIAL":
             self._result = GeneralizedAssemblyMatrixReal()
-        elif keywords['OPTION'] == "RIGI_GENE_C":
+        elif keywords["OPTION"] == "RIGI_GENE_C":
             self._result = GeneralizedAssemblyMatrixComplex()
         else:
             self._result = GeneralizedAssemblyMatrixReal()
@@ -50,7 +50,7 @@ class GeneralizedMatrixBuilder(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._result.setGeneralizedDOFNumbering(keywords['NUME_DDL_GENE'])
+        self._result.setGeneralizedDOFNumbering(keywords["NUME_DDL_GENE"])
 
 
 ASSE_MATR_GENE = GeneralizedMatrixBuilder.run

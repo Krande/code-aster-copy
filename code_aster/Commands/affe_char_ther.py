@@ -20,21 +20,36 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
-from ..Objects import (ThermalLoadReal, ParallelThermalLoadReal,
-                        ConnectionMesh, Model)
+from ..Objects import ThermalLoadReal, ParallelThermalLoadReal, ConnectionMesh, Model
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
 
 class ThermalLoadDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalLoadReal`"""
-    command_name = "AFFE_CHAR_THER"
-    neumannLoads = ['FLUX_REP', 'RAYONNEMENT','ECHANGE','SOURCE','PRE_GRAD_TEMP',\
-                    'ECHANGE_PAROI','CONVECTION', \
-                    'FLUX_NL','SOUR_NL','EVOL_CHAR','LIAISON_CHAMNO']
-    dirichletLoads = ['TEMP_IMPO','LIAISON_DDL','LIAISON_GROUP','LIAISON_MAIL',\
-                      'LIAISON_UNIF','LIAISON_CHAMNO']
 
+    command_name = "AFFE_CHAR_THER"
+    neumannLoads = [
+        "FLUX_REP",
+        "RAYONNEMENT",
+        "ECHANGE",
+        "SOURCE",
+        "PRE_GRAD_TEMP",
+        "ECHANGE_PAROI",
+        "CONVECTION",
+        "FLUX_NL",
+        "SOUR_NL",
+        "EVOL_CHAR",
+        "LIAISON_CHAMNO",
+    ]
+    dirichletLoads = [
+        "TEMP_IMPO",
+        "LIAISON_DDL",
+        "LIAISON_GROUP",
+        "LIAISON_MAIL",
+        "LIAISON_UNIF",
+        "LIAISON_CHAMNO",
+    ]
 
     @classmethod
     def _hasDirichletLoadings(cls, keywords):
@@ -63,17 +78,18 @@ class ThermalLoadDefinition(ExecuteCommand):
         l_diri = self._hasDirichletLoadings(keywords)
         if not model.getMesh().isParallel():
             self._result = ThermalLoadReal(model)
-        else :
+        else:
             if l_neum:
                 if l_diri:
-                    raise TypeError("Not allowed to mix up Dirichlet and Neumann \
-                        loadings in the same parallel AFFE_CHAR_THER")
+                    raise TypeError(
+                        "Not allowed to mix up Dirichlet and Neumann \
+                        loadings in the same parallel AFFE_CHAR_THER"
+                    )
                 else:
                     self._result = ThermalLoadReal(model)
 
     def exec_(self, keywords):
-        """Override default _exec in case of parallel load
-        """
+        """Override default _exec in case of parallel load"""
         if isinstance(self._result, ThermalLoadReal):
             super(ThermalLoadDefinition, self).exec_(keywords)
         else:
@@ -81,8 +97,8 @@ class ThermalLoadDefinition(ExecuteCommand):
             nodeGroups, cellGroups = _getGroups(self._cata, keywords)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
-            connectionModel = Model( connectionMesh )
-            connectionModel.setFrom( model )
+            connectionModel = Model(connectionMesh)
+            connectionModel.setFrom(model)
 
             keywords["MODELE"] = connectionModel
             partialThermalLoad = AFFE_CHAR_THER(**keywords)
@@ -117,15 +133,18 @@ def _addGroup(mcf, groups, keys):
         if mc:
             groups.update(force_list(mc))
 
+
 def _excludeGroup(mcf, keys):
     for name in keys:
         if mcf.get(name):
-            raise RuntimeError("Keyword %s not accepted in parallel AFFE_CHAR_THER"%name)
+            raise RuntimeError("Keyword %s not accepted in parallel AFFE_CHAR_THER" % name)
+
 
 def _getGroups(cata, keywords):
-    """for parallel load, return all node and cells groups present in AFFE_CHAR_THER, in order to define the connection mesh
-    """
-    load_types = [key for key in list(cata.keywords.keys()) if isinstance(cata.keywords[key], FactorKeyword)]
+    """for parallel load, return all node and cells groups present in AFFE_CHAR_THER, in order to define the connection mesh"""
+    load_types = [
+        key for key in list(cata.keywords.keys()) if isinstance(cata.keywords[key], FactorKeyword)
+    ]
     nodeGroups = set()
     cellGroups = set()
     for key in list(keywords.keys()):
@@ -151,9 +170,10 @@ def _getGroups(cata, keywords):
             for mcf in keywords[key]:
                 _addGroup(mcf, nodeGroups, ("GROUP_NO",))
                 _addGroup(mcf, cellGroups, ("GROUP_MA",))
-                _excludeGroup(mcf, ("NOEUD", "MAILLE",))
+                _excludeGroup(mcf, ("NOEUD", "MAILLE"))
         elif key in load_types:
-            raise NotImplementedError("Type of load {0!r} not yet "
-                                    "implemented in parallel".format(key))
+            raise NotImplementedError(
+                "Type of load {0!r} not yet " "implemented in parallel".format(key)
+            )
     # must be sorted to be identical on all procs
     return sorted(list(nodeGroups)), sorted(list(cellGroups))

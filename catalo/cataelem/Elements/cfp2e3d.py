@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,54 +25,54 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY','DZ','LAGS_C','LAGS_F[2]',))
+DDL_MECA = LocatedComponents(
+    phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "LAGS_C", "LAGS_F[2]")
+)
 
 
-
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFP2E3D(Element):
     """Please document this element"""
+
     meshType = MT.SEG2
-    calculs = (
-
-        OP.EXISTE_DDL(te=99,
-            para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA), ),
-        ),
-
-    )
+    calculs = (OP.EXISTE_DDL(te=99, para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),)),)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFQ4E3D(CFP2E3D):
     """Please document this element"""
+
     meshType = MT.QUAD4
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFT3E3D(CFP2E3D):
     """Please document this element"""
+
     meshType = MT.TRIA3
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFQ8E3D(CFP2E3D):
     """Please document this element"""
+
     meshType = MT.QUAD8
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFT6E3D(CFP2E3D):
     """Please document this element"""
+
     meshType = MT.TRIA6
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class CFQ9E3D(CFP2E3D):
     """Please document this element"""
+
     meshType = MT.QUAD9

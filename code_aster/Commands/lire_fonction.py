@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -26,8 +26,8 @@ from ..Utilities import deprecate
 
 
 class ReadFunctionProperly(ExecuteMacro):
-    """Command LIRE_FUNCTION that reads file values representing a function.
-    """
+    """Command LIRE_FUNCTION that reads file values representing a function."""
+
     command_name = "LIRE_FONCTION"
 
 

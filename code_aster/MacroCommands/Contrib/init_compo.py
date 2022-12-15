@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,19 @@
 from ...Cata.Syntax import PROC, SIMP, tr
 from ...Supervis import ExecuteCommand
 
-INIT_COMPO_CATA = PROC(nom="INIT_COMPO",
-                op=  117,
-                fr=tr("Initialiser adresse component YACS"),
-           COMPO           =SIMP(statut='o',typ='I',),
+INIT_COMPO_CATA = PROC(
+    nom="INIT_COMPO",
+    op=117,
+    fr=tr("Initialiser adresse component YACS"),
+    COMPO=SIMP(statut="o", typ="I"),
 )
 
+
 class InitComponent(ExecuteCommand):
-    """Command that initialize a code_aster component.
-    """
+    """Command that initialize a code_aster component."""
+
     command_name = "INIT_COMPO"
     command_cata = INIT_COMPO_CATA
+
 
 INIT_COMPO = InitComponent.run

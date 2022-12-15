@@ -18,173 +18,120 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: nicolas.sellenet at edf.fr
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      BASE=_F(FICHIER='GLOBALE',
-              TAILLE=5000))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), BASE=_F(FICHIER="GLOBALE", TAILLE=5000))
 
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER',)
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
 
 # Cas Tetra10
 
-MODL10=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(GROUP_MA='Tetra10',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+MODL10 = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA="Tetra10", PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
-CHAM10_1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-                    MODELE=MODL10,
-                    OPERATION='AFFE',
-                    AFFE=(_F(GROUP_NO='N1', NOM_CMP=('SIYY',), VALE=(1.,),),
-                          _F(GROUP_NO='N2', NOM_CMP=('SIYY',), VALE=(2.,),),
-                          _F(GROUP_NO='N3', NOM_CMP=('SIYY',), VALE=(3.,),),
-                          _F(GROUP_NO='N4', NOM_CMP=('SIYY',), VALE=(4.,),),
-                          _F(GROUP_NO='N5', NOM_CMP=('SIYY',), VALE=(5.,),),
-                          _F(GROUP_NO='N6', NOM_CMP=('SIYY',), VALE=(6.,),),
-                          _F(GROUP_NO='N7', NOM_CMP=('SIYY',), VALE=(7.,),),
-                          _F(GROUP_NO='N8', NOM_CMP=('SIYY',), VALE=(8.,),),
-                          _F(GROUP_NO='N9', NOM_CMP=('SIYY',), VALE=(9.,),),
-                          _F(GROUP_NO='N10', NOM_CMP=('SIYY',), VALE=(10.,),),),)
+CHAM10_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_SIEF_R",
+    MODELE=MODL10,
+    OPERATION="AFFE",
+    AFFE=(
+        _F(GROUP_NO="N1", NOM_CMP=("SIYY",), VALE=(1.0,)),
+        _F(GROUP_NO="N2", NOM_CMP=("SIYY",), VALE=(2.0,)),
+        _F(GROUP_NO="N3", NOM_CMP=("SIYY",), VALE=(3.0,)),
+        _F(GROUP_NO="N4", NOM_CMP=("SIYY",), VALE=(4.0,)),
+        _F(GROUP_NO="N5", NOM_CMP=("SIYY",), VALE=(5.0,)),
+        _F(GROUP_NO="N6", NOM_CMP=("SIYY",), VALE=(6.0,)),
+        _F(GROUP_NO="N7", NOM_CMP=("SIYY",), VALE=(7.0,)),
+        _F(GROUP_NO="N8", NOM_CMP=("SIYY",), VALE=(8.0,)),
+        _F(GROUP_NO="N9", NOM_CMP=("SIYY",), VALE=(9.0,)),
+        _F(GROUP_NO="N10", NOM_CMP=("SIYY",), VALE=(10.0,)),
+    ),
+)
 
-CHAM10_2=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
-                    MODELE=MODL10,
-                    OPERATION='DISC',
-                    PROL_ZERO='OUI',
-                    CHAM_GD=CHAM10_1,)
+CHAM10_2 = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R", MODELE=MODL10, OPERATION="DISC", PROL_ZERO="OUI", CHAM_GD=CHAM10_1
+)
 
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM10_2,),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=CHAM10_2))
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(CHAM_GD=CHAM10_2,),)
+IMPR_RESU(FORMAT="MED", RESU=_F(CHAM_GD=CHAM10_2))
 
-CHAM10_3=LIRE_CHAMP(UNITE=80,
-                    FORMAT='MED',
-                    NOM_MED='CHAM10_2',
-                    TYPE_CHAM='ELNO_SIEF_R',
-                    NOM_CMP_IDEM='OUI',
-                    MAILLAGE=MAIL,
-                    MODELE=MODL10,)
+CHAM10_3 = LIRE_CHAMP(
+    UNITE=80,
+    FORMAT="MED",
+    NOM_MED="CHAM10_2",
+    TYPE_CHAM="ELNO_SIEF_R",
+    NOM_CMP_IDEM="OUI",
+    MAILLAGE=MAIL,
+    MODELE=MODL10,
+)
 
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM10_3,),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=CHAM10_3))
 
-MAIL2=LIRE_MAILLAGE(FORMAT='MED',
-                    UNITE=80,)
+MAIL2 = LIRE_MAILLAGE(FORMAT="MED", UNITE=80)
 
-IMPR_RESU(FORMAT='ASTER',
-          RESU=_F(MAILLAGE=MAIL2,),)
+IMPR_RESU(FORMAT="ASTER", RESU=_F(MAILLAGE=MAIL2))
 
-TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N1',
-                        VALE_CALC=1.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N2',
-                        VALE_CALC=2.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N3',
-                        VALE_CALC=3.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N4',
-                        VALE_CALC=4.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N5',
-                        VALE_CALC=5.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N6',
-                        VALE_CALC=6.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N7',
-                        VALE_CALC=7.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N8',
-                        VALE_CALC=8.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N9',
-                        VALE_CALC=9.),
-                     _F(CHAM_GD=CHAM10_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        GROUP_NO='N10',
-                        VALE_CALC=10.),),)
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N1", VALE_CALC=1.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N2", VALE_CALC=2.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N3", VALE_CALC=3.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N4", VALE_CALC=4.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N5", VALE_CALC=5.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N6", VALE_CALC=6.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N7", VALE_CALC=7.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N8", VALE_CALC=8.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N9", VALE_CALC=9.0),
+        _F(CHAM_GD=CHAM10_3, NOM_CMP="SIYY", GROUP_MA="M1", GROUP_NO="N10", VALE_CALC=10.0),
+    )
+)
 
 
 # Cas Tetra4
 
-MODL04=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(GROUP_MA='Tetra4',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+MODL04 = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA="Tetra4", PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
-CHAM04_1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
-                    MODELE=MODL04,
-                    OPERATION='AFFE',
-                    AFFE=(_F(GROUP_NO='N1', NOM_CMP=('SIYY',), VALE=(1.,),),
-                          _F(GROUP_NO='N2', NOM_CMP=('SIYY',), VALE=(2.,),),
-                          _F(GROUP_NO='N3', NOM_CMP=('SIYY',), VALE=(3.,),),
-                          _F(GROUP_NO='N4', NOM_CMP=('SIYY',), VALE=(4.,),),),)
+CHAM04_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_SIEF_R",
+    MODELE=MODL04,
+    OPERATION="AFFE",
+    AFFE=(
+        _F(GROUP_NO="N1", NOM_CMP=("SIYY",), VALE=(1.0,)),
+        _F(GROUP_NO="N2", NOM_CMP=("SIYY",), VALE=(2.0,)),
+        _F(GROUP_NO="N3", NOM_CMP=("SIYY",), VALE=(3.0,)),
+        _F(GROUP_NO="N4", NOM_CMP=("SIYY",), VALE=(4.0,)),
+    ),
+)
 
-CHAM04_2=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
-                    MODELE=MODL04,
-                    OPERATION='DISC',
-                    PROL_ZERO='OUI',
-                    CHAM_GD=CHAM04_1,)
+CHAM04_2 = CREA_CHAMP(
+    TYPE_CHAM="ELNO_SIEF_R", MODELE=MODL04, OPERATION="DISC", PROL_ZERO="OUI", CHAM_GD=CHAM04_1
+)
 
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM04_2,),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=CHAM04_2))
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=81,
-          RESU=_F(CHAM_GD=CHAM04_2,),)
+IMPR_RESU(FORMAT="MED", UNITE=81, RESU=_F(CHAM_GD=CHAM04_2))
 
-CHAM04_3=LIRE_CHAMP(UNITE=81,
-                    FORMAT='MED',
-                    NOM_MED='CHAM04_2',
-                    TYPE_CHAM='ELNO_SIEF_R',
-                    NOM_CMP_IDEM='OUI',
-                    MAILLAGE=MAIL,
-                    MODELE=MODL04,)
+CHAM04_3 = LIRE_CHAMP(
+    UNITE=81,
+    FORMAT="MED",
+    NOM_MED="CHAM04_2",
+    TYPE_CHAM="ELNO_SIEF_R",
+    NOM_CMP_IDEM="OUI",
+    MAILLAGE=MAIL,
+    MODELE=MODL04,
+)
 
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(CHAM_GD=CHAM04_3,),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=CHAM04_3))
 
-TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAM04_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M2',
-                        GROUP_NO='N1',
-                        VALE_CALC=1.),
-                     _F(CHAM_GD=CHAM04_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M2',
-                        GROUP_NO='N2',
-                        VALE_CALC=2.),
-                     _F(CHAM_GD=CHAM04_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M2',
-                        GROUP_NO='N3',
-                        VALE_CALC=3.),
-                     _F(CHAM_GD=CHAM04_3,
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M2',
-                        GROUP_NO='N4',
-                        VALE_CALC=4.),),)
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(CHAM_GD=CHAM04_3, NOM_CMP="SIYY", GROUP_MA="M2", GROUP_NO="N1", VALE_CALC=1.0),
+        _F(CHAM_GD=CHAM04_3, NOM_CMP="SIYY", GROUP_MA="M2", GROUP_NO="N2", VALE_CALC=2.0),
+        _F(CHAM_GD=CHAM04_3, NOM_CMP="SIYY", GROUP_MA="M2", GROUP_NO="N3", VALE_CALC=3.0),
+        _F(CHAM_GD=CHAM04_3, NOM_CMP="SIYY", GROUP_MA="M2", GROUP_NO="N4", VALE_CALC=4.0),
+    )
+)
 
 FIN()

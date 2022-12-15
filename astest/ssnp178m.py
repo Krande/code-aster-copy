@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,14 @@ POURSUITE(CODE="OUI")
 with shared_tmpdir("ssnp178m_") as tmpdir:
     medfile = osp.join(tmpdir, "resu.ssnp178m.med")
     DEFI_FICHIER(UNITE=87, FICHIER=medfile, TYPE="BINARY")
-    IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=87, INFO=2,
-          RESU=_F(RESULTAT=resnonl),
-          VERSION_MED='4.1.0')
-    DEFI_FICHIER(ACTION='LIBERER',UNITE=87)
+    IMPR_RESU(
+        FICHIER_UNIQUE="OUI",
+        FORMAT="MED",
+        UNITE=87,
+        INFO=2,
+        RESU=_F(RESULTAT=resnonl),
+        VERSION_MED="4.1.0",
+    )
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
 
 FIN()

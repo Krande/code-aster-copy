@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,55 +20,41 @@
 # person_in_charge: samuel.geniaut at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PAINTER = InputParameter(phys=PHY.N1360R)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R)
+PCFACE = InputParameter(phys=PHY.N720_I)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I)
+PLONGCO = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
-
-
-PBASECO  = InputParameter(phys=PHY.N2448R)
+PBASECO = InputParameter(phys=PHY.N2448R)
 
 
 # Attention : le champ PSEUIL est un champ a sous-points
 # pour les elements de contact XFEM (xhc,xhtc,xtc)
-PSEUIL   = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
+PSEUIL = OutputParameter(phys=PHY.NEUT_R, type="ELEM")
 
 
 XREACL = Option(
-    para_in=(
-           PAINTER,
-           PBASECO,
-           PCFACE,
-        SP.PDEPL_P,
-        SP.PDONCO,
-        SP.PGEOMER,
-           PLONGCO,
-           PLST,
-           PPINTER,
-    ),
-    para_out=(
-           PSEUIL,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.LXFEM,'OUI'),(AT.CONTACT,'OUI'),)),
-    ),
+    para_in=(PAINTER, PBASECO, PCFACE, SP.PDEPL_P, SP.PDONCO, SP.PGEOMER, PLONGCO, PLST, PPINTER),
+    para_out=(PSEUIL,),
+    condition=(CondCalcul("+", ((AT.LXFEM, "OUI"), (AT.CONTACT, "OUI"))),),
 )

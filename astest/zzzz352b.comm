@@ -17,71 +17,95 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                            NU=0.0,),)
+MATER = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.0))
 
 PRE_GIBI()
 
-MA_2D=LIRE_MAILLAGE(FORMAT="ASTER",)
+MA_2D = LIRE_MAILLAGE(FORMAT="ASTER")
 
-CHMAT_2D=AFFE_MATERIAU(MAILLAGE=MA_2D,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=MATER,),)
+CHMAT_2D = AFFE_MATERIAU(MAILLAGE=MA_2D, AFFE=_F(TOUT="OUI", MATER=MATER))
 
 #  MODELE  2D :
 #  ------------
 
-MOD1=AFFE_MODELE(MAILLAGE=MA_2D,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='D_PLAN',),
-                 DISTRIBUTION=_F(METHODE='CENTRALISE'),)
+MOD1 = AFFE_MODELE(
+    MAILLAGE=MA_2D,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+    DISTRIBUTION=_F(METHODE="CENTRALISE"),
+)
 
-CH1=AFFE_CHAR_MECA(MODELE=MOD1,
-                   DDL_IMPO=_F(GROUP_NO='A',
-                               DX=0,
-                               DY=0,),
-                   FACE_IMPO=_F(GROUP_MA='BORD3B',
-                                DX=2.0,
-                                DY=3.0,),
-                   LIAISON_SOLIDE=_F(GROUP_MA='CARRE2',),
-                   INFO=1,)
+CH1 = AFFE_CHAR_MECA(
+    MODELE=MOD1,
+    DDL_IMPO=_F(GROUP_NO="A", DX=0, DY=0),
+    FACE_IMPO=_F(GROUP_MA="BORD3B", DX=2.0, DY=3.0),
+    LIAISON_SOLIDE=_F(GROUP_MA="CARRE2"),
+    INFO=1,
+)
 # CALCUL DE REFERENCE (MUMPS + CHARGEMENT DUALISE)
 
-REREF1=MECA_STATIQUE( MODELE=MOD1, CHAM_MATER=CHMAT_2D, SOLVEUR=_F(METHODE='MUMPS',),
-                      EXCIT=(_F(CHARGE = CH1),   ))
+REREF1 = MECA_STATIQUE(
+    MODELE=MOD1, CHAM_MATER=CHMAT_2D, SOLVEUR=_F(METHODE="MUMPS"), EXCIT=(_F(CHARGE=CH1),)
+)
 
-TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'XX1', GROUP_NO = 'B', OPERATION = 'EXTRACTION',
-                                RESULTAT = REREF1, NUME_ORDRE=1, NOM_CHAM='DEPL', TOUT_CMP = 'OUI' ))
+TN1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="XX1",
+        GROUP_NO="B",
+        OPERATION="EXTRACTION",
+        RESULTAT=REREF1,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        TOUT_CMP="OUI",
+    )
+)
 
-DXREF=TN1['DX',1]
-DYREF=TN1['DY',1]
+DXREF = TN1["DX", 1]
+DYREF = TN1["DY", 1]
 
 # CALCUL AVEC ELIMINATION DES LAGRANGES
 
-MES1=MECA_STATIQUE(MODELE=MOD1,
-                   CHAM_MATER=CHMAT_2D,
-                   EXCIT=_F(CHARGE=CH1,),
-                   SOLVEUR=_F(ELIM_LAGR='OUI',),)
+MES1 = MECA_STATIQUE(
+    MODELE=MOD1, CHAM_MATER=CHMAT_2D, EXCIT=_F(CHARGE=CH1), SOLVEUR=_F(ELIM_LAGR="OUI")
+)
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MES1,
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=MES1,
 #                  NOM_CHAM='DEPL',
 #                  GROUP_NO=('B',),),)
 
 # TESTS
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='B', RESULTAT=MES1,  NOM_CHAM='DEPL', NOM_CMP='DX',
-                                  REFERENCE='AUTRE_ASTER', VALE_REFE=DXREF, VALE_CALC= -8.53964377759386E-01,))
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="B",
+        RESULTAT=MES1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=DXREF,
+        VALE_CALC=-8.53964377759386e-01,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='B', RESULTAT=MES1,  NOM_CHAM='DEPL', NOM_CMP='DY',
-                                  REFERENCE='AUTRE_ASTER', VALE_REFE=DYREF , VALE_CALC = 2.16974908826082E+00,))
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="B",
+        RESULTAT=MES1,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        REFERENCE="AUTRE_ASTER",
+        VALE_REFE=DYREF,
+        VALE_CALC=2.16974908826082e00,
+    )
+)
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 FIN()
 
 #
-#CHECKSUM:7048e3b585852ba7264d1f034c3a9212  -:FIN CHECKSUM
+# CHECKSUM:7048e3b585852ba7264d1f034c3a9212  -:FIN CHECKSUM

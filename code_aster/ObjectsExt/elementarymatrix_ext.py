@@ -24,10 +24,12 @@
 """
 
 import aster
-from libaster import (ElementaryMatrixDisplacementComplex,
-                      ElementaryMatrixDisplacementReal,
-                      ElementaryMatrixPressureComplex,
-                      ElementaryMatrixTemperatureReal)
+from libaster import (
+    ElementaryMatrixDisplacementComplex,
+    ElementaryMatrixDisplacementReal,
+    ElementaryMatrixPressureComplex,
+    ElementaryMatrixTemperatureReal,
+)
 
 from ..Utilities import injector
 from ..Objects.Serialization import InternalStateBuilder

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,27 +20,15 @@
 # person_in_charge: nicolas.greffet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 INTE_ELNO = Option(
-    para_in=(
-        SP.PFREQR,
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PPRESSC,
-    ),
-    para_out=(
-        SP.PINTER,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'AC'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PFREQR, SP.PGEOMER, SP.PMATERC, SP.PPRESSC),
+    para_out=(SP.PINTER,),
+    condition=(CondCalcul("+", ((AT.PHENO, "AC"), (AT.BORD, "0"))),),
     comment="""  INTE_ELNO : CALCUL DE L'INTENSITE ACOUSTIQUE AUX NOEUDS """,
 )

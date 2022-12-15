@@ -20,58 +20,54 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""Pour affecter une liste de modélisations, il faut qu'elles soient de même dimension topologique."""),
-
-    2 : _("""La maille %(k1)s de type %(k2)s n'a pas pu être affectée."""),
-
-    3 : _("""La modélisation choisie est axisymétrique ou plane. Il faut que le maillage soit dans le plan z=0 et ce n'est pas le cas."""),
-
-    4 : _("""Sur les %(i1)d mailles du maillage %(k1)s, on a demandé l'affectation de %(i2)d, on a pu en affecter %(i3)d."""),
-
-
-    5 : _("""Votre modèle doit contenir au moins un élément fini car il n'est pas possible de n'avoir que des macro-éléments si le maillage est lu par LIRE_MAILLAGE. Si vous voulez définir entièrement un modèle avec des macro-éléments, il faut définir ces derniers avec DEFI_MAILLAGE."""),
-
-    6 : _("""Aucune maille du maillage %(k1)s n'a été affectée par des éléments finis."""),
-
-    7 : _("""Attention l'élément HEXA8 en 3D_SI ne fonctionne correctement que sur les parallélépipèdes. Sur les éléments quelconques on peut obtenir des résultats faux."""),
-
-    8 : _("""Liste des noeuds affectés pour la modélisation:"""),
-
-    9 : _("""Liste des mailles affectées pour la modélisation:"""),
-
-    10 : _("""Le modèle contient un mélange d'éléments HHO et non HHO. Ce n'est pas possible."""),
-
-    11 : _("""On ne peut utiliser qu'un seul phénomène."""),
-
-    12 : _("""La formulation %(k1)s n'est pas disponible pour les modélisations choisies."""),
-
-    13 : _("""Les méthodes de partition MAIL_CONTIGU et MAIL_DISPERSE sont interdites avec des 
-modélisations nécessitant des informations sur les mailles voisines (3D_JOINT, 3D_INTERFACE, ...)"""),
-
-    14 : _("""Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D. Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
+    1: _(
+        """Pour affecter une liste de modélisations, il faut qu'elles soient de même dimension topologique."""
+    ),
+    2: _("""La maille %(k1)s de type %(k2)s n'a pas pu être affectée."""),
+    3: _(
+        """La modélisation choisie est axisymétrique ou plane. Il faut que le maillage soit dans le plan z=0 et ce n'est pas le cas."""
+    ),
+    4: _(
+        """Sur les %(i1)d mailles du maillage %(k1)s, on a demandé l'affectation de %(i2)d, on a pu en affecter %(i3)d."""
+    ),
+    5: _(
+        """Votre modèle doit contenir au moins un élément fini car il n'est pas possible de n'avoir que des macro-éléments si le maillage est lu par LIRE_MAILLAGE. Si vous voulez définir entièrement un modèle avec des macro-éléments, il faut définir ces derniers avec DEFI_MAILLAGE."""
+    ),
+    6: _("""Aucune maille du maillage %(k1)s n'a été affectée par des éléments finis."""),
+    7: _(
+        """Attention l'élément HEXA8 en 3D_SI ne fonctionne correctement que sur les parallélépipèdes. Sur les éléments quelconques on peut obtenir des résultats faux."""
+    ),
+    8: _("""Liste des noeuds affectés pour la modélisation:"""),
+    9: _("""Liste des mailles affectées pour la modélisation:"""),
+    10: _("""Le modèle contient un mélange d'éléments HHO et non HHO. Ce n'est pas possible."""),
+    11: _("""On ne peut utiliser qu'un seul phénomène."""),
+    12: _("""La formulation %(k1)s n'est pas disponible pour les modélisations choisies."""),
+    13: _(
+        """Les méthodes de partition MAIL_CONTIGU et MAIL_DISPERSE sont interdites avec des 
+modélisations nécessitant des informations sur les mailles voisines (3D_JOINT, 3D_INTERFACE, ...)"""
+    ),
+    14: _(
+        """Le modèle contient un mélange d'éléments finis 2D (plan Oxy) et 3D. Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
 Parfois, cela empêche de faire le "bon choix". Cette alarme risque de se transformer en erreur fatale dans la suite du calcul.
-"""),
-
-    20 : _(""" Modélisation     Formulation      Type maille  Élément fini     Nombre"""),
-
-    21 : _(""" %(k1)-16s %(k2)-16s %(k3)-12s %(k4)-16s %(i1)d"""),
-
-    38 : _("""%(k1)-8s %(k2)-8s %(k3)-8s %(k4)-8s %(k5)-8s %(k6)-8s %(k7)-8s %(k8)-8s"""),
-
-    53 : _("""Le maillage est 3D (tous les noeuds ne sont pas dans le même plan Z = constante), mais les éléments du modèle sont de dimension 2.
+"""
+    ),
+    20: _(""" Modélisation     Formulation      Type maille  Élément fini     Nombre"""),
+    21: _(""" %(k1)-16s %(k2)-16s %(k3)-12s %(k4)-16s %(i1)d"""),
+    38: _("""%(k1)-8s %(k2)-8s %(k3)-8s %(k4)-8s %(k5)-8s %(k6)-8s %(k7)-8s %(k8)-8s"""),
+    53: _(
+        """Le maillage est 3D (tous les noeuds ne sont pas dans le même plan Z = constante), mais les éléments du modèle sont de dimension 2.
 Si les facettes supportant les éléments ne sont pas dans un plan Z = constante, les résultats seront faux.
 Assurez-vous de la cohérence entre les mailles à affecter et la modélisation souhaitée dans la commande AFFE_MODELE.
-"""),
-
-    54 : _("""Il est interdit de mélanger des éléments discrets 2D et 3D dans le même modèle."""),
-
-
-    58 : _("""Les éléments du modèle sont de dimension 2. Mais les noeuds du maillage sont un même plan Z qui n'est pas à l'origine.
+"""
+    ),
+    54: _("""Il est interdit de mélanger des éléments discrets 2D et 3D dans le même modèle."""),
+    58: _(
+        """Les éléments du modèle sont de dimension 2. Mais les noeuds du maillage sont un même plan Z qui n'est pas à l'origine.
 Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour les modélisations planes ou axisymétriques
-"""),
-
-    63: _("""La maille %(k1)s porte un élément fini de bord, mais elle ne borde aucun élément ayant une "rigidité".
+"""
+    ),
+    63: _(
+        """La maille %(k1)s porte un élément fini de bord, mais elle ne borde aucun élément ayant une "rigidité".
 
   -> Risque & Conseil :
      Cela peut entraîner des problèmes de "pivot nul" lors de la résolution.
@@ -79,9 +75,10 @@ Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour 
      pouvez ignorer ce message.
      Sinon, vérifier la définition du modèle (AFFE_MODELE) en évitant l'utilisation
      de l'opérande TOUT='OUI'.
-"""),
-
-    64: _("""Le modèle n'a pas d'éléments sachant calculer la rigidité.
+"""
+    ),
+    64: _(
+        """Le modèle n'a pas d'éléments sachant calculer la rigidité.
 
   -> Risque & Conseil :
      Ce modèle ne pourra donc pas (en général) être utilisé pour faire des calculs.
@@ -92,9 +89,10 @@ Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour 
        * affecter une modélisation "3D" sur un maillage formé de facettes.
        * affecter une modélisation qui ne sait pas traiter tous les types de mailles du maillage
          (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
-"""),
-
-    70 : _("""
+"""
+    ),
+    70: _(
+        """
  Possible erreur utilisateur dans la commande AFFE_MODELE :
    Un problème a été détecté lors de l'affectation des éléments finis.
    Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de même dimension topologique
@@ -121,14 +119,14 @@ Il est d'usage d'utiliser un maillage dans le plan Z passant par l'origine pour 
                         _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS')),
                         _F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION=('AXIS_SI')),
                         ))
-"""),
-
-    80 : _("""On a détecté %(i1)d mailles qui ont une modélisation de type interaction fluide-structure dont on va vérifier l'orientation des normales."""),
-
-    81 : _("""Les mailles concernées sont de dimension topologique 1 (segments)."""),
-
-    82 : _("""Les mailles concernées sont de dimension topologique 2 (triangles ou quadrangles)."""),
-
-    99 : _("""Le modèle est basé sur le maillage parallèle %(k2)s. La méthode de distribution des éléments doit être CENTRALISE (et non pas %(k1)s)"""),
-
+"""
+    ),
+    80: _(
+        """On a détecté %(i1)d mailles qui ont une modélisation de type interaction fluide-structure dont on va vérifier l'orientation des normales."""
+    ),
+    81: _("""Les mailles concernées sont de dimension topologique 1 (segments)."""),
+    82: _("""Les mailles concernées sont de dimension topologique 2 (triangles ou quadrangles)."""),
+    99: _(
+        """Le modèle est basé sur le maillage parallèle %(k2)s. La méthode de distribution des éléments doit être CENTRALISE (et non pas %(k1)s)"""
+    ),
 }

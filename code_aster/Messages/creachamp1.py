@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,35 +20,40 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-   10 : _("""
+    10: _(
+        """
    Les champs que l'on cherche à combiner doivent tous être des champs aux noeuds.
-"""),
-
-   11 : _("""
+"""
+    ),
+    11: _(
+        """
    Les champs que l'on cherche à combiner doivent tous avoir la même grandeur (DEPL_R, ...).
    Ce doit être la même que celle donnée dans TYPE_CHAM.
-"""),
-
-   12 : _("""
+"""
+    ),
+    12: _(
+        """
    Les champs que l'on cherche à combiner doivent tous avoir la même numérotation.
-"""),
-
-   13 : _("""
+"""
+    ),
+    13: _(
+        """
    Les champs que l'on cherche à combiner doivent tous s'appuyer sur le même maillage.
-"""),
-
-   14 : _("""
+"""
+    ),
+    14: _(
+        """
    On impose la même numérotation sur le champ de sortie (mots-clefs NUME_DDL ou CHAM_NO) que sur les champs d'entrée pour économiser de la mémoire.
    Mais cette opération fait perdre l'information sur les degrés de liberté correspondant aux conditions limites dualisées (AFFE_CHAR_MECA ou AFFE_CHAR_THER).
    Si vous ne voulez pas perdre cette information, il ne faut pas utiliser NUME_DDL ou CHAM_NO.
-"""),
-
-   15 : _("""
+"""
+    ),
+    15: _(
+        """
    Erreur lors de l'opération NORMALE.
    L'élément %(k1)s n'est pas du bon type.
    Si vous êtes en deux dimensions, les éléments doivent être des segments.
    Si vous êtes en trois dimensions, les éléments doivent être des triangles ou des quadrangles.
-"""),
+"""
+    ),
 }

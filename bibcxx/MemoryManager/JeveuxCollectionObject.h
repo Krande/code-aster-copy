@@ -427,7 +427,7 @@ class JeveuxCollectionObject {
         return *this;
     };
 
-    const JeveuxCollectionObjectTypePtr &operator->( void ) const {
+    const JeveuxCollectionObjectTypePtr &operator->(void)const {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _jeveuxCOPtr );
 #endif
@@ -435,7 +435,7 @@ class JeveuxCollectionObject {
         return _jeveuxCOPtr;
     };
 
-    JeveuxCollectionObjectClass< ValueType > &operator*( void ) const {
+    JeveuxCollectionObjectClass< ValueType > &operator*(void)const {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _jeveuxCOPtr );
 #endif

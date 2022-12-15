@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: samuel.geniaut at edf.fr
-
 
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
@@ -39,8 +38,11 @@ PBASLOR = InputParameter(phys=PHY.NEUT_R)
 PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PCNSETO = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-                         comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
 PHEAVTO = InputParameter(phys=PHY.N512_I)
@@ -49,8 +51,11 @@ PHEAVTO = InputParameter(phys=PHY.N512_I)
 PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PLONCHA = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-                         comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
 PLSN = InputParameter(phys=PHY.NEUT_R)
@@ -76,7 +81,7 @@ PPMILTO = InputParameter(phys=PHY.N792_R)
 
 PBASECO = InputParameter(phys=PHY.N2448R)
 
-PSTANO   = InputParameter(phys=PHY.N120_I)
+PSTANO = InputParameter(phys=PHY.N120_I)
 
 
 CALC_K_G_XFEM_F = Option(
@@ -118,12 +123,10 @@ CALC_K_G_XFEM_F = Option(
         SP.PVARCRR,
         PSTANO,
     ),
-    para_out=(
-        SP.PGTHETA,
-    ),
+    para_out=(SP.PGTHETA,),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "-1"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.DISCRET, "OUI"))),
     ),
 )

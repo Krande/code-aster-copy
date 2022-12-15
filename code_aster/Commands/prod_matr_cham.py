@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class ProdMatrCham(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.FieldOnNodesReal`.
-    """
+    """Command that defines :class:`~code_aster.Objects.FieldOnNodesReal`."""
+
     command_name = "PROD_MATR_CHAM"
 
     def create_result(self, keywords):
@@ -50,5 +50,6 @@ class ProdMatrCham(ExecuteCommand):
         self._result.setMesh(dofNum.getMesh())
 
         self._result.build()
+
 
 PROD_MATR_CHAM = ProdMatrCham.run

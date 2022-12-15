@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@
 from ..Utilities import _
 
 cata_msg = {
-
-# Messages dans OP0019
-    2 : _("""AFFE_CARA_ELEM
+    # Messages dans OP0019
+    2: _(
+        """AFFE_CARA_ELEM
 Aucune affectation n'est réalisée sur des GROUP_MA ou des MAILLES.
 
 Vérifiez vos données.
-"""),
-
-
-# Messages dans ace_mass_rep
-    10 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    # Messages dans ace_mass_rep
+    10: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Une maille dans le groupe <%(k2)s> n'est pas de la bonne topologique.
 Vous êtes en 2D, la topologie des mailles doit être 1.
 Les mailles de <%(k2)s> doivent être des segments.
@@ -43,9 +43,10 @@ Pour information :
  - type de la maille incriminée                      : %(k4)s
 
 Vérifiez vos données.
-"""),
-
-    11 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    11: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Une maille dans le groupe  <%(k2)s> n'a pas la bonne dimension topologique.
 
 Les mailles de <%(k2)s> doivent être des segments ou des éléments de surfaces.
@@ -55,9 +56,10 @@ Pour information :
  - son type                 : %(k4)s
 
 Vérifiez vos données.
-"""),
-
-    12 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    12: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 La maille %(k3)s est présente au moins 2 fois dans la définition de la surface.
 
 Les mailles ne doivent être présente qu'une seule fois, en cas de doublon :
@@ -65,9 +67,10 @@ Les mailles ne doivent être présente qu'une seule fois, en cas de doublon :
 - La contribution de cette maille n'est pas correcte.
 
 Vérifiez vos données.
-"""),
-
-    13 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    13: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 La maille %(k3)s présente dans <%(k2)s> n'a pas le bon nombre de noeuds.
 Les mailles gérées doivent avoir %(k5)s noeuds
 
@@ -77,9 +80,10 @@ Pour information :
  - nombre de noeuds de la maille : %(i2)d
 
 Vérifiez vos données.
-"""),
-
-    14 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    14: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Au moins un élément appartenant au GROUP_MA_POI1 <%(k2)s> n'est pas connecté aux mailles
 surfaciques du GROUP_MA.
 
@@ -90,9 +94,10 @@ Pour information :
  - maille détectée : %(k3)s
 
 Vérifiez vos données.
-"""),
-
-    15 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    15: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Au moins un noeud appartenant à un élément du GROUP_MA surfacique n'est pas connecté à une maille du
 GROUP_MA_POI1.
 
@@ -103,9 +108,10 @@ Pour information :
  - noeud concerné : %(k2)s
 
 Vérifiez vos données.
-"""),
-
-    16 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    16: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Des éléments appartenant au GROUP_MA_POI1 <%(k2)s> n'ont pas le bon nombre de noeuds.
 Les mailles doivent être de type POI1 et posséder 1 seul noeud.
 
@@ -113,23 +119,26 @@ Pour information :
  - maille détectée : %(k3)s
 
 Vérifiez vos données.
-"""),
-
-    17 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    17: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Les mailles appartenant au GROUP_MA sont surfaciques. Vous ne devez pas utiliser
 TYPE=LINEIQUE mais TYPE=SURFACIQUE ou TOTALE.
 
 Vérifiez vos données.
-"""),
-
-    18 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    18: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Les mailles appartenant au GROUP_MA sont linéiques. Vous ne devez pas utiliser
 TYPE=SURFACIQUE mais TYPE=LINEIQUE ou TOTALE.
 
 Vérifiez vos données.
-"""),
-
-    19 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    19: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Le noeud <%(k5)s> de la maille <%(k3)s> appartenant au GROUP_MA_POI1 <%(k2)s> est connecté
 avec un noeud d'une maille surfacique du GROUP_MA qui est déjà connecté à la maille
 <%(k4)s> du GROUP_MA_POI1.
@@ -139,16 +148,18 @@ Les noeuds des mailles de surface ne doivent être connecté qu'a un seul noeud 
 La relation doit être bijective.
 
 Vérifiez vos données.
-"""),
-
-    20 : _("""
+"""
+    ),
+    20: _(
+        """
 AFFE_CARA_ELEM. Il y a %(i1)d occurrences du mot clef facteur <%(k1)s>.
 Entre ces différentes occurrences les GROUP_MA_POI1 ont %(i2)d mailles en communs.
 La règle de surcharge est donc appliquée %(i2)d fois.
 La liste des mailles surchargées est affichée avec INFO=2.
-"""),
-
-    21 : _("""
+"""
+    ),
+    21: _(
+        """
 AFFE_CARA_ELEM / MASS_REP. Occurrence %(i1)d.
 
 Le nombre des mailles POI1 affectées lors des différentes occurrences de MASS_REP dépasse
@@ -160,18 +171,20 @@ Pour information :
 
 Conseils : Vérifiez que lors de votre AFFE_MODELE, vous n'avez pas oublié d'affecter des
            DIS_T ou DIS_TR.
-"""),
-
-    22 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    22: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Des éléments appartenant au GROUP_MA_POI1 <%(k2)s> ne sont pas dans le modèle.
 
 Pour information :
  - maille détectée : %(k3)s
 
 Vérifiez vos données.
-"""),
-
-    23 : _("""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+"""
+    ),
+    23: _(
+        """AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
 Une maille dans le groupe <%(k2)s> n'est pas de la bonne topologique.
 Vous êtes en 3D, la topologie des mailles dans le groupe doit être identique.
 
@@ -188,6 +201,6 @@ La topologie du groupe est déterminée par la 1ère maille du groupe.
  - type de la 1ère maille du groupe                  : %(k6)s
 
 Vérifiez vos données.
-"""),
-
+"""
+    ),
 }

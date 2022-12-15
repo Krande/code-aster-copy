@@ -42,19 +42,13 @@ Mail = MODI_MAILLAGE(
 
 
 MODI = AFFE_MODELE(
-    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"),
-                           PHENOMENE="MECANIQUE", MODELISATION="DKT")
+    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"), PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
-CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(
-    GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
+CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
 
-MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3,
-                            ALPHA=0.01))
-CHMAT = AFFE_MATERIAU(MAILLAGE=Mail,
-                      AFFE=_F(
-                          TOUT='OUI',
-                          MATER=MAT))
+MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3, ALPHA=0.01))
+CHMAT = AFFE_MATERIAU(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 DF1 = DEFI_FONCTION(
     NOM_PARA="INST",
@@ -139,23 +133,35 @@ disp = FieldOnNodesReal(dofNumbering)
 disp.setValues(4)
 pair = ContactPairing(DEFICO)
 pair.updateCoordinates(disp)
-test.assertEqual(pair.getCoordinates().getValues()[:10], [54.0, 54.0, 4.0,
-                                                          54.0, 4.0, 4.0, 4.0, 54.0, 4.0, 4.0])
+test.assertEqual(
+    pair.getCoordinates().getValues()[:10], [54.0, 54.0, 4.0, 54.0, 4.0, 4.0, 4.0, 54.0, 4.0, 4.0]
+)
 
 nb_zones = DEFICO.getNumberOfContactZones()
 for i in range(nb_zones):
     pair.computeZone(i)
 
 
-test.assertEqual(pair.getListOfPairsOfZone(1), [(77, 30), (78, 31), (79, 32), (80, 33),
-                                                (81, 34), (82, 35), (83, 36), (84, 37), (85, 38), (86, 39)])
+test.assertEqual(
+    pair.getListOfPairsOfZone(1),
+    [
+        (77, 30),
+        (78, 31),
+        (79, 32),
+        (80, 33),
+        (81, 34),
+        (82, 35),
+        (83, 36),
+        (84, 37),
+        (85, 38),
+        (86, 39),
+    ],
+)
 
-test.assertEqual([pair.getNumberOfPairsOfZone(i)
-                 for i in range(nb_zones)], [26, 10])
+test.assertEqual([pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)], [26, 10])
 
 nbPairs = pair.getNumberOfPairs()
-test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i)
-                 for i in range(nb_zones)))
+test.assertEqual(nbPairs, sum(pair.getNumberOfPairsOfZone(i) for i in range(nb_zones)))
 
 
 # Testing AsterErrorMessage
@@ -286,8 +292,7 @@ fricParam.hasFriction = True
 test.assertTrue(fricParam.hasFriction)
 
 fricParam.setAlgorithm(code_aster.FrictionAlgo.Penalization)
-test.assertEqual(fricParam.getAlgorithm(),
-                 code_aster.FrictionAlgo.Penalization)
+test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Penalization)
 
 fricParam.setType(code_aster.FrictionType.Tresca)
 test.assertEqual(fricParam.getType(), code_aster.FrictionType.Tresca)
@@ -344,8 +349,7 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     pairParam.setDistanceRatio(0.1)
     test.assertEqual(pairParam.getDistanceRatio(), 0.1)
 
-    test.assertEqual(pairParam.getInitialState(),
-                     code_aster.InitialState.Interpenetrated)
+    test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
     pairParam.setInitialState(code_aster.InitialState.Yes)
 
 DEFICO4 = DEFI_CONT(

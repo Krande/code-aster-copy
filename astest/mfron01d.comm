@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 # person_in_charge: david.haboussa at edf.fr
 #    CAS TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT PROPORTIONNEL
 #                   ESSAI AVEC CHARGE EN RAMPE A 100 N
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #        UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
 #                    MODELE ELASTOPLASTIQUE DE CHABOCHE
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
 #               Y       A                          H = 1 MM (EPAISSEUR)
 #               I<----------->                     A = 1 MM (COTE)
@@ -42,134 +42,129 @@
 #               +             B                       1S
 #
 #
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-CREA_LIB_MFRONT(UNITE_MFRONT=38,UNITE_LIBRAIRIE=39)
+CREA_LIB_MFRONT(UNITE_MFRONT=38, UNITE_LIBRAIRIE=39)
 
 
-CARRE=LIRE_MAILLAGE(FORMAT="ASTER",     )
+CARRE = LIRE_MAILLAGE(FORMAT="ASTER")
 
-CPLAN=AFFE_MODELE(             MAILLAGE=CARRE,
-                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
-                                            MODELISATION = 'C_PLAN',
-                                            TOUT = 'OUI'))
+CPLAN = AFFE_MODELE(
+    MAILLAGE=CARRE, AFFE=_F(PHENOMENE="MECANIQUE", MODELISATION="C_PLAN", TOUT="OUI")
+)
 
 
-C1_I=187.*341.
-C2_I=29.*17184.
+C1_I = 187.0 * 341.0
+C2_I = 29.0 * 17184.0
 
 # LE C_I DU MODELE VISC_CIN1_CHAB EST DETERMINE PAR C_I = C1*A1
-ACIER=DEFI_MATERIAU(ELAS=_F(   E = 145200.,
-                                      NU = .3,
-                                      ALPHA = 0.,
-                                            ),
-                    CIN2_CHAB=_F(   R_I = 151.,
-                                         R_0 = 87.,
-                                         B = 2.3,
-                                         K = .43,
-                                         W = 6.09,
-                                         C1_I = C1_I,
-                                         G1_0 = 341.,
-                                         C2_I = C2_I,
-                                         G2_0 = 17184.,
-                                                ),
-                    MFRONT=_F(LISTE_COEF=(145200.,0.3,151.,87.,2.3,0.43,6.09,C1_I,C2_I,341.,17184.,1.,
-                                            ),)
-                                    ,)
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=145200.0, NU=0.3, ALPHA=0.0),
+    CIN2_CHAB=_F(
+        R_I=151.0, R_0=87.0, B=2.3, K=0.43, W=6.09, C1_I=C1_I, G1_0=341.0, C2_I=C2_I, G2_0=17184.0
+    ),
+    MFRONT=_F(
+        LISTE_COEF=(145200.0, 0.3, 151.0, 87.0, 2.3, 0.43, 6.09, C1_I, C2_I, 341.0, 17184.0, 1.0)
+    ),
+)
 
 
-MAT=AFFE_MATERIAU(            MAILLAGE=CARRE,
-                                    AFFE=_F(  GROUP_MA = ('MA1','MA2',),
-                                           MATER = ACIER,
-                                           ))
+MAT = AFFE_MATERIAU(MAILLAGE=CARRE, AFFE=_F(GROUP_MA=("MA1", "MA2"), MATER=ACIER))
 
-LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
-                              _F( JUSQU_A = 0.4, NOMBRE = 1),
-                              _F( JUSQU_A = 1.435, NOMBRE = 30)))
+LINST = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=0.4, NOMBRE=1), _F(JUSQU_A=1.435, NOMBRE=30))
+)
 
-TR_CS=AFFE_CHAR_MECA(             MODELE=CPLAN,DDL_IMPO=(
-                 _F(  GROUP_NO = ('NO3','NO5',), DX = 0.),
-                 _F(  GROUP_NO = 'NO2',  DX = 0., DY = 0.)),FORCE_NODALE=(
-             _F(  GROUP_NO = 'NO1', FX = -1.5,   FY = -0.5),
-             _F(  GROUP_NO = 'NO3',            FY = 0.5),
-             _F(  GROUP_NO = 'NO4', FX = 0.5,   FY = -0.5),
-             _F(  GROUP_NO = 'NO5',            FY = 1.0),
-             _F(  GROUP_NO = 'NO6', FX = -1.0,   FY = -1.0))
-                          )
+TR_CS = AFFE_CHAR_MECA(
+    MODELE=CPLAN,
+    DDL_IMPO=(_F(GROUP_NO=("NO3", "NO5"), DX=0.0), _F(GROUP_NO="NO2", DX=0.0, DY=0.0)),
+    FORCE_NODALE=(
+        _F(GROUP_NO="NO1", FX=-1.5, FY=-0.5),
+        _F(GROUP_NO="NO3", FY=0.5),
+        _F(GROUP_NO="NO4", FX=0.5, FY=-0.5),
+        _F(GROUP_NO="NO5", FY=1.0),
+        _F(GROUP_NO="NO6", FX=-1.0, FY=-1.0),
+    ),
+)
 
-COEF=DEFI_FONCTION(      NOM_PARA='INST',
-                            PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                          VALE=( 0.,  0.,
-                                 1.,  50.,     ))
+COEF = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE", VALE=(0.0, 0.0, 1.0, 50.0)
+)
 
-SOLNL=STAT_NON_LINE(
-               TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE C_PLAN',
-                            MODELE=CPLAN,
-                        CHAM_MATER=MAT,
-                             EXCIT=_F(
-                CHARGE = TR_CS,
-                FONC_MULT = COEF,
-                TYPE_CHARGE = 'FIXE_CSTE'),
-                COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='asterchaboche',
-                                UNITE_LIBRAIRIE=39,
-                                RESI_INTE_MAXI=1.e-8),
-                         INCREMENT=_F(
-                LIST_INST = LINST),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_INCR = 1,
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 50,
-                RESI_GLOB_RELA = 1.0E-6,)
-              )
+SOLNL = STAT_NON_LINE(
+    TITRE="TEST TRACTION_CISAILLEMENT CHABOCHE C_PLAN",
+    MODELE=CPLAN,
+    CHAM_MATER=MAT,
+    EXCIT=_F(CHARGE=TR_CS, FONC_MULT=COEF, TYPE_CHARGE="FIXE_CSTE"),
+    COMPORTEMENT=_F(
+        RELATION="MFRONT", NOM_ROUTINE="asterchaboche", UNITE_LIBRAIRIE=39, RESI_INTE_MAXI=1.0e-8
+    ),
+    INCREMENT=_F(LIST_INST=LINST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_INCR=1, REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=1.0e-6),
+)
 
-SOLNL=CALC_CHAMP(reuse=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLNL,INST=1.435)
+SOLNL = CALC_CHAMP(
+    reuse=SOLNL,
+    CONTRAINTE=("SIGM_ELNO"),
+    VARI_INTERNE=("VARI_ELNO"),
+    DEFORMATION=("EPSI_ELNO"),
+    RESULTAT=SOLNL,
+    INST=1.435,
+)
 
 # comparaison a SSNV101B
 
-TEST_RESU(RESU=(_F(INST=1.4350000000000001,
-                   RESULTAT=SOLNL,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=143.500000118,
-                   VALE_REFE=143.5,
-                   REFERENCE='AUTRE_ASTER',
-                   GROUP_MA='MA1',),
-                _F(INST=1.4350000000000001,
-                   RESULTAT=SOLNL,
-                   NOM_CHAM='EPSI_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=0.0960648895315,
-                   VALE_REFE=0.096064870341893,
-                   REFERENCE='AUTRE_ASTER',
-                   GROUP_MA='MA1',),
-                _F(INST=1.4350000000000001,
-                   RESULTAT=SOLNL,
-                   NOM_CHAM='EPSI_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPXY',
-                   VALE_CALC=0.143899682167,
-                   VALE_REFE=0.14389975382192,
-                   REFERENCE='AUTRE_ASTER',
-                   GROUP_MA='MA1',),
-                _F(INST=1.4350000000000001,
-                   RESULTAT=SOLNL,
-                   NOM_CHAM='VARI_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='V5',
-                   VALE_CALC=0.190153201411,
-                   VALE_REFE=0.19015335583293,
-                   REFERENCE='AUTRE_ASTER',
-                   GROUP_MA='MA1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.4350000000000001,
+            RESULTAT=SOLNL,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="SIXX",
+            VALE_CALC=143.500000118,
+            VALE_REFE=143.5,
+            REFERENCE="AUTRE_ASTER",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            INST=1.4350000000000001,
+            RESULTAT=SOLNL,
+            NOM_CHAM="EPSI_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPXX",
+            VALE_CALC=0.0960648895315,
+            VALE_REFE=0.096064870341893,
+            REFERENCE="AUTRE_ASTER",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            INST=1.4350000000000001,
+            RESULTAT=SOLNL,
+            NOM_CHAM="EPSI_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPXY",
+            VALE_CALC=0.143899682167,
+            VALE_REFE=0.14389975382192,
+            REFERENCE="AUTRE_ASTER",
+            GROUP_MA="MA1",
+        ),
+        _F(
+            INST=1.4350000000000001,
+            RESULTAT=SOLNL,
+            NOM_CHAM="VARI_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="V5",
+            VALE_CALC=0.190153201411,
+            VALE_REFE=0.19015335583293,
+            REFERENCE="AUTRE_ASTER",
+            GROUP_MA="MA1",
+        ),
+    )
+)
 
 FIN()

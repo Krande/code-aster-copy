@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,6 @@ class sd_stoc_lciel(AsBase):
     SCHC = AsVI()
     SCIB = AsVI()
 
-#   les deux objets suivants ne sont crees qu'au moment de la factorisation avec LDLT :
+    #   les deux objets suivants ne sont crees qu'au moment de la factorisation avec LDLT :
     M2LC = Facultatif(AsVI())
     LC2M = Facultatif(AsVI())

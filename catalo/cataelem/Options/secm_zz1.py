@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,35 +20,21 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PSIEF_R  = InputParameter(phys=PHY.SIEF_R,
-comment="""  PSIEF_R : CONTRAINTES AUX POINTS DE GAUSS  """)
+PSIEF_R = InputParameter(
+    phys=PHY.SIEF_R, comment="""  PSIEF_R : CONTRAINTES AUX POINTS DE GAUSS  """
+)
 
 
 SECM_ZZ1 = Option(
-    para_in=(
-        SP.PGEOMER,
-           PSIEF_R,
-    ),
-    para_out=(
-        SP.PVECTR1,
-        SP.PVECTR2,
-        SP.PVECTR3,
-        SP.PVECTR4,
-        SP.PVECTR5,
-        SP.PVECTR6,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PGEOMER, PSIEF_R),
+    para_out=(SP.PVECTR1, SP.PVECTR2, SP.PVECTR3, SP.PVECTR4, SP.PVECTR5, SP.PVECTR6),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  SECM_ZZ1 : CALCUL DES SECOND MEMBRES ELEMENTAIRES
                       POUR LE LISSAGE GLOBAL """,
 )

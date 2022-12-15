@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 from ..Language.SyntaxUtils import deprecate
 
+
 def compat_syntax(keywords):
     """Hook to adapt syntax from a old version or for compatibility reasons.
 
@@ -37,87 +38,146 @@ def compat_syntax(keywords):
             deprecate("DEBUT/DEBUG/HIST_ETAPE", case=2, level=7)
 
 
-DEBUT=MACRO(nom="DEBUT",
-            op=None,
-            compat_syntax=compat_syntax,
-            repetable='n',
-            fr=tr("Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers"),
-
-         IMPR_MACRO      =SIMP(fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
-                           statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
-         BASE            =FACT(fr=tr("définition des paramètres associés aux bases JEVEUX"),
-                               statut='f',min=1,max=2,
-           FICHIER         =SIMP(fr=tr("nom de la base"),statut='o',typ='TXM',
-                                 into=('GLOBALE','VOLATILE'),),
-           TITRE           =SIMP(statut='f',typ='TXM'),
-           CAS             =SIMP(statut='f',typ='TXM'),
-           NMAX_ENRE       =SIMP(fr=tr("nombre maximum d enregistrements"),statut='f',typ='I'),
-           LONG_ENRE       =SIMP(fr=tr("longueur des enregistrements"),statut='f',typ='I'),
-           LONG_REPE       =SIMP(fr=tr("longueur du répertoire"),statut='f',typ='I'),
-           TAILLE          =SIMP(statut='c', typ='I', fr=tr("ne pas utiliser")),
-         ),
-
-         CATALOGUE       =FACT(statut='f',min=1,max=10,
-           FICHIER         =SIMP(statut='o',typ='TXM'),
-           UNITE           =SIMP(statut='f',typ=UnitType(),inout='in'),
-         ),
-
-         CODE            =FACT(fr=tr("paramètres réservés aux cas-tests"),
-                               statut='f',min=1,max=1,
-           NIV_PUB_WEB     =SIMP(statut='o',typ='TXM',into=('INTERNET','INTRANET')),
-         ),
-
-         ERREUR          =FACT(fr=tr("comportement en cas d'erreur"),statut='f',min=1,max=1,
-           ERREUR_F        =SIMP(statut='f',typ='TXM',into=('ABORT','EXCEPTION'),),
-         ),
-
-         DEBUG           =FACT(fr=tr("option de déboggage reservée aux développeurs"),
-                               statut='d',min=1,max=1,
-           JXVERI          =SIMP(fr=tr("vérifie l intégrité de la segmentation mémoire"),
-                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
-           SDVERI          =SIMP(fr=tr("vérifie la conformité des SD produites par les commandes"),
-                                 statut='f',typ='TXM',into=('OUI','NON'), defaut='NON'),
-           JEVEUX          =SIMP(fr=tr("force les déchargement sur disque"),
-                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
-           ENVIMA          =SIMP(fr=tr("imprime les valeurs définies dans ENVIMA"),
-                                 statut='f',typ='TXM',into=('TEST',)),
-           VERI_BASE       =SIMP(fr=tr("exécute un test de vérification sur les bases"),
-                                 statut='f',typ='TXM',into=('GLOBALE','VOLATILE')),
-           VERI_BASE_NB = SIMP(fr=tr("pourcentage de la taille de base à écrire"),
-                             statut='f', typ='I', defaut=125),
-         ),
-
-         MESURE_TEMPS     =FACT(fr=tr("Pour afficher le temps des principales étapes de calcul"),
-                               statut='d',min=1,max=1,
-           NIVE_DETAIL      =SIMP(fr=tr("niveau de détail des impressions"),
-                                 statut='f',typ='I',into=(0,1,2,3),defaut=1),
-                                 # 0 : rien
-                                 # 1 : impression en fin de commande des mesures principales
-                                 # 2 : impression en fin de commande des mesures principales et secondaires
-                                 # 3 : impression des mesures principales et secondaires pour chaque pas de temps
-           MOYENNE     =SIMP(fr=tr("affichage des moyennes et écart-types en parallèle"),
-                                  statut='f',typ='TXM',into=('OUI','NON',),defaut='NON'),
-         ),
-
-         MEMOIRE         =FACT(fr=tr("mode de gestion mémoire utilisé"),statut='d',min=1,max=1,
-           TAILLE_BLOC       =SIMP(statut='f',typ='R',defaut=800.),
-           TAILLE_GROUP_ELEM =SIMP(statut='f',typ='I',defaut=1000),
-         ),
-
-         RESERVE_CPU     =FACT(fr=tr("reserve de temps pour terminer une execution"),statut='d',max=1,
-           regles=(EXCLUS('VALE','POURCENTAGE'),),
-#          par défaut VALE fixée à 10. dans le FORTRAN si CODE présent
-           VALE            =SIMP(statut='f',typ='I',val_min=0,),
-#          par défaut 10% dans le FORTRAN
-           POURCENTAGE     =SIMP(statut='f',typ='R',val_min=0.,val_max=1.0),
-#          valeur en secondes de la réserve maximum bornée à 900 secondes
-           BORNE           =SIMP(statut='f',typ='I',val_min=0,defaut=900),),
-
-         IGNORE_ALARM = SIMP(statut='f', typ='TXM', max='**', fr=tr("Alarmes que l'utilisateur souhaite délibérément ignorer")),
-
-         LANG = SIMP(statut='f', typ='TXM',
-                     fr=tr("Permet de choisir la langue utilisée pour les messages (si disponible)"),
-                     ),
-
-         INFO     = SIMP(statut='f', typ='I', defaut=1, into=(1,2),),
-);
+DEBUT = MACRO(
+    nom="DEBUT",
+    op=None,
+    compat_syntax=compat_syntax,
+    repetable="n",
+    fr=tr("Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers"),
+    IMPR_MACRO=SIMP(
+        fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+        defaut="NON",
+    ),
+    BASE=FACT(
+        fr=tr("définition des paramètres associés aux bases JEVEUX"),
+        statut="f",
+        min=1,
+        max=2,
+        FICHIER=SIMP(fr=tr("nom de la base"), statut="o", typ="TXM", into=("GLOBALE", "VOLATILE")),
+        TITRE=SIMP(statut="f", typ="TXM"),
+        CAS=SIMP(statut="f", typ="TXM"),
+        NMAX_ENRE=SIMP(fr=tr("nombre maximum d enregistrements"), statut="f", typ="I"),
+        LONG_ENRE=SIMP(fr=tr("longueur des enregistrements"), statut="f", typ="I"),
+        LONG_REPE=SIMP(fr=tr("longueur du répertoire"), statut="f", typ="I"),
+        TAILLE=SIMP(statut="c", typ="I", fr=tr("ne pas utiliser")),
+    ),
+    CATALOGUE=FACT(
+        statut="f",
+        min=1,
+        max=10,
+        FICHIER=SIMP(statut="o", typ="TXM"),
+        UNITE=SIMP(statut="f", typ=UnitType(), inout="in"),
+    ),
+    CODE=FACT(
+        fr=tr("paramètres réservés aux cas-tests"),
+        statut="f",
+        min=1,
+        max=1,
+        NIV_PUB_WEB=SIMP(statut="o", typ="TXM", into=("INTERNET", "INTRANET")),
+    ),
+    ERREUR=FACT(
+        fr=tr("comportement en cas d'erreur"),
+        statut="f",
+        min=1,
+        max=1,
+        ERREUR_F=SIMP(statut="f", typ="TXM", into=("ABORT", "EXCEPTION")),
+    ),
+    DEBUG=FACT(
+        fr=tr("option de déboggage reservée aux développeurs"),
+        statut="d",
+        min=1,
+        max=1,
+        JXVERI=SIMP(
+            fr=tr("vérifie l intégrité de la segmentation mémoire"),
+            statut="f",
+            typ="TXM",
+            into=("OUI", "NON"),
+            defaut="NON",
+        ),
+        SDVERI=SIMP(
+            fr=tr("vérifie la conformité des SD produites par les commandes"),
+            statut="f",
+            typ="TXM",
+            into=("OUI", "NON"),
+            defaut="NON",
+        ),
+        JEVEUX=SIMP(
+            fr=tr("force les déchargement sur disque"),
+            statut="f",
+            typ="TXM",
+            into=("OUI", "NON"),
+            defaut="NON",
+        ),
+        ENVIMA=SIMP(
+            fr=tr("imprime les valeurs définies dans ENVIMA"), statut="f", typ="TXM", into=("TEST",)
+        ),
+        VERI_BASE=SIMP(
+            fr=tr("exécute un test de vérification sur les bases"),
+            statut="f",
+            typ="TXM",
+            into=("GLOBALE", "VOLATILE"),
+        ),
+        VERI_BASE_NB=SIMP(
+            fr=tr("pourcentage de la taille de base à écrire"), statut="f", typ="I", defaut=125
+        ),
+    ),
+    MESURE_TEMPS=FACT(
+        fr=tr("Pour afficher le temps des principales étapes de calcul"),
+        statut="d",
+        min=1,
+        max=1,
+        NIVE_DETAIL=SIMP(
+            fr=tr("niveau de détail des impressions"),
+            statut="f",
+            typ="I",
+            into=(0, 1, 2, 3),
+            defaut=1,
+        ),
+        # 0 : rien
+        # 1 : impression en fin de commande des mesures principales
+        # 2 : impression en fin de commande des mesures principales et secondaires
+        # 3 : impression des mesures principales et secondaires pour chaque pas de temps
+        MOYENNE=SIMP(
+            fr=tr("affichage des moyennes et écart-types en parallèle"),
+            statut="f",
+            typ="TXM",
+            into=("OUI", "NON"),
+            defaut="NON",
+        ),
+    ),
+    MEMOIRE=FACT(
+        fr=tr("mode de gestion mémoire utilisé"),
+        statut="d",
+        min=1,
+        max=1,
+        TAILLE_BLOC=SIMP(statut="f", typ="R", defaut=800.0),
+        TAILLE_GROUP_ELEM=SIMP(statut="f", typ="I", defaut=1000),
+    ),
+    RESERVE_CPU=FACT(
+        fr=tr("reserve de temps pour terminer une execution"),
+        statut="d",
+        max=1,
+        regles=(EXCLUS("VALE", "POURCENTAGE"),),
+        #          par défaut VALE fixée à 10. dans le FORTRAN si CODE présent
+        VALE=SIMP(statut="f", typ="I", val_min=0),
+        #          par défaut 10% dans le FORTRAN
+        POURCENTAGE=SIMP(statut="f", typ="R", val_min=0.0, val_max=1.0),
+        #          valeur en secondes de la réserve maximum bornée à 900 secondes
+        BORNE=SIMP(statut="f", typ="I", val_min=0, defaut=900),
+    ),
+    IGNORE_ALARM=SIMP(
+        statut="f",
+        typ="TXM",
+        max="**",
+        fr=tr("Alarmes que l'utilisateur souhaite délibérément ignorer"),
+    ),
+    LANG=SIMP(
+        statut="f",
+        typ="TXM",
+        fr=tr("Permet de choisir la langue utilisée pour les messages (si disponible)"),
+    ),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+)

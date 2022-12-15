@@ -20,31 +20,43 @@
 from ..Utilities import _
 
 cata_msg = {
-    1 : { 'message' : _("""
+    1: {
+        "message": _(
+            """
 Le maillage indiqué par mot-clé MAILLAGE_N n'est pas utilisé. 
 Le maillage considéré est celui provenant de RESU_INIT.
-"""),
-          'flags' : 'DECORATED',
+"""
+        ),
+        "flags": "DECORATED",
     },
-
-    2 : _("""
+    2: _(
+        """
 Assemblage des %(i1)d permutations
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Permutation de l'assemblage %(k1)s en position %(k2)s
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Il faut renseigner au moins un des mots-clés MAILLAGE_N ou RESU_INIT.
-"""),
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
 Le maillage est obsolète : les groupes %(k1)s ne sont pas conformes aux orientations de la cuve.
-"""),
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
 Le fichier THYC est invalide : il n'y a pas de cohérence entre le barycentre et l'épaisseur des mailles.
-"""),
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
 On ne trouve que %(i1)d mailles THYC associées aux %(i2)d grilles.
-"""),
+"""
+    ),
 }

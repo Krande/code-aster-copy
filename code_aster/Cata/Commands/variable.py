@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ The parameters are provided as a pickle file that contains:
 """
 
 
-
 import os.path as osp
 import pickle
 
@@ -38,8 +37,8 @@ import numpy
 class VariableSupport(object):
     """Implementation of the VARIABLE feature for parametic study."""
 
-    nom = 'VARIABLE' # for vocab01a
-    inputs_filename = 'inputs.pick'
+    nom = "VARIABLE"  # for vocab01a
+    inputs_filename = "inputs.pick"
 
     def __init__(self):
         """Initialization"""
@@ -55,9 +54,9 @@ class VariableSupport(object):
             params, values = [], []
         else:
             print("Settings variables values...")
-            with open('inputs.pick', 'rb') as pick:
-                params = pickle.load(pick, encoding='latin1')
-                values = pickle.load(pick, encoding='latin1')
+            with open("inputs.pick", "rb") as pick:
+                params = pickle.load(pick, encoding="latin1")
+                values = pickle.load(pick, encoding="latin1")
 
         self._cache = params, values
         assert len(params) == len(values), (params, values)

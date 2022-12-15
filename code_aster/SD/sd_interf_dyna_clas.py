@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,16 @@ from .sd_util import *
 
 
 class sd_interf_dyna_clas(AsBase):
-#---------------------------------------
+    # ---------------------------------------
     nomj = SDNom(fin=8)
-    IDC_NOMS = AsObject(genr='N', xous='S', type='K', ltyp=8, )
-    IDC_DDAC = AsColl(
-        acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    IDC_DY_FREQ = AsVR(lonmax=1, )
-    IDC_LINO = AsColl(
-        acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    IDC_NOMS = AsObject(genr="N", xous="S", type="K", ltyp=8)
+    IDC_DDAC = AsColl(acces="NU", stockage="DISPERSE", modelong="VARIABLE", type="I")
+    IDC_DY_FREQ = AsVR(lonmax=1)
+    IDC_LINO = AsColl(acces="NU", stockage="DISPERSE", modelong="VARIABLE", type="I")
     IDC_TYPE = AsVK8()
-    IDC_DESC = AsVI(lonmax=5, )
+    IDC_DESC = AsVI(lonmax=5)
     IDC_DEFO = AsVI()
-    IDC_REFE = AsVK24(lonmax=3, )
+    IDC_REFE = AsVK24(lonmax=3)
 
     def check_coherence_longueurs(self, checker):
         noms = self.IDC_NOMS.get()
@@ -54,7 +52,7 @@ class sd_interf_dyna_clas(AsBase):
         sd2.check(checker)
         sd2 = sd_nume_ddl(refe[1])
         sd2.check(checker)
-        assert refe[2].strip() == '', refe
+        assert refe[2].strip() == "", refe
 
     def check_DESC(self, checker):
         desc = self.IDC_DESC.get()
@@ -64,7 +62,7 @@ class sd_interf_dyna_clas(AsBase):
         assert desc[3] > 0 and desc[3] < 500, desc
         assert desc[4] > 0, desc
         nomgd = sdu_nom_gd(desc[3]).strip()
-        assert nomgd == 'DEPL_R', (nomgd, desc)
+        assert nomgd == "DEPL_R", (nomgd, desc)
 
     def check_NOMS(self, checker):
         # il n'y a rien à vérifier : un pointeur de noms contient
@@ -74,7 +72,7 @@ class sd_interf_dyna_clas(AsBase):
     def check_TYPE(self, checker):
         type = self.IDC_TYPE.get()
         for t1 in type:
-            assert t1.strip() in ('CRAIGB', 'MNEAL', 'CB_HARMO', 'AUCUN'), type
+            assert t1.strip() in ("CRAIGB", "MNEAL", "CB_HARMO", "AUCUN"), type
 
     def check_LINO_DDAC(self, checker):
         lino = self.IDC_LINO.get()
@@ -104,5 +102,4 @@ class sd_interf_dyna_clas(AsBase):
         for k in range(nbnot):
             assert defo[k] > 0, defo
 
-        assert sdu_monotone(defo[nbnot:2 * nbnot]) in (
-            1, 0), (nbnot, nbec, defo)
+        assert sdu_monotone(defo[nbnot : 2 * nbnot]) in (1, 0), (nbnot, nbec, defo)

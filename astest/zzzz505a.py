@@ -26,24 +26,21 @@ code_aster.init("--test")
 test = code_aster.TestCase()
 
 # For a Mesh
-mesh = LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
+mesh = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
 nbNodes = mesh.getNumberOfNodes()
 
-model = AFFE_MODELE(MAILLAGE=mesh,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D', ), )
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-dofNume = NUME_DDL(MODELE=model, )
+dofNume = NUME_DDL(MODELE=model)
 
-elno = CREA_CHAMP(TYPE_CHAM='ELGA_DEPL_R',
-                  NUME_DDL=dofNume,
-                  OPERATION='AFFE',
-                  MODELE=model,
-                  AFFE=_F(TOUT='OUI',
-                          NOM_CMP=('DX', 'DY', 'DZ'),
-                          VALE=(-1.0, 2.0, 3.0)))
+elno = CREA_CHAMP(
+    TYPE_CHAM="ELGA_DEPL_R",
+    NUME_DDL=dofNume,
+    OPERATION="AFFE",
+    MODELE=model,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(-1.0, 2.0, 3.0)),
+)
 
 test.assertEqual(elno.getPhysicalQuantity(), "DEPL_R")
 test.assertEqual(elno.getFieldType(), "ELGA")
@@ -53,30 +50,35 @@ test.assertEqual(elno.getNumberOfComponents(), 3)
 elno_values = elno.getValues()
 elno.setValues(elno_values)
 
-TEST_RESU(CHAM_ELEM=_F(CHAM_GD=elno,
-                       REFERENCE='ANALYTIQUE',
-                       VALE_CALC=-1.0,
-                       VALE_REFE=-1.0,
-                       NOM_CMP='DX',
-                       TYPE_TEST='MIN', )
-          )
+TEST_RESU(
+    CHAM_ELEM=_F(
+        CHAM_GD=elno,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=-1.0,
+        VALE_REFE=-1.0,
+        NOM_CMP="DX",
+        TYPE_TEST="MIN",
+    )
+)
 
-field = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                   OPERATION='AFFE',
-                   NUME_DDL=dofNume,
-                   MODELE=model,
-                   AFFE=_F(TOUT='OUI',
-                           NOM_CMP=('DX', 'DY', 'DZ'),
-                           VALE=(-1.0, 2.0, 3.0),
-                           ), )
+field = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    NUME_DDL=dofNume,
+    MODELE=model,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(-1.0, 2.0, 3.0)),
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=field,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=-1.0,
-                     VALE_REFE=-1.0,
-                     NOM_CMP='DX',
-                     TYPE_TEST='MIN', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=field,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=-1.0,
+        VALE_REFE=-1.0,
+        NOM_CMP="DX",
+        TYPE_TEST="MIN",
+    )
+)
 
 norm_1 = (1.0 + 2.0 + 3.0) * nbNodes
 norm_2 = sqrt(14.0 * nbNodes)
@@ -110,24 +112,19 @@ test.assertAlmostEqual(myField.norm("NORM_1"), 3 * nbNodes)
 
 field2 = field - myField
 
-test.assertAlmostEqual(field2.norm("NORM_2"),
-                       sqrt((4.0 + 1.0 + 4.0) * nbNodes))
+test.assertAlmostEqual(field2.norm("NORM_2"), sqrt((4.0 + 1.0 + 4.0) * nbNodes))
 
 # For a Parallel Mesh
-meshp = LIRE_MAILLAGE(FORMAT='MED', UNITE=20, PARTITIONNEUR="PTSCOTCH")
+meshp = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, PARTITIONNEUR="PTSCOTCH")
 
-modelp = AFFE_MODELE(MAILLAGE=meshp,
-                     AFFE=_F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='3D', ), )
+modelp = AFFE_MODELE(MAILLAGE=meshp, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-fieldp = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    OPERATION='AFFE',
-                    MODELE=modelp,
-                    AFFE=_F(TOUT='OUI',
-                            NOM_CMP=('DX', 'DY', 'DZ'),
-                            VALE=(1.0, 2.0, 3.0),
-                            ), )
+fieldp = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MODELE=modelp,
+    AFFE=_F(TOUT="OUI", NOM_CMP=("DX", "DY", "DZ"), VALE=(1.0, 2.0, 3.0)),
+)
 
 test.assertEqual(fieldp.size(), 3 * meshp.getNumberOfNodes())
 test.assertAlmostEqual(fieldp.norm("NORM_1"), norm_1)
@@ -149,8 +146,12 @@ test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 test.printSummary()
 ftest = fieldp.duplicate()
-values_test = {'MAX': 4.0, 'MIN': -7.0, 'SOMM': 25 *
-               1.0 + 4.0 - 7.0, 'SOMM_ABS': 25 * 1.0 + 4.0 + 7.0}
+values_test = {
+    "MAX": 4.0,
+    "MIN": -7.0,
+    "SOMM": 25 * 1.0 + 4.0 - 7.0,
+    "SOMM_ABS": 25 * 1.0 + 4.0 + 7.0,
+}
 ftest.updateValuePointers()
 # for 'MAX' - DX
 ftest[0] = 4.0
@@ -158,71 +159,91 @@ ftest[0] = 4.0
 ftest[3] = -7.0
 
 # Avec NOM_CMP
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=-7.0,
-                     VALE_REFE=values_test['MIN'],
-                     NOM_CMP='DX',
-                     TYPE_TEST='MIN', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=-7.0,
+        VALE_REFE=values_test["MIN"],
+        NOM_CMP="DX",
+        TYPE_TEST="MIN",
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=4.0,
-                     VALE_REFE=values_test['MAX'],
-                     NOM_CMP='DX',
-                     TYPE_TEST='MAX', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=4.0,
+        VALE_REFE=values_test["MAX"],
+        NOM_CMP="DX",
+        TYPE_TEST="MAX",
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=22.0,
-                     VALE_REFE=values_test['SOMM'],
-                     NOM_CMP='DX',
-                     TYPE_TEST='SOMM', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=22.0,
+        VALE_REFE=values_test["SOMM"],
+        NOM_CMP="DX",
+        TYPE_TEST="SOMM",
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=36.0,
-                     VALE_REFE=values_test['SOMM_ABS'],
-                     NOM_CMP='DX',
-                     TYPE_TEST='SOMM_ABS', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=36.0,
+        VALE_REFE=values_test["SOMM_ABS"],
+        NOM_CMP="DX",
+        TYPE_TEST="SOMM_ABS",
+    )
+)
 
 # Sans NOM_CMP
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=-7.0,
-                     VALE_REFE=values_test['MIN'],
-                     TYPE_TEST='MIN', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=-7.0,
+        VALE_REFE=values_test["MIN"],
+        TYPE_TEST="MIN",
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=4.0,
-                     VALE_REFE=values_test['MAX'],
-                     TYPE_TEST='MAX', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=4.0,
+        VALE_REFE=values_test["MAX"],
+        TYPE_TEST="MAX",
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=157.0,
-                     VALE_REFE=157.0,
-                     TYPE_TEST='SOMM', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest, REFERENCE="ANALYTIQUE", VALE_CALC=157.0, VALE_REFE=157.0, TYPE_TEST="SOMM"
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=171.0,
-                     VALE_REFE=171.0,
-                     TYPE_TEST='SOMM_ABS', )
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CHAM_GD=ftest,
+        REFERENCE="ANALYTIQUE",
+        VALE_CALC=171.0,
+        VALE_REFE=171.0,
+        TYPE_TEST="SOMM_ABS",
+    )
+)
 
 # TEST EXTR_COMP for FieldOnNodesReal
 f_real = code_aster.FieldOnNodesReal(dofNume)
 f_real.setValues(1.0)
-vals_real = f_real.EXTR_COMP('DX').valeurs
+vals_real = f_real.EXTR_COMP("DX").valeurs
 test.assertEqual(vals_real[0], 1.0)
 
 sf_real = f_real.exportToSimpleFieldOnNodes()
@@ -233,22 +254,21 @@ test.assertEqual(sf_real_mask.all(), True)
 # TEST EXTR_COMP for FieldOnNodesComplex
 f_complex = code_aster.FieldOnNodesComplex(dofNume)
 f_complex.setValues(1 + 2j)
-vals_complex = f_complex.EXTR_COMP('DX').valeurs
+vals_complex = f_complex.EXTR_COMP("DX").valeurs
 test.assertEqual(vals_complex[0], 1 + 2j)
 
 f2_complex = code_aster.FieldOnNodesComplex(dofNume)
 f2_complex.setValues(1 + 5j)
-dot_f_f2 = sum(f_complex.getValues()[p] *
-               f2_complex.getValues()[p].conjugate()
-               for p in range(len(f_complex.getValues())))
+dot_f_f2 = sum(
+    f_complex.getValues()[p] * f2_complex.getValues()[p].conjugate()
+    for p in range(len(f_complex.getValues()))
+)
 test.assertEqual(f_complex.dot(f2_complex), dot_f_f2)
-test.assertEqual(f_complex.norm("NORM_1"),
-                 sum(map(abs, f_complex.getValues())))
-test.assertEqual(f_complex.norm("NORM_2"),
-                 sqrt(sum(map(lambda x: abs(x) ** 2,
-                              f_complex.getValues()))))
-test.assertEqual(f_complex.norm("NORM_INFINITY"),
-                 max(map(abs, f_complex.getValues())))
+test.assertEqual(f_complex.norm("NORM_1"), sum(map(abs, f_complex.getValues())))
+test.assertEqual(
+    f_complex.norm("NORM_2"), sqrt(sum(map(lambda x: abs(x) ** 2, f_complex.getValues())))
+)
+test.assertEqual(f_complex.norm("NORM_INFINITY"), max(map(abs, f_complex.getValues())))
 
 sf_complex = f_complex.exportToSimpleFieldOnNodes()
 sf_complex_values, sf_complex_mask = sf_complex.getValues()

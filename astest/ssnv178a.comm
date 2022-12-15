@@ -22,147 +22,145 @@
 
 # CARACTERISTIQUES DU BETON
 E = 2e10
-nu = .2
+nu = 0.2
 
 # CARACTERISTIQUES DE L'ARMATURE
 Ea = 2e11
-sec = .1
+sec = 0.1
 
 # CARACTERISTIQUES DU CYLINDRE
 # a : RAYON INTERNE
 # b : RAYON EXTERNE
 
-a= 10.
-b= 20.
+a = 10.0
+b = 20.0
 
 # PRESSION INTERNE
-P=1e6
+P = 1e6
 
 
 # SOLUTION ANALYTIQUE
-#--------------------
-l  = nu*E/(1.-2.*nu)/(1.+nu)
-m  = 1/2.*E/(1.+nu)
+# --------------------
+l = nu * E / (1.0 - 2.0 * nu) / (1.0 + nu)
+m = 1 / 2.0 * E / (1.0 + nu)
 
-Pb = 4.*P*a**2*(l+m)/(b*(3*l+2*m)*2*m*(b**2-a**2)/Ea/sec+b**2*(l+2*m)+a**2*(3*l+2*m))
+Pb = (
+    4.0
+    * P
+    * a**2
+    * (l + m)
+    / (
+        b * (3 * l + 2 * m) * 2 * m * (b**2 - a**2) / Ea / sec
+        + b**2 * (l + 2 * m)
+        + a**2 * (3 * l + 2 * m)
+    )
+)
 
-C1 = (P*a**2-Pb*b**2)/(b**2-a**2)
-C2 = a**2*b**2*(P-Pb)/(b**2-a**2)
-e  = 2./3./(3*l+2*m)*C1
-c  = l/m/(3*l+2*m)*C1
-def f_srr(r) :
-  y = C1-C2/r**2
-  return y
-def f_stt(r) :
-  y = C1+C2/r**2
-  return y
+C1 = (P * a**2 - Pb * b**2) / (b**2 - a**2)
+C2 = a**2 * b**2 * (P - Pb) / (b**2 - a**2)
+e = 2.0 / 3.0 / (3 * l + 2 * m) * C1
+c = l / m / (3 * l + 2 * m) * C1
+
+
+def f_srr(r):
+    y = C1 - C2 / r**2
+    return y
+
+
+def f_stt(r):
+    y = C1 + C2 / r**2
+    return y
+
 
 # Deplacement, deformations contraintes dans le Beton en R=a
-DX_a = (c+3*e)*a/2+C2/2./m/a
-EPSRR_a=(c+3*e)/2.-C2/2./m/a/a
-EPSTT_a=(c+3*e)/2.+C2/2./m/a/a
-SIGRR_a=f_srr(a)
-SIGTT_a=f_stt(a)
+DX_a = (c + 3 * e) * a / 2 + C2 / 2.0 / m / a
+EPSRR_a = (c + 3 * e) / 2.0 - C2 / 2.0 / m / a / a
+EPSTT_a = (c + 3 * e) / 2.0 + C2 / 2.0 / m / a / a
+SIGRR_a = f_srr(a)
+SIGTT_a = f_stt(a)
 
 # Deplacement, deformations contraintes dans le Beton en R=b
-DX_b = (c+3*e)*b/2+C2/2./m/b
-EPSRR_b=(c+3*e)/2.-C2/2./m/b/b
-EPSTT_b=(c+3*e)/2.+C2/2./m/b/b
-SIGRR_b=f_srr(b)
-SIGTT_b=f_stt(b)
+DX_b = (c + 3 * e) * b / 2 + C2 / 2.0 / m / b
+EPSRR_b = (c + 3 * e) / 2.0 - C2 / 2.0 / m / b / b
+EPSTT_b = (c + 3 * e) / 2.0 + C2 / 2.0 / m / b / b
+SIGRR_b = f_srr(b)
+SIGTT_b = f_stt(b)
 
 # Deformations, Contraintes dans l'armature
-ESPXX_armature=EPSTT_b
-SIGXX_armature=ESPXX_armature*Ea
+ESPXX_armature = EPSTT_b
+SIGXX_armature = ESPXX_armature * Ea
 
-#----------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+# ----------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2)
+MA = LIRE_MAILLAGE(FORMAT="MED", INFO=2)
 
-BETON=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=nu,),)
+BETON = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu))
 
-ACIER=DEFI_MATERIAU(
-            ELAS=_F(  E = Ea,   NU = 0.0),
-            ECRO_LINE=_F( D_SIGM_EPSI = 2.E10,   SY = 2.E11, )
-                          )
+ACIER = DEFI_MATERIAU(ELAS=_F(E=Ea, NU=0.0), ECRO_LINE=_F(D_SIGM_EPSI=2.0e10, SY=2.0e11))
 
-MATE=AFFE_MATERIAU(MAILLAGE=MA,
-                   AFFE=(
-                         _F(GROUP_MA=('CYLINDRE',
-                                      'SURF_INT',
-                                      'SURF_INF','SURF_SUP',
-                                      'SURF_DRO','SURF_GAU'),
-                           MATER=BETON,),
-                        _F(  GROUP_MA = ('SURF_EXT',),MATER = ACIER,),),)
+MATE = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(
+            GROUP_MA=("CYLINDRE", "SURF_INT", "SURF_INF", "SURF_SUP", "SURF_DRO", "SURF_GAU"),
+            MATER=BETON,
+        ),
+        _F(GROUP_MA=("SURF_EXT",), MATER=ACIER),
+    ),
+)
 
-MO=AFFE_MODELE(MAILLAGE=MA,INFO=2,
-               AFFE=(
-                     _F(GROUP_MA=('CYLINDRE',
-                                  'SURF_INT',
-                                  'SURF_INF','SURF_SUP',
-                                  'SURF_DRO','SURF_GAU'),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),
-                    _F(  GROUP_MA = 'SURF_EXT',
-                          PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'GRILLE_MEMBRANE'),))
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    INFO=2,
+    AFFE=(
+        _F(
+            GROUP_MA=("CYLINDRE", "SURF_INT", "SURF_INF", "SURF_SUP", "SURF_DRO", "SURF_GAU"),
+            PHENOMENE="MECANIQUE",
+            MODELISATION="3D",
+        ),
+        _F(GROUP_MA="SURF_EXT", PHENOMENE="MECANIQUE", MODELISATION="GRILLE_MEMBRANE"),
+    ),
+)
 
-MA=MODI_MAILLAGE( reuse=MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU=_F(  GROUP_MA_PEAU = ('SURF_INT','SURF_EXT',
-                                               'SURF_INF','SURF_SUP',
-                                               'SURF_DRO','SURF_GAU')
-                      ))
+MA = MODI_MAILLAGE(
+    reuse=MA,
+    MAILLAGE=MA,
+    ORIE_PEAU=_F(
+        GROUP_MA_PEAU=("SURF_INT", "SURF_EXT", "SURF_INF", "SURF_SUP", "SURF_DRO", "SURF_GAU")
+    ),
+)
 
-CAREL=AFFE_CARA_ELEM(    MODELE=MO,
-                       GRILLE=(_F( GROUP_MA = 'SURF_EXT',
-                                SECTION = sec,
-                                ANGL_REP_1 = (90., 0.0,),
-                                EXCENTREMENT = 0.0,
-                              ),
-                              )
-                        )
-CHAR_1=AFFE_CHAR_MECA(MODELE=MO,
-                    FACE_IMPO=(_F(GROUP_MA='SURF_DRO',DNOR=0.0,),
-                               _F(GROUP_MA='SURF_GAU',DNOR=0.0,),
-                              ),
-                     )
-CHAR_2=AFFE_CHAR_MECA(MODELE=MO,
-                    PRES_REP=_F(GROUP_MA='SURF_INT',
-                                PRES=P,),
-      )
-CHAR_3=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=_F(GROUP_MA = ('SURF_SUP'),
-                                DZ = 0.),
-      )
+CAREL = AFFE_CARA_ELEM(
+    MODELE=MO,
+    GRILLE=(_F(GROUP_MA="SURF_EXT", SECTION=sec, ANGL_REP_1=(90.0, 0.0), EXCENTREMENT=0.0),),
+)
+CHAR_1 = AFFE_CHAR_MECA(
+    MODELE=MO, FACE_IMPO=(_F(GROUP_MA="SURF_DRO", DNOR=0.0), _F(GROUP_MA="SURF_GAU", DNOR=0.0))
+)
+CHAR_2 = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=_F(GROUP_MA="SURF_INT", PRES=P))
+CHAR_3 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_MA=("SURF_SUP"), DZ=0.0))
 
-FM=DEFI_FONCTION(NOM_PARA='INST',
-                 VALE=(0.0,0.0,1.0,1.0,),)
+FM = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
-LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),)
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-RESU=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=MATE,
-                   CARA_ELEM=CAREL,
-                   EXCIT=(_F(CHARGE=CHAR_1),
-                          _F(CHARGE=CHAR_2,FONC_MULT=FM,),
-                          _F(CHARGE=CHAR_3)
-                    ,),
-                     NEWTON=_F(MATRICE='TANGENTE',
-                               ),
-                   COMPORTEMENT=(_F(RELATION='ELAS',
-                                GROUP_MA='CYLINDRE',),
-                             _F(RELATION='GRILLE_ISOT_LINE',
-                                GROUP_MA='SURF_EXT',),),
-                   INCREMENT=_F(LIST_INST=LINST,),)
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=MATE,
+    CARA_ELEM=CAREL,
+    EXCIT=(_F(CHARGE=CHAR_1), _F(CHARGE=CHAR_2, FONC_MULT=FM), _F(CHARGE=CHAR_3)),
+    NEWTON=_F(MATRICE="TANGENTE"),
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", GROUP_MA="CYLINDRE"),
+        _F(RELATION="GRILLE_ISOT_LINE", GROUP_MA="SURF_EXT"),
+    ),
+    INCREMENT=_F(LIST_INST=LINST),
+)
 
-CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),RESULTAT=RESU)
+CALC_CHAMP(reuse=RESU, CONTRAINTE=("SIGM_ELNO"), RESULTAT=RESU)
 
-CALC_CHAMP(reuse=RESU,DEFORMATION=('EPSI_ELNO'),GROUP_MA='BETON',RESULTAT=RESU)
+CALC_CHAMP(reuse=RESU, DEFORMATION=("EPSI_ELNO"), GROUP_MA="BETON", RESULTAT=RESU)
 
 #
 # -------------------------------------------------
@@ -173,115 +171,142 @@ CALC_CHAMP(reuse=RESU,DEFORMATION=('EPSI_ELNO'),GROUP_MA='BETON',RESULTAT=RESU)
 
 # TESTS DES DEPLACEMENTS, DEFORMATIONS ET DES CONTRAINTES DANS LE BETON (R=a)
 
-TEST_RESU(RESU=(_F(GROUP_NO='A',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 0.000891925672007,
-                   VALE_REFE=8.9192546583850927E-4,),
-                _F(GROUP_NO='A',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=-6.58345654536E-05,
-                   VALE_REFE=-6.5838509316770184E-05,
-                   GROUP_MA='M100',),
-                _F(GROUP_NO='A',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 8.91892078792E-05,
-                   VALE_REFE=8.9192546583850943E-05,
-                   GROUP_MA='M100',),
-                _F(GROUP_NO='A',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-999931.750633,
-                   VALE_REFE=-1.E6,
-                   GROUP_MA='M100',),
-                _F(GROUP_NO='A',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIYY',
-                   VALE_CALC= 1583797.80491,
-                   VALE_REFE=1.5838509316770188E6,
-                   GROUP_MA='M100',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.000891925672007,
+            VALE_REFE=8.9192546583850927e-4,
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_ELNO",
+            NOM_CMP="EPXX",
+            VALE_CALC=-6.58345654536e-05,
+            VALE_REFE=-6.5838509316770184e-05,
+            GROUP_MA="M100",
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_ELNO",
+            NOM_CMP="EPYY",
+            VALE_CALC=8.91892078792e-05,
+            VALE_REFE=8.9192546583850943e-05,
+            GROUP_MA="M100",
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            NOM_CMP="SIXX",
+            VALE_CALC=-999931.750633,
+            VALE_REFE=-1.0e6,
+            GROUP_MA="M100",
+        ),
+        _F(
+            GROUP_NO="A",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            NOM_CMP="SIYY",
+            VALE_CALC=1583797.80491,
+            VALE_REFE=1.5838509316770188e6,
+            GROUP_MA="M100",
+        ),
+    )
+)
 
 # TESTS DES DEPLACEMENTS, DEFORMATIONS ET DES CONTRAINTES DANS LE BETON (R=b)
 
-TEST_RESU(RESU=(_F(GROUP_NO='B',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC= 0.000621118157994,
-                   VALE_REFE=6.2111801242236027E-4,),
-                _F(GROUP_NO='B',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=-7.70162519751E-06,
-                   VALE_REFE=-7.7018633540372683E-06,
-                   GROUP_MA='M1',),
-                _F(GROUP_NO='B',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='EPSI_ELNO',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 3.10557057166E-05,
-                   VALE_REFE=3.1055900621118014E-05,
-                   GROUP_MA='M1',),
-                _F(GROUP_NO='B',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-31051.7498852,
-                   VALE_REFE=-3.1055900621118024E4,
-                   PRECISION=7.0000000000000001E-3,
-                   GROUP_MA='M1',),
-                _F(GROUP_NO='B',
-                   INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='SIGM_ELNO',
-                   NOM_CMP='SIYY',
-                   VALE_CALC= 614903.765348,
-                   VALE_REFE=6.1490683229813667E5,
-                   GROUP_MA='M1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.000621118157994,
+            VALE_REFE=6.2111801242236027e-4,
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_ELNO",
+            NOM_CMP="EPXX",
+            VALE_CALC=-7.70162519751e-06,
+            VALE_REFE=-7.7018633540372683e-06,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_ELNO",
+            NOM_CMP="EPYY",
+            VALE_CALC=3.10557057166e-05,
+            VALE_REFE=3.1055900621118014e-05,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            NOM_CMP="SIXX",
+            VALE_CALC=-31051.7498852,
+            VALE_REFE=-3.1055900621118024e4,
+            PRECISION=7.0000000000000001e-3,
+            GROUP_MA="M1",
+        ),
+        _F(
+            GROUP_NO="B",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_ELNO",
+            NOM_CMP="SIYY",
+            VALE_CALC=614903.765348,
+            VALE_REFE=6.1490683229813667e5,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 # TESTS DES CONTRAINTES DANS L'ARMATURE (R=b)
 
-TEST_RESU(RESU=_F(GROUP_NO='B',
-                  INST=1.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP='SIXX',
-                  VALE_CALC= 6211181.57704,
-                  VALE_REFE=6.2111801242236029E6,
-                  GROUP_MA='M502',),
-          )
+TEST_RESU(
+    RESU=_F(
+        GROUP_NO="B",
+        INST=1.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="SIGM_ELNO",
+        NOM_CMP="SIXX",
+        VALE_CALC=6211181.57704,
+        VALE_REFE=6.2111801242236029e6,
+        GROUP_MA="M502",
+    )
+)
 
 FIN()
 """

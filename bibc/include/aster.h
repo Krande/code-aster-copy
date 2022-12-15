@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -20,13 +20,12 @@
 #define ASTER_H_
 
 #include "Python.h"
-#include <stdio.h>
-#include <signal.h>
-
-#include "asterc_debug.h"
 #include "aster_depend.h"
+#include "asterc_debug.h"
 #include "definition.h"
 
+#include <signal.h>
+#include <stdio.h>
 
 /* pour indiquer le statut des arguments des fonctions. */
 
@@ -36,9 +35,12 @@
 #define _UNUSED
 
 /* AS_ASSERT is similar to the ASSERT macro used in fortran */
-#define AS_ASSERT(cond) if ( !(cond) ) { \
-            DEBUG_LOC; DBGV("Assertion failed: %s", #cond); \
-            INTERRUPT(17); }
+#define AS_ASSERT( cond )                                                                          \
+    if ( !( cond ) ) {                                                                             \
+        DEBUG_LOC;                                                                                 \
+        DBGV( "Assertion failed: %s", #cond );                                                     \
+        INTERRUPT( 17 );                                                                           \
+    }
 
 /* deprecated functions on Windows */
 #ifdef ASTER_PLATFORM_WINDOWS

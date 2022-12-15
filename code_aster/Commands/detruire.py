@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -28,6 +28,7 @@ from ..Utilities import deprecate, get_caller_context
 
 class Deleter(ExecuteCommand):
     """Command that deletes *DataStructure* instances from the calling stack."""
+
     command_name = "DETRUIRE"
 
     def exec_(self, keywords):
@@ -38,8 +39,7 @@ class Deleter(ExecuteCommand):
                 deletion. "NOM" will not be available for 'post_exec'.
         """
         if self.level > 1:
-            deprecate("DETRUIRE should be used in a macro-command", case=9,
-                      level=5)
+            deprecate("DETRUIRE should be used in a macro-command", case=9, level=5)
             return
 
         to_del = [obj.getName() for obj in keywords.pop("NOM")]

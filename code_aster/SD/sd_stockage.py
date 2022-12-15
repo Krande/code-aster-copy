@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,6 @@ from .sd_stoc_morse import sd_stoc_morse
 
 class sd_stockage(AsBase):
     nomj = SDNom(fin=14)
-    slcs = Facultatif(sd_stoc_lciel(SDNom(nomj='.SLCS')))
-    mltf = Facultatif(sd_stoc_mltf(SDNom(nomj='.MLTF')))
-    smos = sd_stoc_morse(SDNom(nomj='.SMOS'))
+    slcs = Facultatif(sd_stoc_lciel(SDNom(nomj=".SLCS")))
+    mltf = Facultatif(sd_stoc_mltf(SDNom(nomj=".MLTF")))
+    smos = sd_stoc_morse(SDNom(nomj=".SMOS"))

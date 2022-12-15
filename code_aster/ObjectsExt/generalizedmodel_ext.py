@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,19 +33,19 @@ from ..Utilities import injector
 class ExtendedGeneralizedModel:
     cata_sdj = "SD.sd_modele_gene.sd_modele_gene"
 
-    def LIST_SOUS_STRUCT(self) :
-        """ retourne la liste des sous structures du modele generalise
-            la liste des macro-elements sous-jacents"""
-        nommodgen=self.getName()
-        ncham=nommodgen+(8-len(nommodgen))*' '
-        ssno=aster.getvectjev(ncham+(14-len(ncham))*' '+'.MODG.SSNO')
-        ssme=aster.getcolljev(ncham+(14-len(ncham))*' '+'.MODG.SSME')
-        return [([ssno[ind], ssme[ind+1]]) for ind in range(len(ssno))]
+    def LIST_SOUS_STRUCT(self):
+        """retourne la liste des sous structures du modele generalise
+        la liste des macro-elements sous-jacents"""
+        nommodgen = self.getName()
+        ncham = nommodgen + (8 - len(nommodgen)) * " "
+        ssno = aster.getvectjev(ncham + (14 - len(ncham)) * " " + ".MODG.SSNO")
+        ssme = aster.getcolljev(ncham + (14 - len(ncham)) * " " + ".MODG.SSME")
+        return [([ssno[ind], ssme[ind + 1]]) for ind in range(len(ssno))]
 
-    def LIST_LIAIS_STRUCT(self) :
-        """ retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
-            [ (ss1, nom_liais1,  ss2 , nom_liais2), ...] """
-        nommodgen=self.getName()
-        ncham=nommodgen+(8-len(nommodgen))*' '
-        lidf=aster.getcolljev(ncham+(14-len(ncham))*' '+'.MODG.LIDF')
+    def LIST_LIAIS_STRUCT(self):
+        """retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
+        [ (ss1, nom_liais1,  ss2 , nom_liais2), ...]"""
+        nommodgen = self.getName()
+        ncham = nommodgen + (8 - len(nommodgen)) * " "
+        lidf = aster.getcolljev(ncham + (14 - len(ncham)) * " " + ".MODG.LIDF")
         return [([(lidf[ind][indb]) for indb in range(4)]) for ind in lidf]

@@ -28,111 +28,120 @@
 #               2 - direction (DEPSxx,DEPSyy,DEPSxy)=(1, 1.5, 1) jusqu a EPSxx=0.0015
 # ________________________________________________________
 
-DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
-MAIL = LIRE_MAILLAGE( FORMAT = "MED")
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
-                      CREA_GROUP_MA= (
-                                        _F( NOM = 'M1', MAILLE = 'M1'),
-                                     ),
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N3', NOEUD = 'N3'),
-                                        _F( NOM = 'N4', NOEUD = 'N4'),
-                                        _F( NOM = 'N7', NOEUD = 'N7'),
-                                        _F( NOM = 'N6', NOEUD = 'N6'),
-                                        _F( NOM = 'N8', NOEUD = 'N8'),
-                                        _F( NOM = 'N1', NOEUD = 'N1'),
-                                        _F( NOM = 'N2', NOEUD = 'N2'),
-                                        _F( NOM = 'N5', NOEUD = 'N5'),
-                                     ),
-         )
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1"),),
+    CREA_GROUP_NO=(
+        _F(NOM="N3", NOEUD="N3"),
+        _F(NOM="N4", NOEUD="N4"),
+        _F(NOM="N7", NOEUD="N7"),
+        _F(NOM="N6", NOEUD="N6"),
+        _F(NOM="N8", NOEUD="N8"),
+        _F(NOM="N1", NOEUD="N1"),
+        _F(NOM="N2", NOEUD="N2"),
+        _F(NOM="N5", NOEUD="N5"),
+    ),
+)
 
-MODELE = AFFE_MODELE( AFFE = _F( TOUT = 'OUI',
-                                 PHENOMENE = 'MECANIQUE',
-                                 MODELISATION = '3D'),
-                                 MAILLAGE = MAIL)
+MODELE = AFFE_MODELE(AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"), MAILLAGE=MAIL)
 
-coef = 1.0e6 # Pa
-#coef = 1.   # MPa
+coef = 1.0e6  # Pa
+# coef = 1.   # MPa
 
 ENDO_MC__ = 1.5
 ENDO_MT__ = 1.7
-ENDO_SIGUC__ = 38.3*coef
-ENDO_SIGUT__ = 7.3*coef
-YOUNG__ = 32000.0*coef
+ENDO_SIGUC__ = 38.3 * coef
+ENDO_SIGUT__ = 7.3 * coef
+YOUNG__ = 32000.0 * coef
 
-MATER = DEFI_MATERIAU( BETON_RAG =_F( COMP_BETON  = 'ENDO',
-                                      ENDO_SIGUC  = ENDO_SIGUC__,
-                                      ENDO_SIGUT  = ENDO_SIGUT__,
-                                      ENDO_MC = ENDO_MC__,
-                                      ENDO_MT = ENDO_MT__,
-                                      ENDO_DRUPRA = 0.15),
-                       ELAS =_F( NU = 0.2,
-                                 E = YOUNG__,
-                                 ALPHA = 0.0),)
+MATER = DEFI_MATERIAU(
+    BETON_RAG=_F(
+        COMP_BETON="ENDO",
+        ENDO_SIGUC=ENDO_SIGUC__,
+        ENDO_SIGUT=ENDO_SIGUT__,
+        ENDO_MC=ENDO_MC__,
+        ENDO_MT=ENDO_MT__,
+        ENDO_DRUPRA=0.15,
+    ),
+    ELAS=_F(NU=0.2, E=YOUNG__, ALPHA=0.0),
+)
 
-CAR_MAT = AFFE_MATERIAU( MAILLAGE = MAIL,
-                         AFFE = _F( TOUT = 'OUI', MATER = MATER),)
+CAR_MAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
-CLIM = AFFE_CHAR_MECA( MODELE = MODELE,
-                       DDL_IMPO = (_F( GROUP_NO = 'COTEG', DX = 0.0),
-                                   _F( GROUP_NO = 'N1', DY = 0.0, DZ = 0.0),
-                                   _F( GROUP_NO = 'N5', DY = 0.0),),)
+CLIM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO="COTEG", DX=0.0),
+        _F(GROUP_NO="N1", DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N5", DY=0.0),
+    ),
+)
 
-CHAR1 = AFFE_CHAR_MECA ( MODELE = MODELE,
-                         DDL_IMPO = (_F( GROUP_NO = ('N2','N6'), DY = 0.0),
-                                     _F( GROUP_NO = 'COTED', DX = 1.0),
-                                     _F( GROUP_NO = 'HAUT', DY = -0.125),),)
+CHAR1 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N2", "N6"), DY=0.0),
+        _F(GROUP_NO="COTED", DX=1.0),
+        _F(GROUP_NO="HAUT", DY=-0.125),
+    ),
+)
 
-CHAR2 = AFFE_CHAR_MECA( MODELE = MODELE,
-                        DDL_IMPO = (_F( GROUP_NO = 'COTED', DX = 1.0),
-                                    _F( GROUP_NO = 'N4', DY = 1.5),
-                                    _F( GROUP_NO = 'N8', DY = 1.5),
-                                    _F( GROUP_NO = 'N3', DY = 3.5),
-                                    _F( GROUP_NO = 'N7', DY = 3.5),
-                                    _F( GROUP_NO = 'N2', DY = 2.0),
-                                    _F( GROUP_NO = 'N6', DY = 2.0),),)
+CHAR2 = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO="COTED", DX=1.0),
+        _F(GROUP_NO="N4", DY=1.5),
+        _F(GROUP_NO="N8", DY=1.5),
+        _F(GROUP_NO="N3", DY=3.5),
+        _F(GROUP_NO="N7", DY=3.5),
+        _F(GROUP_NO="N2", DY=2.0),
+        _F(GROUP_NO="N6", DY=2.0),
+    ),
+)
 
-L_INS1 = DEFI_LIST_REEL( DEBUT = 0.0,
-                         INTERVALLE = (_F( JUSQU_A = 1.0e-2, NOMBRE = 10),
-                                       _F( JUSQU_A = 5.0e-2, NOMBRE = 300),),)
+L_INS1 = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0e-2, NOMBRE=10), _F(JUSQU_A=5.0e-2, NOMBRE=300))
+)
 
-FCT_MUL1 = DEFI_FONCTION( INTERPOL = ('LIN','LIN'), NOM_PARA = 'INST',
-                          VALE = (0.0,    0.0,
-                                  1.0e-2, 0.84E-04),)
+FCT_MUL1 = DEFI_FONCTION(
+    INTERPOL=("LIN", "LIN"), NOM_PARA="INST", VALE=(0.0, 0.0, 1.0e-2, 0.84e-04)
+)
 
-FCT_MUL2 = DEFI_FONCTION( INTERPOL = ('LIN','LIN'), NOM_PARA = 'INST',
-                          VALE = (1.0e-2, 0.0,
-                                  5.0e-2, 4.76E-4),)
+FCT_MUL2 = DEFI_FONCTION(
+    INTERPOL=("LIN", "LIN"), NOM_PARA="INST", VALE=(1.0e-2, 0.0, 5.0e-2, 4.76e-4)
+)
 
-RESU = STAT_NON_LINE( TITRE = 'BENCH-B',
-                      CHAM_MATER = CAR_MAT,
-                      MODELE = MODELE,
-                      CONVERGENCE = _F( ITER_GLOB_MAXI = 20, RESI_GLOB_RELA = 1.E-06),
-                      COMPORTEMENT =_F( RELATION = 'BETON_RAG',),
-                      INCREMENT =_F( LIST_INST = L_INS1, INST_FIN = 1.0e-2 ),
-                      NEWTON =_F( PREDICTION = 'ELASTIQUE', MATRICE = 'TANGENTE'),
-                      EXCIT = (_F( CHARGE = CLIM),
-                               _F( CHARGE = CHAR1, FONC_MULT = FCT_MUL1),),)
+RESU = STAT_NON_LINE(
+    TITRE="BENCH-B",
+    CHAM_MATER=CAR_MAT,
+    MODELE=MODELE,
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-06),
+    COMPORTEMENT=_F(RELATION="BETON_RAG"),
+    INCREMENT=_F(LIST_INST=L_INS1, INST_FIN=1.0e-2),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE"),
+    EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CHAR1, FONC_MULT=FCT_MUL1)),
+)
 
-RESU = STAT_NON_LINE( TITRE = 'BENCH-A',
-                      reuse = RESU,
-                      CHAM_MATER = CAR_MAT,
-                      MODELE = MODELE,
-                      CONVERGENCE = _F( ITER_GLOB_MAXI = 50, RESI_GLOB_RELA = 1.E-06),
-                      COMPORTEMENT =_F( RELATION = 'BETON_RAG', DEFORMATION = 'PETIT'),
-                      INCREMENT = _F( LIST_INST = L_INS1, INST_FIN = 5.0e-2),
-                      NEWTON = _F( PREDICTION = 'ELASTIQUE',
-                                   MATRICE = 'ELASTIQUE',
-                                   REAC_ITER  = 1,
-                                   REAC_INCR  = 1),
-                      EXCIT = (_F( CHARGE = CLIM),
-                               _F( CHARGE = CHAR2, TYPE_CHARGE = 'DIDI', FONC_MULT = FCT_MUL2),),
-                      ETAT_INIT = _F( EVOL_NOLI = RESU),
-                      ARCHIVAGE = _F( LIST_INST = L_INS1),)
+RESU = STAT_NON_LINE(
+    TITRE="BENCH-A",
+    reuse=RESU,
+    CHAM_MATER=CAR_MAT,
+    MODELE=MODELE,
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_RELA=1.0e-06),
+    COMPORTEMENT=_F(RELATION="BETON_RAG", DEFORMATION="PETIT"),
+    INCREMENT=_F(LIST_INST=L_INS1, INST_FIN=5.0e-2),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="ELASTIQUE", REAC_ITER=1, REAC_INCR=1),
+    EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CHAR2, TYPE_CHARGE="DIDI", FONC_MULT=FCT_MUL2)),
+    ETAT_INIT=_F(EVOL_NOLI=RESU),
+    ARCHIVAGE=_F(LIST_INST=L_INS1),
+)
 
-'''
+"""
 # NE PAS EFFACER SERT A FAIRE LES COURBES DE LA DOCUMENTATION
 
 # POST TRAITEMENT : COURBE SIGMA-EPSI
@@ -190,174 +199,217 @@ IMPR_FONCTION( FORMAT = 'XMGRACE',
                              ABSCISSE = deformation.values()['EPXX_ECH'],
                              ORDONNEE = contrainte.values()['SIXY_ECH']),),)
 DEFI_FICHIER( ACTION = 'LIBERER', UNITE = 33)
-'''
+"""
 
 # TESTS
-RESU = CALC_CHAMP( reuse  = RESU, RESULTAT = RESU,
-                   NUME_ORDRE = (10,25,310),
-                   DEFORMATION = ('EPSI_ELNO','EPSI_NOEU'),
-                   CONTRAINTE = ('SIGM_ELNO','SIGM_NOEU'),
-                   VARI_INTERNE = ('VARI_ELNO','VARI_NOEU'),)
+RESU = CALC_CHAMP(
+    reuse=RESU,
+    RESULTAT=RESU,
+    NUME_ORDRE=(10, 25, 310),
+    DEFORMATION=("EPSI_ELNO", "EPSI_NOEU"),
+    CONTRAINTE=("SIGM_ELNO", "SIGM_NOEU"),
+    VARI_INTERNE=("VARI_ELNO", "VARI_NOEU"),
+)
 
-TEST_RESU( RESU = (_F( NUME_ORDRE = 10,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPXX',
-                       VALE_CALC = 8.4E-05,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 10,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPYY',
-                       VALE_CALC = -1.05E-05,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 10,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPXY',
-                       VALE_CALC = 0.,
-                       CRITERE = 'ABSOLU',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 10,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = 2.43026003*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 10,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIYY',
-                       VALE_CALC = 0.149804992*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 10,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIXY',
-                       VALE_CALC = 0.*coef,
-                       CRITERE = 'ABSOLU',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 25,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPXX',
-                       VALE_CALC = 0.0001078,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 25,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPYY',
-                       VALE_CALC = 2.52E-05,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 25,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPXY',
-                       VALE_CALC = 2.38E-05,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 25,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = 2.97444142*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 25,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIYY',
-                       VALE_CALC = 1.35075222*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 25,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIXY',
-                       VALE_CALC = 0.48946902*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 310,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPXX',
-                       VALE_CALC = 0.00056,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 310,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPYY',
-                       VALE_CALC = 0.0007035,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 310,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'EPSI_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'EPXY',
-                       VALE_CALC = 0.000476,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 310,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIXX',
-                       VALE_CALC = 0.347317185*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 310,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIYY',
-                       VALE_CALC = 0.470440003*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1',),
-                   _F( NUME_ORDRE = 310,
-                       RESULTAT = RESU,
-                       NOM_CHAM = 'SIGM_NOEU',
-                       GROUP_NO = 'N1',
-                       NOM_CMP = 'SIXY',
-                       VALE_CALC = -0.402606135*coef,
-                       TOLE_MACHINE = 1.E-3,
-                       CRITERE = 'RELATIF',
-                       GROUP_MA = 'M1'),),)
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=10,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPXX",
+            VALE_CALC=8.4e-05,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=10,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPYY",
+            VALE_CALC=-1.05e-05,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=10,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPXY",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=10,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIXX",
+            VALE_CALC=2.43026003 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=10,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIYY",
+            VALE_CALC=0.149804992 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=10,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIXY",
+            VALE_CALC=0.0 * coef,
+            CRITERE="ABSOLU",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=25,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPXX",
+            VALE_CALC=0.0001078,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=25,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPYY",
+            VALE_CALC=2.52e-05,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=25,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPXY",
+            VALE_CALC=2.38e-05,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=25,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIXX",
+            VALE_CALC=2.97444142 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=25,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIYY",
+            VALE_CALC=1.35075222 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=25,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIXY",
+            VALE_CALC=0.48946902 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=310,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPXX",
+            VALE_CALC=0.00056,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=310,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPYY",
+            VALE_CALC=0.0007035,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=310,
+            RESULTAT=RESU,
+            NOM_CHAM="EPSI_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="EPXY",
+            VALE_CALC=0.000476,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=310,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIXX",
+            VALE_CALC=0.347317185 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=310,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIYY",
+            VALE_CALC=0.470440003 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+        _F(
+            NUME_ORDRE=310,
+            RESULTAT=RESU,
+            NOM_CHAM="SIGM_NOEU",
+            GROUP_NO="N1",
+            NOM_CMP="SIXY",
+            VALE_CALC=-0.402606135 * coef,
+            TOLE_MACHINE=1.0e-3,
+            CRITERE="RELATIF",
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 FIN()

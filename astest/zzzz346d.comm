@@ -19,127 +19,120 @@
 
 # zzzz346a.para=tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 
 import math
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT='GIBI',
-                         UNITE=19,
-                         )
+MAILLAGE = LIRE_MAILLAGE(FORMAT="GIBI", UNITE=19)
 
-#data:
-#position du point de bifurcation (0,cte)
-cte=0.6
-#pente de la 2eme branche de la level-set: y-a*x-cte
-a=2.
+# data:
+# position du point de bifurcation (0,cte)
+cte = 0.6
+# pente de la 2eme branche de la level-set: y-a*x-cte
+a = 2.0
 
-#definition des bornes des secteurs angulaires
-B1=math.atan2(2.+cte,-1.)
-B2=B1-math.pi
+# definition des bornes des secteurs angulaires
+B1 = math.atan2(2.0 + cte, -1.0)
+B2 = B1 - math.pi
 
-#definition de la level-set
-#la distance a la level-set depend de la position angulaire theta
-def LN(x,y):
-  global B1,B2
-  theta=math.atan2(y-cte,x)
-  if theta>=-math.pi and theta<B2:
-    return -x
-  if theta>=B2 and theta<=0:
-    d1=-x
-    d2=(y-a*x-cte)/math.sqrt(1+a**2)
-    if abs(d1)>abs(d2):  return d2
-    else : return d1
-  if theta>0 and theta<B1:
-    return (y-a*x-cte)/math.sqrt(1+a**2)
-  if theta>=B1 and theta<=math.pi:
-    return (x**2+(y-cte)**2)**0.5
+# definition de la level-set
+# la distance a la level-set depend de la position angulaire theta
+def LN(x, y):
+    global B1, B2
+    theta = math.atan2(y - cte, x)
+    if theta >= -math.pi and theta < B2:
+        return -x
+    if theta >= B2 and theta <= 0:
+        d1 = -x
+        d2 = (y - a * x - cte) / math.sqrt(1 + a**2)
+        if abs(d1) > abs(d2):
+            return d2
+        else:
+            return d1
+    if theta > 0 and theta < B1:
+        return (y - a * x - cte) / math.sqrt(1 + a**2)
+    if theta >= B1 and theta <= math.pi:
+        return (x**2 + (y - cte) ** 2) ** 0.5
 
-LSN = FORMULE(VALE='LN(X,Y)',
-              LN=LN,
-              NOM_PARA=['X', 'Y'],)
 
-MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
-                       MAILLAGE=MAILLAGE,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU=('LIG1','LIG2','LIG3','LIG4'
-                       ,),),
-                       )
+LSN = FORMULE(VALE="LN(X,Y)", LN=LN, NOM_PARA=["X", "Y"])
 
-MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
-                     AFFE=_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN'),
-                           )
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE, MAILLAGE=MAILLAGE, ORIE_PEAU=_F(GROUP_MA_PEAU=("LIG1", "LIG2", "LIG3", "LIG4"))
+)
 
-MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
-                    MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(NOM='NO_M',OPTION ='ENV_SPHERE',
-                                     POINT=(0.,0.5625),
-                                     RAYON=1.E-6,
-                                     PRECISION=1.E-6))
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
-                    TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LSN))
+MAILLAGE = DEFI_GROUP(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    CREA_GROUP_NO=_F(
+        NOM="NO_M", OPTION="ENV_SPHERE", POINT=(0.0, 0.5625), RAYON=1.0e-6, PRECISION=1.0e-6
+    ),
+)
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,
-                         FISSURE=FISS, #CONTACT='STANDARD',
-                         INFO=1)
+FISS = DEFI_FISS_XFEM(MAILLAGE=MAILLAGE, TYPE_DISCONTINUITE="INTERFACE", DEFI_FISS=_F(FONC_LN=LSN))
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=210.E9,NU=0.,))
+MODELEK = MODI_MODELE_XFEM(MODELE_IN=MODELE, FISSURE=FISS, INFO=1)  # CONTACT='STANDARD',
 
-CHAMPMA=AFFE_MATERIAU(MODELE=MODELEK,
-                 AFFE=_F(TOUT='OUI',MATER=MAT))
+MAT = DEFI_MATERIAU(ELAS=_F(E=210.0e9, NU=0.0))
 
-CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
-                    DDL_IMPO=(_F(GROUP_MA='LIG2',DX=-1.,DY=0.),
-                              _F(GROUP_MA='LIG4',DX=1.,DY=0.),),
-                    )
+CHAMPMA = AFFE_MATERIAU(MODELE=MODELEK, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-UTOT1=MECA_STATIQUE(MODELE=MODELEK,
-                    CHAM_MATER=CHAMPMA,
-                    EXCIT=(_F(CHARGE=CHAR)),
-                    SOLVEUR=_F(METHODE='MUMPS'),
-                    INFO=1)
+CHAR = AFFE_CHAR_MECA(
+    MODELE=MODELEK,
+    DDL_IMPO=(_F(GROUP_MA="LIG2", DX=-1.0, DY=0.0), _F(GROUP_MA="LIG4", DX=1.0, DY=0.0)),
+)
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK,)
+UTOT1 = MECA_STATIQUE(
+    MODELE=MODELEK, CHAM_MATER=CHAMPMA, EXCIT=(_F(CHARGE=CHAR)), SOLVEUR=_F(METHODE="MUMPS"), INFO=1
+)
 
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=_F(GROUP_MA='SURF',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),)
+MA_XFEM = POST_MAIL_XFEM(MODELE=MODELEK)
 
-RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
-                        INFO=2)
+MOD_VISU = AFFE_MODELE(
+    MAILLAGE=MA_XFEM, AFFE=_F(GROUP_MA="SURF", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,)))
+RES_XFEM = POST_CHAM_XFEM(MODELE_VISU=MOD_VISU, RESULTAT=UTOT1, INFO=2)
 
-TEST_RESU(RESU=(_F(CRITERE='ABSOLU',
-                   NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   #POINT=1,
-                   NOM_CMP='DX',
-                   PRECISION=1.E-12,
-                   VALE_CALC=1.0,
-                   VALE_REFE=1.0,
-                   GROUP_NO='NO_M',
-                   RESULTAT=UTOT1,
-                   NOM_CHAM='DEPL',
-                   VALE_ABS='NON'),
-                _F(CRITERE='ABSOLU',
-                   NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   #POINT=1,
-                   NOM_CMP='H1X',
-                   PRECISION=1.E-12,
-                   VALE_CALC=1.0,
-                   VALE_REFE=1.0,
-                   GROUP_NO='NO_M',
-                   RESULTAT=UTOT1,
-                   NOM_CHAM='DEPL',
-                   VALE_ABS='NON'),
-                ))
+IMPR_RESU(FORMAT="GMSH", RESU=(_F(RESULTAT=RES_XFEM)))
+
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE="ABSOLU",
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            # POINT=1,
+            NOM_CMP="DX",
+            PRECISION=1.0e-12,
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            GROUP_NO="NO_M",
+            RESULTAT=UTOT1,
+            NOM_CHAM="DEPL",
+            VALE_ABS="NON",
+        ),
+        _F(
+            CRITERE="ABSOLU",
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            # POINT=1,
+            NOM_CMP="H1X",
+            PRECISION=1.0e-12,
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            GROUP_NO="NO_M",
+            RESULTAT=UTOT1,
+            NOM_CHAM="DEPL",
+            VALE_ABS="NON",
+        ),
+    )
+)
 
 
 FIN()

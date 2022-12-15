@@ -22,45 +22,36 @@
 #                       MEMBRANE DE COOK                               #
 ########################################################################
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-mesh0 = LIRE_MAILLAGE(FORMAT='MED')
+mesh0 = LIRE_MAILLAGE(FORMAT="MED")
 
-mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT='OUI', PREF_NUME=12))
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI", PREF_NUME=12))
 
 
-mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh,
-                     ORIE_PEAU=_F(GROUP_MA_PEAU=('Encast', 'load',),),)
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))
 
-mesh = DEFI_GROUP(reuse=mesh,
-                  MAILLAGE=mesh,
-                  CREA_GROUP_MA=_F(NOM='MA3D',
-                                   TYPE_MAILLE='3D',
-                                   TOUT='OUI'),)
+mesh = DEFI_GROUP(
+    reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="MA3D", TYPE_MAILLE="3D", TOUT="OUI")
+)
 
 E = 70
-mater = DEFI_MATERIAU(
-    ECRO_LINE=_F(D_SIGM_EPSI=0.13474, SY=0.243), ELAS=_F(E=E, NU=0.4999, RHO=1.0)
+mater = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0.13474, SY=0.243), ELAS=_F(E=E, NU=0.4999, RHO=1.0))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater,), TOUT="OUI"), MAILLAGE=mesh)
+
+rampe = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="EXCLU"
 )
 
-fieldmat = AFFE_MATERIAU(
-    AFFE=_F(MATER=(mater, ), TOUT='OUI'), MAILLAGE=mesh,
+listr = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(_F(JUSQU_A=0.3, NOMBRE=1), _F(JUSQU_A=0.8, NOMBRE=4), _F(JUSQU_A=1.0, NOMBRE=5)),
 )
-
-rampe = DEFI_FONCTION(NOM_PARA='INST', VALE=(
-    0.0, 0.0, 1.0, 1.0), PROL_DROITE='LINEAIRE', PROL_GAUCHE='EXCLU',)
-
-listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(
-    _F(JUSQU_A=0.3, NOMBRE=1),
-    _F(JUSQU_A=0.8, NOMBRE=4),
-    _F(JUSQU_A=1.0, NOMBRE=5),
-),)
 
 times = DEFI_LIST_INST(
-    DEFI_LIST=_F(LIST_INST=listr),
-    ECHEC=_F(ACTION='DECOUPE', EVENEMENT='ERREUR', SUBD_NIVEAU=3)
+    DEFI_LIST=_F(LIST_INST=listr), ECHEC=_F(ACTION="DECOUPE", EVENEMENT="ERREUR", SUBD_NIVEAU=3)
 )
 
 
@@ -72,143 +63,155 @@ CX = [-0.027489825966779867]
 CT = [0.42393147260348535]
 
 model = AFFE_MODELE(
-    AFFE=_F(MODELISATION=('3D_HHO', ), FORMULATION='LINEAIRE',
-            PHENOMENE='MECANIQUE', TOUT='OUI'),
-    MAILLAGE=mesh
+    AFFE=_F(MODELISATION=("3D_HHO",), FORMULATION="LINEAIRE", PHENOMENE="MECANIQUE", TOUT="OUI"),
+    MAILLAGE=mesh,
 )
 
 depl = AFFE_CHAR_CINE(
-    MECA_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=('Encast', )), MODELE=model, INFO=1,
+    MECA_IMPO=_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("Encast",)), MODELE=model, INFO=1
 )
 
-plan = AFFE_CHAR_CINE(
-    MECA_IMPO=_F(DZ=0.0, TOUT='OUI'), MODELE=model, INFO=1,
-)
+plan = AFFE_CHAR_CINE(MECA_IMPO=_F(DZ=0.0, TOUT="OUI"), MODELE=model, INFO=1)
 
-load = AFFE_CHAR_MECA(
-    FORCE_FACE=_F(FY=0.1125, GROUP_MA=('load', )), MODELE=model
-)
+load = AFFE_CHAR_MECA(FORCE_FACE=_F(FY=0.1125, GROUP_MA=("load",)), MODELE=model)
 
 resnonl = STAT_NON_LINE(
     CHAM_MATER=fieldmat,
-    COMPORTEMENT=_F(DEFORMATION='PETIT',
-                    RELATION='VMIS_ISOT_LINE', TOUT='OUI'),
+    COMPORTEMENT=_F(DEFORMATION="PETIT", RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
     CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1e-6),
     EXCIT=(
-        _F(CHARGE=depl, TYPE_CHARGE='FIXE_CSTE'),
-        _F(CHARGE=plan, TYPE_CHARGE='FIXE_CSTE'),
-        _F(CHARGE=load, FONC_MULT=rampe,
-           TYPE_CHARGE='FIXE_CSTE'),
+        _F(CHARGE=depl, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=plan, TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=load, FONC_MULT=rampe, TYPE_CHARGE="FIXE_CSTE"),
     ),
     INCREMENT=_F(LIST_INST=times),
     MODELE=model,
-    NEWTON=_F(MATRICE='TANGENTE', PREDICTION='TANGENTE', REAC_ITER=1,),
-    SOLVEUR=_F(METHODE='MUMPS',),
-    HHO=_F(STABILISATION='MANUEL', COEF_STAB=10*E, OPTIMISATION='TEMPS'),
+    NEWTON=_F(MATRICE="TANGENTE", PREDICTION="TANGENTE", REAC_ITER=1),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    HHO=_F(STABILISATION="MANUEL", COEF_STAB=10 * E, OPTIMISATION="TEMPS"),
     INFO=1,
 )
 
 resnonl = CALC_CHAMP(
     reuse=resnonl,
     CHAM_MATER=fieldmat,
-    CRITERES=('SIEQ_NOEU', 'SIEQ_ELGA'),
-    PROPRIETES=('MATE_ELEM', 'MATE_ELGA'),
-    CONTRAINTE=('SIEF_ELNO', 'SIEF_NOEU',),
-    DEFORMATION=('EPSI_ELNO', 'EPSI_ELGA',),
-    VARI_INTERNE=('VARC_ELGA'),
+    CRITERES=("SIEQ_NOEU", "SIEQ_ELGA"),
+    PROPRIETES=("MATE_ELEM", "MATE_ELGA"),
+    CONTRAINTE=("SIEF_ELNO", "SIEF_NOEU"),
+    DEFORMATION=("EPSI_ELNO", "EPSI_ELGA"),
+    VARI_INTERNE=("VARC_ELGA"),
     MODELE=model,
     RESULTAT=resnonl,
 )
-rescoor = CALC_CHAM_ELEM(MODELE=model,
-                         OPTION='COOR_ELGA',
-                         GROUP_MA='MA3D')
+rescoor = CALC_CHAM_ELEM(MODELE=model, OPTION="COOR_ELGA", GROUP_MA="MA3D")
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_NO=('A', ),
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=resnonl,
-                  NOM_CHAM="HHO_DEPL",
-                  NOM_CMP='DY',
-                  VALE_CALC=AY,
-                  VALE_REFE=2.13651,
-                  CRITERE='RELATIF',
-                  PRECISION=4.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=resnonl,
+        NOM_CHAM="HHO_DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=AY,
+        VALE_REFE=2.13651,
+        CRITERE="RELATIF",
+        PRECISION=4.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_NO=('A', ),
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=resnonl,
-                  NOM_CHAM="HHO_DEPL",
-                  NOM_CMP='DX',
-                  VALE_CALC=AX,
-                  VALE_REFE=-1.61818,
-                  CRITERE='RELATIF',
-                  PRECISION=4.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=resnonl,
+        NOM_CHAM="HHO_DEPL",
+        NOM_CMP="DX",
+        VALE_CALC=AX,
+        VALE_REFE=-1.61818,
+        CRITERE="RELATIF",
+        PRECISION=4.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_NO=('A',),
-                  RESULTAT=resnonl,
-                  NOM_CHAM='SIEQ_NOEU',
-                  NOM_CMP='TRSIG',
-                  VALE_CALC=AT,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("A",),
+        RESULTAT=resnonl,
+        NOM_CHAM="SIEQ_NOEU",
+        NOM_CMP="TRSIG",
+        VALE_CALC=AT,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_NO=('C', ),
-                  RESULTAT=resnonl,
-                  NOM_CHAM="HHO_DEPL",
-                  NOM_CMP='DY',
-                  VALE_CALC=CY,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("C",),
+        RESULTAT=resnonl,
+        NOM_CHAM="HHO_DEPL",
+        NOM_CMP="DY",
+        VALE_CALC=CY,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_NO=('C', ),
-                  RESULTAT=resnonl,
-                  NOM_CHAM="HHO_DEPL",
-                  NOM_CMP='DX',
-                  VALE_CALC=CX,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("C",),
+        RESULTAT=resnonl,
+        NOM_CHAM="HHO_DEPL",
+        NOM_CMP="DX",
+        VALE_CALC=CX,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_NO=('C', ),
-                  RESULTAT=resnonl,
-                  NOM_CHAM='SIEQ_NOEU',
-                  NOM_CMP='TRSIG',
-                  VALE_CALC=CT,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_NO=("C",),
+        RESULTAT=resnonl,
+        NOM_CHAM="SIEQ_NOEU",
+        NOM_CMP="TRSIG",
+        VALE_CALC=CT,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_MA=('M1797'),
-                  GROUP_NO=('N187',),
-                  RESULTAT=resnonl,
-                  NOM_CHAM='EPSI_ELNO',
-                  NOM_CMP='EPXY',
-                  VALE_CALC=0.0027419874530139575,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_MA=("M1797"),
+        GROUP_NO=("N187",),
+        RESULTAT=resnonl,
+        NOM_CHAM="EPSI_ELNO",
+        NOM_CMP="EPXY",
+        VALE_CALC=0.0027419874530139575,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  GROUP_MA=('M1797'),
-                  POINT=1,
-                  RESULTAT=resnonl,
-                  NOM_CHAM='EPSI_ELGA',
-                  NOM_CMP='EPXY',
-                  VALE_CALC=0.01689736012223333,
-                  CRITERE='RELATIF',),
-          )
-TEST_RESU(CHAM_ELEM=_F(
-    POINT=1,
-    NOM_CMP='X',
-    GROUP_MA='M1797',
-    CHAM_GD=rescoor,
-    VALE_CALC=23.349555125707617,
-),
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        GROUP_MA=("M1797"),
+        POINT=1,
+        RESULTAT=resnonl,
+        NOM_CHAM="EPSI_ELGA",
+        NOM_CMP="EPXY",
+        VALE_CALC=0.01689736012223333,
+        CRITERE="RELATIF",
+    )
+)
+TEST_RESU(
+    CHAM_ELEM=_F(
+        POINT=1, NOM_CMP="X", GROUP_MA="M1797", CHAM_GD=rescoor, VALE_CALC=23.349555125707617
+    )
 )
 
 FIN()

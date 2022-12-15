@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,91 +17,88 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#CAS_TEST__: SDLL08A
+# CAS_TEST__: SDLL08A
 # SDLL08/A                 COMMANDES                            05/03/91
 # GRILLAGE PLAN DE POUTRES ( PROFILES METALLIQUES )
 # SECTION EN I --- L1=L2=5M --- 3D
 # CALCUL MODAL + REPONSE HARMONIQUE                REF: SFM.VPCS SDLL08
 # MODELISATION POU_D_E: 33 NOEUDS -- 30 MAILLES SEG2
 # POINTS  A=N1  B=N6  C=N11  D=N21  E=N26  F=N31  G=N46  H=N41  I=N51
-#=======================================================================
+# =======================================================================
 
 
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"))
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                         MODELISATION = 'POU_D_E')  )
+CARELEM = AFFE_CARA_ELEM(
+    MODELE=MO,
+    POUTRE=_F(
+        GROUP_MA="TOUT",
+        SECTION="GENERALE",
+        CARA=("A", "IY", "IZ", "JX"),
+        VALE=(2.872e-3, 0.1943e-4, 0.1943e-4, 0.5165e-7),
+    ),
+)
 
-CARELEM=AFFE_CARA_ELEM(  MODELE=MO,
-          POUTRE=_F(
-       GROUP_MA = 'TOUT',
-     SECTION = 'GENERALE',
-          CARA = (   'A',        'IY',     'IZ',     'JX',    ),
-          VALE = ( 2.872E-3,  0.1943E-4,  0.1943E-4,  0.5165E-7, )) )
+MAT = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3, RHO=7800.0))
 
-MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+11,  NU = 0.3,   RHO = 7800.) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                AFFE=_F(  TOUT = 'OUI',     MATER = MAT) )
-
-CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-                 # NOEUDS A B C F
-              _F(  GROUP_NO = 'NACDF',  DZ = 0.),
-                          # POUTRE ABC
-              _F(  GROUP_NO = 'PABC', DX = 0., DY = 0., DRY = 0.),
-                          # POUTRE DEF
-              _F(  GROUP_NO = 'PDEF', DX = 0., DY = 0., DRY = 0.),
-                          # POUTRE HGI
-              _F(  GROUP_NO = 'PHGI', DX = 0., DY = 0., DRX = 0.)),LIAISON_DDL=(
-
-                          # LIAISON ROTULEE
-              # NOEUDS B<==>H
-   _F( GROUP_NO = ('N6', 'N41',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
-                          # NOEUDS E<==>I
-   _F( GROUP_NO = ('N26','N51',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.)),
-
-                          # FORCE EN G
-      FORCE_NODALE=_F(  GROUP_NO = 'N46',    FZ = -1.E5)   )
+CH = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        # NOEUDS A B C F
+        _F(GROUP_NO="NACDF", DZ=0.0),
+        # POUTRE ABC
+        _F(GROUP_NO="PABC", DX=0.0, DY=0.0, DRY=0.0),
+        # POUTRE DEF
+        _F(GROUP_NO="PDEF", DX=0.0, DY=0.0, DRY=0.0),
+        # POUTRE HGI
+        _F(GROUP_NO="PHGI", DX=0.0, DY=0.0, DRX=0.0),
+    ),
+    LIAISON_DDL=(
+        # LIAISON ROTULEE
+        # NOEUDS B<==>H
+        _F(GROUP_NO=("N6", "N41"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+        # NOEUDS E<==>I
+        _F(GROUP_NO=("N26", "N51"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, -1.0), COEF_IMPO=0.0),
+    ),
+    # FORCE EN G
+    FORCE_NODALE=_F(GROUP_NO="N46", FZ=-1.0e5),
+)
 
 # ------------------------------------------------------------------
 
-MELR=CALC_MATR_ELEM(  MODELE=MO,          CHARGE=CH,
-                        CARA_ELEM=CARELEM,
-                        CHAM_MATER=CHMAT,  OPTION='RIGI_MECA' )
+MELR = CALC_MATR_ELEM(MODELE=MO, CHARGE=CH, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT, OPTION="RIGI_MECA")
 
-MELM=CALC_MATR_ELEM(  MODELE=MO,          CHARGE=CH,
-                        CARA_ELEM=CARELEM,
-                        CHAM_MATER=CHMAT,  OPTION='MASS_MECA' )
+MELM = CALC_MATR_ELEM(MODELE=MO, CHARGE=CH, CARA_ELEM=CARELEM, CHAM_MATER=CHMAT, OPTION="MASS_MECA")
 
-VECT=CALC_VECT_ELEM(  CHARGE=CH,         OPTION='CHAR_MECA' )
+VECT = CALC_VECT_ELEM(CHARGE=CH, OPTION="CHAR_MECA")
 
-NUM=NUME_DDL(  MATR_RIGI=MELR )
+NUM = NUME_DDL(MATR_RIGI=MELR)
 
-MATASSR=ASSE_MATRICE(  MATR_ELEM=MELR,   NUME_DDL=NUM   )
+MATASSR = ASSE_MATRICE(MATR_ELEM=MELR, NUME_DDL=NUM)
 
-MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,   NUME_DDL=NUM   )
+MATASSM = ASSE_MATRICE(MATR_ELEM=MELM, NUME_DDL=NUM)
 
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECT,   NUME_DDL=NUM   )
+VECTASS = ASSE_VECTEUR(VECT_ELEM=VECT, NUME_DDL=NUM)
 
 # ------------------------------------------------------------------
 
 # --------- CALCUL MODAL
 
-MD=CALC_MODES(MATR_RIGI=MATASSR,
-              OPTION='PLUS_PETITE',
-              CALC_FREQ=_F(NMAX_FREQ=3,
-                           ),
-              MATR_MASS=MATASSM,
-              SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
-                               ),
-              )
+MD = CALC_MODES(
+    MATR_RIGI=MATASSR,
+    OPTION="PLUS_PETITE",
+    CALC_FREQ=_F(NMAX_FREQ=3),
+    MATR_MASS=MATASSM,
+    SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
+)
 
 
 # ====================================================================
@@ -113,60 +110,76 @@ MD=CALC_MODES(MATR_RIGI=MATASSR,
 # ------------------------------------------------------------------
 
 
-CMAT=COMB_MATR_ASSE(COMB_R=(  _F(  MATR_ASSE = MATASSR,  COEF_R = 1.),
-                                _F(  MATR_ASSE = MATASSM,  COEF_R = -6400.)) )
+CMAT = COMB_MATR_ASSE(
+    COMB_R=(_F(MATR_ASSE=MATASSR, COEF_R=1.0), _F(MATR_ASSE=MATASSM, COEF_R=-6400.0))
+)
 
-CMAT=FACTORISER(reuse=CMAT,  MATR_ASSE=CMAT )
+CMAT = FACTORISER(reuse=CMAT, MATR_ASSE=CMAT)
 
-REPHARM=RESOUDRE(  MATR=CMAT,     CHAM_NO=VECTASS )
+REPHARM = RESOUDRE(MATR=CMAT, CHAM_NO=VECTASS)
 
 # --------------------------------------------------------------------
 
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='FREQ',
-                   RESULTAT=MD,
-                   VALE_CALC=16.419020194,
-                   VALE_REFE=16.456,
-                   REFERENCE='NON_DEFINI',
-                   CRITERE='RELATIF',
-                   PRECISION=5.0000000000000001E-3,),
-                _F(NUME_ORDRE=3,
-                   PARA='FREQ',
-                   RESULTAT=MD,
-                   VALE_CALC=38.046795004,
-                   VALE_REFE=38.164999999999999,
-                   REFERENCE='NON_DEFINI',
-                   CRITERE='RELATIF',
-                   PRECISION=5.0000000000000001E-3,),
-                ),)
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            PARA="FREQ",
+            RESULTAT=MD,
+            VALE_CALC=16.419020194,
+            VALE_REFE=16.456,
+            REFERENCE="NON_DEFINI",
+            CRITERE="RELATIF",
+            PRECISION=5.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=3,
+            PARA="FREQ",
+            RESULTAT=MD,
+            VALE_CALC=38.046795004,
+            VALE_REFE=38.164999999999999,
+            REFERENCE="NON_DEFINI",
+            CRITERE="RELATIF",
+            PRECISION=5.0000000000000001e-3,
+        ),
+    )
+)
 
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='N6',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DZ',
-                      PRECISION=0.029999999999999999,
-                      CHAM_GD=REPHARM,
-                      VALE_CALC=-0.100377195,
-                      VALE_REFE=-0.098000000000000004,
-                      REFERENCE='NON_DEFINI',),
-                   _F(GROUP_NO='N26',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DZ',
-                      PRECISION=0.029999999999999999,
-                      CHAM_GD=REPHARM,
-                      VALE_CALC=-0.100377195,
-                      VALE_REFE=-0.098000000000000004,
-                      REFERENCE='NON_DEFINI',),
-                   _F(GROUP_NO='N46',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DZ',
-                      PRECISION=0.029999999999999999,
-                      CHAM_GD=REPHARM,
-                      VALE_CALC=-0.227396528,
-                      VALE_REFE=-0.22700000000000001,
-                      REFERENCE='NON_DEFINI',),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="N6",
+            CRITERE="RELATIF",
+            NOM_CMP="DZ",
+            PRECISION=0.029999999999999999,
+            CHAM_GD=REPHARM,
+            VALE_CALC=-0.100377195,
+            VALE_REFE=-0.098000000000000004,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N26",
+            CRITERE="RELATIF",
+            NOM_CMP="DZ",
+            PRECISION=0.029999999999999999,
+            CHAM_GD=REPHARM,
+            VALE_CALC=-0.100377195,
+            VALE_REFE=-0.098000000000000004,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="N46",
+            CRITERE="RELATIF",
+            NOM_CMP="DZ",
+            PRECISION=0.029999999999999999,
+            CHAM_GD=REPHARM,
+            VALE_CALC=-0.227396528,
+            VALE_REFE=-0.22700000000000001,
+            REFERENCE="NON_DEFINI",
+        ),
+    )
+)
 
 FIN()
 #

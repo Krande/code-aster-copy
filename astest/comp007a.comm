@@ -21,158 +21,152 @@
 # CAS-TEST DE REFERENCE : Aucun
 #        On utilise un materiau de type Acier avec des carateristiques
 #        elastiques classiques.
-#=====================================================================
+# =====================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-TREF = 20.
+TREF = 20.0
 
 T0 = TREF
-Tmax = 500.
+Tmax = 500.0
 
 
-ZERO =DEFI_CONSTANTE(VALE=0.0)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-UN =DEFI_CONSTANTE(VALE=1.0)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
 
-tmax =1.
+tmax = 1.0
 
 NCAL = 5
 
-compor='ELAS'
+compor = "ELAS"
 
-YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 200000.,
-                                         500., 100000.,
-                                           ),)
-ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.E-5,
-                                         500., 2.E-5,
-                                           ),)
+YOUN = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(TREF, 200000.0, 500.0, 100000.0))
+ALPH = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(TREF, 1.0e-5, 500.0, 2.0e-5))
 
-MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
-                                NU=ZERO,
-                                TEMP_DEF_ALPHA=TREF,
-                                ALPHA=ALPH,),)
+MATERI = DEFI_MATERIAU(ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH))
 
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=tmax,
-                                     NOMBRE=NCAL,),
-                                     ),)
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=tmax, NOMBRE=NCAL),))
 
-TIMP=DEFI_FONCTION(
-                      NOM_PARA='INST',  NOM_RESU='TEMP',
-                       VALE=(  0. , TREF, 1. , 500.)
-                        )
+TIMP = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TEMP", VALE=(0.0, TREF, 1.0, 500.0))
 
-U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
-                 MATER=MATERI,
-                 SUPPORT='POINT',
-                   AFFE_VARC=(
-                   _F(  NOM_VARC='TEMP',
-                        VALE_FONC=TIMP,
-                        VALE_REF=TREF),
-                        ),
-                 INCREMENT=_F(LIST_INST=L_INST,),
-                 NEWTON=_F(PREDICTION='ELASTIQUE',
-                           MATRICE='TANGENTE',
-                           REAC_ITER=1,),
-                 EPSI_IMPOSE=_F(EPXX=ZERO,),
-                 INFO=1,)
+U = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION=compor),
+    MATER=MATERI,
+    SUPPORT="POINT",
+    AFFE_VARC=(_F(NOM_VARC="TEMP", VALE_FONC=TIMP, VALE_REF=TREF),),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    EPSI_IMPOSE=_F(EPXX=ZERO),
+    INFO=1,
+)
 
-IMPR_TABLE(TABLE=U,)
+IMPR_TABLE(TABLE=U)
 
 
-MATER  = [None]*20
-RESU   = [None]*20
+MATER = [None] * 20
+RESU = [None] * 20
 
-epsi=1.E-10
+epsi = 1.0e-10
 
-time = 0.
+time = 0.0
 
 #  Formules pour la comparaison calcul 1  / calcul 2
 #
-VERIF = FORMULE(VALE='abs (VAL_CAL - VAL_REF)/VAL_REF',
-                NOM_PARA=['VAL_REF', 'VAL_CAL'],)
+VERIF = FORMULE(VALE="abs (VAL_CAL - VAL_REF)/VAL_REF", NOM_PARA=["VAL_REF", "VAL_CAL"])
 
 
 for i in range(NCAL):
 
-          timem = time
+    timem = time
 
-          time = timem + tmax/NCAL
+    time = timem + tmax / NCAL
 
-          Ti = T0 + time/tmax * (Tmax - T0)
+    Ti = T0 + time / tmax * (Tmax - T0)
 
-          Tm = T0 + timem/tmax * (Tmax - T0)
+    Tm = T0 + timem / tmax * (Tmax - T0)
 
-          # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
+    # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
+    epsimp = DEFI_CONSTANTE(VALE=-ALPH(Ti) * (Ti - TREF))
 
-          print('i=',i, ' instant=', time, ' Temperature=',Ti)
+    print("i=", i, " instant=", time, " Temperature=", Ti)
 
-          MATER[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
-                                          NU=0.,
-                                          ALPHA=0.),
-                                )
+    MATER[i] = DEFI_MATERIAU(ELAS=_F(E=YOUN(Ti), NU=0.0, ALPHA=0.0))
 
-          listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
+    listinst = DEFI_LIST_REEL(DEBUT=timem, INTERVALLE=(_F(JUSQU_A=time, NOMBRE=1),))
 
-          RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
-                                 MATER=MATER[i],
-                                 SUPPORT='POINT',
-                                 INCREMENT=_F(LIST_INST = listinst, ),
-                                 NEWTON=_F( PREDICTION='ELASTIQUE',
-                                             MATRICE='TANGENTE',
-                                             REAC_ITER=1,),
-                                 EPSI_IMPOSE=_F(EPXX=epsimp),
-                                 VARI_INIT=_F(VALE=0.),
-                                 INFO=1,)
+    RESU[i] = SIMU_POINT_MAT(
+        COMPORTEMENT=_F(RELATION=compor),
+        MATER=MATER[i],
+        SUPPORT="POINT",
+        INCREMENT=_F(LIST_INST=listinst),
+        NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+        EPSI_IMPOSE=_F(EPXX=epsimp),
+        VARI_INIT=_F(VALE=0.0),
+        INFO=1,
+    )
 
-          IMPR_TABLE(TABLE=RESU[i])
+    IMPR_TABLE(TABLE=RESU[i])
 
-          DETRUIRE(NOM =epsimp)
-          DETRUIRE(NOM =listinst)
+    DETRUIRE(NOM=epsimp)
+    DETRUIRE(NOM=listinst)
 
-          NOMPARA='VMIS'
-          TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
-                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
-                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
-                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
-                                _F(OPERATION='COMB',TABLE=RESU[i],NOM_PARA=('INST'),),
-                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
-                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
-                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
-                                   ),)
+    NOMPARA = "VMIS"
+    TCOMPR = CALC_TABLE(
+        TABLE=U,
+        ACTION=(
+            _F(OPERATION="FILTRE", NOM_PARA=("INST"), VALE=time),
+            _F(OPERATION="EXTR", NOM_PARA=("INST", NOMPARA)),
+            _F(OPERATION="RENOMME", NOM_PARA=(NOMPARA, "VAL_CAL")),
+            _F(OPERATION="COMB", TABLE=RESU[i], NOM_PARA=("INST")),
+            _F(OPERATION="EXTR", NOM_PARA=("INST", NOMPARA, "VAL_CAL")),
+            _F(OPERATION="RENOMME", NOM_PARA=(NOMPARA, "VAL_REF")),
+            _F(OPERATION="OPER", NOM_PARA="DIFF", FORMULE=VERIF),
+        ),
+    )
 
-          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
-              TYPE_TEST = 'MAX',
-              VALE_CALC = 0., VALE_REFE=0.,
-              CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
-              REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE(NOM =TCOMPR)
+    TEST_TABLE(
+        TABLE=TCOMPR,
+        NOM_PARA="DIFF",
+        TYPE_TEST="MAX",
+        VALE_CALC=0.0,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+        PRECISION=1.0e-6,
+        REFERENCE="AUTRE_ASTER",
+    )
+    DETRUIRE(NOM=TCOMPR)
 
-          NOMPARA='TRACE'
-          TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
-                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
-                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
-                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
-                                _F(OPERATION='COMB',TABLE=RESU[i],NOM_PARA=('INST'),),
-                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
-                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
-                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
-                                   ),)
+    NOMPARA = "TRACE"
+    TCOMPR = CALC_TABLE(
+        TABLE=U,
+        ACTION=(
+            _F(OPERATION="FILTRE", NOM_PARA=("INST"), VALE=time),
+            _F(OPERATION="EXTR", NOM_PARA=("INST", NOMPARA)),
+            _F(OPERATION="RENOMME", NOM_PARA=(NOMPARA, "VAL_CAL")),
+            _F(OPERATION="COMB", TABLE=RESU[i], NOM_PARA=("INST")),
+            _F(OPERATION="EXTR", NOM_PARA=("INST", NOMPARA, "VAL_CAL")),
+            _F(OPERATION="RENOMME", NOM_PARA=(NOMPARA, "VAL_REF")),
+            _F(OPERATION="OPER", NOM_PARA="DIFF", FORMULE=VERIF),
+        ),
+    )
 
-          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
-              TYPE_TEST = 'MAX',
-              VALE_CALC = 0., VALE_REFE=0.,
-              CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
-              REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE(NOM =TCOMPR)
+    TEST_TABLE(
+        TABLE=TCOMPR,
+        NOM_PARA="DIFF",
+        TYPE_TEST="MAX",
+        VALE_CALC=0.0,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+        PRECISION=1.0e-6,
+        REFERENCE="AUTRE_ASTER",
+    )
+    DETRUIRE(NOM=TCOMPR)
 
 
 FIN()

@@ -22,218 +22,246 @@
 #  ANALYSE SPECTRALE MONO SUPPORTEE AVEC
 #  CORRECTION STATIQUE
 #
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 #
 # Calcul des modes statiques pour la correction statique
 #
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-MODE_CO=MODE_STATIQUE(MATR_MASS=MATRMASS,
-                      PSEUDO_MODE=_F(AXE='X',),
-                      MATR_RIGI=MATRRIGI,)
+MODE_CO = MODE_STATIQUE(MATR_MASS=MATRMASS, PSEUDO_MODE=_F(AXE="X"), MATR_RIGI=MATRRIGI)
 
-MODE_CO=CALC_CHAMP(reuse=MODE_CO,RESULTAT=MODE_CO,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
+MODE_CO = CALC_CHAMP(reuse=MODE_CO, RESULTAT=MODE_CO, CONTRAINTE=("SIEF_ELGA", "EFGE_ELNO"))
 
 
-MODE_CO=CALC_CHAMP(reuse =MODE_CO,
-                RESULTAT=MODE_CO,
-                FORCE='FORC_NODA')
+MODE_CO = CALC_CHAMP(reuse=MODE_CO, RESULTAT=MODE_CO, FORCE="FORC_NODA")
 
-MODE_CO=CALC_CHAMP(reuse =MODE_CO,
-                RESULTAT=MODE_CO,
-                FORCE='REAC_NODA')
+MODE_CO = CALC_CHAMP(reuse=MODE_CO, RESULTAT=MODE_CO, FORCE="REAC_NODA")
 
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=MODE_CO,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.025330000,
-                   VALE_REFE=0.025329999999999998,
-                   NOEUD_CMP=('ACCE', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=MODE_CO,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.025330000,
-                   VALE_REFE=0.025329999999999998,
-                   NOEUD_CMP=('ACCE', 'X'),),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=0.025330000,
+            VALE_REFE=0.025329999999999998,
+            NOEUD_CMP=("ACCE", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=MODE_CO,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=0.025330000,
+            VALE_REFE=0.025329999999999998,
+            NOEUD_CMP=("ACCE", "X"),
+        ),
+    )
+)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-COABS=COMB_SISM_MODAL(CORR_FREQ='NON',
-                      MASS_INER=MAS,
-                      COMB_MODE=_F(TYPE='ABS',),
-                      MODE_MECA=MODES,
-                      AMOR_REDUIT=0.0,
-                      NUME_MODE=2,
-                      MONO_APPUI='OUI',
-                      OPTION=('DEPL','EFGE_ELNO','FORC_NODA','REAC_NODA'),
-                      MODE_CORR=MODE_CO,
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),)
+COABS = COMB_SISM_MODAL(
+    CORR_FREQ="NON",
+    MASS_INER=MAS,
+    COMB_MODE=_F(TYPE="ABS"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.0,
+    NUME_MODE=2,
+    MONO_APPUI="OUI",
+    OPTION=("DEPL", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    MODE_CORR=MODE_CO,
+    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
+)
 
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=COABS,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=COABS,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COABS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COABS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+    )
+)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-COSRS=COMB_SISM_MODAL(CORR_FREQ='NON',
-                      MASS_INER=MAS,
-                      COMB_MODE=_F(TYPE='SRSS',),
-                      MODE_MECA=MODES,
-                      AMOR_REDUIT=0.05,
-                      NUME_MODE=2,
-                      MONO_APPUI='OUI',
-                      OPTION=('DEPL','EFGE_ELNO','FORC_NODA','REAC_NODA'),
-                      MODE_CORR=MODE_CO,
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
+COSRS = COMB_SISM_MODAL(
+    CORR_FREQ="NON",
+    MASS_INER=MAS,
+    COMB_MODE=_F(TYPE="SRSS"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    NUME_MODE=2,
+    MONO_APPUI="OUI",
+    OPTION=("DEPL", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    MODE_CORR=MODE_CO,
+    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
+)
 
-                               SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),)
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COSRS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COSRS,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=COSRS,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=COSRS,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                ),
-          )
+# -----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
+CODPC = COMB_SISM_MODAL(
+    CORR_FREQ="NON",
+    MASS_INER=MAS,
+    COMB_MODE=_F(TYPE="DPC"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    NUME_MODE=2,
+    OPTION=("DEPL", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    MODE_CORR=MODE_CO,
+    MONO_APPUI="OUI",
+    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
+)
 
-CODPC=COMB_SISM_MODAL(CORR_FREQ='NON',
-                      MASS_INER=MAS,
-                      COMB_MODE=_F(TYPE='DPC',),
-                      MODE_MECA=MODES,
-                      AMOR_REDUIT=0.05,
-                      NUME_MODE=2,
-                      OPTION=('DEPL','EFGE_ELNO','FORC_NODA','REAC_NODA'),
-                      MODE_CORR=MODE_CO,
-                      MONO_APPUI='OUI',
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),)
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODPC,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODPC,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=CODPC,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=CODPC,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                ),
-          )
+# -----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
+COCQC = COMB_SISM_MODAL(
+    CORR_FREQ="NON",
+    MASS_INER=MAS,
+    COMB_MODE=_F(TYPE="CQC"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    NUME_MODE=2,
+    OPTION=("DEPL", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    MODE_CORR=MODE_CO,
+    MONO_APPUI="OUI",
+    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
+)
 
-COCQC=COMB_SISM_MODAL(CORR_FREQ='NON',
-                      MASS_INER=MAS,
-                      COMB_MODE=_F(TYPE='CQC',),
-                      MODE_MECA=MODES,
-                      AMOR_REDUIT=0.05,
-                      NUME_MODE=2,
-                      OPTION=('DEPL','EFGE_ELNO','FORC_NODA','REAC_NODA'),
-                      MODE_CORR=MODE_CO,
-                      MONO_APPUI='OUI',
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),)
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COCQC,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=COCQC,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=COCQC,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=COCQC,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                ),
-          )
+# -----------------------------------------------------------------------
 
-#-----------------------------------------------------------------------
+CODSC = COMB_SISM_MODAL(
+    CORR_FREQ="NON",
+    MASS_INER=MAS,
+    COMB_MODE=_F(DUREE=15.0, TYPE="DSC"),
+    MODE_MECA=MODES,
+    AMOR_REDUIT=0.05,
+    NUME_MODE=2,
+    OPTION=("DEPL", "EFGE_ELNO", "FORC_NODA", "REAC_NODA"),
+    MODE_CORR=MODE_CO,
+    MONO_APPUI="OUI",
+    EXCIT=_F(AXE=(1.0, 0.0, 0.0), SPEC_OSCI=SPEC1, ECHELLE=1.0),
+)
 
-CODSC=COMB_SISM_MODAL(CORR_FREQ='NON',
-                      MASS_INER=MAS,
-                      COMB_MODE=_F(DUREE=15.0,
-                                   TYPE='DSC',),
-                      MODE_MECA=MODES,
-                      AMOR_REDUIT=0.05,
-                      NUME_MODE=2,
-                      OPTION=('DEPL','EFGE_ELNO','FORC_NODA','REAC_NODA'),
-                      MODE_CORR=MODE_CO,
-                      MONO_APPUI='OUI',
-                      EXCIT=_F(AXE=(1.0,0.0,0.0),
-                               SPEC_OSCI=SPEC1,
-                               ECHELLE=1.0,),)
-
-TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=CODSC,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P2',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                _F(REFERENCE='ANALYTIQUE',
-                   RESULTAT=CODSC,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='P3',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.023027055,
-                   VALE_REFE=0.023023027049999999,
-                   NOEUD_CMP=('DIR', 'X'),),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODSC,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P2",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+        _F(
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=CODSC,
+            NOM_CHAM="DEPL",
+            GROUP_NO="P3",
+            NOM_CMP="DX",
+            VALE_CALC=0.023027055,
+            VALE_REFE=0.023023027049999999,
+            NOEUD_CMP=("DIR", "X"),
+        ),
+    )
+)
 
 FIN()

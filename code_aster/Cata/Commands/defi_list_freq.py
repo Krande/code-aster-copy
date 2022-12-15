@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,34 +23,46 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEFI_LIST_FREQ=MACRO(nom="DEFI_LIST_FREQ",
-                    op=OPS('code_aster.MacroCommands.defi_list_freq_ops.defi_list_freq_ops'),
-                    sd_prod=listr8_sdaster,
-                    fr=tr("Définir une liste de fréquences strictement croissante"),
-                    reentrant='n',
-         regles=(UN_PARMI('VALE','DEBUT',),
-                 EXCLUS('VALE','INTERVALLE'),
-                 ENSEMBLE('DEBUT','INTERVALLE')),
-         VALE            =SIMP(statut='f',typ='R',max='**'),
-         DEBUT           =SIMP(statut='f',typ='R'),
-         INTERVALLE      =FACT(statut='f',max='**',
-           regles=(UN_PARMI('NOMBRE','PAS'),),
-           JUSQU_A         =SIMP(statut='o',typ='R'),
-           NOMBRE          =SIMP(statut='f',typ='I'),
-           PAS             =SIMP(statut='f',typ='R'),
-         ),
-         RAFFINEMENT      =FACT(statut='f',
-           LIST_RAFFINE    =SIMP(statut='o',typ='R',max='**'),
-           NB_POINTS       =SIMP(statut='f',typ='I',defaut=5),
-           PAS_MINI        =SIMP(statut='f',typ='R',defaut=0.001),
-           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU","LARGEUR_3DB")),
-              b_crit_rela_abs=BLOC(condition="""(equal_to("CRITERE", 'RELATIF') or equal_to("CRITERE", 'ABSOLU'))""",
-                 DISPERSION      =SIMP(statut='f',typ='R',defaut=0.01),),
-              b_crit_larg=BLOC(condition="""(equal_to("CRITERE", 'LARGEUR_3DB'))""",
-                    regles = UN_PARMI('AMOR_REDUIT','LIST_AMOR'),
-                    AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
-                    LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),),
-             ),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
+DEFI_LIST_FREQ = MACRO(
+    nom="DEFI_LIST_FREQ",
+    op=OPS("code_aster.MacroCommands.defi_list_freq_ops.defi_list_freq_ops"),
+    sd_prod=listr8_sdaster,
+    fr=tr("Définir une liste de fréquences strictement croissante"),
+    reentrant="n",
+    regles=(
+        UN_PARMI("VALE", "DEBUT"),
+        EXCLUS("VALE", "INTERVALLE"),
+        ENSEMBLE("DEBUT", "INTERVALLE"),
+    ),
+    VALE=SIMP(statut="f", typ="R", max="**"),
+    DEBUT=SIMP(statut="f", typ="R"),
+    INTERVALLE=FACT(
+        statut="f",
+        max="**",
+        regles=(UN_PARMI("NOMBRE", "PAS"),),
+        JUSQU_A=SIMP(statut="o", typ="R"),
+        NOMBRE=SIMP(statut="f", typ="I"),
+        PAS=SIMP(statut="f", typ="R"),
+    ),
+    RAFFINEMENT=FACT(
+        statut="f",
+        LIST_RAFFINE=SIMP(statut="o", typ="R", max="**"),
+        NB_POINTS=SIMP(statut="f", typ="I", defaut=5),
+        PAS_MINI=SIMP(statut="f", typ="R", defaut=0.001),
+        CRITERE=SIMP(
+            statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU", "LARGEUR_3DB")
+        ),
+        b_crit_rela_abs=BLOC(
+            condition="""(equal_to("CRITERE", 'RELATIF') or equal_to("CRITERE", 'ABSOLU'))""",
+            DISPERSION=SIMP(statut="f", typ="R", defaut=0.01),
+        ),
+        b_crit_larg=BLOC(
+            condition="""(equal_to("CRITERE", 'LARGEUR_3DB'))""",
+            regles=UN_PARMI("AMOR_REDUIT", "LIST_AMOR"),
+            AMOR_REDUIT=SIMP(statut="f", typ="R", max="**"),
+            LIST_AMOR=SIMP(statut="f", typ=listr8_sdaster),
+        ),
+    ),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,36 +20,36 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment="""  Informations for non-linear comportment """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
 
-PCONTMR  = InputParameter(phys=PHY.SIEF_R)
-
-
-PVARIMR  = InputParameter(phys=PHY.VARI_R)
+PCONTMR = InputParameter(phys=PHY.SIEF_R)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
+PVARIMR = InputParameter(phys=PHY.VARI_R)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """
+)
 
 
-PCACO3D  = OutputParameter(phys=PHY.CACO3D, type='ELEM',
-comment=""" NE SERT QUE POUR COQUE_3D """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
+
+
+PCACO3D = OutputParameter(phys=PHY.CACO3D, type="ELEM", comment=""" NE SERT QUE POUR COQUE_3D """)
 
 
 RIGI_MECA_ELAS = Option(
@@ -58,12 +58,12 @@ RIGI_MECA_ELAS = Option(
         SP.PCADISK,
         SP.PCAGNBA,
         SP.PCAMASS,
-           PCAORIE,
+        PCAORIE,
         SP.PCARCRI,
         SP.PCINFDI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PMULCOM,
-           PCONTMR,
+        PCONTMR,
         SP.PDEPLMR,
         SP.PDEPLPR,
         SP.PGEOMER,
@@ -71,19 +71,13 @@ RIGI_MECA_ELAS = Option(
         SP.PINSTPR,
         SP.PITERAT,
         SP.PMATERC,
-           PNBSP_I,
+        PNBSP_I,
         SP.PVARCMR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
         SP.PVARIMP,
-           PVARIMR,
+        PVARIMR,
     ),
-    para_out=(
-           PCACO3D,
-        SP.PMATUNS,
-        SP.PMATUUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PCACO3D, SP.PMATUNS, SP.PMATUUR),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,45 +20,45 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : VARIABLES DE COMMANDE  """,
+)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PCOMPOR = InputParameter(
+    phys=PHY.COMPOR, container="RESU!COMPORTEMENT!N", comment=""" COMPORTEMENT """
+)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR, container='RESU!COMPORTEMENT!N',
-comment=""" COMPORTEMENT """)
-
-
-PDEFOPG  = OutputParameter(phys=PHY.EPSI_R, type='ELGA',
-comment="""  PDEFOPG : DEFORMATIONS MECANIQUES A PARTIR DES DEPLACEMENTS
-                     AUX POINTS DE GAUSS """)
+PDEFOPG = OutputParameter(
+    phys=PHY.EPSI_R,
+    type="ELGA",
+    comment="""  PDEFOPG : DEFORMATIONS MECANIQUES A PARTIR DES DEPLACEMENTS
+                     AUX POINTS DE GAUSS """,
+)
 
 
 EPMG_ELGA = Option(
     para_in=(
         SP.PCAMASS,
-           PCOMPOR,
+        PCOMPOR,
         SP.PDEPLAR,
         SP.PGEOMER,
         SP.PMATERC,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
     ),
-    para_out=(
-           PDEFOPG,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PDEFOPG,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  EPMG_ELGA : DEFORMATIONS MECANIQUES A PARTIR DES DEPLACEMENTS,
            THEORIE DES GRANDS DEPLACEMENTS PAR ELEMENTS AUX POINTS DE GAUSS """,
 )

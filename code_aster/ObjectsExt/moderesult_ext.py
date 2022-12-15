@@ -62,5 +62,6 @@ class ModeResultStateBuilder(ResultStateBuilder):
 @injector(ModeResult)
 class ExtentedModeResult:
     """Object for ModeResult."""
+
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ModeResultStateBuilder

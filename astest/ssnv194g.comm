@@ -19,8 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),
-         )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
@@ -34,99 +33,97 @@ from numpy import *
 
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_CFC. Unites : MPa, mm, N
 
-MU=80000. # MPa
-NU=0.3
-E=MU*2*(1.+NU)
-TAU_F  = 80.
-RHO_0  = 1.E5    # en mm**-2
-RHOREF = 1.E6    # en mm**-2
+MU = 80000.0  # MPa
+NU = 0.3
+E = MU * 2 * (1.0 + NU)
+TAU_F = 80.0
+RHO_0 = 1.0e5  # en mm**-2
+RHOREF = 1.0e6  # en mm**-2
 
-N      = 20.
-GAMMA0 = 1.E-3
-ALPHA=0.35
-BETA=2.54E-7     # 2.54 Angstrom
+N = 20.0
+GAMMA0 = 1.0e-3
+ALPHA = 0.35
+BETA = 2.54e-7  # 2.54 Angstrom
 
-A      = 0.13
-B      = 0.005
-Y      = 2.5E-7  # 2.5 Angstrom
+A = 0.13
+B = 0.005
+Y = 2.5e-7  # 2.5 Angstrom
 
 # variable adimensionnee, voir R5.03.11
 
-RHO_0=RHO_0*BETA*BETA
+RHO_0 = RHO_0 * BETA * BETA
 
-ALPHA=0.0
+ALPHA = 0.0
 
 # pour DD_CFC_IRRA
 # variable adimensionnee, voir R5.03.11
-RHO_LOOPS=7.4E13*BETA*BETA
+RHO_LOOPS = 7.4e13 * BETA * BETA
 
-PHI_VOIDS=1.e-3
+PHI_VOIDS = 1.0e-3
 
-ACIERDDi=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=NU,
-                            ALPHA=0.),
-                      MONO_DD_CFC_IRRA=_F(TAU_F  = TAU_F,  # MPa
-                                     Y      = Y      ,  # 2.5 Angstrom
-                                     N      = N,
-                                     GAMMA0 = GAMMA0,
-                                     A      = A,
-                                     B      = B,
-                                     RHO_REF= RHOREF,    # en mm**-2
-                                     ALPHA=ALPHA,
-                                     BETA=BETA,          # 2.54 Angstrom
-                                     H1      = 0.124,
-                                     H2      = 0.625,
-                                     H3      = 0.137,
-                                     H4      = 0.122,
-                                     H5      = 0.07,
-                                     RHO_VOID =1.E3,
-                                     PHI_LOOP =5.9E-6,
-                                     ##ALP_VOID =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
-                                     ##ALP_LOOP =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
-                                     ALP_VOID =0.,
-                                     ALP_LOOP =0.1,
-                                     RHO_SAT  =RHO_LOOPS*0.,
-                                     PHI_SAT  =4.E-2,
-                                     XI_IRRA  =1.,
-                                     DZ_IRRA  =1.e7,
-                                   ),
-                      )
-
-
-ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=NU,
-                            ALPHA=0.),
-                      MONO_DD_CFC=_F(TAU_F  = TAU_F,  # MPa
-                                     Y      = Y      ,  # 2.5 Angstrom
-                                     N      = N,
-                                     GAMMA0 = GAMMA0,
-                                     A      = A,
-                                     B      = B,
-                                     RHO_REF= RHOREF,    # en mm**-2
-                                     ALPHA=ALPHA,
-                                     BETA=BETA,          # 2.54 Angstrom
-                                     H1      = 0.124,
-                                     H2      = 0.625,
-                                     H3      = 0.137,
-                                     H4      = 0.122,
-                                     H5      = 0.07,
-                                   ),
-                      )
+ACIERDDi = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=NU, ALPHA=0.0),
+    MONO_DD_CFC_IRRA=_F(
+        TAU_F=TAU_F,  # MPa
+        Y=Y,  # 2.5 Angstrom
+        N=N,
+        GAMMA0=GAMMA0,
+        A=A,
+        B=B,
+        RHO_REF=RHOREF,  # en mm**-2
+        ALPHA=ALPHA,
+        BETA=BETA,  # 2.54 Angstrom
+        H1=0.124,
+        H2=0.625,
+        H3=0.137,
+        H4=0.122,
+        H5=0.07,
+        RHO_VOID=1.0e3,
+        PHI_LOOP=5.9e-6,
+        ##ALP_VOID =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
+        ##ALP_LOOP =0.,  #essai pour retrouver la solution sans irradiation (SSND110A)
+        ALP_VOID=0.0,
+        ALP_LOOP=0.1,
+        RHO_SAT=RHO_LOOPS * 0.0,
+        PHI_SAT=4.0e-2,
+        XI_IRRA=1.0,
+        DZ_IRRA=1.0e7,
+    ),
+)
 
 
+ACIERDD = DEFI_MATERIAU(
+    ELAS=_F(E=E, NU=NU, ALPHA=0.0),
+    MONO_DD_CFC=_F(
+        TAU_F=TAU_F,  # MPa
+        Y=Y,  # 2.5 Angstrom
+        N=N,
+        GAMMA0=GAMMA0,
+        A=A,
+        B=B,
+        RHO_REF=RHOREF,  # en mm**-2
+        ALPHA=ALPHA,
+        BETA=BETA,  # 2.54 Angstrom
+        H1=0.124,
+        H2=0.625,
+        H3=0.137,
+        H4=0.122,
+        H5=0.07,
+    ),
+)
 
 
 # DD_CFC
-COMPORTi=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDi,
-                                    ECOULEMENT='MONO_DD_CFC_IRRA',
-                                    ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',
-                                    ),)
+COMPORTi = DEFI_COMPOR(
+    MONOCRISTAL=_F(
+        MATER=ACIERDDi, ECOULEMENT="MONO_DD_CFC_IRRA", ELAS="ELAS", FAMI_SYST_GLIS="OCTAEDRIQUE"
+    )
+)
 
-COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
-                                    ECOULEMENT='MONO_DD_CFC',
-                                    ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',
-                                    ),)
+COMPORT = DEFI_COMPOR(
+    MONOCRISTAL=_F(
+        MATER=ACIERDD, ECOULEMENT="MONO_DD_CFC", ELAS="ELAS", FAMI_SYST_GLIS="OCTAEDRIQUE"
+    )
+)
 
 FIN()

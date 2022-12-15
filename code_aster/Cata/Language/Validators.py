@@ -47,8 +47,8 @@ class NoRepeat(Validator):
         """Check values"""
         values = force_list(values)
         if len(set(values)) != len(values):
-            raise ValueError("All the values must be different: "
-                             "{0!r}".format(values))
+            raise ValueError("All the values must be different: " "{0!r}".format(values))
+
 
 class AtMostOneStartsWith(Validator):
     """Check that there is at most one value that starts with a given keyword.
@@ -67,9 +67,10 @@ class AtMostOneStartsWith(Validator):
 
         occurences = list(set(i for i in values if i.startswith(self.args[0])))
         if len(occurences) > 1:
-            raise ValueError("At most one occurrence of '{0}' is accepted. "
-                             "Found {1}: {2}"
-                             .format(self.args[0], len(occurences), occurences))
+            raise ValueError(
+                "At most one occurrence of '{0}' is accepted. "
+                "Found {1}: {2}".format(self.args[0], len(occurences), occurences)
+            )
 
 
 class LongStr(Validator):
@@ -78,17 +79,17 @@ class LongStr(Validator):
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
         assert len(args) == 2, "Exactly two arguments required for LongStr."
-        assert (type(args[0]), type(args[1])) == (int, int), (
-            "LongStr arguments must be 'int'")
+        assert (type(args[0]), type(args[1])) == (int, int), "LongStr arguments must be 'int'"
 
     def check(self, values):
         """Check values"""
         values = force_list(values)
         for string in values:
             if not (self.args[0] <= len(string) <= self.args[1]):
-                raise ValueError("String length must be in [{0[0]}, {0[1]}]: "
-                                 "length of '{1}' is {2}"
-                                 .format(self.args, string, len(string)))
+                raise ValueError(
+                    "String length must be in [{0[0]}, {0[1]}]: "
+                    "length of '{1}' is {2}".format(self.args, string, len(string))
+                )
 
 
 class AndVal(Validator):
@@ -99,8 +100,7 @@ class AndVal(Validator):
             args = args[0]
         super().__init__(*args)
         for i in self.args:
-            assert isinstance(i, Validator), (
-                "Arguments of AndVal must be Validator objects.")
+            assert isinstance(i, Validator), "Arguments of AndVal must be Validator objects."
 
     def check(self, values):
         """Check values"""
@@ -117,8 +117,7 @@ class OrVal(Validator):
             args = args[0]
         super().__init__(*args)
         for i in self.args:
-            assert isinstance(i, Validator), (
-                "Arguments of OrVal must be Validator objects.")
+            assert isinstance(i, Validator), "Arguments of OrVal must be Validator objects."
 
     def check(self, values):
         """Check values"""
@@ -159,8 +158,8 @@ class OrdList(Validator):
     def __init__(self, *args, **kwargs):
         super().__init__()
         assert len(args) <= 1, "At most one argument is required for OrdList."
-        reverse = kwargs.get('reverse', False)
-        if len(args) == 1 and args[0] != 'croissant':
+        reverse = kwargs.get("reverse", False)
+        if len(args) == 1 and args[0] != "croissant":
             reverse = True
 
         self._predicate = partial(ordlist_predicate, reverse=reverse)
@@ -174,9 +173,10 @@ class OrdList(Validator):
         while len(values) > 0:
             current = values.pop(0)
             if not self._predicate(previous, current):
-                raise ValueError("The values are not ordered as "
-                                 "expected: {0} followed by {1}"
-                                 .format(previous, current))
+                raise ValueError(
+                    "The values are not ordered as "
+                    "expected: {0} followed by {1}".format(previous, current)
+                )
             previous = current
 
 
@@ -225,15 +225,15 @@ class Compulsory(Validator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
-        assert len(args) == 1, (
-            "Exactly one argument is required for Compulsory.")
+        assert len(args) == 1, "Exactly one argument is required for Compulsory."
 
     def check(self, values):
         """Check values"""
         missing = set(self.args[0]).difference(force_list(values))
         if missing:
-            raise ValueError("Required values: {0}, missing {1}"
-                             .format(_lstr(*self.args), _lstr(missing)))
+            raise ValueError(
+                "Required values: {0}, missing {1}".format(_lstr(*self.args), _lstr(missing))
+            )
 
 
 class NotEqualTo(Validator):
@@ -245,8 +245,7 @@ class NotEqualTo(Validator):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args)
-        assert len(args) == 1, ("Exactly one argument is required "
-                                "for NotEqualTo.")
+        assert len(args) == 1, "Exactly one argument is required " "for NotEqualTo."
 
     def check(self, values):
         """Check values"""
@@ -254,8 +253,7 @@ class NotEqualTo(Validator):
         values = force_list(values)
         for val in values:
             if val == ref:
-                raise ValueError("Unauthorized value: {0[0]}"
-                                 .format(self.args))
+                raise ValueError("Unauthorized value: {0[0]}".format(self.args))
 
 
 def _lstr(list_):

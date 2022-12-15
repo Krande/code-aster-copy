@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,72 +20,70 @@
 # person_in_charge: jessica.haelewyn at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PSTANO = InputParameter(phys=PHY.N120_I)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I)
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+PLSN = InputParameter(phys=PHY.NEUT_R)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
-
-
-PMATTTR  = OutputParameter(phys=PHY.MTEM_R, type='RESL')
+PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
 
 
 MASS_THER = Option(
     para_in=(
-           PBASLOR,
+        PBASLOR,
         SP.PCACOQU,
-           PCNSETO,
+        PCNSETO,
         SP.PGEOMER,
-           PHEAVTO,
-           PHEA_NO,
-           PLONCHA,
-           PLSN,
-           PLST,
+        PHEAVTO,
+        PHEA_NO,
+        PLONCHA,
+        PLSN,
+        PLST,
         SP.PMATERC,
-           PPINTTO,
-           PSTANO,
+        PPINTTO,
+        PSTANO,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
     ),
-    para_out=(
-           PMATTTR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PMATTTR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

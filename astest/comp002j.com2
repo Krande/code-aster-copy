@@ -22,98 +22,101 @@ from code_aster.MacroCommands.Utils.testcomp_utils import rename_components
 from code_aster.MacroCommands.Utils.veri_matr_tang import VERI_MATR_TANG
 from comp002j import TEST_ECART
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 ##################################################################################
 #  TEST 3D
 ##################################################################################
 
 # les quantites extraites du calcul
-ch_param=['V56','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
+ch_param = ["V56", "VMIS", "TRACE", "SIXX", "SIYY", "SIZZ", "SIXY", "SIXZ", "SIYZ"]
 
 # resultats
-RESU=[None]*Ncal
-R_SI=[None]*len(ch_param)
-TMP_S=[None]
+RESU = [None] * Ncal
+R_SI = [None] * len(ch_param)
+TMP_S = [None]
 
 
-#Boucle sur l'ensemble des calculs
+# Boucle sur l'ensemble des calculs
 for i in range(Ncal):
-        N = N_pas[i]
-        imat = P_imat[i]
-        temps=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
+    N = N_pas[i]
+    imat = P_imat[i]
+    temps = DEFI_LIST_REEL(
+        DEBUT=0.0,
+        INTERVALLE=(
+            _F(JUSQU_A=t_0, NOMBRE=N),
+            _F(JUSQU_A=2.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=3.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=4.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=5.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=6.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=7.0 * t_0, NOMBRE=N),
+            _F(JUSQU_A=8.0 * t_0, NOMBRE=N),
+        ),
+    )
 
-        DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
-                                ECHEC=_F(ACTION='DECOUPE',
-                                         SUBD_METHODE='MANUEL',
-                                         SUBD_PAS=10,
-                                         SUBD_NIVEAU=2,),)
+    DEFLIST = DEFI_LIST_INST(
+        DEFI_LIST=_F(LIST_INST=temps),
+        ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=10, SUBD_NIVEAU=2),
+    )
 
-#       Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT(
-                   COMPORTEMENT=_F(RELATION=compor,
-                                COMPOR=COMP1[imat],
-                                ITER_INTE_MAXI=200,
-                                RESI_INTE_RELA=1.E-10
-                                ),
-                   ANGLE=angles[i],
-                   MASSIF=_F(ANGL_REP=(angles[i])),
-                   NEWTON=_F(MATRICE='TANGENTE',#PREDICTION='ELASTIQUE',
-                             REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.E-8),
-                   MATER      = ACIER[imat],
-                   ARCHIVAGE = _F(LIST_INST = temps_ar),
-#                   INCREMENT=_F(LIST_INST=DEFLIST),
-                   INCREMENT=_F(LIST_INST=temps),
-                   EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
-                                  EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        )
-        #IMPR_TABLE(TABLE=RESU[i])
-        DETRUIRE(NOM=temps)
-        DETRUIRE(NOM=DEFLIST)
+    #       Resout le pb a deformation imposee
+    RESU[i] = SIMU_POINT_MAT(
+        COMPORTEMENT=_F(
+            RELATION=compor, COMPOR=COMP1[imat], ITER_INTE_MAXI=200, RESI_INTE_RELA=1.0e-10
+        ),
+        ANGLE=angles[i],
+        MASSIF=_F(ANGL_REP=(angles[i])),
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),  # PREDICTION='ELASTIQUE',
+        CONVERGENCE=_F(ITER_GLOB_MAXI=10, RESI_GLOB_RELA=1.0e-8),
+        MATER=ACIER[imat],
+        ARCHIVAGE=_F(LIST_INST=temps_ar),
+        #                   INCREMENT=_F(LIST_INST=DEFLIST),
+        INCREMENT=_F(LIST_INST=temps),
+        EPSI_IMPOSE=_F(
+            EPXX=eps_def[0],
+            EPYY=eps_def[1],
+            EPZZ=eps_def[2],
+            EPXY=eps_def[3],
+            EPXZ=eps_def[4],
+            EPYZ=eps_def[5],
+        ),
+    )
+    # IMPR_TABLE(TABLE=RESU[i])
+    DETRUIRE(NOM=temps)
+    DETRUIRE(NOM=DEFLIST)
 
-# On renomme les composantes en fonction de  l'ordre de discretisation
-        R_SI=rename_components(i,N_pas,label_cal,ch_param,RESU,R_SI)
+    # On renomme les composantes en fonction de  l'ordre de discretisation
+    R_SI = rename_components(i, N_pas, label_cal, ch_param, RESU, R_SI)
 
 # impressions
 for i in range(len(ch_param)):
-        IMPR_TABLE(TABLE=R_SI[i])
+    IMPR_TABLE(TABLE=R_SI[i])
 
 # TEST_RESU sur les erreurs relatives
-TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_para)
+TEST_ECART(ch_param2, label_cal, N_pas, Ncal, nbequi, R_SI, prec_ecart, prec_zero, coef_para)
 
 
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
 
 TEST_TABLE(
-           VALE_CALC=3.31336000E8,
-           NOM_PARA='VMIS_Pa_1',
-           TABLE=R_SI[1],
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0,),
-           )
+    VALE_CALC=3.31336000e8,
+    NOM_PARA="VMIS_Pa_1",
+    TABLE=R_SI[1],
+    FILTRE=_F(NOM_PARA="INST", VALE=5.0),
+)
 
 TEST_TABLE(
-           VALE_CALC=2.079485379201E7,
-           NOM_PARA='SIXX_Pa_1',
-           TABLE=R_SI[3],
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=5.0,),
-           )
+    VALE_CALC=2.079485379201e7,
+    NOM_PARA="SIXX_Pa_1",
+    TABLE=R_SI[3],
+    FILTRE=_F(NOM_PARA="INST", VALE=5.0),
+)
 
 for i in range(Ncal):
-    DETRUIRE(NOM = RESU[i])
+    DETRUIRE(NOM=RESU[i])
 for i in range(len(ch_param)):
-    DETRUIRE(NOM = R_SI[i])
-
+    DETRUIRE(NOM=R_SI[i])
 
 
 ###############################################################################
@@ -121,44 +124,54 @@ for i in range(len(ch_param)):
 
 # Test de la matrice tangente sur le calcul le plus fin
 
-N = N_pas[Ncal-1]
-Linst=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),)
+N = N_pas[Ncal - 1]
+Linst = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=t_0, NOMBRE=N),
+        _F(JUSQU_A=2.0 * t_0, NOMBRE=N),
+        _F(JUSQU_A=3.0 * t_0, NOMBRE=N),
+        _F(JUSQU_A=4.0 * t_0, NOMBRE=N),
+        _F(JUSQU_A=5.0 * t_0, NOMBRE=N),
+        _F(JUSQU_A=6.0 * t_0, NOMBRE=N),
+        _F(JUSQU_A=7.0 * t_0, NOMBRE=N),
+        _F(JUSQU_A=8.0 * t_0, NOMBRE=N),
+    ),
+)
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = Linst,),
-                                ECHEC=_F(ACTION='DECOUPE',
-                                         SUBD_METHODE='MANUEL',
-                                         SUBD_PAS=10,
-                                         SUBD_NIVEAU=2,),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=Linst),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=10, SUBD_NIVEAU=2),
+)
 
-DEBUG(SDVERI='NON')
-RESU_TGT=SIMU_POINT_MAT(
-                   COMPORTEMENT=_F(RELATION=compor,
-                                TYPE_MATR_TANG='VERIFICATION',
-                                VALE_PERT_RELA=1.E-5,
-                                COMPOR=COMP1[imat],
-                                ITER_INTE_MAXI=100,
-                                RESI_INTE_RELA=1.E-9,
-                                ),
-                   ANGLE=angles[0],
-                   MASSIF=_F(ANGL_REP=(angles[0])),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[1],
-                 #  INCREMENT=_F(LIST_INST=DEFLIST,),
-                   INCREMENT=_F(LIST_INST=Linst,),
-                   EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
-                                  EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        )
+DEBUG(SDVERI="NON")
+RESU_TGT = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(
+        RELATION=compor,
+        TYPE_MATR_TANG="VERIFICATION",
+        VALE_PERT_RELA=1.0e-5,
+        COMPOR=COMP1[imat],
+        ITER_INTE_MAXI=100,
+        RESI_INTE_RELA=1.0e-9,
+    ),
+    ANGLE=angles[0],
+    MASSIF=_F(ANGL_REP=(angles[0])),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+    MATER=ACIER[1],
+    #  INCREMENT=_F(LIST_INST=DEFLIST,),
+    INCREMENT=_F(LIST_INST=Linst),
+    EPSI_IMPOSE=_F(
+        EPXX=eps_def[0],
+        EPYY=eps_def[1],
+        EPZZ=eps_def[2],
+        EPXY=eps_def[3],
+        EPXZ=eps_def[4],
+        EPYZ=eps_def[5],
+    ),
+)
 
-DIFF_MAT=VERI_MATR_TANG()
+DIFF_MAT = VERI_MATR_TANG()
 
 ###############################################################################
 # impressions
@@ -166,13 +179,15 @@ DIFF_MAT=VERI_MATR_TANG()
 IMPR_TABLE(TABLE=DIFF_MAT)
 
 
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=0.0,
-           VALE_REFE=0.0,
-           NOM_PARA='MAT_DIFF',
-           TYPE_TEST='MAX',
-           TABLE=DIFF_MAT,)
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.02,
+    VALE_CALC=0.0,
+    VALE_REFE=0.0,
+    NOM_PARA="MAT_DIFF",
+    TYPE_TEST="MAX",
+    TABLE=DIFF_MAT,
+)
 
 FIN()

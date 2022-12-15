@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,23 +22,23 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'HOEK_BROWN_TOT',
-    lc_type        = ('MECANIQUE_THM',),
-    doc            =   """Relation de comportement de Hoek et Brown modifiée pour la modélisation du comportement
+    nom="HOEK_BROWN_TOT",
+    lc_type=("MECANIQUE_THM",),
+    doc="""Relation de comportement de Hoek et Brown modifiée pour la modélisation du comportement
    des roches [R7.01.18] pour la mécanique pure. Le couplage est formulé en contraintes totales.
    Pour faciliter l'intégration de ce modèle,
-   on peut utiliser le re-découpage local du pas de temps (ITER_INTE_PAS)."""              ,
-    num_lc         = 0,
-    nb_vari        = 3,
-    nom_vari       = ('GAMMAECR','EPSPVOL','INDIPLAS',),
-    mc_mater       = ('ELAS','HOEK_BROWN',),
-    modelisation   = ('THM',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('NEWTON_1D',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('No',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   on peut utiliser le re-découpage local du pas de temps (ITER_INTE_PAS).""",
+    num_lc=0,
+    nb_vari=3,
+    nom_vari=("GAMMAECR", "EPSPVOL", "INDIPLAS"),
+    mc_mater=("ELAS", "HOEK_BROWN"),
+    modelisation=("THM",),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("NEWTON_1D",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("No",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

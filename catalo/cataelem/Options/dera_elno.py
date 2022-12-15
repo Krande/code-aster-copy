@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,28 +20,24 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PDERAPG = InputParameter(phys=PHY.DERA_R, container='RESU!DERA_ELGA!N',
-                         comment="""  PVDERAPG : INDICATEUR LOCAL DE DECHARGE ET
-           DE PERTE DE RADIALITE  """)
+PDERAPG = InputParameter(
+    phys=PHY.DERA_R,
+    container="RESU!DERA_ELGA!N",
+    comment="""  PVDERAPG : INDICATEUR LOCAL DE DECHARGE ET
+           DE PERTE DE RADIALITE  """,
+)
 
 
 DERA_ELNO = Option(
-    para_in=(
-        PDERAPG,
-    ),
-    para_out=(
-        SP.PDERANO,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-    ),
+    para_in=(PDERAPG,),
+    para_out=(SP.PDERANO,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  DERA_ELNO :
            INDICATEUR LOCAL DE DECHARGE ET
            INDICATEUR DE PERTE DE RADIALITE

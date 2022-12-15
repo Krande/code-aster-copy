@@ -20,209 +20,234 @@
 import numpy as np
 from math import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-maillage = LIRE_MAILLAGE(FORMAT='MED',UNITE=20,INFO=2)
+maillage = LIRE_MAILLAGE(FORMAT="MED", UNITE=20, INFO=2)
 
-modele = AFFE_MODELE(AFFE=(_F(MODELISATION=('DIS_TR', ),
-                            PHENOMENE='MECANIQUE',
-                            GROUP_MA='ROTULES',
-                            ),
-                          ),
-                    MAILLAGE=maillage)
+modele = AFFE_MODELE(
+    AFFE=(_F(MODELISATION=("DIS_TR",), PHENOMENE="MECANIQUE", GROUP_MA="ROTULES"),),
+    MAILLAGE=maillage,
+)
 
-resrot = DEFI_MATERIAU(JONC_ENDO_PLAS=_F(KE=1.E6,
-                                  KP=5.E4,
-                                  KDP=2.E5,
-                                  KDM=1.E5,
-                                  RDP=1.E-3,
-                                  RDM=-1.5E-3,
-                                  MYP=2.E3,
-                                  MYM=-2.5E3,
-                                  ),
-                      )
+resrot = DEFI_MATERIAU(
+    JONC_ENDO_PLAS=_F(
+        KE=1.0e6, KP=5.0e4, KDP=2.0e5, KDM=1.0e5, RDP=1.0e-3, RDM=-1.5e-3, MYP=2.0e3, MYM=-2.5e3
+    )
+)
 
-elast = DEFI_MATERIAU(ELAS=_F(E=200000.E9,
-                              NU=0.3))
+elast = DEFI_MATERIAU(ELAS=_F(E=200000.0e9, NU=0.3))
 
-materiau = AFFE_MATERIAU(AFFE=(
-                               _F(MATER=(resrot, ),
-                                 GROUP_MA='ROTULES'),
-                               ),
-                         MODELE=modele)
+materiau = AFFE_MATERIAU(AFFE=(_F(MATER=(resrot,), GROUP_MA="ROTULES"),), MODELE=modele)
 
-carac =AFFE_CARA_ELEM(MODELE=modele,
-                      DISCRET=(
-                                  _F(GROUP_MA='ROTULES',
-                                    SYME='OUI',
-                                    CARA='K_TR_D_L',
-                                    REPERE='LOCAL',
-                                    VALE=(1.E8,2.E8,5.E8,10.E8,20.E8,1.E6),
-                                    ),
-                                  ),
-                      ORIENTATION=(
-                                  _F(GROUP_MA=('L1','L2','L5','L6'),CARA='ANGL_VRIL',VALE=(0.)),
-                                  _F(GROUP_MA=('L3','L4','L7','L8'),CARA='ANGL_VRIL',VALE=(30.)),
-                                 ),
-                      )
+carac = AFFE_CARA_ELEM(
+    MODELE=modele,
+    DISCRET=(
+        _F(
+            GROUP_MA="ROTULES",
+            SYME="OUI",
+            CARA="K_TR_D_L",
+            REPERE="LOCAL",
+            VALE=(1.0e8, 2.0e8, 5.0e8, 10.0e8, 20.0e8, 1.0e6),
+        ),
+    ),
+    ORIENTATION=(
+        _F(GROUP_MA=("L1", "L2", "L5", "L6"), CARA="ANGL_VRIL", VALE=(0.0)),
+        _F(GROUP_MA=("L3", "L4", "L7", "L8"), CARA="ANGL_VRIL", VALE=(30.0)),
+    ),
+)
 
 # Visualisation et contrôle du repère local associé à l'élément discret
 # IMPR_CONCEPT(FORMAT='MED', UNITE=40,CONCEPT=_F(CARA_ELEM=carac, REPERE_LOCAL='ELNO', MODELE=modele), )
 
-listr = DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=(_F(JUSQU_A=24.0,
-                                      PAS=1.0),
-                                    ),
-                      )
+listr = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=24.0, PAS=1.0),))
 
-listc = DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=(_F(JUSQU_A=24.0,
-                                      PAS=1.0),
-                                    ),
-                      )
+listc = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=24.0, PAS=1.0),))
 
 
-listi = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = listc,),
-                      ECHEC=(_F(EVENEMENT= 'ERREUR',
-                               ACTION= 'DECOUPE',
-                               SUBD_METHODE='MANUEL',
-                               SUBD_PAS=5.,
-                               SUBD_NIVEAU=3,
-                              ),
-                              _F(EVENEMENT= 'DIVE_RESI',
-                               ACTION= 'DECOUPE',
-                               SUBD_METHODE='MANUEL',
-                               SUBD_PAS=5.,
-                               SUBD_NIVEAU=4,
-                              ),),)
+listi = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=listc),
+    ECHEC=(
+        _F(
+            EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=5.0, SUBD_NIVEAU=3
+        ),
+        _F(
+            EVENEMENT="DIVE_RESI",
+            ACTION="DECOUPE",
+            SUBD_METHODE="MANUEL",
+            SUBD_PAS=5.0,
+            SUBD_NIVEAU=4,
+        ),
+    ),
+)
 
-fonc_A = DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0, 0.0,
-                      1.0, 0.001,
-                      2.0, 0.,
-                      3.0, -0.001,
-                      4.0, 0.,
-                      5.0, 0.003,
-                      6.0, 0. ,
-                      7.0, -0.003,
-                      8.0, 0.,
-                      9.0 ,0.005,
-                      10., 0.,
-                      11.0 ,-0.005,
-                      12.0, 0. ,
-                      13.0 , 0.011,
-                      14.0, 0. ,
-                      15.0 , -0.011,
-                      16.0, 0. ,
-                      17.0 , 0.015,
-                      18.0 , 0.,
-                      19.0 , -0.015,
-                      20.0, 0. ,
-                      21.0 , 0.020,
-                      22.0 , 0.,
-                      23.0 , -0.020,
-                      24.0, 0. ,
-                      ))
+fonc_A = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        0.0,
+        0.0,
+        1.0,
+        0.001,
+        2.0,
+        0.0,
+        3.0,
+        -0.001,
+        4.0,
+        0.0,
+        5.0,
+        0.003,
+        6.0,
+        0.0,
+        7.0,
+        -0.003,
+        8.0,
+        0.0,
+        9.0,
+        0.005,
+        10.0,
+        0.0,
+        11.0,
+        -0.005,
+        12.0,
+        0.0,
+        13.0,
+        0.011,
+        14.0,
+        0.0,
+        15.0,
+        -0.011,
+        16.0,
+        0.0,
+        17.0,
+        0.015,
+        18.0,
+        0.0,
+        19.0,
+        -0.015,
+        20.0,
+        0.0,
+        21.0,
+        0.020,
+        22.0,
+        0.0,
+        23.0,
+        -0.020,
+        24.0,
+        0.0,
+    ),
+)
 
-fonc_B = DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0, 0.0,
-                      1.0, -0.001,
-                      2.0, 0.,
-                      3.0, 0.001,
-                      4.0, 0.,
-                      5.0, -0.003,
-                      6.0, 0. ,
-                      7.0, 0.003,
-                      8.0, 0.,
-                      9.0 ,-0.005,
-                      10., 0.,
-                      11.0 ,0.005,
-                      12.0, 0. ,
-                      13.0 , -0.011,
-                      14.0, 0. ,
-                      15.0 , 0.011,
-                      16.0, 0. ,
-                      17.0 , -0.015,
-                      18.0 , 0.,
-                      19.0 , 0.015,
-                      20.0, 0. ,
-                      21.0 , -0.020,
-                      22.0 , 0.,
-                      23.0 , 0.020,
-                      24.0, 0. ,
-                      ))
+fonc_B = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        0.0,
+        0.0,
+        1.0,
+        -0.001,
+        2.0,
+        0.0,
+        3.0,
+        0.001,
+        4.0,
+        0.0,
+        5.0,
+        -0.003,
+        6.0,
+        0.0,
+        7.0,
+        0.003,
+        8.0,
+        0.0,
+        9.0,
+        -0.005,
+        10.0,
+        0.0,
+        11.0,
+        0.005,
+        12.0,
+        0.0,
+        13.0,
+        -0.011,
+        14.0,
+        0.0,
+        15.0,
+        0.011,
+        16.0,
+        0.0,
+        17.0,
+        -0.015,
+        18.0,
+        0.0,
+        19.0,
+        0.015,
+        20.0,
+        0.0,
+        21.0,
+        -0.020,
+        22.0,
+        0.0,
+        23.0,
+        0.020,
+        24.0,
+        0.0,
+    ),
+)
 
-fonc_C = DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0, 0.0,
-                      12.0, 0.020,
-                      24.0, 0.,
-                      ))
+fonc_C = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 12.0, 0.020, 24.0, 0.0))
 
-fonc_D = DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0, 0.0,
-                      12.0, 0.010,
-                      24.0, 0.,
-                      ))
+fonc_D = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 12.0, 0.010, 24.0, 0.0))
 
 
-
-blocage = AFFE_CHAR_MECA(DDL_IMPO=(_F(
-                                   DX=0.,
-                                   DY=0.,
-                                   DZ=0.,
-                                   DRX=0.,
-                                   DRY=0.,
-                                   DRZ=0.,
-                                   GROUP_NO=('ENC', )),
-                                ),
-                      MODELE=modele)
+blocage = AFFE_CHAR_MECA(
+    DDL_IMPO=(_F(DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0, GROUP_NO=("ENC",)),),
+    MODELE=modele,
+)
 
 chargemt = AFFE_CHAR_MECA_F(
-                          DDL_IMPO=(
-                                   _F(DRZ=fonc_A,GROUP_NO=('P2', )),
-                                   _F(DRZ=fonc_B,GROUP_NO=('P4', )),
-                                   _F(DRZ=fonc_A,GROUP_NO=('P6', )),
-                                   _F(DRZ=fonc_B,GROUP_NO=('P8', )),
-                                   _F(DRZ=fonc_C,GROUP_NO=('P10', )),
-                                   _F(DRZ=fonc_C,DX=fonc_D,DY=fonc_D,DZ=fonc_D,DRX=fonc_D,DRY=fonc_D,GROUP_NO=('P12', )),
-                                   _F(DRZ=fonc_C,GROUP_NO=('P14', )),
-                                   _F(DRZ=fonc_C,DX=fonc_D,DY=fonc_D,DZ=fonc_D,DRX=fonc_D,DRY=fonc_D,GROUP_NO=('P16', )),
-                                    ),
-                          MODELE=modele)
+    DDL_IMPO=(
+        _F(DRZ=fonc_A, GROUP_NO=("P2",)),
+        _F(DRZ=fonc_B, GROUP_NO=("P4",)),
+        _F(DRZ=fonc_A, GROUP_NO=("P6",)),
+        _F(DRZ=fonc_B, GROUP_NO=("P8",)),
+        _F(DRZ=fonc_C, GROUP_NO=("P10",)),
+        _F(DRZ=fonc_C, DX=fonc_D, DY=fonc_D, DZ=fonc_D, DRX=fonc_D, DRY=fonc_D, GROUP_NO=("P12",)),
+        _F(DRZ=fonc_C, GROUP_NO=("P14",)),
+        _F(DRZ=fonc_C, DX=fonc_D, DY=fonc_D, DZ=fonc_D, DRX=fonc_D, DRY=fonc_D, GROUP_NO=("P16",)),
+    ),
+    MODELE=modele,
+)
 
 rescal = STAT_NON_LINE(
-                CHAM_MATER=materiau,
-                EXCIT=(_F(CHARGE=blocage), _F(CHARGE=chargemt),),
-                INCREMENT=_F(LIST_INST=listi,
-                             ),
-                MODELE=modele,
-                CARA_ELEM=carac,
-                COMPORTEMENT=(_F(RELATION='JONC_ENDO_PLAS',
-                                 GROUP_MA='ROTULES',
-                                 ITER_INTE_MAXI=20,
-                                 RESI_INTE_RELA=1.e-06),
-                             ),
-                ARCHIVAGE=_F(LIST_INST=listr,),
-                )
+    CHAM_MATER=materiau,
+    EXCIT=(_F(CHARGE=blocage), _F(CHARGE=chargemt)),
+    INCREMENT=_F(LIST_INST=listi),
+    MODELE=modele,
+    CARA_ELEM=carac,
+    COMPORTEMENT=(
+        _F(
+            RELATION="JONC_ENDO_PLAS", GROUP_MA="ROTULES", ITER_INTE_MAXI=20, RESI_INTE_RELA=1.0e-06
+        ),
+    ),
+    ARCHIVAGE=_F(LIST_INST=listr),
+)
 
 
 rescal = CALC_CHAMP(
-                reuse=rescal,
-                RESULTAT=rescal,
-                EXCIT=(_F(CHARGE=blocage), _F(CHARGE=chargemt),),
-                FORCE='REAC_NODA',
-            )
+    reuse=rescal,
+    RESULTAT=rescal,
+    EXCIT=(_F(CHARGE=blocage), _F(CHARGE=chargemt)),
+    FORCE="REAC_NODA",
+)
 
-liste_groupes=['L1','L2','L3','L4','L5','L6','L7','L8']
-liste_noeuds=['P1','P3','P5','P7','P9','P11','P13','P15']
-liste_coord=[0., 1., 2., 3., 4., 5., 6., 7., 8.]
-jj=0
+liste_groupes = ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8"]
+liste_noeuds = ["P1", "P3", "P5", "P7", "P9", "P11", "P13", "P15"]
+liste_coord = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
+jj = 0
 
-coef=-1.0
-OPPOSE=FORMULE(NOM_PARA='MOMENT_Z', VALE='coef * MOMENT_Z', coef=coef)
+coef = -1.0
+OPPOSE = FORMULE(NOM_PARA="MOMENT_Z", VALE="coef * MOMENT_Z", coef=coef)
 
 # pour impression des tables pour le calibarge des tests et pour les courbes de la doc V : decommenter les lignes suivantes
-'''
+"""
 
 listt1 = DEFI_LIST_REEL(DEBUT=1.0,
                        INTERVALLE=(_F(JUSQU_A=23.0,
@@ -371,345 +396,607 @@ for nom_groupe in liste_groupes :
              UNITE=70,)
 
   DETRUIRE(CONCEPT=_F(NOM=(VARI,TMZ_PG,TABLEAU)))
-'''
+"""
 
-TABL={}
+TABL = {}
 
-for jj in range(8) :
+for jj in range(8):
 
-  # recuperation des reactions et moments d'encastrement
-  TABL[jj]=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='RESU',
-                                 RESULTAT=rescal,
-                                 NOM_CHAM='REAC_NODA',
-                                 GROUP_NO=str(liste_noeuds[jj]),
-                                 RESULTANTE=('DX','DY','DZ'),
-                                 MOMENT=('DRX','DRY','DRZ'),
-                                 POINT=(0.,liste_coord[jj],0.),
-                                 LIST_INST=listr,),)
+    # recuperation des reactions et moments d'encastrement
+    TABL[jj] = POST_RELEVE_T(
+        ACTION=_F(
+            OPERATION="EXTRACTION",
+            INTITULE="RESU",
+            RESULTAT=rescal,
+            NOM_CHAM="REAC_NODA",
+            GROUP_NO=str(liste_noeuds[jj]),
+            RESULTANTE=("DX", "DY", "DZ"),
+            MOMENT=("DRX", "DRY", "DRZ"),
+            POINT=(0.0, liste_coord[jj], 0.0),
+            LIST_INST=listr,
+        )
+    )
 
-  # on prend l'oppose du moment d'encastrement pour avoir le moment applique autour de DRZ
-  TABL[jj]=CALC_TABLE(reuse=TABL[jj],TABLE=TABL[jj],
-                    ACTION=(_F(OPERATION='OPER',NOM_PARA='MOMENT',FORMULE=OPPOSE),
-                            _F(OPERATION='EXTR',NOM_PARA=('INST','MOMENT'),),
-                            ),
-                    )
+    # on prend l'oppose du moment d'encastrement pour avoir le moment applique autour de DRZ
+    TABL[jj] = CALC_TABLE(
+        reuse=TABL[jj],
+        TABLE=TABL[jj],
+        ACTION=(
+            _F(OPERATION="OPER", NOM_PARA="MOMENT", FORMULE=OPPOSE),
+            _F(OPERATION="EXTR", NOM_PARA=("INST", "MOMENT")),
+        ),
+    )
 
 
 # tests sur rotule L1
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=1.0),),
-             VALE_CALC=1.0000000000E+03, VALE_REFE=1.E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=1.0),),
+    VALE_CALC=1.0000000000e03,
+    VALE_REFE=1.0e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=-1.0000000000E+03, VALE_REFE=-1.E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=-1.0000000000e03,
+    VALE_REFE=-1.0e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=5.0),),
-             VALE_CALC=1.4000012060E+03, VALE_REFE=1.4E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=5.0),),
+    VALE_CALC=1.4000012060e03,
+    VALE_REFE=1.4e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=7.0),),
-             VALE_CALC=-1.6499913529E+03, VALE_REFE=-1.65E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=7.0),),
+    VALE_CALC=-1.6499913529e03,
+    VALE_REFE=-1.65e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=1.8000201516E+03, VALE_REFE=1.8E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=1.8000201516e03,
+    VALE_REFE=1.8e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=11.0),),
-             VALE_CALC=-1.8499823122E+03, VALE_REFE=-1.85E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=11.0),),
+    VALE_CALC=-1.8499823122e03,
+    VALE_REFE=-1.85e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=13.0),),
-             VALE_CALC=2.2000333885E+03,  )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=13.0),),
+    VALE_CALC=2.2000333885e03,
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=-2.4833102447E+03, )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=-2.4833102447e03,
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=17.0),),
-             VALE_CALC=2.3600198464E+03, )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=17.0),),
+    VALE_CALC=2.3600198464e03,
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=19.0),),
-             VALE_CALC=-2.6166544704E+03, )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=19.0),),
+    VALE_CALC=-2.6166544704e03,
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=2.5600104613E+03, )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=2.5600104613e03,
+)
 
-TEST_TABLE(TABLE=TABL[0], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=23.0),),
-             VALE_CALC=-2.7833133023E+03, )
+TEST_TABLE(
+    TABLE=TABL[0],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=23.0),),
+    VALE_CALC=-2.7833133023e03,
+)
 
 # tests sur rotule L2
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=1.0),),
-             VALE_CALC=-1.0000000000E+03, VALE_REFE=-1.E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=1.0),),
+    VALE_CALC=-1.0000000000e03,
+    VALE_REFE=-1.0e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=1.0000000000E+03, VALE_REFE=1.E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=1.0000000000e03,
+    VALE_REFE=1.0e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=5.0),),
-             VALE_CALC=-1.6500011339E+03, VALE_REFE=-1.65E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=5.0),),
+    VALE_CALC=-1.6500011339e03,
+    VALE_REFE=-1.65e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=7.0),),
-             VALE_CALC=1.4000012060E+03, VALE_REFE=1.4E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=7.0),),
+    VALE_CALC=1.4000012060e03,
+    VALE_REFE=1.4e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=-1.8499876310E+03, VALE_REFE=-1.85E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=-1.8499876310e03,
+    VALE_REFE=-1.85e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=11.0),),
-             VALE_CALC=1.8000191544E+03, VALE_REFE=1.8E3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=11.0),),
+    VALE_CALC=1.8000191544e03,
+    VALE_REFE=1.8e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=13.0),),
-             VALE_CALC=-2.4499751515E+03, )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=13.0),),
+    VALE_CALC=-2.4499751515e03,
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=2.2000319789E+03, )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=2.2000319789e03,
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=17.0),),
-             VALE_CALC=-2.6166525855E+03, )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=17.0),),
+    VALE_CALC=-2.6166525855e03,
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=19.0),),
-             VALE_CALC=2.3600064056E+03, )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=19.0),),
+    VALE_CALC=2.3600064056e03,
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=-2.7833194561E+03, )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=-2.7833194561e03,
+)
 
-TEST_TABLE(TABLE=TABL[1], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=23.0),),
-             VALE_CALC=2.5600102246E+03, )
+TEST_TABLE(
+    TABLE=TABL[1],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=23.0),),
+    VALE_CALC=2.5600102246e03,
+)
 
 # tests sur rotule L3
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=1.0),),
-             VALE_CALC=1.1904146334E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=1.0),),
+    VALE_CALC=1.1904146334e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=-1.3330956029E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=-1.3330956029e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=5.0),),
-             VALE_CALC=1.7237618465E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=5.0),),
+    VALE_CALC=1.7237618465e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=7.0),),
-             VALE_CALC=-1.9588207426E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=7.0),),
+    VALE_CALC=-1.9588207426e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=2.2570932531E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=2.2570932531e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=11.0),),
-             VALE_CALC=-2.2254765738E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=11.0),),
+    VALE_CALC=-2.2254765738e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=13.0),),
-             VALE_CALC=2.6190236961E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=13.0),),
+    VALE_CALC=2.6190236961e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=-2.9329919557E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=-2.9329919557e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=17.0),),
-             VALE_CALC=2.8323462495E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=17.0),),
+    VALE_CALC=2.8323462495e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=19.0),),
-             VALE_CALC=-3.1107499050E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=19.0),),
+    VALE_CALC=-3.1107499050e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=3.0989927972E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=3.0989927972e03,
+)
 
-TEST_TABLE(TABLE=TABL[2], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=23.0),),
-             VALE_CALC=-3.3329548887E+03, )
+TEST_TABLE(
+    TABLE=TABL[2],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=23.0),),
+    VALE_CALC=-3.3329548887e03,
+)
 
 # tests sur rotule L4
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=1.0),),
-             VALE_CALC=-1.3331111481E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=1.0),),
+    VALE_CALC=-1.3331111481e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=1.1904146334E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=1.1904146334e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=5.0),),
-             VALE_CALC=-1.9588352647E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=5.0),),
+    VALE_CALC=-1.9588352647e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=7.0),),
-             VALE_CALC=1.7237265416E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=7.0),),
+    VALE_CALC=1.7237265416e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=-2.2255078234E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=-2.2255078234e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=11.0),),
-             VALE_CALC=2.2570439236E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=11.0),),
+    VALE_CALC=2.2570439236e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=13.0),),
-             VALE_CALC=-2.9330883542E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=13.0),),
+    VALE_CALC=-2.9330883542e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=2.6189599555E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=2.6189599555e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=17.0),),
-             VALE_CALC=-3.1108233780E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=17.0),),
+    VALE_CALC=-3.1108233780e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=19.0),),
-             VALE_CALC=2.8322919007E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=19.0),),
+    VALE_CALC=2.8322919007e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=-3.3329990338E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=-3.3329990338e03,
+)
 
-TEST_TABLE(TABLE=TABL[3], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=23.0),),
-             VALE_CALC=3.0989188385E+03, )
+TEST_TABLE(
+    TABLE=TABL[3],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=23.0),),
+    VALE_CALC=3.0989188385e03,
+)
 
 
 # tests sur rotule L5
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=1.8000002793E+03, VALE_REFE=1.8E+3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=1.8000002793e03,
+    VALE_REFE=1.8e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=6.0),),
-             VALE_CALC=2.1600013585E+03,  )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=6.0),),
+    VALE_CALC=2.1600013585e03,
+)
 
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=2.3600006205E+03, )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=2.3600006205e03,
+)
 
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=12.0),),
-             VALE_CALC=2.5600028074E+03,  )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=12.0),),
+    VALE_CALC=2.5600028074e03,
+)
 
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=1.1054579467E+03, )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=1.1054579467e03,
+)
 
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=18.0),),
-             VALE_CALC=-1.1999884951E+03, )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=18.0),),
+    VALE_CALC=-1.1999884951e03,
+)
 
-TEST_TABLE(TABLE=TABL[4], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=-1.9500021424E+03, )
+TEST_TABLE(
+    TABLE=TABL[4],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=-1.9500021424e03,
+)
 
 # tests sur rotule L6
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=1.8000002793E+03, VALE_REFE=1.8E+3, REFERENCE='ANALYTIQUE', )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=1.8000002793e03,
+    VALE_REFE=1.8e3,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=6.0),),
-             VALE_CALC=2.1600013585E+03,  )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=6.0),),
+    VALE_CALC=2.1600013585e03,
+)
 
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=2.3600006205E+03,  )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=2.3600006205e03,
+)
 
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=12.0),),
-             VALE_CALC=2.5600028074E+03, )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=12.0),),
+    VALE_CALC=2.5600028074e03,
+)
 
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=1.1054579467E+03, )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=1.1054579467e03,
+)
 
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=18.0),),
-             VALE_CALC=-1.1999884951E+03, )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=18.0),),
+    VALE_CALC=-1.1999884951e03,
+)
 
-TEST_TABLE(TABLE=TABL[5], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=-1.9500021424E+03, )
+TEST_TABLE(
+    TABLE=TABL[5],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=-1.9500021424e03,
+)
 
 # tests sur rotule L7
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=2.2570218700E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=2.2570218700e03,
+)
 
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=6.0),),
-             VALE_CALC=2.5656160560E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=6.0),),
+    VALE_CALC=2.5656160560e03,
+)
 
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=2.8322588987E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=2.8322588987e03,
+)
 
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=12.0),),
-             VALE_CALC=3.0989346148E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=12.0),),
+    VALE_CALC=3.0989346148e03,
+)
 
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=1.1994484277E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=1.1994484277e03,
+)
 
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=18.0),),
-             VALE_CALC=-1.8045463738E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=18.0),),
+    VALE_CALC=-1.8045463738e03,
+)
 
-TEST_TABLE(TABLE=TABL[6], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=-2.2218962351E+03, )
+TEST_TABLE(
+    TABLE=TABL[6],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=-2.2218962351e03,
+)
 
 
 # tests sur rotule L8
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=3.0),),
-             VALE_CALC=4.6662898311E+06, )
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=3.0),),
+    VALE_CALC=4.6662898311e06,
+)
 
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=6.0),),
-             VALE_CALC=9.3318646224E+06, )
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=6.0),),
+    VALE_CALC=9.3318646224e06,
+)
 
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=9.0),),
-             VALE_CALC=1.3997034839E+07, )
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=9.0),),
+    VALE_CALC=1.3997034839e07,
+)
 
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=12.0),),
-             VALE_CALC=1.8662205057E+07, )
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=12.0),),
+    VALE_CALC=1.8662205057e07,
+)
 
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=15.0),),
-             VALE_CALC=1.3996314287E+07, )
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=15.0),),
+    VALE_CALC=1.3996314287e07,
+)
 
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=18.0),),
-             VALE_CALC=9.3304235161E+06, )
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=18.0),),
+    VALE_CALC=9.3304235161e06,
+)
 
-TEST_TABLE(TABLE=TABL[7], NOM_PARA='MOMENT',
-             FILTRE = (_F(NOM_PARA = 'INST',CRIT_COMP='EQ',VALE=21.0),),
-             VALE_CALC=4.6637232350E+06, )
-
+TEST_TABLE(
+    TABLE=TABL[7],
+    NOM_PARA="MOMENT",
+    FILTRE=(_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=21.0),),
+    VALE_CALC=4.6637232350e06,
+)
 
 
 FIN()

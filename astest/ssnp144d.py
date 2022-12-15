@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 UTOT1.printListOfFields()
 
@@ -25,31 +25,31 @@ depl = UTOT1.getFieldOnNodesReal("DEPL", 1)
 
 # depl is real
 try:
-   depl_c = UTOT1.getFieldOnNodesComplex("DEPL", 1)
+    depl_c = UTOT1.getFieldOnNodesComplex("DEPL", 1)
 except IndexError:
-   pass
+    pass
 
 sief_elga = UTOT1.getFieldOnCellsReal("SIEF_ELGA", 1)
 
 # sief is real
 try:
-   sief_c = UTOT1.getFieldOnCellsComplex("SIEF_ELGA", 1)
+    sief_c = UTOT1.getFieldOnCellsComplex("SIEF_ELGA", 1)
 except IndexError:
-   pass
+    pass
 
 # sief is real
 try:
-   sief_i = UTOT1.getFieldOnCellsLong("SIEF_ELGA", 1)
+    sief_i = UTOT1.getFieldOnCellsLong("SIEF_ELGA", 1)
 except IndexError:
-   pass
+    pass
 
 indc_elem = UTOT1.getFieldOnCellsLong("INDC_ELEM", 1)
 
 # not 150 fields
 try:
-   test = UTOT1.getFieldOnCellsLong("INDC_ELEM", 150)
+    test = UTOT1.getFieldOnCellsLong("INDC_ELEM", 150)
 except IndexError:
-   pass
+    pass
 
 cohe_elem = UTOT1.getFieldOnCellsReal("COHE_ELEM", 1)
 
@@ -57,24 +57,24 @@ cont_noeu = UTOT1.getFieldOnNodesReal("CONT_NOEU", 1)
 cont_noeu = UTOT1.getField("CONT_NOEU", 1)
 
 try:
-   test = UTOT1.getField("CONT_NOEU", 150)
+    test = UTOT1.getField("CONT_NOEU", 150)
 except IndexError:
-   pass
+    pass
 
 try:
-   test = UTOT1.getField("CONT_ELGA", 150)
+    test = UTOT1.getField("CONT_ELGA", 150)
 except KeyError:
-   pass
+    pass
 
 compor = UTOT1.getConstantFieldOnCellsChar16("COMPORTEMENT", 1)
 try:
-   test = UTOT1.getConstantFieldOnCellsChar16("COMPORTEMENT", 150)
+    test = UTOT1.getConstantFieldOnCellsChar16("COMPORTEMENT", 150)
 except IndexError:
-   pass
+    pass
 
 try:
-   test = UTOT1.getConstantFieldOnCellsReal("COMPORTEMENT", 1)
+    test = UTOT1.getConstantFieldOnCellsReal("COMPORTEMENT", 1)
 except IndexError:
-   pass
+    pass
 
 FIN()

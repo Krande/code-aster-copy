@@ -25,23 +25,14 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-PVECGAP = OutputParameter(phys=PHY.VNEU_R, type='RESL',
-                          comment="""Contact - Field for gap""")
+PVECGAP = OutputParameter(phys=PHY.VNEU_R, type="RESL", comment="""Contact - Field for gap""")
 
-PVEIGAP = OutputParameter(phys=PHY.VNEU_R, type='RESL',
-                          comment="""Contact - Field for pairing""")
+PVEIGAP = OutputParameter(phys=PHY.VNEU_R, type="RESL", comment="""Contact - Field for pairing""")
 
 
 GAP_GEOM = Option(
-    para_in=(
-        SP.PGEOMCR,
-    ),
-    para_out=(
-        PVECGAP,
-        PVEIGAP,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.CONTACT, 'OUI'),)),
-    ),
+    para_in=(SP.PGEOMCR,),
+    para_out=(PVECGAP, PVEIGAP),
+    condition=(CondCalcul("+", ((AT.CONTACT, "OUI"),)),),
     comment=""" GAP_GEOM: CALCUL DU GAP NODAL """,
 )

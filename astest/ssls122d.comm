@@ -55,228 +55,238 @@
 #   - Modelisation DST
 #   - Mailles QUAD4
 #
-#---------------------------------------------------------------
+# ---------------------------------------------------------------
 # PARAMETRES
-#---------------------------------------------------------------
+# ---------------------------------------------------------------
 #
 # - Unite : SI (M,K,s,A)
 #
 # - Caracteristiques geometriques
 #
 # -----> Structure
-longueur = 10.
-largeur  =  1.
+longueur = 10.0
+largeur = 1.0
 
 # -----> partie P1
 
-epais_P1S =  0.05     # Epaisseur
-excen_P1S =  0.015    # Excentricite
-epais_P1I =  0.05     # Epaisseur
-excen_P1I = -0.035    # Excentricite
+epais_P1S = 0.05  # Epaisseur
+excen_P1S = 0.015  # Excentricite
+epais_P1I = 0.05  # Epaisseur
+excen_P1I = -0.035  # Excentricite
 
 # -----> partie P2
 
-epais_P2 = 0.08       # Epaisseur
-excen_P2 = 0.0        # Excentricite
+epais_P2 = 0.08  # Epaisseur
+excen_P2 = 0.0  # Excentricite
 
 # - Caracteristiques mecanique
 #
 # ----> Materiau  (acier)
 
-young=2.1E11
-poisson=0.3
+young = 2.1e11
+poisson = 0.3
 
 # Chargement au centre suivant -Z
 
-force_totale = 200.E3
-force= -force_totale / largeur
+force_totale = 200.0e3
+force = -force_totale / largeur
 
 # - Modele Element finis
 
-mod_EF='DST'
+mod_EF = "DST"
 
 # - Repere de calcul des efforts generalises
 
 # ----> [ANGL_REP(alpha,beta)]
 
-alpha=0.
-beta=0.
-#---------------------------------------------------------------
+alpha = 0.0
+beta = 0.0
+# ---------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',INFO=2)
+MA = LIRE_MAILLAGE(FORMAT="MED", INFO=2)
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='FA',),
-                             _F(GROUP_MA='CD',),),
-              CREA_GROUP_MA=(_F(GROUP_MA='PLAQ_P1',NOM='PLAQ_P1S',),),
-              )
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(_F(GROUP_MA="FA"), _F(GROUP_MA="CD")),
+    CREA_GROUP_MA=(_F(GROUP_MA="PLAQ_P1", NOM="PLAQ_P1S"),),
+)
 
-MAIL=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
-                 CREA_MAILLE=_F(NOM='PLAQ_P1I',
-                                  GROUP_MA='PLAQ_P1S',
-                                  PREF_MAILLE='S',),)
+MAIL = CREA_MAILLAGE(
+    MAILLAGE=MA, INFO=2, CREA_MAILLE=_F(NOM="PLAQ_P1I", GROUP_MA="PLAQ_P1S", PREF_MAILLE="S")
+)
 
-MODEL=AFFE_MODELE(MAILLAGE=MAIL,
-                  AFFE=_F(TOUT='OUI',
-                          PHENOMENE='MECANIQUE',
-                          MODELISATION=mod_EF,),)
+MODEL = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION=mod_EF))
 #
 # On impose l'orientation de la normale vers le Z Global
 #
-MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,
-                      ORIE_NORM_COQUE=_F(GROUP_MA=('PLAQ_P2','PLAQ_P1S','PLAQ_P1I',),
-                                         VECT_NORM=(0.0,0.0,1.0),
-                                         GROUP_NO='B',),
-                      )
+MAIL = MODI_MAILLAGE(
+    MAILLAGE=MAIL,
+    reuse=MAIL,
+    ORIE_NORM_COQUE=_F(
+        GROUP_MA=("PLAQ_P2", "PLAQ_P1S", "PLAQ_P1I"), VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="B"
+    ),
+)
 #
 # Definition
 #   - des epaisseurs
 #   - des excentricites
 #   - du repere de calcul des efforts generalises
 
-CARA=AFFE_CARA_ELEM(MODELE=MODEL,
-                    COQUE=(
-                           _F(GROUP_MA=('PLAQUE',),
-                              EPAIS=epais_P2,
-                              ANGL_REP=(alpha,beta,),
-                              EXCENTREMENT=excen_P2,
-                              INER_ROTA='OUI',),
+CARA = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    COQUE=(
+        _F(
+            GROUP_MA=("PLAQUE",),
+            EPAIS=epais_P2,
+            ANGL_REP=(alpha, beta),
+            EXCENTREMENT=excen_P2,
+            INER_ROTA="OUI",
+        ),
+        # Plaque P2
+        _F(
+            GROUP_MA="PLAQ_P2",
+            EPAIS=epais_P2,
+            ANGL_REP=(alpha, beta),
+            EXCENTREMENT=excen_P2,
+            INER_ROTA="OUI",
+        ),
+        # Plaque P1
+        _F(
+            GROUP_MA="PLAQ_P1S",
+            EPAIS=epais_P1S,
+            ANGL_REP=(alpha, beta),
+            EXCENTREMENT=excen_P1S,
+            INER_ROTA="OUI",
+        ),
+        _F(
+            GROUP_MA="PLAQ_P1I",
+            EPAIS=epais_P1I,
+            ANGL_REP=(alpha, beta),
+            EXCENTREMENT=excen_P1I,
+            INER_ROTA="OUI",
+        ),
+    ),
+)
 
-# Plaque P2
-                           _F(GROUP_MA='PLAQ_P2',
-                              EPAIS=epais_P2,
-                              ANGL_REP=(alpha,beta,),
-                              EXCENTREMENT=excen_P2,
-                              INER_ROTA='OUI',),
-# Plaque P1
-                           _F(GROUP_MA='PLAQ_P1S',
-                              EPAIS=epais_P1S,
-                              ANGL_REP=(alpha,beta,),
-                              EXCENTREMENT=excen_P1S,
-                              INER_ROTA='OUI',),
+ACIER = DEFI_MATERIAU(ELAS=_F(E=young, NU=poisson))
 
-                           _F(GROUP_MA='PLAQ_P1I',
-                              EPAIS=epais_P1I,
-                              ANGL_REP=(alpha,beta,),
-                              EXCENTREMENT=excen_P1I,
-                              INER_ROTA='OUI',),
-                           ),
-                    )
-
-ACIER=DEFI_MATERIAU(ELAS=_F(E=young,
-                            NU=poisson,),)
-
-MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),)
+MATER = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 #
 # Conditions aux limites en deplacement
 #
-COND_LIM=AFFE_CHAR_MECA(MODELE=MODEL,
-                        DDL_IMPO=(
-                                  _F(GROUP_NO=('FA','CD',),
-                                     DZ=0.0,),
-                                  _F(GROUP_NO=('FA',),
-                                     DX=0.0,),
-                                  _F(GROUP_NO='A',
-                                     DX=0.0,
-                                     DY=0.0,
-                                     DRZ=0.0,),),)
+COND_LIM = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(
+        _F(GROUP_NO=("FA", "CD"), DZ=0.0),
+        _F(GROUP_NO=("FA",), DX=0.0),
+        _F(GROUP_NO="A", DX=0.0, DY=0.0, DRZ=0.0),
+    ),
+)
 # Chargement
 
-FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
-                     FORCE_ARETE=_F(GROUP_MA='BE',
-                                    FZ=force,),)
+FORCE = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_ARETE=_F(GROUP_MA="BE", FZ=force))
 
-RESU=MECA_STATIQUE(MODELE=MODEL,
-                   CHAM_MATER=MATER,
-                   CARA_ELEM=CARA,
-                   EXCIT=(_F(CHARGE=COND_LIM,),
-                          _F(CHARGE=FORCE,),),)
+RESU = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=MATER, CARA_ELEM=CARA, EXCIT=(_F(CHARGE=COND_LIM), _F(CHARGE=FORCE))
+)
 
-RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('EFGE_ELNO'),RESULTAT=RESU)
+RESU = CALC_CHAMP(reuse=RESU, CONTRAINTE=("EFGE_ELNO"), RESULTAT=RESU)
 
 
-RESU=CALC_CHAMP(reuse =RESU,
-
-
-             CONTRAINTE='EFGE_NOEU',
-             RESULTAT=RESU,)
-#------------------------------------------------------
+RESU = CALC_CHAMP(reuse=RESU, CONTRAINTE="EFGE_NOEU", RESULTAT=RESU)
+# ------------------------------------------------------
 # Test sur les deplacements et les rotations
 #          aux points B et E
-#------------------------------------------------------
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.350709421,
-                   VALE_REFE=-0.3515625,
-                   PRECISION=4.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='B',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DRZ',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',),
-                ),
-          )
+# ------------------------------------------------------
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.350709421,
+            VALE_REFE=-0.3515625,
+            PRECISION=4.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="B",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRZ",
+            VALE_CALC=0.00000000e00,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='G',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.262520024,
-                   VALE_REFE=-0.26297429999999999,
-                   PRECISION=4.0000000000000001E-3,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='G',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DRZ',
-                   VALE_CALC= 0.00000000E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="G",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.262520024,
+            VALE_REFE=-0.26297429999999999,
+            PRECISION=4.0000000000000001e-3,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="G",
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRZ",
+            VALE_CALC=0.00000000e00,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+        ),
+    )
+)
 
-#------------------------------------------------------
+# ------------------------------------------------------
 # Test sur les efforts normaux cote plaque P2 (GAUCHE)
-#------------------------------------------------------
+# ------------------------------------------------------
 #
 # Point G
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='G',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='EFGE_ELNO',
-                  NOM_CMP='MXX',
-                  VALE_CALC=-2.49862420E+05,
-                  VALE_REFE=-2.50000E5,
-                  GROUP_MA='M10',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="G",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="EFGE_ELNO",
+        NOM_CMP="MXX",
+        VALE_CALC=-2.49862420e05,
+        VALE_REFE=-2.50000e5,
+        GROUP_MA="M10",
+    )
+)
 
 # Point B
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='EFGE_ELNO',
-                  NOM_CMP='MXX',
-                  VALE_CALC=-4.99776476E+05,
-                  VALE_REFE=-5.E5,
-                  GROUP_MA='M12',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="EFGE_ELNO",
+        NOM_CMP="MXX",
+        VALE_CALC=-4.99776476e05,
+        VALE_REFE=-5.0e5,
+        GROUP_MA="M12",
+    )
+)
 
 FIN()

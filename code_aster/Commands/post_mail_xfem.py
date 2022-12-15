@@ -23,6 +23,7 @@ from ..Supervis import ExecuteCommand
 
 class XfemMeshPostprocessing(ExecuteCommand):
     """ """
+
     command_name = "POST_MAIL_XFEM"
 
     def create_result(self, keywords):

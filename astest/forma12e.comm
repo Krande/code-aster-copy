@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 tfin = 0.1
@@ -25,9 +25,9 @@ pa = 0.002
 
 fc = 15.0
 
-om = ((2.0 * pi) * fc)
+om = (2.0 * pi) * fc
 
-E = 200.E9
+E = 200.0e9
 
 rho = 8000.0
 
@@ -35,136 +35,106 @@ nu = 0.3
 
 dse = E / 100
 
-sy = 200E6
+sy = 200e6
 
-MAIL = LIRE_MAILLAGE(FORMAT='MED',
-                     UNITE=20)
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
-MODELE = AFFE_MODELE(AFFE=_F(GROUP_MA=['VOL'],
-                             MODELISATION='3D',
-                             PHENOMENE='MECANIQUE'),
-                     MAILLAGE=MAIL)
+MODELE = AFFE_MODELE(
+    AFFE=_F(GROUP_MA=["VOL"], MODELISATION="3D", PHENOMENE="MECANIQUE"), MAILLAGE=MAIL
+)
 
-MAT = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=dse,
-                                 SY=sy),
-                    ELAS=_F(COEF_AMOR=1.0,
-                            E=E,
-                            NU=nu,
-                            RHO=rho))
+MAT = DEFI_MATERIAU(
+    ECRO_LINE=_F(D_SIGM_EPSI=dse, SY=sy), ELAS=_F(COEF_AMOR=1.0, E=E, NU=nu, RHO=rho)
+)
 
-CHMAT = AFFE_MATERIAU(AFFE=_F(GROUP_MA=['VOL'],
-                              MATER=[MAT]),
-                      MAILLAGE=MAIL)
+CHMAT = AFFE_MATERIAU(AFFE=_F(GROUP_MA=["VOL"], MATER=[MAT]), MAILLAGE=MAIL)
 
-LISTR = DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=tfin,
-                                     PAS=pa))
+LISTR = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tfin, PAS=pa))
 
-sinom = FORMULE(NOM_PARA='INST',
-                VALE='sin(om*INST)',
-                om=om)
+sinom = FORMULE(NOM_PARA="INST", VALE="sin(om*INST)", om=om)
 
-LIS = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LISTR),
-                     ECHEC=_F(ACTION='DECOUPE',
-                              EVENEMENT='ERREUR',
-                              SUBD_METHODE='MANUEL',
-                              SUBD_NIVEAU=5,
-                              SUBD_PAS=4,
-                              SUBD_PAS_MINI=1e-05),
-                     METHODE='MANUEL')
+LIS = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LISTR),
+    ECHEC=_F(
+        ACTION="DECOUPE",
+        EVENEMENT="ERREUR",
+        SUBD_METHODE="MANUEL",
+        SUBD_NIVEAU=5,
+        SUBD_PAS=4,
+        SUBD_PAS_MINI=1e-05,
+    ),
+    METHODE="MANUEL",
+)
 
-BLOCAGE = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=('DEPLACEMENT', 'ROTATION'),
-                                     GROUP_MA=['ENCAS']),
-                         MODELE=MODELE)
+BLOCAGE = AFFE_CHAR_MECA(
+    DDL_IMPO=_F(BLOCAGE=("DEPLACEMENT", "ROTATION"), GROUP_MA=["ENCAS"]), MODELE=MODELE
+)
 
-GRAV = AFFE_CHAR_MECA(MODELE=MODELE,
-                      PESANTEUR=_F(DIRECTION=(-1.0, 0, 1),
-                                   GRAVITE=300.0))
+GRAV = AFFE_CHAR_MECA(MODELE=MODELE, PESANTEUR=_F(DIRECTION=(-1.0, 0, 1), GRAVITE=300.0))
 
-DYNADNL = DYNA_NON_LINE(CHAM_MATER=CHMAT,
-                        COMPORTEMENT=_F(DEFORMATION='PETIT',
-                                        ITER_CPLAN_MAXI=1,
-                                        ITER_INTE_MAXI=20,
-                                        ITER_INTE_PAS=0,
-                                        PARM_THETA=1.0,
-                                        REGU_VISC='NON',
-                                        RELATION='VMIS_CINE_LINE',
-                                        RESI_CPLAN_RELA=1e-06,
-                                        RESI_INTE_RELA=1e-06,
-                                        TOUT='OUI'),
-                        CONVERGENCE=_F(ARRET='OUI',
-                                       ITER_GLOB_ELAS=25,
-                                       ITER_GLOB_MAXI=30),
-                        ENERGIE=_F(CALCUL='OUI'),
-                        EXCIT=(_F(CHARGE=BLOCAGE,
-                                  MULT_APPUI='NON',
-                                  TYPE_CHARGE='FIXE_CSTE'),
-                               _F(CHARGE=GRAV,
-                                  FONC_MULT=sinom,
-                                  MULT_APPUI='NON',
-                                  TYPE_CHARGE='FIXE_CSTE')),
-                        INCREMENT=_F(LIST_INST=LIS,
-                                     PRECISION=1e-06),
-                        MODELE=MODELE,
-                        MODE_VIBR=_F(INST=(0.1, ),
-                                     NMAX_FREQ=1,
-                                     OPTION='PLUS_PETITE'),
-                        SCHEMA_TEMPS=_F(COEF_MASS_SHIFT=0.0,
-                                        FORMULATION='DEPLACEMENT',
-                                        SCHEMA='NEWMARK'))
+DYNADNL = DYNA_NON_LINE(
+    CHAM_MATER=CHMAT,
+    COMPORTEMENT=_F(
+        DEFORMATION="PETIT",
+        ITER_CPLAN_MAXI=1,
+        ITER_INTE_MAXI=20,
+        ITER_INTE_PAS=0,
+        PARM_THETA=1.0,
+        REGU_VISC="NON",
+        RELATION="VMIS_CINE_LINE",
+        RESI_CPLAN_RELA=1e-06,
+        RESI_INTE_RELA=1e-06,
+        TOUT="OUI",
+    ),
+    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_ELAS=25, ITER_GLOB_MAXI=30),
+    ENERGIE=_F(CALCUL="OUI"),
+    EXCIT=(
+        _F(CHARGE=BLOCAGE, MULT_APPUI="NON", TYPE_CHARGE="FIXE_CSTE"),
+        _F(CHARGE=GRAV, FONC_MULT=sinom, MULT_APPUI="NON", TYPE_CHARGE="FIXE_CSTE"),
+    ),
+    INCREMENT=_F(LIST_INST=LIS, PRECISION=1e-06),
+    MODELE=MODELE,
+    MODE_VIBR=_F(INST=(0.1,), NMAX_FREQ=1, OPTION="PLUS_PETITE"),
+    SCHEMA_TEMPS=_F(COEF_MASS_SHIFT=0.0, FORMULATION="DEPLACEMENT", SCHEMA="NEWMARK"),
+)
 
-TAMAS = POST_ELEM(CHAM_MATER=CHMAT,
-                  MASS_INER=_F(TOUT='OUI'),
-                  MODELE=MODELE)
+TAMAS = POST_ELEM(CHAM_MATER=CHMAT, MASS_INER=_F(TOUT="OUI"), MODELE=MODELE)
 
-DYNADNL = CALC_CHAMP(reuse=DYNADNL,
-                     CRITERES=('SIEQ_ELGA', 'EPEQ_ELGA'),
-                     DEFORMATION=('EPSI_ELGA', ),
-                     RESULTAT=DYNADNL)
+DYNADNL = CALC_CHAMP(
+    reuse=DYNADNL, CRITERES=("SIEQ_ELGA", "EPEQ_ELGA"), DEFORMATION=("EPSI_ELGA",), RESULTAT=DYNADNL
+)
 
-IMPR_TABLE(TABLE=TAMAS,
-           UNITE=8)
+IMPR_TABLE(TABLE=TAMAS, UNITE=8)
 
-DEPL_DZ = RECU_FONCTION(GROUP_NO=('P', ),
-                        NOM_CHAM='DEPL',
-                        NOM_CMP='DZ',
-                        RESULTAT=DYNADNL)
+DEPL_DZ = RECU_FONCTION(GROUP_NO=("P",), NOM_CHAM="DEPL", NOM_CMP="DZ", RESULTAT=DYNADNL)
 
-VITE_DZ = RECU_FONCTION(GROUP_NO='P',
-                        NOM_CHAM='VITE',
-                        NOM_CMP='DZ',
-                        RESULTAT=DYNADNL)
+VITE_DZ = RECU_FONCTION(GROUP_NO="P", NOM_CHAM="VITE", NOM_CMP="DZ", RESULTAT=DYNADNL)
 
-IMPR_FONCTION(COURBE=_F(FONCTION=DEPL_DZ,
-                        FREQ_MARQUEUR=0,
-                        MARQUEUR=0,
-                        TRI='N'),
-              FORMAT='XMGRACE',
-              LEGENDE_X='Instant (s)',
-              LEGENDE_Y='Déplacement (m)',
-              TITRE='Déplacement vertical',
-              UNITE=2)
+IMPR_FONCTION(
+    COURBE=_F(FONCTION=DEPL_DZ, FREQ_MARQUEUR=0, MARQUEUR=0, TRI="N"),
+    FORMAT="XMGRACE",
+    LEGENDE_X="Instant (s)",
+    LEGENDE_Y="Déplacement (m)",
+    TITRE="Déplacement vertical",
+    UNITE=2,
+)
 
-ACCE_DZ = RECU_FONCTION(GROUP_NO='P',
-                        NOM_CHAM='ACCE',
-                        NOM_CMP='DZ',
-                        RESULTAT=DYNADNL)
+ACCE_DZ = RECU_FONCTION(GROUP_NO="P", NOM_CHAM="ACCE", NOM_CMP="DZ", RESULTAT=DYNADNL)
 
-IMPR_RESU(RESU=_F(IMPR_NOM_VARI='OUI',
-                  INFO_MAILLAGE='NON',
-                  RESULTAT=DYNADNL),
-          UNITE=80)
+IMPR_RESU(RESU=_F(IMPR_NOM_VARI="OUI", INFO_MAILLAGE="NON", RESULTAT=DYNADNL), UNITE=80)
 
-tableNrj = RECU_TABLE(CO=DYNADNL,
-                      NOM_TABLE='PARA_CALC')
+tableNrj = RECU_TABLE(CO=DYNADNL, NOM_TABLE="PARA_CALC")
 
-IMPR_TABLE(TABLE=tableNrj,
-           UNITE=3)
+IMPR_TABLE(TABLE=tableNrj, UNITE=3)
 
-TEST_FONCTION(VALEUR=_F(CRITERE='RELATIF',
-                        FONCTION=DEPL_DZ,
-                        VALE_ABS='NON',
-                        VALE_CALC=[0.14511192651534],
-                        VALE_PARA=[0.05]))
+TEST_FONCTION(
+    VALEUR=_F(
+        CRITERE="RELATIF",
+        FONCTION=DEPL_DZ,
+        VALE_ABS="NON",
+        VALE_CALC=[0.14511192651534],
+        VALE_PARA=[0.05],
+    )
+)
 
 FIN()

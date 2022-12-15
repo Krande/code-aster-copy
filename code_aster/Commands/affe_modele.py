@@ -26,6 +26,7 @@ from ..Supervis import ExecuteCommand
 class ModelAssignment(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Model` by assigning
     finite elements on a :class:`~code_aster.Objects.Mesh`."""
+
     command_name = "AFFE_MODELE"
 
     def adapt_syntax(self, keywords):
@@ -36,7 +37,7 @@ class ModelAssignment(ExecuteCommand):
                 in place.
         """
         if keywords["MAILLAGE"].isParallel():
-            keywords["DISTRIBUTION"] = {'METHODE': 'CENTRALISE'}
+            keywords["DISTRIBUTION"] = {"METHODE": "CENTRALISE"}
 
     def create_result(self, keywords):
         """Initialize the result.

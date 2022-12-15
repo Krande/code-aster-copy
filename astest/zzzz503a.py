@@ -38,38 +38,41 @@ YOUNG = 200000.0
 POISSON = 0.3
 
 Kinv = 3.2841e-4
-Kv = 1. / Kinv
+Kv = 1.0 / Kinv
 SY = 437.0
 Rinf = 758.0
-Qzer = 758.0 - 437.
-Qinf = Qzer + 100.
+Qzer = 758.0 - 437.0
+Qinf = Qzer + 100.0
 b = 2.3
 C1inf = 63767.0 / 2.0
 C2inf = 63767.0 / 2.0
 Gam1 = 341.0
 Gam2 = 341.0
-C_Pa = 1.e+6
+C_Pa = 1.0e6
 
-acier = DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                              NU=POISSON, ),
-                      VISCOCHAB=_F(K=SY * C_Pa,
-                                   B=b,
-                                   MU=10,
-                                   Q_M=Qinf * C_Pa,
-                                   Q_0=Qzer * C_Pa,
-                                   C1=C1inf * C_Pa,
-                                   C2=C2inf * C_Pa,
-                                   G1_0=Gam1,
-                                   G2_0=Gam2,
-                                   K_0=Kv * C_Pa,
-                                   N=11,
-                                   A_K=1., ), )
+acier = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON),
+    VISCOCHAB=_F(
+        K=SY * C_Pa,
+        B=b,
+        MU=10,
+        Q_M=Qinf * C_Pa,
+        Q_0=Qzer * C_Pa,
+        C1=C1inf * C_Pa,
+        C2=C2inf * C_Pa,
+        G1_0=Gam1,
+        G2_0=Gam2,
+        K_0=Kv * C_Pa,
+        N=11,
+        A_K=1.0,
+    ),
+)
 # acier.debugPrint(6)
 test.assertEqual(acier.getType(), "MATER_SDASTER")
 
 affectMat = code_aster.MaterialField(monMaillage)
 affectMat.addMaterialOnMesh(acier)
-affectMat.addMaterialOnGroupOfCells(acier, ['Haut', 'Bas'])
+affectMat.addMaterialOnGroupOfCells(acier, ["Haut", "Bas"])
 affectMat.build()
 test.assertEqual(affectMat.getType(), "CHAM_MATER")
 
@@ -83,7 +86,7 @@ CharMeca1.build()
 test.assertEqual(CharMeca1.getType(), "CHAR_MECA")
 
 imposedPres1 = code_aster.PressureReal()
-imposedPres1.setValue(code_aster.PhysicalQuantityComponent.Pres, 1000.)
+imposedPres1.setValue(code_aster.PhysicalQuantityComponent.Pres, 1000.0)
 CharMeca2 = code_aster.DistributedPressureReal(monModel)
 CharMeca2.setValue(imposedPres1, "Haut")
 CharMeca2.build()
@@ -126,7 +129,7 @@ matrAsse.setDOFNumbering(numeDDL)
 matrAsse.assemble()
 
 x = matrAsse.EXTR_MATR(sparse=True)
-test.assertTrue('numpy' in str(type(x[0])))
+test.assertTrue("numpy" in str(type(x[0])))
 
 # test setValues
 # -----------------
@@ -134,7 +137,7 @@ values, idx, jdx, neq = matrAsse.EXTR_MATR(sparse=True)
 K1 = matrAsse.EXTR_MATR()
 
 neq = K1.shape[0]
-matrAsse.setValues([0, 1], [0, 1], [1., 1.])
+matrAsse.setValues([0, 1], [0, 1], [1.0, 1.0])
 K2 = matrAsse.EXTR_MATR()
 test.assertAlmostEqual(np.linalg.norm(K2), np.sqrt(2))
 
@@ -156,17 +159,17 @@ else:
     A.view(v)
 
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
-test.assertTrue(isinstance( matrAsse, code_aster.AssemblyMatrixDisplacementReal))
+test.assertTrue(isinstance(matrAsse, code_aster.AssemblyMatrixDisplacementReal))
 monSolver.factorize(matrAsse)
 matrfact = monSolver.getMatrix()
-test.assertTrue( matrAsse == matrfact)
+test.assertTrue(matrAsse == matrfact)
 test.assertEqual(matrfact.getType(), "MATR_ASSE_DEPL_R")
-test.assertTrue(isinstance( matrfact, code_aster.AssemblyMatrixDisplacementReal))
+test.assertTrue(isinstance(matrfact, code_aster.AssemblyMatrixDisplacementReal))
 precond = monSolver.getPrecondMatrix()
 test.assertEqual(precond.getType(), "MATR_ASSE_DEPL_R")
-test.assertTrue(isinstance( precond, code_aster.AssemblyMatrixDisplacementReal))
+test.assertTrue(isinstance(precond, code_aster.AssemblyMatrixDisplacementReal))
 
-vcine = dComputation.getDirichletBC(0.)
+vcine = dComputation.getDirichletBC(0.0)
 resu = monSolver.solve(retour, vcine)
 
 y = resu.EXTR_COMP()
@@ -185,7 +188,7 @@ monSolver.factorize(matrAsse)
 resu = monSolver.solve(retour)
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289 / 10.)
+test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289 / 10.0)
 
 # To be sure that vcine is Permanent #30689
 libaster.deleteTemporaryObjects()

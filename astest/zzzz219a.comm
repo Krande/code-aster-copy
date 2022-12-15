@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
 # Dans ce test tres simple, tous les deplacements des 6 noeuds du maillage
 # sont imposes. On peut donc facilement verifier que les C.L. sont bien respectees.
 #
@@ -35,286 +35,364 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #  N1  +---------+ N2
 #          S1
 #
-#----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",  )
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'D_PLAN') )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
-MAT1=DEFI_MATERIAU( ELAS=_F(  E = 1.2, NU = 0.3, ),)
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=1.2, NU=0.3))
 
-CHMAT=AFFE_MATERIAU( MAILLAGE=MA, AFFE=  _F(TOUT = 'OUI', MATER = MAT1,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT1))
 
-CHMEC=AFFE_CHAR_MECA(  MODELE=MO, INFO=2,
-             FACE_IMPO=( _F(  GROUP_MA = 'GXXXXXX_GAUCHE', SANS_GROUP_NO='N3', DX=1, DY=2),
-                         _F(  GROUP_MA = 'GXXXXXX_BAS', SANS_GROUP_NO='N1' , DNOR = 3),
-                         _F(  GROUP_MA = 'GXXXXXX_HAUT', SANS_GROUP_MA= 'GXXXXXX_GAUCHE', DNOR = 5,),
-                         _F(  GROUP_MA = 'GXXXXXX_DROIT', SANS_GROUP_NO='GXXXXXX_N2N6', DX = 5, DY= 10),),
-             DDL_IMPO=(  _F(  GROUP_NO=('N3','N6','N2'), DX=7),
-                         _F(  GROUP_NO='N3', DY=13),)
-             )
+CHMEC = AFFE_CHAR_MECA(
+    MODELE=MO,
+    INFO=2,
+    FACE_IMPO=(
+        _F(GROUP_MA="GXXXXXX_GAUCHE", SANS_GROUP_NO="N3", DX=1, DY=2),
+        _F(GROUP_MA="GXXXXXX_BAS", SANS_GROUP_NO="N1", DNOR=3),
+        _F(GROUP_MA="GXXXXXX_HAUT", SANS_GROUP_MA="GXXXXXX_GAUCHE", DNOR=5),
+        _F(GROUP_MA="GXXXXXX_DROIT", SANS_GROUP_NO="GXXXXXX_N2N6", DX=5, DY=10),
+    ),
+    DDL_IMPO=(_F(GROUP_NO=("N3", "N6", "N2"), DX=7), _F(GROUP_NO="N3", DY=13)),
+)
 
-DX1=DEFI_CONSTANTE(VALE=1.)
-DY1=DEFI_CONSTANTE(VALE=2.)
-DX2=DEFI_CONSTANTE(VALE=5.)
-DY2=DEFI_CONSTANTE(VALE=10.)
-DX3=DEFI_CONSTANTE(VALE=7.)
-DY3=DEFI_CONSTANTE(VALE=13.)
-DNOR1=DEFI_CONSTANTE(VALE=3.)
-DNOR2=DEFI_CONSTANTE(VALE=5.)
+DX1 = DEFI_CONSTANTE(VALE=1.0)
+DY1 = DEFI_CONSTANTE(VALE=2.0)
+DX2 = DEFI_CONSTANTE(VALE=5.0)
+DY2 = DEFI_CONSTANTE(VALE=10.0)
+DX3 = DEFI_CONSTANTE(VALE=7.0)
+DY3 = DEFI_CONSTANTE(VALE=13.0)
+DNOR1 = DEFI_CONSTANTE(VALE=3.0)
+DNOR2 = DEFI_CONSTANTE(VALE=5.0)
 
-CHMECF=AFFE_CHAR_MECA_F(  MODELE=MO, INFO=2,
-             FACE_IMPO=( _F(  GROUP_MA = 'GXXXXXX_GAUCHE', SANS_GROUP_NO='N3', DX=DX1, DY=DY1),
-                         _F(  GROUP_MA = 'GXXXXXX_BAS', SANS_GROUP_NO='N1' , DNOR = DNOR1),
-                         _F(  GROUP_MA = 'GXXXXXX_HAUT', SANS_GROUP_MA= 'GXXXXXX_GAUCHE', DNOR = DNOR2),
-                         _F(  GROUP_MA = 'GXXXXXX_DROIT', SANS_GROUP_NO='GXXXXXX_N2N6', DX=DX2, DY=DY2),),
-             DDL_IMPO=(  _F(  GROUP_NO=('N3','N6','N2'), DX=DX3),
-                         _F(  GROUP_NO='N3', DY=DY3),)
-             )
+CHMECF = AFFE_CHAR_MECA_F(
+    MODELE=MO,
+    INFO=2,
+    FACE_IMPO=(
+        _F(GROUP_MA="GXXXXXX_GAUCHE", SANS_GROUP_NO="N3", DX=DX1, DY=DY1),
+        _F(GROUP_MA="GXXXXXX_BAS", SANS_GROUP_NO="N1", DNOR=DNOR1),
+        _F(GROUP_MA="GXXXXXX_HAUT", SANS_GROUP_MA="GXXXXXX_GAUCHE", DNOR=DNOR2),
+        _F(GROUP_MA="GXXXXXX_DROIT", SANS_GROUP_NO="GXXXXXX_N2N6", DX=DX2, DY=DY2),
+    ),
+    DDL_IMPO=(_F(GROUP_NO=("N3", "N6", "N2"), DX=DX3), _F(GROUP_NO="N3", DY=DY3)),
+)
 
 
-MSLIN1=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT,EXCIT=_F(CHARGE = CHMEC,), )
-MSLIN2=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT,EXCIT=_F(CHARGE = CHMECF,), )
+MSLIN1 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHMEC))
+MSLIN2 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHMECF))
 
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N1',
-                  NOM_CMP='DX',
-                  VALE_CALC=1.000000000,
-                  VALE_REFE=1.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N1",
+        NOM_CMP="DX",
+        VALE_CALC=1.000000000,
+        VALE_REFE=1.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N1',
-                  NOM_CMP='DY',
-                  VALE_CALC=2.000000000,
-                  VALE_REFE=2.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N1",
+        NOM_CMP="DY",
+        VALE_CALC=2.000000000,
+        VALE_REFE=2.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.000000000,
-                  VALE_REFE=7.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N2",
+        NOM_CMP="DX",
+        VALE_CALC=7.000000000,
+        VALE_REFE=7.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N2',
-                  NOM_CMP='DY',
-                  VALE_CALC=-3.000000000,
-                  VALE_REFE=-3.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N2",
+        NOM_CMP="DY",
+        VALE_CALC=-3.000000000,
+        VALE_REFE=-3.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N3',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.000000000,
-                  VALE_REFE=7.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N3",
+        NOM_CMP="DX",
+        VALE_CALC=7.000000000,
+        VALE_REFE=7.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N3',
-                  NOM_CMP='DY',
-                  VALE_CALC=13.000000000,
-                  VALE_REFE=13.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N3",
+        NOM_CMP="DY",
+        VALE_CALC=13.000000000,
+        VALE_REFE=13.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N4',
-                  NOM_CMP='DX',
-                  VALE_CALC=5.000000000,
-                  VALE_REFE=5.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N4",
+        NOM_CMP="DX",
+        VALE_CALC=5.000000000,
+        VALE_REFE=5.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N4',
-                  NOM_CMP='DY',
-                  VALE_CALC=10.000000000,
-                  VALE_REFE=10.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N4",
+        NOM_CMP="DY",
+        VALE_CALC=10.000000000,
+        VALE_REFE=10.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=1.000000000,
-                  VALE_REFE=1.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=1.000000000,
+        VALE_REFE=1.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DY',
-                  VALE_CALC=2.000000000,
-                  VALE_REFE=2.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DY",
+        VALE_CALC=2.000000000,
+        VALE_REFE=2.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N6',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.000000000,
-                  VALE_REFE=7.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N6",
+        NOM_CMP="DX",
+        VALE_CALC=7.000000000,
+        VALE_REFE=7.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N6',
-                  NOM_CMP='DY',
-                  VALE_CALC=5.000000000,
-                  VALE_REFE=5.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N6",
+        NOM_CMP="DY",
+        VALE_CALC=5.000000000,
+        VALE_REFE=5.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N1',
-                  NOM_CMP='DX',
-                  VALE_CALC=1.000000000,
-                  VALE_REFE=1.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N1",
+        NOM_CMP="DX",
+        VALE_CALC=1.000000000,
+        VALE_REFE=1.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N1',
-                  NOM_CMP='DY',
-                  VALE_CALC=2.000000000,
-                  VALE_REFE=2.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N1",
+        NOM_CMP="DY",
+        VALE_CALC=2.000000000,
+        VALE_REFE=2.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N2',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.000000000,
-                  VALE_REFE=7.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N2",
+        NOM_CMP="DX",
+        VALE_CALC=7.000000000,
+        VALE_REFE=7.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N2',
-                  NOM_CMP='DY',
-                  VALE_CALC=-3.000000000,
-                  VALE_REFE=-3.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N2",
+        NOM_CMP="DY",
+        VALE_CALC=-3.000000000,
+        VALE_REFE=-3.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N3',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.000000000,
-                  VALE_REFE=7.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N3",
+        NOM_CMP="DX",
+        VALE_CALC=7.000000000,
+        VALE_REFE=7.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N3',
-                  NOM_CMP='DY',
-                  VALE_CALC=13.000000000,
-                  VALE_REFE=13.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N3",
+        NOM_CMP="DY",
+        VALE_CALC=13.000000000,
+        VALE_REFE=13.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N4',
-                  NOM_CMP='DX',
-                  VALE_CALC=5.000000000,
-                  VALE_REFE=5.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N4",
+        NOM_CMP="DX",
+        VALE_CALC=5.000000000,
+        VALE_REFE=5.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N4',
-                  NOM_CMP='DY',
-                  VALE_CALC=10.000000000,
-                  VALE_REFE=10.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N4",
+        NOM_CMP="DY",
+        VALE_CALC=10.000000000,
+        VALE_REFE=10.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=1.000000000,
-                  VALE_REFE=1.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=1.000000000,
+        VALE_REFE=1.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DY',
-                  VALE_CALC=2.000000000,
-                  VALE_REFE=2.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DY",
+        VALE_CALC=2.000000000,
+        VALE_REFE=2.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N6',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.000000000,
-                  VALE_REFE=7.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N6",
+        NOM_CMP="DX",
+        VALE_CALC=7.000000000,
+        VALE_REFE=7.0,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MSLIN2,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N6',
-                  NOM_CMP='DY',
-                  VALE_CALC=5.000000000,
-                  VALE_REFE=5.0,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MSLIN2,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N6",
+        NOM_CMP="DY",
+        VALE_CALC=5.000000000,
+        VALE_REFE=5.0,
+    )
+)
 
-FIN( )
+FIN()

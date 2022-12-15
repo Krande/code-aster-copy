@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: xavier.desroches at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -28,17 +27,9 @@ import cataelem.Commons.attributes as AT
 
 
 CHAR_MECA_FORC_R = Option(
-    para_in=(
-        SP.PFORNOR,
-        SP.PGEOMER,
-    ),
-    para_out=(
-        SP.PVECTUR,
-    ),
-    condition=(
-        CondCalcul(
-            '+', ((AT.PHENO, 'ME'), (AT.BORD, '0'), (AT.DIM_TOPO_MODELI, '0'),)),
-    ),
+    para_in=(SP.PFORNOR, SP.PGEOMER),
+    para_out=(SP.PVECTUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.DIM_TOPO_MODELI, "0"))),),
     comment=""" CHAR_MECA_FORC_R (MOT-CLE FORCE_NODALE): CALCUL DU SECOND MEMBRE
            CORRESPONDANT A DES FORCES NODALES""",
 )

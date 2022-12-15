@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class MeshDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Mesh`"""
+
     command_name = "DEFI_MAILLAGE"
 
     def create_result(self, keywords):
@@ -42,5 +43,6 @@ class MeshDefinition(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.build()
+
 
 DEFI_MAILLAGE = MeshDefinition.run

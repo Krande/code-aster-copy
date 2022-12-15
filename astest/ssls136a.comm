@@ -17,205 +17,244 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-MAIL=LIRE_MAILLAGE(FORMAT='ASTER',VERI_MAIL=_F(VERIF='OUI',),)
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER", VERI_MAIL=_F(VERIF="OUI"))
 
 
-MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
-                    AFFE=(
-             _F(GROUP_MA='GMA00001',PHENOMENE='MECANIQUE',MODELISATION='DKT',), # COQUE
-             _F(GROUP_MA='GMA00003',PHENOMENE='MECANIQUE',MODELISATION='DIS_T',), # DISCRET
-),)
+MODMECA = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="GMA00001", PHENOMENE="MECANIQUE", MODELISATION="DKT"),  # COQUE
+        _F(GROUP_MA="GMA00003", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),  # DISCRET
+    ),
+)
 
-MAT00001=DEFI_MATERIAU(
-        ELAS=_F(
-            E=210000.0,
-            NU=0.300000011921,RHO=7.84999976133e-09,),)  #  1
+MAT00001 = DEFI_MATERIAU(ELAS=_F(E=210000.0, NU=0.300000011921, RHO=7.84999976133e-09))  #  1
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=(
-                          _F(GROUP_MA='GMA00002', MATER=MAT00001,),
-                         )
-                    )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=(_F(GROUP_MA="GMA00002", MATER=MAT00001),))
 
-CINE1=AFFE_CHAR_CINE(MODELE=MODMECA,
-                        MECA_IMPO=(
-                                 _F(GROUP_NO='GNO00001',DX=0.0,DY=0.0,DZ=0.0,DRX=0.0,DRY=0.0,DRZ=0.0,),
-        ),)
+CINE1 = AFFE_CHAR_CINE(
+    MODELE=MODMECA,
+    MECA_IMPO=(_F(GROUP_NO="GNO00001", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),),
+)
 
-BRBE3=AFFE_CHAR_MECA(MODELE=MODMECA,
-        LIAISON_RBE3=(
-                _F(
-                      GROUP_NO_MAIT='N000001',
-                      DDL_MAIT=('DX','DY','DZ'),
-                      GROUP_NO_ESCL=('N000002','N000003','N000014','N000009','N000068','N000092','N000010','N000109'),
-                      DDL_ESCL=('DX-DY-DZ',),
-                      COEF_ESCL=(1.,1.,1.,1.,1.,1.,1.,1.)
-                ),
+BRBE3 = AFFE_CHAR_MECA(
+    MODELE=MODMECA,
+    LIAISON_RBE3=(
+        _F(
+            GROUP_NO_MAIT="N000001",
+            DDL_MAIT=("DX", "DY", "DZ"),
+            GROUP_NO_ESCL=(
+                "N000002",
+                "N000003",
+                "N000014",
+                "N000009",
+                "N000068",
+                "N000092",
+                "N000010",
+                "N000109",
+            ),
+            DDL_ESCL=("DX-DY-DZ",),
+            COEF_ESCL=(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
         ),
+    ),
 )
 
 
-CHARGE1=AFFE_CHAR_MECA(MODELE=MODMECA,
-        FORCE_NODALE=(
-                  _F(GROUP_NO='GNO00002',FX=-0.123456701636,FY=-0.246913403273,FZ=-0.370370090008,),),
-                       )
+CHARGE1 = AFFE_CHAR_MECA(
+    MODELE=MODMECA,
+    FORCE_NODALE=(
+        _F(GROUP_NO="GNO00002", FX=-0.123456701636, FY=-0.246913403273, FZ=-0.370370090008),
+    ),
+)
 
-CAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
-        COQUE=(
-                _F(GROUP_MA='GMA00001',EPAIS=0.123000003397, VECTEUR=(0.9,0.1,0.2) ),
-              ),
-        DISCRET=(
-                _F(CARA='K_T_D_N', GROUP_MA='GMA00003',VALE=(0,0,0,),),
-              )
-                  )
+CAEL = AFFE_CARA_ELEM(
+    MODELE=MODMECA,
+    COQUE=(_F(GROUP_MA="GMA00001", EPAIS=0.123000003397, VECTEUR=(0.9, 0.1, 0.2)),),
+    DISCRET=(_F(CARA="K_T_D_N", GROUP_MA="GMA00003", VALE=(0, 0, 0)),),
+)
 
-RES_RBE3=MECA_STATIQUE(MODELE=MODMECA,
-                    OPTION='SANS',
-                    CHAM_MATER=CHMAT,CARA_ELEM=CAEL,
-                    EXCIT=(
-                           _F(CHARGE=CHARGE1,),
-                           _F(CHARGE=CINE1,),
-                           _F(CHARGE=BRBE3,),
-                           ),)
+RES_RBE3 = MECA_STATIQUE(
+    MODELE=MODMECA,
+    OPTION="SANS",
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CAEL,
+    EXCIT=(_F(CHARGE=CHARGE1), _F(CHARGE=CINE1), _F(CHARGE=BRBE3)),
+)
 
 IMPR_RESU(
-      FORMAT='RESULTAT',
-      RESU=(
-      _F(RESULTAT = RES_RBE3,NOM_CHAM = 'DEPL',VALE_MAX = 'OUI',VALE_MIN= 'OUI',
-         GROUP_NO=('N000002','N000003','N000014','N000009','N000068','N000092','N000010','N000109')),
-      ),)
+    FORMAT="RESULTAT",
+    RESU=(
+        _F(
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            VALE_MAX="OUI",
+            VALE_MIN="OUI",
+            GROUP_NO=(
+                "N000002",
+                "N000003",
+                "N000014",
+                "N000009",
+                "N000068",
+                "N000092",
+                "N000010",
+                "N000109",
+            ),
+        ),
+    ),
+)
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=(
-          _F(MAILLAGE=MAIL,RESULTAT=RES_RBE3,NOM_CHAM=('DEPL' ),),
-         ),)
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=(_F(MAILLAGE=MAIL, RESULTAT=RES_RBE3, NOM_CHAM=("DEPL")),))
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000109',
-                   NOM_CMP='DX',
-                   VALE_CALC=-8.24903341E-06,
-                   VALE_REFE=-8.2490300000000005E-06,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000010',
-                   NOM_CMP='DY',
-                   VALE_CALC=-1.65057523E-05,
-                   VALE_REFE=-1.65058E-05,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000009',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.110249224,
-                   VALE_REFE=-0.110249,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000009',
-                   NOM_CMP='DRX',
-                   VALE_CALC= 5.39178995E-03,
-                   VALE_REFE=5.3917899999999996E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000010',
-                   NOM_CMP='DRY',
-                   VALE_CALC= 5.57828180E-03,
-                   VALE_REFE=5.5782799999999997E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000002',
-                   NOM_CMP='DRZ',
-                   VALE_CALC= 0.0E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000002',
-                   NOM_CMP='DX',
-                   VALE_CALC=-8.42701552E-06,
-                   VALE_REFE=-8.4270200000000005E-06,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000009',
-                   NOM_CMP='DY',
-                   VALE_CALC=-1.68363980E-05,
-                   VALE_REFE=-1.68364E-05,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000014',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.110746544,
-                   VALE_REFE=-0.110747,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000003',
-                   NOM_CMP='DRX',
-                   VALE_CALC=-5.53147809E-03,
-                   VALE_REFE=-5.5314800000000001E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000002',
-                   NOM_CMP='DRY',
-                   VALE_CALC=-5.66054085E-03,
-                   VALE_REFE=-5.6605400000000004E-3,
-                   CRITERE='RELATIF',
-                   PRECISION=1.0E-05,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=RES_RBE3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N000002',
-                   NOM_CMP='DRZ',
-                   VALE_CALC=0.0E+00,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000109",
+            NOM_CMP="DX",
+            VALE_CALC=-8.24903341e-06,
+            VALE_REFE=-8.2490300000000005e-06,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000010",
+            NOM_CMP="DY",
+            VALE_CALC=-1.65057523e-05,
+            VALE_REFE=-1.65058e-05,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000009",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.110249224,
+            VALE_REFE=-0.110249,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000009",
+            NOM_CMP="DRX",
+            VALE_CALC=5.39178995e-03,
+            VALE_REFE=5.3917899999999996e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000010",
+            NOM_CMP="DRY",
+            VALE_CALC=5.57828180e-03,
+            VALE_REFE=5.5782799999999997e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000002",
+            NOM_CMP="DRZ",
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000002",
+            NOM_CMP="DX",
+            VALE_CALC=-8.42701552e-06,
+            VALE_REFE=-8.4270200000000005e-06,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000009",
+            NOM_CMP="DY",
+            VALE_CALC=-1.68363980e-05,
+            VALE_REFE=-1.68364e-05,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000014",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.110746544,
+            VALE_REFE=-0.110747,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000003",
+            NOM_CMP="DRX",
+            VALE_CALC=-5.53147809e-03,
+            VALE_REFE=-5.5314800000000001e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000002",
+            NOM_CMP="DRY",
+            VALE_CALC=-5.66054085e-03,
+            VALE_REFE=-5.6605400000000004e-3,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-05,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=RES_RBE3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N000002",
+            NOM_CMP="DRZ",
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-10,
+        ),
+    )
+)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,58 +22,33 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1  : _("""Préparation du second membre pour la prédiction."""),
-
-    2  : _("""Préparation du second membre pour la correction."""),
-
-    3  : _("""Préparation du second membre pour l'accélération initiale."""),
-
-    4  : _("""Calcul des chargements."""),
-
-    5  : _("""Calcul des chargements spécifiques à la dynamique."""),
-
-    6  : _("""Calcul de l'impédance (dynamique)."""),
-
-    7  : _("""Calcul de l'effet sur le second membre des macro-éléments."""),
-
-    8  : _("""Calcul des efforts intérieurs (sans intégration de la loi de comportement)."""),
-
-    9  : _("""Calcul des forces de rappel dynamique."""),
-
-   10  : _("""Calcul des forces d'amortissement modal."""),
-
-   11  : _("""Calcul des réactions d'appui pour les conditions limites de Dirichlet."""),
-
-   12  : _("""Calcul des conditions limites de Dirichlet."""),
-
-   13  : _("""Calcul du second membre pour le pas de temps courant."""),
-
-   14  : _("""Calcul de la contribution des variables de commande."""),
-
-   15  : _("""Calcul du second membre pour la correction."""),
-
-   16  : _("""Calcul du second membre pour un chargement de Dirichlet donné (EXTRAPOLE ou DEPL_CALCULE)."""),
-
-   17  : _("""Calcul du second membre pour l'accélération initiale."""),
-
-   18  : _("""Calcul du second membre pour la dynamique explicite."""),
-
-   19  : _("""Calcul du second membre pour la prédiction (statique)."""),
-
-   20  : _("""Calcul du second membre pour la prédiction (dynamique)."""),
-
-   21  : _("""Préparation du second membre pour la prédiction (dynamique explicite)."""),
-
-   22  : _("""Préparation du second membre pour le pas de temps courant (dynamique explicite)."""),
-
-   25  : _("""Calcul des efforts intérieurs (avec intégration de la loi de comportement)."""),
-
-   26  : _("""Calcul de l'accélération initiale."""),
-
-   29  : _("""Intégration de la loi de comportement et de la matrice tangente."""),
-
-   30  : _("""Calcul des forces de contact et de frottement (méthodes continues)."""),
-
-   31  : _("""Calcul des forces de contact et de frottement (méthodes discrètes)."""),
+    1: _("""Préparation du second membre pour la prédiction."""),
+    2: _("""Préparation du second membre pour la correction."""),
+    3: _("""Préparation du second membre pour l'accélération initiale."""),
+    4: _("""Calcul des chargements."""),
+    5: _("""Calcul des chargements spécifiques à la dynamique."""),
+    6: _("""Calcul de l'impédance (dynamique)."""),
+    7: _("""Calcul de l'effet sur le second membre des macro-éléments."""),
+    8: _("""Calcul des efforts intérieurs (sans intégration de la loi de comportement)."""),
+    9: _("""Calcul des forces de rappel dynamique."""),
+    10: _("""Calcul des forces d'amortissement modal."""),
+    11: _("""Calcul des réactions d'appui pour les conditions limites de Dirichlet."""),
+    12: _("""Calcul des conditions limites de Dirichlet."""),
+    13: _("""Calcul du second membre pour le pas de temps courant."""),
+    14: _("""Calcul de la contribution des variables de commande."""),
+    15: _("""Calcul du second membre pour la correction."""),
+    16: _(
+        """Calcul du second membre pour un chargement de Dirichlet donné (EXTRAPOLE ou DEPL_CALCULE)."""
+    ),
+    17: _("""Calcul du second membre pour l'accélération initiale."""),
+    18: _("""Calcul du second membre pour la dynamique explicite."""),
+    19: _("""Calcul du second membre pour la prédiction (statique)."""),
+    20: _("""Calcul du second membre pour la prédiction (dynamique)."""),
+    21: _("""Préparation du second membre pour la prédiction (dynamique explicite)."""),
+    22: _("""Préparation du second membre pour le pas de temps courant (dynamique explicite)."""),
+    25: _("""Calcul des efforts intérieurs (avec intégration de la loi de comportement)."""),
+    26: _("""Calcul de l'accélération initiale."""),
+    29: _("""Intégration de la loi de comportement et de la matrice tangente."""),
+    30: _("""Calcul des forces de contact et de frottement (méthodes continues)."""),
+    31: _("""Calcul des forces de contact et de frottement (méthodes discrètes)."""),
 }

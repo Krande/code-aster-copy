@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,30 +20,21 @@
 # person_in_charge: sofiane.hendili at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PPHASIN  = InputParameter(phys=PHY.VARI_R, container='RESU!META_ELNO!N',
-comment="""  PPHASIN : PHASES METALLURGIQUES """)
+PPHASIN = InputParameter(
+    phys=PHY.VARI_R, container="RESU!META_ELNO!N", comment="""  PPHASIN : PHASES METALLURGIQUES """
+)
 
 
 DURT_ELNO = Option(
-    para_in=(
-        SP.PMATERC,
-           PPHASIN,
-    ),
-    para_out=(
-        SP.PDURT_R,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PMATERC, PPHASIN),
+    para_out=(SP.PDURT_R,),
+    condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
     comment="""  DURT_ELNO : CALCUL DE DURETE AUX NOEUDS
            A PARTIR DES PHASES METALLURGIQUES """,
 )

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class ReducedDomainDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Mesh`"""
+
     command_name = "DEFI_DOMAINE_REDUIT"
 
     def create_result(self, keywords):

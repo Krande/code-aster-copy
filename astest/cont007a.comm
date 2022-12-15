@@ -19,7 +19,7 @@
 
 # CAS TEST : SSNP152A
 #
-#ELEMENTS LINEAIRES, GRANDES ROTATIONS, CONTRAINTES PLANES,
+# ELEMENTS LINEAIRES, GRANDES ROTATIONS, CONTRAINTES PLANES,
 
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
@@ -28,64 +28,64 @@ import math
 import code_aster
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-MA = LIRE_MAILLAGE(FORMAT='GMSH',
-                   UNITE=19,
-                   )
+MA = LIRE_MAILLAGE(FORMAT="GMSH", UNITE=19)
 
-MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N10', NOEUD = 'N10'),
-                                     ),
-         )
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(NOM="N10", NOEUD="N10"),))
 
-#| noms des groupes de noeuds et mailles
+# | noms des groupes de noeuds et mailles
 
-MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_MA=(_F(GROUP_MA='GM100',NOM='C1'),
-                     _F(GROUP_MA='GM101',NOM='C2'),
-                     _F(GROUP_MA='GM200',NOM='S1R1'),
-                     _F(GROUP_MA='GM300',NOM='S1R2'),
-                     _F(GROUP_MA='GM400',NOM='S2R2'),
-                     _F(GROUP_MA='GM500',NOM='S2R3'),),
-                                   CREA_GROUP_NO=(_F(GROUP_MA='S1R2',NOM='CONT_N_1'),
-                      _F(GROUP_MA='S2R2',NOM='CONT_N_2'),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(GROUP_MA="GM100", NOM="C1"),
+        _F(GROUP_MA="GM101", NOM="C2"),
+        _F(GROUP_MA="GM200", NOM="S1R1"),
+        _F(GROUP_MA="GM300", NOM="S1R2"),
+        _F(GROUP_MA="GM400", NOM="S2R2"),
+        _F(GROUP_MA="GM500", NOM="S2R3"),
+    ),
+    CREA_GROUP_NO=(_F(GROUP_MA="S1R2", NOM="CONT_N_1"), _F(GROUP_MA="S2R2", NOM="CONT_N_2")),
+)
 
-MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(
-            _F(GROUP_MA_PEAU = 'S1R1',),
-            _F(GROUP_MA_PEAU = 'S1R2',),
-            _F(GROUP_MA_PEAU = 'S2R2',),
-            _F(GROUP_MA_PEAU = 'S2R3',),),)
+MA = MODI_MAILLAGE(
+    reuse=MA,
+    MAILLAGE=MA,
+    ORIE_PEAU=(
+        _F(GROUP_MA_PEAU="S1R1"),
+        _F(GROUP_MA_PEAU="S1R2"),
+        _F(GROUP_MA_PEAU="S2R2"),
+        _F(GROUP_MA_PEAU="S2R3"),
+    ),
+)
 
 
-
-
-E1=1.0E9
-E2=1.0E9
-nu1=0.2
-nu2=0.2
+E1 = 1.0e9
+E2 = 1.0e9
+nu1 = 0.2
+nu2 = 0.2
 
 # False plastic material for large strains in elasticity (ticket #26286)
-MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E15),)
-MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,),ECRO_LINE=_F(D_SIGM_EPSI=1.0,SY=1E15),)
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=E1, NU=nu1), ECRO_LINE=_F(D_SIGM_EPSI=1.0, SY=1e15))
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=E2, NU=nu2), ECRO_LINE=_F(D_SIGM_EPSI=1.0, SY=1e15))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(_F(GROUP_MA = 'C1',MATER = MAT1,),
-                            _F(GROUP_MA = 'C2',MATER = MAT2,),),)
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="C1", MATER=MAT1), _F(GROUP_MA="C2", MATER=MAT2))
+)
 
 
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
 
-
-MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
-
-#+----------------------------------------+
-#|       conditions aux limites           |
-#+----------------------------------------+
+# +----------------------------------------+
+# |       conditions aux limites           |
+# +----------------------------------------+
 
 # pression externe
 
-p=1.E6
-
+p = 1.0e6
 
 
 R1 = 1.0
@@ -94,47 +94,46 @@ R3 = 0.2
 
 # calcul analytique de la pression de contact
 
-pres_cont = (2*p*R1*R1)/((R2*R2*(1-nu1)+R1*R1*(1+nu1))+((E1/E2)*((R1*R1-R2*R2)/(R2*R2-R3*R3))*(R2*R2*(1-nu2)+R3*R3*(1+nu2))))
+pres_cont = (2 * p * R1 * R1) / (
+    (R2 * R2 * (1 - nu1) + R1 * R1 * (1 + nu1))
+    + (
+        (E1 / E2)
+        * ((R1 * R1 - R2 * R2) / (R2 * R2 - R3 * R3))
+        * (R2 * R2 * (1 - nu2) + R3 * R3 * (1 + nu2))
+    )
+)
 
 
 # couronne externe
 
-a1=(pres_cont*R2*R2-p*R1*R1)/(R1*R1-R2*R2)
-b1=(pres_cont-p)*(R1*R1*R2*R2)/(R1*R1-R2*R2)
+a1 = (pres_cont * R2 * R2 - p * R1 * R1) / (R1 * R1 - R2 * R2)
+b1 = (pres_cont - p) * (R1 * R1 * R2 * R2) / (R1 * R1 - R2 * R2)
 
-eps_r_1 = (1/E1)*(a1*(1-nu1)*R1+b1*(1+nu1)/R1)
+eps_r_1 = (1 / E1) * (a1 * (1 - nu1) * R1 + b1 * (1 + nu1) / R1)
 
-ux1 = FORMULE(VALE='eps_r_1*cos(atan2(Y,X))',
-              eps_r_1=eps_r_1,
-              NOM_PARA=['X', 'Y'],)
+ux1 = FORMULE(VALE="eps_r_1*cos(atan2(Y,X))", eps_r_1=eps_r_1, NOM_PARA=["X", "Y"])
 
-uy1 = FORMULE(VALE='eps_r_1*sin(atan2(Y,X))',
-              eps_r_1=eps_r_1,
-              NOM_PARA=['X', 'Y'],)
+uy1 = FORMULE(VALE="eps_r_1*sin(atan2(Y,X))", eps_r_1=eps_r_1, NOM_PARA=["X", "Y"])
 
 
-CH1=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA = 'S1R1', DX=ux1,DY=uy1,),),)
+CH1 = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA="S1R1", DX=ux1, DY=uy1),))
 
 # couronne interne
 
-a2=-pres_cont*R2*R2/(R2*R2-R3*R3)
-b2=-pres_cont*(R2*R2*R3*R3)/(R2*R2-R3*R3)
+a2 = -pres_cont * R2 * R2 / (R2 * R2 - R3 * R3)
+b2 = -pres_cont * (R2 * R2 * R3 * R3) / (R2 * R2 - R3 * R3)
 
-eps_r_2 = (1/E2)*(a2*(1-nu2)*R3+b2*(1+nu2)/R3)
+eps_r_2 = (1 / E2) * (a2 * (1 - nu2) * R3 + b2 * (1 + nu2) / R3)
 
-ux2 = FORMULE(VALE='eps_r_2*cos(atan2(Y,X))',
-              eps_r_2=eps_r_2,
-              NOM_PARA=['X', 'Y'],)
+ux2 = FORMULE(VALE="eps_r_2*cos(atan2(Y,X))", eps_r_2=eps_r_2, NOM_PARA=["X", "Y"])
 
-uy2 = FORMULE(VALE='eps_r_2*sin(atan2(Y,X))',
-              eps_r_2=eps_r_2,
-              NOM_PARA=['X', 'Y'],)
+uy2 = FORMULE(VALE="eps_r_2*sin(atan2(Y,X))", eps_r_2=eps_r_2, NOM_PARA=["X", "Y"])
 
-CH2=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA='S2R3',DX=ux2,DY=uy2,),),)
+CH2 = AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA="S2R3", DX=ux2, DY=uy2),))
 
-#+----------------------------------------+
-#|               contact                  |
-#+----------------------------------------+
+# +----------------------------------------+
+# |               contact                  |
+# +----------------------------------------+
 """
 CONT_N  = DEFI_CONTACT(MODELE = MO,
                        FORMULATION    = 'CONTINUE',
@@ -171,50 +170,46 @@ CONT_G  = DEFI_CONTACT(MODELE = MO,
                               GLISSIERE     = 'NON',),),)
 """
 
-CONT_N  = DEFI_CONT(MODELE = MO,
-                       ZONE =(
-                           _F(GROUP_MA_ESCL = 'S2R2',
-                              GROUP_MA_MAIT = 'S1R2',
-                              ALGO_CONT     = 'LAGRANGIEN',
-                              COEF_CONT     = 1.E2,
-                              # CONTACT_INIT  = 'OUI',
-                              ),),)
+CONT_N = DEFI_CONT(
+    MODELE=MO,
+    ZONE=(
+        _F(
+            GROUP_MA_ESCL="S2R2",
+            GROUP_MA_MAIT="S1R2",
+            ALGO_CONT="LAGRANGIEN",
+            COEF_CONT=1.0e2,
+            # CONTACT_INIT  = 'OUI',
+        ),
+    ),
+)
 #    assert zone.getPairingParameter().getInitialState() == InitialState.Interpenetrated
-#AssertionError
+# AssertionError
 
-#+----------------------------------------+
-#|               calcul                   |
-#+----------------------------------------+
+# +----------------------------------------+
+# |               calcul                   |
+# +----------------------------------------+
 
 from math import pow
 
-T=DEFI_LIST_REEL(DEBUT=0.1,INTERVALLE = _F(JUSQU_A = 2.1,NOMBRE=20,),)
-EXP = FORMULE(VALE='pow(10,INST-1.1)',
-              NOM_PARA='INST',)
-RP_EXP=CALC_FONC_INTERP(FONCTION  = EXP,
-         LIST_PARA = T,
-         PROL_DROITE='EXCLU',
-         PROL_GAUCHE='EXCLU',)
+T = DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F(JUSQU_A=2.1, NOMBRE=20))
+EXP = FORMULE(VALE="pow(10,INST-1.1)", NOM_PARA="INST")
+RP_EXP = CALC_FONC_INTERP(FONCTION=EXP, LIST_PARA=T, PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU")
 
-INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
-                    INTERVALLE  = _F(JUSQU_A = 2.1,
-                                      NOMBRE  = 21,),)
+INSTS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=2.1, NOMBRE=21))
 
-RESU1 =  MECA_NON_LINE(MODELE      = MO,
-                       CHAM_MATER  = CHMAT,
-                       EXCIT       = (_F(CHARGE = CH1, FONC_MULT = RP_EXP),
-                                      _F(CHARGE = CH2, FONC_MULT = RP_EXP),),
-                       #CONTACT     = CONT_N,
-                       CONTACT=_F(DEFINITION=CONT_N,
-                                ALGO_RESO_GEOM="NEWTON"),
-                       COMPORTEMENT   = (_F(RELATION = 'VMIS_ISOT_LINE',
-                                         DEFORMATION = 'GDEF_LOG',),),
-                       NEWTON      = _F(REAC_INCR=1,REAC_ITER=1),
-                       INCREMENT   = _F(LIST_INST=INSTS,),
-                       CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
-                       SOLVEUR     = _F(METHODE     = 'MUMPS',
-                                        ),
-                       INFO=1,)
+RESU1 = MECA_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CH1, FONC_MULT=RP_EXP), _F(CHARGE=CH2, FONC_MULT=RP_EXP)),
+    # CONTACT     = CONT_N,
+    CONTACT=_F(DEFINITION=CONT_N, ALGO_RESO_GEOM="NEWTON"),
+    COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", DEFORMATION="GDEF_LOG"),),
+    NEWTON=_F(REAC_INCR=1, REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=INSTS),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    INFO=1,
+)
 
 
 """
@@ -251,112 +246,118 @@ RESU2 =  STAT_NON_LINE(MODELE      = MO,
 """
 # calcul de l'erreur en termes de norme L2 de la pressions de contact
 
-PRES = FORMULE(VALE='-pres_cont*EXP(0.1)',
-               pres_cont=pres_cont,
-               EXP=EXP,
-               NOM_PARA=['X', 'Y'],)
+PRES = FORMULE(VALE="-pres_cont*EXP(0.1)", pres_cont=pres_cont, EXP=EXP, NOM_PARA=["X", "Y"])
 
-Ucal=CREA_CHAMP(OPERATION='EXTR',
-                TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=RESU1,
-                NOM_CHAM='DEPL',
-                NUME_ORDRE=1)
+Ucal = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="NOEU_DEPL_R", RESULTAT=RESU1, NOM_CHAM="DEPL", NUME_ORDRE=1
+)
 
-tabL2=POST_ERREUR(OPTION='LAGR_RELA',
-                  CHAM_GD=Ucal,
-                  MODELE=MO,
-                  GROUP_MA='S2R2',
-                  LAGS_C=PRES)
+tabL2 = POST_ERREUR(OPTION="LAGR_RELA", CHAM_GD=Ucal, MODELE=MO, GROUP_MA="S2R2", LAGS_C=PRES)
 
 IMPR_TABLE(TABLE=tabL2)
 
-print("I=", pres_cont*EXP(0.1)*sqrt(2.*math.pi*R2))
+print("I=", pres_cont * EXP(0.1) * sqrt(2.0 * math.pi * R2))
 
-# valeurs testés mieux qu'avant (continu + intégration auto) 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=179687.76729416644,
-           VALE_REFE=179780.177088,
-           NOM_PARA='REFERENCE',
-           PRECISION=0.0006,
-           FILTRE=_F(NOM_PARA='GROUP_MA',
-                     VALE_K='TOTAL'),
-           TABLE=tabL2,
-           )
+# valeurs testés mieux qu'avant (continu + intégration auto)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=179687.76729416644,
+    VALE_REFE=179780.177088,
+    NOM_PARA="REFERENCE",
+    PRECISION=0.0006,
+    FILTRE=_F(NOM_PARA="GROUP_MA", VALE_K="TOTAL"),
+    TABLE=tabL2,
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.00364298988, # 0.006714426497645172,
-           NOM_PARA='ERREUR RELATIVE',
-           FILTRE=_F(NOM_PARA='GROUP_MA',
-                     VALE_K='TOTAL'),
-           TABLE=tabL2,
-           )
+TEST_TABLE(
+    CRITERE="RELATIF",
+    VALE_CALC=0.00364298988,  # 0.006714426497645172,
+    NOM_PARA="ERREUR RELATIVE",
+    FILTRE=_F(NOM_PARA="GROUP_MA", VALE_K="TOTAL"),
+    TABLE=tabL2,
+)
 
-#+----------------------------------------+
-#|          tests de validation           |
-#+----------------------------------------+
+# +----------------------------------------+
+# |          tests de validation           |
+# +----------------------------------------+
 
 # noeud
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N10',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC= 92255.27849355807, #91970.88643542175,
-                  VALE_REFE=pres_cont*EXP(0.1),
-                  PRECISION=0.007,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        VALE_ABS="OUI",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N10",
+        NOM_CMP="LAGS_C",
+        VALE_CALC=92255.27849355807,  # 91970.88643542175,
+        VALE_REFE=pres_cont * EXP(0.1),
+        PRECISION=0.007,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  VALE_ABS='OUI',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N10',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC=231776.4458255871,  #231062.07978232342,
-                  VALE_REFE=pres_cont*EXP(0.5),
-                  PRECISION=0.007,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        VALE_ABS="OUI",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N10",
+        NOM_CMP="LAGS_C",
+        VALE_CALC=231776.4458255871,  # 231062.07978232342,
+        VALE_REFE=pres_cont * EXP(0.5),
+        PRECISION=0.007,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  VALE_ABS='OUI',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N10',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC=733416.8343946598,  #731156.0766568179,
-                  VALE_REFE=pres_cont*EXP(1.0),
-                  PRECISION=0.006,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        VALE_ABS="OUI",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N10",
+        NOM_CMP="LAGS_C",
+        VALE_CALC=733416.8343946598,  # 731156.0766568179,
+        VALE_REFE=pres_cont * EXP(1.0),
+        PRECISION=0.006,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=15,
-                  VALE_ABS='OUI',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N10',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC=2324031.117526774,  #2316866.9425789905,
-                  VALE_REFE=pres_cont*EXP(1.5),
-                  PRECISION=0.004,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=15,
+        VALE_ABS="OUI",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N10",
+        NOM_CMP="LAGS_C",
+        VALE_CALC=2324031.117526774,  # 2316866.9425789905,
+        VALE_REFE=pres_cont * EXP(1.5),
+        PRECISION=0.004,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=21,
-                  VALE_ABS='OUI',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N10',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC=9335684.074226407,  # 9306899.915319547,
-                  VALE_REFE=pres_cont*EXP(2.1),
-                  PRECISION=0.0085,), #  0.006,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=21,
+        VALE_ABS="OUI",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU1,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N10",
+        NOM_CMP="LAGS_C",
+        VALE_CALC=9335684.074226407,  # 9306899.915319547,
+        VALE_REFE=pres_cont * EXP(2.1),
+        PRECISION=0.0085,
+    )  #  0.006,),
+)
 
 # gauss
 """

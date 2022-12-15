@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,7 @@ class sd_partition(AsBase):
         assert prti[0] > 0, prti
 
         prtk = self.PRTK.get_stripped()
-        assert prtk[0] in (
-            "GROUP_ELEM",
-            "SOUS_DOMAINE",
-            "MAIL_DISPERSE",
-            "MAIL_CONTIGU",
-        ), prtk
+        assert prtk[0] in ("GROUP_ELEM", "SOUS_DOMAINE", "MAIL_DISPERSE", "MAIL_CONTIGU"), prtk
 
         if prtk[0] == "SOUS_DOMAINE":
             sd2 = sd_partit_domain(self.nomj())
@@ -56,15 +51,6 @@ class sd_partit_domain(AsBase):
     """Objects that only exist for SOUS_DOMAINE"""
 
     nomj = SDNom(fin=19)
-    FDIM = AsVI(
-        lonmax=1,
-    )
-    FREF = AsVK8(
-        lonmax=1,
-    )
-    FETA = AsColl(
-        acces="NO",
-        stockage="DISPERSE",
-        modelong="VARIABLE",
-        type="I",
-    )
+    FDIM = AsVI(lonmax=1)
+    FREF = AsVK8(lonmax=1)
+    FETA = AsColl(acces="NO", stockage="DISPERSE", modelong="VARIABLE", type="I")

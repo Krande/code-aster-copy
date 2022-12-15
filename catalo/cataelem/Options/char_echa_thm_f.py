@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,29 +20,15 @@
 # person_in_charge: sylvie.granet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-
 CHAR_ECHA_THM_F = Option(
-    para_in=(
-        SP.PCHTHMF,
-        SP.PFLUXF,
-        SP.PGEOMER,
-        SP.PDEPLMR,
-        SP.PTEMPSR,
-    ),
-    para_out=(
-        SP.PVECTUR,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.TYPMOD2, 'THM'), (AT.BORD, '-1'),)),
-    ),
+    para_in=(SP.PCHTHMF, SP.PFLUXF, SP.PGEOMER, SP.PDEPLMR, SP.PTEMPSR),
+    para_out=(SP.PVECTUR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "THM"), (AT.BORD, "-1"))),),
     comment=""" CHAR_ECHA_THM_F """,
 )

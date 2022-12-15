@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,31 +20,23 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 SIGM_ELGA = Option(
-    para_in=(
-        SP.PSIEFR,
-    ),
-    para_out=(
-        SP.PSIGMC,
-        SP.PSIGMR,
-    ),
+    para_in=(SP.PSIEFR,),
+    para_out=(SP.PSIGMC, SP.PSIGMR),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.EFGE,'OUI'),(AT.SIGM,'NON'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'AFI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'PFI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.ABSO, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.EFGE, "OUI"), (AT.SIGM, "NON"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "3FI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "AFI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "PFI"))),
     ),
     comment="""  SIGM_ELGA : CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
                 A PARTIR DE SIEF_ELGA """,

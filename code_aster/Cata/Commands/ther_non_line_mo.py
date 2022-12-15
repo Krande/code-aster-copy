@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,30 +23,39 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
-                     fr=tr("Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
-                        " stationnaire avec chargement mobile"),
-                     reentrant='n',
-         MODELE          =SIMP(statut='o',typ=modele_sdaster ),
-         CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
-         EXCIT           =FACT(statut='o',max='**',
-           CHARGE          =SIMP(statut='o',typ=char_ther ),
-           FONC_MULT       =SIMP(statut='c',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-         ),
-         ETAT_INIT       =FACT(statut='f',
-           EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',defaut= 0 ),
-         ),
-         CONVERGENCE     =FACT(statut='d',
-           CRIT_TEMP_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
-           CRIT_ENTH_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
-           ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           ARRET           =SIMP(statut='c',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-         ),
-#-------------------------------------------------------------------
-#        Catalogue commun SOLVEUR
-         SOLVEUR         =C_SOLVEUR('THER_NON_LINE_MO'),
-#-------------------------------------------------------------------
-         TITRE           =SIMP(statut='f',typ='TXM' ),
-         INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
-)  ;
+THER_NON_LINE_MO = OPER(
+    nom="THER_NON_LINE_MO",
+    op=171,
+    sd_prod=evol_ther,
+    fr=tr(
+        "Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
+        " stationnaire avec chargement mobile"
+    ),
+    reentrant="n",
+    MODELE=SIMP(statut="o", typ=modele_sdaster),
+    CHAM_MATER=SIMP(statut="o", typ=cham_mater),
+    EXCIT=FACT(
+        statut="o",
+        max="**",
+        CHARGE=SIMP(statut="o", typ=char_ther),
+        FONC_MULT=SIMP(statut="c", typ=(fonction_sdaster, nappe_sdaster, formule)),
+    ),
+    ETAT_INIT=FACT(
+        statut="f",
+        EVOL_THER=SIMP(statut="f", typ=evol_ther),
+        NUME_ORDRE=SIMP(statut="f", typ="I", defaut=0),
+    ),
+    CONVERGENCE=FACT(
+        statut="d",
+        CRIT_TEMP_RELA=SIMP(statut="f", typ="R", defaut=1.0e-3),
+        CRIT_ENTH_RELA=SIMP(statut="f", typ="R", defaut=1.0e-2),
+        ITER_GLOB_MAXI=SIMP(statut="f", typ="I", defaut=10),
+        ARRET=SIMP(statut="c", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+    ),
+    # -------------------------------------------------------------------
+    #        Catalogue commun SOLVEUR
+    SOLVEUR=C_SOLVEUR("THER_NON_LINE_MO"),
+    # -------------------------------------------------------------------
+    TITRE=SIMP(statut="f", typ="TXM"),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+)

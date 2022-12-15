@@ -34,154 +34,154 @@ from cataelem.Options.options import OP
 # Modes locaux :
 # ----------------
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-                             components=(
-                                 ('EN1', ('DX', 'DY', 'DZ',)),))
+DDL_MECA = LocatedComponents(
+    phys=PHY.DEPL_R, type="ELNO", diff=True, components=(("EN1", ("DX", "DY", "DZ")),)
+)
 
-ECCONT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_C',)),)
-                           )
+ECCONT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_C",)),)
+)
 
-ECFROT = LocatedComponents(phys=PHY.CONT_R, type="ELNO", diff=True,
-                           components=(
-                               ('EN1', ('COEF_F',)),)
-                           )
+ECFROT = LocatedComponents(
+    phys=PHY.CONT_R, type="ELNO", diff=True, components=(("EN1", ("COEF_F",)),)
+)
 
 # ------------------------------------------------------------
 
 
 class CNT33D(Element):
     """
-      THE CNT33D CLASS ELEMENT :
-      DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE CNT33D CLASS ELEMENT :
+    DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.TRIA3
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3)),)
     calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
-                      ),
-
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )
+
 
 # ------------------------------------------------------------
 
 
 class CNT63D(CNT33D):
     """
-      THE CNT63D CLASS ELEMENT :
-      DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE CNT63D CLASS ELEMENT :
+    DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.TRIA6
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4, 5, 6)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6)),)
     calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
-                      ),
-
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )
+
 
 # ------------------------------------------------------------
 
 
 class CNQ93D(CNT33D):
     """
-      THE CNQ93D CLASS ELEMENT :
-      DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE CNQ93D CLASS ELEMENT :
+    DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.QUAD9
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4, 5, 6, 7, 8, 9)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8, 9)),)
     calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
-                      ),
-
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )
 
 
 # ------------------------------------------------------------
 class CNQ83D(CNT33D):
     """
-      THE CNQ93D CLASS ELEMENT :
-      DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE CNQ93D CLASS ELEMENT :
+    DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.QUAD8
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4, 5, 6, 7, 8)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4, 5, 6, 7, 8)),)
     calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
-                      ),
-
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )
 
 
 # ------------------------------------------------------------
 class CNQ43D(CNT33D):
     """
-      THE CNQ93D CLASS ELEMENT :
-      DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
-          Slave frictionless Contact Element in 3D : elementary treatments
-      Local Numerotation :
+    THE CNQ93D CLASS ELEMENT :
+    DEFI_CONTACT / NITSCHE / SURFACE-TO-SURFACE
+        Slave frictionless Contact Element in 3D : elementary treatments
+    Local Numerotation :
 
-      Input parameters :
+    Input parameters :
 
-      Output parameters :
+    Output parameters :
     """
+
     meshType = MT.QUAD4
-    nodes = (
-        SetOfNodes('EN1', (1, 2, 3, 4,)),
-    )
+    nodes = (SetOfNodes("EN1", (1, 2, 3, 4)),)
     calculs = (
-
-        OP.EXISTE_DDL(te=99,
-                      para_out=((OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
-                                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
-                                (OP.EXISTE_DDL.PCFROT_R, ECFROT),),
-                      ),
-
+        OP.EXISTE_DDL(
+            te=99,
+            para_out=(
+                (OP.EXISTE_DDL.PDEPL_R, DDL_MECA),
+                (OP.EXISTE_DDL.PCCONT_R, ECCONT),
+                (OP.EXISTE_DDL.PCFROT_R, ECFROT),
+            ),
+        ),
     )

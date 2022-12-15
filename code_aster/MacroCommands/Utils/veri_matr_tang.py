@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ class TANGENT:
         prec_zero : en-dessous de prec_zero, on ne compare pas les matrices
     """
 
-    def __init__(self, ddl='', prec_zero=1.E-12):
+    def __init__(self, ddl="", prec_zero=1.0e-12):
         """
         ddl       : chaine de caracteres designant les ddl (ex: 'UUP')
         prec_zero : en-dessous de prec_zero, on ne compare pas les matrices
@@ -54,23 +54,22 @@ class TANGENT:
 
     def Load(self, nom_fichier):
         """lit la matrice depuis un fichier"""
-        with open(nom_fichier, 'rb') as pick:
+        with open(nom_fichier, "rb") as pick:
             self.__dict__ = pickle.load(pick)
 
     def Save(self, nom_fichier):
         """sauvegarde la matrice dans un fichier"""
-        with open(nom_fichier, 'wb') as pick:
+        with open(nom_fichier, "wb") as pick:
             pickle.dump(self.__dict__, pick)
 
-    def Aster(self, suffixe='MATA'):
+    def Aster(self, suffixe="MATA"):
         """lit la matrice depuis l'espace Aster.
         nom : suffixe de l'objet jeveux
         """
-        nom_obj_jeveux = ('PYTHON.TANGENT.' + suffixe).ljust(24)
+        nom_obj_jeveux = ("PYTHON.TANGENT." + suffixe).ljust(24)
         obj_jeveux = aster.getvectjev(nom_obj_jeveux)
         if not obj_jeveux:
-            raise RuntimeError('TANGENT : OBJET JEVEUX DE SUFFIXE ' +
-                               suffixe + ' INEXISTANT')
+            raise RuntimeError("TANGENT : OBJET JEVEUX DE SUFFIXE " + suffixe + " INEXISTANT")
         self.Matrice(obj_jeveux)
 
     def Eigen(self):
@@ -91,13 +90,12 @@ class TANGENT:
         self.mat = matrice
         self.nddl = nddl
         if not self.ddl:
-            self.ddl = 'D' * nddl
+            self.ddl = "D" * nddl
         elif len(self.ddl) != nddl:
-            raise RuntimeError(
-                'Nommage des DDL incoherents avec la taille de la matrice')
+            raise RuntimeError("Nommage des DDL incoherents avec la taille de la matrice")
         self.norme = NP.trace(NP.dot(NP.transpose(self.mat), self.mat))
 
-    def Difference(self, matp, affi_ok=0, prec_diff=1.E-4):
+    def Difference(self, matp, affi_ok=0, prec_diff=1.0e-4):
         """Comparaison relative de la matrice tangente avec une autre matrice
         matp      : matrice avec laquelle self.mat est comparee
         affi_ok   : si oui, on affiche egalement les valeurs qui collent bien
@@ -112,16 +110,16 @@ class TANGENT:
         elif type(matp) is NP.ndarray:
             pass
         else:
-            raise RuntimeError('1er argument doit etre une matrice (tuple,liste,TANGENT '
-                               'ou tableau numpy)')
+            raise RuntimeError(
+                "1er argument doit etre une matrice (tuple,liste,TANGENT " "ou tableau numpy)"
+            )
         matp = NP.ravel(matp)
         matp = matp.astype(float)
         if len(matp) != self.nddl * self.nddl:
-            raise RuntimeError('Matrices de tailles differentes')
+            raise RuntimeError("Matrices de tailles differentes")
         matp.shape = (self.nddl, self.nddl)
         refe = NP.abs(self.mat) + NP.abs(matp)
-        diff = NP.where(refe > self.prec_zero,
-                        NP.abs(self.mat - matp) / (refe + self.prec_zero), 0)
+        diff = NP.where(refe > self.prec_zero, NP.abs(self.mat - matp) / (refe + self.prec_zero), 0)
         nook = (diff.ravel() > prec_diff).nonzero()[0]
         ok = (diff.ravel() <= prec_diff).nonzero()[0]
         if affi_ok:
@@ -142,22 +140,24 @@ class TANGENT:
                 liste_matt.append(self.mat[i, j])
                 liste_matp.append(matp[i, j])
                 if NP.abs(self.mat[i, j]) + NP.abs(matp[i, j]) >= self.prec_zero:
-                    liste_diff.append(NP.abs(self.mat[i, j] - matp[i, j]) /
-                                     (NP.abs(self.mat[i, j]) + NP.abs(matp[i, j]) + self.prec_zero))
+                    liste_diff.append(
+                        NP.abs(self.mat[i, j] - matp[i, j])
+                        / (NP.abs(self.mat[i, j]) + NP.abs(matp[i, j]) + self.prec_zero)
+                    )
                 else:
                     liste_diff.append(0.0)
         if self.norme > self.prec_zero:
-            ecart = (self.mat - matp) / 2.
+            ecart = (self.mat - matp) / 2.0
             nor_ecart = NP.trace(NP.dot(NP.transpose(ecart), ecart))
             nor_diff = nor_ecart / self.norme
         else:
-            nor_diff = 0.
-        max_diff = 0.
+            nor_diff = 0.0
+        max_diff = 0.0
         if len(liste_diff) > 0:
             max_diff = NP.max(liste_diff)
         return liste_i, liste_j, liste_matt, liste_matp, liste_diff, nor_diff, max_diff
 
-    def Symetrie(self, prec_diff=1.E-4):
+    def Symetrie(self, prec_diff=1.0e-4):
         """Vérification que la matrice tangente est symétrique
         On retourne la norme relative de l'ecart a la symetrie : || (A-At)/2|| / ||A||
         On affiche les termes qui s'ecartent de la symetrie
@@ -177,46 +177,53 @@ def veri_matr_tang_ops(self, **args):
     # Le concept sortant (de type fonction) est nomme ROTGD dans
     # le contexte de la macro
 
-    prec_zero = args['PREC_ZERO']
+    prec_zero = args["PREC_ZERO"]
     tgt = TANGENT(prec_zero=prec_zero)
-    tgt.Aster(suffixe='MATA')
+    tgt.Aster(suffixe="MATA")
     matp = TANGENT(prec_zero=prec_zero)
-    matp.Aster(suffixe='MATC')
-    prec_diff = args['PRECISION']
-    if args['SYMETRIE'] == 'OUI':
+    matp.Aster(suffixe="MATC")
+    prec_diff = args["PRECISION"]
+    if args["SYMETRIE"] == "OUI":
         symetgt = tgt.Symetrie(prec_diff)[-2]
         symeper = matp.Symetrie(prec_diff)[-2]
-        print('Symetrie de la matrice tangente', symetgt)
-        print('Symetrie de la matrice pr pertubation', symeper)
-    if args['DIFFERENCE'] == 'OUI':
-        liste_i, liste_j, liste_matt, liste_matp, liste_diff, nor_diff, max_diff = \
-            tgt.Difference(matp, prec_diff)
-        print('difference entre matrice tangente et matrice par pertubation : norme=', \
-            nor_diff, ' max=', max_diff)
-        TAB_MAT = CREA_TABLE(LISTE=(_F(PARA='I', LISTE_I=liste_i),
-                                    _F(PARA='J', LISTE_I=liste_j),
-                             _F(PARA='MAT_TGTE',
-                                     LISTE_R=liste_matt),
-            _F(PARA='MAT_PERT',
-               LISTE_R=liste_matp),
-            _F(PARA='MAT_DIFF', LISTE_R=liste_diff),))
+        print("Symetrie de la matrice tangente", symetgt)
+        print("Symetrie de la matrice pr pertubation", symeper)
+    if args["DIFFERENCE"] == "OUI":
+        liste_i, liste_j, liste_matt, liste_matp, liste_diff, nor_diff, max_diff = tgt.Difference(
+            matp, prec_diff
+        )
+        print(
+            "difference entre matrice tangente et matrice par pertubation : norme=",
+            nor_diff,
+            " max=",
+            max_diff,
+        )
+        TAB_MAT = CREA_TABLE(
+            LISTE=(
+                _F(PARA="I", LISTE_I=liste_i),
+                _F(PARA="J", LISTE_I=liste_j),
+                _F(PARA="MAT_TGTE", LISTE_R=liste_matt),
+                _F(PARA="MAT_PERT", LISTE_R=liste_matp),
+                _F(PARA="MAT_DIFF", LISTE_R=liste_diff),
+            )
+        )
     return TAB_MAT
 
 
 VERI_MATR_TANG_cata = MACRO(
-    nom="VERI_MATR_TANG", op=None, sd_prod=table_sdaster,
-    docu="", reentrant='n',
+    nom="VERI_MATR_TANG",
+    op=None,
+    sd_prod=table_sdaster,
+    docu="",
+    reentrant="n",
     fr="verification de la matrice tangente : symetrie et difference "
     "par rapport a la matrice calculee par perturbation",
-         regles=(AU_MOINS_UN('SYMETRIE', 'DIFFERENCE')),
-         SYMETRIE = SIMP(
-             statut='f', typ='TXM', defaut="NON", into=("OUI", "NON")),
-         DIFFERENCE=SIMP(
-             statut='f', typ='TXM', defaut="OUI", into=("OUI", "NON")),
-         PRECISION=SIMP(statut='f', typ='R', defaut=1.E-4),
-         PREC_ZERO=SIMP(statut='f', typ='R', defaut=1.E-12),
+    regles=(AU_MOINS_UN("SYMETRIE", "DIFFERENCE")),
+    SYMETRIE=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
+    DIFFERENCE=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+    PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-4),
+    PREC_ZERO=SIMP(statut="f", typ="R", defaut=1.0e-12),
 )
 
 
-VERI_MATR_TANG = UserMacro("VERI_MATR_TANG", VERI_MATR_TANG_cata,
-                           veri_matr_tang_ops)
+VERI_MATR_TANG = UserMacro("VERI_MATR_TANG", VERI_MATR_TANG_cata, veri_matr_tang_ops)

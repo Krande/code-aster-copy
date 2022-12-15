@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,17 +20,18 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    97 : _("""
+    97: _(
+        """
  La loi de comportement ELAS_HYPER ne peut pas être utilisée avec le modèle %(k1)s.
  Modèles disponibles: 3D, 3D_SI, C_PLAN, D_PLAN
-"""),
-
-    98 : _("""
+"""
+    ),
+    98: _(
+        """
  Le coefficient de Poisson ne permet pas de calculer le module de compressibilité car il provoquerait une division par zéro.
  Si vous voulez un matériau quasi incompressible:
   - Renseignez directement le module de compressibilité (paramètre K dans DEFI_MATERIAU/ELAS_HYPER)
   - Choisissez un coefficient de Poisson proche de 0.5 mais pas strictement égal (par exemple 0.499)
-"""),
-
+"""
+    ),
 }

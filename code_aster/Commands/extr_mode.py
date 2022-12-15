@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class ExtrMode(ExecuteCommand):
-    """EXTR_MODE command
-    """
+    """EXTR_MODE command"""
+
     command_name = "EXTR_MODE"
 
     def create_result(self, keywords):
@@ -34,7 +34,7 @@ class ExtrMode(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        mode = keywords['FILTRE_MODE'][0]['MODE']
+        mode = keywords["FILTRE_MODE"][0]["MODE"]
         if mode.getType() == "MODE_MECA":
             self._result = ModeResult()
         else:
@@ -46,7 +46,7 @@ class ExtrMode(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        mode = keywords['FILTRE_MODE'][0]['MODE']
+        mode = keywords["FILTRE_MODE"][0]["MODE"]
         try:
             self._result.setDOFNumbering(mode.getDOFNumbering())
         except:
@@ -59,5 +59,6 @@ class ExtrMode(ExecuteCommand):
             stiffMat = mode.getStiffnessMatrix()
             if stiffMat is not None:
                 self._result.setStiffnessMatrix(stiffMat)
+
 
 EXTR_MODE = ExtrMode.run

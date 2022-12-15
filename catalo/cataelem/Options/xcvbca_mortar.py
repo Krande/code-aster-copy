@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,69 +20,70 @@
 # person_in_charge: samuel.geniaut at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PAINTER = InputParameter(phys=PHY.N1360R)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R)
+PCFACE = InputParameter(phys=PHY.N720_I)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I)
+PLONGCO = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PBASECO = InputParameter(phys=PHY.N2448R)
 
 
-PBASECO  = InputParameter(phys=PHY.N2448R)
-
-
-PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
+PCOHESO = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
 
 # Attention : les champs PINDCOO, PINDMEM, PINDCOT et PCOHESO
 # sont des champs a sous-points
 # pour les elements de contact XFEM (xhc,xhtc,xtc)
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment=""" UTILE POUR HM-XFEM """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment=""" UTILE POUR HM-XFEM """)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
+PSTANO = InputParameter(phys=PHY.N120_I, comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
+PLSN = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I,
-comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
+PFISNO = InputParameter(
+    phys=PHY.NEUT_I, comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """
+)
 
 
-PHEA_FA  = InputParameter(phys=PHY.N240_I,
-comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """)
+PHEA_FA = InputParameter(
+    phys=PHY.N240_I,
+    comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """,
+)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I,
-comment="""  XFEM - IDENTIFIANT HEAVISIDE AU NOEUD XFEM  """)
+PHEA_NO = InputParameter(
+    phys=PHY.N120_I, comment="""  XFEM - IDENTIFIANT HEAVISIDE AU NOEUD XFEM  """
+)
 
 
 XCVBCA_MORTAR = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
-           PCFACE,
+        PAINTER,
+        PBASECO,
+        PCFACE,
         SP.PCOHES,
         SP.PDEPL_P,
         SP.PDEPL_M,
@@ -90,27 +91,20 @@ XCVBCA_MORTAR = Option(
         SP.PGEOMER,
         SP.PGLISS,
         SP.PINDCOI,
-           PLONGCO,
-           PLST,
-           PLSN,
-           PCOMPOR,
-           PSTANO,
-           PFISNO,
+        PLONGCO,
+        PLST,
+        PLSN,
+        PCOMPOR,
+        PSTANO,
+        PFISNO,
         SP.PHEAVNO,
         SP.PFISCO,
-           PHEA_FA,
-           PHEA_NO,
+        PHEA_FA,
+        PHEA_NO,
         SP.PMATERC,
         SP.PMEMCON,
-           PPINTER,
+        PPINTER,
     ),
-    para_out=(
-           PCOHESO,
-        SP.PINCOCA,
-        SP.PINDCOO,
-        SP.PINDMEM,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.LXFEM,'OUI'),(AT.CONTACT,'OUI'),)),
-    ),
+    para_out=(PCOHESO, SP.PINCOCA, SP.PINDCOO, SP.PINDMEM),
+    condition=(CondCalcul("+", ((AT.LXFEM, "OUI"), (AT.CONTACT, "OUI"))),),
 )

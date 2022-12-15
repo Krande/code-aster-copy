@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,26 +22,25 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'BARCELONE',
-    lc_type        = ('MECANIQUE_THM',),
-    doc            =   """Relation décrivant le comportement mécanique élasto-plastique des sols non saturés
+    nom="BARCELONE",
+    lc_type=("MECANIQUE_THM",),
+    doc="""Relation décrivant le comportement mécanique élasto-plastique des sols non saturés
             couplé au comportement hydraulique (Cf. [R7.01.14] pour plus de détail).
             Ce modèle se ramène au modèle de Cam_Clay dans le cas saturé. Deux critères interviennent :
             un critère de plasticité mécanique (celui de Cam_Clay)
             et un critère hydrique contrôlé par la succion (ou pression capillaire).
-            Ce modèle doit être utilisé dans des relations KIT_HHM ou KIT_THHM."""              ,
-    num_lc         = 0,
-    nb_vari        = 5,
-    nom_vari       = ('PCR','INDIPLAS','SEUILHYD','INDIHYDR','COHESION',
-        ),
-    mc_mater       = ('ELAS','CAM_CLAY','BARCELONE',),
-    modelisation   = ('KIT_HHM','KIT_THHM',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('NEWTON_1D',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+            Ce modèle doit être utilisé dans des relations KIT_HHM ou KIT_THHM.""",
+    num_lc=0,
+    nb_vari=5,
+    nom_vari=("PCR", "INDIPLAS", "SEUILHYD", "INDIHYDR", "COHESION"),
+    mc_mater=("ELAS", "CAM_CLAY", "BARCELONE"),
+    modelisation=("KIT_HHM", "KIT_THHM"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("NEWTON_1D",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,25 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=interspectre,
-                    fr=tr("Génération de la fonction temporelle à partir d une matrice interspectrale"),
-                    reentrant='n',
-         INTE_SPEC       =SIMP(statut='o',typ=interspectre),
-         NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
-         INTERPOL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),
-         b_interpol_oui    =BLOC(condition = """equal_to("INTERPOL", 'OUI') """,fr=tr("Parametres cas interpolation autorisee"),
-           DUREE_TIRAGE    =SIMP(statut='f',typ='R' ),
-           FREQ_INIT       =SIMP(statut='f',typ='R' ),
-           FREQ_FIN        =SIMP(statut='f',typ='R' ),
-             ),
-         NB_POIN         =SIMP(statut='f',typ='I'),
-         NB_TIRAGE       =SIMP(statut='f',typ='I',defaut= 1 ),
-         INIT_ALEA       =SIMP(statut='f',typ='I'),
-         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-         TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
+GENE_FONC_ALEA = OPER(
+    nom="GENE_FONC_ALEA",
+    op=118,
+    sd_prod=interspectre,
+    fr=tr("Génération de la fonction temporelle à partir d une matrice interspectrale"),
+    reentrant="n",
+    INTE_SPEC=SIMP(statut="o", typ=interspectre),
+    NUME_VITE_FLUI=SIMP(statut="f", typ="I"),
+    INTERPOL=SIMP(statut="f", typ="TXM", defaut="OUI", into=("NON", "OUI")),
+    b_interpol_oui=BLOC(
+        condition="""equal_to("INTERPOL", 'OUI') """,
+        fr=tr("Parametres cas interpolation autorisee"),
+        DUREE_TIRAGE=SIMP(statut="f", typ="R"),
+        FREQ_INIT=SIMP(statut="f", typ="R"),
+        FREQ_FIN=SIMP(statut="f", typ="R"),
+    ),
+    NB_POIN=SIMP(statut="f", typ="I"),
+    NB_TIRAGE=SIMP(statut="f", typ="I", defaut=1),
+    INIT_ALEA=SIMP(statut="f", typ="I"),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

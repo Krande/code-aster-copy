@@ -787,7 +787,7 @@ class JeveuxVector {
         return *this;
     };
 
-    const JeveuxVectorTypePtr &operator->( void ) const {
+    const JeveuxVectorTypePtr &operator->(void)const {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _jeveuxVectorPtr );
 #endif
@@ -795,7 +795,7 @@ class JeveuxVector {
         return _jeveuxVectorPtr;
     };
 
-    JeveuxVectorClass< ValueType > &operator*( void ) const {
+    JeveuxVectorClass< ValueType > &operator*(void)const {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _jeveuxVectorPtr );
 #endif

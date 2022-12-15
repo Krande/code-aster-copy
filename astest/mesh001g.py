@@ -27,8 +27,12 @@ test = code_aster.TestCase()
 
 
 def printRank(mesh, filename):
-    fon = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=mesh,
-                     AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=-1.0))
+    fon = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_TEMP_R",
+        MAILLAGE=mesh,
+        AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=-1.0),
+    )
     global_num = mesh.getNodes(False)
     global_num = mesh.getNodesRank()
     assert len(global_num) == fon.size()
@@ -39,8 +43,12 @@ def printRank(mesh, filename):
 
 
 def printNumGlob(mesh, filename):
-    fon = CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=mesh,
-                     AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=-1.0))
+    fon = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_TEMP_R",
+        MAILLAGE=mesh,
+        AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=-1.0),
+    )
     global_num = mesh.getNodes(False)
     assert len(global_num) == fon.size()
     fon.updateValuePointers()
@@ -50,98 +58,81 @@ def printNumGlob(mesh, filename):
 
 
 def transfo(mesh):
-    mesh_line = CREA_MAILLAGE(MAILLAGE=mesh,
-                              QUAD_LINE=_F(TOUT='OUI',),
-                              INFO=1,)
+    mesh_line = CREA_MAILLAGE(MAILLAGE=mesh, QUAD_LINE=_F(TOUT="OUI"), INFO=1)
 
-    mesh_raf = CREA_MAILLAGE(MAILLAGE=mesh_line,
-                             RAFFINEMENT=_F(TOUT='OUI', NIVEAU=2),
-                             INFO=1,)
+    mesh_raf = CREA_MAILLAGE(MAILLAGE=mesh_line, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=2), INFO=1)
 
-    mesh_quad = CREA_MAILLAGE(MAILLAGE=mesh_raf,
-                              LINE_QUAD=_F(TOUT='OUI',),
-                              INFO=1,)
+    mesh_quad = CREA_MAILLAGE(MAILLAGE=mesh_raf, LINE_QUAD=_F(TOUT="OUI"), INFO=1)
 
     return mesh_quad
 
 
 def computation(mesh, solv):
-    mesh = MODI_MAILLAGE(reuse=mesh,
-                         MAILLAGE=mesh,
-                         ORIE_PEAU=_F(GROUP_MA_PEAU='L2',),)
+    mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU="L2"))
 
-    MODE = AFFE_MODELE(MAILLAGE=mesh,
-                       AFFE=_F(TOUT='OUI',
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='C_PLAN',),)
-
-    ACIER = DEFI_MATERIAU(ELAS=_F(
-        E=2.000000000E+12, NU=0.3E+00,
-        RHO=0.000000000E+03, ALPHA=0.000000000E+00)
+    MODE = AFFE_MODELE(
+        MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")
     )
 
-    MATE = AFFE_MATERIAU(MAILLAGE=mesh,
-                         AFFE=_F(TOUT='OUI',
-                                 MATER=ACIER,),)
+    ACIER = DEFI_MATERIAU(
+        ELAS=_F(E=2.000000000e12, NU=0.3e00, RHO=0.000000000e03, ALPHA=0.000000000e00)
+    )
 
-    R = FORMULE(VALE='(X-1.5)*(X-1.5) + (Y-0.5)*(Y-0.5)', NOM_PARA=['X', 'Y'],)
+    MATE = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-    DIRI = AFFE_CHAR_CINE_F(MODELE=MODE,
-                            MECA_IMPO=(_F(GROUP_MA='L1',
-                                          DX=R, DY=R,),
-                                       ),
-                            )
+    R = FORMULE(VALE="(X-1.5)*(X-1.5) + (Y-0.5)*(Y-0.5)", NOM_PARA=["X", "Y"])
 
-    CHAR = AFFE_CHAR_MECA(MODELE=MODE,
-                          PRES_REP=_F(GROUP_MA='L2',
-                                      PRES=-100.0,),)
+    DIRI = AFFE_CHAR_CINE_F(MODELE=MODE, MECA_IMPO=(_F(GROUP_MA="L1", DX=R, DY=R),))
 
-    CHXN = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
-                      NOM_CHAM='GEOMETRIE', MAILLAGE=mesh, INFO=1)
+    CHAR = AFFE_CHAR_MECA(MODELE=MODE, PRES_REP=_F(GROUP_MA="L2", PRES=-100.0))
 
-    TEMP1 = CREA_CHAMP(OPERATION='AFFE',
-                       TYPE_CHAM='NOEU_NEUT_F',
-                       MAILLAGE=mesh,
-                       AFFE=(_F(TOUT='OUI', NOM_CMP='X1', VALE_F=R),
-                             ),)
-    TEMP2 = CREA_CHAMP(OPERATION='EVAL',
-                       TYPE_CHAM='NOEU_NEUT_R',
-                       CHAM_F=TEMP1,
-                       CHAM_PARA=CHXN)
+    CHXN = CREA_CHAMP(
+        OPERATION="EXTR", TYPE_CHAM="NOEU_GEOM_R", NOM_CHAM="GEOMETRIE", MAILLAGE=mesh, INFO=1
+    )
 
-    ASSEMBLAGE(MODELE=MODE,
-               CHARGE=(CHAR,),
-               CHAR_CINE=DIRI,
-               CHAM_MATER=MATE,
-               NUME_DDL=CO("NDDL"),
-               MATR_ASSE=(_F(MATRICE=CO("MATK"), OPTION='RIGI_MECA'),))
+    TEMP1 = CREA_CHAMP(
+        OPERATION="AFFE",
+        TYPE_CHAM="NOEU_NEUT_F",
+        MAILLAGE=mesh,
+        AFFE=(_F(TOUT="OUI", NOM_CMP="X1", VALE_F=R),),
+    )
+    TEMP2 = CREA_CHAMP(OPERATION="EVAL", TYPE_CHAM="NOEU_NEUT_R", CHAM_F=TEMP1, CHAM_PARA=CHXN)
 
-    Uana = CREA_CHAMP(OPERATION='ASSE',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      NUME_DDL=NDDL,
-                      MAILLAGE=mesh, PROL_ZERO='OUI',
-                      ASSE=(_F(TOUT='OUI',
-                            CHAM_GD=TEMP2, CUMUL='OUI',
-                               NOM_CMP='X1',
-                               NOM_CMP_RESU='DX',),
-                            _F(TOUT='OUI',
-                            CHAM_GD=TEMP2, CUMUL='OUI',
-                               NOM_CMP='X1',
-                               NOM_CMP_RESU='DY',),
-                            ))
+    ASSEMBLAGE(
+        MODELE=MODE,
+        CHARGE=(CHAR,),
+        CHAR_CINE=DIRI,
+        CHAM_MATER=MATE,
+        NUME_DDL=CO("NDDL"),
+        MATR_ASSE=(_F(MATRICE=CO("MATK"), OPTION="RIGI_MECA"),),
+    )
 
-    MDEP = MATK*Uana
+    Uana = CREA_CHAMP(
+        OPERATION="ASSE",
+        TYPE_CHAM="NOEU_DEPL_R",
+        NUME_DDL=NDDL,
+        MAILLAGE=mesh,
+        PROL_ZERO="OUI",
+        ASSE=(
+            _F(TOUT="OUI", CHAM_GD=TEMP2, CUMUL="OUI", NOM_CMP="X1", NOM_CMP_RESU="DX"),
+            _F(TOUT="OUI", CHAM_GD=TEMP2, CUMUL="OUI", NOM_CMP="X1", NOM_CMP_RESU="DY"),
+        ),
+    )
 
-    CHAR = AFFE_CHAR_MECA(MODELE=MODE,
-                          VECT_ASSE=MDEP,)
+    MDEP = MATK * Uana
 
-    RESU = MECA_STATIQUE(MODELE=MODE,
-                         CHAM_MATER=MATE,
-                         OPTION='SANS',
-                         EXCIT=(_F(CHARGE=CHAR,), _F(CHARGE=DIRI,),),
-                         **solv)
+    CHAR = AFFE_CHAR_MECA(MODELE=MODE, VECT_ASSE=MDEP)
+
+    RESU = MECA_STATIQUE(
+        MODELE=MODE,
+        CHAM_MATER=MATE,
+        OPTION="SANS",
+        EXCIT=(_F(CHARGE=CHAR), _F(CHARGE=DIRI)),
+        **solv
+    )
 
     return RESU
+
 
 # test case
 
@@ -149,22 +140,24 @@ def computation(mesh, solv):
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
-mesh_p = LIRE_MAILLAGE(PARTITIONNEUR='PTSCOTCH', UNITE=20)
-mesh = LIRE_MAILLAGE(UNITE=20,)
+mesh_p = LIRE_MAILLAGE(PARTITIONNEUR="PTSCOTCH", UNITE=20)
+mesh = LIRE_MAILLAGE(UNITE=20)
 
 mesh_p2 = transfo(mesh_p)
 mesh2 = transfo(mesh)
 
-solvers = [{'SOLVEUR': {'METHODE': 'PETSC', 'RESI_RELA': 1.e-14, 'PRE_COND': 'ML'}},
-           {'SOLVEUR': {'METHODE': 'MUMPS', 'TYPE_RESOL': 'NONSYM'}},
-           {'SOLVEUR': {'METHODE': 'MUMPS'}}]
+solvers = [
+    {"SOLVEUR": {"METHODE": "PETSC", "RESI_RELA": 1.0e-14, "PRE_COND": "ML"}},
+    {"SOLVEUR": {"METHODE": "MUMPS", "TYPE_RESOL": "NONSYM"}},
+    {"SOLVEUR": {"METHODE": "MUMPS"}},
+]
 
 for solver in solvers:
     resu_p = computation(mesh_p2, solver)
     resu = computation(mesh2, solver)
 
-    depl = resu.getField('DEPL', 1)
-    depl_p = resu_p.getField('DEPL', 1)
+    depl = resu.getField("DEPL", 1)
+    depl_p = resu_p.getField("DEPL", 1)
 
     test.assertAlmostEqual(depl.norm("NORM_2"), depl_p.norm("NORM_2"))
 

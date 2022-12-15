@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,17 +19,20 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (AssemblyMatrixPressureComplex,
-                       FullHarmonicAcousticResult,
-                       FullHarmonicResult,
-                       FullTransientResult,
-                       HarmoGeneralizedResult,
-                       TransientGeneralizedResult)
+from ..Objects import (
+    AssemblyMatrixPressureComplex,
+    FullHarmonicAcousticResult,
+    FullHarmonicResult,
+    FullTransientResult,
+    HarmoGeneralizedResult,
+    TransientGeneralizedResult,
+)
 from ..Supervis import ExecuteCommand
 
 
 class VibrationDynamics(ExecuteCommand):
     """Command to solve linear vibration dynamics problem, on physical or modal bases, for harmonic or transient analysis."""
+
     command_name = "DYNA_VIBRA"
 
     def create_result(self, keywords):
@@ -73,8 +76,7 @@ class VibrationDynamics(ExecuteCommand):
         if keywords["BASE_CALCUL"] == "GENE":
             stiffnessMatrix = keywords["MATR_RIGI"]
             dofGeneNum = stiffnessMatrix.getGeneralizedDOFNumbering()
-            if isinstance(self._result, (HarmoGeneralizedResult,
-                                         TransientGeneralizedResult)):
+            if isinstance(self._result, (HarmoGeneralizedResult, TransientGeneralizedResult)):
                 self._result.setGeneralizedDOFNumbering(dofGeneNum)
             else:
                 raise Exception("Unknown result type")
@@ -86,7 +88,7 @@ class VibrationDynamics(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.resetDependencies()
-        for key in ('MATR_MASS', 'MATR_RIGI', 'MATR_AMOR'):
+        for key in ("MATR_MASS", "MATR_RIGI", "MATR_AMOR"):
             if keywords.get(key):
                 self._result.addDependency(keywords[key])
 

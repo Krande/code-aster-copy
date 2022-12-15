@@ -17,63 +17,55 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",)
-
-
-BETON=DEFI_MATERIAU(ELAS=_F(E = 1.E9,NU = 0.3,),)
-
-MATAF=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA = 'M1',
-                             MATER = BETON,)))
-
-LEMOD=AFFE_MODELE(MAILLAGE=MA,
-                  AFFE=(_F(GROUP_MA = 'M1',
-                           PHENOMENE = 'MECANIQUE',
-                           MODELISATION = 'DKT',)))
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 
-LACAR=AFFE_CARA_ELEM(MODELE=LEMOD,
-                     COQUE=(_F(GROUP_MA = 'M1',
-                               EPAIS = .2,
-                               ANGL_REP = (0.0, 0.0,),),),)
+BETON = DEFI_MATERIAU(ELAS=_F(E=1.0e9, NU=0.3))
+
+MATAF = AFFE_MATERIAU(MAILLAGE=MA, AFFE=(_F(GROUP_MA="M1", MATER=BETON)))
+
+LEMOD = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="M1", PHENOMENE="MECANIQUE", MODELISATION="DKT"))
+)
 
 
-EPS_CART=CREA_CHAMP(TYPE_CHAM='CART_EPSI_R',
-                  OPERATION='AFFE',
-                  MODELE=LEMOD,
-                  AFFE=_F(TOUT='OUI',
-                          NOM_CMP=('EXX','EYY','EXY','KXX','KYY','KXY'),
-                          VALE=(1.E-3,2.E-3,3.E-3,4.E-3,5.E-3,6.E-3,),),)
+LACAR = AFFE_CARA_ELEM(MODELE=LEMOD, COQUE=(_F(GROUP_MA="M1", EPAIS=0.2, ANGL_REP=(0.0, 0.0)),))
 
 
+EPS_CART = CREA_CHAMP(
+    TYPE_CHAM="CART_EPSI_R",
+    OPERATION="AFFE",
+    MODELE=LEMOD,
+    AFFE=_F(
+        TOUT="OUI",
+        NOM_CMP=("EXX", "EYY", "EXY", "KXX", "KYY", "KXY"),
+        VALE=(1.0e-3, 2.0e-3, 3.0e-3, 4.0e-3, 5.0e-3, 6.0e-3),
+    ),
+)
 
-ZCHM=AFFE_CHAR_MECA(MODELE=LEMOD,
-                    DDL_IMPO=(_F(GROUP_NO = ('N1',),
-                                 DX = 0.,
-                                 DY=0., DZ = 0.,
-                                 ),
-                              _F(GROUP_NO = ('N2','N3',),
-                                 DZ = 0.,
-                                 ),
-                              _F(GROUP_NO = ('N4'),
-                                 DX = 0.,
-                                 ),
-                             ),
-                    PRE_EPSI = (_F(
-                                  #GROUP_MA = 'M1',
-                                  #EXX     = 1.E-3,
-                                  #EYY     = 2.E-3,
-                                  #EXY     = 3.E-3,
-                                  #KXX     = 4.E-3,
-                                  #KYY     = 5.E-3,
-                                  #KXY     = 6.E-3,
-                                  EPSI=EPS_CART,
-                                  ),
-                               ),
 
-            )
+ZCHM = AFFE_CHAR_MECA(
+    MODELE=LEMOD,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N1",), DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO=("N2", "N3"), DZ=0.0),
+        _F(GROUP_NO=("N4"), DX=0.0),
+    ),
+    PRE_EPSI=(
+        _F(
+            # GROUP_MA = 'M1',
+            # EXX     = 1.E-3,
+            # EYY     = 2.E-3,
+            # EXY     = 3.E-3,
+            # KXX     = 4.E-3,
+            # KYY     = 5.E-3,
+            # KXY     = 6.E-3,
+            EPSI=EPS_CART
+        ),
+    ),
+)
 #
 # ----------------------------------------------
 # CALCUL
@@ -81,252 +73,253 @@ ZCHM=AFFE_CHAR_MECA(MODELE=LEMOD,
 #
 
 
-ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
-             INTERVALLE=_F( JUSQU_A = 1.0,  NOMBRE = 1, )
-           )
+ZLIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-LEDEP=STAT_NON_LINE(MODELE=LEMOD,
-                    CHAM_MATER=MATAF,
-                    CARA_ELEM=LACAR,
-                    EXCIT=_F(CHARGE = ZCHM,),
-                    COMPORTEMENT=_F(RELATION = 'ELAS',),
-                    INCREMENT=_F(LIST_INST = ZLIST,),
-                   )
+LEDEP = STAT_NON_LINE(
+    MODELE=LEMOD,
+    CHAM_MATER=MATAF,
+    CARA_ELEM=LACAR,
+    EXCIT=_F(CHARGE=ZCHM),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=ZLIST),
+)
 
 
-LEDEP=CALC_CHAMP(reuse =LEDEP,
-                 RESULTAT=LEDEP,
-                 DEFORMATION=('DEGE_ELGA'),
-                 )
+LEDEP = CALC_CHAMP(reuse=LEDEP, RESULTAT=LEDEP, DEFORMATION=("DEGE_ELGA"))
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=LEDEP, INST = 1.0, NOM_CHAM=('DEGE_ELGA')))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=LEDEP, INST=1.0, NOM_CHAM=("DEGE_ELGA")))
 
-TEST_RESU(RESU=(_F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EXX',
-                   RESULTAT=LEDEP,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=1E-3,
-                   VALE_REFE=1E-3,),
-                _F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EYY',
-                   RESULTAT=LEDEP,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=2E-3,
-                   VALE_REFE=2E-3,),
-                _F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EXY',
-                   RESULTAT=LEDEP,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=3E-3,
-                   VALE_REFE=3E-3,),
-                _F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='KXX',
-                   RESULTAT=LEDEP,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=4E-3,
-                   VALE_REFE=4E-3,),
-                _F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='KYY',
-                   RESULTAT=LEDEP,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=5E-3,
-                   VALE_REFE=5E-3,),
-                _F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='KXY',
-                   RESULTAT=LEDEP,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=6E-3,
-                   VALE_REFE=6E-3,),
-               ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EXX",
+            RESULTAT=LEDEP,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=1e-3,
+            VALE_REFE=1e-3,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EYY",
+            RESULTAT=LEDEP,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=2e-3,
+            VALE_REFE=2e-3,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EXY",
+            RESULTAT=LEDEP,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=3e-3,
+            VALE_REFE=3e-3,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="KXX",
+            RESULTAT=LEDEP,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=4e-3,
+            VALE_REFE=4e-3,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="KYY",
+            RESULTAT=LEDEP,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=5e-3,
+            VALE_REFE=5e-3,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="KXY",
+            RESULTAT=LEDEP,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=6e-3,
+            VALE_REFE=6e-3,
+        ),
+    )
+)
 
 # Validation de la prise en compte d'un champ avec valeurs différentes
 # selon les points de Gauss
 
 
-BLOC=AFFE_CHAR_MECA(MODELE=LEMOD,
-                    DDL_IMPO=(_F(GROUP_NO = ('N1',),
-                                 DX = 0.,
-                                 DY=0., DZ = 0.,
-                                 ),
-                              _F(GROUP_NO = ('N2','N3',),
-                                 DZ = 0.,
-                                 ),
-                              _F(GROUP_NO = ('N4'),
-                                 DX = 0.,
-                                 ),
-                             ),
-            )
+BLOC = AFFE_CHAR_MECA(
+    MODELE=LEMOD,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N1",), DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO=("N2", "N3"), DZ=0.0),
+        _F(GROUP_NO=("N4"), DX=0.0),
+    ),
+)
 
-TRAC=AFFE_CHAR_MECA(MODELE=LEMOD,
-                    FORCE_NODALE=(
-                              _F(GROUP_NO = ('N4'),
-                                 FY = 10000., FZ = 20000.,
-                                 ),
-                                 _F(GROUP_NO = ('N3'),
-                                 FX = 50000.,
-                                 ),
-                             ),
-            )
+TRAC = AFFE_CHAR_MECA(
+    MODELE=LEMOD,
+    FORCE_NODALE=(_F(GROUP_NO=("N4"), FY=10000.0, FZ=20000.0), _F(GROUP_NO=("N3"), FX=50000.0)),
+)
 
 
-RESINIT=STAT_NON_LINE(MODELE=LEMOD,
-                    CHAM_MATER=MATAF,
-                    CARA_ELEM=LACAR,
-                    EXCIT=(_F(CHARGE = BLOC,),
-                           _F(CHARGE = TRAC,),
-                          ),
-                    COMPORTEMENT=_F(RELATION = 'ELAS',),
-                    INCREMENT=_F(LIST_INST = ZLIST,),
-                   )
+RESINIT = STAT_NON_LINE(
+    MODELE=LEMOD,
+    CHAM_MATER=MATAF,
+    CARA_ELEM=LACAR,
+    EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=TRAC)),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=ZLIST),
+)
 
 
-RESINIT=CALC_CHAMP(reuse =RESINIT,
-                 RESULTAT=RESINIT,
-                 DEFORMATION=('DEGE_ELGA'),
-                 )
+RESINIT = CALC_CHAMP(reuse=RESINIT, RESULTAT=RESINIT, DEFORMATION=("DEGE_ELGA"))
 
-IMPR_RESU(UNITE=6, FORMAT="RESULTAT",RESU=_F(RESULTAT=RESINIT, INST = 1.0,
-                                    NOM_CHAM=('DEGE_ELGA')))
+IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=RESINIT, INST=1.0, NOM_CHAM=("DEGE_ELGA")))
 
 
-TEST_RESU(RESU=(_F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   NOM_CMP='EXX',
-                   RESULTAT=RESINIT,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=-5.68826360903108E-05,),
-                _F(GROUP_MA='M1',
-                   POINT = 3,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   NOM_CMP='EXX',
-                   RESULTAT=RESINIT,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=5.26882636090311E-04,),
-                _F(GROUP_MA='M1',
-                   POINT = 2,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   NOM_CMP='EXY',
-                   RESULTAT=RESINIT,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=1.75129581654186E-04,),
-                 _F(GROUP_MA='M1',
-                   POINT = 3,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   NOM_CMP='EXY',
-                   RESULTAT=RESINIT,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=1.16753054436124E-04,),
-               ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            NOM_CMP="EXX",
+            RESULTAT=RESINIT,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=-5.68826360903108e-05,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=3,
+            CRITERE="RELATIF",
+            INST=1.0,
+            NOM_CMP="EXX",
+            RESULTAT=RESINIT,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=5.26882636090311e-04,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            CRITERE="RELATIF",
+            INST=1.0,
+            NOM_CMP="EXY",
+            RESULTAT=RESINIT,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=1.75129581654186e-04,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=3,
+            CRITERE="RELATIF",
+            INST=1.0,
+            NOM_CMP="EXY",
+            RESULTAT=RESINIT,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=1.16753054436124e-04,
+        ),
+    )
+)
 
 
-
-CH=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
-               OPERATION='EXTR',
-               RESULTAT=RESINIT,
-               NUME_ORDRE=1,
-               NOM_CHAM='DEGE_ELGA',)
+CH = CREA_CHAMP(
+    TYPE_CHAM="ELGA_EPSI_R", OPERATION="EXTR", RESULTAT=RESINIT, NUME_ORDRE=1, NOM_CHAM="DEGE_ELGA"
+)
 
 
-PRE_EPSI=AFFE_CHAR_MECA(MODELE=LEMOD,
-                        PRE_EPSI = _F(
-                                  EPSI=CH,
-                                  )
-
-            )
+PRE_EPSI = AFFE_CHAR_MECA(MODELE=LEMOD, PRE_EPSI=_F(EPSI=CH))
 
 
-RESU=STAT_NON_LINE(MODELE=LEMOD,
-                    CHAM_MATER=MATAF,
-                    CARA_ELEM=LACAR,
-                    EXCIT=(_F(CHARGE = BLOC,),
-                           _F(CHARGE = PRE_EPSI,),
-                          ),
-                    COMPORTEMENT=_F(RELATION = 'ELAS',),
-                    INCREMENT=_F(LIST_INST = ZLIST,),
-                   )
+RESU = STAT_NON_LINE(
+    MODELE=LEMOD,
+    CHAM_MATER=MATAF,
+    CARA_ELEM=LACAR,
+    EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=PRE_EPSI)),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=ZLIST),
+)
 
-RESU=CALC_CHAMP(reuse =RESU,
-                 RESULTAT=RESU,
-                 DEFORMATION=('DEGE_ELGA'),
-                 )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, DEFORMATION=("DEGE_ELGA"))
 
-IMPR_RESU(UNITE=6, FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU, INST = 1.0,
-                                    NOM_CHAM=('DEGE_ELGA')))
+IMPR_RESU(UNITE=6, FORMAT="RESULTAT", RESU=_F(RESULTAT=RESU, INST=1.0, NOM_CHAM=("DEGE_ELGA")))
 
 
-TEST_RESU(RESU=(_F(GROUP_MA='M1',
-                   POINT = 1,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EXX',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=-5.68826360903108E-05,
-                   VALE_REFE=-5.68826360903108E-05,),
-                _F(GROUP_MA='M1',
-                   POINT = 3,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EXX',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=5.26882636090311E-04,
-                   VALE_REFE=5.26882636090311E-04,),
-                _F(GROUP_MA='M1',
-                   POINT = 2,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EXY',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=1.75129581654186E-04,
-                   VALE_REFE=1.75129581654186E-04,),
-                 _F(GROUP_MA='M1',
-                   POINT = 3,
-                   CRITERE='RELATIF',
-                   INST = 1.0,
-                   REFERENCE='ANALYTIQUE',
-                   NOM_CMP='EXY',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEGE_ELGA',
-                   VALE_CALC=1.16753054436124E-04,
-                   VALE_REFE=1.16753054436124E-04,),
-               ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_MA="M1",
+            POINT=1,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EXX",
+            RESULTAT=RESU,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=-5.68826360903108e-05,
+            VALE_REFE=-5.68826360903108e-05,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=3,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EXX",
+            RESULTAT=RESU,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=5.26882636090311e-04,
+            VALE_REFE=5.26882636090311e-04,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=2,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EXY",
+            RESULTAT=RESU,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=1.75129581654186e-04,
+            VALE_REFE=1.75129581654186e-04,
+        ),
+        _F(
+            GROUP_MA="M1",
+            POINT=3,
+            CRITERE="RELATIF",
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            NOM_CMP="EXY",
+            RESULTAT=RESU,
+            NOM_CHAM="DEGE_ELGA",
+            VALE_CALC=1.16753054436124e-04,
+            VALE_REFE=1.16753054436124e-04,
+        ),
+    )
+)
 
 
 FIN()

@@ -22,286 +22,258 @@
 # PROPAGATION, REFLEXION ET ABSORPTION D'UNE ONDE PLANE DANS UN MASSIF
 # ELASTIQUE MODELISE SOUS LA FORME D'UNE COLONNE 1D.
 # CAS 3D : MAILLAGE QUADRATIQUE QUADRANGLE
-#=======================================================================
+# =======================================================================
 import numpy as N
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
-                       _F( GROUP_MA = 'FACE1'),
-                       _F( GROUP_MA = 'FACE2'),
-                       _F( GROUP_MA = 'FACE3'),
-                       _F( GROUP_MA = 'FACE4'),
-                       _F( GROUP_MA = 'FACE5'),
-                       _F( GROUP_MA = 'FACE6'),
-                       _F( GROUP_MA = 'FACE7'),
-                       _F( GROUP_MA = 'FACE8'),
-                       _F( GROUP_MA = 'FACE9'),
-                       _F( GROUP_MA = 'ABSO'),
-                       _F( GROUP_MA = 'LIBR'))
-                     )
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL))
+MAIL = DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="FACE1"),
+        _F(GROUP_MA="FACE2"),
+        _F(GROUP_MA="FACE3"),
+        _F(GROUP_MA="FACE4"),
+        _F(GROUP_MA="FACE5"),
+        _F(GROUP_MA="FACE6"),
+        _F(GROUP_MA="FACE7"),
+        _F(GROUP_MA="FACE8"),
+        _F(GROUP_MA="FACE9"),
+        _F(GROUP_MA="ABSO"),
+        _F(GROUP_MA="LIBR"),
+    ),
+)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(MAILLAGE=MAIL))
 
-MAIL = MODI_MAILLAGE(reuse=MAIL,
-                       MAILLAGE=MAIL,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU=('ABSO', ),
-                                       GROUP_MA_INTERNE=('VOLU', ),),
-                       INFO=1,)
+MAIL = MODI_MAILLAGE(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("ABSO",), GROUP_MA_INTERNE=("VOLU",)),
+    INFO=1,
+)
 
-MAT1=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48)
-                    )
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=4.44e8, RHO=1900.0, NU=0.48))
 from sdlv121a import F_FONC
+
 FONCT = F_FONC()
 
-MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
-                         _F(  GROUP_MA = 'VOLU',
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = '3D'),
-                         _F(  GROUP_MA = 'ABSO',
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = '3D_ABSO'))
-                        )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=(
+        _F(GROUP_MA="VOLU", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="ABSO", PHENOMENE="MECANIQUE", MODELISATION="3D_ABSO"),
+    ),
+)
 
-CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,AFFE=(
-                   _F(  GROUP_MA = 'VOLU',
-                          MATER = MAT1),
-                   _F(  GROUP_MA = 'ABSO',
-                          MATER = MAT1))
-                           )
+CHAMPMAT = AFFE_MATERIAU(
+    MAILLAGE=MAIL, AFFE=(_F(GROUP_MA="VOLU", MATER=MAT1), _F(GROUP_MA="ABSO", MATER=MAT1))
+)
 
-LIAISON=AFFE_CHAR_MECA(
-               MODELE=MODELE,LIAISON_UNIF=(
-              _F( GROUP_NO = 'FACE1', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE1', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE1', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE2', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE2', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE2', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE3', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE3', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE3', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE4', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE4', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE4', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE5', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE5', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE5', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE6', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE6', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE6', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE7', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE7', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE7', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE8', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE8', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE8', DDL = 'DZ'),
-              _F( GROUP_NO = 'FACE9', DDL = 'DX'),
-              _F( GROUP_NO = 'FACE9', DDL = 'DY'),
-              _F( GROUP_NO = 'FACE9', DDL = 'DZ'),
-              _F( GROUP_NO = 'ABSO', DDL = 'DX'),
-              _F( GROUP_NO = 'ABSO', DDL = 'DY'),
-              _F( GROUP_NO = 'ABSO', DDL = 'DZ'),
-              _F( GROUP_NO = 'LIBR', DDL = 'DX'),
-              _F( GROUP_NO = 'LIBR', DDL = 'DY'),
-              _F( GROUP_NO = 'LIBR', DDL = 'DZ'))
-                           )
+LIAISON = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    LIAISON_UNIF=(
+        _F(GROUP_NO="FACE1", DDL="DX"),
+        _F(GROUP_NO="FACE1", DDL="DY"),
+        _F(GROUP_NO="FACE1", DDL="DZ"),
+        _F(GROUP_NO="FACE2", DDL="DX"),
+        _F(GROUP_NO="FACE2", DDL="DY"),
+        _F(GROUP_NO="FACE2", DDL="DZ"),
+        _F(GROUP_NO="FACE3", DDL="DX"),
+        _F(GROUP_NO="FACE3", DDL="DY"),
+        _F(GROUP_NO="FACE3", DDL="DZ"),
+        _F(GROUP_NO="FACE4", DDL="DX"),
+        _F(GROUP_NO="FACE4", DDL="DY"),
+        _F(GROUP_NO="FACE4", DDL="DZ"),
+        _F(GROUP_NO="FACE5", DDL="DX"),
+        _F(GROUP_NO="FACE5", DDL="DY"),
+        _F(GROUP_NO="FACE5", DDL="DZ"),
+        _F(GROUP_NO="FACE6", DDL="DX"),
+        _F(GROUP_NO="FACE6", DDL="DY"),
+        _F(GROUP_NO="FACE6", DDL="DZ"),
+        _F(GROUP_NO="FACE7", DDL="DX"),
+        _F(GROUP_NO="FACE7", DDL="DY"),
+        _F(GROUP_NO="FACE7", DDL="DZ"),
+        _F(GROUP_NO="FACE8", DDL="DX"),
+        _F(GROUP_NO="FACE8", DDL="DY"),
+        _F(GROUP_NO="FACE8", DDL="DZ"),
+        _F(GROUP_NO="FACE9", DDL="DX"),
+        _F(GROUP_NO="FACE9", DDL="DY"),
+        _F(GROUP_NO="FACE9", DDL="DZ"),
+        _F(GROUP_NO="ABSO", DDL="DX"),
+        _F(GROUP_NO="ABSO", DDL="DY"),
+        _F(GROUP_NO="ABSO", DDL="DZ"),
+        _F(GROUP_NO="LIBR", DDL="DX"),
+        _F(GROUP_NO="LIBR", DDL="DY"),
+        _F(GROUP_NO="LIBR", DDL="DZ"),
+    ),
+)
 
-ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
+ONDE = AFFE_CHAR_MECA_F(
+    MODELE=MODELE,
+    ONDE_PLANE=_F(
+        DIRECTION=(0.0, 0.0, 1.0), TYPE_ONDE="SH", DIST=-50.0, FONC_SIGNAL=FONCT, GROUP_MA="ABSO"
+    ),
+)
 
-                ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,), TYPE_ONDE = 'SH',
-                 DIST=-50.,
-                 FONC_SIGNAL = FONCT,GROUP_MA='ABSO'))
+RIGI_ELE = CALC_MATR_ELEM(MODELE=MODELE, OPTION="RIGI_MECA", CHAM_MATER=CHAMPMAT, CHARGE=LIAISON)
 
-RIGI_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
-                              OPTION='RIGI_MECA',
-                              CHAM_MATER=CHAMPMAT,
-                              CHARGE=LIAISON
-                            )
+MASS_ELE = CALC_MATR_ELEM(MODELE=MODELE, OPTION="MASS_MECA", CHAM_MATER=CHAMPMAT, CHARGE=LIAISON)
 
-MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
-                              OPTION='MASS_MECA',
-                              CHAM_MATER=CHAMPMAT,
-                              CHARGE=LIAISON
-                            )
+AMOR_ELE = CALC_MATR_ELEM(
+    MODELE=MODELE,
+    OPTION="AMOR_MECA",
+    CHAM_MATER=CHAMPMAT,
+    CHARGE=LIAISON,
+    RIGI_MECA=RIGI_ELE,
+    MASS_MECA=MASS_ELE,
+)
 
-AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
-                              OPTION='AMOR_MECA',
-                              CHAM_MATER=CHAMPMAT,
-                              CHARGE=LIAISON,
-                              RIGI_MECA=RIGI_ELE,
-                              MASS_MECA=MASS_ELE,
-                            )
-
-VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
-                             CHAM_MATER=CHAMPMAT,
-                             CHARGE=LIAISON
-                           )
+VECT_ELE = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHAM_MATER=CHAMPMAT, CHARGE=LIAISON)
 
 
-NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE)
+NUMEDDL = NUME_DDL(MATR_RIGI=RIGI_ELE)
 
 
-#------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------
 
-RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
-                            NUME_DDL=NUMEDDL
-                          )
+RIGIDITE = ASSE_MATRICE(MATR_ELEM=RIGI_ELE, NUME_DDL=NUMEDDL)
 
-AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
-                            NUME_DDL=NUMEDDL
-                          )
+AMORT = ASSE_MATRICE(MATR_ELEM=AMOR_ELE, NUME_DDL=NUMEDDL)
 
-MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
-                         NUME_DDL=NUMEDDL
-                       )
+MASSE = ASSE_MATRICE(MATR_ELEM=MASS_ELE, NUME_DDL=NUMEDDL)
 
-VECAS=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
-                         NUME_DDL=NUMEDDL
-                       )
+VECAS = ASSE_VECTEUR(VECT_ELEM=VECT_ELE, NUME_DDL=NUMEDDL)
 
-TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.8, NOMBRE = 1000))
+TEMPLI = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.8, NOMBRE=1000))
 
-INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 1001, PAS = 1))
+INTLI = DEFI_LIST_ENTI(DEBUT=1, INTERVALLE=_F(JUSQU_A=1001, PAS=1))
 
-DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
-                        MODELE=MODELE,
-                        MATR_MASS=MASSE,
-                        MATR_RIGI=RIGIDITE,
-                        MATR_AMOR=AMORT,
-                        EXCIT=(
-                          _F(  VECT_ASSE = VECAS,
-                               COEF_MULT = 1.),
-                          _F(  CHARGE = ONDE)),
-###CDURAND###           ETAT_INIT=_F( INST_INIT = 0.),
-                        INCREMENT=_F( LIST_INST = TEMPLI),
-#                        ARCHIVAGE=_F( LIST_ARCH = INTLI),
-                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                        )
+DYNA = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="PHYS",
+    MODELE=MODELE,
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGIDITE,
+    MATR_AMOR=AMORT,
+    EXCIT=(_F(VECT_ASSE=VECAS, COEF_MULT=1.0), _F(CHARGE=ONDE)),
+    ###CDURAND###           ETAT_INIT=_F( INST_INIT = 0.),
+    INCREMENT=_F(LIST_INST=TEMPLI),
+    #                        ARCHIVAGE=_F( LIST_ARCH = INTLI),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+)
 
-DXN22=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N22',
-                         NOM_CHAM='DEPL',
-                         NOM_CMP='DX'
-                       )
+DXN22 = RECU_FONCTION(RESULTAT=DYNA, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="DX")
 
-DYN22=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N22',
-                         NOM_CHAM='DEPL',
-                         NOM_CMP='DY'
-                       )
+DYN22 = RECU_FONCTION(RESULTAT=DYNA, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="DY")
 
-DZN22=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N22',
-                         NOM_CHAM='DEPL',
-                         NOM_CMP='DZ'
-                       )
+DZN22 = RECU_FONCTION(RESULTAT=DYNA, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="DZ")
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
-                         VALE_REFE=0.0,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='ABSOLU',
-                         VALE_PARA=0.2656,
-                         FONCTION=DXN22,),
-                      _F(VALE_CALC=1.007886625706E-03,
-                         VALE_REFE=1.E-3,
-                         PRECISION=8.0E-3,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.2656,
-                         FONCTION=DYN22,),
-                      _F(VALE_CALC=9.686076244221E-04,
-                         VALE_REFE=1.E-3,
-                         PRECISION=4.0E-2,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.4384,
-                         FONCTION=DYN22,),
-                      _F(VALE_CALC=-9.101209015287E-06,
-                         VALE_REFE=0.0,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='ABSOLU',
-                         VALE_PARA=0.8,
-                         FONCTION=DYN22,),
-                      _F(VALE_CALC=7.10E-18,
-                         VALE_REFE=0.0,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='ABSOLU',
-                         VALE_PARA=0.2656,
-                         FONCTION=DZN22,),
-                      ),
-              )
+TEST_FONCTION(
+    VALEUR=(
+        _F(
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            VALE_PARA=0.2656,
+            FONCTION=DXN22,
+        ),
+        _F(
+            VALE_CALC=1.007886625706e-03,
+            VALE_REFE=1.0e-3,
+            PRECISION=8.0e-3,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            VALE_PARA=0.2656,
+            FONCTION=DYN22,
+        ),
+        _F(
+            VALE_CALC=9.686076244221e-04,
+            VALE_REFE=1.0e-3,
+            PRECISION=4.0e-2,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="RELATIF",
+            VALE_PARA=0.4384,
+            FONCTION=DYN22,
+        ),
+        _F(
+            VALE_CALC=-9.101209015287e-06,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            VALE_PARA=0.8,
+            FONCTION=DYN22,
+        ),
+        _F(
+            VALE_CALC=7.10e-18,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            VALE_PARA=0.2656,
+            FONCTION=DZN22,
+        ),
+    )
+)
 
 
-TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 0.72, NOMBRE = 450))
+TEMLI = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.72, NOMBRE=450))
 
-TEMLI2=DEFI_LIST_REEL(DEBUT=0.0016,
-        INTERVALLE=_F( JUSQU_A = 0.72, NOMBRE = 449))
+TEMLI2 = DEFI_LIST_REEL(DEBUT=0.0016, INTERVALLE=_F(JUSQU_A=0.72, NOMBRE=449))
 
-INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 451, PAS = 1))
+INLI = DEFI_LIST_ENTI(DEBUT=1, INTERVALLE=_F(JUSQU_A=451, PAS=1))
 
-DYNB=DYNA_NON_LINE(     MODELE=MODELE,
-                        CHAM_MATER=CHAMPMAT,
-                        EXCIT=(
-                          _F(  CHARGE = LIAISON),
-                          _F(  CHARGE = ONDE)),
-                        COMPORTEMENT=_F( RELATION = 'ELAS',
-                                      TOUT = 'OUI'),
-                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8),
-                        SOLVEUR=_F(  METHODE = 'LDLT',
-                                     STOP_SINGULIER = 'NON'),
-                        NEWTON=_F(  MATRICE = 'ELASTIQUE',
-                                    REAC_INCR = 0,
-                                    REAC_ITER = 0),
-                        INCREMENT=_F( LIST_INST = TEMLI),
-                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                FORMULATION='DEPLACEMENT',),
-                        )
+DYNB = DYNA_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHAMPMAT,
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=ONDE)),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8),
+    SOLVEUR=_F(METHODE="LDLT", STOP_SINGULIER="NON"),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_INCR=0, REAC_ITER=0),
+    INCREMENT=_F(LIST_INST=TEMLI),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+)
 
-DXNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   GROUP_NO='N22',
-                         NOM_CHAM='DEPL',
-                         NOM_CMP='DX'
-                       )
+DXNB22 = RECU_FONCTION(
+    LIST_INST=TEMLI2, PRECISION=1.0e-4, RESULTAT=DYNB, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="DX"
+)
 
-DYNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   GROUP_NO='N22',
-                         NOM_CHAM='DEPL',
-                         NOM_CMP='DY'
-                       )
+DYNB22 = RECU_FONCTION(
+    LIST_INST=TEMLI2, PRECISION=1.0e-4, RESULTAT=DYNB, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="DY"
+)
 
-DZNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   GROUP_NO='N22',
-                         NOM_CHAM='DEPL',
-                         NOM_CMP='DZ'
-                       )
+DZNB22 = RECU_FONCTION(
+    LIST_INST=TEMLI2, PRECISION=1.0e-4, RESULTAT=DYNB, GROUP_NO="N22", NOM_CHAM="DEPL", NOM_CMP="DZ"
+)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
-                         CRITERE='ABSOLU',
-                         VALE_PARA=0.2672,
-                         FONCTION=DXNB22,),
-                      _F(VALE_CALC=1.009252145125E-03,
-                         VALE_REFE=9.989051E-04,
-                         REFERENCE='AUTRE_ASTER',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.2672,
-                         PRECISION=1.1E-2,
-                         FONCTION=DYNB22,),
-                      _F(VALE_CALC=9.794603508685E-04,
-                         VALE_REFE=9.914943E-04,
-                         REFERENCE='AUTRE_ASTER',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.44,
-                         PRECISION=1.3E-2,
-                         FONCTION=DYNB22,),
-                      _F(VALE_CALC=-6.318881588327E-07,
-                         CRITERE='ABSOLU',
-                         VALE_PARA=0.72,
-                         FONCTION=DYNB22,),
-                      _F(VALE_CALC=1.63E-19,
-                         CRITERE='ABSOLU',
-                         VALE_PARA=0.2672,
-                         FONCTION=DZNB22,),
-                      ),
-              )
+TEST_FONCTION(
+    VALEUR=(
+        _F(VALE_CALC=0.0, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DXNB22),
+        _F(
+            VALE_CALC=1.009252145125e-03,
+            VALE_REFE=9.989051e-04,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.2672,
+            PRECISION=1.1e-2,
+            FONCTION=DYNB22,
+        ),
+        _F(
+            VALE_CALC=9.794603508685e-04,
+            VALE_REFE=9.914943e-04,
+            REFERENCE="AUTRE_ASTER",
+            CRITERE="RELATIF",
+            VALE_PARA=0.44,
+            PRECISION=1.3e-2,
+            FONCTION=DYNB22,
+        ),
+        _F(VALE_CALC=-6.318881588327e-07, CRITERE="ABSOLU", VALE_PARA=0.72, FONCTION=DYNB22),
+        _F(VALE_CALC=1.63e-19, CRITERE="ABSOLU", VALE_PARA=0.2672, FONCTION=DZNB22),
+    )
+)
 
 FIN()
 #
@@ -435,6 +407,6 @@ FIN()
 #
 #   DEFI_FICHIER(ACTION='LIBERER',
 #                UNITE=unit,)
-#FIN()
+# FIN()
 #
 #

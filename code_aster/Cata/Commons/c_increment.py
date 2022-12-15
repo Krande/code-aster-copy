@@ -23,32 +23,33 @@ from ..Language.DataStructure import list_inst, listr8_sdaster
 from ..Language.Syntax import EXCLUS, FACT, SIMP
 
 
-def C_INCREMENT(TYPE_CMD, mandatory=True) :   #COMMUN#
-#
-    assert TYPE_CMD in ('THERMIQUE','MECANIQUE',)
+def C_INCREMENT(TYPE_CMD, mandatory=True):  # COMMUN#
+    #
+    assert TYPE_CMD in ("THERMIQUE", "MECANIQUE")
     kwargs = {}
-    statut_liste_inst = ' '
+    statut_liste_inst = " "
 
-# La liste d'instants est facultative en thermique et obligatoire en mecanique
+    # La liste d'instants est facultative en thermique et obligatoire en mecanique
 
-    if TYPE_CMD in ('THERMIQUE'):
-      if mandatory:
-        statut_liste_inst = 'o'
-      else:
-        statut_liste_inst = 'f'
-    elif TYPE_CMD in ('MECANIQUE'):
-      statut_liste_inst = 'o'
+    if TYPE_CMD in ("THERMIQUE"):
+        if mandatory:
+            statut_liste_inst = "o"
+        else:
+            statut_liste_inst = "f"
+    elif TYPE_CMD in ("MECANIQUE"):
+        statut_liste_inst = "o"
 
-    kwargs['LIST_INST']         =SIMP(statut=statut_liste_inst,typ=(listr8_sdaster,list_inst))
-    kwargs['NUME_INST_INIT']    =SIMP(statut='f',typ='I')
-    kwargs['INST_INIT']         =SIMP(statut='f',typ='R')
-    kwargs['NUME_INST_FIN']     =SIMP(statut='f',typ='I')
-    kwargs['INST_FIN']          =SIMP(statut='f',typ='R')
-    kwargs['PRECISION']         =SIMP(statut='f',typ='R',defaut=1.0E-6 )
+    kwargs["LIST_INST"] = SIMP(statut=statut_liste_inst, typ=(listr8_sdaster, list_inst))
+    kwargs["NUME_INST_INIT"] = SIMP(statut="f", typ="I")
+    kwargs["INST_INIT"] = SIMP(statut="f", typ="R")
+    kwargs["NUME_INST_FIN"] = SIMP(statut="f", typ="I")
+    kwargs["INST_FIN"] = SIMP(statut="f", typ="R")
+    kwargs["PRECISION"] = SIMP(statut="f", typ="R", defaut=1.0e-6)
 
-    mcfact = FACT(statut=statut_liste_inst,
-                  regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
-                            EXCLUS('NUME_INST_FIN','INST_FIN'),),
-                  **kwargs)
+    mcfact = FACT(
+        statut=statut_liste_inst,
+        regles=(EXCLUS("NUME_INST_INIT", "INST_INIT"), EXCLUS("NUME_INST_FIN", "INST_FIN")),
+        **kwargs
+    )
 
     return mcfact

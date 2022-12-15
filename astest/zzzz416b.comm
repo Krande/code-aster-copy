@@ -16,24 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH0 = LIRE_MAILLAGE(FORMAT="MED")
 
-MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
-                   INFO         = 2,
-                   COQUE_SOLIDE = (_F(GROUP_MA      = 'PlancherTop',
-                                      GROUP_MA_SURF = 'SurfTop',
-                                      PREF_NOEUD    = 'NS',),
-                                   _F(GROUP_MA      = 'PlancherBottom',
-                                      GROUP_MA_SURF = 'SurfMiddle',
-                                      PREF_NOEUD    = 'NT',),
-                                   _F(GROUP_MA      = 'MurLeft',
-                                      GROUP_MA_SURF = 'PiedLeft',
-                                      PREF_NOEUD    = 'NU',),
-                                   _F(GROUP_MA      = 'MurRight',
-                                      GROUP_MA_SURF = 'PiedRight',
-                                      PREF_NOEUD    = 'NV',),),
-                   )
+MESH = CREA_MAILLAGE(
+    MAILLAGE=MESH0,
+    INFO=2,
+    COQUE_SOLIDE=(
+        _F(GROUP_MA="PlancherTop", GROUP_MA_SURF="SurfTop", PREF_NOEUD="NS"),
+        _F(GROUP_MA="PlancherBottom", GROUP_MA_SURF="SurfMiddle", PREF_NOEUD="NT"),
+        _F(GROUP_MA="MurLeft", GROUP_MA_SURF="PiedLeft", PREF_NOEUD="NU"),
+        _F(GROUP_MA="MurRight", GROUP_MA_SURF="PiedRight", PREF_NOEUD="NV"),
+    ),
+)
 
 FIN()

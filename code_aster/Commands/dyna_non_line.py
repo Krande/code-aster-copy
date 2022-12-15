@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,10 +21,12 @@
 
 from .stat_non_line import NonLinearStaticAnalysis
 
+
 class NonLinearDynamicAnalysis(NonLinearStaticAnalysis):
     """Command that creates :class:`~code_aster.Objects.NonLinearResult`
     for non linear dynamic analysis.
     """
+
     command_name = "DYNA_NON_LINE"
 
 

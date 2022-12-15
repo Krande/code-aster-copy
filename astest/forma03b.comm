@@ -19,79 +19,57 @@
 
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',
-),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # LECTURE DU MAILLAGE
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),)
+MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU="haut"))
 
 # AFFECTATION DU MODELE (CONTRAINTES PLANES)
-MODE=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),)
+MODE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
 
 # COURBE DE TRACTION
-CTRAC = LIRE_FONCTION(UNITE=21,
-                      NOM_PARA='EPSI',
-                      PROL_DROITE='CONSTANT',)
+CTRAC = LIRE_FONCTION(UNITE=21, NOM_PARA="EPSI", PROL_DROITE="CONSTANT")
 
-IMPR_FONCTION(FORMAT='XMGRACE',
-              UNITE=29,
-              COURBE=_F(FONCTION=CTRAC,),
-              TITRE='Courbe de traction',
-              LEGENDE_X='Deformation',
-              LEGENDE_Y='Contrainte (MPa)',)
+IMPR_FONCTION(
+    FORMAT="XMGRACE",
+    UNITE=29,
+    COURBE=_F(FONCTION=CTRAC),
+    TITRE="Courbe de traction",
+    LEGENDE_X="Deformation",
+    LEGENDE_Y="Contrainte (MPa)",
+)
 
 
 # DEFINITION DU MATERIAU
-ACIER =DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                         NU=0.3,),
-                 TRACTION=_F(SIGM=CTRAC,),)
+ACIER = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3), TRACTION=_F(SIGM=CTRAC))
 
-CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=ACIER,),)
+CHMATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
-CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
-                      MECA_IMPO=(_F(GROUP_MA='bas',
-                                 DY=0.0,),
-                                 _F(GROUP_MA='gauche',
-                                 DX=0.0,),),
-                                )
+CHSYME = AFFE_CHAR_CINE(
+    MODELE=MODE, MECA_IMPO=(_F(GROUP_MA="bas", DY=0.0), _F(GROUP_MA="gauche", DX=0.0))
+)
 
 # CHARGEMENT EN FORCE
-CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
-                      FORCE_CONTOUR=_F(GROUP_MA='haut',
-                                       FY=1.,),)
+CHFORC = AFFE_CHAR_MECA(MODELE=MODE, FORCE_CONTOUR=_F(GROUP_MA="haut", FY=1.0))
 
 # RAMPE APPLICATION CHARGEMENT
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                           1000.0,1000.0,
-                           ),)
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1000.0, 1000.0))
 
 # DISCRETISATION EN TEMPS
-TFIN  = 230.0
+TFIN = 230.0
 TELAS = 10.0
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=TELAS,
-                                     NOMBRE=1,),
-                                  _F(JUSQU_A=TFIN,
-                                     NOMBRE=50,),
-                                  ),)
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=TELAS, NOMBRE=1), _F(JUSQU_A=TFIN, NOMBRE=50))
+)
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
-                        ECHEC=_F(EVENEMENT='ERREUR',
-                                 SUBD_NIVEAU=5,
-                                 ACTION='DECOUPE',),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST), ECHEC=_F(EVENEMENT="ERREUR", SUBD_NIVEAU=5, ACTION="DECOUPE")
+)
 
 ########################################################################
 #
@@ -99,14 +77,13 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
 #
 ########################################################################
 
-RESUNL=STAT_NON_LINE(MODELE=MODE,
-                     CHAM_MATER=CHMATE,
-                     EXCIT=(_F(CHARGE=CHSYME,),
-                            _F(CHARGE=CHFORC,
-                               FONC_MULT=RAMPE,),),
-                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
-                     INCREMENT=_F(LIST_INST=DEFLIST,
-                                  INST_FIN=TELAS,),)
+RESUNL = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=CHMATE,
+    EXCIT=(_F(CHARGE=CHSYME), _F(CHARGE=CHFORC, FONC_MULT=RAMPE)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+    INCREMENT=_F(LIST_INST=DEFLIST, INST_FIN=TELAS),
+)
 
 ########################################################################
 #
@@ -114,19 +91,16 @@ RESUNL=STAT_NON_LINE(MODELE=MODE,
 #
 ########################################################################
 
-RESUNL=STAT_NON_LINE(reuse =RESUNL,
-                     MODELE=MODE,
-                     CHAM_MATER=CHMATE,
-                     EXCIT=(_F(CHARGE=CHSYME,),
-                            _F(CHARGE=CHFORC,
-                               FONC_MULT=RAMPE,),),
-                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
-                     ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
-                     INCREMENT=_F(LIST_INST=DEFLIST,
-                                  INST_FIN=TFIN,
-                                  ),
-                     NEWTON=_F(REAC_ITER=1,),
-                     )
+RESUNL = STAT_NON_LINE(
+    reuse=RESUNL,
+    MODELE=MODE,
+    CHAM_MATER=CHMATE,
+    EXCIT=(_F(CHARGE=CHSYME), _F(CHARGE=CHFORC, FONC_MULT=RAMPE)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+    ETAT_INIT=_F(EVOL_NOLI=RESUNL),
+    INCREMENT=_F(LIST_INST=DEFLIST, INST_FIN=TFIN),
+    NEWTON=_F(REAC_ITER=1),
+)
 
 ########################################################################
 #
@@ -135,20 +109,16 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
 ########################################################################
 
 # INTERPOLATION DES CONTRAINTES AUX NOEUDS
-RESUNL=CALC_CHAMP(reuse=RESUNL,RESULTAT=RESUNL,CONTRAINTE=('SIGM_ELNO'))
+RESUNL = CALC_CHAMP(reuse=RESUNL, RESULTAT=RESUNL, CONTRAINTE=("SIGM_ELNO"))
 
 
-RESUNL=CALC_CHAMP(reuse =RESUNL,
-               RESULTAT=RESUNL,
-               CONTRAINTE='SIGM_NOEU')
+RESUNL = CALC_CHAMP(reuse=RESUNL, RESULTAT=RESUNL, CONTRAINTE="SIGM_NOEU")
 
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
-RESUNL=CALC_CHAMP(reuse=RESUNL,RESULTAT=RESUNL,VARI_INTERNE=('VARI_ELNO'))
+RESUNL = CALC_CHAMP(reuse=RESUNL, RESULTAT=RESUNL, VARI_INTERNE=("VARI_ELNO"))
 
 
-RESUNL=CALC_CHAMP(reuse =RESUNL,
-               RESULTAT=RESUNL,
-               VARI_INTERNE='VARI_NOEU',)
+RESUNL = CALC_CHAMP(reuse=RESUNL, RESULTAT=RESUNL, VARI_INTERNE="VARI_NOEU")
 
 ########################################################################
 #
@@ -156,8 +126,7 @@ RESUNL=CALC_CHAMP(reuse =RESUNL,
 #
 ########################################################################
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESUNL,),)
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=RESUNL))
 
 #########################################################################
 #
@@ -167,27 +136,25 @@ IMPR_RESU(FORMAT='MED',
 
 
 # DISCRETISATION EN TEMPS
-TCHAR   = 230.0
+TCHAR = 230.0
 TDECHAR = 300.0
 
 # RAMPE APPLICATION CHARGE PUIS DECHARGE
-RAMPE2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                            TCHAR,TCHAR,
-                            TDECHAR,0.,
-                            ),)
+RAMPE2 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, TCHAR, TCHAR, TDECHAR, 0.0))
 
 # DISCRETISATION EN TEMPS
-L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=(_F(JUSQU_A=TELAS,
-                                      NOMBRE=1,),
-                                   _F(JUSQU_A=TCHAR,
-                                      NOMBRE=30,),
-                                   _F(JUSQU_A=TDECHAR,
-                                      NOMBRE=10,),),)
+L_INST2 = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=TELAS, NOMBRE=1),
+        _F(JUSQU_A=TCHAR, NOMBRE=30),
+        _F(JUSQU_A=TDECHAR, NOMBRE=10),
+    ),
+)
 
-DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
-                        ECHEC=_F(EVENEMENT    = 'ERREUR',
-                                 ACTION       = 'DECOUPE',),)
+DEFLIST2 = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST2), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE")
+)
 
 ########################################################################
 #
@@ -195,16 +162,15 @@ DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
 #
 ########################################################################
 
-RESUNL2=STAT_NON_LINE(MODELE=MODE,
-                      CHAM_MATER=CHMATE,
-                      EXCIT=(_F(CHARGE=CHSYME,),
-                          _F(CHARGE=CHFORC,
-                             FONC_MULT=RAMPE2,),),
-                      COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
-                      INCREMENT=_F(LIST_INST=DEFLIST2),
-                      NEWTON=_F(PREDICTION='ELASTIQUE',
-                                REAC_ITER=1,),
-                      ARCHIVAGE=_F(LIST_INST=L_INST2,),)
+RESUNL2 = STAT_NON_LINE(
+    MODELE=MODE,
+    CHAM_MATER=CHMATE,
+    EXCIT=(_F(CHARGE=CHSYME), _F(CHARGE=CHFORC, FONC_MULT=RAMPE2)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_TRAC"),
+    INCREMENT=_F(LIST_INST=DEFLIST2),
+    NEWTON=_F(PREDICTION="ELASTIQUE", REAC_ITER=1),
+    ARCHIVAGE=_F(LIST_INST=L_INST2),
+)
 
 ########################################################################
 #
@@ -212,29 +178,24 @@ RESUNL2=STAT_NON_LINE(MODELE=MODE,
 #
 ########################################################################
 # INTERPOLATION DES CONTRAINTES AUX NOEUDS
-RESUNL2=CALC_CHAMP(reuse=RESUNL2,RESULTAT=RESUNL2,CONTRAINTE=('SIGM_ELNO'))
+RESUNL2 = CALC_CHAMP(reuse=RESUNL2, RESULTAT=RESUNL2, CONTRAINTE=("SIGM_ELNO"))
 
 
-RESUNL2=CALC_CHAMP(reuse =RESUNL2,
-               RESULTAT=RESUNL2,
-               CONTRAINTE='SIGM_NOEU')
+RESUNL2 = CALC_CHAMP(reuse=RESUNL2, RESULTAT=RESUNL2, CONTRAINTE="SIGM_NOEU")
 
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
-RESUNL2=CALC_CHAMP(reuse=RESUNL2,RESULTAT=RESUNL2,VARI_INTERNE=('VARI_ELNO'))
+RESUNL2 = CALC_CHAMP(reuse=RESUNL2, RESULTAT=RESUNL2, VARI_INTERNE=("VARI_ELNO"))
 
 
-RESUNL2=CALC_CHAMP(reuse =RESUNL2,
-               RESULTAT=RESUNL2,
-               VARI_INTERNE='VARI_NOEU',)
+RESUNL2 = CALC_CHAMP(reuse=RESUNL2, RESULTAT=RESUNL2, VARI_INTERNE="VARI_NOEU")
 
-                ########################################################################
+########################################################################
 #
 # IMPRESSION DES RESULTATS
 #
 ########################################################################
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESUNL2,),)
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=RESUNL2))
 
 ########################################################################
 #
@@ -244,166 +205,198 @@ IMPR_RESU(FORMAT='MED',
 ########################################################################
 
 
-TEST_RESU(RESU=_F(INST=10.,
-                  GROUP_NO='B',
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIYY',
-                  VALE_CALC=30.6077958737,
-                  VALE_REFE=30.6077958737,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=10.0,
+        GROUP_NO="B",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=RESUNL,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIYY",
+        VALE_CALC=30.6077958737,
+        VALE_REFE=30.6077958737,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=10.,
-                  GROUP_NO='A',
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=-9.9967257536,
-                  VALE_REFE=-9.9967257536,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=10.0,
+        GROUP_NO="A",
+        REFERENCE="AUTRE_ASTER",
+        RESULTAT=RESUNL,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIXX",
+        VALE_CALC=-9.9967257536,
+        VALE_REFE=-9.9967257536,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    )
+)
 
-                      ########################################################################
+########################################################################
 #
 # TESTS - CALCUL CHARGEMENT PLASTIQUE
 # PARTIE PLASTIQUE
 #
 ########################################################################
 
-TEST_RESU(RESU=_F(INST=230.,
-                  GROUP_NO='B',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIYY',
-                  VALE_CALC=271.642151153,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=230.0,
+        GROUP_NO="B",
+        RESULTAT=RESUNL,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIYY",
+        VALE_CALC=271.642151153,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=230.,
-                  GROUP_NO='A',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=-213.06249364,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=230.0,
+        GROUP_NO="A",
+        RESULTAT=RESUNL,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIXX",
+        VALE_CALC=-213.06249364,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=230.,
-                  GROUP_NO='B',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V1',
-                  VALE_CALC=0.3251779025,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=230.0,
+        GROUP_NO="B",
+        RESULTAT=RESUNL,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V1",
+        VALE_CALC=0.3251779025,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=230.,
-                  GROUP_NO='B',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V2',
-                  VALE_CALC=1.0,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=230.0,
+        GROUP_NO="B",
+        RESULTAT=RESUNL,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V2",
+        VALE_CALC=1.0,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=230.,
-                  GROUP_NO='A',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V1',
-                  VALE_CALC=0.00369151195696,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=230.0,
+        GROUP_NO="A",
+        RESULTAT=RESUNL,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V1",
+        VALE_CALC=0.00369151195696,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=230.,
-                  GROUP_NO='A',
-                  RESULTAT=RESUNL,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V2',
-                  VALE_CALC=1.0,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=230.0,
+        GROUP_NO="A",
+        RESULTAT=RESUNL,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V2",
+        VALE_CALC=1.0,
+        CRITERE="RELATIF",
+    )
+)
 
- ########################################################################
+########################################################################
 #
 # TESTS - CALCUL CHARGEMENT PLASTIQUE PUIS DECHARGE
 # DECHARGE
 #
 ########################################################################
 
-TEST_RESU(RESU=_F(INST=300.,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESUNL2,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIYY',
-                  VALE_CALC=-271.777841344,
-                  VALE_REFE=-271.777841344,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=300.0,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESUNL2,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIYY",
+        VALE_CALC=-271.777841344,
+        VALE_REFE=-271.777841344,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=300.,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESUNL2,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=23.8828857921,
-                  VALE_REFE=23.8828857921,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=300.0,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESUNL2,
+        NOM_CHAM="SIGM_NOEU",
+        NOM_CMP="SIXX",
+        VALE_CALC=23.8828857921,
+        VALE_REFE=23.8828857921,
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    )
+)
 
-TEST_RESU(RESU=_F(INST=300.,
-                  GROUP_NO='B',
-                  RESULTAT=RESUNL2,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V1',
-                  VALE_CALC=0.327601333404,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=300.0,
+        GROUP_NO="B",
+        RESULTAT=RESUNL2,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V1",
+        VALE_CALC=0.327601333404,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=300.,
-                  GROUP_NO='B',
-                  RESULTAT=RESUNL2,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V2',
-                  VALE_CALC=1.0,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=300.0,
+        GROUP_NO="B",
+        RESULTAT=RESUNL2,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V2",
+        VALE_CALC=1.0,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=300.,
-                  GROUP_NO='A',
-                  RESULTAT=RESUNL2,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V1',
-                  VALE_CALC=0.00367869888705,
-                  CRITERE='RELATIF',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=300.0,
+        GROUP_NO="A",
+        RESULTAT=RESUNL2,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V1",
+        VALE_CALC=0.00367869888705,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=300.,
-                  GROUP_NO='A',
-                  RESULTAT=RESUNL2,
-                  NOM_CHAM='VARI_NOEU',
-                  NOM_CMP='V2',
-                  VALE_CALC=0.0,
-                  CRITERE='ABSOLU',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=300.0,
+        GROUP_NO="A",
+        RESULTAT=RESUNL2,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V2",
+        VALE_CALC=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
 FIN()

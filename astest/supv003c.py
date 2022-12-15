@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 # --------------------------------------------------------------------
 
 
-
 import code_aster
 from code_aster import AsterError, raiseAsterError
 from code_aster.Commands import *
@@ -26,18 +25,17 @@ from code_aster.Commands import *
 test = code_aster.TestCase()
 
 try:
-    DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ),
-          ERREUR=_F(ERREUR_F='EXCEPTION',))
+    DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="EXCEPTION"))
 
 except AsterError as exc:
-    assert False, 'no exception should be thrown.'
+    assert False, "no exception should be thrown."
 
-print("Checking translation of AsterErrorCpp as AsterError(Py) "
-      "and catched as AsterError...")
+print("Checking translation of AsterErrorCpp as AsterError(Py) " "and catched as AsterError...")
 try:
     raiseAsterError("SUPERVIS_2")
-    assert False, ('This line should not be reached as an exception should '
-                   'have been thrown by now.')
+    assert False, (
+        "This line should not be reached as an exception should " "have been thrown by now."
+    )
 except AsterError as exc:
     test.assertEqual(exc.id_message, "SUPERVIS_2")
 
@@ -45,12 +43,12 @@ with test.assertRaisesRegex(AsterError, "commandes DEBUT et POURSUITE"):
     raiseAsterError("SUPERVIS_2")
 
 
-print("Checking translation of AsterErrorCpp as AsterError(Py) "
-      "and catched as Exception...")
+print("Checking translation of AsterErrorCpp as AsterError(Py) " "and catched as Exception...")
 try:
     raiseAsterError("SUPERVIS_2")
-    assert False, ('This line should not be reached as an exception should '
-                   'have been thrown by now.')
+    assert False, (
+        "This line should not be reached as an exception should " "have been thrown by now."
+    )
 except Exception as exc:
     test.assertEqual(exc.id_message, "SUPERVIS_2")
 
@@ -58,21 +56,19 @@ with test.assertRaisesRegex(Exception, "commandes DEBUT et POURSUITE"):
     raiseAsterError("SUPERVIS_2")
 
 
-print("Checking AsterErrorCpp thrown from C++ methods "
-      "and catched as AsterError...")
+print("Checking AsterErrorCpp thrown from C++ methods " "and catched as AsterError...")
 mesh = code_aster.Mesh()
 try:
-    mesh.readMedFile('xxxx.mmed')
+    mesh.readMedFile("xxxx.mmed")
 except AsterError as exc:
     test.assertEqual(exc.id_message, "PREPOST3_10")
 
 with test.assertRaisesRegex(AsterError, "mauvaise version de HDF"):
     mesh = code_aster.Mesh()
-    mesh.readMedFile('xxxx.mmed')
+    mesh.readMedFile("xxxx.mmed")
 
 
-print("Checking AsterErrorCpp thrown from Fortran operator "
-      "and catched as AsterError...")
+print("Checking AsterErrorCpp thrown from Fortran operator " "and catched as AsterError...")
 try:
     LIRE_MAILLAGE(UNITE=55)
 except AsterError as exc:

@@ -23,8 +23,8 @@ from ..Supervis import ExecuteCommand
 
 
 class Factoriser(ExecuteCommand):
-    """Command FACTORISER
-    """
+    """Command FACTORISER"""
+
     command_name = "FACTORISER"
 
     def create_result(self, keywords):
@@ -48,7 +48,8 @@ class Factoriser(ExecuteCommand):
         solverName = keywords.get("METHODE")
         if solverName in ("MUMPS", "PETSC"):
             self._result.setSolverName(solverName)
-        if solverName=="GCPC":
+        if solverName == "GCPC":
             self._result.updateDOFNumbering()
+
 
 FACTORISER = Factoriser.run

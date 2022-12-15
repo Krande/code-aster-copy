@@ -19,7 +19,7 @@
 
 # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # HEMISPHERE DOUBLEMENT PINCE
 # MAILLAGE 1/4 DE L'HEMISPHERE
@@ -28,237 +28,257 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 
-MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 6.825E+7,     NU = 0.3000) )
+MATERI_1 = DEFI_MATERIAU(ELAS=_F(E=6.825e7, NU=0.3000))
 
-MAILLA_1=LIRE_MAILLAGE(FORMAT='MED',INFO=2   )
+MAILLA_1 = LIRE_MAILLAGE(FORMAT="MED", INFO=2)
 
-MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MAILLA_1 = DEFI_GROUP(reuse=MAILLA_1, MAILLAGE=MAILLA_1, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
-                            AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
+CH_MAT_1 = AFFE_MATERIAU(MAILLAGE=MAILLA_1, AFFE=_F(TOUT="OUI", MATER=MATERI_1))
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1,
-                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
-                                PHENOMENE = 'MECANIQUE') )
+MODELE_1 = AFFE_MODELE(
+    MAILLAGE=MAILLA_1, AFFE=_F(TOUT="OUI", MODELISATION="COQUE_3D", PHENOMENE="MECANIQUE")
+)
 
-CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,DDL_IMPO=(
-                  _F( GROUP_NO = 'ACSANSAC', DY = 0.,
-                                              DRX = 0., DRZ = 0.),
-                           _F( GROUP_NO = 'BCSANSBC', DX = 0.,
-                                              DRY = 0., DRZ = 0.),
-                           _F( GROUP_NO = 'A',        DY = 0.,
-                                              DRX = 0., DRZ = 0.),
-                           _F( GROUP_NO = 'B',        DX = 0.,
-                                              DRY = 0., DRZ = 0.),
-                           _F( GROUP_NO = 'C',        DX = 0., DY = 0., DZ = 0.,
-                                              DRX = 0., DRY = 0., DRZ = 0.)),FORCE_NODALE=(
-                  _F(  GROUP_NO = 'A',  FX = -2.),
-                  _F(  GROUP_NO = 'B',  FY = 2.)) )
+CHARGE_1 = AFFE_CHAR_MECA(
+    MODELE=MODELE_1,
+    DDL_IMPO=(
+        _F(GROUP_NO="ACSANSAC", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="BCSANSBC", DX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="A", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="B", DX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="C", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+    FORCE_NODALE=(_F(GROUP_NO="A", FX=-2.0), _F(GROUP_NO="B", FY=2.0)),
+)
 
-CARAC__1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
-                               COQUE=_F(
-       GROUP_MA = 'TOUT',
-  EPAIS = 0.040,
-                                  A_CIS = 0.83333333333333) )
+CARAC__1 = AFFE_CARA_ELEM(
+    MODELE=MODELE_1, COQUE=_F(GROUP_MA="TOUT", EPAIS=0.040, A_CIS=0.83333333333333)
+)
 
-MATELE_1=CALC_MATR_ELEM(   MODELE=MODELE_1,     CHARGE=CHARGE_1,
-                               CARA_ELEM=CARAC__1,
-                               CHAM_MATER=CH_MAT_1,
-                               OPTION='RIGI_MECA' )
+MATELE_1 = CALC_MATR_ELEM(
+    MODELE=MODELE_1, CHARGE=CHARGE_1, CARA_ELEM=CARAC__1, CHAM_MATER=CH_MAT_1, OPTION="RIGI_MECA"
+)
 
-VEL=CALC_VECT_ELEM(   CHARGE=CHARGE_1,  OPTION='CHAR_MECA' )
+VEL = CALC_VECT_ELEM(CHARGE=CHARGE_1, OPTION="CHAR_MECA")
 
-NU=NUME_DDL(   MATR_RIGI=MATELE_1 )
+NU = NUME_DDL(MATR_RIGI=MATELE_1)
 
-MATASS=ASSE_MATRICE(   MATR_ELEM=MATELE_1,   NUME_DDL=NU )
+MATASS = ASSE_MATRICE(MATR_ELEM=MATELE_1, NUME_DDL=NU)
 
-VECASS=ASSE_VECTEUR(   VECT_ELEM=VEL,        NUME_DDL=NU )
+VECASS = ASSE_VECTEUR(VECT_ELEM=VEL, NUME_DDL=NU)
 
-MATASS=FACTORISER( reuse=MATASS,  MATR_ASSE=MATASS )
+MATASS = FACTORISER(reuse=MATASS, MATR_ASSE=MATASS)
 
-VECASS=RESOUDRE(reuse=VECASS, MATR=MATASS,     CHAM_NO=VECASS)
+VECASS = RESOUDRE(reuse=VECASS, MATR=MATASS, CHAM_NO=VECASS)
 
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                     NOM_CMP='DX',
-                     GROUP_NO='A',
-                     PRECISION=1.E-2,
-                     CHAM_GD=VECASS,
-                     VALE_CALC=-0.18447251131183,
-                     VALE_REFE=-0.185,
-                     REFERENCE='NON_DEFINI',),
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CRITERE="RELATIF",
+        NOM_CMP="DX",
+        GROUP_NO="A",
+        PRECISION=1.0e-2,
+        CHAM_GD=VECASS,
+        VALE_CALC=-0.18447251131183,
+        VALE_REFE=-0.185,
+        REFERENCE="NON_DEFINI",
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
-                     NOM_CMP='DY',
-                     GROUP_NO='B',
-                     PRECISION=1.E-2,
-                     CHAM_GD=VECASS,
-                     VALE_CALC=0.18448192537617,
-                     VALE_REFE=0.185,
-                     REFERENCE='NON_DEFINI',),
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        CRITERE="RELATIF",
+        NOM_CMP="DY",
+        GROUP_NO="B",
+        PRECISION=1.0e-2,
+        CHAM_GD=VECASS,
+        VALE_CALC=0.18448192537617,
+        VALE_REFE=0.185,
+        REFERENCE="NON_DEFINI",
+    )
+)
 
-RESU=CREA_RESU(OPERATION='AFFE',
-                   TYPE_RESU='EVOL_NOLI',
-                   NOM_CHAM='DEPL',
-                   AFFE=_F(CHAM_GD=VECASS,MODELE=MODELE_1,
-                   CHAM_MATER=CH_MAT_1,
-                   CARA_ELEM=CARAC__1,
-                           INST=0.,),)
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT= RESU, DEFORMATION=('DEGE_ELGA','DEGE_ELNO',), )
+RESU = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_NOLI",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=VECASS, MODELE=MODELE_1, CHAM_MATER=CH_MAT_1, CARA_ELEM=CARAC__1, INST=0.0),
+)
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, DEFORMATION=("DEGE_ELGA", "DEGE_ELNO"))
 
 # NO000124(X=0.15480D+01,Y=0.15788D+01,Z=0.97525D+01)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEGE_ELGA','DEGE_ELNO',),
-                GROUP_MA=('MA000055',),))
-TEST_RESU(RESU=(
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='EXX',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=-7.3072357624462E-08,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='EYY',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=2.8596660386524E-07,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='EXY',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=1.060237513373E-06,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='KXX',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=1.5539323370875E-03,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='KYY',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=-1.5393290996816E-03,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='KXY',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=6.3421852967674E-05,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='GAX',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=1.5483302429125E-06,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELNO',
-                  NOM_CMP='GAY',
-                  GROUP_MA='MA000055',
-                  GROUP_NO='NO000124',
-                  RESULTAT=RESU,
-                  VALE_CALC=-1.9055460766464E-06,
-                  ),
-          ))
+IMPR_RESU(
+    FORMAT="RESULTAT",
+    RESU=_F(RESULTAT=RESU, NOM_CHAM=("DEGE_ELGA", "DEGE_ELNO"), GROUP_MA=("MA000055",)),
+)
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="EXX",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=-7.3072357624462e-08,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="EYY",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=2.8596660386524e-07,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="EXY",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=1.060237513373e-06,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="KXX",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=1.5539323370875e-03,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="KYY",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=-1.5393290996816e-03,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="KXY",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=6.3421852967674e-05,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="GAX",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=1.5483302429125e-06,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELNO",
+            NOM_CMP="GAY",
+            GROUP_MA="MA000055",
+            GROUP_NO="NO000124",
+            RESULTAT=RESU,
+            VALE_CALC=-1.9055460766464e-06,
+        ),
+    )
+)
 
-TEST_RESU(RESU=(
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='EXX',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=-8.69237931689725E-08,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='EYY',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=1.98989839409554E-07,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='EXY',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=-1.46624326257765E-07,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='KXX',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=1.29233263786509E-03,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='KYY',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=-1.35232860373895E-03,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='KXY',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=-4.16189404805216E-04,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='GAX',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=-8.61131593142052E-07,
-                  ),
-               _F(CRITERE='RELATIF',
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEGE_ELGA',
-                  NOM_CMP='GAY',
-                  GROUP_MA='MA000055',
-                  POINT= 3,
-                  RESULTAT=RESU,
-                  VALE_CALC=4.56395923859975E-07,
-                  ),
-          ))
+TEST_RESU(
+    RESU=(
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="EXX",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=-8.69237931689725e-08,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="EYY",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=1.98989839409554e-07,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="EXY",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=-1.46624326257765e-07,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="KXX",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=1.29233263786509e-03,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="KYY",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=-1.35232860373895e-03,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="KXY",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=-4.16189404805216e-04,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="GAX",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=-8.61131593142052e-07,
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            NOM_CHAM="DEGE_ELGA",
+            NOM_CMP="GAY",
+            GROUP_MA="MA000055",
+            POINT=3,
+            RESULTAT=RESU,
+            VALE_CALC=4.56395923859975e-07,
+        ),
+    )
+)
 FIN()
 #

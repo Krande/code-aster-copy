@@ -26,14 +26,14 @@ from .sd_ligrel import sd_ligrel
 
 
 class sd_char_chth(AsBase):
-#--------------------------------
+    # --------------------------------
     nomj = SDNom(fin=13)
 
-    CONVE_VALE = Facultatif(AsVK8(SDNom(nomj='.CONVE.VALE'), lonmax=1))
-    MODEL_NOMO = AsVK8(SDNom(nomj='.MODEL.NOMO'), lonmax=1)
+    CONVE_VALE = Facultatif(AsVK8(SDNom(nomj=".CONVE.VALE"), lonmax=1))
+    MODEL_NOMO = AsVK8(SDNom(nomj=".MODEL.NOMO"), lonmax=1)
     LIGRE = Facultatif(sd_ligrel())
 
-    SOURE = Facultatif(sd_champ(SDNom(nomj='.SOURE')))
+    SOURE = Facultatif(sd_champ(SDNom(nomj=".SOURE")))
     SOURC = Facultatif(sd_cham_elem())
     CIMPO = Facultatif(sd_carte())
     CMULT = Facultatif(sd_carte())
@@ -46,7 +46,7 @@ class sd_char_chth(AsBase):
     HECHP = Facultatif(sd_carte())
     RAYO = Facultatif(sd_carte())
     T_EXT = Facultatif(sd_carte())
-    EVOL_CHAR = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
+    EVOL_CHAR = Facultatif(AsVK8(SDNom(nomj=".EVOL.CHAR"), lonmax=1))
 
     # parfois, TEMP_IMPO crée une carte de sd_fonction :
     # il faut alors vérifier ces sd_fonction
@@ -55,7 +55,7 @@ class sd_char_chth(AsBase):
             return
         vale = self.CIMPO.VALE.get()
         for x in vale:
-            if x.strip() == '':
+            if x.strip() == "":
                 continue
             nomfon = x[:19]
             sd2 = sd_fonction(nomfon)
@@ -63,10 +63,11 @@ class sd_char_chth(AsBase):
 
 
 class sd_char_ther(AsBase):
-#--------------------------------
+    # --------------------------------
     nomj = SDNom(fin=8)
     TYPE = AsVK8(lonmax=1)
     CHTH = sd_char_chth()
+
 
 class sd_parallel_char_ther(AsBase):
     nomj = SDNom(fin=8)

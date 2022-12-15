@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ def post_miss_ops(self, **kwargs):
     """
 
     # création de l'objet POST_MISS_xxx
-    post = PostMissFactory(kwargs['OPTION'], self, kwargs)
+    post = PostMissFactory(kwargs["OPTION"], self, kwargs)
 
     try:
         post.argument()
@@ -45,5 +45,5 @@ def post_miss_ops(self, **kwargs):
     except AsterError:
         raise
     except Exception as err:
-        trace = ''.join(traceback.format_tb(sys.exc_info()[2]))
-        UTMESS('F', 'SUPERVIS2_5', valk=('POST_MISS', trace, str(err)))
+        trace = "".join(traceback.format_tb(sys.exc_info()[2]))
+        UTMESS("F", "SUPERVIS2_5", valk=("POST_MISS", trace, str(err)))

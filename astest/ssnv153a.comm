@@ -21,172 +21,138 @@
 # ON TEST LE LISSAGE
 # MODELISATION 2D DP ELEMENTS LINEAIRES
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
-MA=DEFI_GROUP( reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=(
-                       _F(  GROUP_MA = 'TIRE1',  ),
-                       _F(  GROUP_MA = 'TIRE2',  ),
-                       _F(  GROUP_MA = 'POULIE',  ),
-                       _F(  GROUP_MA = 'SURFMAIT',  ),
-                       _F(  GROUP_MA = 'SURFESCL', ),
-                       _F(  GROUP_MA = 'CORDINF', ),
-                       _F(  GROUP_MA = 'CASTR',))
-                    )
+MA = LIRE_MAILLAGE(FORMAT="MED")
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="TIRE1"),
+        _F(GROUP_MA="TIRE2"),
+        _F(GROUP_MA="POULIE"),
+        _F(GROUP_MA="SURFMAIT"),
+        _F(GROUP_MA="SURFESCL"),
+        _F(GROUP_MA="CORDINF"),
+        _F(GROUP_MA="CASTR"),
+    ),
+)
 
-#---------------------------------------------------
-MO=AFFE_MODELE(
-                MAILLAGE=MA,AFFE=(
-                 _F( TOUT='OUI',
-                     PHENOMENE='MECANIQUE',
-                     MODELISATION='D_PLAN',),
-                                )
-                 )
-#--------------------------------------------------
-MAT2=DEFI_MATERIAU(
-                            ELAS=_F(
-                                  E = 147.6190E+05,
-                                  NU = 0.4762,
-                                 )
-                          )
+# ---------------------------------------------------
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),))
+# --------------------------------------------------
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=147.6190e05, NU=0.4762))
 
 #
-MAT1=DEFI_MATERIAU(
-                            ELAS=_F(
-                                  E = 147.6190E+05,
-                                  NU = 0.4762,
-                                 )
-                          )
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=147.6190e05, NU=0.4762))
 
-CHMAT=AFFE_MATERIAU(
-                            MAILLAGE=MA,AFFE=(
-                           _F(
-                                 GROUP_MA = 'CORDE',
-                                 MATER = MAT2,
-                                ),
-                           _F(
-                                 GROUP_MA = 'POULINT',
-                                 MATER = MAT1,
-                                ),),
-                           )
-#--------------------------------------------------------
-CHA1=AFFE_CHAR_MECA(
-                     MODELE=MO,DDL_IMPO=(
-                     _F(  GROUP_NO = 'N476',  DX = 0.0,),
-                     _F(  GROUP_NO = 'TIRE1',  DY = -1.0,),
-                     _F(  GROUP_NO = 'TIRE2',  DY = -1.0,),
-                     _F(  GROUP_NO = 'CASTR', DX = 0.0,   DY =  0.0,))
-                    )
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="CORDE", MATER=MAT2), _F(GROUP_MA="POULINT", MATER=MAT1))
+)
+# --------------------------------------------------------
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="N476", DX=0.0),
+        _F(GROUP_NO="TIRE1", DY=-1.0),
+        _F(GROUP_NO="TIRE2", DY=-1.0),
+        _F(GROUP_NO="CASTR", DX=0.0, DY=0.0),
+    ),
+)
 
-CHA2 = DEFI_CONTACT(MODELE         = MO,
-                    FORMULATION    = 'CONTINUE',
-                    ALGO_RESO_CONT = 'NEWTON',
-                    ALGO_RESO_GEOM = 'POINT_FIXE',
-                    REAC_GEOM      = 'SANS',
-                    LISSAGE        = 'OUI',
-                    ZONE =(
-                           _F(
-                             GROUP_MA_MAIT = 'SURFMAIT',
-                             GROUP_MA_ESCL = 'SURFESCL',
-                             ALGO_CONT     = 'STANDARD',
-                             COEF_CONT     = 10.,
+CHA2 = DEFI_CONTACT(
+    MODELE=MO,
+    FORMULATION="CONTINUE",
+    ALGO_RESO_CONT="NEWTON",
+    ALGO_RESO_GEOM="POINT_FIXE",
+    REAC_GEOM="SANS",
+    LISSAGE="OUI",
+    ZONE=(
+        _F(
+            GROUP_MA_MAIT="SURFMAIT", GROUP_MA_ESCL="SURFESCL", ALGO_CONT="STANDARD", COEF_CONT=10.0
+        ),
+    ),
+)
 
-                             ),
-                          ),
-                   )
-
-#-----------------------------------------------------------
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,)
-                      )
-FONC=DEFI_FONCTION(
-                   NOM_PARA='INST',
-                   VALE=(0., 0.0,
-                         1., 1.0,)
-                   )
-#-----------------------------------------------
-RESU=STAT_NON_LINE (
-                   MODELE     = MO,
-                   CHAM_MATER = CHMAT,
-                   INCREMENT  =_F(
-                               LIST_INST=L_INST,),
-                   EXCIT      =(
-                               _F(CHARGE=CHA1,
-                                FONC_MULT=FONC,),
-                               ),
-                   CONTACT    = CHA2,
-                   COMPORTEMENT  =_F(
-                                RELATION='ELAS'),
-                   NEWTON     =_F(MATRICE='ELASTIQUE',
-                                  REAC_ITER=1,),
-                   CONVERGENCE=_F(
-                                ARRET='OUI',
-                                ITER_GLOB_MAXI=30,
-                                RESI_GLOB_MAXI=1.E-6,
-                                 ),
-                   )
+# -----------------------------------------------------------
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
+FONC = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
+# -----------------------------------------------
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    INCREMENT=_F(LIST_INST=L_INST),
+    EXCIT=(_F(CHARGE=CHA1, FONC_MULT=FONC),),
+    CONTACT=CHA2,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    NEWTON=_F(MATRICE="ELASTIQUE", REAC_ITER=1),
+    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30, RESI_GLOB_MAXI=1.0e-6),
+)
 
 
-RESU=CALC_CHAMP( reuse=RESU,
-                  RESULTAT=RESU,
-                   CONTRAINTE=('SIGM_ELNO'),
-                )
-RESU=CALC_CHAMP( reuse=RESU,
-                RESULTAT=RESU,
-                CONTRAINTE='SIGM_NOEU',
-              )
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIGM_ELNO"))
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_NOEU")
 
-SIELNO=CREA_CHAMP(  OPERATION='EXTR',
-                    TYPE_CHAM='ELNO_SIEF_R',
-                    NOM_CHAM='SIGM_ELNO',
-                    RESULTAT=RESU,
-                    NUME_ORDRE=1
-                       )
+SIELNO = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", NOM_CHAM="SIGM_ELNO", RESULTAT=RESU, NUME_ORDRE=1
+)
 
 
-TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N37',
-                       CRITERE='RELATIF',
-                       REFERENCE='ANALYTIQUE',
-                       NOM_CMP='SIYY',
-                       PRECISION=0.02,
-                       GROUP_MA='M96',
-                       CHAM_GD=SIELNO,
-                       VALE_CALC=-6.02712145E+05,
-                       VALE_REFE=-5.97000E5,),)
+TEST_RESU(
+    CHAM_ELEM=_F(
+        GROUP_NO="N37",
+        CRITERE="RELATIF",
+        REFERENCE="ANALYTIQUE",
+        NOM_CMP="SIYY",
+        PRECISION=0.02,
+        GROUP_MA="M96",
+        CHAM_GD=SIELNO,
+        VALE_CALC=-6.02712145e05,
+        VALE_REFE=-5.97000e5,
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N450',
-                   NOM_CMP='DX',
-                   VALE_CALC=-5.64175109E-09,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=9.9999999999999995E-08,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N37',
-                   NOM_CMP='DX',
-                   VALE_CALC= 3.04866205E-09,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=9.9999999999999995E-08,),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N476',
-                   NOM_CMP='DX',
-                   VALE_CALC= 7.22223729E-35,
-                   VALE_REFE=0.0,
-                   CRITERE='ABSOLU',
-                   PRECISION=9.9999999999999995E-08,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N450",
+            NOM_CMP="DX",
+            VALE_CALC=-5.64175109e-09,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=9.9999999999999995e-08,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N37",
+            NOM_CMP="DX",
+            VALE_CALC=3.04866205e-09,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=9.9999999999999995e-08,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N476",
+            NOM_CMP="DX",
+            VALE_CALC=7.22223729e-35,
+            VALE_REFE=0.0,
+            CRITERE="ABSOLU",
+            PRECISION=9.9999999999999995e-08,
+        ),
+    )
+)
 
 #
-FIN( )
+FIN()
 #

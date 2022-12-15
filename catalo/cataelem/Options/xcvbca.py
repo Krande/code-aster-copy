@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,105 +20,94 @@
 # person_in_charge: samuel.geniaut at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PLST = InputParameter(phys=PHY.NEUT_R)
+
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
-
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PAINTER = InputParameter(phys=PHY.N1360R)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R)
+PCFACE = InputParameter(phys=PHY.N720_I)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I)
+PLONGCO = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PBASECO = InputParameter(phys=PHY.N2448R)
 
 
-PBASECO  = InputParameter(phys=PHY.N2448R)
+PFISNO = InputParameter(phys=PHY.NEUT_I)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
+PHEA_FA = InputParameter(phys=PHY.N240_I)
 
 
-PHEA_FA  = InputParameter(phys=PHY.N240_I)
+PCOHESO = OutputParameter(phys=PHY.NEUT_R, type="ELEM")
 
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
-PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
+PBASLOC = InputParameter(phys=PHY.N480_R)
 
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
-
-PBASLOC  = InputParameter(phys=PHY.N480_R)
-
-PLSNGG     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
+PLSNGG = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 # Attention : les champs PINDCOO, PINDMEM, PINDCOT et PCOHESO
 # sont des champs a sous-points
 # pour les elements de contact XFEM (xhc,xhtc,xtc)
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment=""" UTILE POUR HM-XFEM """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment=""" UTILE POUR HM-XFEM """)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
+PSTANO = InputParameter(phys=PHY.N120_I, comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
+PLSN = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
 
 
 XCVBCA = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
+        PAINTER,
+        PBASECO,
         SP.PCAR_AI,
         SP.PCAR_PT,
-           PCFACE,
+        PCFACE,
         SP.PCOHES,
         SP.PDEPL_P,
         SP.PDEPL_M,
         SP.PDONCO,
-           PFISNO,
+        PFISNO,
         SP.PGEOMER,
         SP.PGLISS,
         SP.PHEAVNO,
-           PHEA_FA,
-           PHEA_NO,
+        PHEA_FA,
+        PHEA_NO,
         SP.PINDCOI,
-           PLONGCO,
-           PLST,
-           PCOMPOR,
+        PLONGCO,
+        PLST,
+        PCOMPOR,
         SP.PFISCO,
         SP.PMATERC,
         SP.PMEMCON,
-           PPINTER,
-           PLSN,
-           PBASLOR,
-           PSTANO,
-           PBASLOC,
-           PLSNGG,
+        PPINTER,
+        PLSN,
+        PBASLOR,
+        PSTANO,
+        PBASLOC,
+        PLSNGG,
     ),
-    para_out=(
-           PCOHESO,
-        SP.PINCOCA,
-        SP.PINDCOO,
-        SP.PINDMEM,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.LXFEM,'OUI'),(AT.CONTACT,'OUI'),)),
-    ),
+    para_out=(PCOHESO, SP.PINCOCA, SP.PINDCOO, SP.PINDMEM),
+    condition=(CondCalcul("+", ((AT.LXFEM, "OUI"), (AT.CONTACT, "OUI"))),),
 )

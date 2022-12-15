@@ -19,14 +19,14 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (ThermalLoadFunction, ParallelThermalLoadFunction,
-                       ConnectionMesh, Model)
+from ..Objects import ThermalLoadFunction, ParallelThermalLoadFunction, ConnectionMesh, Model
 from ..Supervis import ExecuteCommand
 from .affe_char_ther import ThermalLoadDefinition, _getGroups
 
 
 class ThermalLoadFunctionDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalLoadFunction`"""
+
     command_name = "AFFE_CHAR_THER_F"
 
     def create_result(self, keywords):
@@ -40,18 +40,18 @@ class ThermalLoadFunctionDefinition(ExecuteCommand):
         l_diri = ThermalLoadDefinition._hasDirichletLoadings(keywords)
         if not model.getMesh().isParallel():
             self._result = ThermalLoadFunction(model)
-        else :
+        else:
             if l_neum:
                 if l_diri:
-                    raise TypeError("Not allowed to mix up Dirichlet and Neumann \
-                        loadings in the same parallel AFFE_CHAR_THER_F")
+                    raise TypeError(
+                        "Not allowed to mix up Dirichlet and Neumann \
+                        loadings in the same parallel AFFE_CHAR_THER_F"
+                    )
                 else:
                     self._result = ThermalLoadFunction(model)
 
-
     def exec_(self, keywords):
-        """Override default _exec in case of parallel load
-        """
+        """Override default _exec in case of parallel load"""
         if isinstance(self._result, ThermalLoadFunction):
             super(ThermalLoadFunctionDefinition, self).exec_(keywords)
         else:
@@ -59,8 +59,8 @@ class ThermalLoadFunctionDefinition(ExecuteCommand):
             nodeGroups, cellGroups = _getGroups(self._cata, keywords)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
-            connectionModel = Model( connectionMesh )
-            connectionModel.setFrom( model )
+            connectionModel = Model(connectionMesh)
+            connectionModel.setFrom(model)
 
             keywords["MODELE"] = connectionModel
             partialThermalLoad = AFFE_CHAR_THER_F(**keywords)

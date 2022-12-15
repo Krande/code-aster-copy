@@ -115,7 +115,7 @@ class IncrementalSolver:
             self.phys_state.stress,
             self.phys_state.internVar,
             self.phys_state.time,
-            self.phys_state.time_step
+            self.phys_state.time_step,
         )
 
         resi_state = ResiState()
@@ -134,8 +134,7 @@ class IncrementalSolver:
 
             # Compute dualiazed BC (B^t.primal_curr - primal_impo)
             # Compute dualiazed BC (B^t.primal_curr)
-            dualizedBC_disp = disc_comp.getDualDisplacement(
-                primal_curr, scaling)
+            dualizedBC_disp = disc_comp.getDualDisplacement(primal_curr, scaling)
 
             # Imposed dualisez BC (primal_impo)
             time_curr = self.phys_state.time + self.phys_state.time_step
@@ -143,8 +142,7 @@ class IncrementalSolver:
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
-            resi_state.resi_dual = self.phys_state.createPrimal(
-                self.phys_pb, 0.0)
+            resi_state.resi_dual = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
         resi_state.resi_int = r_int
 
@@ -164,7 +162,8 @@ class IncrementalSolver:
 
         # Compute neuamnn forces
         neumann_forces = disc_comp.getNeumannForces(
-            self.phys_state.time + self.phys_state.time_step)
+            self.phys_state.time + self.phys_state.time_step
+        )
 
         return neumann_forces
 
@@ -188,11 +187,10 @@ class IncrementalSolver:
                 self.phys_state.time_step,
                 self.contact_manager.data(),
                 self.contact_manager.coef_cont,
-                self.contact_manager.coef_frot
+                self.contact_manager.coef_frot,
             )
         else:
-            contact_forces = self.phys_state.createPrimal(
-                self.phys_pb, 0.0)
+            contact_forces = self.phys_state.createPrimal(self.phys_pb, 0.0)
 
         return contact_forces
 
@@ -221,8 +219,7 @@ class IncrementalSolver:
         resi_state.resi_cont = self.computeContactResidual()
 
         # Compute residual
-        resi_state.resi = -(resi_state.resi_int +
-                            resi_state.resi_cont - resi_state.resi_ext)
+        resi_state.resi = -(resi_state.resi_int + resi_state.resi_cont - resi_state.resi_ext)
 
         return resi_state, internVar, stress
 
@@ -244,8 +241,7 @@ class IncrementalSolver:
         # Compute rigidity matrix
         if matrix_type in ("PRED_ELASTIQUE", "ELASTIQUE"):
             time_curr = self.phys_state.time + self.phys_state.time_step
-            matr_elem_rigi = disc_comp.getLinearStiffnessMatrix(
-                time=time_curr, with_dual=False)
+            matr_elem_rigi = disc_comp.getLinearStiffnessMatrix(time=time_curr, with_dual=False)
             codret = 0
         elif matrix_type == "PRED_TANGENTE":
             _, codret, matr_elem_rigi = disc_comp.getPredictionTangentStiffnessMatrix(
@@ -254,7 +250,7 @@ class IncrementalSolver:
                 self.phys_state.stress,
                 self.phys_state.internVar,
                 self.phys_state.time,
-                self.phys_state.time_step
+                self.phys_state.time_step,
             )
         elif matrix_type == "TANGENTE":
             _, codret, matr_elem_rigi = disc_comp.getTangentStiffnessMatrix(
@@ -263,7 +259,7 @@ class IncrementalSolver:
                 self.phys_state.stress,
                 self.phys_state.internVar,
                 self.phys_state.time,
-                self.phys_state.time_step
+                self.phys_state.time_step,
             )
         else:
             raise RuntimeError("Matrix not supported: %s" % (matrix_type))
@@ -293,7 +289,7 @@ class IncrementalSolver:
                 self.phys_state.time_step,
                 self.contact_manager.data(),
                 self.contact_manager.coef_cont,
-                self.contact_manager.coef_frot
+                self.contact_manager.coef_frot,
             )
 
             return matr_elem_cont
@@ -312,8 +308,7 @@ class IncrementalSolver:
         """
         # Compute elementary matrix
 
-        codret, matr_elem_rigi, matr_elem_dual = self.computeInternalJacobian(
-            matrix_type)
+        codret, matr_elem_rigi, matr_elem_dual = self.computeInternalJacobian(matrix_type)
 
         if codret > 0:
             raise IntegrationError("MECANONLINE10_1")
@@ -381,8 +376,7 @@ class IncrementalSolver:
             # compute Dirichlet BC:
             disc_comp = DiscreteComputation(self.phys_pb)
             primal_curr = self.phys_state.primal + self.phys_state.primal_step
-            diriBCs = disc_comp.getIncrementalDirichletBC(
-                time_curr, primal_curr)
+            diriBCs = disc_comp.getIncrementalDirichletBC(time_curr, primal_curr)
 
             # solve linear system
             if not stiffness.isFactorized():

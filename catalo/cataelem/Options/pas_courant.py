@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,23 +23,15 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
 
 PAS_COURANT = Option(
-    para_in=(
-        SP.PCACOQU,
-        SP.PGEOMER,
-        SP.PMATERC,
-           PVARCPR,
-    ),
-    para_out=(
-        SP.PCOURAN,
-    ),
+    para_in=(SP.PCACOQU, SP.PGEOMER, SP.PMATERC, PVARCPR),
+    para_out=(SP.PCOURAN,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.TYPMOD2, 'HHO'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.ABSO, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.TYPMOD2, "HHO"))),
     ),
     comment="""  PAS_COURANT : CALCUL DU PAS DE TEMPS MAXIMUM NECESSAIRE
        A LA STABILITE DES CALCULS DYNAMIQUES AVEC INTEGRATION

@@ -21,36 +21,77 @@
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-def C_AFFE_VARC() : return FACT(statut='f', max='**',
-    regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
-          PRESENT_ABSENT('GROUP_MA','TOUT'),
-          PRESENT_ABSENT('MAILLE','TOUT'),
-          EXCLUS('EVOL','CHAM_GD'),
-          ),
-    TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-    GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-    MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
 
-    NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
-                       "M_ACIER","M_ZIRC","NEUT1","NEUT2","NEUT3","PTOT","DIVU",)),
-    CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster,),
-    EVOL            =SIMP(statut='f',typ=evol_sdaster,),
+def C_AFFE_VARC():
+    return FACT(
+        statut="f",
+        max="**",
+        regles=(
+            PRESENT_ABSENT("TOUT", "GROUP_MA", "MAILLE"),
+            PRESENT_ABSENT("GROUP_MA", "TOUT"),
+            PRESENT_ABSENT("MAILLE", "TOUT"),
+            EXCLUS("EVOL", "CHAM_GD"),
+        ),
+        TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+        NOM_VARC=SIMP(
+            statut="o",
+            typ="TXM",
+            into=(
+                "TEMP",
+                "GEOM",
+                "CORR",
+                "IRRA",
+                "HYDR",
+                "SECH",
+                "EPSA",
+                "M_ACIER",
+                "M_ZIRC",
+                "NEUT1",
+                "NEUT2",
+                "NEUT3",
+                "PTOT",
+                "DIVU",
+            ),
+        ),
+        CHAM_GD=SIMP(statut="f", typ=cham_gd_sdaster),
+        EVOL=SIMP(statut="f", typ=evol_sdaster),
+        B_EVOL=BLOC(
+            condition="""exists("EVOL")""",
+            NOM_CHAM=SIMP(
+                statut="f",
+                typ="TXM",
+                into=(
+                    "TEMP",
+                    "CORR",
+                    "IRRA",
+                    "NEUT",
+                    "GEOM",
+                    "HYDR_ELNO",
+                    "HYDR_NOEU",
+                    "META_ELNO",
+                    "META_NOEU",
+                    "EPSA_ELNO",
+                    "EPSA_NOEU",
+                    "PTOT",
+                    "DIVU",
+                    "HHO_TEMP",
+                ),
+            ),
+            PROL_DROITE=SIMP(
+                statut="f", typ="TXM", defaut="EXCLU", into=("CONSTANT", "LINEAIRE", "EXCLU")
+            ),
+            PROL_GAUCHE=SIMP(
+                statut="f", typ="TXM", defaut="EXCLU", into=("CONSTANT", "LINEAIRE", "EXCLU")
+            ),
+            FONC_INST=SIMP(statut="f", typ=(fonction_sdaster, formule)),
+        ),
+        # VALE_REF est nécessaire pour certaines VARC :
+        B_VALE_REF=BLOC(
+            condition="""is_in("NOM_VARC", ('TEMP','SECH'))""", VALE_REF=SIMP(statut="o", typ="R")
+        ),
+    )
 
-    B_EVOL          =BLOC(condition="""exists("EVOL")""",
-      NOM_CHAM      =SIMP(statut='f',typ='TXM',into=("TEMP","CORR","IRRA","NEUT","GEOM",
-                                                     "HYDR_ELNO","HYDR_NOEU",
-                                                     "META_ELNO","META_NOEU",
-                                                     "EPSA_ELNO","EPSA_NOEU","PTOT","DIVU",
-                                                     "HHO_TEMP",)),
-      PROL_DROITE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
-      PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
-      FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
-    ),
 
-    # VALE_REF est nécessaire pour certaines VARC :
-    B_VALE_REF          =BLOC(condition="""is_in("NOM_VARC", ('TEMP','SECH'))""",
-       VALE_REF          =SIMP(statut='o',typ='R'), ),
-
-);
-
-C_AFFE_VARC_EXTE = FACT(statut='o', AFFE_VARC=C_AFFE_VARC( ))
+C_AFFE_VARC_EXTE = FACT(statut="o", AFFE_VARC=C_AFFE_VARC())

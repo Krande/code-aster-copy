@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,27 +20,17 @@
 # person_in_charge: samuel.geniaut at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PGNEUTR  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
+PGNEUTR = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
 
 
 GRAD_NEUT_R = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PNEUTER,
-    ),
-    para_out=(
-           PGNEUTR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'PR'),)),
-    ),
+    para_in=(SP.PGEOMER, SP.PNEUTER),
+    para_out=(PGNEUTR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "PR"),)),),
 )

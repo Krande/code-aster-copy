@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,24 +24,31 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def calc_char_seisme_prod(MATR_MASS,**args ):
-  if args.get('__all__'):
-      return (cham_no_sdaster, )
+def calc_char_seisme_prod(MATR_MASS, **args):
+    if args.get("__all__"):
+        return (cham_no_sdaster,)
 
-  if AsType(MATR_MASS) == matr_asse_depl_r : return cham_no_sdaster
-  raise AsException("type de concept resultat non prevu")
+    if AsType(MATR_MASS) == matr_asse_depl_r:
+        return cham_no_sdaster
+    raise AsException("type de concept resultat non prevu")
 
-CALC_CHAR_SEISME=OPER(nom="CALC_CHAR_SEISME",op=  92,sd_prod=calc_char_seisme_prod,
-                      reentrant='n',fr=tr("Calcul du chargement sismique"),
-         regles=(UN_PARMI('MONO_APPUI','MODE_STAT' ),),
-         MATR_MASS       =SIMP(statut='o',typ=matr_asse_depl_r,fr=tr("Matrice de masse") ),
-         DIRECTION       =SIMP(statut='o',typ='R',max=6,fr=tr("Directions du séisme imposé")),
-         MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         MODE_STAT       =SIMP(statut='f',typ=(mode_meca,) ),
-         b_mode_stat     =BLOC ( condition = """exists("MODE_STAT")""",
-           regles=(UN_PARMI('NOEUD','GROUP_NO' ),),
-           NOEUD           =SIMP(statut='c',typ=no,validators=NoRepeat(),max='**'),
-           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-         ),
-         TITRE           =SIMP(statut='f',typ='TXM'),
-)  ;
+
+CALC_CHAR_SEISME = OPER(
+    nom="CALC_CHAR_SEISME",
+    op=92,
+    sd_prod=calc_char_seisme_prod,
+    reentrant="n",
+    fr=tr("Calcul du chargement sismique"),
+    regles=(UN_PARMI("MONO_APPUI", "MODE_STAT"),),
+    MATR_MASS=SIMP(statut="o", typ=matr_asse_depl_r, fr=tr("Matrice de masse")),
+    DIRECTION=SIMP(statut="o", typ="R", max=6, fr=tr("Directions du séisme imposé")),
+    MONO_APPUI=SIMP(statut="f", typ="TXM", into=("OUI",)),
+    MODE_STAT=SIMP(statut="f", typ=(mode_meca,)),
+    b_mode_stat=BLOC(
+        condition="""exists("MODE_STAT")""",
+        regles=(UN_PARMI("NOEUD", "GROUP_NO"),),
+        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
+        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+    ),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

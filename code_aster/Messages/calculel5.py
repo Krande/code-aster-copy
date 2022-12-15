@@ -20,124 +20,145 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    3 : _("""
+    3: _(
+        """
  Erreur d'utilisation de POST_CHAMP :
    Dans la structure de données %(k2)s,
    vous avez demandé l'extraction du champ %(k1)s pour le numéro d'ordre %(i1)d.
    Mais ce champ n'existe pas.
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Problème création CHAM_ELEM nul
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
 Erreur utilisateur :
  Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquées
  n'appartient pas à la grandeur : %(k1)s
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
 Erreur utilisateur :
   Vous ne pouvez pas utiliser la méthode ECLA_PG avec le mot-clé RESULTAT.
 Conseil :
    Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
-"""),
-
-    20 : _("""
+"""
+    ),
+    20: _(
+        """
  le GROUP_NO  %(k1)s  contient  %(k2)s  noeuds
-"""),
-
-    21 : _("""
+"""
+    ),
+    21: _(
+        """
  le GROUP_MA  %(k1)s  contient  %(k2)s  mailles
-"""),
-
-
-
-    28 : _("""
+"""
+    ),
+    28: _(
+        """
 PROJ_CHAMP :
   La méthode SOUS_POINT accepte uniquement des évolutions de type TEMP HYDR NEUT
-  pour définir des évolutions de variables de commandes EVOL_VARC"""),
-
-    29 : _("""
+  pour définir des évolutions de variables de commandes EVOL_VARC"""
+    ),
+    29: _(
+        """
 PROJ_CHAMP :
   La méthode SOUS_POINT accepte uniquement des champs de type TEMP HYDR NEUT SIEF
-  Un champ de type %(k1)s n'est actuellement pas géré."""),
-
-    30 : _("""
+  Un champ de type %(k1)s n'est actuellement pas géré."""
+    ),
+    30: _(
+        """
 PROJ_CHAMP :
   La méthode SOUS_POINT accepte uniquement les résultats de type
-  EVOL_THER."""),
-
-    31 : _("""
+  EVOL_THER."""
+    ),
+    31: _(
+        """
 PROJ_CHAMP :
-  Le mot-clé %(k1)s est interdit avec la méthode SOUS_POINT."""),
-
-    32 : _("""
+  Le mot-clé %(k1)s est interdit avec la méthode SOUS_POINT."""
+    ),
+    32: _(
+        """
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  La méthode %(k1)s est incompatible avec les champs aux noeuds."""),
-
-    33 : _("""
+  La méthode %(k1)s est incompatible avec les champs aux noeuds."""
+    ),
+    33: _(
+        """
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  La méthode %(k1)s est incompatible avec les champs par élément de type %(k2)s."""),
-
-    34 : _("""
-   Maillage quadratique obligatoire avec terme source non nul."""),
-
-    35 : _("""
+  La méthode %(k1)s est incompatible avec les champs par élément de type %(k2)s."""
+    ),
+    34: _(
+        """
+   Maillage quadratique obligatoire avec terme source non nul."""
+    ),
+    35: _(
+        """
 PROJ_CHAMP (ou LIAISON_MAILLE) :
   Vous cherchez à projeter un champ par élément (ELGA).
-  Pour cela, il vous faut renseigner le mot-clé MODELE_1."""),
-
-    36 : _("""
+  Pour cela, il vous faut renseigner le mot-clé MODELE_1."""
+    ),
+    36: _(
+        """
 PROJ_CHAMP (ou LIAISON_MAILLE) :
   Le mot-clé TYPE_CHAM est incompatible avec le mot-clé CHAM_GD.
-  Il n'est utilisable qu'avec le mot-clé RESULTAT."""),
-
-    37 : _("""
+  Il n'est utilisable qu'avec le mot-clé RESULTAT."""
+    ),
+    37: _(
+        """
 PROJ_CHAMP (ou LIAISON_MAILLE) :
   Vous cherchez à projeter un champ par élément (ELNO, ELEM ou ELGA).
-  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
-
-    38 : _("""
+  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""
+    ),
+    38: _(
+        """
   il faut définir un champ de vitesse
-"""),
-
-    39 : _("""
+"""
+    ),
+    39: _(
+        """
  la grandeur pour la variable:  %(k1)s  doit être:  %(k2)s  mais elle est:  %(k3)s
-"""),
-
-    40 : _("""
+"""
+    ),
+    40: _(
+        """
 PROJ_CHAMP  :
   Vous utilisez la méthode SOUS_POINT.
-  Pour cela, il vous faut renseigner le mot-clé  %(k1)s."""),
-
-    43 : _("""
+  Pour cela, il vous faut renseigner le mot-clé  %(k1)s."""
+    ),
+    43: _(
+        """
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à la distance %(r4)e"""),
-
-    44 : _("""
+  Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à la distance %(r4)e"""
+    ),
+    44: _(
+        """
 Le champ doit être un CHAM_ELEM
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    45 : _("""
+"""
+    ),
+    45: _(
+        """
 Longueurs des modes locaux incompatibles entre eux
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    46 : _("""
+"""
+    ),
+    46: _(
+        """
 Terme normalisation global nul
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    47 : _("""
+"""
+    ),
+    47: _(
+        """
  PROJ_CHAMP, occurrence %(i1)d de VIS_A_VIS : 
  
  Le noeud %(k1)s est jugé distant de la maille sur laquelle il devrait être
@@ -145,9 +166,10 @@ Contactez le support technique.
  précédente, on ne tient pas compte de cette projection distante.
  
  Conseil : il est cependant recommandé de vérifier l'affectation des groupes dans VIS_A_VIS. 
-"""),
-
-    48 : _("""
+"""
+    ),
+    48: _(
+        """
  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
  des noeuds sur des mailles (par exemple LIAISON_MAIL).
  Il y a %(i1)d noeuds qui ont été projetés sur des mailles jugées distantes.
@@ -168,9 +190,10 @@ Risques et conseils :
     projetés (ou "liés" quand on utilise le mot clé LIAISON_MAIL).
   * Le mot clé DISTANCE_ALARME permet d'éviter cette alarme.
 
-"""),
-
-    52 : _("""
+"""
+    ),
+    52: _(
+        """
  Le calcul du champ SIGM_ELNO n'a pas été fait sur la maille volumique %(k1)s qui borde
  la maille surfacique %(k2)s.
 
@@ -180,23 +203,25 @@ Risques et conseils :
   le volume.
   Il est aussi possible de supprimer le calcul préalable de SIGM_ELNO, le calcul sera fait
   automatiquement sur les bonnes mailles volumiques.
-"""),
-
-
-    53 : _("""
+"""
+    ),
+    53: _(
+        """
  La SUPER_MAILLE %(k1)s n'existe pas dans le maillage %(k2)s.
-"""),
-
-    54 : _("""
+"""
+    ),
+    54: _(
+        """
  Aucune maille de peau n'a été fournie.
 
  Vous devez renseigner le mot-clé MAILLE/GROUP_MA en donnant une liste de mailles ou
  un groupe de maille contenant des mailles de peau.
  Si vous avez renseigné le mot-clé TOUT='OUI', cela signifie qu'il n'y a pas de mailles
  de peau dans votre modèle ; il faut revoir le maillage.
-"""),
-
-    55 : _("""
+"""
+    ),
+    55: _(
+        """
 Alarme utilisateur :
   Vous avez utilisé le mot clé LIAISON_SOLIDE pour solidifier un ensemble
   de noeuds.
@@ -209,9 +234,10 @@ Risques et Conseils :
   En utilisant le mot clé DIST_MIN, vous pouvez faire en sorte que le
   programme considère le nuage de points comme surfacique.
   Pour cela, vous devez choisir un DIST_MIN > %(r2)f
-"""),
-
-    56 : _("""
+"""
+    ),
+    56: _(
+        """
 Alarme utilisateur :
   Vous avez utilisé le mot clé LIAISON_SOLIDE pour solidifier un ensemble
   de noeuds.
@@ -224,48 +250,51 @@ Risques et Conseils :
   En utilisant le mot clé DIST_MIN, vous pouvez faire en sorte que le
   programme considère le nuage de points comme linéique.
   Pour cela, vous devez choisir un DIST_MIN > %(r2)f
-"""),
-
-    57 : _("""
+"""
+    ),
+    57: _(
+        """
 Erreur utilisateur dans la commande PROJ_CHAMP :
   La structure de données résultat à projeter ne contient que des champs 'ELGA'.
   La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG' mais
   elle ne fonctionne qu'avec un champ isolé (mot clé CHAM_GD).
-"""),
-
-    58 : _("""
+"""
+    ),
+    58: _(
+        """
 Erreur utilisateur dans la commande PROJ_CHAMP :
   On cherche à projeter un champ par éléments 'ELGA' isolé (mot clé CHAM_GD).
   La méthode de projection doit être 'ECLA_PG' et non pas %(k1)s
-"""),
-
-
-
-
-
-    65 : _("""
+"""
+    ),
+    65: _(
+        """
  composante non définie dans  la grandeur composante:  %(k1)s
-"""),
-
-    66 : _("""
+"""
+    ),
+    66: _(
+        """
 
  le nombre de composantes affectées n'est pas égal  au nombre de composantes à affecter
  occurrence de AFFE numéro %(i1)d
  nombre de composante affectées :  %(i2)d
  nombre de composante a affecter :  %(i3)d
-"""),
-
-    67 : _("""
+"""
+    ),
+    67: _(
+        """
  erreurs données le GROUP_MA  %(k1)s
   n'a pas le même nombre de mailles  que le GROUP_MA  %(k2)s
-"""),
-
-    68 : _("""
+"""
+    ),
+    68: _(
+        """
  erreurs données le GROUP_MA  %(k1)s
   n'a pas les mêmes types de maille  que le GROUP_MA  %(k2)s
-"""),
-
-    69 : _("""
+"""
+    ),
+    69: _(
+        """
  Problème lors de la vérification de correspondance entre le
  GROUP_MA_INIT '%(k1)s' et le GROUP_MA_FINAL '%(k2)s' :
 
@@ -279,39 +308,46 @@ Erreur utilisateur dans la commande PROJ_CHAMP :
 
  - Une erreur fréquente lors de l'utilisation de la commande PERM_MAC3COEUR
  est que les 2 assemblages à permuter ne sont pas du même type de conception.
-"""),
-
-    70 : _("""
+"""
+    ),
+    70: _(
+        """
  l'instant  de calcul  %(r1)f  n'existe pas dans  %(k1)s
-"""),
-
-    71 : _("""
+"""
+    ),
+    71: _(
+        """
  plusieurs numéros d'ordre trouves pour l'instant  %(r1)f
-"""),
-
-    72 : _("""
+"""
+    ),
+    72: _(
+        """
  Cette commande est réentrante :   structure de données résultat en sortie     %(k1)s
  Structure de données RESU_FINAL  %(k2)s
-"""),
-
-    73 : _("""
+"""
+    ),
+    73: _(
+        """
 La structure de données résultat en sortie  %(k1)s doit contenir qu'un seul NUME_ORDRE %(k2)s
-"""),
-
-    76 : _("""
+"""
+    ),
+    76: _(
+        """
  Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
     élément fini :  %(k2)s
     famille      :  %(k3)s.
  Faites une demande d'évolution.
-"""),
-
-    78 : _("""
+"""
+    ),
+    78: _(
+        """
  Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
     élément fini :  %(k2)s.
  Faites une demande d'évolution.
-"""),
-
-    79 : _("""
+"""
+    ),
+    79: _(
+        """
 Vous utilisez la commande PROJ_CHAMP (ou une fonctionnalité utilisant la
 projection d'un maillage sur un autre).
 Pour des raisons de performance, les mailles du maillage à projeter sont
@@ -327,17 +363,13 @@ Nombre maximal de mailles dans une cellule : %(i2)d
 Conseil : dans ce type de cas de figure, l'utilisation de VIS_A_VIS peut
 améliorer très significativement les performances de PROJ_CHAMP.
 
-"""),
-
-
-
-
-
-
-    85 : _("""
+"""
+    ),
+    85: _(
+        """
  Problème liste de mailles carte : %(k1)s  numéro entité : %(i1)d
   position dans liste : %(i2)d
   numéro de maille  : %(i3)d
-"""),
-
+"""
+    ),
 }

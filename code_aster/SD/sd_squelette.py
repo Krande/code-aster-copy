@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ from .sd_util import *
 
 
 class sd_squelette(sd_maillage):
-#-------------------------------
+    # -------------------------------
     nomj = SDNom(fin=8)
-    inv_skeleton = Facultatif(AsVI(SDNom(nomj='.INV.SKELETON'),))
+    inv_skeleton = Facultatif(AsVI(SDNom(nomj=".INV.SKELETON")))
 
     CORRES = Facultatif(AsVI())
-    NOMSST = Facultatif(AsVK8(SDNom(debut=17),))
+    NOMSST = Facultatif(AsVK8(SDNom(debut=17)))
 
     # ENSEMBLE__ : TRANS , ANGL_NAUT
     TRANS = Facultatif(AsVK8(lonmax=3))

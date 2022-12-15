@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ from .sd_titre import sd_titre
 
 
 class sd_table(sd_titre):
-#-------------------------------------
+    # -------------------------------------
     nomj = SDNom(fin=17)
-    TBNP = AsVI(SDNom(debut=19), lonmax=2, )
-    TBBA = AsVK8(SDNom(debut=19), lonmax=1, )
-    TBLP = AsVK24(SDNom(debut=19), )
+    TBNP = AsVI(SDNom(debut=19), lonmax=2)
+    TBBA = AsVK8(SDNom(debut=19), lonmax=1)
+    TBLP = AsVK24(SDNom(debut=19))
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
@@ -40,7 +40,7 @@ class sd_table(sd_titre):
 
     def get_column(self, i):
         nbcol = self.nb_column()
-        if ((i <= 0) or (i > nbcol)):
+        if (i <= 0) or (i > nbcol):
             return [None, None]
         desc = self.TBLP.get()
         data_name = desc[4 * (i - 1) + 2]
@@ -73,13 +73,17 @@ class sd_table(sd_titre):
             col_d.check(checker)
             col_m.check(checker)
             if col_d.data.lonuti != shape[1]:
-                checker.err(self, "La taille du vecteur data pour le paramètre '%s' de la "
-                            "table est inconsistante %d!=%d"
-                            % (param_name, col_d.data.lonuti, shape[1]))
+                checker.err(
+                    self,
+                    "La taille du vecteur data pour le paramètre '%s' de la "
+                    "table est inconsistante %d!=%d" % (param_name, col_d.data.lonuti, shape[1]),
+                )
             if col_m.mask.lonuti != shape[1]:
-                checker.err(self, "La taille du vecteur mask pour le paramètre '%s' de la "
-                            "table est inconsistante %d!=%d"
-                            % (param_name, col_m.mask.lonuti, shape[1]))
+                checker.err(
+                    self,
+                    "La taille du vecteur mask pour le paramètre '%s' de la "
+                    "table est inconsistante %d!=%d" % (param_name, col_m.mask.lonuti, shape[1]),
+                )
 
 
 class Colonne_Data(AsBase):

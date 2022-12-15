@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,25 +21,38 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'VMIS_CIN2_NRAD',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi élastoplastique de J.L.Chaboche à 2 variables cinématiques qui rend compte du comportement cyclique en élasto-plasticité
+    nom="VMIS_CIN2_NRAD",
+    lc_type=("MECANIQUE",),
+    doc="""Loi élastoplastique de J.L.Chaboche à 2 variables cinématiques qui rend compte du comportement cyclique en élasto-plasticité
    avec 2 tenseurs d'écrouissage cinématique non linéaire, un écrouissage isotrope non linéaire, un effet d'écrouissage sur les variables
    tensorielles de rappel, et prise en compte de la non proportionnalité du chargement.
-   Toutes les constantes du matériau peuvent éventuellement dépendre de la température."""              ,
-    num_lc         = 4,
-    nb_vari        = 14,
-    nom_vari       = ('EPSPEQ','INDIPLAS','ALPHAXX','ALPHAYY','ALPHAZZ',
-        'ALPHAXY','ALPHAXZ','ALPHAYZ','ALPHA2XX','ALPHA2YY',
-        'ALPHA2ZZ','ALPHA2XY','ALPHA2XZ','ALPHA2YZ',),
-    mc_mater       = ('ELAS','CIN2_CHAB','CIN2_NRAD',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','GDEF_LOG',),
-    algo_inte      = ('BRENT','SECANTE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   Toutes les constantes du matériau peuvent éventuellement dépendre de la température.""",
+    num_lc=4,
+    nb_vari=14,
+    nom_vari=(
+        "EPSPEQ",
+        "INDIPLAS",
+        "ALPHAXX",
+        "ALPHAYY",
+        "ALPHAZZ",
+        "ALPHAXY",
+        "ALPHAXZ",
+        "ALPHAYZ",
+        "ALPHA2XX",
+        "ALPHA2YY",
+        "ALPHA2ZZ",
+        "ALPHA2XY",
+        "ALPHA2XZ",
+        "ALPHA2YZ",
+    ),
+    mc_mater=("ELAS", "CIN2_CHAB", "CIN2_NRAD"),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP", "GDEF_LOG"),
+    algo_inte=("BRENT", "SECANTE"),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

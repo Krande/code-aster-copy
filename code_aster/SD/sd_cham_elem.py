@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,9 @@ from .sd_titre import sd_titre
 
 class sd_cham_elem(sd_titre):
     nomj = SDNom(fin=19)
-    CELD = AsVI(docu='CHML', )
-    CELV = AsObject(genr='V', xous='S', type=Parmi(
-        'C', 'I', 'K', 'R'), ltyp=Parmi(4, 8, 16), )
-    CELK = AsVK24(lonmax=7, )
+    CELD = AsVI(docu="CHML")
+    CELV = AsObject(genr="V", xous="S", type=Parmi("C", "I", "K", "R"), ltyp=Parmi(4, 8, 16))
+    CELK = AsVK24(lonmax=7)
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
@@ -40,11 +39,11 @@ class sd_cham_elem(sd_titre):
         celk = self.CELK.get_stripped()
         sd2 = sd_ligrel(celk[0])
         sd2.check(checker)
-        assert celk[1] != '', celk
-        assert celk[2] in ('ELNO', 'ELGA', 'ELEM'), celk
-        assert celk[4] in ('', 'INF', 'MOY', 'SUP'), celk
-        assert celk[5] != '', celk
-        assert celk[6] in ('MPI_COMPLET', 'MPI_INCOMPLET'), celk
+        assert celk[1] != "", celk
+        assert celk[2] in ("ELNO", "ELGA", "ELEM"), celk
+        assert celk[4] in ("", "INF", "MOY", "SUP"), celk
+        assert celk[5] != "", celk
+        assert celk[6] in ("MPI_COMPLET", "MPI_INCOMPLET"), celk
 
     def check_2(self, checker):
         if not checker._profond:
@@ -85,10 +84,15 @@ class sd_cham_elem(sd_titre):
                 assert nbsp > 0, (nbsp, kgrel, iel)
                 if lvari:
                     assert ncdyn > 0, (ncdyn, kgrel, iel)
-                    assert lgchel == lgcata * nbsp * \
-                        ncdyn, (lgchel, lgcata, nbsp, ncdyn, kgrel, iel)
+                    assert lgchel == lgcata * nbsp * ncdyn, (
+                        lgchel,
+                        lgcata,
+                        nbsp,
+                        ncdyn,
+                        kgrel,
+                        iel,
+                    )
                 else:
                     assert ncdyn == 0, (ncdyn, kgrel, iel)
-                    assert lgchel == lgcata * \
-                        nbsp, (lgchel, lgcata, nbsp, kgrel, iel)
+                    assert lgchel == lgcata * nbsp, (lgchel, lgcata, nbsp, kgrel, iel)
                 assert adiel > 0, (adiel, kgrel, iel)

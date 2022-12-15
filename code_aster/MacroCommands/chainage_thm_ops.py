@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ from .GeoMeca.chainage_meca_hydr import *
 
 def chainage_thm_ops(self, TYPE_CHAINAGE, **args):
     """
-       Ecriture de la macro CHAINAGE_THM
+    Ecriture de la macro CHAINAGE_THM
     """
     #
     # RESU_MECA / MODELE_HYDR : résultat mécanique à projeter
@@ -71,27 +71,27 @@ def chainage_thm_ops(self, TYPE_CHAINAGE, **args):
 
     motscles = dict()
 
-    if (TYPE_CHAINAGE == "HYDR_MECA"):
+    if TYPE_CHAINAGE == "HYDR_MECA":
         return CHAINAGE_HYDR_MECA(self, args, motscles)
 
     #
     # 2. Chaînage MECANIQUE ===> HYDRAULIQUE
     #
 
-    elif (TYPE_CHAINAGE == "MECA_HYDR"):
+    elif TYPE_CHAINAGE == "MECA_HYDR":
         return CHAINAGE_MECA_HYDR(self, args, motscles)
 
     #
     # 3. Initialisation des matrices de projection
     #
 
-    elif (TYPE_CHAINAGE == "INIT"):
+    elif TYPE_CHAINAGE == "INIT":
         MATR_MH, MATR_HM1, MATR_HM2 = CHAINAGE_INIT(self, args, motscles)
-        self.register_result(MATR_MH, args['MATR_MH'])
-        self.register_result(MATR_HM1, args['MATR_HM1'])
-        self.register_result(MATR_HM2, args['MATR_HM2'])
+        self.register_result(MATR_MH, args["MATR_MH"])
+        self.register_result(MATR_HM1, args["MATR_HM1"])
+        self.register_result(MATR_HM2, args["MATR_HM2"])
 
     else:
-        UTMESS('F', 'DVP_1')
+        UTMESS("F", "DVP_1")
 
     return

@@ -21,100 +21,95 @@
 # MODELISATION AXIS : FLUAGE PROPRE UMLV
 # -----------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # PARAMETRE D'ETUDE
 
-PRES_INT=1E6
+PRES_INT = 1e6
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 # 1- LLECTURE MAILLAGE
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
-MAILME=LIRE_MAILLAGE(INFO=2,FORMAT='MED')
+MAILME = LIRE_MAILLAGE(INFO=2, FORMAT="MED")
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 # 2- DEFINITION DU MODELE MECANIQUE
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
-MODELEME=AFFE_MODELE(MAILLAGE=MAILME,
-                   AFFE=(
-                          _F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='AXIS'),
-                            ),
-                         )
+MODELEME = AFFE_MODELE(
+    MAILLAGE=MAILME, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"),)
+)
 
-MAILME=DEFI_GROUP(reuse=MAILME,
-                  MAILLAGE=MAILME,
-                  CREA_GROUP_NO=(_F( GROUP_MA = 'SINTERI'),
-                                 _F( GROUP_MA = 'SBASSE'),
-                                 _F( GROUP_MA = 'SHAUTE'),
-                                 _F( GROUP_MA = 'SEXTERI'),),
-                  )
+MAILME = DEFI_GROUP(
+    reuse=MAILME,
+    MAILLAGE=MAILME,
+    CREA_GROUP_NO=(
+        _F(GROUP_MA="SINTERI"),
+        _F(GROUP_MA="SBASSE"),
+        _F(GROUP_MA="SHAUTE"),
+        _F(GROUP_MA="SEXTERI"),
+    ),
+)
 
-MAILME=MODI_MAILLAGE(reuse =MAILME,MAILLAGE=MAILME,ORIE_PEAU=_F(GROUP_MA_PEAU='SINTERI',),)
+MAILME = MODI_MAILLAGE(reuse=MAILME, MAILLAGE=MAILME, ORIE_PEAU=_F(GROUP_MA_PEAU="SINTERI"))
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 # 3 DEFINITION DES CONSTANTES MATERIAU
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 # 3.1. LE BETON
 
-E = DEFI_CONSTANTE(VALE = 31.0E9)
+E = DEFI_CONSTANTE(VALE=31.0e9)
 
-NU=DEFI_CONSTANTE(VALE=0.200,)
+NU = DEFI_CONSTANTE(VALE=0.200)
 
-ALPHA=DEFI_CONSTANTE(VALE=0.0,)
+ALPHA = DEFI_CONSTANTE(VALE=0.0)
 
-FCTD=DEFI_FONCTION(NOM_PARA='SECH',
-                   VALE=(0.0,0.0,
-                         1.0,1.0,  ),
-                   PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',)
+FCTD = DEFI_FONCTION(
+    NOM_PARA="SECH", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE"
+)
 
-BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
-                               NU=NU,
-                               TEMP_DEF_ALPHA=0.0,
-                               ALPHA= ALPHA,
-                               FONC_DESORP=FCTD,
-                               ),
-                    BETON_UMLV=_F(K_RS   = 2.0E11,      #[Pa]
-                                     ETA_RS = 4.0E16,      #[Pa.s]
-                                     K_IS   = 5.0E10,     #[Pa]
-                                     ETA_IS = 1.0E17,      #[Pa.s]
-                                     K_RD   = 5.0E11,      #[Pa]
-                                     ETA_RD = 1.0E16,    #[Pa.s]
-                                     ETA_ID = 1.0E17 ,  # [Pa.s]
-                                     ),
-               )
-
+BETON = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E, NU=NU, TEMP_DEF_ALPHA=0.0, ALPHA=ALPHA, FONC_DESORP=FCTD),
+    BETON_UMLV=_F(
+        K_RS=2.0e11,  # [Pa]
+        ETA_RS=4.0e16,  # [Pa.s]
+        K_IS=5.0e10,  # [Pa]
+        ETA_IS=1.0e17,  # [Pa.s]
+        K_RD=5.0e11,  # [Pa]
+        ETA_RD=1.0e16,  # [Pa.s]
+        ETA_ID=1.0e17,  # [Pa.s]
+    ),
+)
 
 
 # #-------------------------------------------------
 # 4.  Definition des temps caracteristiques
 # #------------------------------------------------
 
-#TEMPS 10 HEURES
-TPS_10H=10*3600.
-TPS_1AN=3600*365.25*24
+# TEMPS 10 HEURES
+TPS_10H = 10 * 3600.0
+TPS_1AN = 3600 * 365.25 * 24
 # #-------------------------------------------------
 # 5.  DEFINITION LISTE D'INSTANTS
 # #------------------------------------------------
 
-LINST=DEFI_LIST_REEL(DEBUT=-1.0,
-                        INTERVALLE=(_F(JUSQU_A = 0.0,      NOMBRE = 1),
-                                    _F(JUSQU_A = TPS_10H,  NOMBRE = 10),
-                                    _F(JUSQU_A = TPS_1AN,  NOMBRE = 100),
-                                    ),)
+LINST = DEFI_LIST_REEL(
+    DEBUT=-1.0,
+    INTERVALLE=(
+        _F(JUSQU_A=0.0, NOMBRE=1),
+        _F(JUSQU_A=TPS_10H, NOMBRE=10),
+        _F(JUSQU_A=TPS_1AN, NOMBRE=100),
+    ),
+)
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
-                        ECHEC=_F(ACTION='DECOUPE',
-                                 SUBD_METHODE='MANUEL',
-                                 SUBD_PAS=3,
-                                 SUBD_PAS_MINI =1E-6 ),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LINST),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=3, SUBD_PAS_MINI=1e-6),
+)
 
 # #---------------------------------------------------------------------------------
 # 6. CALCUL THERMIQUE
@@ -123,36 +118,34 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
 
 # CHAMP DE TEMPERATURE
 
-TEMP=CREA_CHAMP(OPERATION='AFFE',
-                TYPE_CHAM='NOEU_TEMP_R',
-                MAILLAGE=MAILME,
-                AFFE=_F(TOUT = 'OUI',
-                        NOM_CMP = 'TEMP',
-                        VALE = 20.),
-                )
+TEMP = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAILME,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
+)
 
 # CHAMP DE SECHAGE
 
-SECH=CREA_CHAMP(OPERATION='AFFE',
-                TYPE_CHAM='NOEU_TEMP_R',
-                MAILLAGE=MAILME,
-                AFFE=_F(TOUT = 'OUI',
-                        NOM_CMP = 'TEMP',
-                        VALE = 1.0)
-                       )
+SECH = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_R",
+    MAILLAGE=MAILME,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=1.0),
+)
 
 # #---------------------------------------------------------------------------------
 # 7. AFFECTATION MATERIAU AVEC PRISE EN COMPTE THERMIQUE
 # #---------------------------------------------------------------------------------
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAILME,
-                    AFFE=(_F(TOUT='OUI',MATER=BETON,),
-                         ),
-                    AFFE_VARC=(
-                               _F(TOUT='OUI',CHAM_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20.,),
-                               _F(TOUT='OUI',CHAM_GD=SECH,NOM_VARC='SECH',VALE_REF=1.,),
-                              ),
-                    )
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MAILME,
+    AFFE=(_F(TOUT="OUI", MATER=BETON),),
+    AFFE_VARC=(
+        _F(TOUT="OUI", CHAM_GD=TEMP, NOM_VARC="TEMP", VALE_REF=20.0),
+        _F(TOUT="OUI", CHAM_GD=SECH, NOM_VARC="SECH", VALE_REF=1.0),
+    ),
+)
 
 
 # #---------------------------------------------------------------------------------
@@ -161,48 +154,33 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILME,
 
 # 8.1.CONDITIONS AUX LIMITES
 
-CLIM=AFFE_CHAR_MECA(MODELE=MODELEME,
-                    DDL_IMPO=_F(GROUP_NO='SBASSE',DY=0.0,),
-                    LIAISON_UNIF=(_F(GROUP_NO ='SEXTERI',DDL = 'DX',),
-                                  _F(GROUP_NO ='SHAUTE',DDL = 'DY',),
-                                 ),
-                   )
+CLIM = AFFE_CHAR_MECA(
+    MODELE=MODELEME,
+    DDL_IMPO=_F(GROUP_NO="SBASSE", DY=0.0),
+    LIAISON_UNIF=(_F(GROUP_NO="SEXTERI", DDL="DX"), _F(GROUP_NO="SHAUTE", DDL="DY")),
+)
 
 # 8.2 CHARGEMENT EN PRESSION
 
-CH_P = AFFE_CHAR_MECA(MODELE=MODELEME,PRES_REP=_F(GROUP_MA='SINTERI',PRES = PRES_INT),)
-
+CH_P = AFFE_CHAR_MECA(MODELE=MODELEME, PRES_REP=_F(GROUP_MA="SINTERI", PRES=PRES_INT))
 
 
 # 8.3. CALCUL
 
-RESUMECA=STAT_NON_LINE(
-                       MODELE=MODELEME,
-                       CHAM_MATER=CHMAT,
-                       EXCIT=(
-                               _F(CHARGE=CLIM,),
-                               _F(CHARGE=CH_P,),
-                              ),
-                       COMPORTEMENT=_F(RELATION='BETON_UMLV'),
-                       INCREMENT=_F(LIST_INST=DEFLIST,
-                                   ),
-                       NEWTON=_F(PREDICTION = 'ELASTIQUE',MATRICE='TANGENTE',REAC_ITER=1),
-                       CONVERGENCE=_F(
-                                      ITER_GLOB_MAXI=10,
-                                    ),
-
-                       OBSERVATION=(_F(LIST_INST=LINST,
-                                       NOM_CHAM='VARI_ELGA',
-                                       POINT = 1,
-                                       NOM_CMP='V1',
-                                       GROUP_MA='M1',),
-                                       _F(NOM_CHAM='VARI_ELGA',
-                                       POINT = 1,
-                                       NOM_CMP='V2',
-                                       GROUP_MA='M1',),
-                                      ),
-                        ARCHIVAGE =_F(LIST_INST =LINST),
-             )
+RESUMECA = STAT_NON_LINE(
+    MODELE=MODELEME,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CLIM), _F(CHARGE=CH_P)),
+    COMPORTEMENT=_F(RELATION="BETON_UMLV"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
+    OBSERVATION=(
+        _F(LIST_INST=LINST, NOM_CHAM="VARI_ELGA", POINT=1, NOM_CMP="V1", GROUP_MA="M1"),
+        _F(NOM_CHAM="VARI_ELGA", POINT=1, NOM_CMP="V2", GROUP_MA="M1"),
+    ),
+    ARCHIVAGE=_F(LIST_INST=LINST),
+)
 
 
 # #---------------------------------------------------------------------------------
@@ -211,25 +189,23 @@ RESUMECA=STAT_NON_LINE(
 
 # 9.1. CALCUL DES GRANDEURS A DEPOUILLER
 
-RESUMECA=CALC_CHAMP(reuse=RESUMECA,RESULTAT=RESUMECA,DEFORMATION=('EPSI_ELGA'))
+RESUMECA = CALC_CHAMP(reuse=RESUMECA, RESULTAT=RESUMECA, DEFORMATION=("EPSI_ELGA"))
 
 
+CHAMELG = CALC_CHAM_ELEM(MODELE=MODELEME, GROUP_MA="M1", OPTION="COOR_ELGA")
 
-CHAMELG=CALC_CHAM_ELEM(MODELE=MODELEME,GROUP_MA='M1',OPTION='COOR_ELGA')
+TABLE = RECU_TABLE(CO=RESUMECA, NOM_TABLE="OBSERVATION")
 
-TABLE=RECU_TABLE(CO=RESUMECA,NOM_TABLE='OBSERVATION',)
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TYPE_TEST='SOMM',
-           TABLE=TABLE,
-           FILTRE=_F(CRIT_COMP='EQ',
-                     NOM_PARA='NOM_CMP',
-                     VALE_K='V2',),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TYPE_TEST="SOMM",
+    TABLE=TABLE,
+    FILTRE=_F(CRIT_COMP="EQ", NOM_PARA="NOM_CMP", VALE_K="V2"),
+)
 
 FIN()

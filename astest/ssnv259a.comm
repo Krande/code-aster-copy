@@ -19,32 +19,30 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 # MESH
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=20)
+MAIL = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 # MAIL=DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL,
-               # CREA_GROUP_NO=(_F(NOM='FFIS',
-                                 # NOEUD=('N3','N39','N75','N165',)),),)
+# CREA_GROUP_NO=(_F(NOM='FFIS',
+# NOEUD=('N3','N39','N75','N165',)),),)
 # MAIL=DEFI_GROUP(reuse =MAIL,MAILLAGE=MAIL,
-                # CREA_GROUP_NO=(_F(NOM='FFIS1',OPTION='SEGM_DROI_ORDO',
-                                # GROUP_NO ='FFIS',
-                                # NOEUD_ORIG='N3',
-                                # NOEUD_EXTR='N165',
-                                # PRECISION=1.,
-                                # CRITERE='RELATIF',),),)
+# CREA_GROUP_NO=(_F(NOM='FFIS1',OPTION='SEGM_DROI_ORDO',
+# GROUP_NO ='FFIS',
+# NOEUD_ORIG='N3',
+# NOEUD_EXTR='N165',
+# PRECISION=1.,
+# CRITERE='RELATIF',),),)
 
 # START CALCUL
 
-MA=DEFI_MATERIAU(ELAS=_F(E=197000, NU=0.3,),
-                 ECRO_LINE=_F(D_SIGM_EPSI=0., SY=800.),)
+MA = DEFI_MATERIAU(ELAS=_F(E=197000, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=0.0, SY=800.0))
 
-MATE=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MA))
+MATE = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MA))
 
-MODE=AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI',
-                                PHENOMENE='MECANIQUE', MODELISATION='3D'))
+MODE = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-'''
+"""
 
 This is the commands file that generates the RMED: SSNV259a.MMED
 
@@ -72,171 +70,149 @@ RESUIMP=STAT_NON_LINE(MODELE=MODE,
                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6),
                       SOLVEUR=_F(METHODE='MULT_FRONT'),
                       ARCHIVAGE=_F(LIST_INST=L_INST,),)
-'''
+"""
 #
 
-RESUIMP = LIRE_RESU(TYPE_RESU  = 'EVOL_NOLI',
-                 FORMAT     = 'MED',
-                 MODELE     = MODE,
-                 CHAM_MATER=MATE,
-                 FORMAT_MED = (
-                 
-                                  _F( NOM_RESU = 'RESUIMP',
-                                   NOM_CHAM = 'SIEF_ELGA'),
-                 
-                                  _F( NOM_RESU = 'RESUIMP',
-                                   NOM_CHAM = 'VARI_ELGA'),
-                                  
-                                  _F( NOM_RESU = 'RESUIMP',
-                                   NOM_CHAM = 'DEPL'),
-                                   
-                                   ),
-                 UNITE      = 20,
-                 TOUT_ORDRE = 'OUI',);
+RESUIMP = LIRE_RESU(
+    TYPE_RESU="EVOL_NOLI",
+    FORMAT="MED",
+    MODELE=MODE,
+    CHAM_MATER=MATE,
+    FORMAT_MED=(
+        _F(NOM_RESU="RESUIMP", NOM_CHAM="SIEF_ELGA"),
+        _F(NOM_RESU="RESUIMP", NOM_CHAM="VARI_ELGA"),
+        _F(NOM_RESU="RESUIMP", NOM_CHAM="DEPL"),
+    ),
+    UNITE=20,
+    TOUT_ORDRE="OUI",
+)
 
 
-
-FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
-                    SYME='OUI',
-                    FOND_FISS=_F(GROUP_MA='FFIS'),
-                    LEVRE_SUP=_F(GROUP_MA='SULEV'),)
+FISS = DEFI_FOND_FISS(
+    MAILLAGE=MAIL, SYME="OUI", FOND_FISS=_F(GROUP_MA="FFIS"), LEVRE_SUP=_F(GROUP_MA="SULEV")
+)
 LISTG = (0, 3, 7, 10)
-LISTI = (1.0)
+LISTI = 1.0
 
 # CALC_G
-G=CALC_G(
-        RESULTAT=RESUIMP,
-        OPTION='G', 
-        INST=LISTI,
-        THETA=_F(FISSURE=FISS,),)
-         
+G = CALC_G(RESULTAT=RESUIMP, OPTION="G", INST=LISTI, THETA=_F(FISSURE=FISS))
+
 IMPR_TABLE(TABLE=G, UNITE=6)
 
-TEST_TABLE(TABLE=G,
-          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                      VALE_I = 1, 
-                      ),
-                      _F(NOM_PARA = 'INST',
-                      VALE = LISTI ),
-                      ),
-          NOM_PARA='G',
-          VALE_CALC=9.42530E-02,
-          VALE_REFE=0.118,
-          CRITERE='ABSOLU',
-          PRECISION= 0.05,
-          REFERENCE='ANALYTIQUE' )
-  
-     
+TEST_TABLE(
+    TABLE=G,
+    FILTRE=(_F(NOM_PARA="NUM_PT", VALE_I=1), _F(NOM_PARA="INST", VALE=LISTI)),
+    NOM_PARA="G",
+    VALE_CALC=9.42530e-02,
+    VALE_REFE=0.118,
+    CRITERE="ABSOLU",
+    PRECISION=0.05,
+    REFERENCE="ANALYTIQUE",
+)
+
+
 # POST_K1_K2_K3
-K=POST_K1_K2_K3(RESULTAT=RESUIMP, 
-                FOND_FISS=FISS, 
-                INST=LISTI,
-                TITRE='POST_K1_K2_K3')
+K = POST_K1_K2_K3(RESULTAT=RESUIMP, FOND_FISS=FISS, INST=LISTI, TITRE="POST_K1_K2_K3")
 IMPR_TABLE(TABLE=K, UNITE=6)
 
-TEST_TABLE(TABLE=K,
-          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                      VALE_I = 1, 
-                      ),
-                      _F(NOM_PARA = 'INST',
-                      VALE = LISTI ),
-                      ),
-          NOM_PARA='G',
-          VALE_CALC=0.08357822555740928,
-          VALE_REFE=0.118,
-          CRITERE='ABSOLU',
-          PRECISION= 0.05,
-          REFERENCE='ANALYTIQUE' )
-          
+TEST_TABLE(
+    TABLE=K,
+    FILTRE=(_F(NOM_PARA="NUM_PT", VALE_I=1), _F(NOM_PARA="INST", VALE=LISTI)),
+    NOM_PARA="G",
+    VALE_CALC=0.08357822555740928,
+    VALE_REFE=0.118,
+    CRITERE="ABSOLU",
+    PRECISION=0.05,
+    REFERENCE="ANALYTIQUE",
+)
+
 # POST_JMOD
 
-MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
-               CREA_GROUP_NO= (
-               _F( NOM = 'NPJ', NOEUD = 'N3'),
-               ),
-)
-          
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(NOM="NPJ", NOEUD="N3"),))
 
-IMPR_RESU(FORMAT='RESULTAT',UNITE=6,RESU=_F(RESULTAT=RESUIMP))
+
+IMPR_RESU(FORMAT="RESULTAT", UNITE=6, RESU=_F(RESULTAT=RESUIMP))
 
 ## TEST1
-J1=POST_JMOD(
-           RESULTAT=RESUIMP,
-           FOND_FISS=FISS, 
-           NB_COUCHES=2,
-           TITRE='01 - POST_JMOD', 
-           OPTION='JMOD',
-           NB_POINT_FOND=2,NUME_ORDRE=10,
-                     )
-J2=POST_JMOD(
-           RESULTAT=RESUIMP,
-           FOND_FISS=FISS, 
-           NB_COUCHES=2,
-           TITRE='01 - POST_JMOD', 
-           OPTION='JMOD',
-           NB_POINT_FOND=2,INST=1.0,PRECISION=1.E-1,
-                     )
-           
+J1 = POST_JMOD(
+    RESULTAT=RESUIMP,
+    FOND_FISS=FISS,
+    NB_COUCHES=2,
+    TITRE="01 - POST_JMOD",
+    OPTION="JMOD",
+    NB_POINT_FOND=2,
+    NUME_ORDRE=10,
+)
+J2 = POST_JMOD(
+    RESULTAT=RESUIMP,
+    FOND_FISS=FISS,
+    NB_COUCHES=2,
+    TITRE="01 - POST_JMOD",
+    OPTION="JMOD",
+    NB_POINT_FOND=2,
+    INST=1.0,
+    PRECISION=1.0e-1,
+)
+
 
 ## TEST3
-J3=POST_JMOD(
-           RESULTAT=RESUIMP,
-           FOND_FISS=FISS, 
-           NB_COUCHES=2,
-           TITRE='01 - POST_JMOD', 
-           OPTION='JMOD',
-           NB_POINT_FOND=2,
-                     )
-           
+J3 = POST_JMOD(
+    RESULTAT=RESUIMP,
+    FOND_FISS=FISS,
+    NB_COUCHES=2,
+    TITRE="01 - POST_JMOD",
+    OPTION="JMOD",
+    NB_POINT_FOND=2,
+)
+
 IMPR_TABLE(TABLE=J3, UNITE=6)
 
-TEST_TABLE(TABLE=J3,
-          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                      VALE_I = 1, 
-                      ),
-                      _F(NOM_PARA = 'INST',
-                      VALE = LISTI ),
-                      ),
-          NOM_PARA='J',
-          VALE_CALC=0.09886667799671604,
-          VALE_REFE=0.118,
-          CRITERE='ABSOLU',
-          PRECISION= 3E-2,
-          REFERENCE='ANALYTIQUE' )
-  
+TEST_TABLE(
+    TABLE=J3,
+    FILTRE=(_F(NOM_PARA="NUM_PT", VALE_I=1), _F(NOM_PARA="INST", VALE=LISTI)),
+    NOM_PARA="J",
+    VALE_CALC=0.09886667799671604,
+    VALE_REFE=0.118,
+    CRITERE="ABSOLU",
+    PRECISION=3e-2,
+    REFERENCE="ANALYTIQUE",
+)
+
 
 # create a dummy field to test ETAT_INIT
-zero=0.0
-EPSIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
-                   OPERATION='AFFE',
-                   MODELE=MODE,
-                   AFFE=_F(TOUT='OUI',
-                           NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPYZ','EPXZ'),
-                            VALE=(zero,zero,zero,zero,zero,zero,),),);
+zero = 0.0
+EPSIELGA = CREA_CHAMP(
+    TYPE_CHAM="ELGA_EPSI_R",
+    OPERATION="AFFE",
+    MODELE=MODE,
+    AFFE=_F(
+        TOUT="OUI",
+        NOM_CMP=("EPXX", "EPYY", "EPZZ", "EPXY", "EPYZ", "EPXZ"),
+        VALE=(zero, zero, zero, zero, zero, zero),
+    ),
+)
 # TEST6
-J4=POST_JMOD(
-           RESULTAT=RESUIMP,
-           FOND_FISS=FISS, 
-           NB_COUCHES=2,
-           TITRE='01 - POST_JMOD', 
-           OPTION='J',
-           NB_POINT_FOND=2,
-           ETAT_INIT=_F(EPSI=EPSIELGA),)
-           
+J4 = POST_JMOD(
+    RESULTAT=RESUIMP,
+    FOND_FISS=FISS,
+    NB_COUCHES=2,
+    TITRE="01 - POST_JMOD",
+    OPTION="J",
+    NB_POINT_FOND=2,
+    ETAT_INIT=_F(EPSI=EPSIELGA),
+)
+
 IMPR_TABLE(TABLE=J4, UNITE=6)
 
-TEST_TABLE(TABLE=J4,
-          FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                      VALE_I = 1, 
-                      ),
-                      _F(NOM_PARA = 'INST',
-                      VALE = LISTI ),
-                      ),
-          NOM_PARA='J',
-          VALE_CALC=0.09886667799671604,
-          VALE_REFE=0.118,
-          CRITERE='ABSOLU',
-          PRECISION= 3E-2,
-          REFERENCE='AUTRE_ASTER' )
-  
+TEST_TABLE(
+    TABLE=J4,
+    FILTRE=(_F(NOM_PARA="NUM_PT", VALE_I=1), _F(NOM_PARA="INST", VALE=LISTI)),
+    NOM_PARA="J",
+    VALE_CALC=0.09886667799671604,
+    VALE_REFE=0.118,
+    CRITERE="ABSOLU",
+    PRECISION=3e-2,
+    REFERENCE="AUTRE_ASTER",
+)
+
 FIN()

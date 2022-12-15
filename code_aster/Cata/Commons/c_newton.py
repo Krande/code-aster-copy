@@ -25,28 +25,28 @@ from ..Language.Syntax import *
 
 def C_NEWTON(Command=None):
     if Command == "MECA_NON_LINE":
-        mfact = FACT(statut='d',
-                     PREDICTION=SIMP(statut='f', typ='TXM', defaut="TANGENTE", into=(
-                         "TANGENTE", "ELASTIQUE",)),
-                     MATRICE=SIMP(statut='f', typ='TXM', defaut="TANGENTE",
-                                  into=("TANGENTE", "ELASTIQUE")),
-                     REAC_ITER=SIMP(statut='f', typ='I', defaut=1, val_min=0),
-                     REAC_INCR=SIMP(statut='f', typ='I', defaut=1, val_min=0),
-                     )
+        mfact = FACT(
+            statut="d",
+            PREDICTION=SIMP(
+                statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE", "ELASTIQUE")
+            ),
+            MATRICE=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE", "ELASTIQUE")),
+            REAC_ITER=SIMP(statut="f", typ="I", defaut=1, val_min=0),
+            REAC_INCR=SIMP(statut="f", typ="I", defaut=1, val_min=0),
+        )
     else:
-        mfact = FACT(statut='d',
-                     REAC_INCR=SIMP(statut='f', typ='I', defaut=1, val_min=0),
-                     PREDICTION=SIMP(statut='f', typ='TXM', into=(
-                         "DEPL_CALCULE", "TANGENTE", "ELASTIQUE", "EXTRAPOLE")),
-                     MATRICE=SIMP(statut='f', typ='TXM', defaut="TANGENTE", into=(
-                         "TANGENTE", "ELASTIQUE")),
-                     PAS_MINI_ELAS=SIMP(statut='f', typ='R', val_min=0.0),
-                     REAC_ITER=SIMP(statut='f', typ='I', defaut=1, val_min=0),
-                     REAC_ITER_ELAS=SIMP(
-                         statut='f', typ='I', defaut=0, val_min=0),
-                     EVOL_NOLI=SIMP(statut='f', typ=evol_noli),
-                     MATR_RIGI_SYME=SIMP(
-                         statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), ),
-                     )
+        mfact = FACT(
+            statut="d",
+            REAC_INCR=SIMP(statut="f", typ="I", defaut=1, val_min=0),
+            PREDICTION=SIMP(
+                statut="f", typ="TXM", into=("DEPL_CALCULE", "TANGENTE", "ELASTIQUE", "EXTRAPOLE")
+            ),
+            MATRICE=SIMP(statut="f", typ="TXM", defaut="TANGENTE", into=("TANGENTE", "ELASTIQUE")),
+            PAS_MINI_ELAS=SIMP(statut="f", typ="R", val_min=0.0),
+            REAC_ITER=SIMP(statut="f", typ="I", defaut=1, val_min=0),
+            REAC_ITER_ELAS=SIMP(statut="f", typ="I", defaut=0, val_min=0),
+            EVOL_NOLI=SIMP(statut="f", typ=evol_noli),
+            MATR_RIGI_SYME=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
+        )
 
     return mfact

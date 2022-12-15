@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,8 @@ from .sd_util import *
 
 class sd_prof_chno(AsBase):
     nomj = SDNom(fin=19)
-    PRNO = AsColl(acces='NU', stockage='CONTIG',
-                  modelong=Parmi('CONSTANT', 'VARIABLE'), type='I', )
-    LILI = AsObject(genr='N', xous='S', type='K', ltyp=24, )
+    PRNO = AsColl(acces="NU", stockage="CONTIG", modelong=Parmi("CONSTANT", "VARIABLE"), type="I")
+    LILI = AsObject(genr="N", xous="S", type="K", ltyp=24)
     NUEQ = AsVI()
     DEEQ = AsVI()
 

@@ -23,212 +23,213 @@
 # MODELISATION : AXIS
 # MAILLAGE     : 1840 QUAD8, 6449 NOEUDS
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED')
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 # Pour eviter les "TOLE MACHINE", on perturbe legerement la geometrie du maillage :
-MODI_MAILLAGE(reuse =MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
+MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION="TRAN", ALEA=1.0e-8))
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_MA=_F(NOM='TOUT',
-                                 TOUT='OUI',),)
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA='TOUT',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='AXIS',),)
+MODMECA = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA="TOUT", PHENOMENE="MECANIQUE", MODELISATION="AXIS")
+)
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='BC',),
-                   )
+MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU="BC"))
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
-                           NU=0.3,
-                           RHO=7800.0,),)
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=210000000000.0, NU=0.3, RHO=7800.0))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    MODELE=MODMECA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT1,),)
-PCRIT = 1./(2.*pi)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, MODELE=MODMECA, AFFE=_F(TOUT="OUI", MATER=MAT1))
+PCRIT = 1.0 / (2.0 * pi)
 
 
-CLS=AFFE_CHAR_MECA(MODELE=MODMECA,
-                   DDL_IMPO=(_F(GROUP_MA='DA',
-                                DX=0.0,),
-                             _F(GROUP_MA='BC',
-                                DY=0.0,),),)
+CLS = AFFE_CHAR_MECA(
+    MODELE=MODMECA, DDL_IMPO=(_F(GROUP_MA="DA", DX=0.0), _F(GROUP_MA="BC", DY=0.0))
+)
 
-CHAR=AFFE_CHAR_MECA(MODELE=MODMECA,
-                    FORCE_CONTOUR=_F(GROUP_MA='BC',
-                                     FX=PCRIT,),)
+CHAR = AFFE_CHAR_MECA(MODELE=MODMECA, FORCE_CONTOUR=_F(GROUP_MA="BC", FX=PCRIT))
 
-ELAS=MACRO_ELAS_MULT(MODELE=MODMECA,
-                     CHAM_MATER=CHMAT,
-                     SOLVEUR=_F(METHODE="MULT_FRONT"),
-                     CHAR_MECA_GLOBAL=CLS,
-                     CAS_CHARGE=_F(MODE_FOURIER=0,
-                                   TYPE_MODE='SYME',
-                                   CHAR_MECA=CHAR,),)
+ELAS = MACRO_ELAS_MULT(
+    MODELE=MODMECA,
+    CHAM_MATER=CHMAT,
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CHAR_MECA_GLOBAL=CLS,
+    CAS_CHARGE=_F(MODE_FOURIER=0, TYPE_MODE="SYME", CHAR_MECA=CHAR),
+)
 
-SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-               OPERATION='EXTR',
-               RESULTAT=ELAS,
-               NOM_CHAM='SIEF_ELGA',
-               TYPE_MAXI='MINI',
-               TYPE_RESU='VALE',)
+SIG = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=ELAS,
+    NOM_CHAM="SIEF_ELGA",
+    TYPE_MAXI="MINI",
+    TYPE_RESU="VALE",
+)
 
-MAT_RI_M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=MODMECA,
-                        CHAM_MATER=CHMAT,
-                        CHARGE=(CLS,CHAR,),)
+MAT_RI_M = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODMECA, CHAM_MATER=CHMAT, CHARGE=(CLS, CHAR))
 
-MAT_RI_G=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
-                        MODELE=MODMECA,
-                        SIEF_ELGA=SIG,)
+MAT_RI_G = CALC_MATR_ELEM(OPTION="RIGI_GEOM", MODELE=MODMECA, SIEF_ELGA=SIG)
 
-MAT_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                       MODELE=MODMECA,
-                       CHAM_MATER=CHMAT,)
+MAT_MAS = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODMECA, CHAM_MATER=CHMAT)
 
-NUM=NUME_DDL(MATR_RIGI=MAT_RI_M,)
+NUM = NUME_DDL(MATR_RIGI=MAT_RI_M)
 
-MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MAT_RI_M,
-                      NUME_DDL=NUM,)
+MAS_RI_M = ASSE_MATRICE(MATR_ELEM=MAT_RI_M, NUME_DDL=NUM)
 
-MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
-                      NUME_DDL=NUM,)
+MAS_RI_G = ASSE_MATRICE(MATR_ELEM=MAT_RI_G, NUME_DDL=NUM)
 
-MASMA=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
-                   NUME_DDL=NUM,)
+MASMA = ASSE_MATRICE(MATR_ELEM=MAT_MAS, NUME_DDL=NUM)
 
-RESULT=CALC_MODES( OPTION='PLUS_PETITE',SOLVEUR=_F(METHODE='MULT_FRONT', NPREC=15),
-                   MATR_RIGI=MAS_RI_M,
-                   MATR_RIGI_GEOM=MAS_RI_G,
-                   SOLVEUR_MODAL=_F( METHODE='SORENSEN',
-                                     NMAX_ITER_SOREN=20 ),
-                   TYPE_RESU='MODE_FLAMB',
-                   CALC_CHAR_CRIT=_F( NMAX_CHAR_CRIT=10 ),
-                   VERI_MODE=_F( SEUIL=0.0001 ),)
+RESULT = CALC_MODES(
+    OPTION="PLUS_PETITE",
+    SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=15),
+    MATR_RIGI=MAS_RI_M,
+    MATR_RIGI_GEOM=MAS_RI_G,
+    SOLVEUR_MODAL=_F(METHODE="SORENSEN", NMAX_ITER_SOREN=20),
+    TYPE_RESU="MODE_FLAMB",
+    CALC_CHAR_CRIT=_F(NMAX_CHAR_CRIT=10),
+    VERI_MODE=_F(SEUIL=0.0001),
+)
 
 
-MODE=CALC_MODES( MATR_RIGI=MAS_RI_M,SOLVEUR=_F(METHODE='MULT_FRONT', NPREC=15),
-                 MATR_MASS=MASMA,
-                 SOLVEUR_MODAL=_F( METHODE='SORENSEN',
-                                   NMAX_ITER_SOREN=20 ),
-                 VERI_MODE=_F( SEUIL=0.0001 ),)
+MODE = CALC_MODES(
+    MATR_RIGI=MAS_RI_M,
+    SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=15),
+    MATR_MASS=MASMA,
+    SOLVEUR_MODAL=_F(METHODE="SORENSEN", NMAX_ITER_SOREN=20),
+    VERI_MODE=_F(SEUIL=0.0001),
+)
 
 
-MODE=CALC_CHAMP(reuse=MODE,RESULTAT=MODE,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'))
+MODE = CALC_CHAMP(
+    reuse=MODE,
+    RESULTAT=MODE,
+    CONTRAINTE=("SIEF_ELGA"),
+    ENERGIE=("ETOT_ELGA", "ETOT_ELNO", "ETOT_ELEM"),
+)
 
 
-DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                OPERATION='EXTR',
-                RESULTAT=MODE,
-                NOM_CHAM='DEPL',
-                NUME_ORDRE=1,)
+DEPL = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=MODE, NOM_CHAM="DEPL", NUME_ORDRE=1
+)
 
-EVOLELAS=CREA_RESU(OPERATION='AFFE',
-                   TYPE_RESU='EVOL_ELAS',
-                   NOM_CHAM='DEPL',
-                   AFFE=_F(
-                   CHAM_GD=DEPL,
-                   MODELE=MODMECA,
-                   CHAM_MATER=CHMAT,
-                   INST=0.0,),)
+EVOLELAS = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_ELAS",
+    NOM_CHAM="DEPL",
+    AFFE=_F(CHAM_GD=DEPL, MODELE=MODMECA, CHAM_MATER=CHMAT, INST=0.0),
+)
 
-EVOLELAS=CALC_CHAMP(reuse=EVOLELAS,RESULTAT=EVOLELAS,CONTRAINTE=('SIEF_ELGA'),ENERGIE=('ETOT_ELGA','ETOT_ELNO','ETOT_ELEM'))
+EVOLELAS = CALC_CHAMP(
+    reuse=EVOLELAS,
+    RESULTAT=EVOLELAS,
+    CONTRAINTE=("SIEF_ELGA"),
+    ENERGIE=("ETOT_ELGA", "ETOT_ELNO", "ETOT_ELEM"),
+)
 
 
-RES_NORM=NORM_MODE(MODE=RESULT,
-                   NORME='TRAN',)
+RES_NORM = NORM_MODE(MODE=RESULT, NORME="TRAN")
 
-CHA_DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    OPERATION='EXTR',
-                    RESULTAT=RESULT,
-                    NOM_CHAM='DEPL',
-                    NUME_MODE=1,)
+CHA_DEPL = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RESULT, NOM_CHAM="DEPL", NUME_MODE=1
+)
 
-MODE_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                  OPERATION='EXTR',
-                  RESULTAT=RES_NORM,
-                  NOM_CHAM='DEPL',
-                  NUME_ORDRE=10,)
+MODE_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=RES_NORM, NOM_CHAM="DEPL", NUME_ORDRE=10
+)
 
-TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
-                  NUME_MODE=10,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RES_NORM,
-# de rigidité du problème elastique : la plaque est tres mince.
-                  VALE_CALC=-848467.2821675014,
-                  VALE_REFE=-8.493509396E5,
-                  PRECISION=2.E-3,),)
+TEST_RESU(
+    RESU=_F(
+        PARA="CHAR_CRIT",
+        NUME_MODE=10,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RES_NORM,
+        # de rigidité du problème elastique : la plaque est tres mince.
+        VALE_CALC=-848467.2821675014,
+        VALE_REFE=-8.493509396e5,
+        PRECISION=2.0e-3,
+    )
+)
 
-TEST_RESU(CHAM_NO=_F(GROUP_NO='N4',
-                     REFERENCE='ANALYTIQUE',
-                     NOM_CMP='DY',
-                     CHAM_GD=MODE_1,
-                     VALE_CALC=0.999985449497,
-                     VALE_REFE=1.0,),
-          )
+TEST_RESU(
+    CHAM_NO=_F(
+        GROUP_NO="N4",
+        REFERENCE="ANALYTIQUE",
+        NOM_CMP="DY",
+        CHAM_GD=MODE_1,
+        VALE_CALC=0.999985449497,
+        VALE_REFE=1.0,
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=EVOLELAS,
-                   NOM_CHAM='ETOT_ELEM',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=0.0669481688318,
-                   GROUP_MA='M20',
-                   ),
-                _F(NUME_ORDRE=1,
-                   POINT=1,
-                   RESULTAT=EVOLELAS,
-                   NOM_CHAM='ETOT_ELGA',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=673007474.517,
-                   GROUP_MA='M10',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=EVOLELAS,
-                   NOM_CHAM='ETOT_ELNO',
-                   GROUP_NO='N10',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=728025449.383,
-                   GROUP_MA='M3',
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            POINT=1,
+            RESULTAT=EVOLELAS,
+            NOM_CHAM="ETOT_ELEM",
+            NOM_CMP="TOTALE",
+            VALE_CALC=0.0669481688318,
+            GROUP_MA="M20",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            POINT=1,
+            RESULTAT=EVOLELAS,
+            NOM_CHAM="ETOT_ELGA",
+            NOM_CMP="TOTALE",
+            VALE_CALC=673007474.517,
+            GROUP_MA="M10",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=EVOLELAS,
+            NOM_CHAM="ETOT_ELNO",
+            GROUP_NO="N10",
+            NOM_CMP="TOTALE",
+            VALE_CALC=728025449.383,
+            GROUP_MA="M3",
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   REFERENCE='AUTRE_ASTER',
-                   POINT=1,
-                   RESULTAT=MODE,
-                   NOM_CHAM='ETOT_ELEM',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=0.0669481688318,
-                   VALE_REFE=0.066948111485693004,
-                   GROUP_MA='M20',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='AUTRE_ASTER',
-                   POINT=1,
-                   RESULTAT=MODE,
-                   NOM_CHAM='ETOT_ELGA',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=673007474.517,
-                   VALE_REFE=6.7300645536777997E8,
-                   GROUP_MA='M10',),
-                _F(NUME_ORDRE=1,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=MODE,
-                   NOM_CHAM='ETOT_ELNO',
-                   GROUP_NO='N10',
-                   NOM_CMP='TOTALE',
-                   VALE_CALC=728025449.383,
-                   VALE_REFE=7.2802885013540006E8,
-                   GROUP_MA='M3',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            RESULTAT=MODE,
+            NOM_CHAM="ETOT_ELEM",
+            NOM_CMP="TOTALE",
+            VALE_CALC=0.0669481688318,
+            VALE_REFE=0.066948111485693004,
+            GROUP_MA="M20",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            RESULTAT=MODE,
+            NOM_CHAM="ETOT_ELGA",
+            NOM_CMP="TOTALE",
+            VALE_CALC=673007474.517,
+            VALE_REFE=6.7300645536777997e8,
+            GROUP_MA="M10",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=MODE,
+            NOM_CHAM="ETOT_ELNO",
+            GROUP_NO="N10",
+            NOM_CMP="TOTALE",
+            VALE_CALC=728025449.383,
+            VALE_REFE=7.2802885013540006e8,
+            GROUP_MA="M3",
+        ),
+    )
+)
 
 FIN()

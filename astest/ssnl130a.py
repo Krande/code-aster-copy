@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-def Pression(t,x,y,z):
-   Pressy = 5.0*(y-2.0)**2
-   if ( t <= 1.0 ): return Pressy*t
-   return Pressy
 
-def Deplacer(t,x,y,z):
-   if ( t<= 1.0): return 0.0
-   return (t-1.0)*0.5E-02
+def Pression(t, x, y, z):
+    Pressy = 5.0 * (y - 2.0) ** 2
+    if t <= 1.0:
+        return Pressy * t
+    return Pressy
+
+
+def Deplacer(t, x, y, z):
+    if t <= 1.0:
+        return 0.0
+    return (t - 1.0) * 0.5e-02

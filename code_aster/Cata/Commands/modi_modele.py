@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,21 +23,27 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MODI_MODELE=OPER(nom="MODI_MODELE",op= 103,sd_prod=modele_sdaster,
-         reentrant='o:MODELE',
-         fr=tr("Modifier la partition d'un modèle (parallélisme) "),
-
-         reuse=SIMP(statut='c', typ=CO),
-         MODELE          =SIMP(statut='o',typ=modele_sdaster,min=1,max=1,),
-
-         DISTRIBUTION  =FACT(statut='d',
-             METHODE    =SIMP(statut='f',typ='TXM',defaut="SOUS_DOMAINE",
-                                   into=("MAIL_CONTIGU","MAIL_DISPERSE","CENTRALISE",
-                                         "SOUS_DOMAINE","GROUP_ELEM")),
-             # remarque : "GROUP_ELEM" et "SOUS_DOMAINE" ne servent à rien car on ne modifie la distribution des éléments.
-             #            Mais on les acceptent pour simplifier la programmation de calc_modes_multi_bandes.py
-             b_dist_maille          =BLOC(condition = """is_in("METHODE", ('MAIL_DISPERSE','MAIL_CONTIGU'))""",
-                 CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,val_min=0),
-             ),
-         ),
-)  ;
+MODI_MODELE = OPER(
+    nom="MODI_MODELE",
+    op=103,
+    sd_prod=modele_sdaster,
+    reentrant="o:MODELE",
+    fr=tr("Modifier la partition d'un modèle (parallélisme) "),
+    reuse=SIMP(statut="c", typ=CO),
+    MODELE=SIMP(statut="o", typ=modele_sdaster, min=1, max=1),
+    DISTRIBUTION=FACT(
+        statut="d",
+        METHODE=SIMP(
+            statut="f",
+            typ="TXM",
+            defaut="SOUS_DOMAINE",
+            into=("MAIL_CONTIGU", "MAIL_DISPERSE", "CENTRALISE", "SOUS_DOMAINE", "GROUP_ELEM"),
+        ),
+        # remarque : "GROUP_ELEM" et "SOUS_DOMAINE" ne servent à rien car on ne modifie la distribution des éléments.
+        #            Mais on les acceptent pour simplifier la programmation de calc_modes_multi_bandes.py
+        b_dist_maille=BLOC(
+            condition="""is_in("METHODE", ('MAIL_DISPERSE','MAIL_CONTIGU'))""",
+            CHARGE_PROC0_MA=SIMP(statut="f", typ="I", defaut=100, val_min=0),
+        ),
+    ),
+)

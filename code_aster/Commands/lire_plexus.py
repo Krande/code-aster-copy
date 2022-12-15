@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class LirePlexus(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.LoadResult`.
-    """
+    """Command that defines :class:`~code_aster.Objects.LoadResult`."""
+
     command_name = "LIRE_PLEXUS"
 
     def create_result(self, keywords):
@@ -44,5 +44,6 @@ class LirePlexus(ExecuteCommand):
         """
         self._result.setModel(keywords["MODELE"])
         self._result.build()
+
 
 LIRE_PLEXUS = LirePlexus.run

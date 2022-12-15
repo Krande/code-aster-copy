@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ def macro_bascule_schema_ops(self, **args):
     SCHEMA_INIT = args.get("SCHEMA_INIT")
 
     motscles = {}
-    motscles['MODELE'] = MODELE
-    motscles['CHAM_MATER'] = CHAM_MATER
+    motscles["MODELE"] = MODELE
+    motscles["CHAM_MATER"] = CHAM_MATER
     if CARA_ELEM is not None:
-        motscles['CARA_ELEM'] = CARA_ELEM
+        motscles["CARA_ELEM"] = CARA_ELEM
 
     #
     dexct = args.get("EXCIT")
@@ -79,218 +79,341 @@ def macro_bascule_schema_ops(self, **args):
     __L0 = args.get("LIST_INST_BASCULE").getValues()
 
     dincri1 = dincri
-    dincri1[-1]['INST_FIN'] = __L0[0]
+    dincri1[-1]["INST_FIN"] = __L0[0]
     #
-    __dtimp = dequi[-1]['PAS_IMPL']
-    __dtexp = dequi[-1]['PAS_EXPL']
+    __dtimp = dequi[-1]["PAS_IMPL"]
+    __dtexp = dequi[-1]["PAS_EXPL"]
     #
-    __non_lin = 'NON'
+    __non_lin = "NON"
     for comp in dComp_incri:
-        if (comp['RELATION'] != 'DIS_CHOC' and comp['RELATION'] != 'ELAS'):
-            __non_lin = 'OUI'
+        if comp["RELATION"] != "DIS_CHOC" and comp["RELATION"] != "ELAS":
+            __non_lin = "OUI"
             break
     #
     #
 
     # alarme de DYNA_NON_LINE si les mot-cles de COMPORTEMENT sont renseignes
     # a tort
-    MasquerAlarme('COMPOR4_70')
+    MasquerAlarme("COMPOR4_70")
 
-    if SCHEMA_INIT == 'IMPLICITE':
+    if SCHEMA_INIT == "IMPLICITE":
         dincri1 = dincri
-        dincri1[-1]['INST_FIN'] = __L0[0]
-        nomres = DYNA_NON_LINE(EXCIT=dexct,
-                               COMPORTEMENT=dComp_incri,
-                               INCREMENT=dincri1,
-                               SCHEMA_TEMPS=dschi,
-                               NEWTON=dnew, CONVERGENCE=dconv,
-                               SOLVEUR=dsolv, ENERGIE=dener, OBSERVATION=dobs, ARCHIVAGE=darch,
-                               ETAT_INIT=dini, **motscles)
-        __prc = 'IMPLICITE'
+        dincri1[-1]["INST_FIN"] = __L0[0]
+        nomres = DYNA_NON_LINE(
+            EXCIT=dexct,
+            COMPORTEMENT=dComp_incri,
+            INCREMENT=dincri1,
+            SCHEMA_TEMPS=dschi,
+            NEWTON=dnew,
+            CONVERGENCE=dconv,
+            SOLVEUR=dsolv,
+            ENERGIE=dener,
+            OBSERVATION=dobs,
+            ARCHIVAGE=darch,
+            ETAT_INIT=dini,
+            **motscles
+        )
+        __prc = "IMPLICITE"
     #
-    if SCHEMA_INIT == 'EXPLICITE':
+    if SCHEMA_INIT == "EXPLICITE":
         dincre1 = dincre
-        dincre1[-1]['INST_FIN'] = __L0[0]
-        nomres = DYNA_NON_LINE(MASS_DIAG='OUI',
-                               EXCIT=dexct,
-                               COMPORTEMENT=dComp_incre,
-                               INCREMENT=dincre1,
-                               SCHEMA_TEMPS=dsche,
-                               NEWTON=dnew, CONVERGENCE=dconv,
-                               SOLVEUR=dsolv, ENERGIE=dener, OBSERVATION=dobs, ARCHIVAGE=darch,
-                               ETAT_INIT=dini, **motscles)
+        dincre1[-1]["INST_FIN"] = __L0[0]
+        nomres = DYNA_NON_LINE(
+            MASS_DIAG="OUI",
+            EXCIT=dexct,
+            COMPORTEMENT=dComp_incre,
+            INCREMENT=dincre1,
+            SCHEMA_TEMPS=dsche,
+            NEWTON=dnew,
+            CONVERGENCE=dconv,
+            SOLVEUR=dsolv,
+            ENERGIE=dener,
+            OBSERVATION=dobs,
+            ARCHIVAGE=darch,
+            ETAT_INIT=dini,
+            **motscles
+        )
 
-        __prc = 'EXPLICITE'
+        __prc = "EXPLICITE"
 
-  #
+    #
     __nb = len(__L0)
     j = 1
     while 1:
         #
-        if __prc == 'IMPLICITE':
+        if __prc == "IMPLICITE":
             __Ue = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="DEPL",
+                INST=__L0[j - 1],
+            )
             #
             __Ve = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='VITE', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="VITE",
+                INST=__L0[j - 1],
+            )
             #
             __Ae = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='ACCE', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="ACCE",
+                INST=__L0[j - 1],
+            )
             #
             __Ce = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='ELGA_SIEF_R', NOM_CHAM='SIEF_ELGA', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="ELGA_SIEF_R",
+                NOM_CHAM="SIEF_ELGA",
+                INST=__L0[j - 1],
+            )
             #
             __Vae = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="ELGA_VARI_R",
+                NOM_CHAM="VARI_ELGA",
+                INST=__L0[j - 1],
+            )
             dincre1 = dincre
-            dincre1[-1]['INST_INIT'] = __L0[j - 1]
-            if (j < __nb):
-                dincre1[-1]['INST_FIN'] = __L0[j]
+            dincre1[-1]["INST_INIT"] = __L0[j - 1]
+            if j < __nb:
+                dincre1[-1]["INST_FIN"] = __L0[j]
             else:
-                if 'INST_FIN' in dincre1[-1]:
-                    del dincre1[-1]['INST_FIN']
+                if "INST_FIN" in dincre1[-1]:
+                    del dincre1[-1]["INST_FIN"]
 
-            nomres = DYNA_NON_LINE(reuse=nomres,
-                                   EXCIT=dexct,
-                                   ETAT_INIT=_F(
-                                       DEPL=__Ue, VITE=__Ve, ACCE=__Ae,
-                                   SIGM=__Ce, VARI=__Vae,),
-                                   COMPORTEMENT=dComp_incre,
-                                   INCREMENT=dincre1,
-                                   SCHEMA_TEMPS=dsche,
-                                   SOLVEUR=dsolv, ENERGIE=dener, OBSERVATION=dobs, ARCHIVAGE=darch,
-                                   NEWTON=dnew, CONVERGENCE=dconv, **motscles)
+            nomres = DYNA_NON_LINE(
+                reuse=nomres,
+                EXCIT=dexct,
+                ETAT_INIT=_F(DEPL=__Ue, VITE=__Ve, ACCE=__Ae, SIGM=__Ce, VARI=__Vae),
+                COMPORTEMENT=dComp_incre,
+                INCREMENT=dincre1,
+                SCHEMA_TEMPS=dsche,
+                SOLVEUR=dsolv,
+                ENERGIE=dener,
+                OBSERVATION=dobs,
+                ARCHIVAGE=darch,
+                NEWTON=dnew,
+                CONVERGENCE=dconv,
+                **motscles
+            )
             #
-            __prc = 'EXPLICITE'
-            bool = (j != (__nb))
-            if (not bool):
+            __prc = "EXPLICITE"
+            bool = j != (__nb)
+            if not bool:
                 break
             j = j + 1
             #
-        if __prc == 'EXPLICITE':
+        if __prc == "EXPLICITE":
             # calcul sur la zone de recouvrement
-            print('Calcul d''une solution explicite stabilisée')
+            print("Calcul d" "une solution explicite stabilisée")
             __U1 = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="DEPL",
+                INST=__L0[j - 1],
+            )
             #
             __V1 = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='VITE', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="VITE",
+                INST=__L0[j - 1],
+            )
             #
             __A1 = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='ACCE', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="ACCE",
+                INST=__L0[j - 1],
+            )
             #
             __C1 = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='ELGA_SIEF_R', NOM_CHAM='SIEF_ELGA', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="ELGA_SIEF_R",
+                NOM_CHAM="SIEF_ELGA",
+                INST=__L0[j - 1],
+            )
             #
             __Va1 = CREA_CHAMP(
-                OPERATION='EXTR', PRECISION=1.E-7, RESULTAT=nomres,
-                TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', INST=__L0[j - 1],)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="ELGA_VARI_R",
+                NOM_CHAM="VARI_ELGA",
+                INST=__L0[j - 1],
+            )
             #
-            __lrec = DEFI_LIST_REEL(DEBUT=__L0[j - 1],
-                                    INTERVALLE=_F(
-                                    JUSQU_A=(__L0[j - 1]) + (10 * (__dtexp)),
-                                    PAS=__dtexp),)
-            schema_equi = dscheq[-1]['SCHEMA']
-            if (schema_equi == 'TCHAMWA') or (schema_equi == 'DIFF_CENT'):
-                masse_diago = 'OUI'
+            __lrec = DEFI_LIST_REEL(
+                DEBUT=__L0[j - 1],
+                INTERVALLE=_F(JUSQU_A=(__L0[j - 1]) + (10 * (__dtexp)), PAS=__dtexp),
+            )
+            schema_equi = dscheq[-1]["SCHEMA"]
+            if (schema_equi == "TCHAMWA") or (schema_equi == "DIFF_CENT"):
+                masse_diago = "OUI"
             else:
-                masse_diago = 'NON'
-            __u_rec = DYNA_NON_LINE(MASS_DIAG=masse_diago,
-                                    EXCIT=dexct,
-                                    ETAT_INIT=_F(
-                                        DEPL=__U1, VITE=__V1, ACCE=__A1,
-                                    SIGM=__C1, VARI=__Va1,),
-                                    COMPORTEMENT=dComp_incre,
-                                    INCREMENT=_F(LIST_INST=__lrec,
-                                                 INST_INIT=__L0[j - 1],
-                                                 INST_FIN=(
-                                                 __L0[j - 1]) + (
-                                                 10 * (__dtexp))),
-                                    SCHEMA_TEMPS=dscheq,
-                                    SOLVEUR=dsolv, ENERGIE=dener, OBSERVATION=dobs, ARCHIVAGE=darch,
-                                    NEWTON=dnew, CONVERGENCE=dconv, **motscles)
+                masse_diago = "NON"
+            __u_rec = DYNA_NON_LINE(
+                MASS_DIAG=masse_diago,
+                EXCIT=dexct,
+                ETAT_INIT=_F(DEPL=__U1, VITE=__V1, ACCE=__A1, SIGM=__C1, VARI=__Va1),
+                COMPORTEMENT=dComp_incre,
+                INCREMENT=_F(
+                    LIST_INST=__lrec,
+                    INST_INIT=__L0[j - 1],
+                    INST_FIN=(__L0[j - 1]) + (10 * (__dtexp)),
+                ),
+                SCHEMA_TEMPS=dscheq,
+                SOLVEUR=dsolv,
+                ENERGIE=dener,
+                OBSERVATION=dobs,
+                ARCHIVAGE=darch,
+                NEWTON=dnew,
+                CONVERGENCE=dconv,
+                **motscles
+            )
             #
             __Ui = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=__u_rec,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL',      INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=__u_rec,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="DEPL",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             __Vi = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=__u_rec,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='VITE',      INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=__u_rec,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="VITE",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             __Ai = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=__u_rec,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='ACCE',      INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=__u_rec,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="ACCE",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             # equilibrage du premier pas implicite
-            print('Equilibrage du pas explicite stabilisée')
+            print("Equilibrage du pas explicite stabilisée")
             dincri1 = dincri
-            dincri1[-1]['INST_FIN'] = ((__L0[j - 1]) + (10 * (__dtexp)))
-            dincri1[-1]['INST_INIT'] = (__L0[j - 1])
-            nomres = DYNA_NON_LINE(reuse=nomres,
-                                   EXCIT=dexct,
-                                   ETAT_INIT=_F(
-                                       DEPL=__Ui, VITE=__Vi, ACCE=__Ai,
-                                   SIGM=__C1, VARI=__Va1,),
-                                   COMPORTEMENT=dComp_incri,
-                                   INCREMENT=dincri1,
-                                   SCHEMA_TEMPS=dschi,
-                                   SOLVEUR=dsolv, ENERGIE=dener, OBSERVATION=dobs, ARCHIVAGE=darch,
-                                   NEWTON=dnew, CONVERGENCE=dconv, **motscles)
+            dincri1[-1]["INST_FIN"] = (__L0[j - 1]) + (10 * (__dtexp))
+            dincri1[-1]["INST_INIT"] = __L0[j - 1]
+            nomres = DYNA_NON_LINE(
+                reuse=nomres,
+                EXCIT=dexct,
+                ETAT_INIT=_F(DEPL=__Ui, VITE=__Vi, ACCE=__Ai, SIGM=__C1, VARI=__Va1),
+                COMPORTEMENT=dComp_incri,
+                INCREMENT=dincri1,
+                SCHEMA_TEMPS=dschi,
+                SOLVEUR=dsolv,
+                ENERGIE=dener,
+                OBSERVATION=dobs,
+                ARCHIVAGE=darch,
+                NEWTON=dnew,
+                CONVERGENCE=dconv,
+                **motscles
+            )
             #
             __Ui = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL',      INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="DEPL",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             __Vi = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='VITE',      INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="VITE",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             __Ai = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
-                TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='ACCE',      INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="NOEU_DEPL_R",
+                NOM_CHAM="ACCE",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             __Ci = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
-                TYPE_CHAM='ELGA_SIEF_R', NOM_CHAM='SIEF_ELGA', INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="ELGA_SIEF_R",
+                NOM_CHAM="SIEF_ELGA",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
             __Vai = CREA_CHAMP(
-                OPERATION='EXTR',        PRECISION=1.E-7,      RESULTAT=nomres,
-                TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', INST=(__L0[j - 1]) + (10 * (__dtexp)),)
+                OPERATION="EXTR",
+                PRECISION=1.0e-7,
+                RESULTAT=nomres,
+                TYPE_CHAM="ELGA_VARI_R",
+                NOM_CHAM="VARI_ELGA",
+                INST=(__L0[j - 1]) + (10 * (__dtexp)),
+            )
             #
-            print('Calcul implicite après équilibrage')
+            print("Calcul implicite après équilibrage")
             dincri1 = dincri
-            dincri1[-1]['INST_INIT'] = ((__L0[j - 1]) + (10 * (__dtexp)))
-            if (j < __nb):
-                dincri1[-1]['INST_FIN'] = __L0[j]
+            dincri1[-1]["INST_INIT"] = (__L0[j - 1]) + (10 * (__dtexp))
+            if j < __nb:
+                dincri1[-1]["INST_FIN"] = __L0[j]
             else:
-                del dincri1[-1]['INST_FIN']
-            nomres = DYNA_NON_LINE(reuse=nomres,
-                                   EXCIT=dexct,
-                                   ETAT_INIT=_F(
-                                       DEPL=__Ui, VITE=__Vi, ACCE=__Ai,
-                                   SIGM=__Ci, VARI=__Vai,
-                                   ),
-                                   COMPORTEMENT=dComp_incri,
-                                   INCREMENT=dincri1,
-                                   SCHEMA_TEMPS=dschi,
-                                   SOLVEUR=dsolv, ENERGIE=dener, OBSERVATION=dobs, ARCHIVAGE=darch,
-                                   NEWTON=dnew, CONVERGENCE=dconv, **motscles)
+                del dincri1[-1]["INST_FIN"]
+            nomres = DYNA_NON_LINE(
+                reuse=nomres,
+                EXCIT=dexct,
+                ETAT_INIT=_F(DEPL=__Ui, VITE=__Vi, ACCE=__Ai, SIGM=__Ci, VARI=__Vai),
+                COMPORTEMENT=dComp_incri,
+                INCREMENT=dincri1,
+                SCHEMA_TEMPS=dschi,
+                SOLVEUR=dsolv,
+                ENERGIE=dener,
+                OBSERVATION=dobs,
+                ARCHIVAGE=darch,
+                NEWTON=dnew,
+                CONVERGENCE=dconv,
+                **motscles
+            )
             #
-            __prc = 'IMPLICITE'
-            bool = (j != (__nb))
-            if (not bool):
+            __prc = "IMPLICITE"
+            bool = j != (__nb)
+            if not bool:
                 break
             j = j + 1
     #
-    RetablirAlarme('COMPOR4_70')
+    RetablirAlarme("COMPOR4_70")
     return nomres

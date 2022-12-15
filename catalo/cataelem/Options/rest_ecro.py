@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,47 +20,32 @@
 # person_in_charge: sofiane.hendili at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment=""" PCOMPOR: COMPORTEMENT  """)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment=""" PCOMPOR: COMPORTEMENT  """)
+PVARIMR = InputParameter(
+    phys=PHY.VARI_R, comment=""" PVARIMR: VARIABLES INTERNES AVANT MODIFICATION """
+)
 
 
-PVARIMR  = InputParameter(phys=PHY.VARI_R,
-comment=""" PVARIMR: VARIABLES INTERNES AVANT MODIFICATION """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment=""" PVARCPR: VARIABLES DE COMMANDES POUR T+ """)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-comment=""" PVARCPR: VARIABLES DE COMMANDES POUR T+ """)
-
-
-PVARIPR  = OutputParameter(phys=PHY.VARI_R, type='ELGA',
-comment=""" PVARIPR: VARIABLES INTERNES APRES MODIFICATION """)
+PVARIPR = OutputParameter(
+    phys=PHY.VARI_R, type="ELGA", comment=""" PVARIPR: VARIABLES INTERNES APRES MODIFICATION """
+)
 
 
 REST_ECRO = Option(
-    para_in=(
-        SP.PCARCRI,
-           PCOMPOR,
-        SP.PMATERC,
-        SP.PTEMPSR,
-        SP.PVARCMR,
-           PVARCPR,
-           PVARIMR,
-    ),
-    para_out=(
-           PVARIPR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PCARCRI, PCOMPOR, SP.PMATERC, SP.PTEMPSR, SP.PVARCMR, PVARCPR, PVARIMR),
+    para_out=(PVARIPR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  REST_ECRO :
            RESTAURATION D'ECROUISSAGE - MODIFICATION VARIABLES INTERNES """,
 )

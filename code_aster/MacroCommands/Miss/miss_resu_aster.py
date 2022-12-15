@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ class ResuAsterReader(object):
             self._read_all()
             self.fobj.close()
         except (ValueError, IOError, AssertionError) as err:
-            UTMESS('F', 'MISS0_7', vali=self.ln, valk=str(err))
+            UTMESS("F", "MISS0_7", vali=self.ln, valk=str(err))
         self.check()
         self.post()
         return self.struct
@@ -66,7 +66,7 @@ class ResuAsterReader(object):
         try:
             struct.check()
         except AssertionError as err:
-            UTMESS('F', 'MISS0_8', valk=traceback.format_exc(limit=2))
+            UTMESS("F", "MISS0_8", valk=traceback.format_exc(limit=2))
 
     def post(self):
         """arrangements"""
@@ -123,9 +123,9 @@ class ResuAsterReader(object):
 
     def _read_noeuds_coord(self):
         """noeuds : coordonnées"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.noeud_nb * 3,
-                                   self.struct.noeud_coor, double)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.noeud_nb * 3, self.struct.noeud_coor, double
+        )
 
     def _read_mailles_connect(self):
         """mailles : connectivité"""
@@ -139,83 +139,90 @@ class ResuAsterReader(object):
         self.ln += 1
         lab, nb = self.fobj.readline().split()
         nb = int(nb)
-        if lab == 'POINT':
+        if lab == "POINT":
             self.struct.maille_dime[idx] = 1
-        elif lab == 'ELEM':
+        elif lab == "ELEM":
             self.struct.maille_dime[idx] = 8
         else:
-            raise ValueError('unsupported element type: %s' % lab)
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   nb * self.struct.maille_dime[idx],
-                                   self.struct.maille_connec[idx], int)
+            raise ValueError("unsupported element type: %s" % lab)
+        self.ln += lire_nb_valeurs(
+            self.fobj, nb * self.struct.maille_dime[idx], self.struct.maille_connec[idx], int
+        )
         self.struct.maille_nb[idx] = nb
 
     def _read_mode_dyna(self):
         """mode dynamiques"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.noeud_nb * 3,
-                                   self.struct.mode_dyna_vale,
-                                   double,
-                                   self.struct.mode_dyna_nb,
-                                   1, max_per_line=3, regexp_label="MODE +DYNA")
+        self.ln += lire_nb_valeurs(
+            self.fobj,
+            self.struct.noeud_nb * 3,
+            self.struct.mode_dyna_vale,
+            double,
+            self.struct.mode_dyna_nb,
+            1,
+            max_per_line=3,
+            regexp_label="MODE +DYNA",
+        )
 
     def _read_mode_dyna_freq(self):
         """modes dynamiques : fréquence"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb,
-                                   self.struct.mode_dyna_freq,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.mode_dyna_nb, self.struct.mode_dyna_freq, double, 1, 1
+        )
 
     def _read_mode_dyna_amor(self):
         """modes dynamiques : amortissement"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb,
-                                   self.struct.mode_dyna_amor,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.mode_dyna_nb, self.struct.mode_dyna_amor, double, 1, 1
+        )
 
     def _read_mode_dyna_mass(self):
         """modes dynamiques : masse"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb,
-                                   self.struct.mode_dyna_mass,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.mode_dyna_nb, self.struct.mode_dyna_mass, double, 1, 1
+        )
 
     def _read_mode_dyna_rigi(self):
         """modes dynamiques : rigidité"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb,
-                                   self.struct.mode_dyna_rigi,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.mode_dyna_nb, self.struct.mode_dyna_rigi, double, 1, 1
+        )
 
     def _read_mode_stat(self):
         """mode statiques"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.noeud_nb * 3,
-                                   self.struct.mode_stat_vale,
-                                   double,
-                                   self.struct.mode_stat_nb,
-                                   1, max_per_line=3, regexp_label="MODE +STAT +INTER")
+        self.ln += lire_nb_valeurs(
+            self.fobj,
+            self.struct.noeud_nb * 3,
+            self.struct.mode_stat_vale,
+            double,
+            self.struct.mode_stat_nb,
+            1,
+            max_per_line=3,
+            regexp_label="MODE +STAT +INTER",
+        )
 
     def _read_mode_stat_mass(self):
         """modes statiques : masse"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_stat_nb ** 2,
-                                   self.struct.mode_stat_mass,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.mode_stat_nb ** 2, self.struct.mode_stat_mass, double, 1, 1
+        )
 
     def _read_mode_stat_rigi(self):
         """modes statiques : rigidité"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_stat_nb ** 2,
-                                   self.struct.mode_stat_rigi,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj, self.struct.mode_stat_nb ** 2, self.struct.mode_stat_rigi, double, 1, 1
+        )
 
     def _read_mode_stat_amor(self):
         """modes statiques : amortissements (facultatifs)"""
-        unused = lire_nb_valeurs(self.fobj,
-                                 self.struct.mode_stat_nb ** 2,
-                                 self.struct.mode_stat_amor,
-                                 double, 1, 1, regexp_label="STAT +AMOR")
+        unused = lire_nb_valeurs(
+            self.fobj,
+            self.struct.mode_stat_nb ** 2,
+            self.struct.mode_stat_amor,
+            double,
+            1,
+            1,
+            regexp_label="STAT +AMOR",
+        )
 
     def _read_mode_coupl_para(self):
         """modes couplés"""
@@ -225,27 +232,37 @@ class ResuAsterReader(object):
 
     def _read_mode_coupl_mass(self):
         """modes couplés : masse"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb *
-                                   self.struct.mode_stat_nb,
-                                   self.struct.coupl_mass,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj,
+            self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+            self.struct.coupl_mass,
+            double,
+            1,
+            1,
+        )
 
     def _read_mode_coupl_rigi(self):
         """modes couplés : rigidité"""
-        self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb *
-                                   self.struct.mode_stat_nb,
-                                   self.struct.coupl_rigi,
-                                   double, 1, 1)
+        self.ln += lire_nb_valeurs(
+            self.fobj,
+            self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+            self.struct.coupl_rigi,
+            double,
+            1,
+            1,
+        )
 
     def _read_mode_coupl_amor(self):
         """modes couplés : amortissements (facultatifs)"""
-        unused = lire_nb_valeurs(self.fobj,
-                                 self.struct.mode_dyna_nb *
-                                 self.struct.mode_stat_nb,
-                                 self.struct.coupl_amor,
-                                 double, 1, 1, regexp_label="COUPL +AMOR")
+        unused = lire_nb_valeurs(
+            self.fobj,
+            self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+            self.struct.coupl_amor,
+            double,
+            1,
+            1,
+            regexp_label="COUPL +AMOR",
+        )
 
 
 class STRUCT_RESULTAT:
@@ -288,25 +305,28 @@ class STRUCT_RESULTAT:
         """Vérifications."""
         assert len(self.noeud_coor) == self.noeud_nb * 3
         assert len(self.maille_nb) == len(self.maille_connec)
-        for nb, dime, connec in zip(self.maille_nb,
-                                    self.maille_dime,
-                                    self.maille_connec):
+        for nb, dime, connec in zip(self.maille_nb, self.maille_dime, self.maille_connec):
             assert len(connec) == nb * dime
-        assert len(self.mode_dyna_vale) == 0 \
+        assert (
+            len(self.mode_dyna_vale) == 0
             or len(self.mode_dyna_vale) == self.mode_dyna_nb * self.noeud_nb * 3
+        )
         assert len(self.mode_dyna_freq) == self.mode_dyna_nb
         assert len(self.mode_dyna_amor) == self.mode_dyna_nb
         assert len(self.mode_dyna_mass) == self.mode_dyna_nb
         assert len(self.mode_dyna_rigi) == self.mode_dyna_nb
-        assert len(self.mode_stat_vale) == 0 \
+        assert (
+            len(self.mode_stat_vale) == 0
             or len(self.mode_stat_vale) == self.mode_stat_nb * self.noeud_nb * 3
-        assert len(self.mode_stat_amor) == 0 \
-            or len(self.mode_stat_amor) == self.mode_stat_nb ** 2
+        )
+        assert len(self.mode_stat_amor) == 0 or len(self.mode_stat_amor) == self.mode_stat_nb ** 2
         assert len(self.mode_stat_mass) == self.mode_stat_nb ** 2
         assert len(self.mode_stat_rigi) == self.mode_stat_nb ** 2
         assert self.coupl_nb == (self.mode_dyna_nb, self.mode_stat_nb)
-        assert len(self.coupl_amor) == 0 \
+        assert (
+            len(self.coupl_amor) == 0
             or len(self.coupl_amor) == self.mode_dyna_nb * self.mode_stat_nb
+        )
         assert len(self.coupl_mass) == self.mode_dyna_nb * self.mode_stat_nb
         assert len(self.coupl_rigi) == self.mode_dyna_nb * self.mode_stat_nb
 
@@ -315,11 +335,10 @@ class STRUCT_RESULTAT:
         nbgrp = len(self.maille_nb)
         for idx in range(nbgrp):
             dime = self.maille_dime[idx]
-            add = [0, ] * (20 - dime)
+            add = [0] * (20 - dime)
             new = []
             for i in range(self.maille_nb[idx]):
-                new.extend(
-                    self.maille_connec[idx][i * dime: (i + 1) * dime] + add)
+                new.extend(self.maille_connec[idx][i * dime : (i + 1) * dime] + add)
             self.maille_connec[idx] = new
 
     def repr(self):
@@ -327,7 +346,7 @@ class STRUCT_RESULTAT:
         txt = []
         for attr in dir(self):
             val = getattr(self, attr)
-            if attr.startswith('_') or callable(val):
+            if attr.startswith("_") or callable(val):
                 continue
             if type(val) in (list, tuple):
                 val = list(val[:8])
@@ -341,10 +360,11 @@ class STRUCT_RESULTAT:
 class TestMissInterface(unittest.TestCase):
 
     """test interface functions to create miss datafiles"""
-    faster = 'ZZZZ108B.aster'
+
+    faster = "ZZZZ108B.aster"
 
     # unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
-                     #"requires %s" % faster)
+    # "requires %s" % faster)
     def test01_ext(self):
         """test creation of the .ext file"""
         if not osp.isfile(self.faster):
@@ -357,5 +377,6 @@ class TestMissInterface(unittest.TestCase):
         assert data.mode_dyna_nb == 0, data.mode_dyna_nb
         assert data.mode_stat_nb == 291, data.mode_stat_nb
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

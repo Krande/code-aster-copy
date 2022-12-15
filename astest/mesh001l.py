@@ -38,7 +38,7 @@ def create_mesh(nb_node_dir, meshfile):
     ls = []
     for i in range(mesh.getNumberOfCells()):
         grp = DataArrayInt([i])
-        grp.setName("GrpWithLongName_%d" % (i+1))
+        grp.setName("GrpWithLongName_%d" % (i + 1))
         ls.append(grp)
 
     mm = MEDFileUMesh()

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -26,6 +26,7 @@ from ..Utilities import force_list
 
 class ReducedBaseDefinition(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Mesh`"""
+
     command_name = "DEFI_BASE_REDUITE"
 
     def create_result(self, keywords):
@@ -62,5 +63,6 @@ class ReducedBaseDefinition(ExecuteCommand):
             if matr_asse is not None:
                 self._result.setMesh(force_list(matr_asse)[0]["MATRICE"].getMesh())
         self._result.build()
+
 
 DEFI_BASE_REDUITE = ReducedBaseDefinition.run

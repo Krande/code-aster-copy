@@ -25,11 +25,11 @@ from ..Language.Syntax import *
 
 def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
-# --------------------------------------------------------------------
-#
-# VERIFICATIONS
-#
-# --------------------------------------------------------------------
+    # --------------------------------------------------------------------
+    #
+    # VERIFICATIONS
+    #
+    # --------------------------------------------------------------------
     if BASE is not None:
         assert COMMAND == "DYNA_LINE_HARM"
         assert BASE in ("GENE", "PHYS")
@@ -422,8 +422,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _BlocPE_GAMG["RENUM"] = SIMP(statut="f", typ="TXM", defaut="SANS", into=("SANS",))
 
     # --------------------------------------------------------------------
-    _BlocPE_HPDDM['RENUM'] = SIMP(
-        statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
+    _BlocPE_HPDDM["RENUM"] = SIMP(statut="f", typ="TXM", defaut="SANS", into=("SANS",))
     # --------------------------------------------------------------------
 
     _BlocPE_LAGAUG["RENUM"] = SIMP(statut="f", typ="TXM", defaut="SANS", into=("SANS",))

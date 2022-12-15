@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class StaticModeCalculation(ExecuteCommand):
     """Command that computes static modes."""
+
     command_name = "MODE_STATIQUE"
 
     def create_result(self, keywords):
@@ -45,5 +46,6 @@ class StaticModeCalculation(ExecuteCommand):
         dofNum = matrRigi.getDOFNumbering()
         self._result.setModel(dofNum.getModel())
         self._result.setDOFNumbering(dofNum)
+
 
 MODE_STATIQUE = StaticModeCalculation.run

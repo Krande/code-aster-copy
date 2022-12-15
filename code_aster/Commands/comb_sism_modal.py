@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class ModalSeismicCombination(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.NotImplemented`"""
+
     command_name = "COMB_SISM_MODAL"
 
     def create_result(self, keywords):
@@ -56,5 +57,6 @@ class ModalSeismicCombination(ExecuteCommand):
         else:
             self._result.setMesh(keywords["MODE_MECA"].getMesh())
         self._result.build(feds=feds)
+
 
 COMB_SISM_MODAL = ModalSeismicCombination.run

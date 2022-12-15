@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: xavier.desroches at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -31,18 +30,10 @@ PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
 CHAR_LIMITE = Option(
-    para_in=(
-        SP.PDEPLAR,
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PTEMPSR,
-        PVARCPR,
-    ),
-    para_out=(
-        SP.PECHLI,
-    ),
+    para_in=(SP.PDEPLAR, SP.PGEOMER, SP.PMATERC, SP.PTEMPSR, PVARCPR),
+    para_out=(SP.PECHLI,),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.DISCRET, "OUI"))),
     ),
 )

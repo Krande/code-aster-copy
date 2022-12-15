@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,19 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-COMB_FOURIER=OPER(nom="COMB_FOURIER",op= 161,sd_prod=comb_fourier,
-                  reentrant='n',fr=tr("Recombiner les modes de Fourier d'une SD Résultat dans des directions particulières"),
-         RESULTAT        =SIMP(statut='o',typ=(fourier_elas,fourier_ther),),
-         ANGLE           =SIMP(statut='o',typ='R',max='**'),
-         NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=6,into=("DEPL","REAC_NODA",
-                               "SIEF_ELGA","EPSI_ELNO","SIGM_ELNO","TEMP","FLUX_ELNO"),),
-) ;
+COMB_FOURIER = OPER(
+    nom="COMB_FOURIER",
+    op=161,
+    sd_prod=comb_fourier,
+    reentrant="n",
+    fr=tr("Recombiner les modes de Fourier d'une SD Résultat dans des directions particulières"),
+    RESULTAT=SIMP(statut="o", typ=(fourier_elas, fourier_ther)),
+    ANGLE=SIMP(statut="o", typ="R", max="**"),
+    NOM_CHAM=SIMP(
+        statut="o",
+        typ="TXM",
+        validators=NoRepeat(),
+        max=6,
+        into=("DEPL", "REAC_NODA", "SIEF_ELGA", "EPSI_ELNO", "SIGM_ELNO", "TEMP", "FLUX_ELNO"),
+    ),
+)

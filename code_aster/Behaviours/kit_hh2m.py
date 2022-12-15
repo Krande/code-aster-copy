@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,21 +21,29 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'KIT_HH2M',
-    lc_type        = ('KIT_THM',),
-    doc            =   """KIT associé au comportement des milieux poreux (modélisations thermo-hydro-mécanique)."""    ,
-    num_lc         = 0,
-    nb_vari        = 0,
-    nom_vari       = None,
-    mc_mater       = None,
-    modelisation   = ('D_PLAN_HH2M_SI','D_PLAN_HH2MD','D_PLAN_HH2MS','AXIS_HH2MD','AXIS_HH2MS',
-        '3D_HH2MD','3D_HH2MS','3D_HH2M_SI',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('SANS_OBJET',),
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="KIT_HH2M",
+    lc_type=("KIT_THM",),
+    doc="""KIT associé au comportement des milieux poreux (modélisations thermo-hydro-mécanique).""",
+    num_lc=0,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=None,
+    modelisation=(
+        "D_PLAN_HH2M_SI",
+        "D_PLAN_HH2MD",
+        "D_PLAN_HH2MS",
+        "AXIS_HH2MD",
+        "AXIS_HH2MS",
+        "3D_HH2MD",
+        "3D_HH2MS",
+        "3D_HH2M_SI",
+    ),
+    deformation=("PETIT",),
+    algo_inte=("SANS_OBJET",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

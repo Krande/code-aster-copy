@@ -17,68 +17,56 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=2.1e11,
-                            NU=0.3,),)
+MATER = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3))
 
-AFFMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MATER,),)
+AFFMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
-AFFMOD=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='DKT',),)
+AFFMOD = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKT"))
 
-AFFCI=AFFE_CHAR_CINE(MODELE=AFFMOD,
-                     MECA_IMPO=(_F(GROUP_MA='AB',
-                                   DX=0,
-                                   DY=0,
-                                   DZ=0,
-                                   DRX=0,
-                                   DRY=0,
-                                   DRZ=0,),
-                                _F(GROUP_MA='CD',
-                                   DX=1,
-                                   DY=0,
-                                   DZ=0,),),)
+AFFCI = AFFE_CHAR_CINE(
+    MODELE=AFFMOD,
+    MECA_IMPO=(
+        _F(GROUP_MA="AB", DX=0, DY=0, DZ=0, DRX=0, DRY=0, DRZ=0),
+        _F(GROUP_MA="CD", DX=1, DY=0, DZ=0),
+    ),
+)
 
-CAREL=AFFE_CARA_ELEM(MODELE=AFFMOD,
-                     INFO=2,
-                     COQUE=(_F(GROUP_MA=('PR','DE',),
-                               EPAIS=0.01,),
-                            _F(GROUP_MA=('M33',),
-                               EPAIS=0.01,
-                               VECTEUR=(1,1,1),),
-                           ),)
+CAREL = AFFE_CARA_ELEM(
+    MODELE=AFFMOD,
+    INFO=2,
+    COQUE=(
+        _F(GROUP_MA=("PR", "DE"), EPAIS=0.01),
+        _F(GROUP_MA=("M33",), EPAIS=0.01, VECTEUR=(1, 1, 1)),
+    ),
+)
 
-MESTA=MECA_STATIQUE(MODELE=AFFMOD,
-                    CHAM_MATER=AFFMAT,
-                    CARA_ELEM=CAREL,
-                    EXCIT=_F(CHARGE=AFFCI,),)
+MESTA = MECA_STATIQUE(MODELE=AFFMOD, CHAM_MATER=AFFMAT, CARA_ELEM=CAREL, EXCIT=_F(CHARGE=AFFCI))
 
-MESTA=CALC_CHAMP(reuse=MESTA,
-                 RESULTAT=MESTA,
-                 CONTRAINTE=('EFGE_NOEU',),)
+MESTA = CALC_CHAMP(reuse=MESTA, RESULTAT=MESTA, CONTRAINTE=("EFGE_NOEU",))
 
-TEST_RESU(RESU=(_F(GROUP_NO='POINT',
-                   INST=0,
-                   RESULTAT=MESTA,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=0.41467491233351,
-                   ),
-                _F(GROUP_NO='POINT',
-                   INST=0,
-                   RESULTAT=MESTA,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.025255690069370,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="POINT",
+            INST=0,
+            RESULTAT=MESTA,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=0.41467491233351,
+        ),
+        _F(
+            GROUP_NO="POINT",
+            INST=0,
+            RESULTAT=MESTA,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            VALE_CALC=-0.025255690069370,
+        ),
+    )
+)
 
 FIN()

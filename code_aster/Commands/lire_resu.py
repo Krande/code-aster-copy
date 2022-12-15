@@ -19,19 +19,25 @@
 
 # person_in_charge: j-pierre.lefebvre at edf.fr
 
-from ..Objects import (LoadResult, ThermalResult,
-                       FullHarmonicResult,
-                       FullTransientResult,
-                       ExternalStateVariablesResult,
-                       ElasticResult,
-                       ModeResultComplex, ModeResult,
-                       EmpiricalModeResult, NonLinearResult)
+from ..Objects import (
+    LoadResult,
+    ThermalResult,
+    FullHarmonicResult,
+    FullTransientResult,
+    ExternalStateVariablesResult,
+    ElasticResult,
+    ModeResultComplex,
+    ModeResult,
+    EmpiricalModeResult,
+    NonLinearResult,
+)
 from ..Supervis import ExecuteCommand
 
 
 class ResultsReader(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.??` by assigning
     finite elements on a :class:`~code_aster.Objects.??`."""
+
     command_name = "LIRE_RESU"
 
     def create_result(self, keywords):
@@ -64,8 +70,7 @@ class ResultsReader(ExecuteCommand):
         elif typ == "EVOL_VARC":
             self._result = ExternalStateVariablesResult()
         else:
-            raise NotImplementedError("Type of result {0!r} not yet "
-                                      "implemented".format(typ))
+            raise NotImplementedError("Type of result {0!r} not yet " "implemented".format(typ))
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -88,7 +93,7 @@ class ResultsReader(ExecuteCommand):
         if "MATR_RIGI" in keywords:
             dofNum = keywords["MATR_RIGI"].getDOFNumbering()
             if dofNum:
-                self._result.setDOFNumbering( dofNum )
+                self._result.setDOFNumbering(dofNum)
 
         self._result.build()
 

@@ -24,13 +24,15 @@ import scipy.sparse.linalg
 import os
 import inspect
 from ..Objects.user_extensions import WithEmbeddedObjects
+
 try:
     import matplotlib.pyplot as plt
+
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
 
-from ..Commands import (CREA_CHAMP, RESOUDRE, CREA_RESU, FACTORISER)
+from ..Commands import CREA_CHAMP, RESOUDRE, CREA_RESU, FACTORISER
 
 DEBUG = False
 
@@ -40,7 +42,7 @@ def debugPrint(*args, **kwargs):
         # get module, class, function, linenumber information
         className = None
         try:
-            className = inspect.stack()[2][0].f_locals['self'].__class__.__name__
+            className = inspect.stack()[2][0].f_locals["self"].__class__.__name__
         except:
             pass
         modName = None
@@ -58,9 +60,9 @@ def debugPrint(*args, **kwargs):
         argCnt = len(args)
         kwargCnt = len(kwargs)
         fmt = ""
-        fmt1 = DbgText+":"+"->"
+        fmt1 = DbgText + ":" + "->"
         if argCnt > 0:
-            fmt1 += (argCnt-1)*"%s,"
+            fmt1 += (argCnt - 1) * "%s,"
             fmt1 += "%s"
             fmt += fmt1
 
@@ -68,7 +70,7 @@ def debugPrint(*args, **kwargs):
             fmt2 = "%s"
             args += ("{}".format(kwargs),)
             if len(fmt) > 0:
-                fmt += ","+fmt2
+                fmt += "," + fmt2
             else:
                 fmt += fmt2
 
@@ -76,7 +78,7 @@ def debugPrint(*args, **kwargs):
 
 
 class Interface(WithEmbeddedObjects):
-    """ Interface object for dynamic substructring.
+    """Interface object for dynamic substructring.
 
     The interface is a 2D surface, modeled by a group of cells.
     It needs not to be conforming  : the mesh of each substructure on the interface
@@ -96,19 +98,20 @@ class Interface(WithEmbeddedObjects):
         self.sub2 = sub2
         self.name = interfaceName
 
-        if not (self.sub1.mesh.hasGroupOfCells(interfaceName) and
-                self.sub2.mesh.hasGroupOfCells(interfaceName)):
+        if not (
+            self.sub1.mesh.hasGroupOfCells(interfaceName)
+            and self.sub2.mesh.hasGroupOfCells(interfaceName)
+        ):
             raise RuntimeError(
-                "Each substructure must have a group of cells named {}".format(interfaceName))
+                "Each substructure must have a group of cells named {}".format(interfaceName)
+            )
 
     def __getstate__(self):
-        """Method for aster serialization process
-        """
+        """Method for aster serialization process"""
         return [self.sub1, self.sub2, self.name]
 
     def __setstate__(self, state):
-        """Method for aster serialization process
-        """
+        """Method for aster serialization process"""
         assert len(state) == 3, state
         (self.sub1, self.sub2, self.name) = state
 
@@ -122,7 +125,7 @@ class Interface(WithEmbeddedObjects):
         dofsType : either 'Struct', 'Fluid' or 'IFS'
         """
         # check the value of the argument
-        VALID_DOFS = {'Structure', 'Fluid', 'IFS'}
+        VALID_DOFS = {"Structure", "Fluid", "IFS"}
         if dofsType not in VALID_DOFS:
             raise ValueError("dofsType must be one of %r." % VALID_DOFS)
         # we begin by merging all nodes of the interface in common objects
@@ -134,7 +137,7 @@ class Interface(WithEmbeddedObjects):
             lINodes = []
             for cell in lCells:
                 lINodes += connect[cell]
-            interfaceNodes1 = list(np.unique(np.array(lINodes)-1))
+            interfaceNodes1 = list(np.unique(np.array(lINodes) - 1))
         else:
             interfaceNodes1 = list(np.array(self.sub1.mesh.getNodes(self.name)))
         if not self.sub2.mesh.hasGroupOfNodes(self.name):
@@ -143,15 +146,15 @@ class Interface(WithEmbeddedObjects):
             lINodes = []
             for cell in lCells:
                 lINodes += connect[cell]
-            interfaceNodes2 = list(np.unique(np.array(lINodes)-1))
+            interfaceNodes2 = list(np.unique(np.array(lINodes) - 1))
         else:
             interfaceNodes2 = list(np.array(self.sub2.mesh.getNodes(self.name)))
         interfaceNodes = np.array(interfaceNodes1 + interfaceNodes2)
         nInterfaceNodes = len(interfaceNodes)
 
         # we get the indices of the nodes of the interface in the common list
-        ind_no1 = np.where(np.in1d(nodes[:len(self.sub1.nodes)], interfaceNodes1))[0]
-        ind_no2 = np.where(np.in1d(nodes[len(self.sub1.nodes):], interfaceNodes2))[0]
+        ind_no1 = np.where(np.in1d(nodes[: len(self.sub1.nodes)], interfaceNodes1))[0]
+        ind_no2 = np.where(np.in1d(nodes[len(self.sub1.nodes) :], interfaceNodes2))[0]
         # since the indices are for a sub-list, we must shift them for use in the common list
         ind_no2 += len(self.sub1.nodes)
         ind_no = np.hstack((ind_no1, ind_no2))
@@ -165,8 +168,8 @@ class Interface(WithEmbeddedObjects):
 
         # if there is an ovious mean plane, we use it. Otherwise we compute it with a SVD
         CoordMax = np.abs(Coord_t).max(axis=0)
-        if np.any(CoordMax < 1.e-12):
-            indx = np.where(CoordMax < 1.e-12)[0][0]
+        if np.any(CoordMax < 1.0e-12):
+            indx = np.where(CoordMax < 1.0e-12)[0][0]
             U = np.eye(3)
             U[:, [2, indx]] = U[:, [indx, 2]]  # swap the columns
         else:
@@ -183,17 +186,17 @@ class Interface(WithEmbeddedObjects):
         Xmin = np.min(NewCoord[0, :])
         Ymin = np.min(NewCoord[1, :])
 
-        NewCoord[0, :] -= (Xmax + Xmin) / 2.
-        NewCoord[1, :] -= (Ymax + Ymin) / 2.
+        NewCoord[0, :] -= (Xmax + Xmin) / 2.0
+        NewCoord[1, :] -= (Ymax + Ymin) / 2.0
 
-        R = np.sqrt(NewCoord[0, :]**2 + NewCoord[1, :]**2)
+        R = np.sqrt(NewCoord[0, :] ** 2 + NewCoord[1, :] ** 2)
         Th = np.arctan2(NewCoord[1, :], NewCoord[0, :])
 
         Rmax = np.max(R)
         Interf = []
 
         #  section for fluid dofs
-        if dofsType == 'Fluid' or dofsType == 'IFS':
+        if dofsType == "Fluid" or dofsType == "IFS":
             """
             Interface pressure fields
             * constant pressure
@@ -209,14 +212,14 @@ class Interface(WithEmbeddedObjects):
             Pres[:, 2] = NewCoord[1, :] / Rmax  # linear pressure
             # Pres[:,3] = 1.- (R/Rmax)**2  # quadratic field - not so usefull
 
-            Pres *= 1.e5  # Normalize
+            Pres *= 1.0e5  # Normalize
 
             for i1 in range(nPress):
                 Interf.append(np.zeros((nInterfaceNodes, 4)))
                 Interf[-1][:, 3] += Pres[:, i1]
 
-#  section for structure dofs
-        if dofsType == 'Structure' or dofsType == 'IFS':
+        #  section for structure dofs
+        if dofsType == "Structure" or dofsType == "IFS":
             """
             Interface displacement fields
             * 6 rigid body modes
@@ -231,11 +234,11 @@ class Interface(WithEmbeddedObjects):
                 Disp = np.zeros((nInterfaceNodes, 3))
 
                 if i1 < 3:  # -- translation rigid body modes
-                    Disp[:, i1] += 1.
+                    Disp[:, i1] += 1.0
 
                 elif (i1 >= 3) & (i1 < 5):  # -- rotation along X / Y local vectors
                     Disp = np.zeros((nInterfaceNodes, 3))
-                    Disp[:, 2] = R*np.cos(Th + (i1-3)*np.pi/2)/Rmax
+                    Disp[:, 2] = R * np.cos(Th + (i1 - 3) * np.pi / 2) / Rmax
 
                 elif i1 == 5:  # -- rotation along Z local vectors
                     Disp[:, 0] = NewCoord[1, :] / Rmax
@@ -245,9 +248,9 @@ class Interface(WithEmbeddedObjects):
                     Disp[:, 0] = np.cos(Th)
                     Disp[:, 1] = np.sin(Th)
 
-                elif (i1 < 9):  # -- ovalisation
-                    Disp[:, 0] = np.cos(Th)*np.sin(2*Th + (i1-7)*np.pi/2)
-                    Disp[:, 1] = np.sin(Th)*np.sin(2*Th + (i1-7)*np.pi/2)
+                elif i1 < 9:  # -- ovalisation
+                    Disp[:, 0] = np.cos(Th) * np.sin(2 * Th + (i1 - 7) * np.pi / 2)
+                    Disp[:, 1] = np.sin(Th) * np.sin(2 * Th + (i1 - 7) * np.pi / 2)
                 # elif (i1 == 7):  # -- ovalisation1
                 #     Disp[:, 0] = np.cos(Th)*1.5
                 #     Disp[:, 1] = np.sin(Th)*0.2
@@ -256,21 +259,23 @@ class Interface(WithEmbeddedObjects):
                 #     Disp[:, 0] = np.cos(Th+np.pi/2)*1.5
                 #     Disp[:, 1] = np.sin(Th+np.pi/2)*0.2
                 else:
-                    print('not done yet...')
+                    print("not done yet...")
 
                 Disp = np.matmul(Disp, U.T)
                 for k1 in range(3):  # loop on displacement dofs
                     Interf[-1][:, k1] += Disp[:, k1]
 
         # transfer the interface data to the specific substructure
-        self.sub1.setInterfaceData(self.name, interfaceNodes1, [
-                                   a[:len(ind_no1), :] for a in Interf])
-        self.sub2.setInterfaceData(self.name, interfaceNodes2, [
-                                   a[len(ind_no1):, :] for a in Interf])
+        self.sub1.setInterfaceData(
+            self.name, interfaceNodes1, [a[: len(ind_no1), :] for a in Interf]
+        )
+        self.sub2.setInterfaceData(
+            self.name, interfaceNodes2, [a[len(ind_no1) :, :] for a in Interf]
+        )
 
 
 class SubStructure(WithEmbeddedObjects):
-    """ SubStructure object for dynamic substructring.
+    """SubStructure object for dynamic substructring.
 
     The subStructure is fully defined by :
     - its stiffness and mass matrices
@@ -278,8 +283,19 @@ class SubStructure(WithEmbeddedObjects):
     """
 
     # Mandatory class attribute in order to manage aster serialization process
-    aster_embedded = ["mass", "mesh", "modes", "nodes", "coords",
-                      "dofNumbering", "stiffness", "lINodes", "lIDispl", "iModes", "lIName"]
+    aster_embedded = [
+        "mass",
+        "mesh",
+        "modes",
+        "nodes",
+        "coords",
+        "dofNumbering",
+        "stiffness",
+        "lINodes",
+        "lIDispl",
+        "iModes",
+        "lIName",
+    ]
 
     def __init__(self, stiffness, mass, modes):
 
@@ -299,18 +315,37 @@ class SubStructure(WithEmbeddedObjects):
         self.stiffness = stiffness
 
     def __getstate__(self):
-        """Method for aster serialization process
-        """
-        return [self.mass, self.mesh, self.modes, self.nodes, self.coords,
-                self.dofNumbering, self.stiffness, self.lINodes, self.lIDispl, self.iModes,
-                self.lIName]
+        """Method for aster serialization process"""
+        return [
+            self.mass,
+            self.mesh,
+            self.modes,
+            self.nodes,
+            self.coords,
+            self.dofNumbering,
+            self.stiffness,
+            self.lINodes,
+            self.lIDispl,
+            self.iModes,
+            self.lIName,
+        ]
 
     def __setstate__(self, state):
-        """Method for aster serialization process
-        """
+        """Method for aster serialization process"""
         assert len(state) == 11, state
-        (self.mass, self.mesh, self.modes, self.nodes, self.coords, self.dofNumbering,
-         self.stiffness, self.lINodes, self.lIDispl, self.iModes, self.lIName) = state
+        (
+            self.mass,
+            self.mesh,
+            self.modes,
+            self.nodes,
+            self.coords,
+            self.dofNumbering,
+            self.stiffness,
+            self.lINodes,
+            self.lIDispl,
+            self.iModes,
+            self.lIName,
+        ) = state
 
     def setInterfaceData(self, iName: str, iNodes: list, iDispl: list):
         """
@@ -340,45 +375,49 @@ class SubStructure(WithEmbeddedObjects):
 
             for displ in iDispl:
 
-                Cham = CREA_CHAMP(MODELE=model,
-                                  NUME_DDL=dofNumbering,
-                                  PROL_ZERO='OUI',
-                                  OPERATION='AFFE',
-                                  TYPE_CHAM='NOEU_DEPL_R',
-                                  AFFE=(_F(TOUT='OUI',
-                                           NOM_CMP=('DX',),
-                                           VALE=(0.)),
-                                        ),)
+                Cham = CREA_CHAMP(
+                    MODELE=model,
+                    NUME_DDL=dofNumbering,
+                    PROL_ZERO="OUI",
+                    OPERATION="AFFE",
+                    TYPE_CHAM="NOEU_DEPL_R",
+                    AFFE=(_F(TOUT="OUI", NOM_CMP=("DX",), VALE=(0.0)),),
+                )
 
                 for i1, no in enumerate(iNodes):
                     dictDofValues = {}
-                    dictDofValues['NOEUD'] = int(no)+1
-                    for j1, comp in enumerate(['DX', 'DY', 'DZ', 'PRES']):
+                    dictDofValues["NOEUD"] = int(no) + 1
+                    for j1, comp in enumerate(["DX", "DY", "DZ", "PRES"]):
                         dictDofValues[comp] = displ[i1, j1]
                     try:
                         Cham.setDirichletBC(**dictDofValues)
                     except Exception as e:
-                        print("Erreur avec noeud {} comp {} et valeur {}".format(no+1, comp,
-                                                                                 displ[i1, j1]))
+                        print(
+                            "Erreur avec noeud {} comp {} et valeur {}".format(
+                                no + 1, comp, displ[i1, j1]
+                            )
+                        )
                         print(e)
                         pass
 
-                resu = RESOUDRE(MATR=self.stiffness, CHAM_NO=Cham, RESI_RELA=-1.)
+                resu = RESOUDRE(MATR=self.stiffness, CHAM_NO=Cham, RESI_RELA=-1.0)
 
                 if createOutputFile:
-                    interfModes = CREA_RESU(OPERATION='AFFE',
-                                            TYPE_RESU='MULT_ELAS',
-                                            NOM_CHAM='DEPL',
-                                            AFFE=_F(CHAM_GD=resu, MODELE=model),
-                                            )
+                    interfModes = CREA_RESU(
+                        OPERATION="AFFE",
+                        TYPE_RESU="MULT_ELAS",
+                        NOM_CHAM="DEPL",
+                        AFFE=_F(CHAM_GD=resu, MODELE=model),
+                    )
                     createOutputFile = False
                 else:
-                    interfModes = CREA_RESU(reuse=interfModes,
-                                            OPERATION='AFFE',
-                                            TYPE_RESU='MULT_ELAS',
-                                            NOM_CHAM='DEPL',
-                                            AFFE=_F(CHAM_GD=resu, MODELE=model),
-                                            )
+                    interfModes = CREA_RESU(
+                        reuse=interfModes,
+                        OPERATION="AFFE",
+                        TYPE_RESU="MULT_ELAS",
+                        NOM_CHAM="DEPL",
+                        AFFE=_F(CHAM_GD=resu, MODELE=model),
+                    )
                 interfModes.userName = "Resu_{}".format(iName)
 
             self.iModes = interfModes
@@ -411,43 +450,45 @@ class SubStructure(WithEmbeddedObjects):
             # pour ne pas avoir deux valeurs propres strictement egal
             if precision:
                 if eig == prevEig:
-                    eig += 10**-precision
+                    eig += 10 ** -precision
                 prevEig = eig
-            print('frequence = %s' % eig)
-            Cham = CREA_CHAMP(MODELE=model,
-                              NUME_DDL=dofNumbering,
-                              PROL_ZERO='OUI',
-                              OPERATION='AFFE',
-                              TYPE_CHAM='NOEU_DEPL_R',
-                              AFFE=(_F(TOUT='OUI',
-                                        NOM_CMP='DX',
-                                        VALE=0.),),)
+            print("frequence = %s" % eig)
+            Cham = CREA_CHAMP(
+                MODELE=model,
+                NUME_DDL=dofNumbering,
+                PROL_ZERO="OUI",
+                OPERATION="AFFE",
+                TYPE_CHAM="NOEU_DEPL_R",
+                AFFE=(_F(TOUT="OUI", NOM_CMP="DX", VALE=0.0),),
+            )
 
             Cham.updateValuePointers()
             for i in range(evArray.shape[0]):
                 Cham[i] = evArray[i, idx].real  # keep only real part
 
             if idx == 0:
-                Resu = CREA_RESU(OPERATION='AFFE',
-                                 TYPE_RESU='MODE_MECA',
-                                 NOM_CHAM='DEPL',
-                                 AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
-                                 )
+                Resu = CREA_RESU(
+                    OPERATION="AFFE",
+                    TYPE_RESU="MODE_MECA",
+                    NOM_CHAM="DEPL",
+                    AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
+                )
                 Resu.setDOFNumbering(dofNumbering)
             else:
-                Resu = CREA_RESU(reuse=Resu,
-                                 OPERATION='AFFE',
-                                 TYPE_RESU='MODE_MECA',
-                                 NOM_CHAM='DEPL',
-                                 AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
-                                 )
+                Resu = CREA_RESU(
+                    reuse=Resu,
+                    OPERATION="AFFE",
+                    TYPE_RESU="MODE_MECA",
+                    NOM_CHAM="DEPL",
+                    AFFE=_F(CHAM_GD=Cham, NUME_MODE=idx, FREQ=eig),
+                )
             Resu.userName = "Modes_{}".format(model.getName())
 
         return Resu
 
 
 class Structure(WithEmbeddedObjects):
-    """ Structure object for dynamic substructring.
+    """Structure object for dynamic substructring.
 
     The subStructure is fully defined by the list of substructures and interfaces
     """
@@ -460,13 +501,11 @@ class Structure(WithEmbeddedObjects):
         self.lInterfaces = lInterfaces
 
     def __getstate__(self):
-        """Method for aster serialization process
-        """
+        """Method for aster serialization process"""
         return [self.lSubS, self.lInterfaces]
 
     def __setstate__(self, state):
-        """Method for aster serialization process
-        """
+        """Method for aster serialization process"""
         assert len(state) == 2, state
         (self.lSubS, self.lInterfaces) = state
 
@@ -479,14 +518,14 @@ class Structure(WithEmbeddedObjects):
 
         # Compute Reduced Matrices
         Kred, Mred, allModes = self._computeReducedOperators(
-            lNumberOfPhysicalEqs, lIndexOfInterfModes, lNumberOfInterfModes)
+            lNumberOfPhysicalEqs, lIndexOfInterfModes, lNumberOfInterfModes
+        )
         totalNumberOfModes = allModes.shape[1]
         debugPrint(Kred=Kred)
         debugPrint(Mred=Mred)
 
         # Kernel of the constraint matrix
-        T = self._computeKernelBasis(
-            lNumberOfInterfModes, totalNumberOfModes, lIndexOfInterfModes)
+        T = self._computeKernelBasis(lNumberOfInterfModes, totalNumberOfModes, lIndexOfInterfModes)
         debugPrint(T=T)
 
         # Projection on the kernel
@@ -501,7 +540,7 @@ class Structure(WithEmbeddedObjects):
             plt.show()
 
         if DEBUG:
-            with open('/tmp/matrices.npy', 'wb') as f:
+            with open("/tmp/matrices.npy", "wb") as f:
                 np.save(f, Kredred)
                 np.save(f, Mredred)
         # Solve of the global modal problem
@@ -509,18 +548,21 @@ class Structure(WithEmbeddedObjects):
         # initial vector - mandatory to get same results on different platforms
         v0 = scipy.sparse.linalg.splu(Kredred).solve(np.random.rand(Kredred.shape[0]) - 0.5)
         # we use the shift and invert strategy of arpack in order to get the lowest eigenvalues
-        omredred, evredred = scipy.sparse.linalg.eigs(Kredred, M=Mredred, which='LM', k=nmodes,
-                                                      v0=v0, sigma=0, maxiter=1000*nmodes)
+        omredred, evredred = scipy.sparse.linalg.eigs(
+            Kredred, M=Mredred, which="LM", k=nmodes, v0=v0, sigma=0, maxiter=1000 * nmodes
+        )
 
         # sort the eigenvalues
-        omredred = np.sqrt(omredred) / 2. / np.pi
+        omredred = np.sqrt(omredred) / 2.0 / np.pi
         tri = np.real(omredred).argsort()
         omredred = omredred[tri]
         evredred = evredred[:, tri]
 
         # rotate each ev (aka each column) so that the imaginary part is zero (this is not
         # guaranted by the eigensolver ; see issue32008)
-        evredred = np.apply_along_axis(lambda x: x*np.exp(-np.angle(x[0])*1j), axis=0, arr=evredred)
+        evredred = np.apply_along_axis(
+            lambda x: x * np.exp(-np.angle(x[0]) * 1j), axis=0, arr=evredred
+        )
 
         # Switch back to physical space
         evred = T.dot(evredred)
@@ -530,7 +572,7 @@ class Structure(WithEmbeddedObjects):
         resu = []
         for isub, sub in enumerate(self.lSubS):
             neq = lNumberOfPhysicalEqs[isub]
-            evSub = ev[decalage:decalage + neq, :]
+            evSub = ev[decalage : decalage + neq, :]
             decalage += neq
             resuSub = sub.exportModesToAsterResult(omredred, evSub, precision)
             resu.append(resuSub)
@@ -564,11 +606,11 @@ class Structure(WithEmbeddedObjects):
                     index = np.where(np.array(inames) == interface.name)[0]
                     nConstraintSub1 = len(index)
                     indexConstraintSub = index_interfModes[isub][index]
-                    idx1[iConstraints: iConstraints + nConstraintSub1] = np.arange(
+                    idx1[iConstraints : iConstraints + nConstraintSub1] = np.arange(
                         iConstraints, iConstraints + nConstraintSub1
                     )
-                    jdx1[iConstraints: iConstraints + nConstraintSub1] = indexConstraintSub
-                    values1[iConstraints: iConstraints + nConstraintSub1] = 1
+                    jdx1[iConstraints : iConstraints + nConstraintSub1] = indexConstraintSub
+                    values1[iConstraints : iConstraints + nConstraintSub1] = 1
                 if sub == sub2:
                     # number of local modes per interface
                     nRanks = len(sub.iModes.getIndexes()) // len(sub.lIName)
@@ -577,11 +619,11 @@ class Structure(WithEmbeddedObjects):
                     index = np.where(np.array(inames) == interface.name)[0]
                     nConstraintSub2 = len(index)
                     indexConstraintSub = index_interfModes[isub][index]
-                    idx2[iConstraints: iConstraints + nConstraintSub2] = np.arange(
+                    idx2[iConstraints : iConstraints + nConstraintSub2] = np.arange(
                         iConstraints, iConstraints + nConstraintSub2
                     )
-                    jdx2[iConstraints: iConstraints + nConstraintSub2] = indexConstraintSub
-                    values2[iConstraints: iConstraints + nConstraintSub2] = -1
+                    jdx2[iConstraints : iConstraints + nConstraintSub2] = indexConstraintSub
+                    values2[iConstraints : iConstraints + nConstraintSub2] = -1
             assert nConstraintSub1 == nConstraintSub2
             iConstraints += nConstraintSub1
         values = np.hstack((values1, values2))
@@ -614,8 +656,9 @@ class Structure(WithEmbeddedObjects):
 
         return T
 
-    def _computeReducedOperators(self, lNumberOfPhysicalEqs: list, lIndexOfInterfModes: list,
-                                 lNumberOfInterfModes: list):
+    def _computeReducedOperators(
+        self, lNumberOfPhysicalEqs: list, lIndexOfInterfModes: list, lNumberOfInterfModes: list
+    ):
         Kred = []
         Mred = []
         allModes = []
@@ -634,18 +677,18 @@ class Structure(WithEmbeddedObjects):
             lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers())
 
             modes = sub.modes
-            em = [modes.getField('DEPL', r).getValues() for r in modes.getIndexes()]
+            em = [modes.getField("DEPL", r).getValues() for r in modes.getIndexes()]
             decalage += len(em)
             em = np.vstack(em).T
-            em[lag, :] = 0.  # mise a zero des Lagrange
+            em[lag, :] = 0.0  # mise a zero des Lagrange
 
             imodes = sub.iModes
-            im = [imodes.getField('DEPL', r).getValues() for r in imodes.getIndexes()]
+            im = [imodes.getField("DEPL", r).getValues() for r in imodes.getIndexes()]
             lIndexOfInterfModes.append(np.arange(len(im)) + decalage)
             lNumberOfInterfModes.append(len(im))
             decalage += len(im)
             im = np.vstack(im).T
-            im[lag, :] = 0.  # mise a zero des Lagrange
+            im[lag, :] = 0.0  # mise a zero des Lagrange
 
             allModesSub = np.hstack((em, im))
             Kred.append(allModesSub.T.dot(K.dot(allModesSub)))
@@ -658,9 +701,21 @@ class Structure(WithEmbeddedObjects):
         return Kred, Mred, allModes
 
 
-def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=True,
-            name1=None, name2=None, list1=None, list2=None, dof=None, interactive_plot=False,
-            save_plot_filename=""):
+def macPlot(
+    lres1,
+    lres2,
+    lmass,
+    fluid_material=None,
+    massprod=True,
+    normalize=True,
+    name1=None,
+    name2=None,
+    list1=None,
+    list2=None,
+    dof=None,
+    interactive_plot=False,
+    save_plot_filename="",
+):
     """Compute and plot the MAC for 2 data-structures computed for a given modal problem.
     The function can also handle lists of data-structures. This can be handy in the case where
     dynamic substructuring is used. In this case,
@@ -709,13 +764,13 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         raise KeyError("list2 is out of bound")
     nModes1 = len(list1) if list1 else nres1
     nModes2 = len(list2) if list2 else nres2
-    lMode1 = list1 if list1 else range(1, nModes1+1)
-    lMode2 = list2 if list2 else range(1, nModes2+1)
+    lMode1 = list1 if list1 else range(1, nModes1 + 1)
+    lMode2 = list2 if list2 else range(1, nModes2 + 1)
     lMode11 = list1 if list1 else range(nModes1)
     lMode22 = list2 if list2 else range(nModes2)
     lFreq1 = lres1[0].LIST_VARI_ACCES()["FREQ"]
     lFreq2 = lres2[0].LIST_VARI_ACCES()["FREQ"]
-    rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.
+    rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.0
     # start MAC computation : MAC = MAC1 **2 / MAC2 / MAC3
     MAC1 = np.zeros((nModes2, nModes1))
     MAC2 = np.zeros((nModes2, nModes1))
@@ -725,9 +780,7 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         res1 = lres1[istru]
         res2 = lres2[istru]
         # selection of the dofs
-        lPhysical = (
-            np.array(mass.getDOFNumbering().getRowsAssociatedToPhysicalDofs())
-        )
+        lPhysical = np.array(mass.getDOFNumbering().getRowsAssociatedToPhysicalDofs())
         lDOF = lPhysical
         if dof:
             dict_dof = {}
@@ -746,12 +799,7 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         def getLeftAndRightModes(_res, _idx, _imode, _dof, _lFreq):
             vectot = _res.getField("DEPL", _imode).EXTR_COMP().valeurs
             v0_right = (
-                np.concatenate(
-                    [
-                        _res.getField("DEPL", _imode).EXTR_COMP(d).valeurs
-                        for d in _dof
-                    ]
-                )
+                np.concatenate([_res.getField("DEPL", _imode).EXTR_COMP(d).valeurs for d in _dof])
                 if _dof
                 else None
             )
@@ -778,9 +826,7 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
                         rhof * (2 * np.pi * _lFreq[_idx]) ** 2 * vectot[id]
                         if d in ["DX", "DY", "DZ"]
                         else vectot[id]
-                        for id, d in enumerate(
-                            _res.getField("DEPL", _imode).EXTR_COMP(topo=1).comp
-                        )
+                        for id, d in enumerate(_res.getField("DEPL", _imode).EXTR_COMP(topo=1).comp)
                     ]
                 )
             )
@@ -818,8 +864,14 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         cbar = plt.colorbar()
         cbar.ax.set_ylabel("MAC")
         for (x_val, y_val), val in np.ndenumerate(np.transpose(mac)):
-            ax.text(x_val, y_val, "{:.1f}".format(val) if (val > 0.2) else "", va="center",
-                    ha="center", color="white",)
+            ax.text(
+                x_val,
+                y_val,
+                "{:.1f}".format(val) if (val > 0.2) else "",
+                va="center",
+                ha="center",
+                color="white",
+            )
         if interactive_plot and interactive_is_possible:
             plt.show()
         if save_plot_filename:

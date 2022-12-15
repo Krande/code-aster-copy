@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class MeshAssembler(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Mesh`"""
+
     command_name = "ASSE_MAILLAGE"
 
     def create_result(self, keywords):
@@ -42,5 +43,6 @@ class MeshAssembler(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.build()
+
 
 ASSE_MAILLAGE = MeshAssembler.run

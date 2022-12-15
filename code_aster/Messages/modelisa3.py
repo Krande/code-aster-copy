@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,257 +20,311 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
 MODI_REPERE / CHAMP_GD
     Seuls les champs de contraintes à sous-points issus d'une projection sont traités.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
 MODI_REPERE / CHAMP_GD
     Le mot clé REPERE est obligatoire et doit valoir GLOBAL_UTIL.
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 MODI_REPERE / CHAMP_GD
     Le mot clé REPERE doit valoir GLOBAL_UTIL.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 MODI_REPERE / CHAMP_GD
     Le CARA_ELEM <%(k1)s> doit avoir des caractéristiques de coques, du type :
         %(k2)s
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 MODI_REPERE / CHAMP_GD
     Les maillages doivent être identique :
         Le CHAMP     est bâti sur le maillage %(k1)s.
         Le CARA_ELEM est bâti sur le maillage %(k2)s.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 MODI_REPERE / CHAMP_GD
     Les modèles doivent être identique :
         Le CHAMP     est bâti sur le modèle %(k1)s.
         Le CARA_ELEM est bâti sur le modèle %(k2)s.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 MODI_REPERE / CHAMP_GD
     Le mot clé CARA_ELEM est obligatoire.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
  le mot clé "TRAN" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
  le mot clé "ANGL_NAUT" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
  le mot clé "centre" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
-"""),
-
-    12: _("""
+"""
+    ),
+    12: _(
+        """
   Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre
   en vis-à-vis n'ont pas le même nombre de noeuds.
 
    - Nombre de noeuds présent sous le mot clé %(k1)s: %(i1)d
    - Nombre de noeuds présent sous le mot clé %(k2)s: %(i2)d
 
-"""),
-
-    13: _("""
+"""
+    ),
+    13: _(
+        """
  Il n'y a aucun groupe de noeuds ni aucun noeud défini après le mot facteur  %(k1)s
-"""),
-
-    14: _("""
+"""
+    ),
+    14: _(
+        """
 MODI_REPERE / RESULTAT / concept réentrant
     Le mot clé REPERE est obligatoire et doit valoir "COQUE_INTR_UTIL" ou "COQUE_UTIL_INTR"
-"""),
-
-    15: _("""
+"""
+    ),
+    15: _(
+        """
 MODI_REPERE / RESULTAT / concept réentrant
     Le mot clé REPERE vaut %(k1)s. Il est interdit d'utiliser le même concept résultat en entrée et en sortie de
     la commande MODI_REPERE pour ce type de changement de repère.
 
     Conseils : Définissez un concept résultat différent en sortie de la commande.
-"""),
-2 : _("""
+"""
+    ),
+    2: _(
+        """
   Une variable utilisée ou produite par MFront a dépassée les bornes physiques
   ou les bornes de corrélation de la loi de comportement.
 
   Conseils : Vérifiez les coefficients matériau donnés à la loi de comportement.
-"""),
-
-    18: _("""
+"""
+    ),
+    18: _(
+        """
  la table "CARA_GEOM" n'existe pas dans le maillage
-"""),
-
-    19: _("""
+"""
+    ),
+    19: _(
+        """
  mailles mal orientées
-"""),
-
-    20: _("""
+"""
+    ),
+    20: _(
+        """
  pour les segments en 3d, il faut renseigner VECT_ORIE_pou
-"""),
-
-    21: _("""
+"""
+    ),
+    21: _(
+        """
  pas de normale pour les tria en 2d
-"""),
-
-    22: _("""
+"""
+    ),
+    22: _(
+        """
  pas de normale pour les quadrangles en 2d
-"""),
-
-    37: _("""
+"""
+    ),
+    37: _(
+        """
  erreur pour extension de la carte  %(k1)s
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    60: _("""
+"""
+    ),
+    60: _(
+        """
  on ne donne le mot facteur "CONVECTION" qu'une fois au maximum
-"""),
-
-
-
-
-    64: _("""
+"""
+    ),
+    64: _(
+        """
  nombre d occurrence du mot clé "SOUR_CALCULEE"  supérieur a 1
-"""),
-
-    67: _("""
+"""
+    ),
+    67: _(
+        """
  on doit utiliser obligatoirement le mot-clé DIST pour définir la demi largeur de bande.
-"""),
-
-    68: _("""
+"""
+    ),
+    68: _(
+        """
  on doit donner une distance strictement positive pour définir la bande.
-"""),
-
-    69: _("""
+"""
+    ),
+    69: _(
+        """
  on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option bande de CREA_GROUP_MA. ce mot-clé permet de définir la direction perpendiculaire au plan milieu de la bande.
-"""),
-
-    70: _("""
+"""
+    ),
+    70: _(
+        """
  pour l'option bande de CREA_GROUP_MA, il faut  définir les 3 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 3d.
-"""),
-
-    71: _("""
+"""
+    ),
+    71: _(
+        """
  pour l'option bande de CREA_GROUP_MA, il faut  définir les 2 composantes du vecteur perpendiculaire au plan milieu de la  bande quand on est en 2d.
-"""),
-
-    72: _("""
+"""
+    ),
+    72: _(
+        """
  erreur dans la donnée du vecteur normal au plan milieu de la  bande : ce vecteur est nul.
-"""),
-
-    73: _("""
+"""
+    ),
+    73: _(
+        """
  l'option cylindre de CREA_GROUP_MA n'est utilisable qu'en 3d.
-"""),
-
-    74: _("""
+"""
+    ),
+    74: _(
+        """
  on doit utiliser obligatoirement le mot-clé rayon pour définir le rayon du cylindre.
-"""),
-
-    75: _("""
+"""
+    ),
+    75: _(
+        """
  on doit donner un rayon strictement positif pour définir la cylindre.
-"""),
-
-    76: _("""
+"""
+    ),
+    76: _(
+        """
  on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option cylindre de CREA_GROUP_MA
-"""),
-
-    77: _("""
+"""
+    ),
+    77: _(
+        """
  pour l'option cylindre de CREA_GROUP_MA, il faut  définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot-clé VECT_NORMALE.
-"""),
-
-    78: _("""
+"""
+    ),
+    78: _(
+        """
  pour l'option cylindre de CREA_GROUP_MA, il faut définir les 2 angles nautiques quand on utilise le mot-clé "ANGL_NAUT".
-"""),
-
-    79: _("""
+"""
+    ),
+    79: _(
+        """
  erreur dans la donnée du vecteur orientant l'axe du cylindre,ce vecteur est nul.
-"""),
-
-    80: _("""
+"""
+    ),
+    80: _(
+        """
  on doit utiliser obligatoirement le mots-clés ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option FACE_NORMALE de CREA_GROUP_MA
-"""),
-
-    81: _("""
+"""
+    ),
+    81: _(
+        """
  erreur dans la donnée du vecteur normal selon lequel on veut sélectionner des mailles : ce vecteur est nul.
-"""),
-
-    82: _("""
+"""
+    ),
+    82: _(
+        """
  on doit utiliser obligatoirement le mot-clé rayon pour définir le rayon de la sphère.
-"""),
-
-    83: _("""
+"""
+    ),
+    83: _(
+        """
  on doit donner un rayon strictement positif pour définir la sphère.
-"""),
-
-    84: _("""
+"""
+    ),
+    84: _(
+        """
  l'option ENV_CYLINDRE de CREA_GROUP_NO n'est utilisable qu'en 3d.
-"""),
-
-    85: _("""
+"""
+    ),
+    85: _(
+        """
  on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option ENV_CYLINDRE de CREA_GROUP_NO
-"""),
-
-    86: _("""
+"""
+    ),
+    86: _(
+        """
  pour l'option ENV_CYLINDRE de CREA_GROUP_NO, il faut définir les 3 composantes du vecteur orientant l'axe du cylindre quand on utilise le mot clé "VECT_NORMALE".
-"""),
-
-    87: _("""
+"""
+    ),
+    87: _(
+        """
  pour l'option ENV_CYLINDRE de CREA_GROUP_NO, il faut définir les 2 angles nautiques quand on utilise le mot clé "ANGL_NAUT".
-"""),
-
-    88: _("""
+"""
+    ),
+    88: _(
+        """
  le mot-clé précision est obligatoire après le mot-clé ENV_CYLINDRE pour définir la tolérance (i.e. la distance du point a l'enveloppe du cylindre) acceptée pour déclarer l'appartenance du point a cette enveloppe.
-"""),
-
-    89: _("""
+"""
+    ),
+    89: _(
+        """
  on doit donner une demi épaisseur strictement positive définir l'enveloppe du cylindre.
-"""),
-
-    90: _("""
+"""
+    ),
+    90: _(
+        """
  le mot-clé précision est obligatoire après le mot-clé ENV_SPHERE pour définir la tolérance (i.e. la distance du point a l'enveloppe de la sphère) acceptée pour déclarer l'appartenance du point a cette enveloppe.
-"""),
-
-    91: _("""
+"""
+    ),
+    91: _(
+        """
  on doit donner une demi épaisseur strictement positive définir l'enveloppe de la sphère.
-"""),
-
-    92: _("""
+"""
+    ),
+    92: _(
+        """
  erreur dans la donnée du vecteur orientant l'axe d'un segment ,ce vecteur est nul.
-"""),
-
-    93: _("""
+"""
+    ),
+    93: _(
+        """
  on doit utiliser obligatoirement le mot-clé ANGL_NAUT ou le mot-clé VECT_NORMALE pour l'option plan de CREA_GROUP_NO. ce mot-clé permet de définir la direction  perpendiculaire au plan ou a la droite.
-"""),
-
-    94: _("""
+"""
+    ),
+    94: _(
+        """
  pour l'option plan de CREA_GROUP_NO, il faut  définir les 3 composantes du vecteur perpendiculaire au plan.
-"""),
-
-    95: _("""
+"""
+    ),
+    95: _(
+        """
  pour l'option plan de CREA_GROUP_NO, il faut  définir les 2 composantes du vecteur perpendiculaire a la droite.
-"""),
-
-    96: _("""
+"""
+    ),
+    96: _(
+        """
  erreur dans la donnée du vecteur normal au plan ou a la droite : ce vecteur est nul.
-"""),
-
-    97: _("""
+"""
+    ),
+    97: _(
+        """
  le mot-clé précision est obligatoire après le mot-clé plan  pour définir la tolérance (i.e. la distance du point au plan ou a la droite) acceptée pour déclarer l'appartenance du point a ce plan ou a cette droite.
-"""),
-
-    98: _("""
+"""
+    ),
+    98: _(
+        """
  on doit donner une tolérance strictement positive pour vérifier l'appartenance d'un noeud au plan ou a la droite.
-"""),
-
-    99: _("""
+"""
+    ),
+    99: _(
+        """
  il manque l'ensemble des noeuds que l'on veut ordonner, mots clés "noeud" et/ou "GROUP_NO"
-"""),
+"""
+    ),
 }

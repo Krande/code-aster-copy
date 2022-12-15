@@ -17,115 +17,104 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=1e9,
-                            NU=0.2,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=1e9, NU=0.2))
 
-L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),)
+L_TPS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),)
+L_ARCH = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 # MODELISATION C_PLAN
 
-MO0=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),)
+MO0 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
 
-MOMAT0=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+MOMAT0 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-AX=0.0
-AY=0.0
-BX=1.E-3
-BY=0.0
-CX=2.E-3
-CY=-2.E-3
-DX=1.E-3
-DY=-2.E-3
+AX = 0.0
+AY = 0.0
+BX = 1.0e-3
+BY = 0.0
+CX = 2.0e-3
+CY = -2.0e-3
+DX = 1.0e-3
+DY = -2.0e-3
 
-BLOC0=AFFE_CHAR_MECA(MODELE=MO0,
-                       DDL_IMPO=(_F(GROUP_NO='A',
-                                    DX=AX,
-                                    DY=AY,),
-                                 _F(GROUP_NO='B',
-                                    DX=BX,
-                                    DY=BY,),
-                                 _F(GROUP_NO='C',
-                                    DX=CX,
-                                    DY=CY,),
-                                 _F(GROUP_NO='D',
-                                    DX=DX,
-                                    DY=DY,),),)
+BLOC0 = AFFE_CHAR_MECA(
+    MODELE=MO0,
+    DDL_IMPO=(
+        _F(GROUP_NO="A", DX=AX, DY=AY),
+        _F(GROUP_NO="B", DX=BX, DY=BY),
+        _F(GROUP_NO="C", DX=CX, DY=CY),
+        _F(GROUP_NO="D", DX=DX, DY=DY),
+    ),
+)
 
-U0=STAT_NON_LINE(MODELE=MO0,
-                CHAM_MATER=MOMAT0,
-                EXCIT=_F(CHARGE=BLOC0,),
-                COMPORTEMENT=_F(RELATION='ELAS',),
-                INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
+U0 = STAT_NON_LINE(
+    MODELE=MO0,
+    CHAM_MATER=MOMAT0,
+    EXCIT=_F(CHARGE=BLOC0),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_TPS),
+    ARCHIVAGE=_F(LIST_INST=L_ARCH),
+)
 
-U0=CALC_CHAMP(reuse = U0, ENERGIE='ENEL_ELEM', RESULTAT=U0, )
+U0 = CALC_CHAMP(reuse=U0, ENERGIE="ENEL_ELEM", RESULTAT=U0)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=U0,
-                  NOM_CHAM='ENEL_ELEM',
-                  NOM_CMP='TOTALE',
-                  VALE_REFE=2395.833333,
-                  VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=U0,
+        NOM_CHAM="ENEL_ELEM",
+        NOM_CMP="TOTALE",
+        VALE_REFE=2395.833333,
+        VALE_CALC=2395.833333,
+        GROUP_MA="M5",
+    )
+)
 
 # MODELISATION C_PLAN_SI
 
-MO1=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_SI',),)
+MO1 = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN_SI"))
 
-MOMAT1=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+MOMAT1 = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
-                       DDL_IMPO=(_F(GROUP_NO='A',
-                                    DX=AX,
-                                    DY=AY,),
-                                 _F(GROUP_NO='B',
-                                    DX=BX,
-                                    DY=BY,),
-                                 _F(GROUP_NO='C',
-                                    DX=CX,
-                                    DY=CY,),
-                                 _F(GROUP_NO='D',
-                                    DX=DX,
-                                    DY=DY,),),)
+BLOC1 = AFFE_CHAR_MECA(
+    MODELE=MO1,
+    DDL_IMPO=(
+        _F(GROUP_NO="A", DX=AX, DY=AY),
+        _F(GROUP_NO="B", DX=BX, DY=BY),
+        _F(GROUP_NO="C", DX=CX, DY=CY),
+        _F(GROUP_NO="D", DX=DX, DY=DY),
+    ),
+)
 
-U1=STAT_NON_LINE(MODELE=MO1,
-                CHAM_MATER=MOMAT1,
-                EXCIT=_F(CHARGE=BLOC1,),
-                COMPORTEMENT=_F(RELATION='ELAS',),
-                INCREMENT=_F(LIST_INST=L_TPS,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),)
+U1 = STAT_NON_LINE(
+    MODELE=MO1,
+    CHAM_MATER=MOMAT1,
+    EXCIT=_F(CHARGE=BLOC1),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_TPS),
+    ARCHIVAGE=_F(LIST_INST=L_ARCH),
+)
 
-U1=CALC_CHAMP(reuse = U1, ENERGIE='ENEL_ELEM', RESULTAT=U1, )
+U1 = CALC_CHAMP(reuse=U1, ENERGIE="ENEL_ELEM", RESULTAT=U1)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=U1,
-                  NOM_CHAM='ENEL_ELEM',
-                  NOM_CMP='TOTALE',
-                  VALE_REFE=2395.833333,
-                  VALE_CALC=2395.833333,
-                  GROUP_MA='M5',),)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=U1,
+        NOM_CHAM="ENEL_ELEM",
+        NOM_CMP="TOTALE",
+        VALE_REFE=2395.833333,
+        VALE_CALC=2395.833333,
+        GROUP_MA="M5",
+    )
+)
 
 
 FIN()

@@ -17,84 +17,40 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
-AMODE2=CALC_MODES(MATR_RIGI=MATRRIGI,
-                  MATR_MASS=MATRMASS,
-                  CALC_FREQ=_F(  NMAX_FREQ = 10),
-                  #VERI_MODE=_F(  STOP_ERREUR='NON')
-                 )
+AMODE2 = CALC_MODES(
+    MATR_RIGI=MATRRIGI,
+    MATR_MASS=MATRMASS,
+    CALC_FREQ=_F(NMAX_FREQ=10),
+    # VERI_MODE=_F(  STOP_ERREUR='NON')
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='FREQ',
-                   RESULTAT=AMODE2,
-                   VALE_CALC=3.84980812311,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=AMODE2,
-                   VALE_CALC=3.85737512084,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=3,
-                   PARA='FREQ',
-                   RESULTAT=AMODE2,
-                   VALE_CALC=4.77883519831,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=4,
-                   PARA='FREQ',
-                   RESULTAT=AMODE2,
-                   VALE_CALC=4.78053960261,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=5,
-                   PARA='FREQ',
-                   RESULTAT=AMODE2,
-                   VALE_CALC=7.12105014579,
-                   CRITERE='RELATIF',
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=AMODE2, VALE_CALC=3.84980812311, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=2, PARA="FREQ", RESULTAT=AMODE2, VALE_CALC=3.85737512084, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=3, PARA="FREQ", RESULTAT=AMODE2, VALE_CALC=4.77883519831, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=4, PARA="FREQ", RESULTAT=AMODE2, VALE_CALC=4.78053960261, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=5, PARA="FREQ", RESULTAT=AMODE2, VALE_CALC=7.12105014579, CRITERE="RELATIF"),
+    )
+)
 
-AMODE3=CALC_MODES(MATR_RIGI=MATRRIGB,
-                  MATR_MASS=MATRMASB,
-                  CALC_FREQ=_F(  NMAX_FREQ = 10),
-                  #VERI_MODE=_F(  STOP_ERREUR='NON')
-                 )
+AMODE3 = CALC_MODES(
+    MATR_RIGI=MATRRIGB,
+    MATR_MASS=MATRMASB,
+    CALC_FREQ=_F(NMAX_FREQ=10),
+    # VERI_MODE=_F(  STOP_ERREUR='NON')
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='FREQ',
-                   RESULTAT=AMODE3,
-                   VALE_CALC=3.85979994809,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=AMODE3,
-                   VALE_CALC=3.86752331394,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=3,
-                   PARA='FREQ',
-                   RESULTAT=AMODE3,
-                   VALE_CALC=4.77969494954,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=4,
-                   PARA='FREQ',
-                   RESULTAT=AMODE3,
-                   VALE_CALC=4.78134075159,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=5,
-                   PARA='FREQ',
-                   RESULTAT=AMODE3,
-                   VALE_CALC=7.05951839631,
-                   CRITERE='RELATIF',
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=AMODE3, VALE_CALC=3.85979994809, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=2, PARA="FREQ", RESULTAT=AMODE3, VALE_CALC=3.86752331394, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=3, PARA="FREQ", RESULTAT=AMODE3, VALE_CALC=4.77969494954, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=4, PARA="FREQ", RESULTAT=AMODE3, VALE_CALC=4.78134075159, CRITERE="RELATIF"),
+        _F(NUME_ORDRE=5, PARA="FREQ", RESULTAT=AMODE3, VALE_CALC=7.05951839631, CRITERE="RELATIF"),
+    )
+)
 
-FIN( )
+FIN()

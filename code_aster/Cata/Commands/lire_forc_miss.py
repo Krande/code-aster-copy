@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,19 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-LIRE_FORC_MISS=OPER(nom="LIRE_FORC_MISS",op= 179,sd_prod=vect_asse_gene,
-                    fr=tr("Création d'un vecteur assemblé à partir d'une base modale"),
-                    reentrant='n',
-         BASE            =SIMP(statut='o',typ=mode_meca),
-         NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
-         FREQ_EXTR       =SIMP(statut='o',typ='R',max=1),
-         NOM_CMP         =SIMP(statut='f',typ='TXM',into=("DX","DY","DZ") ),
-         NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE"),defaut="DEPL"),
-         NUME_CHAR       =SIMP(statut='f',typ='I' ),
-         ISSF            =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
-         UNITE_RESU_FORC =SIMP(statut='f',typ=UnitType(),defaut=30, inout='in',),
-         NOM_RESU_FORC   =SIMP(statut='f',typ='TXM' ),
-)  ;
+LIRE_FORC_MISS = OPER(
+    nom="LIRE_FORC_MISS",
+    op=179,
+    sd_prod=vect_asse_gene,
+    fr=tr("Création d'un vecteur assemblé à partir d'une base modale"),
+    reentrant="n",
+    BASE=SIMP(statut="o", typ=mode_meca),
+    NUME_DDL_GENE=SIMP(statut="o", typ=nume_ddl_gene),
+    FREQ_EXTR=SIMP(statut="o", typ="R", max=1),
+    NOM_CMP=SIMP(statut="f", typ="TXM", into=("DX", "DY", "DZ")),
+    NOM_CHAM=SIMP(statut="f", typ="TXM", into=("DEPL", "VITE", "ACCE"), defaut="DEPL"),
+    NUME_CHAR=SIMP(statut="f", typ="I"),
+    ISSF=SIMP(statut="f", typ="TXM", defaut="NON", into=("NON", "OUI")),
+    UNITE_RESU_FORC=SIMP(statut="f", typ=UnitType(), defaut=30, inout="in"),
+    NOM_RESU_FORC=SIMP(statut="f", typ="TXM"),
+)

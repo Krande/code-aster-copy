@@ -28,6 +28,7 @@ from .extr_table import EXTR_TABLE
 
 class Compute(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Table`"""
+
     command_name = "_CALCUL_"
     command_cata = Commands.CALCUL
 
@@ -85,11 +86,12 @@ def calcul_ops(self, **kwargs):
         for row in table:
             name = row["NOM_OBJET"]
             objects.append(name)
-            content[name] = EXTR_TABLE(TABLE=container,
-                                       TYPE_RESU=row["TYPE_OBJET"],
-                                       NOM_PARA="NOM_SD",
-                                       FILTRE=_F(NOM_PARA="NOM_OBJET",
-                                                 VALE_K=name))
+            content[name] = EXTR_TABLE(
+                TABLE=container,
+                TYPE_RESU=row["TYPE_OBJET"],
+                NOM_PARA="NOM_SD",
+                FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K=name),
+            )
             if hasattr(content[name], "setModel"):
                 content[name].setModel(kwargs["MODELE"])
             if hasattr(content[name], "build"):

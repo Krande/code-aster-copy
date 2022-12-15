@@ -21,50 +21,68 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MECA_STATIQUE=MACRO(nom="MECA_STATIQUE",
-                   op=OPS("code_aster.MacroCommands.meca_statique_ops.meca_statique_ops"),
-                   sd_prod=evol_elas,
-                   fr=tr("Résoudre un problème de mécanique statique linéaire"),
-                   reentrant='f:RESULTAT',
-         regles=(EXCLUS("INST","LIST_INST"),
-                 AU_MOINS_UN('CHAM_MATER','CARA_ELEM',),),
-         reuse=SIMP(statut='c', typ=CO),
-         RESULTAT        =SIMP(statut='f',typ=evol_elas,fr=tr("Résultat utilisé en cas de réécriture"),
-         ),
-         MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         CHAM_MATER      =SIMP(statut='f',typ=cham_mater,
-         fr=tr("le CHAM_MATER est nécessaire, sauf si le modèle ne contient que des éléments discrets (modélisations DIS_XXX)"),
-         ),
-         CARA_ELEM       =SIMP(statut='f',typ=cara_elem,
-         fr=tr("le CARA_ELEM est nécessaire dès que le modèle contient des éléments de structure : coques, poutres, ..."),
-         ),
-          b_exict_cara=BLOC(condition="""exists("CARA_ELEM")""",
-           EXCIT           =FACT(statut='f',max='**',
-           CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",) ),),
-         ),
-          b_exict_ncara=BLOC(condition="""not exists("CARA_ELEM")""",
-           EXCIT           =FACT(statut='o',max='**',
-           CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
-           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",) ),),
-         ),
-
-         INST            =SIMP(statut='f',typ='R'),
-         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
-         INST_FIN        =SIMP(statut='f',typ='R'),
-         OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","SANS"),defaut="SIEF_ELGA",max=1,
-             fr=tr("Seule option : contraintes aux points de Gauss. Utilisez CALC_CHAMP pour les autres options."),
-                          ),
-
-#-------------------------------------------------------------------
-#        Catalogue commun SOLVEUR
-         SOLVEUR         =C_SOLVEUR('MECA_STATIQUE'),
-#-------------------------------------------------------------------
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-         TITRE           =SIMP(statut='f',typ='TXM' ),
-         translation={
-            "MECA_STATIQUE": "Static mechanical analysis",
-         }
+MECA_STATIQUE = MACRO(
+    nom="MECA_STATIQUE",
+    op=OPS("code_aster.MacroCommands.meca_statique_ops.meca_statique_ops"),
+    sd_prod=evol_elas,
+    fr=tr("Résoudre un problème de mécanique statique linéaire"),
+    reentrant="f:RESULTAT",
+    regles=(EXCLUS("INST", "LIST_INST"), AU_MOINS_UN("CHAM_MATER", "CARA_ELEM")),
+    reuse=SIMP(statut="c", typ=CO),
+    RESULTAT=SIMP(statut="f", typ=evol_elas, fr=tr("Résultat utilisé en cas de réécriture")),
+    MODELE=SIMP(statut="o", typ=modele_sdaster),
+    CHAM_MATER=SIMP(
+        statut="f",
+        typ=cham_mater,
+        fr=tr(
+            "le CHAM_MATER est nécessaire, sauf si le modèle ne contient que des éléments discrets (modélisations DIS_XXX)"
+        ),
+    ),
+    CARA_ELEM=SIMP(
+        statut="f",
+        typ=cara_elem,
+        fr=tr(
+            "le CARA_ELEM est nécessaire dès que le modèle contient des éléments de structure : coques, poutres, ..."
+        ),
+    ),
+    b_exict_cara=BLOC(
+        condition="""exists("CARA_ELEM")""",
+        EXCIT=FACT(
+            statut="f",
+            max="**",
+            CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
+            FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+        ),
+    ),
+    b_exict_ncara=BLOC(
+        condition="""not exists("CARA_ELEM")""",
+        EXCIT=FACT(
+            statut="o",
+            max="**",
+            CHARGE=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
+            FONC_MULT=SIMP(statut="f", typ=(fonction_sdaster, nappe_sdaster, formule)),
+            TYPE_CHARGE=SIMP(statut="f", typ="TXM", defaut="FIXE_CSTE", into=("FIXE_CSTE",)),
+        ),
+    ),
+    INST=SIMP(statut="f", typ="R"),
+    LIST_INST=SIMP(statut="f", typ=listr8_sdaster),
+    INST_FIN=SIMP(statut="f", typ="R"),
+    OPTION=SIMP(
+        statut="f",
+        typ="TXM",
+        into=("SIEF_ELGA", "SANS"),
+        defaut="SIEF_ELGA",
+        max=1,
+        fr=tr(
+            "Seule option : contraintes aux points de Gauss. Utilisez CALC_CHAMP pour les autres options."
+        ),
+    ),
+    # -------------------------------------------------------------------
+    #        Catalogue commun SOLVEUR
+    SOLVEUR=C_SOLVEUR("MECA_STATIQUE"),
+    # -------------------------------------------------------------------
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+    translation={"MECA_STATIQUE": "Static mechanical analysis"},
 )

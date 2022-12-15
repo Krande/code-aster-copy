@@ -18,8 +18,7 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: mathieu.courtois at edf.fr
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
-              ))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # Ce test vérifie les arguments dans le catalogue de commandes
 # et imprime l'ensemble des mots-clés et les commandes qui les utilisent
@@ -34,13 +33,14 @@ from vocab01a_cmd import VOCAB01
 
 # read the previous 'fort.34'
 import re
+
 try:
-    with open('fort.34', 'r') as fobj:
+    with open("fort.34", "r") as fobj:
         text = fobj.read()
-    recmt = re.compile('^#')
+    recmt = re.compile("^#")
     existing_keywords = [line for line in text.splitlines() if not recmt.search(line)]
 except IOError:
-    existing_keywords = ['???']
+    existing_keywords = ["???"]
 
 # En cas de NOOK, mettre INFO=2 dans l'appel à VOCAB01 ci-dessous,
 # Un message de ce type sera affiché dans l'output indiquant le
@@ -57,7 +57,6 @@ except IOError:
 #    ************************************************************
 
 # TEST_TABLE are included in the "macro-command"
-VOCAB01(EXISTANT=existing_keywords,
-        INFO=2)
+VOCAB01(EXISTANT=existing_keywords, INFO=2)
 
 FIN()

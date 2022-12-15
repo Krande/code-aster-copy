@@ -23,693 +23,1046 @@
 # BARREAU CYLINDRIQUE COUPLE EN TRCTION SIMPLE
 # MODELISATION AXIS_META  (ELEMENTS AXISYMETRIQUES METALLURGIQUES)
 #             13 NOEUDS  2 MAILLES QUAD8
-#======================================================================
+# ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), BASE=_F(FICHIER='GLOBALE', LONG_REPE=7000), DEBUG=_F(SDVERI='OUI'))
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    BASE=_F(FICHIER="GLOBALE", LONG_REPE=7000),
+    DEBUG=_F(SDVERI="OUI"),
+)
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER", )
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
 
-TRCMNDA=DEFI_TRC(HIST_EXP=(
+TRCMNDA = DEFI_TRC(
+    HIST_EXP=(
+        _F(
+            VALE=(
+                -1.106e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -2.206e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -3.497e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -4.402e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -5.542e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -6.977e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -8.784e00,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -1.106e01,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -1.392e01,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -1.753e01,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+        _F(
+            VALE=(
+                -2.206e01,
+                1.100e01,
+                8.563e00,
+                -2.760e-02,
+                1.220e-04,
+                -2.955e-07,
+                3.402e-10,
+                -1.517e-13,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                8.360e02,
+                0.000e00,
+                0.000e00,
+                0.000e00,
+                3.880e02,
+            )
+        ),
+    ),
+    TEMP_MS=_F(SEUIL=4.500e-01, AKM=-3.125e01, BKM=1.406e01, TPLM=-3.497e00),
+)
 
- _F( VALE = (
--1.106E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--2.206E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--3.497E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--4.402E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--5.542E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--6.977E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--8.784E+00,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--1.106E+01,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--1.392E+01,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--1.753E+01,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      )),
- _F( VALE = (
--2.206E+01,  1.100E+01,  8.563E+00, -2.760E-02,
- 1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
- 0.000E+00,  0.000E+00,  0.000E+00,  8.360E+02,
- 0.000E+00,  0.000E+00,  0.000E+00,  3.880E+02,
-      ))),
-   TEMP_MS=_F(
-    SEUIL = 4.500E-01,
-    AKM = -3.125E+01,
-    BKM = 1.406E+01,
-    TPLM = -3.497E+00)
-   )
+ACIER = DEFI_MATERIAU(
+    THER=_F(RHO_CP=2000000.0, LAMBDA=9999.9),
+    META_ACIER=_F(
+        TRC=TRCMNDA,
+        AR3=830.0,
+        ALPHA=-0.0300,
+        MS0=650.0,
+        AC1=724.0,
+        AC3=846.0,
+        TAUX_1=0.34,
+        TAUX_3=0.34,
+    ),
+)
 
-ACIER=DEFI_MATERIAU(     THER=_F(  RHO_CP = 2000000.0, LAMBDA = 9999.9),
-                           META_ACIER=_F(  TRC = TRCMNDA,    AR3 = 830.0,
-                                       ALPHA = -0.0300,    MS0 = 650.0,
-                                       AC1 = 724.0,     AC3 = 846.0,
-                                       TAUX_1 = 0.34,     TAUX_3 = 0.34)
-                       )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                               AFFE=_F(  TOUT = 'OUI', MATER = ACIER)
-                       )
+MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="AXIS", PHENOMENE="THERMIQUE"))
 
-MOTH=AFFE_MODELE(    MAILLAGE=MAIL,
-                             AFFE=_F(  TOUT = 'OUI',
-                                    MODELISATION = 'AXIS',
-                                    PHENOMENE = 'THERMIQUE')
-                     )
+TIMPO = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="TEMP",
+    VALE=(0.0, 900.0, 90.0, 0.0),
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    INTERPOL="LIN",
+)
 
-TIMPO=DEFI_FONCTION(       NOM_PARA='INST',
-                              NOM_RESU='TEMP',
-                                  VALE=(0.0, 900.0, 90.0,  0.0,),
-                           PROL_GAUCHE='LINEAIRE',
-                            PROL_DROITE='LINEAIRE',
-                              INTERPOL='LIN'
-                       )
+CHTH = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=_F(TOUT="OUI", TEMP=TIMPO))
 
-CHTH=AFFE_CHAR_THER_F(       MODELE=MOTH,
-                              TEMP_IMPO=_F( TOUT = 'OUI',
-                                         TEMP = TIMPO)
-                       )
+LR8 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=90.0, NOMBRE=45))
 
-LR8=DEFI_LIST_REEL(    DEBUT=0.,
-                            INTERVALLE=_F(  JUSQU_A = 90.0,  NOMBRE = 45)
-                        )
+DEFLISTT = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LR8))
 
-DEFLISTT=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       LR8))
+PHASINIT = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="CART_VAR2_R",
+    MAILLAGE=MAIL,
+    AFFE=_F(
+        TOUT="OUI",
+        NOM_CMP=("V1", "V2", "V3", "V4", "V5", "V6", "V7"),
+        VALE=(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 10.0),
+    ),
+)
 
-PHASINIT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R',
-                           MAILLAGE=MAIL,
-                           AFFE=_F(  TOUT = 'OUI',
-             NOM_CMP = ( 'V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7',),
-             VALE = ( 0.0, 0.0, 0.0, 0.0, 1.0, 0., 10.,    ))
-                        )
+TEMPE = THER_LINEAIRE(
+    MODELE=MOTH,
+    CHAM_MATER=CHMAT,
+    PARM_THETA=0.57,
+    EXCIT=_F(CHARGE=CHTH),
+    INCREMENT=_F(LIST_INST=DEFLISTT),
+    ETAT_INIT=_F(VALE=900.0),
+)
 
-TEMPE=THER_LINEAIRE(        MODELE=MOTH,
-                           CHAM_MATER=CHMAT,
-                           PARM_THETA=0.57,
-                                EXCIT=_F(  CHARGE = CHTH),
-                            INCREMENT=_F(  LIST_INST = DEFLISTT),
-                            ETAT_INIT=_F(  VALE = 900.)
+TEMPE = CALC_META(
+    reuse=TEMPE,
+    RESULTAT=TEMPE,
+    ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
+    COMPORTEMENT=_F(RELATION="ACIER", TOUT="OUI"),
+    OPTION="META_ELNO",
+)
 
-                        )
+FBM1 = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(
+        0.0,
+        5258.03e6,
+        20.0,
+        5144.19e6,
+        40.0,
+        5030.22e6,
+        60.0,
+        4916.11e6,
+        80.0,
+        4801.87e6,
+        100.0,
+        4687.50e6,
+        120.0,
+        4572.99e6,
+        140.0,
+        4458.35e6,
+        160.0,
+        4343.57e6,
+        180.0,
+        4228.66e6,
+        200.0,
+        4113.61e6,
+        220.0,
+        3998.43e6,
+        240.0,
+        3883.11e6,
+        260.0,
+        3767.66e6,
+        280.0,
+        3652.07e6,
+        300.0,
+        3536.35e6,
+        320.0,
+        3420.48e6,
+        340.0,
+        3304.48e6,
+        360.0,
+        3188.35e6,
+        380.0,
+        3072.08e6,
+        400.0,
+        2955.66e6,
+        420.0,
+        2839.12e6,
+        440.0,
+        2722.43e6,
+        460.0,
+        2605.61e6,
+        480.0,
+        2488.64e6,
+        500.0,
+        2371.54e6,
+        520.0,
+        2254.30e6,
+        540.0,
+        2136.92e6,
+        560.0,
+        2019.40e6,
+        580.0,
+        1901.74e6,
+        600.0,
+        1783.94e6,
+        620.0,
+        1666.00e6,
+        640.0,
+        1547.93e6,
+        660.0,
+        1429.71e6,
+        680.0,
+        1311.34e6,
+        700.0,
+        1192.84e6,
+        720.0,
+        1074.20e6,
+        740.0,
+        955.41e6,
+        760.0,
+        836.49e6,
+        780.0,
+        717.42e6,
+        800.0,
+        598.21e6,
+        820.0,
+        478.85e6,
+        840.0,
+        359.35e6,
+        860.0,
+        239.71e6,
+        880.0,
+        119.93e6,
+        900.0,
+        0.00e6,
+    ),
+)
 
-TEMPE=CALC_META(reuse=TEMPE,
-                RESULTAT=TEMPE,
-                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
-                COMPORTEMENT=_F(RELATION='ACIER',
-                             TOUT='OUI'),
-                OPTION='META_ELNO',)
+FBM2 = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(0.0, 950.0e6, 900.0, 50.0e6),
+)
 
-FBM1=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                                 VALE=( 0.,  5258.03E+6,  20., 5144.19E+6,
-                                       40.,  5030.22E+6,  60., 4916.11E+6,
-                                       80.,  4801.87E+6, 100., 4687.50E+6,
-                                      120.,  4572.99E+6, 140., 4458.35E+6,
-                                      160.,  4343.57E+6, 180., 4228.66E+6,
-                                      200.,  4113.61E+6, 220., 3998.43E+6,
-                                      240.,  3883.11E+6, 260., 3767.66E+6,
-                                      280.,  3652.07E+6, 300., 3536.35E+6,
-                                      320.,  3420.48E+6, 340., 3304.48E+6,
-                                      360.,  3188.35E+6, 380., 3072.08E+6,
-                                      400.,  2955.66E+6, 420., 2839.12E+6,
-                                      440.,  2722.43E+6, 460., 2605.61E+6,
-                                      480.,  2488.64E+6, 500., 2371.54E+6,
-                                      520.,  2254.30E+6, 540., 2136.92E+6,
-                                      560.,  2019.40E+6, 580., 1901.74E+6,
-                                      600.,  1783.94E+6, 620., 1666.00E+6,
-                                      640.,  1547.93E+6, 660., 1429.71E+6,
-                                      680.,  1311.34E+6, 700., 1192.84E+6,
-                                      720.,  1074.20E+6, 740.,  955.41E+6,
-                                      760.,   836.49E+6, 780.,  717.42E+6,
-                                      800.,   598.21E+6, 820.,  478.85E+6,
-                                      840.,   359.35E+6, 860.,  239.71E+6,
-                                      880.,   119.93E+6, 900.,    0.00E+6,
-                                      ))
+AUS1 = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(
+        0.0,
+        896.00e6,
+        20.0,
+        876.14e6,
+        40.0,
+        856.32e6,
+        60.0,
+        836.49e6,
+        80.0,
+        816.65e6,
+        100.0,
+        796.81e6,
+        120.0,
+        776.97e6,
+        140.0,
+        757.12e6,
+        160.0,
+        737.27e6,
+        180.0,
+        717.42e6,
+        200.0,
+        697.56e6,
+        220.0,
+        677.70e6,
+        240.0,
+        657.83e6,
+        260.0,
+        637.96e6,
+        280.0,
+        618.08e6,
+        300.0,
+        598.20e6,
+        320.0,
+        578.32e6,
+        340.0,
+        558.44e6,
+        360.0,
+        538.55e6,
+        380.0,
+        518.65e6,
+        400.0,
+        498.75e6,
+        420.0,
+        478.85e6,
+        440.0,
+        458.94e6,
+        460.0,
+        439.03e6,
+        480.0,
+        419.12e6,
+        500.0,
+        399.20e6,
+        520.0,
+        379.28e6,
+        540.0,
+        359.35e6,
+        560.0,
+        339.42e6,
+        580.0,
+        319.49e6,
+        600.0,
+        299.55e6,
+        620.0,
+        279.61e6,
+        640.0,
+        259.66e6,
+        660.0,
+        239.71e6,
+        680.0,
+        219.76e6,
+        700.0,
+        199.80e6,
+        720.0,
+        179.84e6,
+        740.0,
+        159.87e6,
+        760.0,
+        139.90e6,
+        780.0,
+        119.93e6,
+        800.0,
+        99.95e6,
+        820.0,
+        79.97e6,
+        840.0,
+        59.98e6,
+        860.0,
+        39.99e6,
+        880.0,
+        20.00e6,
+        900.0,
+        0.00e6,
+    ),
+)
 
-FBM2=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                                 VALE=( 0.,  950.E+6,  900., 50.E+6, ))
+AUS2 = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(0.0, 1220.0e6, 900.0, 50.0e6),
+)
 
-AUS1=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                                 VALE=( 0.,   896.00E+6,  20.,  876.14E+6,
-                                       40.,   856.32E+6,  60.,  836.49E+6,
-                                       80.,   816.65E+6, 100.,  796.81E+6,
-                                      120.,   776.97E+6, 140.,  757.12E+6,
-                                      160.,   737.27E+6, 180.,  717.42E+6,
-                                      200.,   697.56E+6, 220.,  677.70E+6,
-                                      240.,   657.83E+6, 260.,  637.96E+6,
-                                      280.,   618.08E+6, 300.,  598.20E+6,
-                                      320.,   578.32E+6, 340.,  558.44E+6,
-                                      360.,   538.55E+6, 380.,  518.65E+6,
-                                      400.,   498.75E+6, 420.,  478.85E+6,
-                                      440.,   458.94E+6, 460.,  439.03E+6,
-                                      480.,   419.12E+6, 500.,  399.20E+6,
-                                      520.,   379.28E+6, 540.,  359.35E+6,
-                                      560.,   339.42E+6, 580.,  319.49E+6,
-                                      600.,   299.55E+6, 620.,  279.61E+6,
-                                      640.,   259.66E+6, 660.,  239.71E+6,
-                                      680.,   219.76E+6, 700.,  199.80E+6,
-                                      720.,   179.84E+6, 740.,  159.87E+6,
-                                      760.,   139.90E+6, 780.,  119.93E+6,
-                                      800.,    99.95E+6, 820.,   79.97E+6,
-                                      840.,    59.98E+6, 860.,   39.99E+6,
-                                      880.,    20.00E+6, 900.,    0.00E+6,
-                                      ))
+ALP1 = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+    VALE=(0.0, 15.0e-6, 900.0, 15.0e-6),
+)
 
-AUS2=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                                 VALE=( 0., 1220.E+6,  900., 50.E+6, ))
+ALP2 = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+    VALE=(0.0, 23.5e-6, 900.0, 23.5e-6),
+)
 
-ALP1=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=( 0., 15.E-6,  900., 15.E-6, ))
+VISCO1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 0.0, 900.0, 0.0)
+)
 
-ALP2=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=( 0., 23.5E-6,  900., 23.5E-6, ))
+VISCO2 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 20.0, 900.0, 20.0)
+)
 
-VISCO1=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=( 0., 0.,  900., 0., ))
+VISCO3 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 0.0, 900.0, 0.0)
+)
 
-VISCO2=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=( 0., 20.,  900., 20., ))
+VISCO4 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 20.0, 900.0, 20.0)
+)
 
-VISCO3=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=( 0., 0.,  900., 0., ))
+FMEL = DEFI_FONCTION(
+    NOM_PARA="META", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 0.0, 1.0, 1.0)
+)
 
-VISCO4=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                                 VALE=( 0., 20.,  900., 20., ))
+YOUNG = DEFI_CONSTANTE(VALE=200000.0e6)
 
-FMEL=DEFI_FONCTION(      NOM_PARA='META',
-                          PROL_DROITE='CONSTANT',
-                         PROL_GAUCHE='CONSTANT',
-                               VALE=( 0.,  0.,   1., 1., ))
+NU = DEFI_CONSTANTE(VALE=0.3)
 
-YOUNG=DEFI_CONSTANTE( VALE=200000.E+6)
+ACIER2 = DEFI_MATERIAU(
+    ELAS_META_FO=_F(
+        E=YOUNG,
+        NU=NU,
+        F_ALPHA=ALP1,
+        C_ALPHA=ALP2,
+        PHASE_REFE="CHAUD",
+        EPSF_EPSC_TREF=2.52e-3,
+        F1_S_VP=FBM2,
+        F2_S_VP=FBM2,
+        F3_S_VP=FBM2,
+        F4_S_VP=FBM2,
+        C_S_VP=AUS2,
+        TEMP_DEF_ALPHA=900.0,
+        S_VP_MELANGE=FMEL,
+    ),
+    META_ECRO_LINE=_F(
+        F1_D_SIGM_EPSI=FBM1,
+        F2_D_SIGM_EPSI=FBM1,
+        F3_D_SIGM_EPSI=FBM1,
+        F4_D_SIGM_EPSI=FBM1,
+        C_D_SIGM_EPSI=AUS1,
+    ),
+    META_VISC_FO=_F(
+        F1_ETA=VISCO1,
+        F2_ETA=VISCO1,
+        F3_ETA=VISCO1,
+        F4_ETA=VISCO1,
+        C_ETA=VISCO1,
+        F1_N=VISCO2,
+        F2_N=VISCO2,
+        F3_N=VISCO2,
+        F4_N=VISCO2,
+        C_N=VISCO2,
+        F1_C=VISCO3,
+        F2_C=VISCO3,
+        F3_C=VISCO3,
+        F4_C=VISCO3,
+        C_C=VISCO3,
+        F1_M=VISCO4,
+        F2_M=VISCO4,
+        F3_M=VISCO4,
+        F4_M=VISCO4,
+        C_M=VISCO4,
+    ),
+)
 
-NU=DEFI_CONSTANTE( VALE=0.3)
+CM2 = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=ACIER2),
+    AFFE_VARC=(
+        _F(TOUT="OUI", EVOL=TEMPE, NOM_VARC="M_ACIER", NOM_CHAM="META_ELNO"),
+        _F(TOUT="OUI", EVOL=TEMPE, NOM_VARC="TEMP", NOM_CHAM="TEMP", VALE_REF=900),
+    ),
+)
 
-ACIER2=DEFI_MATERIAU(ELAS_META_FO=_F( E = YOUNG,
-                                      NU = NU,
-                                      F_ALPHA = ALP1,
-                                      C_ALPHA = ALP2,
-                                      PHASE_REFE = 'CHAUD',
-                                      EPSF_EPSC_TREF = 2.52E-3,
-                                      F1_S_VP = FBM2,
-                                      F2_S_VP = FBM2,
-                                      F3_S_VP = FBM2,
-                                      F4_S_VP = FBM2,
-                                      C_S_VP = AUS2,
-                                      TEMP_DEF_ALPHA=900.,
-                                      S_VP_MELANGE = FMEL),
-                     META_ECRO_LINE=_F(F1_D_SIGM_EPSI = FBM1,
-                                       F2_D_SIGM_EPSI = FBM1,
-                                       F3_D_SIGM_EPSI = FBM1,
-                                       F4_D_SIGM_EPSI = FBM1,
-                                       C_D_SIGM_EPSI = AUS1),
-                     META_VISC_FO=_F( F1_ETA = VISCO1,
-                                      F2_ETA = VISCO1,
-                                      F3_ETA = VISCO1,
-                                      F4_ETA = VISCO1,
-                                      C_ETA = VISCO1,
-                                      F1_N = VISCO2,
-                                      F2_N = VISCO2,
-                                      F3_N = VISCO2,
-                                      F4_N = VISCO2,
-                                      C_N = VISCO2,
-                                      F1_C = VISCO3,
-                                      F2_C = VISCO3,
-                                      F3_C = VISCO3,
-                                      F4_C = VISCO3,
-                                      C_C = VISCO3,
-                                      F1_M = VISCO4,
-                                      F2_M = VISCO4,
-                                      F3_M = VISCO4,
-                                      F4_M = VISCO4,
-                                      C_M = VISCO4)
-                                    )
+MO = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
-CM2=AFFE_MATERIAU(
-                           MAILLAGE=MAIL,
-                          AFFE=_F( TOUT = 'OUI',MATER = ACIER2 ),
-                                AFFE_VARC=(_F(TOUT='OUI',
-                                             EVOL=TEMPE,
-                                             NOM_VARC='M_ACIER',
-                                             NOM_CHAM='META_ELNO'),
-                                          _F(TOUT='OUI',
-                                             EVOL=TEMPE,
-                                             NOM_VARC='TEMP',
-                                             NOM_CHAM='TEMP',
-                                             VALE_REF=900,),),
+CH_FO = AFFE_CHAR_MECA(
+    MODELE=MO,
+    FORCE_CONTOUR=_F(GROUP_MA="M3", FY=1.0),
+    DDL_IMPO=(_F(GROUP_NO="N4", DY=0.0), _F(GROUP_NO="N2", DY=0.0), _F(GROUP_NO="N5", DY=0.0)),
+)
 
-           )
+RAMPE = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    VALE=(0.0, 0.0, 100.0, 1500.0e6),
+)
 
-MO=AFFE_MODELE(
-           MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
-                MODELISATION = 'AXIS'))
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=24.0, NOMBRE=6),
+        _F(JUSQU_A=40.0, NOMBRE=8),
+        _F(JUSQU_A=90.0, NOMBRE=13),
+    ),
+)
 
-CH_FO=AFFE_CHAR_MECA(
-            MODELE=MO,
-            FORCE_CONTOUR=_F(  GROUP_MA = 'M3',  FY = 1.),DDL_IMPO=(
-                 _F(  GROUP_NO = 'N4',  DY = 0.),
-                 _F(  GROUP_NO = 'N2',  DY = 0.),
-                 _F(  GROUP_NO = 'N5',  DY = 0.))
-           )
+DEFLISTM = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST))
 
-RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
-           PROL_GAUCHE='LINEAIRE',  PROL_DROITE='LINEAIRE',
-           VALE=(0.0,0.0,100.,1500.0E+6,))
+U = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM2,
+    EXCIT=_F(CHARGE=CH_FO, FONC_MULT=RAMPE),
+    COMPORTEMENT=_F(RELATION="META_V_IL", RELATION_KIT=("ACIER",)),
+    INCREMENT=_F(LIST_INST=DEFLISTM, NUME_INST_FIN=27),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=40),
+)
 
-L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
-             _F( JUSQU_A = 24.,      NOMBRE = 6),
-             _F( JUSQU_A = 40.,      NOMBRE = 8),
-             _F( JUSQU_A = 90.,      NOMBRE = 13))
-           )
-
-DEFLISTM=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=       L_INST))
-
-U=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM2,
-                             EXCIT=_F(
-                CHARGE = CH_FO,
-                FONC_MULT = RAMPE),
-                         COMPORTEMENT=_F(
-                RELATION = 'META_V_IL',
- RELATION_KIT = ('ACIER',)),
-                         INCREMENT=_F(
-                LIST_INST = DEFLISTM,
-                NUME_INST_FIN = 27),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-8,
-                ITER_GLOB_MAXI = 40)
-              )
-
-U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
+U = CALC_CHAMP(reuse=U, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U)
 
 
-U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELNO','EPVC_ELNO','EPME_ELNO','EPSP_ELNO'))
+U = CALC_CHAMP(
+    reuse=U, RESULTAT=U, DEFORMATION=("EPSI_ELNO", "EPVC_ELNO", "EPME_ELNO", "EPSP_ELNO")
+)
 
 
-CHVAR24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-RESULTAT=U, NOM_CHAM='VARI_ELNO',
-                       INST=24. )
+CHVAR24 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_VARI_R", RESULTAT=U, NOM_CHAM="VARI_ELNO", INST=24.0
+)
 
-CHSIG24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIGM_ELNO',
-                       INST=24. )
+CHSIG24 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=U, NOM_CHAM="SIGM_ELNO", INST=24.0
+)
 
-CHEPS24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSI_ELNO',
-                       INST=24. )
+CHEPS24 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSI_ELNO", INST=24.0
+)
 
-CHEPT24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPVC_ELNO',
-                       INST=24. )
+CHEPT24 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPVC_ELNO", INST=24.0
+)
 
-CHEPM24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPME_ELNO',
-                       INST=24. )
+CHEPM24 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPME_ELNO", INST=24.0
+)
 
-CHEPP24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSP_ELNO',
-                       INST=24. )
+CHEPP24 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSP_ELNO", INST=24.0
+)
 #
-CHVAR26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-RESULTAT=U, NOM_CHAM='VARI_ELNO',
-                       INST=26. )
+CHVAR26 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_VARI_R", RESULTAT=U, NOM_CHAM="VARI_ELNO", INST=26.0
+)
 
-CHSIG26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIGM_ELNO',
-                       INST=26. )
+CHSIG26 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=U, NOM_CHAM="SIGM_ELNO", INST=26.0
+)
 
-CHEPS26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSI_ELNO',
-                       INST=26. )
+CHEPS26 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSI_ELNO", INST=26.0
+)
 
-CHEPT26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPVC_ELNO',
-                       INST=26. )
+CHEPT26 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPVC_ELNO", INST=26.0
+)
 
-CHEPM26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPME_ELNO',
-                       INST=26. )
+CHEPM26 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPME_ELNO", INST=26.0
+)
 
-CHEPP26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSP_ELNO',
-                       INST=26. )
+CHEPP26 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSP_ELNO", INST=26.0
+)
 #
-CHVAR40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-RESULTAT=U, NOM_CHAM='VARI_ELNO',
-                       INST=40. )
+CHVAR40 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_VARI_R", RESULTAT=U, NOM_CHAM="VARI_ELNO", INST=40.0
+)
 
-CHSIG40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIGM_ELNO',
-                       INST=40. )
+CHSIG40 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=U, NOM_CHAM="SIGM_ELNO", INST=40.0
+)
 
-CHEPS40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSI_ELNO',
-                       INST=40. )
+CHEPS40 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSI_ELNO", INST=40.0
+)
 
-CHEPT40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPVC_ELNO',
-                       INST=40. )
+CHEPT40 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPVC_ELNO", INST=40.0
+)
 
-CHEPM40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPME_ELNO',
-                       INST=40. )
+CHEPM40 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPME_ELNO", INST=40.0
+)
 
-CHEPP40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSP_ELNO',
-                       INST=40. )
+CHEPP40 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSP_ELNO", INST=40.0
+)
 #
-CHVAR90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-RESULTAT=U, NOM_CHAM='VARI_ELNO',
-                       INST=90. )
+CHVAR90 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_VARI_R", RESULTAT=U, NOM_CHAM="VARI_ELNO", INST=90.0
+)
 
-CHSIG90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIGM_ELNO',
-                       INST=90. )
+CHSIG90 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_SIEF_R", RESULTAT=U, NOM_CHAM="SIGM_ELNO", INST=90.0
+)
 
-CHEPS90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSI_ELNO',
-                       INST=90. )
+CHEPS90 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSI_ELNO", INST=90.0
+)
 
-CHEPT90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPVC_ELNO',
-                       INST=90. )
+CHEPT90 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPVC_ELNO", INST=90.0
+)
 
-CHEPM90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPME_ELNO',
-                       INST=90. )
+CHEPM90 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPME_ELNO", INST=90.0
+)
 
-CHEPP90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-RESULTAT=U, NOM_CHAM='EPSP_ELNO',
-                       INST=90. )
+CHEPP90 = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="ELNO_EPSI_R", RESULTAT=U, NOM_CHAM="EPSP_ELNO", INST=90.0
+)
 #
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 #
-TEST_RESU(CHAM_ELEM=(
-                     # INST = 24
-                     _F(GROUP_NO='N13',
-                        CRITERE='ABSOLU',
-                        NOM_CMP='V5',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR24,
-                        VALE_CALC=0.0E+00,
-                        VALE_REFE=0.0,
-                        REFERENCE = 'ANALYTIQUE',
-                        ORDRE_GRANDEUR = 1.E-6),
-                     _F(GROUP_NO='N13',
-                        CRITERE='ABSOLU',
-                        NOM_CMP='V8',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR24,
-                        VALE_CALC=0.0E+00,
-                        VALE_REFE=0.0,
-                        REFERENCE = 'ANALYTIQUE',
-                        ORDRE_GRANDEUR = 1.E-6),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHSIG24,
-                        VALE_CALC=3.5999983273579E+08,
-                        VALE_REFE=3.6E8,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPS24,
-                        VALE_CALC=-3.840000491808E-03,
-                        VALE_REFE=-3.8400000000000001E-3,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPTHER_L',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPT24,
-                        VALE_CALC=-0.005640,
-                        VALE_REFE=-0.005640,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPM24,
-                        VALE_CALC=0.00179999950819,
-                        VALE_REFE=0.0018,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='ABSOLU',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPP24,
-                        VALE_CALC=0.0E+00,
-                        VALE_REFE=0.0,
-                        REFERENCE = 'ANALYTIQUE',
-                        ORDRE_GRANDEUR = 1.E-6,),
-                     # INST = 26
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='V5',
-                        REFERENCE = 'ANALYTIQUE',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR26,
-                        VALE_CALC=0.037217307235709,
-                        VALE_REFE=0.037199999999999997,
-                        ),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='V8',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR26,
-                        VALE_CALC=1.0,
-                        VALE_REFE=1.0,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHSIG26,
-                        VALE_CALC=3.8999989937214E+08,
-                        VALE_REFE=3.90000000E8,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION=1.E-3,),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        REFERENCE = 'ANALYTIQUE',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPS26,
-                        VALE_CALC=0.034283237310913,
-                        VALE_REFE=0.034279999999999998,
-                        ),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPTHER_L',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPT26,
-                        VALE_CALC=-0.00488407018382,
-                        VALE_REFE=-0.004884,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPM26,
-                        VALE_CALC=0.0391673074947,
-                        VALE_REFE=0.039164,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPP26,
-                        VALE_CALC=0.0372173072357,
-                        VALE_REFE=0.0372,
-                        REFERENCE = 'ANALYTIQUE',),
-                     # INST = 40
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='V4',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR40,
-                        VALE_CALC=0.062523462895153,
-                        VALE_REFE=0.0625,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='V8',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR40,
-                        VALE_CALC=1.0,
-                        VALE_REFE=1.0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION=1.E-3,),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHSIG40,
-                        VALE_CALC=5.9999975305959E+08,
-                        VALE_REFE=6.E8,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPS40,
-                        VALE_CALC=0.061977697587105,
-                        VALE_REFE=0.06198,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPTHER_L',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPT40,
-                        VALE_CALC=-0.00354576525951,
-                        VALE_REFE=-0.003546,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPM40,
-                        VALE_CALC=0.0655234626107,
-                        VALE_REFE=0.065526,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPP40,
-                        VALE_CALC=0.0625234626492,
-                        VALE_REFE=0.0625,
-                        REFERENCE = 'ANALYTIQUE',),
-                     # INST = 90
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='V4',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR90,
-                        VALE_CALC=0.074146036733645,
-                        VALE_REFE=0.074099999999999999,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='V8',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHVAR90,
-                        VALE_CALC=1.0,
-                        VALE_REFE=1.0,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='SIYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHSIG90,
-                        VALE_CALC=1.3499995126152E+09,
-                        VALE_REFE=1.350000000E9,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPS90,
-                        VALE_CALC=0.069854032655877,
-                        VALE_REFE=0.069844000000000003,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPTHER_L',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPT90,
-                        VALE_CALC=-0.0110420039126,
-                        VALE_REFE=-0.01100,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION=0.4E-2,),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPM90,
-                        VALE_CALC=0.0808960364433,
-                        VALE_REFE=0.08085,
-                        REFERENCE = 'ANALYTIQUE',),
-                     _F(GROUP_NO='N13',
-                        CRITERE='RELATIF',
-                        NOM_CMP='EPYY',
-                        GROUP_MA='M1',
-                        CHAM_GD=CHEPP90,
-                        VALE_CALC=0.074146036611264,
-                        VALE_REFE=0.0741,
-                        REFERENCE = 'ANALYTIQUE',),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        # INST = 24
+        _F(
+            GROUP_NO="N13",
+            CRITERE="ABSOLU",
+            NOM_CMP="V5",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR24,
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=1.0e-6,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="ABSOLU",
+            NOM_CMP="V8",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR24,
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=1.0e-6,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="SIYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHSIG24,
+            VALE_CALC=3.5999983273579e08,
+            VALE_REFE=3.6e8,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPS24,
+            VALE_CALC=-3.840000491808e-03,
+            VALE_REFE=-3.8400000000000001e-3,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPTHER_L",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPT24,
+            VALE_CALC=-0.005640,
+            VALE_REFE=-0.005640,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPM24,
+            VALE_CALC=0.00179999950819,
+            VALE_REFE=0.0018,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="ABSOLU",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPP24,
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            ORDRE_GRANDEUR=1.0e-6,
+        ),
+        # INST = 26
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="V5",
+            REFERENCE="ANALYTIQUE",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR26,
+            VALE_CALC=0.037217307235709,
+            VALE_REFE=0.037199999999999997,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="V8",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR26,
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="SIYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHSIG26,
+            VALE_CALC=3.8999989937214e08,
+            VALE_REFE=3.90000000e8,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            REFERENCE="ANALYTIQUE",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPS26,
+            VALE_CALC=0.034283237310913,
+            VALE_REFE=0.034279999999999998,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPTHER_L",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPT26,
+            VALE_CALC=-0.00488407018382,
+            VALE_REFE=-0.004884,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPM26,
+            VALE_CALC=0.0391673074947,
+            VALE_REFE=0.039164,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPP26,
+            VALE_CALC=0.0372173072357,
+            VALE_REFE=0.0372,
+            REFERENCE="ANALYTIQUE",
+        ),
+        # INST = 40
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="V4",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR40,
+            VALE_CALC=0.062523462895153,
+            VALE_REFE=0.0625,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="V8",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR40,
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="SIYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHSIG40,
+            VALE_CALC=5.9999975305959e08,
+            VALE_REFE=6.0e8,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPS40,
+            VALE_CALC=0.061977697587105,
+            VALE_REFE=0.06198,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPTHER_L",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPT40,
+            VALE_CALC=-0.00354576525951,
+            VALE_REFE=-0.003546,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPM40,
+            VALE_CALC=0.0655234626107,
+            VALE_REFE=0.065526,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPP40,
+            VALE_CALC=0.0625234626492,
+            VALE_REFE=0.0625,
+            REFERENCE="ANALYTIQUE",
+        ),
+        # INST = 90
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="V4",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR90,
+            VALE_CALC=0.074146036733645,
+            VALE_REFE=0.074099999999999999,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="V8",
+            GROUP_MA="M1",
+            CHAM_GD=CHVAR90,
+            VALE_CALC=1.0,
+            VALE_REFE=1.0,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="SIYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHSIG90,
+            VALE_CALC=1.3499995126152e09,
+            VALE_REFE=1.350000000e9,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPS90,
+            VALE_CALC=0.069854032655877,
+            VALE_REFE=0.069844000000000003,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPTHER_L",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPT90,
+            VALE_CALC=-0.0110420039126,
+            VALE_REFE=-0.01100,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.4e-2,
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPM90,
+            VALE_CALC=0.0808960364433,
+            VALE_REFE=0.08085,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            GROUP_NO="N13",
+            CRITERE="RELATIF",
+            NOM_CMP="EPYY",
+            GROUP_MA="M1",
+            CHAM_GD=CHEPP90,
+            VALE_CALC=0.074146036611264,
+            VALE_REFE=0.0741,
+            REFERENCE="ANALYTIQUE",
+        ),
+    )
+)
 FIN()
 #

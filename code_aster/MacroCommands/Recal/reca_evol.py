@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 
 #
 
-'''
+"""
 Le programme d'optimisation d'une fonctionelle base sur l'algorithm genetique,
 developpement issu du contrat PdM-AMA
-'''
+"""
 
 import math
 import random
@@ -30,19 +30,21 @@ import random
 import numpy
 
 
-def evolutivo(fonc, val, nb_iter, err_min, nb_parents, nb_fils, sigma, borne_inf, borne_sup, graine):
+def evolutivo(
+    fonc, val, nb_iter, err_min, nb_parents, nb_fils, sigma, borne_inf, borne_sup, graine
+):
 
-# initialisation du vecteur des parametres
+    # initialisation du vecteur des parametres
     par_ini = []
-# les valeurs initiales des parametres sont recuperees
+    # les valeurs initiales des parametres sont recuperees
     for ind in val:
         if ind:
             par_ini.append(ind)
 
-# valeur du critere d arret
+    # valeur du critere d arret
     val_crit = nb_iter
 
-# initialisation et remplisage du vecteur des parents
+    # initialisation et remplisage du vecteur des parents
     Parents_ini = []
     for ind in range(nb_parents):
         Parents_ini.append(par_ini)
@@ -115,7 +117,7 @@ def selection(fonc, fils, parents, err_parents, nb_parents):
         fam_ordonne.append(famille[ind])
         err_ordonne.append(err[ind])
 
-    return fam_ordonne[0:int(nb_parents)], err_ordonne[0:int(nb_parents)]
+    return fam_ordonne[0 : int(nb_parents)], err_ordonne[0 : int(nb_parents)]
 
 
 def fils(parents, nb_parents, nb_fils, sigma, borne_inf, borne_sup):
@@ -127,12 +129,13 @@ def fils(parents, nb_parents, nb_fils, sigma, borne_inf, borne_sup):
     for ind in range(int(math.floor(nb_fils / nb_parents))):
         for ind2 in range(nb_parents):
             F.append(genere_fils(parents[ind2], sigma, borne_inf, borne_sup))
-# le dernier parent est le plus prolific car il va completer le nombres de fils
-# mais il est aussi le meilleur parent car correspond a l'erreur minimale
+    # le dernier parent est le plus prolific car il va completer le nombres de fils
+    # mais il est aussi le meilleur parent car correspond a l'erreur minimale
     for ind2 in range(nb_fils % nb_parents):
         F.append(genere_fils(parents[ind2], sigma, borne_inf, borne_sup))
 
     return F
+
 
 # les fils sont generes ici
 
@@ -144,13 +147,13 @@ def genere_fils(parent, sigma, borne_inf, borne_sup):
     errate = True
     while errate:
         errate = False
-# F est le vecteur de fils a remplir ici avec la fonction random
-# a partir des valeurs du parent courant
+        # F est le vecteur de fils a remplir ici avec la fonction random
+        # a partir des valeurs du parent courant
         F = []
         for ind in parent:
-            F.append(ind + ind / 100. * random.gauss(0, sigma))
-# la variable parametre initialise ici est un index pour defiler les
-# valeurs de F
+            F.append(ind + ind / 100.0 * random.gauss(0, sigma))
+        # la variable parametre initialise ici est un index pour defiler les
+        # valeurs de F
         parametre = 0
         for ind in parent:
             test1 = F[parametre] >= borne_inf[parametre]
@@ -159,7 +162,7 @@ def genere_fils(parent, sigma, borne_inf, borne_sup):
                 pass
             else:
                 errate = True
-#                print "parametre hors bornes"
+            #                print "parametre hors bornes"
             parametre += 1
-#        print 'fils genere:',F
+    #        print 'fils genere:',F
     return F

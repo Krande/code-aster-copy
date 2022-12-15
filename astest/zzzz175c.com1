@@ -19,116 +19,133 @@
 
 # person_in_charge: gerald.nicolas at edf.fr
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 # 2. Adaptation
 # 2.1. Du maillage de 2 vers 3 : uniforme sur la face du tore
 
-MACR_ADAP_MAIL(MAILLAGE_N=M_2,
-               MAILLAGE_NP1=CO('M_3'),
-               ADAPTATION='RAFFINEMENT_UNIFORME',
-               GROUP_MA=('Tore_f',),
-               FRONTIERE_ANALYTIQUE=(
-                    _F(NOM='TORE',
-                       TYPE='TORE',
-                       X_CENTRE= 0.,
-                       Y_CENTRE= 0.,
-                       Z_CENTRE= 0.,
-                       X_AXE=  1.,
-                       Y_AXE=  0.,
-                       Z_AXE=  0.,
-                       RAYON= 400.,
-                       RAYON2= 160.,
-                       GROUP_MA=('Tore_f',),),
-                    _F(NOM='Cone_1',
-                       TYPE='CONE_R',
-                       X_CENTRE=   0.,
-                       Y_CENTRE= 400.,
-                       Z_CENTRE=   0.,
-                       RAYON= 0.,
-                       X_CENTRE2= 320.,
-                       Y_CENTRE2= 400.,
-                       Z_CENTRE2=   0.,
-                       RAYON2= 184.752086,
-                       GROUP_MA=('C_1_cote',),),
-                    _F(NOM='Cone_2',
-                       TYPE='CONE_R',
-                       X_CENTRE=    0.,
-                       Y_CENTRE= -400.,
-                       Z_CENTRE=    0.,
-                       RAYON= 0.,
-                       X_CENTRE2=  320.,
-                       Y_CENTRE2= -400.,
-                       Z_CENTRE2=    0.,
-                       RAYON2= 184.752086,
-                       GROUP_MA=('C_2_cote',),),
-                    _F(NOM='Cone_3',
-                       TYPE='CONE_A',
-                       X_CENTRE=    0.,
-                       Y_CENTRE=    0.,
-                       Z_CENTRE= 400.,
-                       X_AXE=  1.,
-                       Y_AXE=  0.,
-                       Z_AXE=  0.,
-                       ANGLE=30.,
-                       GROUP_MA=('C_3_cote',),),
-                    _F(NOM='Cone_4',
-                       TYPE='CONE_A',
-                       X_CENTRE=    0.,
-                       Y_CENTRE=    0.,
-                       Z_CENTRE= -400.,
-                       X_AXE=  1.,
-                       Y_AXE=  0.,
-                       Z_AXE=  0.,
-                       ANGLE=30.,
-                       GROUP_MA=('C_4_cote',),),),
-               MAILLAGE_FRONTIERE=MA_INTER,
-               NOMBRE='OUI',
-               PROP_CALCUL='OUI',)
+MACR_ADAP_MAIL(
+    MAILLAGE_N=M_2,
+    MAILLAGE_NP1=CO("M_3"),
+    ADAPTATION="RAFFINEMENT_UNIFORME",
+    GROUP_MA=("Tore_f",),
+    FRONTIERE_ANALYTIQUE=(
+        _F(
+            NOM="TORE",
+            TYPE="TORE",
+            X_CENTRE=0.0,
+            Y_CENTRE=0.0,
+            Z_CENTRE=0.0,
+            X_AXE=1.0,
+            Y_AXE=0.0,
+            Z_AXE=0.0,
+            RAYON=400.0,
+            RAYON2=160.0,
+            GROUP_MA=("Tore_f",),
+        ),
+        _F(
+            NOM="Cone_1",
+            TYPE="CONE_R",
+            X_CENTRE=0.0,
+            Y_CENTRE=400.0,
+            Z_CENTRE=0.0,
+            RAYON=0.0,
+            X_CENTRE2=320.0,
+            Y_CENTRE2=400.0,
+            Z_CENTRE2=0.0,
+            RAYON2=184.752086,
+            GROUP_MA=("C_1_cote",),
+        ),
+        _F(
+            NOM="Cone_2",
+            TYPE="CONE_R",
+            X_CENTRE=0.0,
+            Y_CENTRE=-400.0,
+            Z_CENTRE=0.0,
+            RAYON=0.0,
+            X_CENTRE2=320.0,
+            Y_CENTRE2=-400.0,
+            Z_CENTRE2=0.0,
+            RAYON2=184.752086,
+            GROUP_MA=("C_2_cote",),
+        ),
+        _F(
+            NOM="Cone_3",
+            TYPE="CONE_A",
+            X_CENTRE=0.0,
+            Y_CENTRE=0.0,
+            Z_CENTRE=400.0,
+            X_AXE=1.0,
+            Y_AXE=0.0,
+            Z_AXE=0.0,
+            ANGLE=30.0,
+            GROUP_MA=("C_3_cote",),
+        ),
+        _F(
+            NOM="Cone_4",
+            TYPE="CONE_A",
+            X_CENTRE=0.0,
+            Y_CENTRE=0.0,
+            Z_CENTRE=-400.0,
+            X_AXE=1.0,
+            Y_AXE=0.0,
+            Z_AXE=0.0,
+            ANGLE=30.0,
+            GROUP_MA=("C_4_cote",),
+        ),
+    ),
+    MAILLAGE_FRONTIERE=MA_INTER,
+    NOMBRE="OUI",
+    PROP_CALCUL="OUI",
+)
 
-#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_3,),)
+# IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M_3,),)
 
 #
 # 6. Un p'tit calcul pour un TEST_RESU
 #
-MTMECA3=AFFE_MATERIAU( MAILLAGE=M_3,AFFE=_F( TOUT='OUI', MATER = MATERIO, ),)
+MTMECA3 = AFFE_MATERIAU(MAILLAGE=M_3, AFFE=_F(TOUT="OUI", MATER=MATERIO))
 #
-MOMECA3=AFFE_MODELE( MAILLAGE=M_3,
-  AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = '3D', ))
+MOMECA3 = AFFE_MODELE(MAILLAGE=M_3, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 #
 
-CHMECA3=AFFE_CHAR_MECA(  MODELE=MOMECA3,
-                        FACE_IMPO=_F(  GROUP_MA = 'C_1_base', DX = 0., DY = 0., DZ = 0. ),
-                        PRES_REP=_F(GROUP_MA=('C_3_base',), PRES=1.E3,),
-                          )
+CHMECA3 = AFFE_CHAR_MECA(
+    MODELE=MOMECA3,
+    FACE_IMPO=_F(GROUP_MA="C_1_base", DX=0.0, DY=0.0, DZ=0.0),
+    PRES_REP=_F(GROUP_MA=("C_3_base",), PRES=1.0e3),
+)
 #
-REMECA3=STAT_NON_LINE( MODELE=MOMECA3,
-                      CHAM_MATER=MTMECA3,
-                      EXCIT=_F( CHARGE = CHMECA3,),
-                      INCREMENT=_F(LIST_INST=LI,),
-                    )
-#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=REMECA,),)
+REMECA3 = STAT_NON_LINE(
+    MODELE=MOMECA3, CHAM_MATER=MTMECA3, EXCIT=_F(CHARGE=CHMECA3), INCREMENT=_F(LIST_INST=LI)
+)
+# IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=REMECA,),)
 #
-TEST_RESU(RESU=(_F(NUME_ORDRE=5,
-                   GROUP_NO='S_2',
-                   RESULTAT=REMECA3,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=-628.773696974,
-                   VALE_REFE=-628.773696974,
-                   CRITERE='RELATIF', PRECISION = 1.E-5,
-                   REFERENCE = 'AUTRE_ASTER',
-                   ),
-                _F(NUME_ORDRE=5,
-                   GROUP_NO='S_4',
-                   RESULTAT=REMECA3,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   VALE_CALC=-152.436880132,
-                   VALE_REFE=-152.436880132,
-                   CRITERE='RELATIF', PRECISION = 1.E-5,
-                   REFERENCE = 'AUTRE_ASTER',
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=5,
+            GROUP_NO="S_2",
+            RESULTAT=REMECA3,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=-628.773696974,
+            VALE_REFE=-628.773696974,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-5,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            NUME_ORDRE=5,
+            GROUP_NO="S_4",
+            RESULTAT=REMECA3,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            VALE_CALC=-152.436880132,
+            VALE_REFE=-152.436880132,
+            CRITERE="RELATIF",
+            PRECISION=1.0e-5,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
 #
 FIN()

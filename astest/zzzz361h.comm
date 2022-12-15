@@ -17,185 +17,145 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # MODELISATION H : X-FEM FISSURE NON-COINCIDENTE PUR - TRACTION
 # LE FOND DE FISSURE EST AU CENTRE DES ELEMENTS
 # ON TESTE :
 # - CALC_G pour XFEM quadratique
 
-#----------------------------------------------
+# ----------------------------------------------
 #                MAILLAGE : hexa_5_31_51.mgib
-#----------------------------------------------
+# ----------------------------------------------
 
-MAILLAG0=LIRE_MAILLAGE(FORMAT='MED')
+MAILLAG0 = LIRE_MAILLAGE(FORMAT="MED")
 
-MAILLAG1 = CREA_MAILLAGE(MAILLAGE = MAILLAG0,
-                         LINE_QUAD = _F(TOUT = 'OUI'))
+MAILLAG1 = CREA_MAILLAGE(MAILLAGE=MAILLAG0, LINE_QUAD=_F(TOUT="OUI"))
 
-MAILLAG1 = DEFI_GROUP( reuse = MAILLAG1, MAILLAGE = MAILLAG1,
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N9768', NOEUD = 'N9768'),
-                                        _F( NOM = 'N3886', NOEUD = 'N3886'),
-                                        _F( NOM = 'N4031', NOEUD = 'N4031'),
-                                        _F( NOM = 'N4041', NOEUD = 'N4041'),
-                                        _F( NOM = 'N9767', NOEUD = 'N9767'),
-                                        _F( NOM = 'N3876', NOEUD = 'N3876'),
-                                     ),
-         )
+MAILLAG1 = DEFI_GROUP(
+    reuse=MAILLAG1,
+    MAILLAGE=MAILLAG1,
+    CREA_GROUP_NO=(
+        _F(NOM="N9768", NOEUD="N9768"),
+        _F(NOM="N3886", NOEUD="N3886"),
+        _F(NOM="N4031", NOEUD="N4031"),
+        _F(NOM="N4041", NOEUD="N4041"),
+        _F(NOM="N9767", NOEUD="N9767"),
+        _F(NOM="N3876", NOEUD="N3876"),
+    ),
+)
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),)
+MAILLAG1 = DEFI_GROUP(reuse=MAILLAG1, MAILLAGE=MAILLAG1, CREA_GROUP_NO=_F(GROUP_MA="VOL"))
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),
-                    )
+MAILLAG1 = DEFI_GROUP(reuse=MAILLAG1, MAILLAGE=MAILLAG1, CREA_GROUP_NO=_F(GROUP_MA="SURFSUP"))
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   MODELE ET FISSURE
-#----------------------------------------------
+# ----------------------------------------------
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('VOL',),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),
-                           _F(GROUP_MA=('SURFINF','SURFSUP',),
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),)
+MODELEIN = AFFE_MODELE(
+    MAILLAGE=MAILLAG1,
+    AFFE=(
+        _F(GROUP_MA=("VOL",), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA=("SURFINF", "SURFSUP"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+    ),
+)
 
-MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
-                       MAILLAGE=MAILLAG1,
-                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
-                       )
+MAILLAG1 = MODI_MAILLAGE(
+    reuse=MAILLAG1, MAILLAGE=MAILLAG1, ORIE_PEAU=_F(GROUP_MA_PEAU=("SURFSUP", "SURFINF"))
+)
 
-LN = FORMULE(VALE='Z-15.',
-             NOM_PARA=['X', 'Y', 'Z'],)
-LT = FORMULE(VALE='-Y+5.',
-             NOM_PARA=['X', 'Y', 'Z'],)
+LN = FORMULE(VALE="Z-15.", NOM_PARA=["X", "Y", "Z"])
+LT = FORMULE(VALE="-Y+5.", NOM_PARA=["X", "Y", "Z"])
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    INFO=1,
-                    )
+FISS = DEFI_FISS_XFEM(MAILLAGE=MAILLAG1, DEFI_FISS=_F(FONC_LT=LT, FONC_LN=LN), INFO=1)
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,)
+MODELEK = MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=1)
 
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   MATERIAU
-#----------------------------------------------
+# ----------------------------------------------
 
-E=205000.0E6
-nu=0.
-rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),)
+E = 205000.0e6
+nu = 0.0
+rho = 7800.0
+ACIER = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho))
 
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
-                       MODELE=MODELEK,
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                ),
-                             )
+CHAMPMA1 = AFFE_MATERIAU(MAILLAGE=MAILLAG1, MODELE=MODELEK, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   CHARGEMENTS
-#----------------------------------------------
+# ----------------------------------------------
 
-PRES=-1.E6
-CHB=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   LIAISON_DDL=(_F(GROUP_NO=('N4031','N3876',),
-                                   DDL=('DX','DX',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(GROUP_NO=('N4031','N3876',),
-                                   DDL=('DY','DY',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(GROUP_NO=('N4031','N3876',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(GROUP_NO=('N3886','N4041',),
-                                   DDL=('DX','DX',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(GROUP_NO=('N3886','N4041',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(GROUP_NO=('N9768','N9767',),
-                                   DDL=('DZ','DZ',),
-                                   COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                             ),)
+PRES = -1.0e6
+CHB = AFFE_CHAR_MECA(
+    MODELE=MODELEK,
+    LIAISON_DDL=(
+        _F(GROUP_NO=("N4031", "N3876"), DDL=("DX", "DX"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("N4031", "N3876"), DDL=("DY", "DY"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("N4031", "N3876"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("N3886", "N4041"), DDL=("DX", "DX"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("N3886", "N4041"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0),
+        _F(GROUP_NO=("N9768", "N9767"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0.0),
+    ),
+)
 
 
-CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES))
+CH1 = AFFE_CHAR_MECA(MODELE=MODELEK, PRES_REP=_F(GROUP_MA=("SURFSUP", "SURFINF"), PRES=PRES))
 
 #                   3) PRESSION CONSTANTE SUR LES LEVRES
-CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,PRES_REP=_F(FISSURE=FISS,PRES=1.e6))
+CHPRES = AFFE_CHAR_MECA(MODELE=MODELEK, PRES_REP=_F(FISSURE=FISS, PRES=1.0e6))
 
 #                   4) PRESSION FONCTION SUR LES LEVRES
-PRESF = FORMULE(VALE='1.e6*(1.-X)',
-                NOM_PARA=['X', 'Y', 'Z'],)
-CHPRESF=AFFE_CHAR_MECA_F(MODELE=MODELEK,PRES_REP=_F(FISSURE=FISS,PRES=PRESF))
+PRESF = FORMULE(VALE="1.e6*(1.-X)", NOM_PARA=["X", "Y", "Z"])
+CHPRESF = AFFE_CHAR_MECA_F(MODELE=MODELEK, PRES_REP=_F(FISSURE=FISS, PRES=PRESF))
 
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   RESOLUTION
-#----------------------------------------------
+# ----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1))
+L_INS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
 
-
-UTOT2x=MECA_STATIQUE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,
-                   EXCIT=(
-                          _F(CHARGE=CHB),
-                          _F(CHARGE=CHPRES),
-                          ),
-                   )
-
+UTOT2x = MECA_STATIQUE(
+    MODELE=MODELEK, CHAM_MATER=CHAMPMA1, EXCIT=(_F(CHARGE=CHB), _F(CHARGE=CHPRES))
+)
 
 
 # unique test de CALC_G, option CALC_G avec pression sur levres
-G2=CALC_G_XFEM(RESULTAT=UTOT2x,
-               CHAM_THETA=CO('cham_theta_no2'),
-          THETA=_F(FISSURE=FISS,
-                   R_INF=2.,
-                   R_SUP=4.,),
-          LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                     LISSAGE_G='LAGRANGE',),
-          )
+G2 = CALC_G_XFEM(
+    RESULTAT=UTOT2x,
+    CHAM_THETA=CO("cham_theta_no2"),
+    THETA=_F(FISSURE=FISS, R_INF=2.0, R_SUP=4.0),
+    LISSAGE=_F(LISSAGE_THETA="LAGRANGE", LISSAGE_G="LAGRANGE"),
+)
 
 IMPR_TABLE(TABLE=G2)
 
 
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.080000000000000002,
+    VALE_CALC=615.61580807,
+    VALE_REFE=612.19357355805357,
+    NOM_PARA="G",
+    TYPE_TEST="MAX",
+    TABLE=G2,
+)
 
-
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.080000000000000002,
-           VALE_CALC=615.61580807,
-           VALE_REFE=612.19357355805357,
-           NOM_PARA='G',
-           TYPE_TEST='MAX',
-           TABLE=G2,)
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.080000000000000002,
-           VALE_CALC=608.999832662,
-           VALE_REFE=612.19357355805357,
-           NOM_PARA='G',
-           TYPE_TEST='MIN',
-           TABLE=G2,)
-
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.080000000000000002,
+    VALE_CALC=608.999832662,
+    VALE_REFE=612.19357355805357,
+    NOM_PARA="G",
+    TYPE_TEST="MIN",
+    TABLE=G2,
+)
 
 
 FIN()

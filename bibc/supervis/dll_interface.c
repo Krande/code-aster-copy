@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -20,7 +20,6 @@
 #include "aster.h"
 #include "aster_fort_utils.h"
 #include "definition_pt.h"
-
 #include "dll_register.h"
 
 #ifdef ASTER_PLATFORM_POSIX
@@ -36,32 +35,29 @@
  * *********************************************************************/
 
 /* Global dictionnary used to register (libraries, symbol) couples */
-static PyObject* DLL_DICT = NULL;
+static PyObject *DLL_DICT = NULL;
 
-void dll_init()
-{
+void dll_init() {
     /* Initialization */
-    if ( ! DLL_DICT ) {
+    if ( !DLL_DICT ) {
         DLL_DICT = PyDict_New();
     }
 }
 
-PyObject* get_dll_register_dict()
-{
+PyObject *get_dll_register_dict() {
     /* Return the register dictionnary.
      * For external modules. */
     dll_init();
     return DLL_DICT;
 }
 
-void DEF0(DLLCLS, dllcls)
-{
+void DEF0( DLLCLS, dllcls ) {
 #ifdef ASTER_PLATFORM_POSIX
     /* Unload all components
      */
     dll_init();
-    libsymb_apply_on_all(DLL_DICT, (FUNC_PTR)dlclose, 1);
-    Py_DECREF(DLL_DICT);
+    libsymb_apply_on_all( DLL_DICT, (FUNC_PTR)dlclose, 1 );
+    Py_DECREF( DLL_DICT );
     DLL_DICT = NULL;
 #endif
 }

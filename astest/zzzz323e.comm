@@ -17,353 +17,346 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # MODELISATION C_PLAN, D_PLAN ET AXIS
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",    UNITE=20 )
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
 
-MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( GROUP_MA = ('CPL4','CPL3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'C_PLAN'
-                            ),
-                          _F( GROUP_MA = ('DPL4','DPL3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'D_PLAN'
-                            ),
-                          _F( GROUP_MA = ('AXI4','AXI3'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'AXIS'
-                            ),
-                         ),
-                  )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA=("CPL4", "CPL3"), PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"),
+        _F(GROUP_MA=("DPL4", "DPL3"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(GROUP_MA=("AXI4", "AXI3"), PHENOMENE="MECANIQUE", MODELISATION="AXIS"),
+    ),
+)
 
-CARAELEM=AFFE_CARA_ELEM(
-                       MODELE=MODELE,
-                       MASSIF=(_F( GROUP_MA='GROUP_MA_QUAD4',
-                                   ANGL_REP=(90.0,),
-                                ),
-                              _F(  GROUP_MA='GROUP_MA_TRIA3',
-                                   ANGL_REP=(45.0),
-                                )
-                               ),
-
-                         )
+CARAELEM = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    MASSIF=(
+        _F(GROUP_MA="GROUP_MA_QUAD4", ANGL_REP=(90.0,)),
+        _F(GROUP_MA="GROUP_MA_TRIA3", ANGL_REP=(45.0)),
+    ),
+)
 
 # IMPRESSION AU FORMAT ASTER
-IMPR_CONCEPT(FORMAT="RESULTAT",
-             CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='ELEM',MODELE=MODELE
-                      ))
+IMPR_CONCEPT(FORMAT="RESULTAT", CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE))
 
 
 # IMPRESSION AU FORMAT MED
 # On pourrait très bien utiliser un seul fichier.
 # On sépare les deux pour vérifier l'écriture dans des versions différentes de MED.
-IMPR_CONCEPT(FORMAT='MED',UNITE=81,
-             VERSION_MED='3.3.1',
-             CONCEPT=_F(CARA_ELEM=CARAELEM,
-                        REPERE_LOCAL='ELEM',
-                        MODELE=MODELE))
+IMPR_CONCEPT(
+    FORMAT="MED",
+    UNITE=81,
+    VERSION_MED="3.3.1",
+    CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE),
+)
 
-DEFI_FICHIER(UNITE=81, ACTION='LIBERER')
+DEFI_FICHIER(UNITE=81, ACTION="LIBERER")
 
-IMPR_CONCEPT(FORMAT='MED',UNITE=82,
-             VERSION_MED='4.0.0',
-             CONCEPT=_F(CARA_ELEM=CARAELEM,
-                        REPERE_LOCAL='ELEM',
-                        MODELE=MODELE))
+IMPR_CONCEPT(
+    FORMAT="MED",
+    UNITE=82,
+    VERSION_MED="4.0.0",
+    CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE),
+)
 
-DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
+DEFI_FICHIER(UNITE=82, ACTION="LIBERER")
 
 
-IMPR_CONCEPT(FORMAT='MED',UNITE=83,
-             VERSION_MED='4.1.0',
-             CONCEPT=_F(CARA_ELEM=CARAELEM,
-                        REPERE_LOCAL='ELEM',
-                        MODELE=MODELE))
+IMPR_CONCEPT(
+    FORMAT="MED",
+    UNITE=83,
+    VERSION_MED="4.1.0",
+    CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE),
+)
 
-DEFI_FICHIER(UNITE=83, ACTION='LIBERER')
+DEFI_FICHIER(UNITE=83, ACTION="LIBERER")
 
 # RELECTURE DU FICHIER MED
 REPLO_1 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 81,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000003.REPLO_1',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=81,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000003.REPLO_1",
+    NOM_CMP_IDEM="OUI",
+)
 REPLO_2 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000003.REPLO_2',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000003.REPLO_2",
+    NOM_CMP_IDEM="OUI",
+)
 
 # TEST_RESU
 
 # VECTEUR x local
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='CPL4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.E0,
-                        VALE_REFE=0.E0,
-                        CRITERE='ABSOLU',
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='CPL4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=1.E0,
-                        VALE_REFE=1.E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DPL4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.E0,
-                        VALE_REFE=0.E0,
-                        CRITERE='ABSOLU',
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DPL4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=1.E0,
-                        VALE_REFE=1.E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='AXI4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.E0,
-                        VALE_REFE=0.E0,
-                        CRITERE='ABSOLU',
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='AXI4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=1.E0,
-                        VALE_REFE=1.E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='CPL3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='CPL3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DPL3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DPL3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='AXI3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='AXI3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="CPL4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.0e0,
+            VALE_REFE=0.0e0,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="CPL4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DPL4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.0e0,
+            VALE_REFE=0.0e0,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DPL4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="AXI4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.0e0,
+            VALE_REFE=0.0e0,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="AXI4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="CPL3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="CPL3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DPL3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DPL3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="AXI3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="AXI3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
 # VECTEUR y local
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='CPL4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=-1.0E0,
-                        VALE_REFE=-1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='CPL4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.E0,
-                        VALE_REFE=0.E0,
-                        CRITERE='ABSOLU',
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='DPL4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=-1.E0,
-                        VALE_REFE=-1.E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='DPL4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.E0,
-                        VALE_REFE=0.E0,
-                        CRITERE='ABSOLU',
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='AXI4',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=-1.E0,
-                        VALE_REFE=-1.E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='AXI4',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.E0,
-                        VALE_REFE=0.E0,
-                        CRITERE='ABSOLU',
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='CPL3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=-0.707106781186547E0,
-                        VALE_REFE=-0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='CPL3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='DPL3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=-0.707106781186547E0,
-                        VALE_REFE=-0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='DPL3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='AXI3',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=-0.707106781186547E0,
-                        VALE_REFE=-0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='AXI3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186547E0,
-                        VALE_REFE=0.707106781186547E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
-
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="CPL4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=-1.0e0,
+            VALE_REFE=-1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="CPL4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.0e0,
+            VALE_REFE=0.0e0,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="DPL4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=-1.0e0,
+            VALE_REFE=-1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="DPL4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.0e0,
+            VALE_REFE=0.0e0,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="AXI4",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=-1.0e0,
+            VALE_REFE=-1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="AXI4",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.0e0,
+            VALE_REFE=0.0e0,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="CPL3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=-0.707106781186547e0,
+            VALE_REFE=-0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="CPL3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="DPL3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=-0.707106781186547e0,
+            VALE_REFE=-0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="DPL3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="AXI3",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=-0.707106781186547e0,
+            VALE_REFE=-0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="AXI3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186547e0,
+            VALE_REFE=0.707106781186547e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,23 +24,24 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def elim_lagr_prod(MATR_RIGI,**args):
-  if args.get('__all__'):
-      return (matr_asse_elim_r, )
+def elim_lagr_prod(MATR_RIGI, **args):
+    if args.get("__all__"):
+        return (matr_asse_elim_r,)
 
-  if AsType(MATR_RIGI) == matr_asse_depl_r : return matr_asse_elim_r
-  raise AsException("type de concept resultat non prevu")
-
-ELIM_LAGR=OPER(nom="ELIM_LAGR",op=69,sd_prod=elim_lagr_prod,
-               fr=tr("Créer une matrice en ayant éliminé les condition cinématiques dualisées."),
-
-         reuse=SIMP(statut='c', typ=CO),
-         # Matrice de "rigidité" (celle qui contient les équations dualisées) :
-         MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,) ),
-
-         # Matrice à réduire (si ce n'est pas la matrice de rigidité) :
-         MATR_ASSE       =SIMP(statut='f',typ=(matr_asse_depl_r,) ),
+    if AsType(MATR_RIGI) == matr_asse_depl_r:
+        return matr_asse_elim_r
+    raise AsException("type de concept resultat non prevu")
 
 
-         INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
-)  ;
+ELIM_LAGR = OPER(
+    nom="ELIM_LAGR",
+    op=69,
+    sd_prod=elim_lagr_prod,
+    fr=tr("Créer une matrice en ayant éliminé les condition cinématiques dualisées."),
+    reuse=SIMP(statut="c", typ=CO),
+    # Matrice de "rigidité" (celle qui contient les équations dualisées) :
+    MATR_RIGI=SIMP(statut="o", typ=(matr_asse_depl_r,)),
+    # Matrice à réduire (si ce n'est pas la matrice de rigidité) :
+    MATR_ASSE=SIMP(statut="f", typ=(matr_asse_depl_r,)),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2)),
+)

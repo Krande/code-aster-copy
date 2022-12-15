@@ -17,127 +17,140 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # maillage, modele, caraelem
 
 maillage = LIRE_MAILLAGE()
 
-modele = AFFE_MODELE(MAILLAGE = maillage,
-                    AFFE = _F(MODELISATION = "POU_D_T",
-                              PHENOMENE = "MECANIQUE",
-                              TOUT = "OUI",))
+modele = AFFE_MODELE(
+    MAILLAGE=maillage, AFFE=_F(MODELISATION="POU_D_T", PHENOMENE="MECANIQUE", TOUT="OUI")
+)
 
-acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
-                            RHO = 7800,
-                            ALPHA = 1.2E-5,
-                            NU = 0.3),
-                    POST_ROCHE=_F(RAMB_OSGO_FACT=0.01,
-                                  RAMB_OSGO_EXPO=2)
-                    )
+acier = DEFI_MATERIAU(
+    ELAS=_F(E=2.0e11, RHO=7800, ALPHA=1.2e-5, NU=0.3),
+    POST_ROCHE=_F(RAMB_OSGO_FACT=0.01, RAMB_OSGO_EXPO=2),
+)
 
 
-t_ini=CREA_CHAMP(
-    TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MODELE=modele,
-    AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=20,),)
+t_ini = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MODELE=modele,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20),
+)
 
-t_final=CREA_CHAMP(
-                            TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MODELE=modele,
-                            AFFE=_F(TOUT='OUI', NOM_CMP='TEMP', VALE=120.0,),)
+t_final = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MODELE=modele,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=120.0),
+)
 
-resu_temp = CREA_RESU(TYPE_RESU = 'EVOL_THER',
-                        NOM_CHAM='TEMP',
-                        OPERATION='AFFE',
-                        AFFE=(
-                            _F(CHAM_GD=t_ini, INST=0.0),
-                            _F(CHAM_GD=t_final, INST=1.0),))
-
-
-ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
-                       AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',EVOL=resu_temp,VALE_REF=20.0,),
-                       AFFE=_F(TOUT="OUI", MATER = acier))
-
-cara_elem=AFFE_CARA_ELEM(MODELE=modele, INFO=2,
-                         POUTRE=_F(GROUP_MA="TUYAU", SECTION = 'CERCLE',
-                                   VARI_SECT = 'HOMOTHETIQUE',
-                                   CARA = ('R_DEBUT', 'R_FIN', 'EP_DEBUT', 'EP_FIN'),
-                                   VALE = (0.01, 0.005, 0.005, 0.0025)))
+resu_temp = CREA_RESU(
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    OPERATION="AFFE",
+    AFFE=(_F(CHAM_GD=t_ini, INST=0.0), _F(CHAM_GD=t_final, INST=1.0)),
+)
 
 
+ch_mater = AFFE_MATERIAU(
+    MAILLAGE=maillage,
+    AFFE_VARC=_F(TOUT="OUI", NOM_VARC="TEMP", EVOL=resu_temp, VALE_REF=20.0),
+    AFFE=_F(TOUT="OUI", MATER=acier),
+)
 
-poids_propre = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
-                         MODELE=modele, TOUT_ORDRE='OUI',
-                         FORMAT_MED=(
-                         # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
-                         _F(NOM_RESU='poids_propre', NOM_CHAM=('EFGE_ELNO'),),)
-                         )
-
-deplacement_impose = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
-                         MODELE=modele, TOUT_ORDRE='OUI',
-                         FORMAT_MED=(
-                         # _F(NOM_RESU='deplacement_impose', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
-                         _F(NOM_RESU='deplacement_impose', NOM_CHAM=('EFGE_ELNO',),),)
-                         )
+cara_elem = AFFE_CARA_ELEM(
+    MODELE=modele,
+    INFO=2,
+    POUTRE=_F(
+        GROUP_MA="TUYAU",
+        SECTION="CERCLE",
+        VARI_SECT="HOMOTHETIQUE",
+        CARA=("R_DEBUT", "R_FIN", "EP_DEBUT", "EP_FIN"),
+        VALE=(0.01, 0.005, 0.005, 0.0025),
+    ),
+)
 
 
+poids_propre = LIRE_RESU(
+    TYPE_RESU="EVOL_ELAS",
+    FORMAT="MED",
+    UNITE=81,
+    MODELE=modele,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=(
+        # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+        _F(NOM_RESU="poids_propre", NOM_CHAM=("EFGE_ELNO")),
+    ),
+)
+
+deplacement_impose = LIRE_RESU(
+    TYPE_RESU="EVOL_ELAS",
+    FORMAT="MED",
+    UNITE=81,
+    MODELE=modele,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=(
+        # _F(NOM_RESU='deplacement_impose', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+        _F(NOM_RESU="deplacement_impose", NOM_CHAM=("EFGE_ELNO",)),
+    ),
+)
 
 
+dilatation_thermique = LIRE_RESU(
+    TYPE_RESU="EVOL_ELAS",
+    FORMAT="MED",
+    UNITE=81,
+    MODELE=modele,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=(
+        # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+        _F(NOM_RESU="dilatation_thermique", NOM_CHAM=("EFGE_ELNO",)),
+    ),
+)
 
-dilatation_thermique = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
-                         MODELE=modele, TOUT_ORDRE='OUI',
-                         FORMAT_MED=(
-                         # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
-                         _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('EFGE_ELNO',),),)
-                         )
+resu_dyna = LIRE_RESU(
+    TYPE_RESU="DYNA_TRANS",
+    FORMAT="MED",
+    UNITE=81,
+    MODELE=modele,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=(_F(NOM_RESU="resu_dyna", NOM_CHAM=("EFGE_ELNO",)),),
+)
 
-resu_dyna = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
-                         MODELE=modele, TOUT_ORDRE='OUI',
-                         FORMAT_MED=(
-                         _F(NOM_RESU='resu_dyna', NOM_CHAM=('EFGE_ELNO',),),)
-                          )
-
-resu_corr = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
-                         MODELE=modele, TOUT_ORDRE='OUI',
-                         FORMAT_MED=(
-                         _F(NOM_RESU='resu_corr', NOM_CHAM=('EFGE_ELNO',),),)
-                          )
+resu_corr = LIRE_RESU(
+    TYPE_RESU="DYNA_TRANS",
+    FORMAT="MED",
+    UNITE=81,
+    MODELE=modele,
+    TOUT_ORDRE="OUI",
+    FORMAT_MED=(_F(NOM_RESU="resu_corr", NOM_CHAM=("EFGE_ELNO",)),),
+)
 # appel à POST_ROCHE
 
-resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
-                                     GROUP_MA='TUYAU',
-                                     GROUP_NO_ORIG = 'A',
-                                    ),
-                                  ),
-                    MODELE = modele,
-                    CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,
-                    RESU_MECA_TRAN=(
-                               _F(TYPE_CHAR='SISM_INER_TRAN',
-                                 RESULTAT=resu_dyna,
-                                 RESU_CORR=resu_corr,
-                                 INST=(1,2),
-                                 # NUME_ORDRE=(1,2),
-                                 # TOUT_ORDRE='OUI',
-                                 ),
-                               _F(TYPE_CHAR='POIDS',
-                                 RESULTAT=poids_propre,
-                                 NUME_ORDRE=1,
-                                 ),
-                               _F(TYPE_CHAR='DILAT_THERM',
-                                 RESULTAT=dilatation_thermique,
-                                 NUME_ORDRE=1,
-                                 ),
-                               _F(TYPE_CHAR='DEPLACEMENT',
-                                 RESULTAT=deplacement_impose,
-                                 NUME_ORDRE=1,
-                                 ),
-                                ),
-                     PRESSION=(_F(
-                                     GROUP_MA='TUYAU',
-                                     VALE = 1E6,
-                                    ),
-                                  ),
-                    )
+resuPostRoche = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA_TRAN=(
+        _F(
+            TYPE_CHAR="SISM_INER_TRAN",
+            RESULTAT=resu_dyna,
+            RESU_CORR=resu_corr,
+            INST=(1, 2),
+            # NUME_ORDRE=(1,2),
+            # TOUT_ORDRE='OUI',
+        ),
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DILAT_THERM", RESULTAT=dilatation_thermique, NUME_ORDRE=1),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6),),
+)
 
 # Tests cas de calcul
 # 4- seisme inertiel (S)
@@ -146,102 +159,84 @@ resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
 # 7- seisme inertiel + deplacement (SD)
 
 # 4- seisme inertiel (S)
-resuPostRoche_S = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
-                                     GROUP_MA='TUYAU',
-                                     GROUP_NO_ORIG = 'A',
-                                    ),
-                                  ),
-                    MODELE = modele,
-                    CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,
-                    RESU_MECA_TRAN=(
-                               _F(TYPE_CHAR='SISM_INER_TRAN',
-                                 RESULTAT=resu_dyna,
-                                 RESU_CORR=resu_corr,
-                                 INST=(1,2),
-                                 #NUME_ORDRE=(1,2),
-                                 #TOUT_ORDRE='OUI',
-                                 ),
-                                ),
-                    )
+resuPostRoche_S = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA_TRAN=(
+        _F(
+            TYPE_CHAR="SISM_INER_TRAN",
+            RESULTAT=resu_dyna,
+            RESU_CORR=resu_corr,
+            INST=(1, 2),
+            # NUME_ORDRE=(1,2),
+            # TOUT_ORDRE='OUI',
+        ),
+    ),
+)
 
 # 5- seisme inertiel + pression (SP)
-resuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
-                                     GROUP_MA='TUYAU',
-                                     GROUP_NO_ORIG = 'A',
-                                    ),
-                                  ),
-                    MODELE = modele,
-                    CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,
-                    RESU_MECA_TRAN=(
-                               _F(TYPE_CHAR='SISM_INER_TRAN',
-                                 RESULTAT=resu_dyna,
-                                 RESU_CORR=resu_corr,
-                                 INST=(1,2),
-                                 #NUME_ORDRE=(1,2),
-                                 #TOUT_ORDRE='OUI',
-                                 ),
-                                ),
-                     PRESSION=(_F(
-                                     GROUP_MA='TUYAU',
-                                     VALE = 1E6,
-                                    ),
-                                  ),
-                    )
+resuPostRoche_SP = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA_TRAN=(
+        _F(
+            TYPE_CHAR="SISM_INER_TRAN",
+            RESULTAT=resu_dyna,
+            RESU_CORR=resu_corr,
+            INST=(1, 2),
+            # NUME_ORDRE=(1,2),
+            # TOUT_ORDRE='OUI',
+        ),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6),),
+)
 
 
 # 6- seisme inertiel + pression + poids propre (SPG)
-resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
-                                     GROUP_MA='TUYAU',
-                                     GROUP_NO_ORIG = 'A',
-                                    ),
-                                  ),
-                    MODELE = modele,
-                    CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,
-                    RESU_MECA_TRAN=(
-                               _F(TYPE_CHAR='SISM_INER_TRAN',
-                                 RESULTAT=resu_dyna,
-                                 RESU_CORR=resu_corr,
-                                 INST=(1,2),
-                                 #NUME_ORDRE=(1,2),
-                                 #TOUT_ORDRE='OUI',
-                                 ),
-                               _F(TYPE_CHAR='POIDS',
-                                 RESULTAT=poids_propre,
-                                 NUME_ORDRE=1,
-                                 ),
-                                ),
-                     PRESSION=(_F(
-                                     GROUP_MA='TUYAU',
-                                     VALE = 1E6,
-                                    ),
-                                  ),
-                    )
+resuPostRoche_SPG = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA_TRAN=(
+        _F(
+            TYPE_CHAR="SISM_INER_TRAN",
+            RESULTAT=resu_dyna,
+            RESU_CORR=resu_corr,
+            INST=(1, 2),
+            # NUME_ORDRE=(1,2),
+            # TOUT_ORDRE='OUI',
+        ),
+        _F(TYPE_CHAR="POIDS", RESULTAT=poids_propre, NUME_ORDRE=1),
+    ),
+    PRESSION=(_F(GROUP_MA="TUYAU", VALE=1e6),),
+)
 
 # 7- seisme inertiel + deplacement (SD)
-resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
-                                     GROUP_MA='TUYAU',
-                                     GROUP_NO_ORIG = 'A',
-                                    ),
-                                  ),
-                    MODELE = modele,
-                    CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,
-                    RESU_MECA_TRAN=(
-                               _F(TYPE_CHAR='SISM_INER_TRAN',
-                                 RESULTAT=resu_dyna,
-                                 RESU_CORR=resu_corr,
-                                 INST=(1,2),
-                                 #NUME_ORDRE=(1,2),
-                                 #TOUT_ORDRE='OUI',
-                                 ),
-                               _F(TYPE_CHAR='DEPLACEMENT',
-                                 RESULTAT=deplacement_impose,
-                                 NUME_ORDRE=1,
-                                 ),
-                                ),
-                    )
+resuPostRoche_SD = POST_ROCHE(
+    RCCM_RX="NON",
+    ZONE_ANALYSE=(_F(GROUP_MA="TUYAU", GROUP_NO_ORIG="A"),),
+    MODELE=modele,
+    CARA_ELEM=cara_elem,
+    CHAM_MATER=ch_mater,
+    RESU_MECA_TRAN=(
+        _F(
+            TYPE_CHAR="SISM_INER_TRAN",
+            RESULTAT=resu_dyna,
+            RESU_CORR=resu_corr,
+            INST=(1, 2),
+            # NUME_ORDRE=(1,2),
+            # TOUT_ORDRE='OUI',
+        ),
+        _F(TYPE_CHAR="DEPLACEMENT", RESULTAT=deplacement_impose, NUME_ORDRE=1),
+    ),
+)
 
 FIN()

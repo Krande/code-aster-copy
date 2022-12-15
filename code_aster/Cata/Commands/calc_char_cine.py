@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,21 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-CALC_CHAR_CINE=OPER(nom="CALC_CHAR_CINE",op= 102,sd_prod=cham_no_sdaster,
-                    fr=tr("Calcul des seconds membres associés à des charges cinématiques (conditions aux limites non dualisées)"),
-                    reentrant='n',
-         NUME_DDL        =SIMP(statut='o',typ=nume_ddl_sdaster ),
-         CHAR_CINE       =SIMP(statut='o',typ=(char_cine_meca,char_cine_ther,char_cine_acou ),validators=NoRepeat(),max='**' ),
-         INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
-)  ;
+CALC_CHAR_CINE = OPER(
+    nom="CALC_CHAR_CINE",
+    op=102,
+    sd_prod=cham_no_sdaster,
+    fr=tr(
+        "Calcul des seconds membres associés à des charges cinématiques (conditions aux limites non dualisées)"
+    ),
+    reentrant="n",
+    NUME_DDL=SIMP(statut="o", typ=nume_ddl_sdaster),
+    CHAR_CINE=SIMP(
+        statut="o",
+        typ=(char_cine_meca, char_cine_ther, char_cine_acou),
+        validators=NoRepeat(),
+        max="**",
+    ),
+    INST=SIMP(statut="f", typ="R", defaut=0.0e0),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+)

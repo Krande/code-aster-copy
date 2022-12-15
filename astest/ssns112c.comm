@@ -22,34 +22,28 @@
 # epaisseur de la plaque
 ep_beton = 0.15
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#-----------------------------------------------
+# -----------------------------------------------
 # LECTURE DU MAILLAGE
-#-----------------------------------------------
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+# -----------------------------------------------
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='A',),
-                               _F(GROUP_MA='B',),),)
+MAIL = DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=(_F(GROUP_MA="A"), _F(GROUP_MA="B")))
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_NORM_COQUE=_F(GROUP_MA='POUTRE',
-                                      VECT_NORM=(0.,0.,1.,),
-                                      GROUP_NO='AA',),)
+MAIL = MODI_MAILLAGE(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    ORIE_NORM_COQUE=_F(GROUP_MA="POUTRE", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="AA"),
+)
 
-#-----------------------------------------------
+# -----------------------------------------------
 # CREATION DU MODELE
-#-----------------------------------------------
-MO=AFFE_MODELE(MAILLAGE=MAIL,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='DKTG',),)
+# -----------------------------------------------
+MO = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DKTG"))
 
-#-----------------------------------------------
+# -----------------------------------------------
 # DEFINTION DES MATERIAUX ET CARACTERSISTIQUES
-#-----------------------------------------------
+# -----------------------------------------------
 
 FIN()

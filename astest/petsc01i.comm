@@ -17,103 +17,99 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-       DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),
-               DISTRIBUTION=_F(METHODE='MAIL_CONTIGU',),
-               )
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+    DISTRIBUTION=_F(METHODE="MAIL_CONTIGU"),
+)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
-                          NU=0.3,
-                          RHO=1.e-1,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=202702.7, NU=0.3, RHO=1.0e-1))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=_F(GROUP_NO='GRNO7',
-                                 DX=0.0,
-                                 DY=0.01,),)
+CHA1 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO="GRNO7", DX=0.0, DY=0.01))
 
-CHA2=AFFE_CHAR_CINE(MODELE=MO,
-                    MECA_IMPO=(_F(GROUP_NO='GRNO1',
-                                 DZ=0.0,),
-                              _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),)
+CHA2 = AFFE_CHAR_CINE(
+    MODELE=MO, MECA_IMPO=(_F(GROUP_NO="GRNO1", DZ=0.0), _F(GROUP_NO="GRNO8", DY=0.0))
+)
 
-LIST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=2,),)
+LIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
 
-EVOL=DYNA_NON_LINE(MODELE=MO,
-                   INFO=1,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHA1,),
-                          _F(CHARGE=CHA2,),),
-                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                   FORMULATION='DEPLACEMENT',),
-                   COMPORTEMENT=_F(RELATION='ELAS',
-                                TOUT='OUI',),
-                   METHODE='NEWTON_KRYLOV',
-                   NEWTON=_F(REAC_ITER=1),
-                   INCREMENT=_F(LIST_INST=LIST,),
-                   SOLVEUR=_F(METHODE='PETSC',
-                              ALGORITHME='FGMRES',
-                              PRE_COND='LDLT_SP',
-                              PCENT_PIVOT=20,),)
+EVOL = DYNA_NON_LINE(
+    MODELE=MO,
+    INFO=1,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHA1), _F(CHARGE=CHA2)),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
+    METHODE="NEWTON_KRYLOV",
+    NEWTON=_F(REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=LIST),
+    SOLVEUR=_F(METHODE="PETSC", ALGORITHME="FGMRES", PRE_COND="LDLT_SP", PCENT_PIVOT=20),
+)
 
-TEST_RESU(RESU=(_F(RESULTAT=EVOL,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.01,
-                   VALE_REFE=0.01,
-                   PRECISION=0.00015,
-                   REFERENCE='NON_DEFINI',),
-                _F(RESULTAT=EVOL,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=5.74395335085E-05,
-                   VALE_REFE=5.7439532999582E-05,
-                   PRECISION=0.00015,
-                   REFERENCE='NON_DEFINI',),
-                _F(RESULTAT=EVOL,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=0.00453577257719,
-                   VALE_REFE=4.5357725792808E-03,
-                   PRECISION=0.00015,
-                   REFERENCE='NON_DEFINI',),
-                _F(RESULTAT=EVOL,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=0.00966269003391,
-                   VALE_REFE=9.6626900370336E-03,
-                   PRECISION=0.00015,
-                   REFERENCE='NON_DEFINI',),
-                _F(RESULTAT=EVOL,
-                   NUME_ORDRE=2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=-3.22055868401E-05,
-                   VALE_REFE=-3.2205586901003E-05,
-                   PRECISION=0.00015,
-                   REFERENCE='NON_DEFINI',),),)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=EVOL,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.01,
+            VALE_REFE=0.01,
+            PRECISION=0.00015,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            RESULTAT=EVOL,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2958",
+            VALE_CALC=5.74395335085e-05,
+            VALE_REFE=5.7439532999582e-05,
+            PRECISION=0.00015,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            RESULTAT=EVOL,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00453577257719,
+            VALE_REFE=4.5357725792808e-03,
+            PRECISION=0.00015,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            RESULTAT=EVOL,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00966269003391,
+            VALE_REFE=9.6626900370336e-03,
+            PRECISION=0.00015,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            RESULTAT=EVOL,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2974",
+            VALE_CALC=-3.22055868401e-05,
+            VALE_REFE=-3.2205586901003e-05,
+            PRECISION=0.00015,
+            REFERENCE="NON_DEFINI",
+        ),
+    )
+)
 
 FIN()

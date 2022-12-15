@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,6 +23,7 @@ from ..Supervis import ExecuteCommand
 
 class RCCMPostprocessing(ExecuteCommand):
     """ """
+
     command_name = "POST_RCCM"
 
     def create_result(self, keywords):
@@ -32,5 +33,6 @@ class RCCMPostprocessing(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Table()
+
 
 POST_RCCM = RCCMPostprocessing.run

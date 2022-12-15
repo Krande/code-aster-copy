@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,22 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu="U4.44.12-e",reentrant='n',
-                           fr=tr("Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes"),
-
-    regles = (UN_PARMI('FISSURE','MODELE_THER')),
-
-    reuse=SIMP(statut='c', typ=CO),
-    MODELE_IN       =SIMP(statut='o',typ=modele_sdaster,min=1,max=1,),
-    FISSURE         =SIMP(statut='f',typ=fiss_xfem,min=1,max=99,),
-    MODELE_THER     =SIMP(statut='f',typ=modele_sdaster,min=1,max=1,),
-    INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,)),
-    CONTACT
-     =SIMP(statut='f',typ='TXM',defaut='SANS',into=("SANS","STANDARD","MORTAR"),min=1,max=1,),
-    PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('AUTO','SANS','FORCE')),
-    DECOUPE_FACETTE =SIMP(statut='f',typ='TXM',defaut='DEFAUT',into=('DEFAUT','SOUS_ELEMENTS')),
-)  ;
+MODI_MODELE_XFEM = OPER(
+    nom="MODI_MODELE_XFEM",
+    op=113,
+    sd_prod=modele_sdaster,
+    docu="U4.44.12-e",
+    reentrant="n",
+    fr=tr("Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes"),
+    regles=(UN_PARMI("FISSURE", "MODELE_THER")),
+    reuse=SIMP(statut="c", typ=CO),
+    MODELE_IN=SIMP(statut="o", typ=modele_sdaster, min=1, max=1),
+    FISSURE=SIMP(statut="f", typ=fiss_xfem, min=1, max=99),
+    MODELE_THER=SIMP(statut="f", typ=modele_sdaster, min=1, max=1),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    CONTACT=SIMP(
+        statut="f", typ="TXM", defaut="SANS", into=("SANS", "STANDARD", "MORTAR"), min=1, max=1
+    ),
+    PRETRAITEMENTS=SIMP(statut="f", typ="TXM", defaut="AUTO", into=("AUTO", "SANS", "FORCE")),
+    DECOUPE_FACETTE=SIMP(statut="f", typ="TXM", defaut="DEFAUT", into=("DEFAUT", "SOUS_ELEMENTS")),
+)

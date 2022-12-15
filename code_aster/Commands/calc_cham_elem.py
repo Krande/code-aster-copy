@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class CalcChamElem(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.FieldOnCellsReal`.
-    """
+    """Command that defines :class:`~code_aster.Objects.FieldOnCellsReal`."""
+
     command_name = "CALC_CHAM_ELEM"
 
     def create_result(self, keywords):
@@ -44,5 +44,6 @@ class CalcChamElem(ExecuteCommand):
         """
         self._result.setDescription(keywords["MODELE"].getFiniteElementDescriptor())
         self._result.build()
+
 
 CALC_CHAM_ELEM = CalcChamElem.run

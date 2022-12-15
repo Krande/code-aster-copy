@@ -17,241 +17,161 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#FICHIER DE COMMANDE DU TP FORMATION ASTER AVANCE
-#TP MECANIQUE DE LA RUPTURE, EXERCICE 5 : ZONES COHESIVES
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+# FICHIER DE COMMANDE DU TP FORMATION ASTER AVANCE
+# TP MECANIQUE DE LA RUPTURE, EXERCICE 5 : ZONES COHESIVES
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # MODELIDATION A : ELEMENTS JOINTS
 
 
 tfin = 10
-nbarch = 10*tfin
+nbarch = 10 * tfin
 
 young = 100
-nu=0.
+nu = 0.0
 tenac = 0.9
-sigc  = 3
-pen=0.00001
+sigc = 3
+pen = 0.00001
 
-ri_gli=10
-pen_lag=100
+ri_gli = 10
+pen_lag = 100
 
-dc=2*tenac/sigc
+dc = 2 * tenac / sigc
 
 deply = 1.0
 deplx = 0.0
 deplz = 0.0
 
 # LECTURE DU MAILLAGE
-MA  =  LIRE_MAILLAGE(
-                    FORMAT='MED',
-                    )
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
 
+# ORIENTATION DES MAILLES SUR LESQUELLES ON AFFECTE LA CZM
+MA = MODI_MAILLAGE(reuse=MA, MAILLAGE=MA, ORIE_FISSURE=_F(GROUP_MA="DCB_J"), INFO=2)
 
-#ORIENTATION DES MAILLES SUR LESQUELLES ON AFFECTE LA CZM
-MA=MODI_MAILLAGE(reuse =MA,
-                   MAILLAGE=MA,
-                   ORIE_FISSURE=_F(GROUP_MA='DCB_J'),
-                   INFO=2
-                   )
-
-#AFFECTATION DU MODELE
-MO=AFFE_MODELE(
-
-                MAILLAGE=MA,
-                AFFE= (
-                _F(
-                        GROUP_MA = ('DCB_1','DCB_2'),
-                        PHENOMENE = 'MECANIQUE',
-                        MODELISATION = '3D'
-                     ),
-                _F(
-                        GROUP_MA = 'DCB_J',
-                        PHENOMENE = 'MECANIQUE',
-                        MODELISATION = '3D_JOINT'
-                       ),
-
-                 )
-              )
+# AFFECTATION DU MODELE
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA=("DCB_1", "DCB_2"), PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="DCB_J", PHENOMENE="MECANIQUE", MODELISATION="3D_JOINT"),
+    ),
+)
 
 ## AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
 ## POUR LES ELEMENTS D'INTERFACE UNIQUEMENT
 #
-#ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
+# ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
 #                     MASSIF=(
 #                             _F(GROUP_MA='DCB_J',ANGL_REP=(-90, 0 ,-90)),
 #                                 ))
 
-#DEFINITION ET AFFECTATION DU MATERIAU
-ACIER=DEFI_MATERIAU(
-
-     ELAS=_F(
-              E =  young,
-              NU = nu),
-     RUPT_FRAG = _F(
-                     GC = tenac,
-                     SIGM_C = sigc,
-                     PENA_ADHERENCE=pen,
-                     PENA_LAGR = pen_lag,
-                     RIGI_GLIS = ri_gli,
-                    )
-            )
+# DEFINITION ET AFFECTATION DU MATERIAU
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=young, NU=nu),
+    RUPT_FRAG=_F(GC=tenac, SIGM_C=sigc, PENA_ADHERENCE=pen, PENA_LAGR=pen_lag, RIGI_GLIS=ri_gli),
+)
 
 
-CM=AFFE_MATERIAU(
-
-               MAILLAGE=MA,
-               AFFE=_F(
-                       GROUP_MA = ('DCB_1','DCB_2','DCB_J'),
-                       MATER = ACIER),
-              )
+CM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA=("DCB_1", "DCB_2", "DCB_J"), MATER=ACIER))
 
 
-
-#CONDITIONS DE CHARGEMENT ET LIMITES
-SYMETRIE = AFFE_CHAR_MECA(
-  MODELE = MO,
-  DDL_IMPO = (
-               _F(GROUP_MA='JOINT_B',DY=0)
-             ))
+# CONDITIONS DE CHARGEMENT ET LIMITES
+SYMETRIE = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=(_F(GROUP_MA="JOINT_B", DY=0)))
 
 
 TRACTION = AFFE_CHAR_MECA(
- MODELE = MO,
+    MODELE=MO, FACE_IMPO=(_F(GROUP_MA="DCB_GB", DY=deply, DX=deplx, DZ=deplz),)
+)
 
-  FACE_IMPO= (
-      _F(GROUP_MA  = 'DCB_GB' , DY = deply ,
-                                DX = deplx ,
-                                DZ = deplz ),
-         ))
-
-#DEFINITION DES INSTANTS DE CALCUL
-DEF_LIST=DEFI_LIST_REEL(
-
-                     DEBUT   = 0,
-     INTERVALLE=(
-
-      _F( JUSQU_A = 10  ,   NOMBRE = 200 ),
-
-      )
-     )
-L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =DEF_LIST ,),
-                                ECHEC=_F(SUBD_METHODE='MANUEL',
-                                         SUBD_PAS=10,),)
+# DEFINITION DES INSTANTS DE CALCUL
+DEF_LIST = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=10, NOMBRE=200),))
+L_INST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=DEF_LIST), ECHEC=_F(SUBD_METHODE="MANUEL", SUBD_PAS=10)
+)
 
 
-INS_ARCH=DEFI_LIST_REEL(
+INS_ARCH = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=tfin, NOMBRE=nbarch),))
+FCT = DEFI_FONCTION(NOM_PARA="INST", VALE=(-1, 0, 0, 0.0001, tfin, tfin))
 
-                     DEBUT   = 0,
-     INTERVALLE=(
-
-      _F( JUSQU_A = tfin  ,   NOMBRE = nbarch),
-
-      )
-     )
-FCT = DEFI_FONCTION(
-  NOM_PARA = 'INST',
-  VALE     = (-1,0 ,  0,0.0001,tfin,tfin  ),
-                )
-
-#REALISATION DU CALCUL MECANIQUE
-U=STAT_NON_LINE(
-  MODELE     = MO,
-  CHAM_MATER = CM,
-  EXCIT      = (
-                 _F(CHARGE = SYMETRIE),
-                 _F(CHARGE = TRACTION ,
-                    FONC_MULT=FCT,
-                    ),
-               ),
-  COMPORTEMENT  = (
-                _F(RELATION = 'ELAS'      , GROUP_MA = ('DCB_1','DCB_2')),
-                _F(RELATION = 'CZM_EXP_REG',    GROUP_MA = 'DCB_J', ),
-#                _F(RELATION = 'CZM_LIN_REG',    GROUP_MA = 'DCB_J', ),
-                ),
-  INCREMENT  = _F(LIST_INST = L_INST,
-                  INST_FIN = tfin,
-                 ),
-  NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1 ,
-                   ),
-
-  CONVERGENCE = _F(
-                   RESI_GLOB_RELA = 5.E-5,
-                   ITER_GLOB_MAXI = 20,
-                  ),
-  SOLVEUR = _F(METHODE = 'MUMPS', #NPREC=-1
-   ),
-  ARCHIVAGE = _F(
-    LIST_INST     = INS_ARCH
-  ))
+# REALISATION DU CALCUL MECANIQUE
+U = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=SYMETRIE), _F(CHARGE=TRACTION, FONC_MULT=FCT)),
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", GROUP_MA=("DCB_1", "DCB_2")),
+        _F(RELATION="CZM_EXP_REG", GROUP_MA="DCB_J"),
+        #                _F(RELATION = 'CZM_LIN_REG',    GROUP_MA = 'DCB_J', ),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=tfin),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=5.0e-5, ITER_GLOB_MAXI=20),
+    SOLVEUR=_F(METHODE="MUMPS"),  # NPREC=-1
+    ARCHIVAGE=_F(LIST_INST=INS_ARCH),
+)
 
 
 ##########################################################################
 # POST-TRAITEMENT
 ##########################################################################
-#CALCUL DES FORCES NODALES
-U = CALC_CHAMP(reuse = U,
-
-
-  RESULTAT = U,
-  FORCE='FORC_NODA',
-  GROUP_MA='DCB_1'
-  )
+# CALCUL DES FORCES NODALES
+U = CALC_CHAMP(reuse=U, RESULTAT=U, FORCE="FORC_NODA", GROUP_MA="DCB_1")
 
 
 # RELEVE DU DEPLACEMENT IMPOSE
 DEP_IMP = POST_RELEVE_T(
- ACTION = _F(
-   INTITULE     = 'U_PILOTE',
-   OPERATION    = 'EXTRACTION',
-   GROUP_NO     = 'NO7',
-   NOM_CHAM     = 'DEPL',
-   NOM_CMP      = 'DY',
-   RESULTAT     =  U,
-   TOUT_ORDRE   = 'OUI',
-    ))
+    ACTION=_F(
+        INTITULE="U_PILOTE",
+        OPERATION="EXTRACTION",
+        GROUP_NO="NO7",
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        RESULTAT=U,
+        TOUT_ORDRE="OUI",
+    )
+)
 
 # RELEVE DE LA FORCE RESULTANTE DANS LA DIRECTION Y:
 FRES = POST_RELEVE_T(
- ACTION = _F(
-   INTITULE     = 'F_RESULTANTE',
-   OPERATION    = 'EXTRACTION',
-   GROUP_NO     = 'DCB_GB',
-   NOM_CHAM     = 'FORC_NODA',
-   RESULTANTE   = 'DY',
-   RESULTAT     =  U,
-   TOUT_ORDRE   = 'OUI',
-    ))
+    ACTION=_F(
+        INTITULE="F_RESULTANTE",
+        OPERATION="EXTRACTION",
+        GROUP_NO="DCB_GB",
+        NOM_CHAM="FORC_NODA",
+        RESULTANTE="DY",
+        RESULTAT=U,
+        TOUT_ORDRE="OUI",
+    )
+)
 
 # IMPRESSION DES RESULTATS POUR TRACE COURBES f/deP
-#--------------------------------------------------
-IMPR_TABLE(TABLE = DEP_IMP)
-IMPR_TABLE(TABLE = FRES)
+# --------------------------------------------------
+IMPR_TABLE(TABLE=DEP_IMP)
+IMPR_TABLE(TABLE=FRES)
 
 # impression du resultat (reduit sur la modelisation '3D') pour visualisation :
-#------------------------------------------------------------------------------
-MAred=CREA_MAILLAGE(MAILLAGE=MA,  RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)))
+# ------------------------------------------------------------------------------
+MAred = CREA_MAILLAGE(MAILLAGE=MA, RESTREINT=_F(GROUP_MA=("DCB_1", "DCB_2")))
 
-MOred=AFFE_MODELE(MAILLAGE=MAred,
-                 AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE',  MODELISATION='3D',))
+MOred = AFFE_MODELE(MAILLAGE=MAred, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-Ured=EXTR_RESU(RESULTAT=U, RESTREINT=_F(MODELE=MOred,  ))
-IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=Ured), UNITE=81 ,)
+Ured = EXTR_RESU(RESULTAT=U, RESTREINT=_F(MODELE=MOred))
+IMPR_RESU(FORMAT="MED", RESU=_F(RESULTAT=Ured), UNITE=81)
 
 ##########################################################################
 # TEST
 ##########################################################################
 #
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-2,
-           VALE_CALC=4.901842832,
-           VALE_REFE=4.8600000000000003,
-           NOM_PARA='DY',
-           TABLE=FRES,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.0,),
-           )
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-2,
+    VALE_CALC=4.901842832,
+    VALE_REFE=4.8600000000000003,
+    NOM_PARA="DY",
+    TABLE=FRES,
+    FILTRE=_F(NOM_PARA="INST", VALE=10.0),
+)
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ from ..Utilities import force_list, initial_context
 
 class FormulaDefinition(ExecuteCommand):
     """Execute legacy operator FORMULE."""
+
     command_name = "FORMULE"
     _ctxt = None
 
@@ -45,7 +46,7 @@ class FormulaDefinition(ExecuteCommand):
         # add in _ctxt all keywords but VALE, VALE_C, NOM_PARA.
         keys = list(keywords.keys())
         for key in keys:
-            if key not in ('VALE', 'VALE_C', 'NOM_PARA'):
+            if key not in ("VALE", "VALE_C", "NOM_PARA"):
                 self._ctxt[key] = keywords.pop(key)
 
     def create_result(self, keywords):
@@ -55,7 +56,7 @@ class FormulaDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Formula()
-        if keywords.get('VALE_C'):
+        if keywords.get("VALE_C"):
             self._result.setComplex()
 
     def exec_(self, keywords):
@@ -64,8 +65,8 @@ class FormulaDefinition(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.setVariables(force_list(keywords['NOM_PARA']))
-        expr = keywords.get('VALE') or keywords.get('VALE_C')
+        self._result.setVariables(force_list(keywords["NOM_PARA"]))
+        expr = keywords.get("VALE") or keywords.get("VALE_C")
         expr = expr.strip()
         self._result.setExpression("".join(expr.splitlines()))
         self._result.setContext(self._ctxt)

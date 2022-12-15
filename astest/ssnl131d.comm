@@ -23,123 +23,90 @@
 #               COMPORTEMENT EN ROTATION AVEC DEPENDANCE VIS-A-VIS
 #               DE LA TEMPERATURE ET DE L'IRRADIATION
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), DEBUG=_F(SDVERI="OUI"))
 
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",  )
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MA=DEFI_GROUP(
-   reuse =MA,
-   MAILLAGE=MA,
-   CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),
-              )
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=(_F(TOUT_GROUP_MA="OUI"),))
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-                 AFFE=(_F(GROUP_MA = ('LI1'),
-                          PHENOMENE = 'MECANIQUE',
-                          MODELISATION = 'DIS_TR'),
-                                ),
-                  INFO=2,)
+MO = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA=("LI1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),), INFO=2
+)
 
-CHTEMP_1=CREA_CHAMP(
-   TYPE_CHAM='NOEU_TEMP_R',
-   OPERATION='AFFE',
-   MAILLAGE=MA,
-   AFFE=(
-      _F(TOUT='OUI',
-         NOM_CMP='TEMP',
-         VALE=20.,),
-         ),)
+CHTEMP_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=(_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),),
+)
 
-CHTEMP_2=CREA_CHAMP(
-   TYPE_CHAM='NOEU_TEMP_R',
-   OPERATION='AFFE',
-   MAILLAGE=MA,
-   AFFE=(
-      _F(TOUT='OUI',
-         NOM_CMP='TEMP',
-         VALE=320.,),
-         ),)
+CHTEMP_2 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=(_F(TOUT="OUI", NOM_CMP="TEMP", VALE=320.0),),
+)
 
-CHTEMP=CREA_RESU(
-  TYPE_RESU='EVOL_THER',
-  NOM_CHAM='TEMP',
-  OPERATION='AFFE',
-  AFFE=( _F(CHAM_GD=CHTEMP_1,INST=0.,),
-         _F(CHAM_GD=CHTEMP_1,INST=0.2,),
-         _F(CHAM_GD=CHTEMP_2,INST=0.5,),
-         _F(CHAM_GD=CHTEMP_2,INST=1.,),
-         _F(CHAM_GD=CHTEMP_2,INST=2.,),
-         ),)
+CHTEMP = CREA_RESU(
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    OPERATION="AFFE",
+    AFFE=(
+        _F(CHAM_GD=CHTEMP_1, INST=0.0),
+        _F(CHAM_GD=CHTEMP_1, INST=0.2),
+        _F(CHAM_GD=CHTEMP_2, INST=0.5),
+        _F(CHAM_GD=CHTEMP_2, INST=1.0),
+        _F(CHAM_GD=CHTEMP_2, INST=2.0),
+    ),
+)
 
-CHIRRA_1=CREA_CHAMP(
-   TYPE_CHAM='NOEU_IRRA_R',
-   OPERATION='AFFE',
-   MAILLAGE=MA,
-   AFFE=(
-      _F(TOUT='OUI',
-         NOM_CMP='IRRA',
-         VALE=1.,),
-         ),)
+CHIRRA_1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=(_F(TOUT="OUI", NOM_CMP="IRRA", VALE=1.0),),
+)
 
-CHIRRA_2=CREA_CHAMP(
-   TYPE_CHAM='NOEU_IRRA_R',
-   OPERATION='AFFE',
-   MAILLAGE=MA,
-   AFFE=(
-      _F(TOUT='OUI',
-         NOM_CMP='IRRA',
-         VALE=10.,),
-         ),)
+CHIRRA_2 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_IRRA_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=(_F(TOUT="OUI", NOM_CMP="IRRA", VALE=10.0),),
+)
 
-CHIRRA=CREA_RESU(
-  TYPE_RESU='EVOL_VARC',
-  NOM_CHAM='IRRA',
-  OPERATION='AFFE',
-  AFFE=( _F(CHAM_GD=CHIRRA_1,INST=0.,),
-         _F(CHAM_GD=CHIRRA_1,INST=1.,),
-         _F(CHAM_GD=CHIRRA_2,INST=2.,),
-         ),)
+CHIRRA = CREA_RESU(
+    TYPE_RESU="EVOL_VARC",
+    NOM_CHAM="IRRA",
+    OPERATION="AFFE",
+    AFFE=(
+        _F(CHAM_GD=CHIRRA_1, INST=0.0),
+        _F(CHAM_GD=CHIRRA_1, INST=1.0),
+        _F(CHAM_GD=CHIRRA_2, INST=2.0),
+    ),
+)
 
 
-CHART=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(GROUP_NO='N2',DRX=1.,),),
-                       )
+CHART = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=(_F(GROUP_NO="N2", DRX=1.0),))
 
-BLOC=AFFE_CHAR_MECA( MODELE=MO,
-                     DDL_IMPO=(
-                          _F(GROUP_NO = ('N1','N3','N4','N5'),
-                             DX = 0., DY = 0., DZ = 0.,
-                             DRX = 0., DRY = 0., DRZ = 0.
-                             ),
-                          _F(GROUP_NO = ('N2',),
-                             DZ=0.,
-                             DRZ = 0.),
-                             ),
-                       )
+BLOC = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N1", "N3", "N4", "N5"), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO=("N2",), DZ=0.0, DRZ=0.0),
+    ),
+)
 
-FONCT=DEFI_FONCTION(   NOM_PARA='INST',
-                           VALE=( 0.,    0.,
-                                  1.,  0.01,
-                                  2.,  0.00001,
-                                  ) ,)
+FONCT = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 0.01, 2.0, 0.00001))
 
-LINST=DEFI_LIST_REEL( DEBUT=0.,
-                      INTERVALLE=(
-                         _F( JUSQU_A = 2., NOMBRE = 40),
-                       ),
-                       )
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=2.0, NOMBRE=40),))
 
-carel=[0.]*78
+carel = [0.0] * 78
 
-CAREG=AFFE_CARA_ELEM(MODELE=MO,
-                     DISCRET=_F(GROUP_MA=('LI1'),
-                                CARA = 'K_TR_L',
-                                VALE = carel,
-                                REPERE='LOCAL' , ),
-                                ORIENTATION=(_F(GROUP_MA=('LI1',),
-                                CARA='VECT_Y',
-                                VALE=(0.,0.,1.),),),
-                        )
+CAREG = AFFE_CARA_ELEM(
+    MODELE=MO,
+    DISCRET=_F(GROUP_MA=("LI1"), CARA="K_TR_L", VALE=carel, REPERE="LOCAL"),
+    ORIENTATION=(_F(GROUP_MA=("LI1",), CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),),
+)
 
 FIN()

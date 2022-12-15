@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,26 +23,18 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PERREUR  = OutputParameter(phys=PHY.ERRE_R, type='ELEM',
-comment="""  PERREUR : ESTIMATEUR D ERREUR  """)
+PERREUR = OutputParameter(
+    phys=PHY.ERRE_R, type="ELEM", comment="""  PERREUR : ESTIMATEUR D ERREUR  """
+)
 
 
 ERRE_TEMPS_THM = Option(
-    para_in=(
-        SP.PCONTGM,
-        SP.PCONTGP,
-        SP.PGEOMER,
-        SP.PGRDCA,
-        SP.PMATERC,
-        SP.PTEMPSR,
-    ),
-    para_out=(
-           PERREUR,
-    ),
+    para_in=(SP.PCONTGM, SP.PCONTGP, SP.PGEOMER, SP.PGRDCA, SP.PMATERC, SP.PTEMPSR),
+    para_out=(PERREUR,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.TYPMOD2, 'THM'),(AT.DIM_COOR_MODELI,'2'),(AT.BORD,'0'),)),
+        CondCalcul(
+            "+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "THM"), (AT.DIM_COOR_MODELI, "2"), (AT.BORD, "0"))
+        ),
     ),
     comment="""  ERRE_TEMPS_THM :
            ESTIMATEUR D ERREUR TEMPORELLE POUR LA THM SATURE

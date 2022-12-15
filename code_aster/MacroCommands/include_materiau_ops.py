@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,16 +60,21 @@ from ..Commands import DEFI_MATERIAU
 from ..Messages import UTMESS
 from ..Utilities import ExecutionParameter
 
-EXTR = 'extraction'
-FTEMP = 'temp_eval'
-FCOEF = 'coef_unit'
-DPROL = 'prol'
-DEFI_MOTSCLES = 'defi_motscles'
-MOTSCLES = 'motscles'
+EXTR = "extraction"
+FTEMP = "temp_eval"
+FCOEF = "coef_unit"
+DPROL = "prol"
+DEFI_MOTSCLES = "defi_motscles"
+MOTSCLES = "motscles"
 COMMANDES = [
-    'DEFI_LIST_REEL', 'DEFI_FONCTION', 'DEFI_CONSTANTE', 'DEFI_NAPPE',
-    'FORMULE', 'CALC_FONCTION', 'CALC_FONC_INTERP',
-    'DETRUIRE',
+    "DEFI_LIST_REEL",
+    "DEFI_FONCTION",
+    "DEFI_CONSTANTE",
+    "DEFI_NAPPE",
+    "FORMULE",
+    "CALC_FONCTION",
+    "CALC_FONC_INTERP",
+    "DETRUIRE",
 ]
 
 
@@ -79,9 +84,9 @@ def build_context(unite, temp, prol):
     unite = unite.lower()
     assert unite in ("m", "mm")
     if unite == "m":
-        coef_unit = lambda expo: 1.
+        coef_unit = lambda expo: 1.0
     else:
-        coef_unit = lambda expo: pow(10., expo)
+        coef_unit = lambda expo: pow(10.0, expo)
 
     # extraction à une température donnée
     if temp is not None:
@@ -93,66 +98,70 @@ def build_context(unite, temp, prol):
     def defi_motscles(**kwargs):
         return kwargs
 
-    context = {
-        FCOEF: coef_unit,
-        DPROL: prol,
-        FTEMP: func_temp,
-        DEFI_MOTSCLES: defi_motscles,
-    }
+    context = {FCOEF: coef_unit, DPROL: prol, FTEMP: func_temp, DEFI_MOTSCLES: defi_motscles}
     return context
 
 
-def include_materiau_ops(self,
-                         EXTRACTION=None, UNITE_LONGUEUR=None, INFO=None,
-                         PROL_GAUCHE=None, PROL_DROITE=None, **args):
+def include_materiau_ops(
+    self,
+    EXTRACTION=None,
+    UNITE_LONGUEUR=None,
+    INFO=None,
+    PROL_GAUCHE=None,
+    PROL_DROITE=None,
+    **args
+):
     """Macro INCLUDE_MATERIAU"""
-    fmat = args.get('FICHIER')
+    fmat = args.get("FICHIER")
     if not fmat:
-        bnmat = ''.join([args['NOM_AFNOR'], '_', args['TYPE_MODELE'],
-                         '_', args['VARIANTE'], '.', args['TYPE_VALE']])
+        bnmat = "".join(
+            [
+                args["NOM_AFNOR"],
+                "_",
+                args["TYPE_MODELE"],
+                "_",
+                args["VARIANTE"],
+                ".",
+                args["TYPE_VALE"],
+            ]
+        )
         rcdir = ExecutionParameter().get_option("rcdir")
         fmat = osp.join(rcdir, "materiau", bnmat)
 
     if not osp.exists(fmat):
-        UTMESS('F', 'FICHIER_1', valk=fmat)
+        UTMESS("F", "FICHIER_1", valk=fmat)
 
     # extraction à une température donnée
     extract = EXTRACTION is not None
     if extract:
-        TEMP_EVAL = EXTRACTION['TEMP_EVAL']
-        keep_compor = lambda compor: compor in EXTRACTION['COMPOR']
+        TEMP_EVAL = EXTRACTION["TEMP_EVAL"]
+        keep_compor = lambda compor: compor in EXTRACTION["COMPOR"]
     else:
         TEMP_EVAL = None
         keep_compor = lambda compor: True
 
     # définition du prolongement des fonctions
-    dict_prol = {
-        'droite': PROL_DROITE,
-        'gauche': PROL_GAUCHE,
-    }
+    dict_prol = {"droite": PROL_DROITE, "gauche": PROL_GAUCHE}
 
     context = build_context(UNITE_LONGUEUR, TEMP_EVAL, dict_prol)
     # ajout des commandes autorisées
     commandes = dict([(cmd, getattr(Commands, cmd)) for cmd in COMMANDES])
     context.update(commandes)
-    context['_F'] = _F
+    context["_F"] = _F
 
     # exécution du catalogue
     with open(fmat) as f:
-        exec(compile(f.read(), fmat, 'exec'), context)
+        exec(compile(f.read(), fmat, "exec"), context)
     kwcata = context.get(MOTSCLES)
     if kwcata is None:
-        UTMESS('F', 'SUPERVIS2_6', valk=bnmat)
+        UTMESS("F", "SUPERVIS2_6", valk=bnmat)
     # certains concepts cachés doivent être connus plus tard (au moins les
     # objets FORMULE)
-    to_add = dict([(v.getName(), v)
-                  for k, v in list(context.items()) if isinstance(v, formule)])
+    to_add = dict([(v.getName(), v) for k, v in list(context.items()) if isinstance(v, formule)])
     self.sdprods.extend(list(to_add.values()))
     if INFO == 2:
-        aster.affiche('MESSAGE', " Mots-clés issus du catalogue : \n%s"
-                      % pprint.pformat(kwcata))
-        aster.affiche(
-            'MESSAGE', 'Concepts transmis au contexte global :\n%s' % to_add)
+        aster.affiche("MESSAGE", " Mots-clés issus du catalogue : \n%s" % pprint.pformat(kwcata))
+        aster.affiche("MESSAGE", "Concepts transmis au contexte global :\n%s" % to_add)
 
     # filtre des mots-clés
     for mcf, value in list(kwcata.items()):
@@ -160,9 +169,9 @@ def include_materiau_ops(self,
             del kwcata[mcf]
             continue
         if type(value) not in (list, tuple):
-            value = [value, ]
+            value = [value]
         if type(value) in (list, tuple) and len(value) != 1:
-            UTMESS('F', 'SUPERVIS2_7', valk=(bnmat, mcf))
+            UTMESS("F", "SUPERVIS2_7", valk=(bnmat, mcf))
         for occ in value:
             if occ.get(EXTR) in (None, extract):
                 if occ.get(EXTR) is not None:

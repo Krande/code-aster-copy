@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,367 +22,311 @@
 #       MODELISATION D : ECROUISSAGE CINEMATIQUE NON LINEAIRE (CAS II)
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-TITRE='PHI2AS TEST1 CHABOCHE II (CHAB1)'
+TITRE = "PHI2AS TEST1 CHABOCHE II (CHAB1)"
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER", )
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-LINST=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
-                             _F( JUSQU_A = 0.95,   NOMBRE = 1,   ),
-                             _F( JUSQU_A = 1.00,   NOMBRE = 40,   ),
-                             _F( JUSQU_A = 1.26,    NOMBRE = 10,   ),
-                             _F( JUSQU_A = 1.98,    NOMBRE = 10,   ),
-                             _F( JUSQU_A = 2.00,   NOMBRE = 10,    ))
-                         )
+LINST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=0.95, NOMBRE=1),
+        _F(JUSQU_A=1.00, NOMBRE=40),
+        _F(JUSQU_A=1.26, NOMBRE=10),
+        _F(JUSQU_A=1.98, NOMBRE=10),
+        _F(JUSQU_A=2.00, NOMBRE=10),
+    ),
+)
 
-COEF=DEFI_FONCTION(      NOM_PARA='INST',
-                            PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                          VALE=( 0.0,     0.0,
-                                 1.0,     1.0,
-                                 2.0,     1.0,))
+COEF = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(0.0, 0.0, 1.0, 1.0, 2.0, 1.0),
+)
 
-UN=DEFI_CONSTANTE( VALE=1.0)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
-ZERO=DEFI_CONSTANTE( VALE=0.0)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-YOUNG=2.E5
+YOUNG = 2.0e5
 
-S_F = FORMULE(VALE='200.- 1.7*TEMP',
-              NOM_PARA='TEMP',)
+S_F = FORMULE(VALE="200.- 1.7*TEMP", NOM_PARA="TEMP")
 
-C_F = FORMULE(VALE='(100.+1.7*TEMP)*(50.+2.*TEMP)',
-              NOM_PARA='TEMP',)
+C_F = FORMULE(VALE="(100.+1.7*TEMP)*(50.+2.*TEMP)", NOM_PARA="TEMP")
 
-D_F = FORMULE(VALE='50.+2.*TEMP',
-              NOM_PARA='TEMP',)
+D_F = FORMULE(VALE="50.+2.*TEMP", NOM_PARA="TEMP")
 
-TEMPE1=DEFI_LIST_REEL(  DEBUT=-10.,
-              INTERVALLE=_F(  JUSQU_A = 120.,    NOMBRE = 130,  )
-                         )
+TEMPE1 = DEFI_LIST_REEL(DEBUT=-10.0, INTERVALLE=_F(JUSQU_A=120.0, NOMBRE=130))
 
-C_T=CALC_FONC_INTERP(    FONCTION=C_F,
-                             LIST_PARA=TEMPE1,
-                            NOM_PARA = 'TEMP', )
+C_T = CALC_FONC_INTERP(FONCTION=C_F, LIST_PARA=TEMPE1, NOM_PARA="TEMP")
 
-D_T=CALC_FONC_INTERP(    FONCTION=D_F,
-                             LIST_PARA=TEMPE1,
-                          NOM_PARA = 'TEMP', )
+D_T = CALC_FONC_INTERP(FONCTION=D_F, LIST_PARA=TEMPE1, NOM_PARA="TEMP")
 
-R0_T=CALC_FONC_INTERP(FONCTION=S_F,LIST_PARA=TEMPE1,NOM_PARA ='TEMP')
+R0_T = CALC_FONC_INTERP(FONCTION=S_F, LIST_PARA=TEMPE1, NOM_PARA="TEMP")
 
-ACIER=DEFI_MATERIAU(  THER=_F( LAMBDA = 1.,   ),
-                            ELAS=_F( E = YOUNG,  NU = .3,
-                                  ALPHA = 0.00001,   ),
-                CIN1_CHAB_FO=_F(
-                                 R_0 = R0_T,
-                                 R_I = R0_T,
-                                 B = ZERO,
-                                 C_I = C_T,
-                                 K = UN,
-                                 W = ZERO,
-                                 G_0 = D_T,
-                                 A_I = UN,
-                                    )
-                          )
+ACIER = DEFI_MATERIAU(
+    THER=_F(LAMBDA=1.0),
+    ELAS=_F(E=YOUNG, NU=0.3, ALPHA=0.00001),
+    CIN1_CHAB_FO=_F(R_0=R0_T, R_I=R0_T, B=ZERO, C_I=C_T, K=UN, W=ZERO, G_0=D_T, A_I=UN),
+)
 
-C2_F = FORMULE(VALE='C_F(TEMP)*0.5',
-               C_F=C_F,
-               NOM_PARA='TEMP',)
+C2_F = FORMULE(VALE="C_F(TEMP)*0.5", C_F=C_F, NOM_PARA="TEMP")
 
-C2_T=CALC_FONC_INTERP(    FONCTION=C2_F,
-                             LIST_PARA=TEMPE1,
-                          NOM_PARA = 'TEMP', )
+C2_T = CALC_FONC_INTERP(FONCTION=C2_F, LIST_PARA=TEMPE1, NOM_PARA="TEMP")
 
-ACIER2=DEFI_MATERIAU(  THER=_F( LAMBDA = 1.,   ),
-                            ELAS=_F( E = YOUNG,  NU = .3,
-                                  ALPHA = 0.00001,   ),
-                CIN2_CHAB_FO=_F(
-                                 R_0 = R0_T,
-                                 R_I = R0_T,
-                                 B = ZERO,
-                                 C1_I = C2_T,
-                                 C2_I = C2_T,
-                                 K = UN,
-                                 W = ZERO,
-                                 G1_0 = D_T,
-                                 G2_0 = D_T,
-                                 A_I = UN,
-                                    )
-                          )
+ACIER2 = DEFI_MATERIAU(
+    THER=_F(LAMBDA=1.0),
+    ELAS=_F(E=YOUNG, NU=0.3, ALPHA=0.00001),
+    CIN2_CHAB_FO=_F(
+        R_0=R0_T, R_I=R0_T, B=ZERO, C1_I=C2_T, C2_I=C2_T, K=UN, W=ZERO, G1_0=D_T, G2_0=D_T, A_I=UN
+    ),
+)
 
-MOMECA=AFFE_MODELE(
+MOMECA = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-               MAILLAGE=MA,
+PRESSION = AFFE_CHAR_MECA(MODELE=MOMECA, PRES_REP=_F(GROUP_MA="HAUT", PRES=-210.0))
 
-                AFFE=_F(
-                TOUT = 'OUI',
-                PHENOMENE = 'MECANIQUE',
-                MODELISATION = '3D',
-                )
-              )
+FTEMP = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    VALE=(0.0, 0.0, 1.0, 0.0, 2.0, 100.0),
+)
 
-PRESSION=AFFE_CHAR_MECA(        MODELE=MOMECA,
+CHP_TEMP = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_F",
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=FTEMP),
+)
 
-                                  PRES_REP=_F(  GROUP_MA = 'HAUT',     PRES = -210.,      )
-                           )
-
-FTEMP=DEFI_FONCTION(
-                            NOM_PARA='INST',
-                             PROL_DROITE='LINEAIRE',
-                            PROL_GAUCHE='LINEAIRE',
-                           VALE=( 0.,  0.,
-                                  1., 0.,
-                                  2., 100.,)
-                          )
-
-CHP_TEMP=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
-               MAILLAGE=MA,
-
-                   AFFE=_F(
-               TOUT = 'OUI',
-               NOM_CMP = 'TEMP',
-               VALE_F = FTEMP,
-               )
-             )
-
-RTEMP=CREA_RESU(
-               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                NOM_CHAM='TEMP',
-                 AFFE=_F(
-               LIST_INST = LINST,
-               CHAM_GD = CHP_TEMP,
-               )
-             )
+RTEMP = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=_F(LIST_INST=LINST, CHAM_GD=CHP_TEMP),
+)
 
 
-CHMATER=AFFE_MATERIAU(  MAILLAGE=MA,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = ACIER,  ),
-                            AFFE_VARC=_F( TOUT='OUI',
-                                  EVOL=RTEMP,VALE_REF=0.,
-                                  NOM_VARC='TEMP',
-                                  NOM_CHAM='TEMP',),)
+CHMATER = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=ACIER),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=RTEMP, VALE_REF=0.0, NOM_VARC="TEMP", NOM_CHAM="TEMP"),
+)
 
-CHMATER2=AFFE_MATERIAU(  MAILLAGE=MA,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = ACIER2,  ),
-                            AFFE_VARC=_F( TOUT='OUI',
-                                  EVOL=RTEMP,VALE_REF=0.,
-                                  NOM_VARC='TEMP',
-                                  NOM_CHAM='TEMP',),)
+CHMATER2 = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=ACIER2),
+    AFFE_VARC=_F(TOUT="OUI", EVOL=RTEMP, VALE_REF=0.0, NOM_VARC="TEMP", NOM_CHAM="TEMP"),
+)
 
 
-LIAISON=AFFE_CHAR_MECA(      MODELE=MOMECA,DDL_IMPO=(
+LIAISON = AFFE_CHAR_MECA(
+    MODELE=MOMECA,
+    DDL_IMPO=(
+        _F(GROUP_NO="NO3", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="NO4", DY=0.0, DZ=0.0),
+        _F(GROUP_NO="NO8", DY=0.0),
+        _F(GROUP_NO="NO7", DY=0.0),
+    ),
+)
 
-                               _F(  GROUP_NO = 'NO3',    DX = 0.,  DY = 0.,   DZ = 0., ),
-                               _F(  GROUP_NO = 'NO4',           DY = 0.,   DZ = 0., ),
-                               _F(  GROUP_NO = 'NO8',           DY = 0.,         ),
-                               _F(  GROUP_NO = 'NO7',           DY = 0.,         ))
-                           )
+U = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CHMATER,
+    COMPORTEMENT=_F(
+        RELATION="VMIS_CIN1_CHAB",
+        RESI_INTE_RELA=9.99999999999999955e-7,
+        ITER_INTE_MAXI=50,
+        ITER_INTE_PAS=0,
+    ),
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=PRESSION, FONC_MULT=COEF)),
+    INCREMENT=_F(LIST_INST=LINST),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, ARRET="OUI"),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
+)
 
-U=STAT_NON_LINE(
-                     MODELE=MOMECA,
-                     CHAM_MATER=CHMATER,
-                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN1_CHAB',
-                                    RESI_INTE_RELA = 9.99999999999999955E-7,
-                                    ITER_INTE_MAXI = 50,
-                                    ITER_INTE_PAS = 0,
-
-   ),EXCIT=(
-                     _F(
-                   CHARGE = LIAISON,
-                           ), _F(
-                   CHARGE = PRESSION,
-                   FONC_MULT = COEF,
-                           ), ),
-                     INCREMENT=_F(  LIST_INST = LINST,   ),
-
-                              CONVERGENCE=_F(
-                    ITER_GLOB_MAXI = 50,
-                    ARRET = 'OUI',
-                              ),
-
-                              NEWTON=_F(
-                      REAC_INCR = 1,
-                      MATRICE = 'TANGENTE',
-                      REAC_ITER = 1,
-                              )
-
-                   )
-
-U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSP_ELNO'))
+U = CALC_CHAMP(reuse=U, RESULTAT=U, DEFORMATION=("EPSP_ELNO"))
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=209.999999994,
-                   VALE_REFE=210.0,
-                   GROUP_MA='CUBE',),
-                _F(NUME_ORDRE=41,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 2.11012381E-03,
-                   VALE_REFE=2.1072E-3,
-                   PRECISION=2.E-3,
-                   GROUP_MA='CUBE',),
-                _F(INST=1.26,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 4.23081202E-03,
-                   VALE_REFE=4.1894699999999998E-3,
-                   PRECISION=1.E-2,
-                   GROUP_MA='CUBE',),
-                _F(NUME_ORDRE=61,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 4.23081202E-03,
-                   VALE_REFE=4.1894699999999998E-3,
-                   PRECISION=1.E-2,
-                   GROUP_MA='CUBE',),
-                _F(NUME_ORDRE=71,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 4.16262639E-03,
-                   VALE_REFE=4.1213100000000004E-3,
-                   PRECISION=0.010999999999999999,
-                   GROUP_MA='CUBE',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            VALE_CALC=209.999999994,
+            VALE_REFE=210.0,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            NUME_ORDRE=41,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=2.11012381e-03,
+            VALE_REFE=2.1072e-3,
+            PRECISION=2.0e-3,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            INST=1.26,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=4.23081202e-03,
+            VALE_REFE=4.1894699999999998e-3,
+            PRECISION=1.0e-2,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            NUME_ORDRE=61,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=4.23081202e-03,
+            VALE_REFE=4.1894699999999998e-3,
+            PRECISION=1.0e-2,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            NUME_ORDRE=71,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=4.16262639e-03,
+            VALE_REFE=4.1213100000000004e-3,
+            PRECISION=0.010999999999999999,
+            GROUP_MA="CUBE",
+        ),
+    )
+)
 
-TAB1=POST_RELEVE_T(     ACTION=_F(
-                          INTITULE = 'EPYY',
-                          RESULTAT = U,
-                          NOM_CHAM = 'EPSP_ELNO',
-                          NOM_CMP = 'EPYY',
-                          OPERATION = 'EXTRACTION',
-                          GROUP_NO = 'NO1',
-                          TOUT_ORDRE = 'OUI',
-                          )
-             )
+TAB1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="EPYY",
+        RESULTAT=U,
+        NOM_CHAM="EPSP_ELNO",
+        NOM_CMP="EPYY",
+        OPERATION="EXTRACTION",
+        GROUP_NO="NO1",
+        TOUT_ORDRE="OUI",
+    )
+)
 
-IMPR_TABLE( UNITE = 25, FORMAT='AGRAF',
-            TITRE = 'ESPP_YY VMIS_CIN1',
-            TABLE = TAB1,
-            NOM_PARA = ('INST','EPYY',  )
-            )
+IMPR_TABLE(
+    UNITE=25, FORMAT="AGRAF", TITRE="ESPP_YY VMIS_CIN1", TABLE=TAB1, NOM_PARA=("INST", "EPYY")
+)
 
-U2=STAT_NON_LINE(
-                     MODELE=MOMECA,
-                     CHAM_MATER=CHMATER2,
-                     COMPORTEMENT=_F(  RELATION = 'VMIS_CIN2_CHAB',
-                                    RESI_INTE_RELA = 9.99999999999999955E-7,
-                                    ITER_INTE_MAXI = 50,
-                                    ITER_INTE_PAS = 0,
+U2 = STAT_NON_LINE(
+    MODELE=MOMECA,
+    CHAM_MATER=CHMATER2,
+    COMPORTEMENT=_F(
+        RELATION="VMIS_CIN2_CHAB",
+        RESI_INTE_RELA=9.99999999999999955e-7,
+        ITER_INTE_MAXI=50,
+        ITER_INTE_PAS=0,
+    ),
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=PRESSION, FONC_MULT=COEF)),
+    INCREMENT=_F(LIST_INST=LINST),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, ARRET="OUI"),
+    NEWTON=_F(REAC_INCR=1, MATRICE="TANGENTE", REAC_ITER=1),
+)
 
-   ),EXCIT=(
-                     _F(
-                   CHARGE = LIAISON,
-                           ), _F(
-                   CHARGE = PRESSION,
-                   FONC_MULT = COEF,
-                           ), ),
-                     INCREMENT=_F(  LIST_INST = LINST,   ),
-
-                              CONVERGENCE=_F(
-                    ITER_GLOB_MAXI = 50,
-                    ARRET = 'OUI',
-                              ),
-
-                              NEWTON=_F(
-                      REAC_INCR = 1,
-                      MATRICE = 'TANGENTE',
-                      REAC_ITER = 1,
-                              )
-
-                   )
-
-U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,DEFORMATION=('EPSP_ELNO'))
+U2 = CALC_CHAMP(reuse=U2, RESULTAT=U2, DEFORMATION=("EPSP_ELNO"))
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   REFERENCE='ANALYTIQUE',
-                   POINT=1,
-                   RESULTAT=U2,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=209.999999994,
-                   VALE_REFE=210.0,
-                   GROUP_MA='CUBE',),
-                _F(NUME_ORDRE=41,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=U2,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 2.11012381E-03,
-                   VALE_REFE=2.1072E-3,
-                   PRECISION=2.E-3,
-                   GROUP_MA='CUBE',),
-                _F(INST=1.26,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U2,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 4.23081202E-03,
-                   VALE_REFE=4.1894699999999998E-3,
-                   PRECISION=1.E-2,
-                   GROUP_MA='CUBE',),
-                _F(NUME_ORDRE=61,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U2,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 4.23081202E-03,
-                   VALE_REFE=4.1894699999999998E-3,
-                   PRECISION=1.E-2,
-                   GROUP_MA='CUBE',),
-                _F(NUME_ORDRE=71,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=U2,
-                   NOM_CHAM='EPSP_ELNO',
-                   GROUP_NO='NO1',
-                   NOM_CMP='EPYY',
-                   VALE_CALC= 4.16262639E-03,
-                   VALE_REFE=4.1213100000000004E-3,
-                   PRECISION=0.010999999999999999,
-                   GROUP_MA='CUBE',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="ANALYTIQUE",
+            POINT=1,
+            RESULTAT=U2,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIYY",
+            VALE_CALC=209.999999994,
+            VALE_REFE=210.0,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            NUME_ORDRE=41,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=U2,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=2.11012381e-03,
+            VALE_REFE=2.1072e-3,
+            PRECISION=2.0e-3,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            INST=1.26,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U2,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=4.23081202e-03,
+            VALE_REFE=4.1894699999999998e-3,
+            PRECISION=1.0e-2,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            NUME_ORDRE=61,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U2,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=4.23081202e-03,
+            VALE_REFE=4.1894699999999998e-3,
+            PRECISION=1.0e-2,
+            GROUP_MA="CUBE",
+        ),
+        _F(
+            NUME_ORDRE=71,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=U2,
+            NOM_CHAM="EPSP_ELNO",
+            GROUP_NO="NO1",
+            NOM_CMP="EPYY",
+            VALE_CALC=4.16262639e-03,
+            VALE_REFE=4.1213100000000004e-3,
+            PRECISION=0.010999999999999999,
+            GROUP_MA="CUBE",
+        ),
+    )
+)
 
-TAB2=POST_RELEVE_T(     ACTION=_F(
-                          INTITULE = 'EPYY',
-                          RESULTAT = U2,
-                          NOM_CHAM = 'EPSP_ELNO',
-                          NOM_CMP = 'EPYY',
-                          OPERATION = 'EXTRACTION',
-                          GROUP_NO = 'NO1',
-                          TOUT_ORDRE = 'OUI',
-                          )
-             )
+TAB2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="EPYY",
+        RESULTAT=U2,
+        NOM_CHAM="EPSP_ELNO",
+        NOM_CMP="EPYY",
+        OPERATION="EXTRACTION",
+        GROUP_NO="NO1",
+        TOUT_ORDRE="OUI",
+    )
+)
 
-IMPR_TABLE( UNITE = 25, FORMAT='AGRAF',
-            TITRE = 'ESPP_YY VMIS_CIN2',
-            TABLE = TAB2,
-            NOM_PARA = ('INST','EPYY',),)
+IMPR_TABLE(
+    UNITE=25, FORMAT="AGRAF", TITRE="ESPP_YY VMIS_CIN2", TABLE=TAB2, NOM_PARA=("INST", "EPYY")
+)
 
 FIN()

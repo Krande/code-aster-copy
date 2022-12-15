@@ -29,160 +29,126 @@
 #              1.0 M
 #          !---------!
 # ======================================================================
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAILL = LIRE_MAILLAGE(FORMAT='ASTER',
-                      UNITE=20)
+MAILL = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
-MODTH = AFFE_MODELE(AFFE=_F(MODELISATION='PLAN',
-                            PHENOMENE='THERMIQUE',
-                            TOUT='OUI'),
-                    MAILLAGE=MAILL)
+MODTH = AFFE_MODELE(AFFE=_F(MODELISATION="PLAN", PHENOMENE="THERMIQUE", TOUT="OUI"), MAILLAGE=MAILL)
 
-MODME = AFFE_MODELE(AFFE=_F(MODELISATION='C_PLAN',
-                            PHENOMENE='MECANIQUE',
-                            TOUT='OUI'),
-                    MAILLAGE=MAILL)
+MODME = AFFE_MODELE(
+    AFFE=_F(MODELISATION="C_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI"), MAILLAGE=MAILL
+)
 
-MAT = DEFI_MATERIAU(ELAS=_F(ALPHA=0.0,
-                            E=1.0,
-                            NU=0.3),
-                    THER=_F(LAMBDA=1.0,
-                            RHO_CP=0.0))
+MAT = DEFI_MATERIAU(ELAS=_F(ALPHA=0.0, E=1.0, NU=0.3), THER=_F(LAMBDA=1.0, RHO_CP=0.0))
 
-CHMAT = AFFE_MATERIAU(AFFE=_F(MATER=MAT,
-                              TOUT='OUI'),
-                      MAILLAGE=MAILL)
+CHMAT = AFFE_MATERIAU(AFFE=_F(MATER=MAT, TOUT="OUI"), MAILLAGE=MAILL)
 
 # POUR TESTER AFFE_CHAR_THER_F/PRE_GRAD_TEMP :
 #   (FL1+FL2+FL3+FL4)(INST,Y)=0.0
-FL1 = DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(-1.0, -1.0, 1.0, 1.0))
+FL1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(-1.0, -1.0, 1.0, 1.0))
 
-FL2 = DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(-1.0, 2.0, 1.0, 0.0))
+FL2 = DEFI_FONCTION(NOM_PARA="INST", VALE=(-1.0, 2.0, 1.0, 0.0))
 
-FL3 = DEFI_FONCTION(NOM_PARA='Y',
-                    VALE=(-1000.0, 5.0, 1000.0, 0.0))
+FL3 = DEFI_FONCTION(NOM_PARA="Y", VALE=(-1000.0, 5.0, 1000.0, 0.0))
 
-FL4 = DEFI_FONCTION(NOM_PARA='Y',
-                    VALE=(-1000.0, -6.0, 1000.0, -1.0))
+FL4 = DEFI_FONCTION(NOM_PARA="Y", VALE=(-1000.0, -6.0, 1000.0, -1.0))
 
 # -----------------------------------------------------------------------
-CHARTH = AFFE_CHAR_THER(MODELE=MODTH,
-                        PRE_GRAD_TEMP=_F(FLUX_X=-1.0,
-                                         TOUT='OUI'),
-                        TEMP_IMPO=_F(GROUP_NO='GRNM14',
-                                     TEMP=0.0))
+CHARTH = AFFE_CHAR_THER(
+    MODELE=MODTH,
+    PRE_GRAD_TEMP=_F(FLUX_X=-1.0, TOUT="OUI"),
+    TEMP_IMPO=_F(GROUP_NO="GRNM14", TEMP=0.0),
+)
 
-CHART1 = AFFE_CHAR_THER_F(MODELE=MODTH,
-                          PRE_GRAD_TEMP=_F(FLUX_X=FL1,
-                                           TOUT='OUI'))
+CHART1 = AFFE_CHAR_THER_F(MODELE=MODTH, PRE_GRAD_TEMP=_F(FLUX_X=FL1, TOUT="OUI"))
 
-CHART2 = AFFE_CHAR_THER_F(MODELE=MODTH,
-                          PRE_GRAD_TEMP=_F(FLUX_X=FL2,
-                                           TOUT='OUI'))
+CHART2 = AFFE_CHAR_THER_F(MODELE=MODTH, PRE_GRAD_TEMP=_F(FLUX_X=FL2, TOUT="OUI"))
 
-CHART3 = AFFE_CHAR_THER_F(MODELE=MODTH,
-                          PRE_GRAD_TEMP=_F(FLUX_X=FL3,
-                                           TOUT='OUI'))
+CHART3 = AFFE_CHAR_THER_F(MODELE=MODTH, PRE_GRAD_TEMP=_F(FLUX_X=FL3, TOUT="OUI"))
 
-CHART4 = AFFE_CHAR_THER_F(MODELE=MODTH,
-                          PRE_GRAD_TEMP=_F(FLUX_X=FL4,
-                                           TOUT='OUI'))
+CHART4 = AFFE_CHAR_THER_F(MODELE=MODTH, PRE_GRAD_TEMP=_F(FLUX_X=FL4, TOUT="OUI"))
 
-CHARMM = AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
-                                     GROUP_NO='GRNM14'),
-                                  _F(DY=0.0,
-                                     GROUP_NO='O')),
-                        MODELE=MODME,
-                        PRE_EPSI=_F(EPXX=-1.0,
-                                    TOUT='OUI'))
+CHARMM = AFFE_CHAR_MECA(
+    DDL_IMPO=(_F(DX=0.0, GROUP_NO="GRNM14"), _F(DY=0.0, GROUP_NO="O")),
+    MODELE=MODME,
+    PRE_EPSI=_F(EPXX=-1.0, TOUT="OUI"),
+)
 
-TEMPGR = THER_LINEAIRE(CHAM_MATER=CHMAT,
-                       EXCIT=(_F(CHARGE=CHARTH),
-                              _F(CHARGE=CHART1),
-                              _F(CHARGE=CHART2),
-                              _F(CHARGE=CHART3),
-                              _F(CHARGE=CHART4)),
-                       MODELE=MODTH)
+TEMPGR = THER_LINEAIRE(
+    CHAM_MATER=CHMAT,
+    EXCIT=(
+        _F(CHARGE=CHARTH),
+        _F(CHARGE=CHART1),
+        _F(CHARGE=CHART2),
+        _F(CHARGE=CHART3),
+        _F(CHARGE=CHART4),
+    ),
+    MODELE=MODTH,
+)
 
-DEPLDM = MECA_STATIQUE(CHAM_MATER=CHMAT,
-                       EXCIT=_F(CHARGE=CHARMM),
-                       MODELE=MODME)
+DEPLDM = MECA_STATIQUE(CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARMM), MODELE=MODME)
 
-TEMPGR = CALC_CHAMP(reuse=TEMPGR,
-                    RESULTAT=TEMPGR,
-                    THERMIQUE='ETHE_ELEM')
+TEMPGR = CALC_CHAMP(reuse=TEMPGR, RESULTAT=TEMPGR, THERMIQUE="ETHE_ELEM")
 
-DEPLDM = CALC_CHAMP(reuse=DEPLDM,
-                    CONTRAINTE='SIGM_ELNO',
-                    RESULTAT=DEPLDM)
+DEPLDM = CALC_CHAMP(reuse=DEPLDM, CONTRAINTE="SIGM_ELNO", RESULTAT=DEPLDM)
 
 # ------------------------------------------------------------------
-T_DZETA = CREA_CHAMP(NOM_CHAM='TEMP',
-                     NUME_ORDRE = 1,
-                     OPERATION='EXTR',
-                     RESULTAT=TEMPGR,
-                     TYPE_CHAM='NOEU_TEMP_R')
+T_DZETA = CREA_CHAMP(
+    NOM_CHAM="TEMP", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=TEMPGR, TYPE_CHAM="NOEU_TEMP_R"
+)
 
-TT = POST_ELEM(CHAM_GD=T_DZETA,
-               CHAM_MATER=CHMAT,
-               ENER_POT=_F(TOUT='OUI'),
-               INST=0.0,
-               MODELE=MODTH)
+TT = POST_ELEM(CHAM_GD=T_DZETA, CHAM_MATER=CHMAT, ENER_POT=_F(TOUT="OUI"), INST=0.0, MODELE=MODTH)
 
-DEM_KI11 = CREA_CHAMP(NOM_CHAM='DEPL',
-                      NUME_ORDRE=1,
-                      OPERATION='EXTR',
-                      RESULTAT=DEPLDM,
-                      TYPE_CHAM='NOEU_DEPL_R')
+DEM_KI11 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=DEPLDM, TYPE_CHAM="NOEU_DEPL_R"
+)
 
-PM = POST_ELEM(CHAM_GD=DEM_KI11,
-               CHAM_MATER=CHMAT,
-               ENER_POT=_F(TOUT='OUI'),
-               MODELE=MODME,
-               TITRE=('TEST POST_ELEM', ))
+PM = POST_ELEM(
+    CHAM_GD=DEM_KI11,
+    CHAM_MATER=CHMAT,
+    ENER_POT=_F(TOUT="OUI"),
+    MODELE=MODME,
+    TITRE=("TEST POST_ELEM",),
+)
 
-TEST_RESU(RESU=_F(GROUP_MA='M1',
-                  NOM_CHAM='ETHE_ELEM',
-                  NOM_CMP='TOTALE',
-                  NUME_ORDRE = 1,
-                  POINT=1,
-                  RESULTAT=TEMPGR,
-                  VALE_CALC=-0.5))
+TEST_RESU(
+    RESU=_F(
+        GROUP_MA="M1",
+        NOM_CHAM="ETHE_ELEM",
+        NOM_CMP="TOTALE",
+        NUME_ORDRE=1,
+        POINT=1,
+        RESULTAT=TEMPGR,
+        VALE_CALC=-0.5,
+    )
+)
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD=T_DZETA,
-                      CRITERE='RELATIF',
-                      GROUP_NO='A',
-                      NOM_CMP='TEMP',
-                      VALE_CALC=-1.0),
-                   _F(CHAM_GD=DEM_KI11,
-                      CRITERE='RELATIF',
-                      GROUP_NO='A',
-                      NOM_CMP='DX',
-                      VALE_CALC=-1.0),
-                   _F(CHAM_GD=DEM_KI11,
-                      CRITERE='RELATIF',
-                      GROUP_NO='N6',
-                      NOM_CMP='DX',
-                      VALE_CALC=-0.5)))
+TEST_RESU(
+    CHAM_NO=(
+        _F(CHAM_GD=T_DZETA, CRITERE="RELATIF", GROUP_NO="A", NOM_CMP="TEMP", VALE_CALC=-1.0),
+        _F(CHAM_GD=DEM_KI11, CRITERE="RELATIF", GROUP_NO="A", NOM_CMP="DX", VALE_CALC=-1.0),
+        _F(CHAM_GD=DEM_KI11, CRITERE="RELATIF", GROUP_NO="N6", NOM_CMP="DX", VALE_CALC=-0.5),
+    )
+)
 
-TEST_TABLE(NOM_PARA='TOTALE',
-           PRECISION=1e-06,
-           REFERENCE='ANALYTIQUE',
-           TABLE=TT,
-           TYPE_TEST='SOMM_ABS',
-           VALE_CALC=0.5,
-           VALE_REFE=0.5)
+TEST_TABLE(
+    NOM_PARA="TOTALE",
+    PRECISION=1e-06,
+    REFERENCE="ANALYTIQUE",
+    TABLE=TT,
+    TYPE_TEST="SOMM_ABS",
+    VALE_CALC=0.5,
+    VALE_REFE=0.5,
+)
 
-TEST_TABLE(NOM_PARA='TOTALE',
-           PRECISION=1e-06,
-           REFERENCE='ANALYTIQUE',
-           TABLE=PM,
-           TYPE_TEST='SOMM_ABS',
-           VALE_CALC=0.549450549,
-           VALE_REFE=0.5494505)
+TEST_TABLE(
+    NOM_PARA="TOTALE",
+    PRECISION=1e-06,
+    REFERENCE="ANALYTIQUE",
+    TABLE=PM,
+    TYPE_TEST="SOMM_ABS",
+    VALE_CALC=0.549450549,
+    VALE_REFE=0.5494505,
+)
 
 FIN()

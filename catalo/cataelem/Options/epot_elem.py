@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,33 +20,38 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS """
+)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS """)
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR: TEMPERATURES INSTANT ACTUEL """,
+)
 
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR: TEMPERATURES INSTANT ACTUEL """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU,
+           ISSUE DE AFFE_CARA_ELEM MOT CLE ORIENTATION """,
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU,
-           ISSUE DE AFFE_CARA_ELEM MOT CLE ORIENTATION """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR, container="CHMA!.COMPOR")
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR, container='CHMA!.COMPOR')
-
-
-PENERDR  = OutputParameter(phys=PHY.ENER_R, type='ELEM',
-comment="""  PENERDR : ENERGIE DE DEFORMATION PAR ELEMENT """)
+PENERDR = OutputParameter(
+    phys=PHY.ENER_R, type="ELEM", comment="""  PENERDR : ENERGIE DE DEFORMATION PAR ELEMENT """
+)
 
 
 EPOT_ELEM = Option(
@@ -57,23 +62,19 @@ EPOT_ELEM = Option(
         SP.PCAGNPO,
         SP.PCAARPO,
         SP.PCAMASS,
-           PCAORIE,
+        PCAORIE,
         SP.PCINFDI,
-           PCOMPOR,
+        PCOMPOR,
         SP.PDEPLAR,
         SP.PFIBRES,
         SP.PGEOMER,
         SP.PHARMON,
         SP.PMATERC,
-           PNBSP_I,
-           PVARCPR,
+        PNBSP_I,
+        PVARCPR,
         SP.PVARCRR,
     ),
-    para_out=(
-           PENERDR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(PENERDR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  EPOT_ELEM : ENERGIE DE DEFORMATION PAR ELEMENT """,
 )

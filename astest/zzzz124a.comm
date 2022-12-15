@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,118 +17,169 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-    AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E') )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"))
 
-MATR=DEFI_MATERIAU(ELAS=_F( E = 2.E11,  NU = 0.3) )
+MATR = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT = 'OUI', MATER = MATR))
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATR))
 
-CAREL=AFFE_CARA_ELEM(MODELE=MO, INFO=2,
-    POUTRE=(
-        _F(GROUP_MA = 'G123',   SECTION = 'RECTANGLE',
-           CARA = (   'HY',            'HZ',  ),
-           VALE = (    0.2,             0.1, )),
-    ),
+CAREL = AFFE_CARA_ELEM(
+    MODELE=MO,
+    INFO=2,
+    POUTRE=(_F(GROUP_MA="G123", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(0.2, 0.1)),),
 )
 #
-CHARG1=AFFE_CHAR_MECA(
+CHARG1 = AFFE_CHAR_MECA(
     MODELE=MO,
-    DDL_IMPO     =_F(GROUP_NO = 'A',
-                     DX  = 0.0, DY  = 0.0, DZ  = 0.0,
-                     DRX = 0.0, DRY = 0.0, DRZ = 0.0,),
-    FORCE_NODALE =_F(GROUP_NO = 'B',
-                     FX =  5.0E+08, FY = 10.0E+08, FZ = 15.0E+08,
-                     MX = 20.0E+08, MY = 25.0E+08, MZ = 30.0E+08,),
+    DDL_IMPO=_F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    FORCE_NODALE=_F(
+        GROUP_NO="B", FX=5.0e08, FY=10.0e08, FZ=15.0e08, MX=20.0e08, MY=25.0e08, MZ=30.0e08
+    ),
 )
 
-MEST1=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT,
-    CARA_ELEM=CAREL,
-    EXCIT=_F(CHARGE = CHARG1),
-)
+MEST1 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, CARA_ELEM=CAREL, EXCIT=_F(CHARGE=CHARG1))
 
-MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO',), FORCE=('REAC_NODA',),)
-#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MEST1,NOM_CHAM=('EFGE_ELNO','REAC_NODA',),),)
+MEST1 = CALC_CHAMP(reuse=MEST1, RESULTAT=MEST1, CONTRAINTE=("EFGE_ELNO",), FORCE=("REAC_NODA",))
+# IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=MEST1,NOM_CHAM=('EFGE_ELNO','REAC_NODA',),),)
 
 
 # ==================================================================================================
 # Le repère utilisateur est le repère local : EFGE_ELNO inchangé
-RESU01=MODI_REPERE(
-    RESULTAT    = MEST1, TOUT_ORDRE = 'OUI',
-    MODI_CHAM  = (
-        _F(NOM_CHAM   = 'EFGE_ELNO',
-           NOM_CMP    = ('N','VY','VZ','MT','MFY','MFZ'),
-           TYPE_CHAM  = 'VECT_3D',),
+RESU01 = MODI_REPERE(
+    RESULTAT=MEST1,
+    TOUT_ORDRE="OUI",
+    MODI_CHAM=(
+        _F(
+            NOM_CHAM="EFGE_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
+        ),
     ),
-    REPERE = 'UTILISATEUR',
-    AFFE = _F(VECT_X= (1.,1.,1.,), VECT_Y=(-1.0,1.0,0.0),TOUT='OUI', ),
+    REPERE="UTILISATEUR",
+    AFFE=_F(VECT_X=(1.0, 1.0, 1.0), VECT_Y=(-1.0, 1.0, 0.0), TOUT="OUI"),
     INFO=1,
 )
 
 #
-EFGE_ELNO={}; REAC_NODA={}
-EFGE_ELNO['R1_local']  ={'N' : 1.73205080756894E+09, 'VY' :  3.53553390593309E+08, 'VZ' : 6.12372435695867E+08,
-                         'MT': 4.33012701892219E+09, 'MFY': -8.71191480820460E+08, 'MFZ': 1.31947921689513E+09}
-EFGE_ELNO['R3_local']  ={'N' : 1.73205080756891E+09, 'VY' :  3.53553390593325E+08, 'VZ' : 6.12372435695857E+08,
-                         'MT': 4.33012701892219E+09, 'MFY':  3.53553390593271E+08, 'MFZ': 6.12372435695789E+08}
-REAC_NODA['R1_global'] ={'N' : -4.99999999999981E+08, 'VY' : -1.00000000000003E+09, 'VZ' : -1.50000000000009E+09,
-                         'MT': -2.57735026920006E+09, 'MFY': -1.34529946159987E+09, 'MFZ': -3.57735026920007E+09}
-EFGE_ELNO['R3_global'] ={'N' :  5.0E+08, 'VY' : 10.0E+08, 'VZ' : 15.0E+08,
-                         'MT': 20.0E+08, 'MFY': 25.0E+08, 'MFZ': 30.0E+08}
+EFGE_ELNO = {}
+REAC_NODA = {}
+EFGE_ELNO["R1_local"] = {
+    "N": 1.73205080756894e09,
+    "VY": 3.53553390593309e08,
+    "VZ": 6.12372435695867e08,
+    "MT": 4.33012701892219e09,
+    "MFY": -8.71191480820460e08,
+    "MFZ": 1.31947921689513e09,
+}
+EFGE_ELNO["R3_local"] = {
+    "N": 1.73205080756891e09,
+    "VY": 3.53553390593325e08,
+    "VZ": 6.12372435695857e08,
+    "MT": 4.33012701892219e09,
+    "MFY": 3.53553390593271e08,
+    "MFZ": 6.12372435695789e08,
+}
+REAC_NODA["R1_global"] = {
+    "N": -4.99999999999981e08,
+    "VY": -1.00000000000003e09,
+    "VZ": -1.50000000000009e09,
+    "MT": -2.57735026920006e09,
+    "MFY": -1.34529946159987e09,
+    "MFZ": -3.57735026920007e09,
+}
+EFGE_ELNO["R3_global"] = {
+    "N": 5.0e08,
+    "VY": 10.0e08,
+    "VZ": 15.0e08,
+    "MT": 20.0e08,
+    "MFY": 25.0e08,
+    "MFZ": 30.0e08,
+}
 
-for nom_cmp,valer in EFGE_ELNO['R1_local'].items():
+for nom_cmp, valer in EFGE_ELNO["R1_local"].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU01, GROUP_MA='S12',
-                NOM_CHAM='EFGE_ELNO', GROUP_NO='R1', NOM_CMP=nom_cmp,
-                VALE_CALC= valer, VALE_REFE=valer, ),
-        ),
+            _F(
+                NUME_ORDRE=1,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RESU01,
+                GROUP_MA="S12",
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="R1",
+                NOM_CMP=nom_cmp,
+                VALE_CALC=valer,
+                VALE_REFE=valer,
+            ),
+        )
     )
-for nom_cmp,valer in EFGE_ELNO['R3_local'].items():
+for nom_cmp, valer in EFGE_ELNO["R3_local"].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU01, GROUP_MA='S23',
-                NOM_CHAM='EFGE_ELNO', GROUP_NO='R3', NOM_CMP=nom_cmp,
-                VALE_CALC= valer, VALE_REFE=valer, ),
-        ),
+            _F(
+                NUME_ORDRE=1,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RESU01,
+                GROUP_MA="S23",
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="R3",
+                NOM_CMP=nom_cmp,
+                VALE_CALC=valer,
+                VALE_REFE=valer,
+            ),
+        )
     )
 
 # ==================================================================================================
 # Le repère utilisateur est le repère global :
 # EFGE_ELNO = -REAC_NODA    au noeud R1
 # EFGE_ELNO =  FORCE_NODALE au noeud R3
-RESU02=MODI_REPERE(
-    RESULTAT    = MEST1, TOUT_ORDRE = 'OUI',
-    MODI_CHAM  = (
-        _F(NOM_CHAM   = 'EFGE_ELNO',
-           NOM_CMP    = ('N','VY','VZ','MT','MFY','MFZ'),
-           TYPE_CHAM  = 'VECT_3D',),
+RESU02 = MODI_REPERE(
+    RESULTAT=MEST1,
+    TOUT_ORDRE="OUI",
+    MODI_CHAM=(
+        _F(
+            NOM_CHAM="EFGE_ELNO", NOM_CMP=("N", "VY", "VZ", "MT", "MFY", "MFZ"), TYPE_CHAM="VECT_3D"
+        ),
     ),
-    REPERE = 'UTILISATEUR',
-    AFFE = _F(ANGL_NAUT= (0.,0.,0.,), TOUT='OUI', ),
+    REPERE="UTILISATEUR",
+    AFFE=_F(ANGL_NAUT=(0.0, 0.0, 0.0), TOUT="OUI"),
     INFO=1,
 )
 
-for nom_cmp,valer in REAC_NODA['R1_global'].items():
+for nom_cmp, valer in REAC_NODA["R1_global"].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU02, GROUP_MA='S12',
-                NOM_CHAM='EFGE_ELNO', GROUP_NO='R1', NOM_CMP=nom_cmp,
-                VALE_CALC=-valer, VALE_REFE=-valer, ),
-        ),
+            _F(
+                NUME_ORDRE=1,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RESU02,
+                GROUP_MA="S12",
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="R1",
+                NOM_CMP=nom_cmp,
+                VALE_CALC=-valer,
+                VALE_REFE=-valer,
+            ),
+        )
     )
 
-for nom_cmp,valer in EFGE_ELNO['R3_global'].items():
+for nom_cmp, valer in EFGE_ELNO["R3_global"].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU02, GROUP_MA='S23',
-                NOM_CHAM='EFGE_ELNO', GROUP_NO='R3', NOM_CMP=nom_cmp,
-                VALE_CALC= valer, VALE_REFE=valer, ),
-        ),
+            _F(
+                NUME_ORDRE=1,
+                REFERENCE="AUTRE_ASTER",
+                RESULTAT=RESU02,
+                GROUP_MA="S23",
+                NOM_CHAM="EFGE_ELNO",
+                GROUP_NO="R3",
+                NOM_CMP=nom_cmp,
+                VALE_CALC=valer,
+                VALE_REFE=valer,
+            ),
+        )
     )
 
 FIN()

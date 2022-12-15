@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,14 @@ class SDNom(Type):
 
     """Objet représentant une sous-partie de nom
     d'objet jeveux"""
+
     nomj = None
     debut = None
     fin = None
     just = None
     justtype = None
 
-    def __init__(self, nomj=None, debut=None, fin=None, just='l', **kwargs):
+    def __init__(self, nomj=None, debut=None, fin=None, just="l", **kwargs):
         """
         Configure un objet nom
         nomj : la partie du nom fixée (par ex .TITR) ou '' si non précisée
@@ -63,14 +64,13 @@ class SDNom(Type):
         nom est alors la valeur du suffixe pour une sous-structure ou None pour
         une structure principale.
         """
-        super(SDNom, self).__init__(
-            nomj=nomj, debut=debut, fin=fin, just=just, **kwargs)
+        super(SDNom, self).__init__(nomj=nomj, debut=debut, fin=fin, just=just, **kwargs)
         self.update((nomj, debut, fin, just))
 
     def __call__(self):
         if self._parent is None or self._parent._parent is None:
             debut = self.debut or 0
-            prefix = ' ' * debut
+            prefix = " " * debut
         else:
             # normalement
             # assert self._parent.nomj is self
@@ -78,14 +78,14 @@ class SDNom(Type):
             prefix = nomparent()
             debut = self.debut or nomparent.fin or len(prefix)
         fin = self.fin or 24
-        nomj = self.nomj or ''
+        nomj = self.nomj or ""
         nomj = self.just(nomj, fin - debut)
         prefix = prefix.ljust(24)
         res = prefix[:debut] + nomj + prefix[fin:]
         return res[:24]
 
     def fcata(self):
-        return self.just(self.nomj, self.fin - self.debut).replace(' ', '?')
+        return self.just(self.nomj, self.fin - self.debut).replace(" ", "?")
 
     def __repr__(self):
         return "<SDNom(%r,%s,%s)>" % (self.nomj, self.debut, self.fin)
@@ -101,9 +101,9 @@ class SDNom(Type):
         self.nomj = nomj
         self.debut = debut
         self.fin = fin
-        if just == 'l' or just is None:
+        if just == "l" or just is None:
             self.just = str.ljust
-        elif just == 'r':
+        elif just == "r":
             self.just = str.rjust
         else:
             raise ValueError("Justification '%s' invalide" % just)
@@ -118,9 +118,9 @@ class SDNom(Type):
         if self.fin is None:
             self.fin = fin
         if self.justtype is None and just is not None:
-            if just == 'l':
+            if just == "l":
                 self.just = str.ljust
-            elif just == 'r':
+            elif just == "r":
                 self.just = str.rjust
             else:
                 raise ValueError("Justification '%s' invalide" % just)

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -87,9 +87,9 @@ extern void DEFSP( JENONU, jenonu, const char *, STRING_SIZE, ASTERINTEGER * );
 #define CALLO_JENUNO( a, b ) CALLOO( JENUNO, jenuno, a, b )
 extern void DEFSS( JENUNO, jenuno, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_JEDUPO( a, b, c, d) CALLOOOP( JEDUPO, jedupo, a, b, c, d )
-void DEFSSSP( JEDUPO, jedupo, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                 const char *, STRING_SIZE,  ASTERLOGICAL * );
+#define CALLO_JEDUPO( a, b, c, d ) CALLOOOP( JEDUPO, jedupo, a, b, c, d )
+void DEFSSSP( JEDUPO, jedupo, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
+              STRING_SIZE, ASTERLOGICAL * );
 
 /* char functions: the first two arguments is the result */
 #define CALLO_JEXNUM( a, b, c ) CALLVOP( JEXNUM, jexnum, a, b, c )
@@ -100,7 +100,7 @@ extern void DEFVSP( JEXNUM, jexnum, const char *, STRING_SIZE, const char *, STR
 extern void DEFVSS( JEXNOM, jexnom, const char *, STRING_SIZE, const char *, STRING_SIZE,
                     const char *, STRING_SIZE );
 
-#define CALLO_JUVECA( a, b) CALLOP( JUVECA, juveca, a, b )
+#define CALLO_JUVECA( a, b ) CALLOP( JUVECA, juveca, a, b )
 void DEFSP( JUVECA, juveca, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALLO_JEVEUOC( a, b, c ) CALLOOP( JEVEUOC, jeveuoc, a, b, c )

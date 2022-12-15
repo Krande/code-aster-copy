@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,16 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1  : _("""Le comportement ne peut être qu'élastique sur une modélisation de type 3D_FLUIDE, AXIS_FLUIDE ou 2D_FLUIDE."""),
-
-    2  : _("""Le calcul de l'option n'est pas possible avec la formulation %(k1)s. Il faut demander une évolution."""),
-
-    3  : _("""On n'a pas trouvé d'élément fluide en regard de l'élément d'interaction fluide-structure. On ne peut donc pas vérifier les normales."""),
-
-    4  : _("""Certaines normales entre fluide et structure ne sont pas orientées dans le bon sens."""),
+    1: _(
+        """Le comportement ne peut être qu'élastique sur une modélisation de type 3D_FLUIDE, AXIS_FLUIDE ou 2D_FLUIDE."""
+    ),
+    2: _(
+        """Le calcul de l'option n'est pas possible avec la formulation %(k1)s. Il faut demander une évolution."""
+    ),
+    3: _(
+        """On n'a pas trouvé d'élément fluide en regard de l'élément d'interaction fluide-structure. On ne peut donc pas vérifier les normales."""
+    ),
+    4: _(
+        """Certaines normales entre fluide et structure ne sont pas orientées dans le bon sens."""
+    ),
 }

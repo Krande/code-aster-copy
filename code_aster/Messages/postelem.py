@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,41 +21,45 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
  Un instant demandé dans POST_ELEM, option CHAR_LIMITE n'est pas présent dans le résultat <%(k1)s>.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
  L'utilisation d'une liste de coefficients COEF_MULT dans POST_ELEM option NORME n'est valable que pour un
  champ de type NEUT_R.
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
  Le résultat <%(k1)s> utilisé dans POST_ELEM, option CHAR_LIMITE n'a pas été produit par un STAT_NON_LINE avec pilotage.
  Vérifiez que vous utilisez le bon résultat.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 Erreur utilisateur :
    Le calcul de POST_ELEM / INTEGRALE pour les champs FORC_NODA et REAC_NODA n'a pas de sens
    car ces quantités ne sont pas "continues".
-"""),
-
-    6: _("""La sélection des composantes par NOM_VARI n'est possible que sur une structure de données de type résultat et non sur un champ isolé."""),
-
-    10: _("""Pour le calcul de l'option MASS_INER sur la géométrie déformée, il faut que le résultat contienne plus d'un numéro d'ordre"""),
-
-    11: _("""
+"""
+    ),
+    6: _(
+        """La sélection des composantes par NOM_VARI n'est possible que sur une structure de données de type résultat et non sur un champ isolé."""
+    ),
+    10: _(
+        """Pour le calcul de l'option MASS_INER sur la géométrie déformée, il faut que le résultat contienne plus d'un numéro d'ordre"""
+    ),
+    11: _(
+        """
  Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
-"""),
-
+"""
+    ),
     20: _("""Il faut renseigner le MODELE"""),
-
-
-
 }

@@ -28,61 +28,58 @@ code_aster.init("--test")
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("zzzz504b/%d.med"%rank, True)
+pMesh2.readMedFile("zzzz504b/%d.med" % rank, True)
 
-model = AFFE_MODELE(MAILLAGE = pMesh2,
-                    AFFE = _F(MODELISATION = "D_PLAN_INCO_UPG",
-                              PHENOMENE = "MECANIQUE",
-                              TOUT = "OUI",),)
+model = AFFE_MODELE(
+    MAILLAGE=pMesh2, AFFE=_F(MODELISATION="D_PLAN_INCO_UPG", PHENOMENE="MECANIQUE", TOUT="OUI")
+)
 
-char_cin = AFFE_CHAR_CINE(MODELE=model,
-                          MECA_IMPO=(_F(GROUP_NO="N2",
-                                        DX=0.,DY=0.,DZ=0.,),
-                                     _F(GROUP_NO="N4",
-                                        DX=0.,DY=0.,DZ=0.,),),)
+char_cin = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(
+        _F(GROUP_NO="N2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N4", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
 
-char_meca = AFFE_CHAR_MECA(MODELE=model,
-                           LIAISON_DDL=_F(GROUP_NO=("N1", "N3"),
-                                          DDL=('PRES','PRES'),
-                                          COEF_MULT=(1.0,1.0),
-                                          COEF_IMPO=0,),
-                           DDL_IMPO=(_F(GROUP_NO="N1",PRES=200000.0),
-                                          ))
-char_meca.debugPrint(10+rank)
+char_meca = AFFE_CHAR_MECA(
+    MODELE=model,
+    LIAISON_DDL=_F(GROUP_NO=("N1", "N3"), DDL=("PRES", "PRES"), COEF_MULT=(1.0, 1.0), COEF_IMPO=0),
+    DDL_IMPO=(_F(GROUP_NO="N1", PRES=200000.0),),
+)
+char_meca.debugPrint(10 + rank)
 
-MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                               NU=0.499999,),)
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.499999))
 
-AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=MATER1,),)
+AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=MATER1))
 
-LINSTC=DEFI_LIST_REEL(VALE=( 1.0, 2.0),)
+LINSTC = DEFI_LIST_REEL(VALE=(1.0, 2.0))
 
 
-resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
-                     MODELE=model,
-                     LIST_INST = LINSTC, INST_FIN=1.0,
-                     EXCIT=(_F(CHARGE=char_cin,),
-                            _F(CHARGE=char_meca,),),
-                     )
+resu = MECA_STATIQUE(
+    CHAM_MATER=AFFMAT,
+    MODELE=model,
+    LIST_INST=LINSTC,
+    INST_FIN=1.0,
+    EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=char_meca)),
+)
 
 ranks = resu.getIndexes()
 test.assertEqual(len(ranks), 1)
 test.assertAlmostEqual(ranks[0], 1.0)
-resu.debugPrint(10+rank)
+resu.debugPrint(10 + rank)
 
 test.assertEqual("resu", resu.userName)
 test.assertFalse(resu.hasElementaryCharacteristics())
 test.assertFalse(resu.hasElementaryCharacteristics(1))
 
-resu.printMedFile("test"+str(rank)+".med")
-#from shutil import copyfile
-#copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
+resu.printMedFile("test" + str(rank) + ".med")
+# from shutil import copyfile
+# copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
-sfon.debugPrint(10+rank)
+sfon.debugPrint(10 + rank)
 sfon.build()
 
 

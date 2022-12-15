@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,18 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-LIRE_IMPE_MISS=OPER(nom="LIRE_IMPE_MISS",op= 164,sd_prod=matr_asse_gene_c,
-                    fr=tr("Création d une matrice assemblée à partir de base modale"),
-                    reentrant='n',
-         BASE            =SIMP(statut='o',typ=mode_meca ),
-         NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
-         FREQ_EXTR       =SIMP(statut='f',typ='R',max=1),
-         INST_EXTR       =SIMP(statut='f',typ='R',max=1),
-         UNITE_RESU_IMPE =SIMP(statut='f',typ=UnitType(),defaut=30, inout='in'),
-         ISSF            =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
-         TYPE            =SIMP(statut='f',typ='TXM',defaut="ASCII",into=("BINAIRE","ASCII") ),
-         SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
-)  ;
+LIRE_IMPE_MISS = OPER(
+    nom="LIRE_IMPE_MISS",
+    op=164,
+    sd_prod=matr_asse_gene_c,
+    fr=tr("Création d une matrice assemblée à partir de base modale"),
+    reentrant="n",
+    BASE=SIMP(statut="o", typ=mode_meca),
+    NUME_DDL_GENE=SIMP(statut="o", typ=nume_ddl_gene),
+    FREQ_EXTR=SIMP(statut="f", typ="R", max=1),
+    INST_EXTR=SIMP(statut="f", typ="R", max=1),
+    UNITE_RESU_IMPE=SIMP(statut="f", typ=UnitType(), defaut=30, inout="in"),
+    ISSF=SIMP(statut="f", typ="TXM", defaut="NON", into=("NON", "OUI")),
+    TYPE=SIMP(statut="f", typ="TXM", defaut="ASCII", into=("BINAIRE", "ASCII")),
+    SYME=SIMP(statut="f", typ="TXM", defaut="NON", into=("NON", "OUI")),
+)

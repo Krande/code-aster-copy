@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,28 +21,28 @@ from ...Cata.Syntax import _F
 from ...Commands import CALC_TABLE
 
 
-def relative_error(X, Xref, coef=1., prec_zero=0.):
+def relative_error(X, Xref, coef=1.0, prec_zero=0.0):
     """calcul erreur relative entre deux nombres"""
     if abs(Xref) < prec_zero:
-        err = 0.
+        err = 0.0
     else:
         err = abs((X * coef - Xref) / Xref)
     return err
+
 
 def vect_prod_rot(X1, X2):
     """calcul Produit de 2 vecteurs pour les coef de rotations
     dimension de X1 et X2 liste de 3 scalaire resultat liste de 6 scalaire"""
     if not (len(X1) == len(X2) == 3):
-        raise ValueError("CALCUL vect_prod_rot IMPOSSIBLE, "
-                         "dimensions inattendues")
+        raise ValueError("CALCUL vect_prod_rot IMPOSSIBLE, " "dimensions inattendues")
     Y = [None] * 6
-    V_ind = [[0, 0, 0.5], [1, 1, 0.5], [2, 2, 0.5],
-                [0, 1, 1.0], [0, 2, 1.0], [1, 2, 1.0]]
+    V_ind = [[0, 0, 0.5], [1, 1, 0.5], [2, 2, 0.5], [0, 1, 1.0], [0, 2, 1.0], [1, 2, 1.0]]
     for ind in V_ind:
         i = V_ind.index(ind)
         ind1, ind2, coef = ind[0], ind[1], ind[2]
         Y[i] = coef * (X1[ind1] * X2[ind2] + X1[ind2] * X2[ind1])
     return Y
+
 
 def rename_components(i, N_pas, label_cal, ch_param, RESU, R_SI):
     """On renomme les composantes en fonction de  l'ordre de discrétisation"""
@@ -53,25 +53,28 @@ def rename_components(i, N_pas, label_cal, ch_param, RESU, R_SI):
         chnew = ch + chN
         # Extraction par type de variable
         if R_SI[j] is None:
-            R_SI[j] = CALC_TABLE(TABLE=RESU[i],
-                                 TITRE=' ',
-                                 ACTION=(_F(OPERATION='EXTR',
-                                            NOM_PARA=('INST', ch,),),
-                                         _F(OPERATION='RENOMME',
-                                            NOM_PARA=(ch, chnew,),),
-                                         ),)
+            R_SI[j] = CALC_TABLE(
+                TABLE=RESU[i],
+                TITRE=" ",
+                ACTION=(
+                    _F(OPERATION="EXTR", NOM_PARA=("INST", ch)),
+                    _F(OPERATION="RENOMME", NOM_PARA=(ch, chnew)),
+                ),
+            )
         else:
-            TMP_S = CALC_TABLE(TABLE=RESU[i],
-                               TITRE=' ',
-                               ACTION=(_F(OPERATION='EXTR',
-                                          NOM_PARA=('INST', ch,),),
-                                       _F(OPERATION='RENOMME',
-                                          NOM_PARA=(ch, chnew,),),
-                                       ),)
-            R_SI[j] = CALC_TABLE(reuse=R_SI[j], TABLE=R_SI[j],
-                                 TITRE=' ',
-                                 ACTION=(_F(OPERATION='COMB',
-                                            TABLE=TMP_S, NOM_PARA='INST',),
-                                         ),)
+            TMP_S = CALC_TABLE(
+                TABLE=RESU[i],
+                TITRE=" ",
+                ACTION=(
+                    _F(OPERATION="EXTR", NOM_PARA=("INST", ch)),
+                    _F(OPERATION="RENOMME", NOM_PARA=(ch, chnew)),
+                ),
+            )
+            R_SI[j] = CALC_TABLE(
+                reuse=R_SI[j],
+                TABLE=R_SI[j],
+                TITRE=" ",
+                ACTION=(_F(OPERATION="COMB", TABLE=TMP_S, NOM_PARA="INST"),),
+            )
 
     return R_SI

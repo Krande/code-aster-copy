@@ -27,9 +27,7 @@ from ...Objects import DiscreteComputation
 
 
 class GeometricSolver:
-    """Solves a step, loops on iterations.
-
-    """
+    """Solves a step, loops on iterations."""
 
     current_incr = phys_state = prediction = None
     phys_pb = linear_solver = coordinates = None
@@ -94,7 +92,7 @@ class GeometricSolver:
         self.linear_solver = linear_solver
 
     def setContactManager(self, contact_manager):
-        """ Set contact manager.
+        """Set contact manager.
 
         Arguments:
             contact_manager (ContactManager): contact manager
@@ -228,7 +226,7 @@ class GeometricSolver:
             if self.current_incr > 0:
                 self.logManager.printConvTableRow(
                     [
-                        self.current_incr-1,
+                        self.current_incr - 1,
                         convManager.getCriteria("RESI_GLOB_RELA"),
                         convManager.getCriteria("RESI_GLOB_MAXI"),
                         convManager.getCriteria("RESI_GEOM"),

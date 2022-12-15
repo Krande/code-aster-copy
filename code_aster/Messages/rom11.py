@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,39 +24,27 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""Le champ a pour support %(k1)s, ce qui n'est pas autorisé."""),
-
-    2 : _("""Le champ n'a aucune composante de nom %(k1)s."""),
-
-    3 : _("""La composante %(k1)s concerne %(i1)d équations dans le champ."""),
-
-    7 : _("""Création de la liste des noeuds à partir de la liste des équations."""),
-
-    8 : _("""Détection des équations définies pour les noeuds donnés."""),
-
-   11 : _("""On n'a pas réussi à extraire le champ de type %(k1)s pour le numéro d'ordre %(i1)d dans la structure de données résultat."""),
-
-   23 : _("""Le champ contient la composante %(k1)s qui n'est pas autorisée. Vous utilisez un modèle qui n'est pas compatible avec la réduction de modèle."""),
-
-   25 : _("""Le champ ne contient pas la composante %(k1)s. Vous utilisez un modèle qui n'est pas compatible avec la réduction de modèle."""),
-
-   35 : _("""Le champ a un nombre de composantes par noeud qui n'est pas constant."""),
-
-   37 : _("""Préparation de la relation entre les équations de deux domaines."""),
-
-   50 : _("""Le champ est de type %(k1)s."""),
-
-   51 : _("""Le champ contient %(i1)d équations."""),
-
-   52 : _("""Le champ est défini sur les noeuds."""),
-
-   53 : _("""Le champ est défini sur les points d'intégration ."""),
-
-   54 : _("""Le champ contient %(i1)d composantes."""),
-
-   55 : _("""Nom de la composante %(i1)d: %(k1)s."""),
-
-   56 : _("""Le champ contient des multiplicateurs de Lagrange."""),
-
+    1: _("""Le champ a pour support %(k1)s, ce qui n'est pas autorisé."""),
+    2: _("""Le champ n'a aucune composante de nom %(k1)s."""),
+    3: _("""La composante %(k1)s concerne %(i1)d équations dans le champ."""),
+    7: _("""Création de la liste des noeuds à partir de la liste des équations."""),
+    8: _("""Détection des équations définies pour les noeuds donnés."""),
+    11: _(
+        """On n'a pas réussi à extraire le champ de type %(k1)s pour le numéro d'ordre %(i1)d dans la structure de données résultat."""
+    ),
+    23: _(
+        """Le champ contient la composante %(k1)s qui n'est pas autorisée. Vous utilisez un modèle qui n'est pas compatible avec la réduction de modèle."""
+    ),
+    25: _(
+        """Le champ ne contient pas la composante %(k1)s. Vous utilisez un modèle qui n'est pas compatible avec la réduction de modèle."""
+    ),
+    35: _("""Le champ a un nombre de composantes par noeud qui n'est pas constant."""),
+    37: _("""Préparation de la relation entre les équations de deux domaines."""),
+    50: _("""Le champ est de type %(k1)s."""),
+    51: _("""Le champ contient %(i1)d équations."""),
+    52: _("""Le champ est défini sur les noeuds."""),
+    53: _("""Le champ est défini sur les points d'intégration ."""),
+    54: _("""Le champ contient %(i1)d composantes."""),
+    55: _("""Nom de la composante %(i1)d: %(k1)s."""),
+    56: _("""Le champ contient des multiplicateurs de Lagrange."""),
 }

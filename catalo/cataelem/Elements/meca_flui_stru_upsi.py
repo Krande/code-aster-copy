@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,102 +25,88 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 # Located components
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-                             components=('DX', 'DY', 'DZ', 'PSI',))
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ", "PSI"))
 
-MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
-MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
+MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-#----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 class MEFS_FACE3PSI(Element):
     """Element for FSI interaction (U,PSI) - 3D - On TR3"""
+
     meshType = MT.TRIA3
-    elrefe = (
-        ElrefeLoc(MT.TR3, gauss=('RIGI=COT3', 'FPG1=FPG1',), mater=('FPG1',),),
-    )
+    elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "FPG1=FPG1"), mater=("FPG1",)),)
     calculs = (
-        OP.CHAR_MECA_PRES_F(te=205,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSF, LC.CPRE3DF),
-                        (SP.PTEMPSR, LC.MTEMPSR),),
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.CHAR_MECA_PRES_F(
+            te=205,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSF, LC.CPRE3DF), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-        
-        OP.CHAR_MECA_PRES_R(te=205,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSR, LC.EPRE3DR),
-                        (SP.PTEMPSR, LC.MTEMPSR),),
-            para_out = ((SP.PVECTUR, MVECTUR),),
+        OP.CHAR_MECA_PRES_R(
+            te=205,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSR, LC.EPRE3DR), (SP.PTEMPSR, LC.MTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.CHAR_MECA_VFAC(te=213,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITEFR, LC.EVITEFR),),
-            para_out = ((SP.PVECTUR, MVECTUR), ),
+        OP.CHAR_MECA_VFAC(
+            te=213,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFR, LC.EVITEFR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.CHAR_MECA_VFAC_F(te=213,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITEFF, LC.EVITEFF),),
-            para_out = ((SP.PVECTUR, MVECTUR), ),
+        OP.CHAR_MECA_VFAC_F(
+            te=213,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC), (SP.PVITEFF, LC.EVITEFF)),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.MASS_MECA(te=99,
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMATUUR, MMATUUR),),
+        OP.MASS_MECA(
+            te=99,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        
-        OP.AMOR_MECA(te=380, 
-            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),),
-            para_out = ((SP.PMATUUR, MMATUUR),),
+        OP.AMOR_MECA(
+            te=380,
+            para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-
-        OP.TOU_INI_ELEM(te=99,
-            para_out = ((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),),
-        ),
-
-        OP.TOU_INI_ELGA(te=99,
-            para_out = ((OP.TOU_INI_ELGA.PGEOM_R, LC.EGGAU3D),),
-        ),
-
-        OP.TOU_INI_ELNO(te=99,
-            para_out = ((OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),),
-        ),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, LC.EGGAU3D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, LC.EGEOM3D),)),
     )
 
-#----------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------
 class MEFS_FACE4PSI(MEFS_FACE3PSI):
     """Element for FSI interaction (U,PSI) - 3D - On QU4"""
-    meshType = MT.QUAD4
-    elrefe = (
-        ElrefeLoc(MT.QU4, gauss=('RIGI=FPG4', 'FPG1=FPG1',), mater=('FPG1',),),
-    )
 
-#----------------------------------------------------------------------------------------------
+    meshType = MT.QUAD4
+    elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ----------------------------------------------------------------------------------------------
 class MEFS_FACE6PSI(MEFS_FACE3PSI):
     """Element for FSI interaction (U,PSI) - 3D - On TR6"""
-    meshType = MT.TRIA6
-    elrefe = (
-        ElrefeLoc(MT.TR6, gauss=('RIGI=FPG4', 'FPG1=FPG1',), mater=('FPG1',),),
-    )
 
-#----------------------------------------------------------------------------------------------
+    meshType = MT.TRIA6
+    elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ----------------------------------------------------------------------------------------------
 class MEFS_FACE8PSI(MEFS_FACE3PSI):
     """Element for FSI interaction (U,PSI) - 3D - On QU8"""
-    meshType = MT.QUAD8
-    elrefe = (
-        ElrefeLoc(MT.QU8, gauss=('RIGI=FPG9', 'FPG1=FPG1',), mater=('FPG1',),),
-    )
 
-#----------------------------------------------------------------------------------------------
+    meshType = MT.QUAD8
+    elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# ----------------------------------------------------------------------------------------------
 class MEFS_FACE9PSI(MEFS_FACE3PSI):
     """Element for FSI interaction (U,PSI) - 3D - On QU9"""
+
     meshType = MT.QUAD9
-    elrefe = (
-        ElrefeLoc(MT.QU9, gauss=('RIGI=FPG9', 'FPG1=FPG1',), mater=('FPG1',),),
-    )
+    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)

@@ -19,92 +19,109 @@
 
 # person_in_charge: david.haboussa at edf.fr
 # ELASTOPLASTICITE  ECROUISSAGE ISOTROPE VON MISES
-#......................................................................
+# ......................................................................
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON")
 
 # donnee materiau et fonction
 
-#parametres elastiques
+# parametres elastiques
 YOUNG = 200000.0
 POISSON = 0.3
 
 # def des materiaux
-ACIER = [None]*2
-#unite en Pa
-C_Pa = 1.e+6
+ACIER = [None] * 2
+# unite en Pa
+C_Pa = 1.0e6
 YOUNG_Pa = YOUNG * C_Pa
 #
 # COURBE DE TRACTION a LA TEMPeRATURE 100 degres
 #
-A7=DEFI_FONCTION(
-             NOM_PARA='EPSI',
-         PROL_DROITE='CONSTANT',
-         PROL_GAUCHE='EXCLU',
-                 VALE=(
-          2.185E-3       ,437.E+6       ,
-          9.185E-3       ,437.E+6       ,
-          0.010235       ,447.E+6       ,
-          0.015385       ,477.E+6       ,
-          0.020485       ,497.E+6       ,
-          0.025585       ,517.E+6       ,
-          0.030635       ,527.E+6       ,
-          0.03571        ,542.E+6       ,
-          0.04076        ,552.E+6       ,
-          0.04581        ,562.E+6       ,
-          0.050835       ,567.E+6       ,
-          0.05587        ,574.E+6       ,
-          0.06091        ,582.E+6       ,
-          0.065935       ,587.E+6       ,
-          0.07097        ,594.E+6       ,
-          0.075995       ,599.E+6       ,
-          0.081035       ,607.E+6       ,
-          0.08606        ,612.E+6       ,
-          0.091085       ,617.E+6       ,
-          ))
+A7 = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="EXCLU",
+    VALE=(
+        2.185e-3,
+        437.0e6,
+        9.185e-3,
+        437.0e6,
+        0.010235,
+        447.0e6,
+        0.015385,
+        477.0e6,
+        0.020485,
+        497.0e6,
+        0.025585,
+        517.0e6,
+        0.030635,
+        527.0e6,
+        0.03571,
+        542.0e6,
+        0.04076,
+        552.0e6,
+        0.04581,
+        562.0e6,
+        0.050835,
+        567.0e6,
+        0.05587,
+        574.0e6,
+        0.06091,
+        582.0e6,
+        0.065935,
+        587.0e6,
+        0.07097,
+        594.0e6,
+        0.075995,
+        599.0e6,
+        0.081035,
+        607.0e6,
+        0.08606,
+        612.0e6,
+        0.091085,
+        617.0e6,
+    ),
+)
 
 
-ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
-                               NU=POISSON,
-                               ALPHA=11.8e-6),
-                    TRACTION=_F(SIGM=A7,
-                                 ),)
-#unite en MPa
-A7_MPa=CALC_FONCTION(COMB=_F(FONCTION=A7,
-                             COEF=1./C_Pa,),)
+ACIER[0] = DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa, NU=POISSON, ALPHA=11.8e-6), TRACTION=_F(SIGM=A7))
+# unite en MPa
+A7_MPa = CALC_FONCTION(COMB=_F(FONCTION=A7, COEF=1.0 / C_Pa))
 
-ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                               NU=POISSON,
-                               ALPHA=11.8e-6),
-                    TRACTION=_F(SIGM=A7_MPa,
-                                 ),)
+ACIER[1] = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=11.8e-6), TRACTION=_F(SIGM=A7_MPa))
 
-compor='VMIS_ISOT_TRAC'
+compor = "VMIS_ISOT_TRAC"
 
 # test 3D
-tabresu=TEST_COMPOR(OPTION='MECA', INFO=1,
+tabresu = TEST_COMPOR(
+    OPTION="MECA",
+    INFO=1,
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE_RELA=1.0e-8),
+    NEWTON=_F(REAC_ITER=1),
+    LIST_MATER=ACIER,
+    YOUNG=YOUNG,
+    POISSON=POISSON,
+    VARI_TEST=("V1", "VMIS", "TRACE"),
+)
 
-              COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
-              NEWTON=_F(REAC_ITER=1),
-              LIST_MATER=ACIER,
-              YOUNG=YOUNG,POISSON=POISSON,
-              VARI_TEST=('V1','VMIS','TRACE'),
-              )
-
-#IMPR_TABLE(TABLE=tabresu)
+# IMPR_TABLE(TABLE=tabresu)
 
 # test C_PLAN
-tabres2=TEST_COMPOR(OPTION='MECA', INFO=1,
-                    MODELISATION='C_PLAN',SUPPORT='ELEMENT',
-              COMPORTEMENT=_F(RELATION=compor,RESI_INTE_RELA=1.E-8,),
-              NEWTON=_F(REAC_ITER=1),
-              LIST_MATER=ACIER,
-              YOUNG=YOUNG,POISSON=POISSON,
-              LIST_NPAS=4*[1] + [1, 5],
-              VARI_TEST=('V1','VMIS','TRACE'),
-              LIST_TOLE=4*[1.E-10] + [5.E-1] + 2*[11.E-2] + [1.E-2]
-              )
+tabres2 = TEST_COMPOR(
+    OPTION="MECA",
+    INFO=1,
+    MODELISATION="C_PLAN",
+    SUPPORT="ELEMENT",
+    COMPORTEMENT=_F(RELATION=compor, RESI_INTE_RELA=1.0e-8),
+    NEWTON=_F(REAC_ITER=1),
+    LIST_MATER=ACIER,
+    YOUNG=YOUNG,
+    POISSON=POISSON,
+    LIST_NPAS=4 * [1] + [1, 5],
+    VARI_TEST=("V1", "VMIS", "TRACE"),
+    LIST_TOLE=4 * [1.0e-10] + [5.0e-1] + 2 * [11.0e-2] + [1.0e-2],
+)
 
-#IMPR_TABLE(TABLE=tabres2)
+# IMPR_TABLE(TABLE=tabres2)
 
 FIN()

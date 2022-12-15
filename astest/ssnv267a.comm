@@ -21,7 +21,7 @@
 #  TEST DE LA LOI DE KICHENIN (3D) - PARTIE VISCOELASTIQUE
 # ---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 import numpy as np
 
@@ -29,178 +29,147 @@ import numpy as np
 class SOLUTION:
 
     # Parametres utilisateurs
-    Ep   = 4.e2     # module de Young branche plastique
-    nup  = 0.15     # coefficient de Poisson branche plastique
+    Ep = 4.0e2  # module de Young branche plastique
+    nup = 0.15  # coefficient de Poisson branche plastique
 
-    Ev   = 8.e2     # module de young branche viscoelastique
-    nuv  = 0.3      # coefficient de Poisson branche viscoelastique
-    nud  = 0.25     # coefficient de Poisson de l'amortisseur
-    gam  = 2.0      # exposant de l'amortisseur
-    eta1 = 4.e3     # viscosite pour le cas lineaire (gam=1)
+    Ev = 8.0e2  # module de young branche viscoelastique
+    nuv = 0.3  # coefficient de Poisson branche viscoelastique
+    nud = 0.25  # coefficient de Poisson de l'amortisseur
+    gam = 2.0  # exposant de l'amortisseur
+    eta1 = 4.0e3  # viscosite pour le cas lineaire (gam=1)
 
-    tc   = 2.5      # temps de montee en charge sur la branche visqueuse
-    sm   = 10.0     # contrainte plateau sur la branche visqueuse
-    sy   = 1.e5     # limite d'elasticite (fictive)
-    prag = 1.e2     # constante de Prager (fictive)
+    tc = 2.5  # temps de montee en charge sur la branche visqueuse
+    sm = 10.0  # contrainte plateau sur la branche visqueuse
+    sy = 1.0e5  # limite d'elasticite (fictive)
+    prag = 1.0e2  # constante de Prager (fictive)
 
-    #sdir = (0.2,0.3,0.4,0.5,0.6,0.7)  # direction de sollicitation
-    sdir = (1.0,0.2,0.4,0.1,0.3,0.5)  # direction de sollicitation
-
+    # sdir = (0.2,0.3,0.4,0.5,0.6,0.7)  # direction de sollicitation
+    sdir = (1.0, 0.2, 0.4, 0.1, 0.3, 0.5)  # direction de sollicitation
 
     # Parametres internes
-    rac2 = np.array((1,1,1,2**0.5,2**0.5,2**0.5))
-    krn  = np.array((1,1,1,0,0,0))/3**0.5
+    rac2 = np.array((1, 1, 1, 2**0.5, 2**0.5, 2**0.5))
+    krn = np.array((1, 1, 1, 0, 0, 0)) / 3**0.5
 
     epsComp = dict(EPXX=0, EPYY=1, EPZZ=2, EPXY=3, EPXZ=4, EPYZ=5)
     sigComp = dict(SIXX=0, SIYY=1, SIZZ=2, SIXY=3, SIXZ=4, SIYZ=5)
 
+    def Sph(self, v):
+        return np.dot(v, self.krn)
 
-    def Sph(self,v): return np.dot(v,self.krn)
-    def Dev(self,v): return v-self.Sph(v)*self.krn
+    def Dev(self, v):
+        return v - self.Sph(v) * self.krn
 
+    def __init__(self, Npas):
 
-    def __init__(self,Npas):
+        self.sdir = np.array(self.sdir) * self.rac2
+        self.sdir = self.sdir / np.dot(self.sdir, self.sdir) ** 0.5
+        self.sig0 = self.sm * self.sdir
 
-        self.sdir = np.array(self.sdir)*self.rac2
-        self.sdir = self.sdir / np.dot(self.sdir,self.sdir)**0.5
-        self.sig0 = self.sm*self.sdir
+        self.eta = (self.sm ** (self.gam - 1) * self.eta1) ** (1.0 / self.gam)
 
-        self.eta = (self.sm**(self.gam-1)*self.eta1)**(1.0/self.gam)
-
-        self.inst = np.linspace(0,2*self.tc,Npas+1)
+        self.inst = np.linspace(0, 2 * self.tc, Npas + 1)
         self.CalcSolution()
-
 
     def CalcSolution(self):
 
-        cv_h = self.Ev/(1-2*self.nuv)
-        cv_d = self.Ev/(1+self.nuv)
-        cp_h = self.Ep/(1-2*self.nup)
-        cp_d = self.Ep/(1+self.nup)
-        v_h  = 1-2*self.nud
-        v_d  = 1+self.nud
+        cv_h = self.Ev / (1 - 2 * self.nuv)
+        cv_d = self.Ev / (1 + self.nuv)
+        cp_h = self.Ep / (1 - 2 * self.nup)
+        cp_d = self.Ep / (1 + self.nup)
+        v_h = 1 - 2 * self.nud
+        v_d = 1 + self.nud
 
         sig0_h = self.Sph(self.sig0)
         sig0_d = self.Dev(self.sig0)
 
-        v_s0      = v_h*sig0_h*self.krn + v_d*sig0_d
-        s0_nor    = (v_h*sig0_h**2 + v_d*np.dot(sig0_d,sig0_d))**0.5
-        e0        = self.tc/self.eta**self.gam*s0_nor**(self.gam-1)*v_s0
-        cvm_s0    = 1/cv_h*sig0_h*self.krn + 1/cv_d*sig0_d
-        cp_cvm_s0 = cp_h/cv_h*sig0_h*self.krn + cp_d/cv_d*sig0_d
-        cp_e0     = cp_h*self.Sph(e0)*self.krn + cp_d*self.Dev(e0)
+        v_s0 = v_h * sig0_h * self.krn + v_d * sig0_d
+        s0_nor = (v_h * sig0_h**2 + v_d * np.dot(sig0_d, sig0_d)) ** 0.5
+        e0 = self.tc / self.eta**self.gam * s0_nor ** (self.gam - 1) * v_s0
+        cvm_s0 = 1 / cv_h * sig0_h * self.krn + 1 / cv_d * sig0_d
+        cp_cvm_s0 = cp_h / cv_h * sig0_h * self.krn + cp_d / cv_d * sig0_d
+        cp_e0 = cp_h * self.Sph(e0) * self.krn + cp_d * self.Dev(e0)
 
-        tb   = self.inst/self.tc
-        st   = np.minimum(1.0,tb)
-        evt  = 1/(self.gam+1)*np.minimum(1.0,tb**(self.gam+1)) + np.maximum(0.0, tb-1)
+        tb = self.inst / self.tc
+        st = np.minimum(1.0, tb)
+        evt = 1 / (self.gam + 1) * np.minimum(1.0, tb ** (self.gam + 1)) + np.maximum(0.0, tb - 1)
 
-        self.epv = np.outer(e0,evt)
-        self.sig = np.outer(cp_cvm_s0,st) + np.outer(cp_e0,evt) + np.outer(self.sig0,st)
-        self.eps = np.outer(cvm_s0,st) + self.epv
+        self.epv = np.outer(e0, evt)
+        self.sig = np.outer(cp_cvm_s0, st) + np.outer(cp_e0, evt) + np.outer(self.sig0, st)
+        self.eps = np.outer(cvm_s0, st) + self.epv
 
-        self.epvcum = evt * (2.0/3.0*np.dot(e0,e0))**0.5
+        self.epvcum = evt * (2.0 / 3.0 * np.dot(e0, e0)) ** 0.5
 
+    def GetInst(self):
+        return self.inst.tolist()
 
-    def GetInst(self): return self.inst.tolist()
-    def GetSig(self,nom_cmp): return (self.sig[self.sigComp[nom_cmp],:]/self.rac2[self.sigComp[nom_cmp]]).tolist()
-    def GetEps(self,nom_cmp): return (self.eps[self.epsComp[nom_cmp],:]/self.rac2[self.epsComp[nom_cmp]]).tolist()
-    def GetEpv(self,nom_cmp): return (self.epv[self.epsComp[nom_cmp],:]/self.rac2[self.epsComp[nom_cmp]]).tolist()
-    def GetEpvCum(self)     : return self.epvcum.tolist()
+    def GetSig(self, nom_cmp):
+        return (self.sig[self.sigComp[nom_cmp], :] / self.rac2[self.sigComp[nom_cmp]]).tolist()
+
+    def GetEps(self, nom_cmp):
+        return (self.eps[self.epsComp[nom_cmp], :] / self.rac2[self.epsComp[nom_cmp]]).tolist()
+
+    def GetEpv(self, nom_cmp):
+        return (self.epv[self.epsComp[nom_cmp], :] / self.rac2[self.epsComp[nom_cmp]]).tolist()
+
+    def GetEpvCum(self):
+        return self.epvcum.tolist()
 
 
 sol = SOLUTION(Npas=100)
 
 
-
 MATE = DEFI_MATERIAU(
-    ELAS = _F(
-        E  = sol.Ep,
-        NU = sol.nup,
-        ),
-    KICHENIN_NL = _F(
-        SIGC        = sol.sy,
-        PRAGER      = sol.prag,
-        E_VISC      = sol.Ev,
-        NU_VISC     = sol.nuv,
-        NU_AMOR     = sol.nud,
-        ETA_AMOR    = sol.eta,
-        N_AMOR      = 1.0/sol.gam,
-        ),
-    )
+    ELAS=_F(E=sol.Ep, NU=sol.nup),
+    KICHENIN_NL=_F(
+        SIGC=sol.sy,
+        PRAGER=sol.prag,
+        E_VISC=sol.Ev,
+        NU_VISC=sol.nuv,
+        NU_AMOR=sol.nud,
+        ETA_AMOR=sol.eta,
+        N_AMOR=1.0 / sol.gam,
+    ),
+)
 
 
 DEFLIST1 = DEFI_LIST_INST(
-    DEFI_LIST = _F( VALE = sol.GetInst()),
-    ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
-    )
+    DEFI_LIST=_F(VALE=sol.GetInst()), ECHEC=_F(ACTION="DECOUPE", SUBD_PAS=4, SUBD_NIVEAU=2)
+)
 
 
-SIXX = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sol.GetInst(),
-    ORDONNEE    = sol.GetSig(nom_cmp='SIXX'),
-    )
+SIXX = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sol.GetInst(), ORDONNEE=sol.GetSig(nom_cmp="SIXX"))
 
 
-SIYY = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sol.GetInst(),
-    ORDONNEE    = sol.GetSig(nom_cmp='SIYY'),
-    )
+SIYY = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sol.GetInst(), ORDONNEE=sol.GetSig(nom_cmp="SIYY"))
 
 
-SIZZ = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sol.GetInst(),
-    ORDONNEE    = sol.GetSig(nom_cmp='SIZZ'),
-    )
+SIZZ = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sol.GetInst(), ORDONNEE=sol.GetSig(nom_cmp="SIZZ"))
 
 
-SIXY = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sol.GetInst(),
-    ORDONNEE    = sol.GetSig(nom_cmp='SIXY'),
-    )
+SIXY = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sol.GetInst(), ORDONNEE=sol.GetSig(nom_cmp="SIXY"))
 
 
-SIXZ = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sol.GetInst(),
-    ORDONNEE    = sol.GetSig(nom_cmp='SIXZ'),
-    )
+SIXZ = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sol.GetInst(), ORDONNEE=sol.GetSig(nom_cmp="SIXZ"))
 
 
-SIYZ = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    ABSCISSE    = sol.GetInst(),
-    ORDONNEE    = sol.GetSig(nom_cmp='SIYZ'),
-    )
+SIYZ = DEFI_FONCTION(NOM_PARA="INST", ABSCISSE=sol.GetInst(), ORDONNEE=sol.GetSig(nom_cmp="SIYZ"))
 
 
 EVOL = SIMU_POINT_MAT(
-    SUPPORT       = 'ELEMENT',
-    MODELISATION  = '3D',
-    COMPORTEMENT  = _F(
-        RELATION       = 'KICHENIN_NL',
-        ),
-    MATER      = MATE,
-    INCREMENT  = _F( LIST_INST=DEFLIST1,),
-    NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
-    CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    SIGM_IMPOSE= _F(
-        SIXX = SIXX,
-        SIYY = SIYY,
-        SIZZ = SIZZ,
-        SIXY = SIXY,
-        SIXZ = SIXZ,
-        SIYZ = SIYZ,
-        ),
-    )
+    SUPPORT="ELEMENT",
+    MODELISATION="3D",
+    COMPORTEMENT=_F(RELATION="KICHENIN_NL"),
+    MATER=MATE,
+    INCREMENT=_F(LIST_INST=DEFLIST1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=10),
+    SIGM_IMPOSE=_F(SIXX=SIXX, SIYY=SIYY, SIZZ=SIZZ, SIXY=SIXY, SIXZ=SIXZ, SIYZ=SIYZ),
+)
 
 
-#----------------------------------------------------------------#
+# ----------------------------------------------------------------#
 # TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
-#----------------------------------------------------------------#
+# ----------------------------------------------------------------#
 
 nume = -1
 prec = 0.01
@@ -208,227 +177,226 @@ prec = 0.01
 # Calcul de la deformation visqueuse cumulee
 
 
+TEST_TABLE(
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.012363855048880355,
+    VALE_REFE=sol.GetEps(nom_cmp="EPXX")[nume],
+    NOM_PARA="EPXX",
+    FILTRE=_F(
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.012363855048880355,
-    VALE_REFE = sol.GetEps(nom_cmp='EPXX')[nume],
-    NOM_PARA  = 'EPXX',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.002863061091934376,
+    VALE_REFE=sol.GetEps(nom_cmp="EPYY")[nume],
+    NOM_PARA="EPYY",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.002863061091934376,
-    VALE_REFE = sol.GetEps(nom_cmp='EPYY')[nume],
-    NOM_PARA  = 'EPYY',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.0009436691952169194,
+    VALE_REFE=sol.GetEps(nom_cmp="EPZZ")[nume],
+    NOM_PARA="EPZZ",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.0009436691952169194,
-    VALE_REFE = sol.GetEps(nom_cmp='EPZZ')[nume],
-    NOM_PARA  = 'EPZZ',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.0019033649484843501,
+    VALE_REFE=sol.GetEps(nom_cmp="EPXY")[nume],
+    NOM_PARA="EPXY",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.0019033649484843501,
-    VALE_REFE = sol.GetEps(nom_cmp='EPXY')[nume],
-    NOM_PARA  = 'EPXY',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.005710094845453042,
+    VALE_REFE=sol.GetEps(nom_cmp="EPXZ")[nume],
+    NOM_PARA="EPXZ",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.005710094845453042,
-    VALE_REFE = sol.GetEps(nom_cmp='EPXZ')[nume],
-    NOM_PARA  = 'EPXZ',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.00951682474242174,
+    VALE_REFE=sol.GetEps(nom_cmp="EPYZ")[nume],
+    NOM_PARA="EPYZ",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.00951682474242174,
-    VALE_REFE = sol.GetEps(nom_cmp='EPYZ')[nume],
-    NOM_PARA  = 'EPYZ',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.00644612431853576,
+    VALE_REFE=sol.GetEpvCum()[nume],
+    NOM_PARA="V8",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.00644612431853576,
-    VALE_REFE = sol.GetEpvCum()[nume],
-    NOM_PARA  = 'V8',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.004935649606094221,
+    VALE_REFE=sol.GetEpv(nom_cmp="EPXX")[nume],
+    NOM_PARA="V9",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.004935649606094221,
-    VALE_REFE = sol.GetEpv(nom_cmp='EPXX')[nume],
-    NOM_PARA  = 'V9',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=-0.0008705701405728873,
+    VALE_REFE=sol.GetEpv(nom_cmp="EPYY")[nume],
+    NOM_PARA="V10",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = -0.0008705701405728873,
-    VALE_REFE = sol.GetEpv(nom_cmp='EPYY')[nume],
-    NOM_PARA  = 'V10',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.000580984796093889,
+    VALE_REFE=sol.GetEpv(nom_cmp="EPZZ")[nume],
+    NOM_PARA="V11",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.000580984796093889,
-    VALE_REFE = sol.GetEpv(nom_cmp='EPZZ')[nume],
-    NOM_PARA  = 'V11',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.0007257774683333894,
+    VALE_REFE=sol.GetEpv(nom_cmp="EPXY")[nume],
+    NOM_PARA="V12",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.0007257774683333894,
-    VALE_REFE = sol.GetEpv(nom_cmp='EPXY')[nume],
-    NOM_PARA  = 'V12',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.0021773324050001646,
+    VALE_REFE=sol.GetEpv(nom_cmp="EPXZ")[nume],
+    NOM_PARA="V13",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.0021773324050001646,
-    VALE_REFE = sol.GetEpv(nom_cmp='EPXZ')[nume],
-    NOM_PARA  = 'V13',
+    TABLE=EVOL,
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=prec,
+    VALE_CALC=0.0036288873416669425,
+    VALE_REFE=sol.GetEpv(nom_cmp="EPYZ")[nume],
+    NOM_PARA="V14",
     FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
-
-TEST_TABLE(
-    TABLE     = EVOL,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = prec,
-    VALE_CALC = 0.0036288873416669425,
-    VALE_REFE = sol.GetEpv(nom_cmp='EPYZ')[nume],
-    NOM_PARA  = 'V14',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = sol.GetInst()[nume],
-        CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        NOM_PARA="INST",
+        CRIT_COMP="EQ",
+        VALE=sol.GetInst()[nume],
+        CRITERE="RELATIF",
+        PRECISION=1.0e-08,
+    ),
+)
 
 
 FIN()

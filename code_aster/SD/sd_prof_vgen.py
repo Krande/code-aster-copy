@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,8 @@ from . import *
 
 class sd_prof_vgen(AsBase):
     nomj = SDNom(fin=19)
-    PRNO = AsColl(SDNom(debut=19), acces='NU',
-                  stockage='DISPERSE', modelong='VARIABLE', type='I', )
-    LILI = AsObject(SDNom(debut=19), genr='N', xous='S', type='K', ltyp=8, )
-    NUEQ = AsVI(SDNom(debut=19), )
-    DEEQ = AsVI(SDNom(debut=19), )
-    DELG = AsVI(SDNom(debut=19), )
+    PRNO = AsColl(SDNom(debut=19), acces="NU", stockage="DISPERSE", modelong="VARIABLE", type="I")
+    LILI = AsObject(SDNom(debut=19), genr="N", xous="S", type="K", ltyp=8)
+    NUEQ = AsVI(SDNom(debut=19))
+    DEEQ = AsVI(SDNom(debut=19))
+    DELG = AsVI(SDNom(debut=19))

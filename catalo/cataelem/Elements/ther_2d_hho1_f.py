@@ -31,70 +31,57 @@ import cataelem.Commons.attributes as AT
 # ----------------
 
 
-CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type='ELEM',
-                            components=('H',))
+CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
 
 
-CCOEFHR = LocatedComponents(phys=PHY.COEH_R, type='ELEM',
-                            components=('H',))
+CCOEFHR = LocatedComponents(phys=PHY.COEH_R, type="ELEM", components=("H",))
 
 
-NACCELR = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-                            components=('DX', 'DY',))
+NACCELR = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"))
 
 
-CFLUXNF = LocatedComponents(phys=PHY.FLUN_F, type='ELEM',
-                            components=('FLUN',))
+CFLUXNF = LocatedComponents(phys=PHY.FLUN_F, type="ELEM", components=("FLUN",))
 
 
-CFLUXNR = LocatedComponents(phys=PHY.FLUN_R, type='ELEM',
-                            components=('FLUN',))
+CFLUXNR = LocatedComponents(phys=PHY.FLUN_R, type="ELEM", components=("FLUN",))
 
 
-EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type='ELNO',
-                            components=('FLUX', 'FLUY',))
+EFLUXNO = LocatedComponents(phys=PHY.FLUX_R, type="ELNO", components=("FLUX", "FLUY"))
 
 
-EFLUXPG = LocatedComponents(phys=PHY.FLUX_R, type='ELGA', location='RIGI',
-                            components=('FLUX', 'FLUY',))
+EFLUXPG = LocatedComponents(
+    phys=PHY.FLUX_R, type="ELGA", location="RIGI", components=("FLUX", "FLUY")
+)
 
 
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-                            components=('X', 'Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
-EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-                             components=('X', 'Y', 'W',))
+EGGEOP_R = LocatedComponents(
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
+)
 
 
-EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-                             components=('X', 'Y',))
+EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y"))
 
 
-CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-                            components=('INST', 'DELTAT', 'THETA', 'KHI', 'R',
-                                        'RHO',))
+CTEMPSR = LocatedComponents(
+    phys=PHY.INST_R, type="ELEM", components=("INST", "DELTAT", "THETA", "KHI", "R", "RHO")
+)
 
 
-EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELGA', location='RIGI',
-                             components=('X[30]',))
+EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type="ELGA", location="RIGI", components=("X[30]",))
 
 
-EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
-                             components=('X[30]',))
+EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type="ELGA", location="RIGI", components=("X[30]",))
 
-CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type='ELEM',
-                            components=('TEMP',))
+CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
 
-EEFLUNR = LocatedComponents(phys=PHY.FLUN_R, type='ELEM',
-                            components=('FLUN',))
+EEFLUNR = LocatedComponents(phys=PHY.FLUN_R, type="ELEM", components=("FLUN",))
 
-DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO', diff=True,
-                             components=(
-                                 ('EN1', ('HHO_F[2]',)),
-                                 ('EN2', ()),
-                             )
-                             )
+DDL_THER = LocatedComponents(
+    phys=PHY.TEMP_R, type="ELNO", diff=True, components=(("EN1", ("HHO_F[2]",)), ("EN2", ()))
+)
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -105,31 +92,22 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 class THER_2D_HHO1_F(Element):
     """Please document this element"""
-    meshType = MT.SEG3
-    nodes = (
-        SetOfNodes('EN1', (3,)),
-        SetOfNodes('EN2', (1, 2,)),
-    )
-    attrs = ((AT.BORD_ISO, 'OUI'),)
-    elrefe = (
-        ElrefeLoc(MT.SE3, gauss=('RIGI=FPG2',), mater=('RIGI',),),
-    )
-    calculs = (
 
+    meshType = MT.SEG3
+    nodes = (SetOfNodes("EN1", (3,)), SetOfNodes("EN2", (1, 2)))
+    attrs = ((AT.BORD_ISO, "OUI"),)
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",), mater=("RIGI",)),)
+    calculs = (
         OP.CHAR_THER_FLUN_F(
             te=461,
-            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER,
-                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
         OP.CHAR_THER_FLUN_R(
             te=461,
-            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER,
-                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
         OP.CHAR_THER_TEXT_F(
             te=461,
             para_in=(
@@ -141,7 +119,6 @@ class THER_2D_HHO1_F(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
         OP.CHAR_THER_TEXT_R(
             te=461,
             para_in=(
@@ -153,41 +130,40 @@ class THER_2D_HHO1_F(Element):
             ),
             para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
         OP.RIGI_THER_COEH_F(
             te=457,
-            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER,
-                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
         ),
-
         OP.RIGI_THER_COEH_R(
             te=457,
-            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER,
-                     NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
             para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
         ),
-
-        OP.TOU_INI_ELGA(te=99,
-                        para_out=((OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG), (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
-                                  (OP.TOU_INI_ELGA.PNEUT_F,
-                                   EGNEUT_F), (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R), (SP.PTEMP_R, LC.ETEMPPG),
-                                  ),
-                        ),
-
-        OP.TOU_INI_ELEM(te=99,
-                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),
-                                  (OP.TOU_INI_ELEM.PFLUN_R, EEFLUNR),
-                                  ),
-                        ),
-
-
-        OP.TOU_INI_ELNO(te=99,
-                        para_out=((OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO), (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
-                                  (OP.TOU_INI_ELNO.PHYDRPM,
-                                   LC.EHYDRNO), (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
-                                  (OP.TOU_INI_ELNO.PNEUT_F,
-                                   LC.ENNEUT_F), (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
-                                  (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_), ),
-                        ),
+        OP.TOU_INI_ELGA(
+            te=99,
+            para_out=(
+                (OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG),
+                (OP.TOU_INI_ELGA.PGEOM_R, EGGEOM_R),
+                (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
+                (OP.TOU_INI_ELGA.PNEUT_R, EGNEUT_R),
+                (SP.PTEMP_R, LC.ETEMPPG),
+            ),
+        ),
+        OP.TOU_INI_ELEM(
+            te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), (OP.TOU_INI_ELEM.PFLUN_R, EEFLUNR)),
+        ),
+        OP.TOU_INI_ELNO(
+            te=99,
+            para_out=(
+                (OP.TOU_INI_ELNO.PFLUX_R, EFLUXNO),
+                (OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),
+                (OP.TOU_INI_ELNO.PHYDRPM, LC.EHYDRNO),
+                (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
+                (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
+                (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                (OP.TOU_INI_ELNO.PVARI_R, LC.EPHASNO_),
+            ),
+        ),
     )

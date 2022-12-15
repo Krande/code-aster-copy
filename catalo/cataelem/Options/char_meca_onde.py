@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: nicolas.greffet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -28,19 +27,13 @@ import cataelem.Commons.attributes as AT
 
 
 CHAR_MECA_ONDE = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PONDECR,
-    ),
-    para_out=(
-        SP.PVECTUR,
-    ),
+    para_in=(SP.PGEOMER, SP.PMATERC, SP.PONDECR),
+    para_out=(SP.PVECTUR,),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME')  , (AT.FLUIDE, 'OUI'), (AT.BORD, '-1'),)),
-        CondCalcul('-', ((AT.FLUIDE, 'OUI'), (AT.ABSO  , 'OUI'),)),
-        CondCalcul('-', ((AT.FSI   , 'OUI'),)),
-        CondCalcul('-', ((AT.PESA  , 'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"), (AT.BORD, "-1"))),
+        CondCalcul("-", ((AT.FLUIDE, "OUI"), (AT.ABSO, "OUI"))),
+        CondCalcul("-", ((AT.FSI, "OUI"),)),
+        CondCalcul("-", ((AT.PESA, "OUI"),)),
     ),
     comment=""" CHAR_MECA_ONDE (MOT-CLE: ONDE_FLUI) : CALCUL DU SECOND MEMBRE
            CORRESPONDANT A UNE PRESSION D'ONDE INCIDENTE SINUSOIDALE ARRIVANT

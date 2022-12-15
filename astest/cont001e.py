@@ -25,35 +25,22 @@ from libaster import ContactPairing, ContactComputation
 import numpy
 
 
-DEBUT(
-    CODE=_F(NIV_PUB_WEB="INTERNET"),
-    DEBUG=_F(SDVERI='OUI',),
-    INFO=1,
-)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
 test = code_aster.TestCase()
 
 Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 Mail = MODI_MAILLAGE(
-    reuse=Mail,
-    MAILLAGE=Mail,
-    ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS",)),
+    reuse=Mail, MAILLAGE=Mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS"))
 )
 
-MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3,
-                            ALPHA=0.01))
+MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3, ALPHA=0.01))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=Mail,
-                      AFFE=_F(
-                          TOUT='OUI',
-                          MATER=MAT))
+CHMAT = AFFE_MATERIAU(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 
-MODI = AFFE_MODELE(MAILLAGE=Mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
+MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
 # Slave side - CONT_BAS
 DEFICO_BAS = DEFI_CONT(
@@ -89,9 +76,17 @@ grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 1)
 test.assertEqual(len(grel[0]), 7)
 test.assertEqual(len(grel[0]), len(nema) + 1)
-test.assertSequenceEqual(nema, [[11, 2, 17, 24, 97],  [11, 2, 24, 25, 97],
-                                [12, 11, 24, 25, 97], [12, 11, 25, 26, 97],
-                                [12, 11, 26, 19, 97], [4, 12, 26, 19, 97]])
+test.assertSequenceEqual(
+    nema,
+    [
+        [11, 2, 17, 24, 97],
+        [11, 2, 24, 25, 97],
+        [12, 11, 24, 25, 97],
+        [12, 11, 25, 26, 97],
+        [12, 11, 26, 19, 97],
+        [4, 12, 26, 19, 97],
+    ],
+)
 
 CD = ContactComputation(DEFICO_BAS)
 gap, i_gap = CD.geometricGap(pair)
@@ -100,8 +95,7 @@ test.assertEqual(i_gap.size(), 4)
 val = gap.getValues()
 test.assertTrue(numpy.isnan(val[1]))
 val[1] = None
-test.assertSequenceEqual(
-    val, [0.0, None, 33.33333333333333, 66.66666666666667])
+test.assertSequenceEqual(val, [0.0, None, 33.33333333333333, 66.66666666666667])
 test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0])
 
 # Slave side - CONT_HAUT
@@ -137,12 +131,17 @@ test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 2)
 test.assertEqual(len(grel[1]), 6)
 test.assertEqual(len(grel[0]) + len(grel[1]), len(nema) + 2)
-test.assertSequenceEqual(nema, [[17, 24, 11, 2, 97],
-                                [17, 24, 12, 11, 97],
-                                [24, 25, 12, 11, 97],
-                                [24, 25, 4, 12, 97],
-                                [25, 26, 4, 12, 97],
-                                [19, 72]])
+test.assertSequenceEqual(
+    nema,
+    [
+        [17, 24, 11, 2, 97],
+        [17, 24, 12, 11, 97],
+        [24, 25, 12, 11, 97],
+        [24, 25, 4, 12, 97],
+        [25, 26, 4, 12, 97],
+        [19, 72],
+    ],
+)
 
 CD = ContactComputation(DEFICO_HAUT)
 gap, i_gap = CD.geometricGap(pair)
@@ -154,9 +153,9 @@ test.assertEqual(gap.size(), 5)
 test.assertEqual(i_gap.size(), 5)
 test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 1.0, 1.0, 0.0])
 
-IMPR_RESU(FORMAT="MED",RESU=(_F(CHAM_GD=gap,)))
+IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap)))
 
 data = CD.contactData(pair, CHMAT, False)
-test.assertEqual(data.size() , 60 * len(nema))
+test.assertEqual(data.size(), 60 * len(nema))
 
 FIN()

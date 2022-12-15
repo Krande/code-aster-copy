@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,218 +18,194 @@
 # --------------------------------------------------------------------
 
 # MODELISATION 3D   (10 MAILLES HEXA20)
-#======================================================================
+# ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA='M1',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='DKT',),
-                     )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA="M1", PHENOMENE="MECANIQUE", MODELISATION="DKT"))
 
-CAEL=AFFE_CARA_ELEM(MODELE=MO,
-                    COQUE=_F(GROUP_MA='M1',
-                             EPAIS=1.,),
-                    )
+CAEL = AFFE_CARA_ELEM(MODELE=MO, COQUE=_F(GROUP_MA="M1", EPAIS=1.0))
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=30000.0E6,
-                            NU=0.2,),
-                    BETON_REGLE_PR=_F(D_SIGM_EPSI=-10000.0E6,
-                                       SYT=3.0E6,
-                                       SYC=30.0E6,
-                                       EPSC=1.E-3,
-                                       N=2.),)
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=30000.0e6, NU=0.2),
+    BETON_REGLE_PR=_F(D_SIGM_EPSI=-10000.0e6, SYT=3.0e6, SYC=30.0e6, EPSC=1.0e-3, N=2.0),
+)
 
-MATER=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(GROUP_MA='M1',
-                            MATER=ACIER,),)
+MATER = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="M1", MATER=ACIER))
 
-CHAR0=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(GROUP_NO=('N1','N2','N3','N4',),
-                                  DZ=0.0,
-                                  DRX=0.0,
-                                  DRY=0.0,
-                                  DRZ=0.0,),
-                               _F(GROUP_NO='N1',
-                                  DX=0.0,
-                                  DY=0.0,),
-                               _F(GROUP_NO='N2',
-                                  DX=0.0,),
-                               _F(GROUP_NO='N4',
-                                  DY=0.0,),
-                                  ),)
+CHAR0 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO=("N1", "N2", "N3", "N4"), DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="N1", DX=0.0, DY=0.0),
+        _F(GROUP_NO="N2", DX=0.0),
+        _F(GROUP_NO="N4", DY=0.0),
+    ),
+)
 
-CHAR=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO=('N2','N3',),
-                                 DY=-1.0,),
-                              _F(GROUP_NO=('N3','N4',),
-                                 DX=0.1,),),)
+CHAR = AFFE_CHAR_MECA(
+    MODELE=MO, DDL_IMPO=(_F(GROUP_NO=("N2", "N3"), DY=-1.0), _F(GROUP_NO=("N3", "N4"), DX=0.1))
+)
 
-INST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=(_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),
-                                _F(JUSQU_A=10.0,
-                                   NOMBRE=90,),),)
+INST = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=1), _F(JUSQU_A=10.0, NOMBRE=90))
+)
 
-RAMPE1=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=( 0.0 , 0.0000,
-                            1.0 , 0.0001,
-                            10. , 0.0020,),)
+RAMPE1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0000, 1.0, 0.0001, 10.0, 0.0020))
 
-RESU=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=MATER,
-                   CARA_ELEM=CAEL,
-                   EXCIT=(_F(CHARGE=CHAR0,),
-                          _F(CHARGE=CHAR,
-                             FONC_MULT=RAMPE1,),),
-                   COMPORTEMENT=_F(RELATION='BETON_REGLE_PR',
-                                GROUP_MA='M1',),
-                   INCREMENT=_F(LIST_INST=INST,),
-                   NEWTON=_F(REAC_ITER=1,),)
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=MATER,
+    CARA_ELEM=CAEL,
+    EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=CHAR, FONC_MULT=RAMPE1)),
+    COMPORTEMENT=_F(RELATION="BETON_REGLE_PR", GROUP_MA="M1"),
+    INCREMENT=_F(LIST_INST=INST),
+    NEWTON=_F(REAC_ITER=1),
+)
 
-RESU=CALC_CHAMP(reuse =RESU,
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, TOUT_ORDRE="OUI", TOUT="OUI", CONTRAINTE=("EFGE_ELNO"))
 
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, FORCE=("FORC_NODA", "REAC_NODA"))
 
+TEST_RESU(
+    RESU=_F(
+        INST=4.5999999999999996,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N4",
+        NOM_CMP="DX",
+        VALE_CALC=1.29000000e06,
+        VALE_REFE=1.290000e6,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
-               RESULTAT=RESU,
-               TOUT_ORDRE='OUI',
-               TOUT='OUI',
-                CONTRAINTE=('EFGE_ELNO'),)
+TEST_RESU(
+    RESU=_F(
+        INST=4.5999999999999996,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N2",
+        NOM_CMP="DY",
+        VALE_CALC=-1.47060000e07,
+        VALE_REFE=-1.4706000e7,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
-RESU=CALC_CHAMP(reuse =RESU,
-             RESULTAT=RESU,
-             FORCE=('FORC_NODA','REAC_NODA'),
+TEST_RESU(
+    RESU=_F(
+        INST=10.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N4",
+        NOM_CMP="DX",
+        VALE_CALC=1.00000000e06,
+        VALE_REFE=1.0e6,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
-
-             )
-
-TEST_RESU(RESU=_F(INST=4.5999999999999996,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N4',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.29000000E+06,
-                  VALE_REFE=1.290000E6,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
-
-TEST_RESU(RESU=_F(INST=4.5999999999999996,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N2',
-                  NOM_CMP='DY',
-                  VALE_CALC=-1.47060000E+07,
-                  VALE_REFE=-1.4706000E7,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
-
-TEST_RESU(RESU=_F(INST=10.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N4',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.00000000E+06,
-                  VALE_REFE=1.E6,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
-
-TEST_RESU(RESU=_F(INST=10.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N2',
-                  NOM_CMP='DY',
-                  VALE_CALC=-1.50000000E+07,
-                  VALE_REFE=-1.5000000E7,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=10.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N2",
+        NOM_CMP="DY",
+        VALE_CALC=-1.50000000e07,
+        VALE_REFE=-1.5000000e7,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 # même calcul en matrice sécante
 # cet ajout n'est volontairement pas décrit dans la doc
 
-RESU_SEC=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=MATER,
-                   CARA_ELEM=CAEL,
-                   EXCIT=(_F(CHARGE=CHAR0,),
-                          _F(CHARGE=CHAR,
-                             FONC_MULT=RAMPE1,),),
-                   COMPORTEMENT=_F(RELATION='BETON_REGLE_PR',
-                                GROUP_MA='M1',),
-                   INCREMENT=_F(LIST_INST=INST,),
-                   NEWTON=_F(REAC_ITER_ELAS=1, PAS_MINI_ELAS=100),)
+RESU_SEC = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=MATER,
+    CARA_ELEM=CAEL,
+    EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=CHAR, FONC_MULT=RAMPE1)),
+    COMPORTEMENT=_F(RELATION="BETON_REGLE_PR", GROUP_MA="M1"),
+    INCREMENT=_F(LIST_INST=INST),
+    NEWTON=_F(REAC_ITER_ELAS=1, PAS_MINI_ELAS=100),
+)
 
-RESU_SEC=CALC_CHAMP(reuse =RESU_SEC,
+RESU_SEC = CALC_CHAMP(
+    reuse=RESU_SEC, RESULTAT=RESU_SEC, TOUT_ORDRE="OUI", TOUT="OUI", CONTRAINTE=("EFGE_ELNO")
+)
 
+RESU_SEC = CALC_CHAMP(reuse=RESU_SEC, RESULTAT=RESU_SEC, FORCE=("FORC_NODA", "REAC_NODA"))
 
+TEST_RESU(
+    RESU=_F(
+        INST=4.5999999999999996,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU_SEC,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N4",
+        NOM_CMP="DX",
+        VALE_CALC=1.29000000e06,
+        VALE_REFE=1.290000e6,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
-               RESULTAT=RESU_SEC,
-               TOUT_ORDRE='OUI',
-               TOUT='OUI',
-                CONTRAINTE=('EFGE_ELNO'),)
+TEST_RESU(
+    RESU=_F(
+        INST=4.5999999999999996,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU_SEC,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N2",
+        NOM_CMP="DY",
+        VALE_CALC=-1.47060000e07,
+        VALE_REFE=-1.4706000e7,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
-RESU_SEC=CALC_CHAMP(reuse =RESU_SEC,
-             RESULTAT=RESU_SEC,
-             FORCE=('FORC_NODA','REAC_NODA'),
+TEST_RESU(
+    RESU=_F(
+        INST=10.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU_SEC,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N4",
+        NOM_CMP="DX",
+        VALE_CALC=1.00000000e06,
+        VALE_REFE=1.0e6,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
-
-             )
-
-TEST_RESU(RESU=_F(INST=4.5999999999999996,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU_SEC,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N4',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.29000000E+06,
-                  VALE_REFE=1.290000E6,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
-
-TEST_RESU(RESU=_F(INST=4.5999999999999996,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU_SEC,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N2',
-                  NOM_CMP='DY',
-                  VALE_CALC=-1.47060000E+07,
-                  VALE_REFE=-1.4706000E7,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
-
-TEST_RESU(RESU=_F(INST=10.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU_SEC,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N4',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.00000000E+06,
-                  VALE_REFE=1.E6,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
-
-TEST_RESU(RESU=_F(INST=10.0,
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU_SEC,
-                  NOM_CHAM='FORC_NODA',
-                  GROUP_NO='N2',
-                  NOM_CMP='DY',
-                  VALE_CALC=-1.50000000E+07,
-                  VALE_REFE=-1.5000000E7,
-                  CRITERE='RELATIF',
-                  PRECISION=9.9999999999999995E-07,),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=10.0,
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=RESU_SEC,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO="N2",
+        NOM_CMP="DY",
+        VALE_CALC=-1.50000000e07,
+        VALE_REFE=-1.5000000e7,
+        CRITERE="RELATIF",
+        PRECISION=9.9999999999999995e-07,
+    )
+)
 
 
 FIN()

@@ -28,42 +28,41 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 pMesh = code_aster.ParallelMesh()
-pMesh.readMedFile("mesh004a/%d.med"%rank, True)
+pMesh.readMedFile("mesh004a/%d.med" % rank, True)
 
 monModel = code_aster.Model(pMesh)
-monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
-                              code_aster.Modelings.Tridimensional)
+monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
 monModel.build()
 
 testMesh = monModel.getMesh()
 test.assertEqual(testMesh.getType(), "MAILLAGE_P")
 
-acier = DEFI_MATERIAU(ELAS = _F(E = 2.e11,
-                                NU = 0.3,),)
+acier = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3))
 
 affectMat = code_aster.MaterialField(pMesh)
-affectMat.addMaterialOnMesh( acier )
+affectMat.addMaterialOnMesh(acier)
 affectMat.build()
 
 testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")
 
 charCine = code_aster.MechanicalDirichletBC(monModel)
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
-charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0.0, "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0.0, "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0.0, "COTE_B")
 charCine.build()
 
-charMeca = AFFE_CHAR_MECA(MODELE=monModel, DOUBLE_LAGRANGE="NON",
-                           DDL_IMPO=_F(GROUP_NO=("COTE_H"),
-                                       DZ=1.0,),)
+charMeca = AFFE_CHAR_MECA(
+    MODELE=monModel, DOUBLE_LAGRANGE="NON", DDL_IMPO=_F(GROUP_NO=("COTE_H"), DZ=1.0)
+)
 
 monSolver = code_aster.MumpsSolver()
 
-resu = MECA_STATIQUE(MODELE=monModel, CHAM_MATER=affectMat,
-  EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charMeca)),)
+resu = MECA_STATIQUE(
+    MODELE=monModel, CHAM_MATER=affectMat, EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charMeca))
+)
 
-resu.printMedFile("fort."+str(rank+40)+".med")
+resu.printMedFile("fort." + str(rank + 40) + ".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()

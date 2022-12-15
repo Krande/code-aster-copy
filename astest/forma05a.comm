@@ -19,7 +19,7 @@
 
 import numpy as np
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # MODELIDATION A : FEM, plaque entière, maillage libre
 
@@ -27,186 +27,163 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # Unités : m, Pa
 a = 0.1
-W = 1.
-sigma = 10.e6
-E = 210000.e6
+W = 1.0
+sigma = 10.0e6
+E = 210000.0e6
 nu = 0.3
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Maillage
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # lecture du maillage linéaire
-MALINE = LIRE_MAILLAGE(FORMAT='MED')
+MALINE = LIRE_MAILLAGE(FORMAT="MED")
 
 # Passage en quadratique
-MA = CREA_MAILLAGE(MAILLAGE=MALINE,
-                   LINE_QUAD=_F(TOUT='OUI'))
+MA = CREA_MAILLAGE(MAILLAGE=MALINE, LINE_QUAD=_F(TOUT="OUI"))
 
-MA = MODI_MAILLAGE(reuse=MA,
-                   MAILLAGE=MA,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT', 'BAS', 'LEV_SUP', 'LEV_INF')))
+MA = MODI_MAILLAGE(
+    reuse=MA, MAILLAGE=MA, ORIE_PEAU=_F(GROUP_MA_PEAU=("HAUT", "BAS", "LEV_SUP", "LEV_INF"))
+)
 
 # Barsoum
-MA = MODI_MAILLAGE(reuse=MA,
-                   MAILLAGE=MA,
-                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
-                                  GROUP_NO_FOND='FRONT'))
+MA = MODI_MAILLAGE(
+    reuse=MA, MAILLAGE=MA, MODI_MAILLE=_F(OPTION="NOEUD_QUART", GROUP_NO_FOND="FRONT")
+)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Modèle
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-MO = AFFE_MODELE(MAILLAGE=MA,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='D_PLAN'))
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Matériau
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 ACIER = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu))
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
-                      AFFE=_F(TOUT='OUI',
-                              MATER=ACIER))
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # CL et Chargements
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-BLOC = AFFE_CHAR_MECA(MODELE=MO,
-                      DDL_IMPO=(_F(GROUP_NO='FRONT', DX=0., DY=0.),
-                                _F(GROUP_NO='C', DY=0.)),
-                      )
+BLOC = AFFE_CHAR_MECA(
+    MODELE=MO, DDL_IMPO=(_F(GROUP_NO="FRONT", DX=0.0, DY=0.0), _F(GROUP_NO="C", DY=0.0))
+)
 
-CHAR = AFFE_CHAR_MECA(MODELE=MO,
-                      PRES_REP=_F(GROUP_MA=('HAUT', 'BAS'), PRES=-sigma))
+CHAR = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=_F(GROUP_MA=("HAUT", "BAS"), PRES=-sigma))
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Résolution
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-RESU = MECA_STATIQUE(MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     EXCIT=(_F(CHARGE=BLOC),
-                            _F(CHARGE=CHAR))
-                     )
+RESU = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=BLOC), _F(CHARGE=CHAR)))
 
-RESU = CALC_CHAMP(reuse=RESU,
-                  RESULTAT=RESU,
-                  CONTRAINTE='SIGM_NOEU',
-                  CRITERES='SIEQ_NOEU')
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE="SIGM_NOEU", CRITERES="SIEQ_NOEU")
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(RESULTAT=RESU))
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=RESU))
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Post-traitements en Mécanique de la Rupture
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-FISS = DEFI_FOND_FISS(MAILLAGE=MA,
-                      SYME='NON',
-                      FOND_FISS=_F(GROUP_NO='FRONT'),
-                      LEVRE_SUP=_F(GROUP_MA='LEV_SUP'),
-                      LEVRE_INF=_F(GROUP_MA='LEV_INF'),
-                      )
+FISS = DEFI_FOND_FISS(
+    MAILLAGE=MA,
+    SYME="NON",
+    FOND_FISS=_F(GROUP_NO="FRONT"),
+    LEVRE_SUP=_F(GROUP_MA="LEV_SUP"),
+    LEVRE_INF=_F(GROUP_MA="LEV_INF"),
+)
 
-h = a/50.
-RSUP = 5*h
-RINF = 2*h
+h = a / 50.0
+RSUP = 5 * h
+RINF = 2 * h
 
 # Méthode G-thêta
-GK = CALC_G(OPTION=('G', 'K'),
-            RESULTAT=RESU,
-            THETA=_F(FISSURE=FISS,
-                     R_INF=RINF,
-                     R_SUP=RSUP),
-            )
+GK = CALC_G(OPTION=("G", "K"), RESULTAT=RESU, THETA=_F(FISSURE=FISS, R_INF=RINF, R_SUP=RSUP))
 
 IMPR_TABLE(TABLE=GK)
 
-GK2 = CALC_G(OPTION=('G', 'K'),
-            RESULTAT=RESU,
-            THETA=_F(FISSURE=FISS,
-                     R_INF=h,
-                     R_SUP=4*h),
-            )
+GK2 = CALC_G(OPTION=("G", "K"), RESULTAT=RESU, THETA=_F(FISSURE=FISS, R_INF=h, R_SUP=4 * h))
 
 IMPR_TABLE(TABLE=GK2)
 
 
-GK3 = CALC_G(OPTION=('G', 'K'),
-            RESULTAT=RESU,
-            THETA=_F(FISSURE=FISS,
-                     R_INF=5*h,
-                     R_SUP=10*h),
-            )
+GK3 = CALC_G(OPTION=("G", "K"), RESULTAT=RESU, THETA=_F(FISSURE=FISS, R_INF=5 * h, R_SUP=10 * h))
 
 IMPR_TABLE(TABLE=GK3)
 
 
 # Méthode par extrapolaton des sauts de déplacements
-K = POST_K1_K2_K3(RESULTAT=RESU,
-                  FOND_FISS=FISS)
+K = POST_K1_K2_K3(RESULTAT=RESU, FOND_FISS=FISS)
 
 IMPR_TABLE(TABLE=K)
 
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 # Comparaison aux valeurs de référence
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
 # Valeurs de référence : régression par moindres carrés (Gross 1964; Brown 1966)
-a_W = a/W
-f = 1.122-0.231*a_W+10.550*a_W**2-21.710*a_W**3+30.382*a_W**4
+a_W = a / W
+f = 1.122 - 0.231 * a_W + 10.550 * a_W**2 - 21.710 * a_W**3 + 30.382 * a_W**4
 
 # formule alternative de Tada 1973
 # ~q = np.pi*a_W/2.
 # ~f = np.sqrt(np.tan(q)/q)*(0.752+2.02*a_W+0.37*(1-np.sin(q))**3)/np.cos(q)
 
-K1ref = f * sigma * np.sqrt(np.pi*a)
+K1ref = f * sigma * np.sqrt(np.pi * a)
 # ~K1ref = 6.646e6
 
-Gref = (1-nu**2)/E*K1ref**2
-#Gref = 191.4
+Gref = (1 - nu**2) / E * K1ref**2
+# Gref = 191.4
 
 # tests sur G
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.6e-2,
-           VALE_CALC=192.4711005135881,
-           VALE_REFE=Gref,
-           NOM_PARA='G',
-           TABLE=GK)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.6e-2,
+    VALE_CALC=192.4711005135881,
+    VALE_REFE=Gref,
+    NOM_PARA="G",
+    TABLE=GK,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.6e-2,
-           VALE_CALC=192.48783075071347,
-           VALE_REFE=Gref,
-           NOM_PARA='G_IRWIN',
-           TABLE=GK)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.6e-2,
+    VALE_CALC=192.48783075071347,
+    VALE_REFE=Gref,
+    NOM_PARA="G_IRWIN",
+    TABLE=GK,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.e-2,
-           VALE_CALC=193.26676301850753,
-           VALE_REFE=Gref,
-           NOM_PARA='G',
-           TABLE=K)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-2,
+    VALE_CALC=193.26676301850753,
+    VALE_REFE=Gref,
+    NOM_PARA="G",
+    TABLE=K,
+)
 
 # tests sur K1
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.3e-2,
-           VALE_CALC=6664853.231962417,
-           VALE_REFE=K1ref,
-           NOM_PARA='K1',
-           TABLE=GK)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.3e-2,
+    VALE_CALC=6664853.231962417,
+    VALE_REFE=K1ref,
+    NOM_PARA="K1",
+    TABLE=GK,
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.5e-2,
-           VALE_CALC=6678324.003978961,
-           VALE_REFE=K1ref,
-           NOM_PARA='K1',
-           TABLE=K)
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=0.5e-2,
+    VALE_CALC=6678324.003978961,
+    VALE_REFE=K1ref,
+    NOM_PARA="K1",
+    TABLE=K,
+)
 
 FIN()

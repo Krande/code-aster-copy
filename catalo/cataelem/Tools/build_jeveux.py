@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,34 +45,35 @@ ERR = JV.ERR
 # Fonction principale :
 #
 def impr_cata(cel, nomfic, dbgdir=None):
-#============================
-# imprimer les catalogues d'elements (cel) sur le fichier (nomfic) au
-# format "objets jeveux"
+    # ============================
+    # imprimer les catalogues d'elements (cel) sur le fichier (nomfic) au
+    # format "objets jeveux"
 
     fimpr = open(nomfic, "w")
     imprime_ojb(cel, fimpr, dbgdir)
     fimpr.close()
     ERR.fini()
 
+
 #
 # utilitaires :
 #
 def txtpad(long, chaine):
-    #---------------------------------------
+    # ---------------------------------------
     # retourne une chaine de longueur "long" en completant chaine par des
     # "blancs"
     return chaine[:long].ljust(long)
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # impression au format 'ojb' :
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def imprime_ojb(cel, file, dbgdir):
     cel.msg("INFO Debut de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
     d = {}  # dictionnaire des ojb
 
-    #=========================================================================
+    # =========================================================================
     # Bouts de code pouvant servir aux developpeurs pour generer des fichiers pratiques pour les scripts :
     # Ces bouts de code sont places ici, avant les "del cata"
     if dbgdir:
@@ -89,23 +90,24 @@ def imprime_ojb(cel, file, dbgdir):
         # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
         numte_lnomte(osp.join(dbgdir, "CATA_numte_lnomte.txt"), cel)
 
-    #=========================================================================
+    # =========================================================================
     # Verifications de coherence des catalogues :
-    #--------------------------------------------
+    # --------------------------------------------
     verif_phenmode(cel)
 
-    #=========================================================================
+    # =========================================================================
 
     #  TOUCOMLIBR = objet contenant tous les commentaires libres :
-    #-------------------------------------------------------------
+    # -------------------------------------------------------------
     TOUCOMLIBR = JV.cree_co(
-        d, nom='&CATA.CL.COMLIBR', tsca='K80', tsca_pn='K8', contig='CONTIG', acces='NU', longv=1)
+        d, nom="&CATA.CL.COMLIBR", tsca="K80", tsca_pn="K8", contig="CONTIG", acces="NU", longv=1
+    )
 
     def split_comlibr(TOUCOMLIBR, comlibr):
         # "splite" la chaine comlibr en plusieurs lignes et stocke ces lignes dans TOUCOMLIBR
         indice = len(TOUCOMLIBR.objs)
         if comlibr:
-            l = comlibr.split('\n')
+            l = comlibr.split("\n")
             nblig = len(l)
             ind1 = indice
             for x in l:
@@ -124,19 +126,20 @@ def imprime_ojb(cel, file, dbgdir):
             ifpg = NOFPG.jenonu(txtpad(8, elrf.name) + nfam)
             return (int(npg), ifpg)
         else:
-            ERR.mess('E', " famille de Points de Gauss inconnue: " +
-                     nfam + " pour ELREFE: " + elrf)
+            ERR.mess("E", " famille de Points de Gauss inconnue: " + nfam + " pour ELREFE: " + elrf)
 
     #  catalogue des TYPE_MAILLE :
-    #-----------------------------------------
+    # -----------------------------------------
     ERR.contexte("Examen du catalogue des types de mailles")
-    NOMTM = JV.cree_pn(d, nom='&CATA.TM.NOMTM', tsca='K8')
-    NOELRF = JV.cree_pn(d, nom='&CATA.TM.NOELRF', tsca='K8')
-    NOFPG = JV.cree_pn(d, nom='&CATA.TM.NOFPG', tsca='K16')
-    NBNO = JV.cree_co(d, nom='&CATA.TM.NBNO', tsca='I',
-                      tsca_pn='K8', contig='CONTIG', acces='NO', longv=1)
-    TMDIM = JV.cree_co(d, nom='&CATA.TM.TMDIM', tsca='I',
-                       tsca_pn='K8', contig='CONTIG', acces='NO', longv=1)
+    NOMTM = JV.cree_pn(d, nom="&CATA.TM.NOMTM", tsca="K8")
+    NOELRF = JV.cree_pn(d, nom="&CATA.TM.NOELRF", tsca="K8")
+    NOFPG = JV.cree_pn(d, nom="&CATA.TM.NOFPG", tsca="K16")
+    NBNO = JV.cree_co(
+        d, nom="&CATA.TM.NBNO", tsca="I", tsca_pn="K8", contig="CONTIG", acces="NO", longv=1
+    )
+    TMDIM = JV.cree_co(
+        d, nom="&CATA.TM.TMDIM", tsca="I", tsca_pn="K8", contig="CONTIG", acces="NO", longv=1
+    )
     nb_elrf = 0
     nb_fpg = 0
     meshTypes = cel.getMeshTypes()
@@ -158,8 +161,8 @@ def imprime_ojb(cel, file, dbgdir):
                 nb_fpg = nb_fpg + 1
                 NOFPG.ajout_nom(nom + nfam)
 
-    TMELRF = JV.cree_os(d, nom='&CATA.TM.TMELRF', tsca='I', long=nb_elrf)
-    TMFPG = JV.cree_os(d, nom='&CATA.TM.TMFPG', tsca='I', long=nb_fpg)
+    TMELRF = JV.cree_os(d, nom="&CATA.TM.TMELRF", tsca="I", long=nb_elrf)
+    TMFPG = JV.cree_os(d, nom="&CATA.TM.TMFPG", tsca="I", long=nb_fpg)
     ifpg = 0
     for tm in meshTypes:
         notm = tm.name
@@ -174,7 +177,7 @@ def imprime_ojb(cel, file, dbgdir):
                 TMFPG.ecri_os(indice=ifpg, valeur=npg)
 
     #  catalogue des grandeurs :
-    #-----------------------------------------
+    # -----------------------------------------
     ERR.contexte("Examen du catalogue des grandeurs")
 
     # calcul de l_gdsimp et l_gdelem :
@@ -182,12 +185,14 @@ def imprime_ojb(cel, file, dbgdir):
     l_gdelem = cel.getArrayOfQuantities()
 
     nbgd = len(l_gdsimp) + len(l_gdelem)
-    NOMGD = JV.cree_pn(d, nom='&CATA.GD.NOMGD', tsca='K8')
-    TYPEGD = JV.cree_os(d, nom='&CATA.GD.TYPEGD', tsca='K8', long=nbgd)
-    NOMCMP = JV.cree_co(d, nom='&CATA.GD.NOMCMP', tsca='K8',
-                        tsca_pn='K8', contig='CONTIG', acces='NO', longv=0)
-    DESCRIGD = JV.cree_co(d, nom='&CATA.GD.DESCRIGD', tsca='I',
-                          tsca_pn='K8', contig='CONTIG', acces='NU', longv=7)
+    NOMGD = JV.cree_pn(d, nom="&CATA.GD.NOMGD", tsca="K8")
+    TYPEGD = JV.cree_os(d, nom="&CATA.GD.TYPEGD", tsca="K8", long=nbgd)
+    NOMCMP = JV.cree_co(
+        d, nom="&CATA.GD.NOMCMP", tsca="K8", tsca_pn="K8", contig="CONTIG", acces="NO", longv=0
+    )
+    DESCRIGD = JV.cree_co(
+        d, nom="&CATA.GD.DESCRIGD", tsca="I", tsca_pn="K8", contig="CONTIG", acces="NU", longv=7
+    )
 
     k = 0
     for gd in l_gdsimp:
@@ -217,22 +222,20 @@ def imprime_ojb(cel, file, dbgdir):
         NOMCMP.cree_oc(nom=nogd, long=0)
         DESCRIGD.cree_oc(nom=nogd, long=7)
 
-        if gd.dim == 'V':
-            ERR.veri_appartient_liste(
-                'F', gd.physicalQuantity.name, NOMGD.valeurs)
+        if gd.dim == "V":
+            ERR.veri_appartient_liste("F", gd.physicalQuantity.name, NOMGD.valeurs)
             igd1 = NOMGD.valeurs.index(gd.physicalQuantity.name)
             DESCRIGD.ecri_co(nom=nogd, indice=1, valeur=3)
             DESCRIGD.ecri_co(nom=nogd, indice=4, valeur=igd1 + 1)
             tscal = TYPEGD.valeurs[igd1]
 
-        elif gd.dim in ('MS', 'MR'):
-            ERR.veri_appartient_liste(
-                'F', gd.physicalQuantity.name, NOMGD.valeurs)
+        elif gd.dim in ("MS", "MR"):
+            ERR.veri_appartient_liste("F", gd.physicalQuantity.name, NOMGD.valeurs)
             igd1 = NOMGD.valeurs.index(gd.physicalQuantity.name)
 
-            if gd.dim == 'MS':
+            if gd.dim == "MS":
                 DESCRIGD.ecri_co(nom=nogd, indice=1, valeur=4)
-            elif gd.dim == 'MR':
+            elif gd.dim == "MR":
                 DESCRIGD.ecri_co(nom=nogd, indice=1, valeur=5)
 
             DESCRIGD.ecri_co(nom=nogd, indice=4, valeur=igd1 + 1)
@@ -246,16 +249,19 @@ def imprime_ojb(cel, file, dbgdir):
         TYPEGD.ecri_os(indice=k, valeur=tscal)
 
     #  catalogues des options :
-    #-----------------------------------------
+    # -----------------------------------------
     options = cel.getOptions()
     nbop = len(options)
-    NOMOP = JV.cree_pn(d, nom='&CATA.OP.NOMOPT', tsca='K16')
-    DESCOPT = JV.cree_co(d, nom='&CATA.OP.DESCOPT', tsca='I',
-                         tsca_pn='K16', contig='CONTIG', acces='NU', longv=0)
-    OPTPARA = JV.cree_co(d, nom='&CATA.OP.OPTPARA', tsca='K8',
-                         tsca_pn='K16', contig='CONTIG', acces='NU', longv=0)
-    LOCALIS = JV.cree_co(d, nom='&CATA.OP.LOCALIS', tsca='K24',
-                         tsca_pn='K16', contig='CONTIG', acces='NU', longv=0)
+    NOMOP = JV.cree_pn(d, nom="&CATA.OP.NOMOPT", tsca="K16")
+    DESCOPT = JV.cree_co(
+        d, nom="&CATA.OP.DESCOPT", tsca="I", tsca_pn="K16", contig="CONTIG", acces="NU", longv=0
+    )
+    OPTPARA = JV.cree_co(
+        d, nom="&CATA.OP.OPTPARA", tsca="K8", tsca_pn="K16", contig="CONTIG", acces="NU", longv=0
+    )
+    LOCALIS = JV.cree_co(
+        d, nom="&CATA.OP.LOCALIS", tsca="K24", tsca_pn="K16", contig="CONTIG", acces="NU", longv=0
+    )
 
     for opt in options:
         nom = opt.name
@@ -303,10 +309,8 @@ def imprime_ojb(cel, file, dbgdir):
                 LOCALIS.ecri_co(nom=nom, indice=3 * k - 1, valeur="VIDE")
                 LOCALIS.ecri_co(nom=nom, indice=3 * k, valeur="VIDE")
             (nblcom, indcom) = split_comlibr(TOUCOMLIBR, comlibr)
-            DESCOPT.ecri_co(
-                nom=nom, indice=6 + nbin + nbou + 2 * (k - 1) + 1, valeur=nblcom)
-            DESCOPT.ecri_co(
-                nom=nom, indice=6 + nbin + nbou + 2 * (k - 1) + 2, valeur=indcom)
+            DESCOPT.ecri_co(nom=nom, indice=6 + nbin + nbou + 2 * (k - 1) + 1, valeur=nblcom)
+            DESCOPT.ecri_co(nom=nom, indice=6 + nbin + nbou + 2 * (k - 1) + 2, valeur=indcom)
 
         k = 0
         for para_ou in lpaou:
@@ -321,13 +325,11 @@ def imprime_ojb(cel, file, dbgdir):
             OPTPARA.ecri_co(nom=nom, indice=nbin + k, valeur=para)
             OPTPARA.ecri_co(nom=nom, indice=nbin + nbou + k, valeur=typout)
             (nblcom, indcom) = split_comlibr(TOUCOMLIBR, comlibr)
-            DESCOPT.ecri_co(
-                nom=nom, indice=6 + 3 * nbin + nbou + 2 * (k - 1) + 1, valeur=nblcom)
-            DESCOPT.ecri_co(
-                nom=nom, indice=6 + 3 * nbin + nbou + 2 * (k - 1) + 2, valeur=indcom)
+            DESCOPT.ecri_co(nom=nom, indice=6 + 3 * nbin + nbou + 2 * (k - 1) + 1, valeur=nblcom)
+            DESCOPT.ecri_co(nom=nom, indice=6 + 3 * nbin + nbou + 2 * (k - 1) + 2, valeur=indcom)
 
     #  catalogues des type_elem :
-    #-------------------------------------------
+    # -------------------------------------------
     # fonction de calcul d'une suite d'entiers codes correspondant à une liste
     # de CMPS:
     def entiers_codes(note, lcmp, lcmp_gd):
@@ -339,8 +341,9 @@ def imprime_ojb(cel, file, dbgdir):
             # index will raise IndexError
             rangcmp = lcmp_gd.index(lcmp[icmp])
             if rangcmp < rangav:
-                ERR.mess('E', " CMPS dans un ordre incorrect. " +
-                         repr(lcmp) + " type_elem: " + note)
+                ERR.mess(
+                    "E", " CMPS dans un ordre incorrect. " + repr(lcmp) + " type_elem: " + note
+                )
 
             rangav = rangcmp
             iec = int(rangcmp / 30)
@@ -348,9 +351,9 @@ def imprime_ojb(cel, file, dbgdir):
             liec[iec] = liec[iec] | 2 ** puiss
         return liec
 
-#   --- debut instructions imprime_ojb pour les elements :
-#   ------------------------------------------------------
-#   -- calcul de 2 dictionnaires qui seront utilises plus loin :
+    #   --- debut instructions imprime_ojb pour les elements :
+    #   ------------------------------------------------------
+    #   -- calcul de 2 dictionnaires qui seront utilises plus loin :
     opt_contrainte, opt_a_calculer = liste_opt_a_calculer(cel, dbgdir)
 
     nbte = len(cel.getElements())
@@ -359,34 +362,37 @@ def imprime_ojb(cel, file, dbgdir):
     if dbgdir:
         cel.msg("DEBUG {} {} {}".format(nbte, nblocfpg, nbopte))
 
-    NOMTE = JV.cree_pn(d, nom='&CATA.TE.NOMTE', tsca='K16')
-    TYPEMA = JV.cree_os(d, nom='&CATA.TE.TYPEMA', tsca='K8', long=nbte)
-    NOMMOLOC = JV.cree_pn(d, nom='&CATA.TE.NOMMOLOC', tsca='K24')
-    MODELOC = JV.cree_co(d, nom='&CATA.TE.MODELOC', tsca='I',
-                         tsca_pn='K24', contig='CONTIG', acces='NU', longv=0)
-    NBELREFE = JV.cree_os(d, nom='&CATA.TE.NBELREFE', tsca='I', long=2 * nbte)
-    NOELREFE = JV.cree_os(
-        d, nom='&CATA.TE.NOELREFE', tsca='K8', long=cel.getNbElrefe())
-    PNLOCFPG = JV.cree_os(
-        d, nom='&CATA.TE.PNLOCFPG', tsca='K32', long=nblocfpg)
-    NOLOCFPG = JV.cree_os(d, nom='&CATA.TE.NOLOCFPG', tsca='I', long=nblocfpg)
-    OPTT2 = JV.cree_os(d, nom='&CATA.TE.OPTT2', tsca='I', long=2 * nbopte)
+    NOMTE = JV.cree_pn(d, nom="&CATA.TE.NOMTE", tsca="K16")
+    TYPEMA = JV.cree_os(d, nom="&CATA.TE.TYPEMA", tsca="K8", long=nbte)
+    NOMMOLOC = JV.cree_pn(d, nom="&CATA.TE.NOMMOLOC", tsca="K24")
+    MODELOC = JV.cree_co(
+        d, nom="&CATA.TE.MODELOC", tsca="I", tsca_pn="K24", contig="CONTIG", acces="NU", longv=0
+    )
+    NBELREFE = JV.cree_os(d, nom="&CATA.TE.NBELREFE", tsca="I", long=2 * nbte)
+    NOELREFE = JV.cree_os(d, nom="&CATA.TE.NOELREFE", tsca="K8", long=cel.getNbElrefe())
+    PNLOCFPG = JV.cree_os(d, nom="&CATA.TE.PNLOCFPG", tsca="K32", long=nblocfpg)
+    NOLOCFPG = JV.cree_os(d, nom="&CATA.TE.NOLOCFPG", tsca="I", long=nblocfpg)
+    OPTT2 = JV.cree_os(d, nom="&CATA.TE.OPTT2", tsca="I", long=2 * nbopte)
 
-    OPTMOD = JV.cree_co(d, nom='&CATA.TE.OPTMOD', tsca='I',
-                        tsca_pn='K8', contig='CONTIG', acces='NU', longv=0)
-    OPTNOM = JV.cree_co(d, nom='&CATA.TE.OPTNOM', tsca='K8',
-                        tsca_pn='K8', contig='CONTIG', acces='NU', longv=0)
-    CTE_ATTR = JV.cree_co(d, nom='&CATA.TE.CTE_ATTR', tsca='K16',
-                          tsca_pn='K16', contig='CONTIG', acces='NU', longv=0)
+    OPTMOD = JV.cree_co(
+        d, nom="&CATA.TE.OPTMOD", tsca="I", tsca_pn="K8", contig="CONTIG", acces="NU", longv=0
+    )
+    OPTNOM = JV.cree_co(
+        d, nom="&CATA.TE.OPTNOM", tsca="K8", tsca_pn="K8", contig="CONTIG", acces="NU", longv=0
+    )
+    CTE_ATTR = JV.cree_co(
+        d, nom="&CATA.TE.CTE_ATTR", tsca="K16", tsca_pn="K16", contig="CONTIG", acces="NU", longv=0
+    )
 
     # objets FPG_LISTE et NOFPG_LISTE :
     # --------------------------------------
     ERR.contexte("fabrication de l'objet .FPG_LISTE")
     # locations={NOMTE(1:16)//nofpgl(1:8):[nofpg1,nofpg2,...,ELREFE]}
     locations = getAllLocations(cel)
-    FPG_LISTE = JV.cree_co(d, nom='&CATA.TE.FPG_LISTE', tsca='K8',
-                           tsca_pn='K24', contig='CONTIG', acces='NU', longv=0)
-    NOFPG_LISTE = JV.cree_pn(d, nom='&CATA.TE.NOFPG_LISTE', tsca='K24')
+    FPG_LISTE = JV.cree_co(
+        d, nom="&CATA.TE.FPG_LISTE", tsca="K8", tsca_pn="K24", contig="CONTIG", acces="NU", longv=0
+    )
+    NOFPG_LISTE = JV.cree_pn(d, nom="&CATA.TE.NOFPG_LISTE", tsca="K24")
     locIndex = {}
     i = 0
     for nofpgl, loc in list(locations.items()):
@@ -413,18 +419,18 @@ def imprime_ojb(cel, file, dbgdir):
         ERR.contexte("Examen du catalogue du type_elem : " + note)
         ERR.contexte("  rubrique: entete ", "AJOUT")
         if dbgele:
-            cel.msg('DEBUG nodes: {}'.format([(i.name, i.nodes) for i in l_decl_en or []]))
+            cel.msg("DEBUG nodes: {}".format([(i.name, i.nodes) for i in l_decl_en or []]))
 
         NOMTE.ajout_nom(note)
         nute = NOMTE.jenonu(nom=note)
         if nute != k:
-            ERR.mess('F', "bizarre !")
+            ERR.mess("F", "bizarre !")
         note2 = txtpad(16, note)
 
         notm = cata.meshType.name
         nutm = NOMTM.jenonu(nom=notm)
         if nutm == 0:
-            raise Exception('Erreur: nom de type_maille inconnu: %s' % notm)
+            raise Exception("Erreur: nom de type_maille inconnu: %s" % notm)
         nno = NBNO.lit_co(nom=notm, indice=1)
 
         TYPEMA.ecri_os(indice=nute, valeur=cata.meshType.name)
@@ -437,8 +443,7 @@ def imprime_ojb(cel, file, dbgdir):
             ielrefe = ielrefe + 1
             NOELREFE.ecri_os(indice=ielrefe, valeur=elref1.elrefe.name)
         NBELREFE.ecri_os(indice=2 * (nute - 1) + 1, valeur=kelrefe)
-        NBELREFE.ecri_os(
-            indice=2 * (nute - 1) + 2, valeur=ielrefe - kelrefe + 1)
+        NBELREFE.ecri_os(indice=2 * (nute - 1) + 2, valeur=ielrefe - kelrefe + 1)
 
         # objets PNLOCFPG et NOLOCFPG :
         # ---------------------------------
@@ -450,8 +455,7 @@ def imprime_ojb(cel, file, dbgdir):
             for loca in list(elref1.gauss.keys()):
                 globa = elref1.gauss[loca]
                 iflpg = iflpg + 1
-                noflpg = note2 + \
-                    txtpad(8, elref1.elrefe.name) + txtpad(8, loca)
+                noflpg = note2 + txtpad(8, elref1.elrefe.name) + txtpad(8, loca)
                 ifpg = NOFPG.jenonu(txtpad(8, elref1.elrefe.name) + globa)
                 PNLOCFPG.ecri_os(indice=iflpg, valeur=noflpg)
                 NOLOCFPG.ecri_os(indice=iflpg, valeur=ifpg)
@@ -460,10 +464,12 @@ def imprime_ojb(cel, file, dbgdir):
             if len(elref1.mater) > 0:
                 if num_elref1 != 1:
                     ERR.mess(
-                        'E', "Utilisation d'une famille de PG 'MATER' pour un elrefe non principal: " + elref1.elrefe.name)
+                        "E",
+                        "Utilisation d'une famille de PG 'MATER' pour un elrefe non principal: "
+                        + elref1.elrefe.name,
+                    )
                 iflpg = iflpg + 1
-                noflpg = note2 + \
-                    txtpad(8, elref1.elrefe.name) + txtpad(8, 'MATER')
+                noflpg = note2 + txtpad(8, elref1.elrefe.name) + txtpad(8, "MATER")
                 # pour la famille de PG "MATER" : NOLOCFPG(iflpg)=0
                 ifpg = 0
                 PNLOCFPG.ecri_os(indice=iflpg, valeur=noflpg)
@@ -475,22 +481,23 @@ def imprime_ojb(cel, file, dbgdir):
         nbattr = len(liattr)
         CTE_ATTR.cree_oc(nom=note, long=nbattr * 2)
         for iattr in range(nbattr):
-            CTE_ATTR.ecri_co(nom=note, indice=2*iattr + 1, valeur=liattr[iattr][0].name)
-            CTE_ATTR.ecri_co(nom=note, indice=2*iattr + 2, valeur=liattr[iattr][1])
+            CTE_ATTR.ecri_co(nom=note, indice=2 * iattr + 1, valeur=liattr[iattr][0].name)
+            CTE_ATTR.ecri_co(nom=note, indice=2 * iattr + 2, valeur=liattr[iattr][1])
 
         # modes locaux :
         # ---------------
         modlocs = cata.usedLocatedComponents()
         ERR.contexte("Examen du catalogue du type_elem: " + note)
-        ERR.contexte(
-            "  rubrique: modes locaux utilises par le type_elem ", "AJOUT")
+        ERR.contexte("  rubrique: modes locaux utilises par le type_elem ", "AJOUT")
 
         # modes locaux "simples" :
         for moloc in modlocs:
-            if moloc.type not in ('ELEM', 'ELNO', 'ELGA'):
+            if moloc.type not in ("ELEM", "ELNO", "ELGA"):
                 continue
             nomolo = moloc.name
-            assert nomolo is not None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
+            assert (
+                nomolo is not None
+            ), "Il faut nommer explicitement tous les modes locaux crees dans les boucles."
             nogd = moloc.physicalQuantity.name
             typept = moloc.type
             diff = moloc.diff
@@ -520,20 +527,22 @@ def imprime_ojb(cel, file, dbgdir):
 
                 # si on n'a pas trouve, on regarde la famille "MATER" :
                 if nbpt == -999:
-                    if len(elref1.mater) > 0 and nofpg1 == 'MATER':
+                    if len(elref1.mater) > 0 and nofpg1 == "MATER":
                         # on parcourt les familles "simples" de MATER :
                         nbpt_l = 0
                         for loca in elref1.mater:
                             globa = elref1.gauss[loca]
-                            (nbpt, ifpg) = elrefe_npg(
-                                NOFPG, cata.elrefe[0].elrefe, globa)
+                            (nbpt, ifpg) = elrefe_npg(NOFPG, cata.elrefe[0].elrefe, globa)
                             nbpt_l = nbpt_l + nbpt
                         nbpt = nbpt_l
-                        ifpg = - locIndex[note2 + nofpg1]
+                        ifpg = -locIndex[note2 + nofpg1]
 
             if nbpt == -999:
                 ERR.mess(
-                    'F', "Utilisation d'un nombre de points de Gauss indefini pour le mode_local: " + nomolo)
+                    "F",
+                    "Utilisation d'un nombre de points de Gauss indefini pour le mode_local: "
+                    + nomolo,
+                )
 
             if not diff:
                 nbpt2 = nbpt
@@ -556,8 +565,7 @@ def imprime_ojb(cel, file, dbgdir):
             MODELOC.ecri_co(nom=nomolo2, indice=2, valeur=igd)
             MODELOC.ecri_co(nom=nomolo2, indice=4, valeur=nbpt2)
             if typept == "ELGA":
-                MODELOC.ecri_co(
-                    nom=nomolo2, indice=4 + nec * nbpt3 + 1, valeur=ifpg)
+                MODELOC.ecri_co(nom=nomolo2, indice=4 + nec * nbpt3 + 1, valeur=ifpg)
             if dbgele:
                 cel.msg(repr(nomolo, typept, nogd, igd, diff, nbpt, nbpt2, nbpt3, nec))
 
@@ -565,8 +573,7 @@ def imprime_ojb(cel, file, dbgdir):
                 point = moloc.components
                 liec = entiers_codes(note, point, lcmp_gd)
                 for kk in range(len(liec)):
-                    MODELOC.ecri_co(
-                        nom=nomolo2, indice=4 + kk + 1, valeur=liec[kk])
+                    MODELOC.ecri_co(nom=nomolo2, indice=4 + kk + 1, valeur=liec[kk])
                 nbscal = len(point) * nbpt
                 MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
                 if dbgele:
@@ -595,7 +602,10 @@ def imprime_ojb(cel, file, dbgdir):
                         for ino in liste:
                             for kk in range(len(liec)):
                                 MODELOC.ecri_co(
-                                    nom=nomolo2, indice=4 + (ino - 1) * nec + kk + 1, valeur=liec[kk])
+                                    nom=nomolo2,
+                                    indice=4 + (ino - 1) * nec + kk + 1,
+                                    valeur=liec[kk],
+                                )
                                 if dbgele:
                                     cel.msg("{0} ec={1}".format(nomolo, liec[kk]))
                             nbscal = nbscal + len(point)
@@ -605,31 +615,34 @@ def imprime_ojb(cel, file, dbgdir):
 
         # modes locaux "vecteurs" :
         for moloc in modlocs:
-            if moloc.type not in ('VEC',):
+            if moloc.type not in ("VEC",):
                 continue
             nomolo = moloc.name
-            assert nomolo is not None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
+            assert (
+                nomolo is not None
+            ), "Il faut nommer explicitement tous les modes locaux crees dans les boucles."
             nogd = moloc.physicalQuantity.name
             molo1 = moloc.locatedComponents.name
             nomolo2 = note2 + nomolo
             igd = NOMGD.jenonu(nogd)
             NOMMOLOC.ajout_nom(nomolo2)
             MODELOC.cree_oc(nom=nomolo2, long=5)
-            MODELOC.ecri_co(nom=nomolo2, indice=1, valeur=4)   # VECTEUR
+            MODELOC.ecri_co(nom=nomolo2, indice=1, valeur=4)  # VECTEUR
             MODELOC.ecri_co(nom=nomolo2, indice=2, valeur=igd)
             nbscal = MODELOC.lit_co(nom=note2 + molo1, indice=3)
             MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
-            MODELOC.ecri_co(
-                nom=nomolo2, indice=4, valeur=NOMMOLOC.jenonu(note2 + molo1))
+            MODELOC.ecri_co(nom=nomolo2, indice=4, valeur=NOMMOLOC.jenonu(note2 + molo1))
             if dbgele:
                 cel.msg(repr(nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1)))
 
         # modes locaux "matrices" :
         for moloc in modlocs:
-            if moloc.type not in ('MAT',):
+            if moloc.type not in ("MAT",):
                 continue
             nomolo = moloc.name
-            assert nomolo is not None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
+            assert (
+                nomolo is not None
+            ), "Il faut nommer explicitement tous les modes locaux crees dans les boucles."
             nogd = moloc.physicalQuantity.name
             molo1 = moloc.locatedComponents.name
             # forcément les mêmes LocatedComponents pour une matrice
@@ -639,7 +652,7 @@ def imprime_ojb(cel, file, dbgdir):
             type_matrice = DESCRIGD.lit_co(nom=nogd, indice=1)
             NOMMOLOC.ajout_nom(nomolo2)
             MODELOC.cree_oc(nom=nomolo2, long=5)
-            MODELOC.ecri_co(nom=nomolo2, indice=1, valeur=5)   # MATRICE
+            MODELOC.ecri_co(nom=nomolo2, indice=1, valeur=5)  # MATRICE
             MODELOC.ecri_co(nom=nomolo2, indice=2, valeur=igd)
             nbsca1 = MODELOC.lit_co(nom=note2 + molo1, indice=3)
             nbsca2 = MODELOC.lit_co(nom=note2 + molo2, indice=3)
@@ -652,12 +665,19 @@ def imprime_ojb(cel, file, dbgdir):
             else:
                 raise Exception("Erreur")
             MODELOC.ecri_co(nom=nomolo2, indice=3, valeur=nbscal)
-            MODELOC.ecri_co(
-                nom=nomolo2, indice=4, valeur=NOMMOLOC.jenonu(note2 + molo1))
-            MODELOC.ecri_co(
-                nom=nomolo2, indice=5, valeur=NOMMOLOC.jenonu(note2 + molo2))
+            MODELOC.ecri_co(nom=nomolo2, indice=4, valeur=NOMMOLOC.jenonu(note2 + molo1))
+            MODELOC.ecri_co(nom=nomolo2, indice=5, valeur=NOMMOLOC.jenonu(note2 + molo2))
             if dbgele:
-                cel.msg(repr(nomolo, nogd, igd, nbscal, NOMMOLOC.jenonu(note2 + molo1), NOMMOLOC.jenonu(note2 + molo2)))
+                cel.msg(
+                    repr(
+                        nomolo,
+                        nogd,
+                        igd,
+                        nbscal,
+                        NOMMOLOC.jenonu(note2 + molo1),
+                        NOMMOLOC.jenonu(note2 + molo2),
+                    )
+                )
 
         # options :
         # ---------------
@@ -668,12 +688,14 @@ def imprime_ojb(cel, file, dbgdir):
             nbou = len(opt.para_out)
             ERR.contexte("Examen du catalogue du type_elem : " + note)
             ERR.contexte("  rubrique: option : " + noop, "AJOUT")
-            ERR.veri_pas_doublon_lpara('E', opt.para_in)
-            ERR.veri_pas_doublon_lpara('E', opt.para_out)
+            ERR.veri_pas_doublon_lpara("E", opt.para_in)
+            ERR.veri_pas_doublon_lpara("E", opt.para_out)
 
             if dico_opt_te.get(noop):
                 ERR.mess(
-                    'E', "L'option: " + noop + " est definie plusieurs fois pour le TYPE_ELEM: " + note)
+                    "E",
+                    "L'option: " + noop + " est definie plusieurs fois pour le TYPE_ELEM: " + note,
+                )
             else:
                 dico_opt_te[noop] = numte
 
@@ -698,22 +720,44 @@ def imprime_ojb(cel, file, dbgdir):
                 for kk in range(nbin):
                     param = opt.para_in[kk][0].name
                     mode = opt.para_in[kk][1].name
-                    OPTNOM.ecri_co(
-                        nom=str(ioptte), indice=kk + 1, valeur=param)
+                    OPTNOM.ecri_co(nom=str(ioptte), indice=kk + 1, valeur=param)
                     OPTMOD.ecri_co(
-                        nom=str(ioptte), indice=3 + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
+                        nom=str(ioptte), indice=3 + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode)
+                    )
                     if dbgele:
-                        cel.msg(repr(noop, 'in', param, mode, kk + 1, 3 + kk + 1, NOMMOLOC.jenonu(note2 + mode)))
+                        cel.msg(
+                            repr(
+                                noop,
+                                "in",
+                                param,
+                                mode,
+                                kk + 1,
+                                3 + kk + 1,
+                                NOMMOLOC.jenonu(note2 + mode),
+                            )
+                        )
 
                 for kk in range(nbou):
                     param = opt.para_out[kk][0].name
                     mode = opt.para_out[kk][1].name
-                    OPTNOM.ecri_co(
-                        nom=str(ioptte), indice=nbin + kk + 1, valeur=param)
+                    OPTNOM.ecri_co(nom=str(ioptte), indice=nbin + kk + 1, valeur=param)
                     OPTMOD.ecri_co(
-                        nom=str(ioptte), indice=3 + nbin + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
+                        nom=str(ioptte),
+                        indice=3 + nbin + kk + 1,
+                        valeur=NOMMOLOC.jenonu(note2 + mode),
+                    )
                     if dbgele:
-                        cel.msg(repr(noop, 'out', param, mode, nbin + kk + 1, 3 + nbin + kk + 1, NOMMOLOC.jenonu(note2 + mode)))
+                        cel.msg(
+                            repr(
+                                noop,
+                                "out",
+                                param,
+                                mode,
+                                nbin + kk + 1,
+                                3 + nbin + kk + 1,
+                                NOMMOLOC.jenonu(note2 + mode),
+                            )
+                        )
 
         # -- on emet une erreur si le type_elem calcule des options qu'il NE DEVRAIT PAS calculer
         ERR.contexte("Examen du catalogue du type_elem : " + note)
@@ -725,7 +769,12 @@ def imprime_ojb(cel, file, dbgdir):
             if noop in opt_contrainte:
                 if noop not in opt_a_calculer[note]:
                     ERR.mess(
-                        'F', "L'option: " + noop + " NE DOIT PAS etre calculee par le TYPE_ELEM: " + note)
+                        "F",
+                        "L'option: "
+                        + noop
+                        + " NE DOIT PAS etre calculee par le TYPE_ELEM: "
+                        + note,
+                    )
 
         # -- on ajoute des "-1" pour les options que le type_elem DEVRAIT calculer
         #    et qu'il ne calcule pas.
@@ -746,22 +795,28 @@ def imprime_ojb(cel, file, dbgdir):
 
         del cata
 
-    assert(ioptte == nbopte)
+    assert ioptte == nbopte
 
     #  catalogue des PHENOMENE_MODELISATION :
-    #--------------------------------------------------------
+    # --------------------------------------------------------
     ERR.contexte("Examen du catalogue phenomene modelisation : ")
-    PHENOMENE = JV.cree_pn(d, nom='&CATA.PHENOMENE', tsca='K16')
+    PHENOMENE = JV.cree_pn(d, nom="&CATA.PHENOMENE", tsca="K16")
 
     for pheno in cel.getPhenomenons():
         ph = pheno.name
         codph = pheno.code
         lmod = pheno.modelisations
         PHENOMENE.ajout_nom(ph)
-        MODELI = JV.cree_co(d, nom='&CATA.' + ph, tsca='I',
-                            tsca_pn='K16', contig='CONTIG', acces='NU', longv=(nbtm + 2))
-        NOMMODELI = JV.cree_pn(
-            d, nom='&CATA.' + txtpad(13, ph) + '.MODL', tsca='K16')
+        MODELI = JV.cree_co(
+            d,
+            nom="&CATA." + ph,
+            tsca="I",
+            tsca_pn="K16",
+            contig="CONTIG",
+            acces="NU",
+            longv=(nbtm + 2),
+        )
+        NOMMODELI = JV.cree_pn(d, nom="&CATA." + txtpad(13, ph) + ".MODL", tsca="K16")
         for mod in list(lmod.keys()):
             modeli = lmod[mod]
             codmod = modeli.code
@@ -774,29 +829,33 @@ def imprime_ojb(cel, file, dbgdir):
             MODELI.ecri_co(nom=mod, indice=nbtm + 2, valeur=int(d2))
             for (tyma, tyel) in laffe:
                 MODELI.ecri_co(
-                    nom=mod, indice=NOMTM.jenonu(nom=tyma.name), valeur=NOMTE.jenonu(nom=tyel.name))
+                    nom=mod, indice=NOMTM.jenonu(nom=tyma.name), valeur=NOMTE.jenonu(nom=tyel.name)
+                )
 
     #  impression des obj :
-    #-----------------------------------------
+    # -----------------------------------------
     likeys = list(d.keys())
     likeys.sort()
     for nomojb in likeys:
         ojb = d[nomojb]
         ojb.impr(file)
         if dbgdir:
-            fdbg = osp.join(dbgdir, nomojb.replace(' ', '_') + '.ojb')
-            with open(fdbg, 'w') as fobj:
+            fdbg = osp.join(dbgdir, nomojb.replace(" ", "_") + ".ojb")
+            with open(fdbg, "w") as fobj:
                 ojb.impr(fobj)
     cel.msg("INFO Fin de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
 
-#---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
 # TODO should be CataElem.getAttrsElement(element)
 _cache_attr = {}
+
+
 def get_liattr(cel, cata):
     #     retourne la liste des attributs d'un type_elem :
     #     (y compris les attributs definis au niveau des modelisations)
     #     (y compris les attributs definis AUTOMATIQUEMENT)
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     note = cata.name
     if _cache_attr.get(note):
         return _cache_attr[note]
@@ -815,89 +874,94 @@ def get_liattr(cel, cata):
     # affecte la valeur "###" (qui veut dire plusieurs) ou (-999 si c'est un entier)
     #    Si c'est embetant, il faut redefinir l'attribut au niveau du type_elem
 
-    lattr_AUTO = [AT.ALIAS8, AT.PHENO, AT.MODELI, AT.TYPMA, AT.DIM_TOPO_MODELI,
-                  AT.DIM_COOR_MODELI, AT.DIM_TOPO_MAILLE, AT.BORD, AT.DISCRET]
+    lattr_AUTO = [
+        AT.ALIAS8,
+        AT.PHENO,
+        AT.MODELI,
+        AT.TYPMA,
+        AT.DIM_TOPO_MODELI,
+        AT.DIM_COOR_MODELI,
+        AT.DIM_TOPO_MAILLE,
+        AT.BORD,
+        AT.DISCRET,
+    ]
 
     for pheno, modeli in cel.getElemModel(cata.name):
-            codph = pheno.code
-            codmod = modeli.code
-            (d1, d2) = modeli.dim
-            laffe = modeli.elements
-            lattrib = modeli.attrs
-            d1 = int(d1)
-            d2 = int(d2)
-            assert d1 in (-1, 0, 1, 2, 3), d1
-            assert d2 in (0, 1, 2, 3), d2
-            # On ajoute les attributs definis AUTOMATIQUEMENT (ceux de
-            # lattr_AUTO) :
+        codph = pheno.code
+        codmod = modeli.code
+        (d1, d2) = modeli.dim
+        laffe = modeli.elements
+        lattrib = modeli.attrs
+        d1 = int(d1)
+        d2 = int(d2)
+        assert d1 in (-1, 0, 1, 2, 3), d1
+        assert d2 in (0, 1, 2, 3), d2
+        # On ajoute les attributs definis AUTOMATIQUEMENT (ceux de
+        # lattr_AUTO) :
 
-            # Si les attributs automatiques existent deja, c'est que l'element est partage.
-            # On verifie alors la coherence des informations
-            if dicattr.get(AT.ALIAS8) is None:
-                dicattr[AT.DIM_TOPO_MAILLE] = str(dimtma)
-                dicattr[AT.DIM_TOPO_MODELI] = str(d1)
-                dicattr[AT.DIM_COOR_MODELI] = str(d2)
-                dicattr[AT.ALIAS8] = str(codph)[0:2] + str(codmod)[0:3] + str(codtma)[0:3]
-                dicattr[AT.PHENO] = str(codph)[0:2]
-                dicattr[AT.MODELI] = str(codmod)[0:3]
-                dicattr[AT.TYPMA] = str(codtma)[0:3]
+        # Si les attributs automatiques existent deja, c'est que l'element est partage.
+        # On verifie alors la coherence des informations
+        if dicattr.get(AT.ALIAS8) is None:
+            dicattr[AT.DIM_TOPO_MAILLE] = str(dimtma)
+            dicattr[AT.DIM_TOPO_MODELI] = str(d1)
+            dicattr[AT.DIM_COOR_MODELI] = str(d2)
+            dicattr[AT.ALIAS8] = str(codph)[0:2] + str(codmod)[0:3] + str(codtma)[0:3]
+            dicattr[AT.PHENO] = str(codph)[0:2]
+            dicattr[AT.MODELI] = str(codmod)[0:3]
+            dicattr[AT.TYPMA] = str(codtma)[0:3]
 
+        else:
+            if dicattr[AT.DIM_TOPO_MAILLE] != str(dimtma):
+                ERR.mess("E", "DIM_TOPO_MAILLE mal defini (plusieurs)")
+            if dicattr[AT.DIM_TOPO_MODELI] != str(d1):
+                ERR.mess("E", "DIM_TOPO_MODELI mal defini (plusieurs)")
+            if dicattr[AT.DIM_COOR_MODELI] != str(d2):
+                ERR.mess("E", "DIM_COOR_MODELI mal defini (plusieurs)")
+            if dicattr[AT.ALIAS8][5:] != str(codtma)[0:3]:
+                ERR.mess("E", "code type_maille mal defini (plusieurs)")
+
+            alias8 = dicattr[AT.ALIAS8]
+            if alias8[:2] != str(codph)[0:2]:
+                dicattr[AT.PHENO] = "##"
+                alias8 = "##" + alias8[2:]
+            if alias8[2:5] != str(codmod)[0:3]:
+                dicattr[AT.MODELI] = "###"
+                alias8 = alias8[:2] + "###" + alias8[5:]
+            dicattr[AT.ALIAS8] = alias8
+
+        # le cas d1 == -1 est particulier : il est reserve aux
+        # modelisations discrètes DIS_xxx
+        if d1 == -1:
+            dicattr[AT.DISCRET] = "OUI"
+            dicattr[AT.PRINCIPAL] = "OUI"
+            dicattr[AT.BORD] = "0"
+        else:
+            dicattr[AT.DISCRET] = "NON"
+            if d1 > d2:
+                ERR.mess("E", "Pb. pour les dimensions  d1 d2 de la modelisation:" + mod)
+
+            if dimtma == d1:
+                dicattr[AT.PRINCIPAL] = "OUI"
+                dicattr[AT.BORD] = "0"
+            elif dimtma == d1 - 1:
+                dicattr[AT.BORD] = "-1"
+            elif dimtma == d1 - 2:
+                dicattr[AT.BORD] = "-2"
+            elif dimtma == d1 - 3:
+                dicattr[AT.BORD] = "-3"
             else:
-                if dicattr[AT.DIM_TOPO_MAILLE] != str(dimtma):
-                    ERR.mess('E', "DIM_TOPO_MAILLE mal defini (plusieurs)")
-                if dicattr[AT.DIM_TOPO_MODELI] != str(d1):
-                    ERR.mess('E', "DIM_TOPO_MODELI mal defini (plusieurs)")
-                if dicattr[AT.DIM_COOR_MODELI] != str(d2):
-                    ERR.mess('E', "DIM_COOR_MODELI mal defini (plusieurs)")
-                if dicattr[AT.ALIAS8][5:] != str(codtma)[0:3]:
-                    ERR.mess(
-                        'E', "code type_maille mal defini (plusieurs)")
+                assert False, (modeli, modeli.code, d1, dimtma)
 
-                alias8 = dicattr[AT.ALIAS8]
-                if alias8[:2] != str(codph)[0:2]:
-                    dicattr[AT.PHENO] = '##'
-                    alias8 = '##' + alias8[2:]
-                if alias8[2:5] != str(codmod)[0:3]:
-                    dicattr[AT.MODELI] = '###'
-                    alias8 = alias8[:2] + '###' + alias8[5:]
-                dicattr[AT.ALIAS8] = alias8
-
-            # le cas d1 == -1 est particulier : il est reserve aux
-            # modelisations discrètes DIS_xxx
-            if d1 == -1:
-                dicattr[AT.DISCRET] = 'OUI'
-                dicattr[AT.PRINCIPAL] = 'OUI'
-                dicattr[AT.BORD] = '0'
-            else:
-                dicattr[AT.DISCRET] = 'NON'
-                if d1 > d2:
-                    ERR.mess(
-                        'E', "Pb. pour les dimensions  d1 d2 de la modelisation:" + mod)
-
-                if dimtma == d1:
-                    dicattr[AT.PRINCIPAL] = 'OUI'
-                    dicattr[AT.BORD] = '0'
-                elif dimtma == d1 - 1:
-                    dicattr[AT.BORD] = '-1'
-                elif dimtma == d1 - 2:
-                    dicattr[AT.BORD] = '-2'
-                elif dimtma == d1 - 3:
-                    dicattr[AT.BORD] = '-3'
-                else:
-                    assert False, (modeli, modeli.code, d1, dimtma)
-
-            for attr, val_attr in modeli.attrs or []:
-                if attr in lattr_AUTO:
-                    ERR.mess(
-                        'E', "Il est interdit de redefinir l'attribut:" + attr.name)
-                dicattr[attr] = val_attr
+        for attr, val_attr in modeli.attrs or []:
+            if attr in lattr_AUTO:
+                ERR.mess("E", "Il est interdit de redefinir l'attribut:" + attr.name)
+            dicattr[attr] = val_attr
 
     # surcharge eventuelle des attributs definis pour le type_elem:
     for attr, val_attr in cata.getAttrs() or []:
         # XXX was "and" !
         if attr in lattr_AUTO or attr in dicattr:
-            ERR.mess(
-                'E', "Il est interdit de redefinir l'attribut:" + attr.name)
+            ERR.mess("E", "Il est interdit de redefinir l'attribut:" + attr.name)
         dicattr[attr] = val_attr
 
     liattr = list(dicattr.items())
@@ -905,7 +969,7 @@ def get_liattr(cel, cata):
     return liattr
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def liste_opt_a_calculer(cel, dbgdir=None):
     #   -- retourne 2 dictionnaires :
     #      opt_contrainte[noop]=1
@@ -916,12 +980,12 @@ def liste_opt_a_calculer(cel, dbgdir=None):
     opt_contrainte = {}
     opt_a_calculer = {}
 
-#   -- On calcule :
-#      dic1[attr=valattr]=set([nomte])
-#   ------------------------------------
+    #   -- On calcule :
+    #      dic1[attr=valattr]=set([nomte])
+    #   ------------------------------------
     dic1 = {}
     for cata in cel.getElements():
-       # entete, modlocs, opts = cata.cata_te
+        # entete, modlocs, opts = cata.cata_te
         nomte = cata.name
         opt_a_calculer[nomte] = []
         liattr = get_liattr(cel, cata)
@@ -929,10 +993,10 @@ def liste_opt_a_calculer(cel, dbgdir=None):
             dic1[(attr, val)] = dic1.get((attr, val), set())
             dic1[(attr, val)].add(nomte)
 
-#   -- On remplit opt_a_calculer :
-#   -------------------------------
+    #   -- On remplit opt_a_calculer :
+    #   -------------------------------
     for cata in cel.getOptions():
-      # noop, lpain, lchou, lpaou, cond_calcul = cata.cata_op
+        # noop, lpain, lchou, lpaou, cond_calcul = cata.cata_op
         noop = cata.name
         cond_calcul = cata.condition
         if not cond_calcul:
@@ -955,18 +1019,16 @@ def liste_opt_a_calculer(cel, dbgdir=None):
             opt_a_calculer[nomte].append(noop)
 
     if dbgdir:
-        opt_contrainte = OrderedDict(sorted(list(opt_contrainte.items()),
-                                            key=lambda i: i[0]))
-        fdbg = open(osp.join(dbgdir, 'opt_contrainte'), 'w')
+        opt_contrainte = OrderedDict(sorted(list(opt_contrainte.items()), key=lambda i: i[0]))
+        fdbg = open(osp.join(dbgdir, "opt_contrainte"), "w")
         fdbg.write(os.linesep.join(list(opt_contrainte.keys())))
         fdbg.close()
-        fdbg = open(osp.join(dbgdir, 'opt_a_calculer'), 'w')
+        fdbg = open(osp.join(dbgdir, "opt_a_calculer"), "w")
         for nomte in sorted(opt_a_calculer.keys()):
-            fdbg.write(' '.join([nomte, ":"] + sorted(opt_a_calculer[nomte])))
+            fdbg.write(" ".join([nomte, ":"] + sorted(opt_a_calculer[nomte])))
             fdbg.write(os.linesep)
             opt_a_calculer[nomte] = sorted(opt_a_calculer[nomte])
-        opt_a_calculer = OrderedDict(sorted(list(opt_a_calculer.items()),
-                                            key=lambda i: i[0]))
+        opt_a_calculer = OrderedDict(sorted(list(opt_a_calculer.items()), key=lambda i: i[0]))
         fdbg.close()
     return (opt_contrainte, opt_a_calculer)
 
@@ -976,25 +1038,26 @@ def calc_nbopte(cel, opt_a_calculer):
 
     nbopte = 0
     for cata in cel.getElements():
-       # entete, modlocs, opts = cata.cata_te
+        # entete, modlocs, opts = cata.cata_te
         note = cata.name
         dico_opt_te = {}
 
-#       -- 1. les couples declares dans les catalogues de type_elem :
+        #       -- 1. les couples declares dans les catalogues de type_elem :
         for noop, opt in cata.getCalculs():
             dico_opt_te[noop] = 1
             nbopte = nbopte + 1
 
-#       -- 2. les couples absents (pas encore programmes => -1) :
+        #       -- 2. les couples absents (pas encore programmes => -1) :
         for noop in opt_a_calculer[note]:
             if not dico_opt_te.get(noop):
                 nbopte = nbopte + 1
     return nbopte
 
+
 # TODO CataElem.allLocations()
 def getAllLocations(cel):
     #  retourne un dictionnaire contenant toutes les definitions des familles "liste" de PG
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     lifpgl = {}
     for cata in cel.getElements():
         note2 = txtpad(16, cata.name)
@@ -1007,18 +1070,17 @@ def getAllLocations(cel):
     return locations
 
 
-
-#============================================================================================
+# ============================================================================================
 # Quelques fonctions utiles pour engendrer des fichiers pratiques pour les programmeurs
 # (voir la variable xxut1 ci-dessus)
-#=========================================================================
+# =========================================================================
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 def impr_CMP(nomfic, cel):
     # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR  CMP )
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     file = open(nomfic, "w")
 
     for cata in cel.getElements():
@@ -1027,7 +1089,7 @@ def impr_CMP(nomfic, cel):
 
         dicmod = {}
         for moloc in modlocs:
-            if moloc.type not in ('ELEM', 'ELNO', 'ELGA'):
+            if moloc.type not in ("ELEM", "ELNO", "ELGA"):
                 continue
             nomolo = moloc.name
             nogd = moloc.physicalQuantity.name
@@ -1061,7 +1123,8 @@ def impr_CMP(nomfic, cel):
                         nogd, licmp = dicmod[mode]
                         for cmp in licmp:
                             file.write(
-                                noop + " " + note + " IN " + param + " " + nogd + " " + cmp + "\n")
+                                noop + " " + note + " IN " + param + " " + nogd + " " + cmp + "\n"
+                            )
 
                 for kk in range(nbou):
                     param = opt.para_out[kk][0].name
@@ -1070,13 +1133,14 @@ def impr_CMP(nomfic, cel):
                         nogd, licmp = dicmod[mode]
                         for cmp in licmp:
                             file.write(
-                                noop + " " + note + " OUT " + param + " " + nogd + " " + cmp + "\n")
+                                noop + " " + note + " OUT " + param + " " + nogd + " " + cmp + "\n"
+                            )
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def impr_param_options(nomfic, cel):
     # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)  (y compris les RESL)
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     file = open(nomfic, "w")
 
     for cata in cel.getElements():
@@ -1085,7 +1149,9 @@ def impr_param_options(nomfic, cel):
         dicmod = {}
         for moloc in modlocs:
             nomolo = moloc.name
-            assert nomolo is not None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
+            assert (
+                nomolo is not None
+            ), "Il faut nommer explicitement tous les modes locaux crees dans les boucles."
             nogd = moloc.physicalQuantity.name
             dicmod[nomolo] = nogd
 
@@ -1101,23 +1167,21 @@ def impr_param_options(nomfic, cel):
                     mode = opt.para_in[kk][1].name
                     if mode in dicmod:
                         nogd = dicmod[mode]
-                        file.write(
-                            noop + " " + note + " IN " + param + " " + nogd + "\n")
+                        file.write(noop + " " + note + " IN " + param + " " + nogd + "\n")
 
                 for kk in range(nbou):
                     param = opt.para_out[kk][0].name
                     mode = opt.para_out[kk][1].name
                     if mode in dicmod:
                         nogd = dicmod[mode]
-                        file.write(
-                            noop + " " + note + " OUT " + param + " " + nogd + "\n")
+                        file.write(noop + " " + note + " OUT " + param + " " + nogd + "\n")
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def PbOptions(cel):
     # pour imprimer les noms des options qui ne sont plus realisees
     # pour imprimer les noms des parametres inutilises des options
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # La fonction n'est pas a jour ... Il faut la corriger !
     utilise = {}
     for cata in cel.getElements():
@@ -1155,25 +1219,30 @@ def PbOptions(cel):
     erreur = False
     for noop in lopt:
         if not noop in utilise:
-            ERR.mess(
-                'E', "L'option " + noop + " n'est calculee par aucun element.")
+            ERR.mess("E", "L'option " + noop + " n'est calculee par aucun element.")
 
             erreur = True
             continue
         for param in declare[noop]:
             if not param in utilise[noop]:
                 # exception acceptee :
-                if noop == 'SIRO_ELEM' and param == 'XXXXXX':
+                if noop == "SIRO_ELEM" and param == "XXXXXX":
                     continue
                 ERR.mess(
-                    'E', "Le parametre " + param + " de l'option " + noop + " n'est utilise par aucun element.")
+                    "E",
+                    "Le parametre "
+                    + param
+                    + " de l'option "
+                    + noop
+                    + " n'est utilise par aucun element.",
+                )
                 erreur = True
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def numte_lnomte(nomfic, cel):
     # pour imprimer les noms des type_elem qui utilisent une routine te00ij
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     file = open(nomfic, "w")
     dico = {}
     for cata in cel.getElements():
@@ -1182,23 +1251,23 @@ def numte_lnomte(nomfic, cel):
             numte = opt.te
             if numte > 0 and numte != 99:
                 numte = 1000 + numte
-                numte = 'te0' + str(numte)[1:]
+                numte = "te0" + str(numte)[1:]
                 if not numte in dico:
                     dico[numte] = []
                 dico[numte].append(note)
     l1 = list(dico.keys())
     l1.sort()
     for numte in l1:
-        file.write(numte + ' ')
+        file.write(numte + " ")
         for note in dico[numte]:
-            file.write(note + ' ')
-        file.write('\n')
+            file.write(note + " ")
+        file.write("\n")
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def nomte_nomtm(nomfic, cel):
     # pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     file = open(nomfic, "w")
     lines = []
     for cata in cel.getElements():
@@ -1213,14 +1282,14 @@ def nomte_nomtm(nomfic, cel):
         # for k in range(n1 / 2):
         #     x1 = "%-17s" % (liattr[2 * k] + "=" + liattr[2 * k + 1],)
         #     l1 = l1 + x1 + " "
-    lines.append('')
-    file.write('\n'.join(lines))
+    lines.append("")
+    file.write("\n".join(lines))
 
 
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 def verif_phenmode(cel):
     # verifie que les elements se retrouvent dans PHENOMENE_MODELISATION :
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     dic1 = {}
     for cata in cel.getElements():
         note = cata.name
@@ -1241,12 +1310,12 @@ def verif_phenmode(cel):
 
     s3 = s1.difference(s2)
     for tyel in s3:
-        if tyel[0:8] in ('D_DEPL_R', 'D_TEMP_R', 'D_PRES_C'):
+        if tyel[0:8] in ("D_DEPL_R", "D_TEMP_R", "D_PRES_C"):
             continue
-        ERR.mess('E', "L'element " + tyel +
-                 " doit figurer dans la catalogue PHENOMENE_MODELISATION__ .")
+        ERR.mess(
+            "E", "L'element " + tyel + " doit figurer dans la catalogue PHENOMENE_MODELISATION__ ."
+        )
 
     s3 = s2.difference(s1)
     for tyel in s3:
-        ERR.mess('E', "L'element " + tyel +
-                 " n'est pas decrit dans un catalogue d'element .")
+        ERR.mess("E", "L'element " + tyel + " n'est pas decrit dans un catalogue d'element .")

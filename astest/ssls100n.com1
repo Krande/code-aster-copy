@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,34 +16,32 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'))
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 # Gravity: equivalent to pressure
-gravity = AFFE_CHAR_MECA(MODELE    = MODEL,
-                         PESANTEUR = _F(GRAVITE   = presAppl,
-                                        DIRECTION = (0., 0., -1., ), ),)
+gravity = AFFE_CHAR_MECA(MODELE=MODEL, PESANTEUR=_F(GRAVITE=presAppl, DIRECTION=(0.0, 0.0, -1.0)))
 
 
 # Static linear
-resuLinearGravity = MECA_STATIQUE(MODELE     = MODEL,
-                                  CHAM_MATER = MATERIAL,
-                                  EXCIT      = (_F(CHARGE=kineCondition,),
-                                                _F(CHARGE=gravity,),
-                                               ),
-                                  )
+resuLinearGravity = MECA_STATIQUE(
+    MODELE=MODEL, CHAM_MATER=MATERIAL, EXCIT=(_F(CHARGE=kineCondition), _F(CHARGE=gravity))
+)
 
 # Test
-deplDZTole = 0.01 * 8.3E-2
+deplDZTole = 0.01 * 8.3e-2
 
-TEST_RESU(RESU=_F(RESULTAT       = resuLinearGravity,
-                  INST           = 0,
-                  GROUP_NO       = 'c1',
-                  REFERENCE      = 'ANALYTIQUE',
-                  NOM_CHAM       = 'DEPL',
-                  NOM_CMP        = ('DZ',),
-                  VALE_REFE      = deplDZRefe,
-                  VALE_CALC      = -1.0008268440234853,
-                  PRECISION      = deplDZTole,
-          ),)
+TEST_RESU(
+    RESU=_F(
+        RESULTAT=resuLinearGravity,
+        INST=0,
+        GROUP_NO="c1",
+        REFERENCE="ANALYTIQUE",
+        NOM_CHAM="DEPL",
+        NOM_CMP=("DZ",),
+        VALE_REFE=deplDZRefe,
+        VALE_CALC=-1.0008268440234853,
+        PRECISION=deplDZTole,
+    )
+)
 
 FIN()

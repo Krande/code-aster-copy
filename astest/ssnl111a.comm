@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#......................................................................
+# ......................................................................
 # TROIS BARRES EN THERMOPLASTICITE  CALCUL 2D CONTRAINTES PLANES
 # ELASTOPLASTICITE PARFAITE ISOTROPE VON MISES   (3 QUAD4)
 #
@@ -38,569 +38,546 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #     !       !             !
 #  SI ---------  PI     ----!--------  X
 #
-#......................................................................
+# ......................................................................
 
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER", )
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MO=AFFE_MODELE(
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
 
-               MAILLAGE=MA,
-
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                PHENOMENE = 'MECANIQUE',
-                MODELISATION = 'C_PLAN')
-              )
-
-ACIER=DEFI_MATERIAU(
+ACIER = DEFI_MATERIAU(
+    ELAS=_F(E=200000.0, NU=0.30, ALPHA=1.0e-5), ECRO_LINE=_F(D_SIGM_EPSI=0.0, SY=200.0)
+)
 
 
-                ELAS=_F(
-                E = 200000.,
-                NU = 0.30,
-                ALPHA = 1.E-5),
+F1_T = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+    VALE=(0.0, 0.0, 1.0, 150.0, 2.0, 330.0, 3.0, 330.0, 3.81, 330.0, 4.0, 330.0, 5.0, 0.0),
+)
 
-                ECRO_LINE=_F(
-                D_SIGM_EPSI = 0.0,
-                SY = 200.)
-              )
+F2_T = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+    VALE=(0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 220.0, 3.81, 310.0, 4.0, 330.0, 5.0, 0.0),
+)
 
+F3_T = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+    VALE=(0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 3.0, 110.0, 3.81, 290.0, 4.0, 330.0, 5.0, 0.0),
+)
 
-F1_T=DEFI_FONCTION(
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=3.0, NOMBRE=3),
+        _F(JUSQU_A=3.81, NOMBRE=1),
+        _F(JUSQU_A=4.0, NOMBRE=1),
+        _F(JUSQU_A=5.0, NOMBRE=1),
+    ),
+)
 
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
+TEMPIMPO = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_F",
+    MAILLAGE=MA,
+    AFFE=(
+        _F(NOM_CMP="TEMP", GROUP_NO="BAR1", VALE_F=F1_T),
+        _F(NOM_CMP="TEMP", GROUP_NO="BAR2", VALE_F=F2_T),
+        _F(NOM_CMP="TEMP", GROUP_NO="BAR3", VALE_F=F3_T),
+    ),
+)
 
-                VALE=(
-                0.0,    0.0,
-                1.0,  150.0,
-                2.0,  330.0,
-                3.0,  330.0,
-                3.81, 330.0,
-                4.0,  330.0,
-                5.0,    0.0,
-                )
-              )
-
-F2_T=DEFI_FONCTION(
-
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
-
-                VALE=(
-                0.0,    0.0,
-                1.0,    0.0,
-                2.0,    0.0,
-                3.0,  220.0,
-                3.81, 310.0,
-                4.0,  330.0,
-                5.0,    0.0,
-                )
-              )
-
-F3_T=DEFI_FONCTION(
-
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
-
-                VALE=(
-                0.0,    0.0,
-                1.0,    0.0,
-                2.0,    0.0,
-                3.0,  110.0,
-                3.81, 290.0,
-                4.0,  330.0,
-                5.0,    0.0,
-                )
-              )
-
-L_INST=DEFI_LIST_REEL(
-
-                     DEBUT=0.0,INTERVALLE=(
-                _F( JUSQU_A = 3.0,     NOMBRE = 3),
-                           _F( JUSQU_A = 3.81,    NOMBRE = 1),
-                           _F( JUSQU_A = 4.0,     NOMBRE = 1),
-                           _F( JUSQU_A = 5.0,     NOMBRE = 1))
-              )
-
-TEMPIMPO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
-                     MAILLAGE=MA,AFFE=(
-
-                _F(
-                NOM_CMP = 'TEMP',
-                GROUP_NO = 'BAR1',
-                VALE_F = F1_T),
-
-                _F(
-                NOM_CMP = 'TEMP',
-                GROUP_NO = 'BAR2',
-                VALE_F = F2_T),
-
-                _F(
-                NOM_CMP = 'TEMP',
-                GROUP_NO = 'BAR3',
-                VALE_F = F3_T))
-              )
-
-TEMPRESU=CREA_RESU(
-
-                   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',
-
-                AFFE=_F(
-                LIST_INST = L_INST,
-                NUME_INIT = 1,
-                NUME_FIN = 7,
-                CHAM_GD = TEMPIMPO)
-              )
+TEMPRESU = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=_F(LIST_INST=L_INST, NUME_INIT=1, NUME_FIN=7, CHAM_GD=TEMPIMPO),
+)
 
 
-LIAISON=AFFE_CHAR_MECA(
+LIAISON = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="P1", DX=0.0),
+        _F(GROUP_NO="P2", DX=0.0),
+        _F(GROUP_NO="P3", DX=0.0),
+        _F(GROUP_NO="HAU1", DY=0.0),
+        _F(GROUP_NO="HAU2", DY=0.0),
+        _F(GROUP_NO="HAU3", DY=0.0),
+    ),
+    LIAISON_UNIF=_F(GROUP_MA=("BAS1", "BAS2", "BAS3"), DDL="DY"),
+)
 
-               MODELE=MO,DDL_IMPO=(
-
-                _F( GROUP_NO = 'P1',      DX = 0.),
-                _F( GROUP_NO = 'P2',      DX = 0.),
-                _F( GROUP_NO = 'P3',      DX = 0.),
-
-                _F( GROUP_NO = 'HAU1',  DY = 0.),
-                _F( GROUP_NO = 'HAU2',  DY = 0.),
-                _F( GROUP_NO = 'HAU3',  DY = 0.)),
-
-                LIAISON_UNIF=_F( GROUP_MA = ('BAS1','BAS2','BAS3',), DDL = 'DY')
-              )
-
-CM=AFFE_MATERIAU(
-
-               MAILLAGE=MA,
-
-                AFFE=_F(
-                   TOUT = 'OUI',
-                   MATER = ACIER,
-                   ),
-                AFFE_VARC=_F(
-                   NOM_VARC='TEMP',
-                   TOUT='OUI',
-                   EVOL=TEMPRESU,
-                   NOM_CHAM='TEMP',
-                   VALE_REF=0.),
-              )
+CM = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", MATER=ACIER),
+    AFFE_VARC=_F(NOM_VARC="TEMP", TOUT="OUI", EVOL=TEMPRESU, NOM_CHAM="TEMP", VALE_REF=0.0),
+)
 
 
-UELAS=MECA_STATIQUE(
+UELAS = MECA_STATIQUE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=LIAISON),),
+    LIST_INST=L_INST,
+    SOLVEUR=_F(METHODE="LDLT"),
+)
 
-                     MODELE=MO,
-                 CHAM_MATER=CM,EXCIT=(
-
-                 _F( CHARGE = LIAISON),),
-                  LIST_INST=L_INST,
-
-                 SOLVEUR=_F( METHODE = 'LDLT'),
-
-               )
-
-CALC_CHAMP(reuse=UELAS,RESULTAT=UELAS,LIST_INST=L_INST,CONTRAINTE=('SIGM_ELNO'))
+CALC_CHAMP(reuse=UELAS, RESULTAT=UELAS, LIST_INST=L_INST, CONTRAINTE=("SIGM_ELNO"))
 
 
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=-200.0,
+            VALE_REFE=-200.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.0,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.0,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=-440.0,
+            VALE_REFE=-440.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=220.0,
+            VALE_REFE=220.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=220.0,
+            VALE_REFE=220.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=3.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=-220.0,
+            VALE_REFE=-220.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=3.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=2.2737367544323e-13,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=3.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=220.0,
+            VALE_REFE=220.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=4.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=1.5529910840365e-13,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=4.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=1.7053025658242e-13,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=4.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=1.1368683772162e-13,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=5.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=5.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=5.0,
+            RESULTAT=UELAS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=0.0e00,
+            VALE_REFE=0.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            CRITERE="ABSOLU",
+            GROUP_MA="BARR3",
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-200.0,
-                   VALE_REFE=-200.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=1.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.0,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=1.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.0,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=2.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-440.0,
-                   VALE_REFE=-440.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=2.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=220.0,
-                   VALE_REFE=220.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=2.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=220.0,
-                   VALE_REFE=220.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=3.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-220.0,
-                   VALE_REFE=-220.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=3.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=2.2737367544323E-13,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR2',),
-                _F(INST=3.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=220.0,
-                   VALE_REFE=220.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=4.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=1.5529910840365E-13,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR1',),
-                _F(INST=4.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=1.7053025658242E-13,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR2',),
-                _F(INST=4.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=1.1368683772162E-13,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR3',),
-                _F(INST=5.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=0.0E+00,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR1',),
-                _F(INST=5.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=0.0E+00,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR2',),
-                _F(INST=5.0,
-                   RESULTAT=UELAS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=0.0E+00,
-                   VALE_REFE=0.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   CRITERE='ABSOLU',
-                   GROUP_MA='BARR3',),
-                ),
-          )
+UY_T = RECU_FONCTION(
+    RESULTAT=UELAS,
+    TOUT_INST="OUI",
+    NOM_CHAM="DEPL",
+    NOM_CMP="DY",
+    GROUP_MA="BARR1",
+    GROUP_NO="P1",
+    NOM_PARA="INST",
+    NOM_RESU="UY_T",
+    INTERPOL="LIN",
+)
 
-UY_T=RECU_FONCTION(
-                 RESULTAT=UELAS,
-                TOUT_INST='OUI',
-                NOM_CHAM='DEPL',
-                 NOM_CMP='DY',
-                   GROUP_MA='BARR1',
-                    GROUP_NO='P1',
-                 NOM_PARA='INST',
-                 NOM_RESU='UY_T',
-                 INTERPOL='LIN'
-                          )
+SIGY1_T = RECU_FONCTION(
+    RESULTAT=UELAS,
+    TOUT_INST="OUI",
+    NOM_CHAM="SIGM_ELNO",
+    NOM_CMP="SIYY",
+    GROUP_MA="BARR1",
+    GROUP_NO="P1",
+    NOM_PARA="INST",
+    NOM_RESU="SIGY1_T",
+    INTERPOL="LIN",
+)
 
-SIGY1_T=RECU_FONCTION(
-                 RESULTAT=UELAS,
-                TOUT_INST='OUI',
-                NOM_CHAM='SIGM_ELNO',
-                 NOM_CMP='SIYY',
-                   GROUP_MA='BARR1',
-                    GROUP_NO='P1',
-                 NOM_PARA='INST',
-                 NOM_RESU='SIGY1_T',
-                 INTERPOL='LIN'
-                          )
+SIGY2_T = RECU_FONCTION(
+    RESULTAT=UELAS,
+    TOUT_INST="OUI",
+    NOM_CHAM="SIGM_ELNO",
+    NOM_CMP="SIYY",
+    GROUP_MA="BARR2",
+    GROUP_NO="P2",
+    NOM_PARA="INST",
+    NOM_RESU="SIGY2_T",
+    INTERPOL="LIN",
+)
 
-SIGY2_T=RECU_FONCTION(
-                 RESULTAT=UELAS,
-                TOUT_INST='OUI',
-                NOM_CHAM='SIGM_ELNO',
-                 NOM_CMP='SIYY',
-                   GROUP_MA='BARR2',
-                    GROUP_NO='P2',
-                 NOM_PARA='INST',
-                 NOM_RESU='SIGY2_T',
-                 INTERPOL='LIN'
-                          )
+SIGY3_T = RECU_FONCTION(
+    RESULTAT=UELAS,
+    TOUT_INST="OUI",
+    NOM_CHAM="SIGM_ELNO",
+    NOM_CMP="SIYY",
+    GROUP_MA="BARR3",
+    GROUP_NO="P3",
+    NOM_PARA="INST",
+    NOM_RESU="SIGY3_T",
+    INTERPOL="LIN",
+)
 
-SIGY3_T=RECU_FONCTION(
-                 RESULTAT=UELAS,
-                TOUT_INST='OUI',
-                NOM_CHAM='SIGM_ELNO',
-                 NOM_CMP='SIYY',
-                   GROUP_MA='BARR3',
-                    GROUP_NO='P3',
-                 NOM_PARA='INST',
-                 NOM_RESU='SIGY3_T',
-                 INTERPOL='LIN'
-                          )
-
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
-                        ECHEC=_F(ACTION='DECOUPE',
-                                 SUBD_METHODE='MANUEL',
-                                 SUBD_PAS=5,
-                                 SUBD_PAS_MINI = 0.001),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=L_INST),
+    ECHEC=_F(ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=5, SUBD_PAS_MINI=0.001),
+)
 
 ################################################################
 #
 
-U=STAT_NON_LINE(
-                            MODELE=MO, INFO=2,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = LIAISON),),
-                         COMPORTEMENT=_F(
-                RELATION = 'VMIS_ISOT_LINE',
-                TOUT = 'OUI'),
-                         INCREMENT=_F(
-                LIST_INST = DEFLIST,
-                NUME_INST_INIT = 0,
-                NUME_INST_FIN = 6),
-                            NEWTON=_F(
-                REAC_INCR = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-3,
-                ITER_GLOB_MAXI = 15),
-                           SOLVEUR=_F(
-                METHODE = 'LDLT')
-              )
+U = STAT_NON_LINE(
+    MODELE=MO,
+    INFO=2,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=LIAISON),),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=DEFLIST, NUME_INST_INIT=0, NUME_INST_FIN=6),
+    NEWTON=_F(REAC_INCR=1),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-3, ITER_GLOB_MAXI=15),
+    SOLVEUR=_F(METHODE="LDLT"),
+)
 
-CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
+CALC_CHAMP(reuse=U, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE=("VARI_ELNO"), RESULTAT=U)
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-200.0,
-                   VALE_REFE=-200.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=1.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.0,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=1.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.0,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=2.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-200.00064397949,
-                   VALE_REFE=-200.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=2.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.00065235902373,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=2.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.00065235902386,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=3.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=19.99938852433185,
-                   VALE_REFE=20.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=3.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-119.99969426216586,
-                   VALE_REFE=-120.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=3.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=100.0003057378341,
-                   VALE_REFE=100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=4.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=200.00023999599944,
-                   VALE_REFE=200.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=4.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-100.00028443531279,
-                   VALE_REFE=-100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=4.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-100.00028443531282,
-                   VALE_REFE=-100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                _F(INST=5.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=200.0000298166639,
-                   VALE_REFE=200.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR1',),
-                _F(INST=5.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P2',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-100.00014162934147,
-                   VALE_REFE=-100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR2',),
-                _F(INST=5.0,
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='P3',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=-100.00014162934139,
-                   VALE_REFE=-100.0,
-                   REFERENCE = 'ANALYTIQUE',
-                   PRECISION=1.E-3,
-                   GROUP_MA='BARR3',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=-200.0,
+            VALE_REFE=-200.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.0,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=1.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.0,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=-200.00064397949,
+            VALE_REFE=-200.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.00065235902373,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=2.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.00065235902386,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=3.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=19.99938852433185,
+            VALE_REFE=20.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=3.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=-119.99969426216586,
+            VALE_REFE=-120.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=3.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=100.0003057378341,
+            VALE_REFE=100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=4.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=200.00023999599944,
+            VALE_REFE=200.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=4.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=-100.00028443531279,
+            VALE_REFE=-100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=4.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=-100.00028443531282,
+            VALE_REFE=-100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+        _F(
+            INST=5.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P1",
+            NOM_CMP="SIYY",
+            VALE_CALC=200.0000298166639,
+            VALE_REFE=200.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR1",
+        ),
+        _F(
+            INST=5.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P2",
+            NOM_CMP="SIYY",
+            VALE_CALC=-100.00014162934147,
+            VALE_REFE=-100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR2",
+        ),
+        _F(
+            INST=5.0,
+            RESULTAT=U,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="P3",
+            NOM_CMP="SIYY",
+            VALE_CALC=-100.00014162934139,
+            VALE_REFE=-100.0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-3,
+            GROUP_MA="BARR3",
+        ),
+    )
+)
 
 FIN()
 #

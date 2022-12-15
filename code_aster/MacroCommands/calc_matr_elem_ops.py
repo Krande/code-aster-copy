@@ -17,10 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from ..Objects import (
-    PhysicalProblem,
-    DiscreteComputation,
-)
+from ..Objects import PhysicalProblem, DiscreteComputation
 
 from ..Utilities import force_list
 
@@ -65,9 +62,7 @@ def calc_matr_elem_ops(self, **args):
     matr_elem = None
     if myOption in ("RIGI_MECA", "RIGI_THER", "RIGI_ACOU"):
         if "CALC_ELEM_MODELE" not in args or args["CALC_ELEM_MODELE"] == "OUI":
-            matr_elem = disc_comp.getLinearStiffnessMatrix(
-                time, fourier, group_ma
-            )
+            matr_elem = disc_comp.getLinearStiffnessMatrix(time, fourier, group_ma)
         else:
             matr_elem = disc_comp.getDualStiffnessMatrix()
 
@@ -77,7 +72,8 @@ def calc_matr_elem_ops(self, **args):
         displ = args.get("DEPL")
 
         matr_elem = disc_comp.getGeometricStiffnessMatrix(
-            sief_elga, strx_elga, displ, fourier, group_ma)
+            sief_elga, strx_elga, displ, fourier, group_ma
+        )
 
     elif myOption == "RIGI_ROTA":
         matr_elem = disc_comp.getRotationalStiffnessMatrix(group_ma)
@@ -98,12 +94,12 @@ def calc_matr_elem_ops(self, **args):
         getMechanicalMassMatrix = args.get("MASS_MECA")
         stiffnessMatrix = args.get("RIGI_MECA")
         matr_elem = disc_comp.getMechanicalDampingMatrix(
-            getMechanicalMassMatrix, stiffnessMatrix, time, group_ma)
+            getMechanicalMassMatrix, stiffnessMatrix, time, group_ma
+        )
 
     elif myOption == "RIGI_MECA_HYST":
         stiffnessMatrix = args["RIGI_MECA"]
-        matr_elem = disc_comp.getHystereticStiffnessMatrix(
-            stiffnessMatrix, time, group_ma)
+        matr_elem = disc_comp.getHystereticStiffnessMatrix(stiffnessMatrix, time, group_ma)
 
     elif myOption == "AMOR_ACOU":
         matr_elem = disc_comp.getImpedanceMatrix()
@@ -112,8 +108,7 @@ def calc_matr_elem_ops(self, **args):
         matr_elem = disc_comp.getFluidStructureStiffnessMatrix(time, groupOfCells=group_ma)
 
         matr_rigi_dual = disc_comp.getDualStiffnessMatrix()
-        matr_elem.addElementaryTerm(
-            matr_rigi_dual.getElementaryTerms())
+        matr_elem.addElementaryTerm(matr_rigi_dual.getElementaryTerms())
         matr_elem.build()
 
     elif myOption == "MASS_FLUI_STRU":

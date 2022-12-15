@@ -24,17 +24,17 @@ from ..Objects import DOFNumbering, ParallelDOFNumbering
 
 
 def meshIsParallel(args):
-    """ The mesh is a ParallelMesh ?
+    """The mesh is a ParallelMesh ?
 
     Arguments:
         args (dict): Keywords arguments of user's keywords.
     """
 
-    model = args.get('MODELE')
+    model = args.get("MODELE")
     if model is not None:
         return model.getMesh().isParallel()
     else:
-        matr = args.get('MATR_RIGI')[0]
+        matr = args.get("MATR_RIGI")[0]
         return matr.getMesh().isParallel()
 
 
@@ -54,7 +54,7 @@ def nume_ddl_ops(self, **args):
     else:
         nume_ddl = DOFNumbering()
 
-    model = args.get('MODELE')
+    model = args.get("MODELE")
     if model is not None:
         nume_ddl.setModel(model)
         charge = args.get("CHARGE")
@@ -62,7 +62,7 @@ def nume_ddl_ops(self, **args):
             for curLoad in charge:
                 nume_ddl.addLoad(curLoad)
     else:
-        matrRigi = args['MATR_RIGI']
+        matrRigi = args["MATR_RIGI"]
         for matr in matrRigi:
             nume_ddl.setElementaryMatrix(matr)
 

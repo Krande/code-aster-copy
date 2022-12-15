@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,9 @@ from .sd_ligrel import sd_ligrel
 
 class sd_resuelem(AsBase):
     nomj = SDNom(fin=19)
-    NOLI = AsVK24(lonmax=4, )
-    DESC = AsVI(docu='RESL', )
-    RESL = AsColl(acces='NU', stockage='DISPERSE',
-                  modelong='VARIABLE', type=Parmi('C', 'R'))
+    NOLI = AsVK24(lonmax=4)
+    DESC = AsVI(docu="RESL")
+    RESL = AsColl(acces="NU", stockage="DISPERSE", modelong="VARIABLE", type=Parmi("C", "R"))
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
@@ -39,9 +38,9 @@ class sd_resuelem(AsBase):
         noli = self.NOLI.get_stripped()
         sd2 = sd_ligrel(noli[0])
         sd2.check(checker)
-        assert noli[1] != '', noli
-        assert noli[2] in ('MPI_COMPLET', 'MPI_INCOMPLET'), noli
-        assert noli[3] == '', noli
+        assert noli[1] != "", noli
+        assert noli[2] in ("MPI_COMPLET", "MPI_INCOMPLET"), noli
+        assert noli[3] == "", noli
 
         desc = self.DESC.get()
         assert desc[0] > 0 and desc[0] < 1000, desc

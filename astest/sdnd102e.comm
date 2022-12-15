@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,151 +24,192 @@
 #
 # ----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' A CAUSE DU SUR-COUT CPU
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER")
 
 #
 # DESCRIPTION DES PAS DE CALCUL ET D ARCHIVAGE
-#---------------------------------------------
-L_INST =DEFI_LIST_REEL( DEBUT=0.0,   INTERVALLE=_F(JUSQU_A = 0.5, PAS = 0.001))
-L_INST2=DEFI_LIST_REEL( DEBUT=0.0,   INTERVALLE=_F(JUSQU_A = 0.5, PAS = 0.001))
-LISTIMP=DEFI_LIST_REEL( DEBUT=0.001, INTERVALLE=_F(JUSQU_A = 0.5, PAS = 0.001))
+# ---------------------------------------------
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.5, PAS=0.001))
+L_INST2 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=0.5, PAS=0.001))
+LISTIMP = DEFI_LIST_REEL(DEBUT=0.001, INTERVALLE=_F(JUSQU_A=0.5, PAS=0.001))
 #
 # DESCRIPTION DE L'ACCELEROGRAMME
-#--------------------------------
-OMEGAA=2.*pi*10.
+# --------------------------------
+OMEGAA = 2.0 * pi * 10.0
 
-ACCE1 = FORMULE(VALE='sin(OMEGAA*INST) ', OMEGAA=OMEGAA, NOM_PARA='INST',)
+ACCE1 = FORMULE(VALE="sin(OMEGAA*INST) ", OMEGAA=OMEGAA, NOM_PARA="INST")
 
-ACCELER1=CALC_FONC_INTERP( FONCTION=ACCE1,  LIST_PARA=L_INST,
-                           NOM_PARA = 'INST',
-                           PROL_DROITE='LINEAIRE',
-                           PROL_GAUCHE='LINEAIRE',
-                           NOM_RESU='ACCE',
-                           INFO=1)
+ACCELER1 = CALC_FONC_INTERP(
+    FONCTION=ACCE1,
+    LIST_PARA=L_INST,
+    NOM_PARA="INST",
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    NOM_RESU="ACCE",
+    INFO=1,
+)
 
 # MATERIAU
 #
-MAT_CHO=DEFI_MATERIAU(
-    DIS_CONTACT=_F(  RIGI_NOR = 5.76E7, DIST_1 = 0.4495,  JEU = 0.4500) #J=5D-4
-)
+MAT_CHO = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=5.76e7, DIST_1=0.4495, JEU=0.4500))  # J=5D-4
 
-MATBID=DEFI_MATERIAU(
-    ELAS=_F(  E = 1.E10,  NU = 0.3,  RHO = 0.)
-)
+MATBID = DEFI_MATERIAU(ELAS=_F(E=1.0e10, NU=0.3, RHO=0.0))
 
 #
-CH_MAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-    AFFE=(
-        _F(  GROUP_MA = 'RESSORT1',  MATER = MATBID),
-        _F(  GROUP_MA = 'MASSES1',   MATER = MAT_CHO),
-    )
+CH_MAT = AFFE_MATERIAU(
+    MAILLAGE=MAILLAGE,
+    AFFE=(_F(GROUP_MA="RESSORT1", MATER=MATBID), _F(GROUP_MA="MASSES1", MATER=MAT_CHO)),
 )
 
 
 #
-#=======================================================================
+# =======================================================================
 # 1/ ON ETUDIE LE SYSTEME A 1 DDL
 #       ACCE_IMPO = ACCELER1 (SIN(OMEGAA*T)) EN X=0
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 #
 # MODELISATION
 #
-MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
     AFFE=(
-        _F(PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T', GROUP_MA = 'RESSORT1'),
-        _F(PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T', GROUP_MA = 'MASSES1'),
+        _F(PHENOMENE="MECANIQUE", MODELISATION="DIS_T", GROUP_MA="RESSORT1"),
+        _F(PHENOMENE="MECANIQUE", MODELISATION="DIS_T", GROUP_MA="MASSES1"),
     ),
 )
 
-CON_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+CON_LIM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
     DDL_IMPO=(
-        _F(  GROUP_NO = 'NO1',   DX = 0.,  DY = 0.,  DZ = 0.),
-        _F(  GROUP_NO = ( 'MASSES1', ), DY = 0.,  DZ = 0.))
+        _F(GROUP_NO="NO1", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO=("MASSES1",), DY=0.0, DZ=0.0),
+    ),
 )
 
 #
-CARA_ELE=AFFE_CARA_ELEM(
+CARA_ELE = AFFE_CARA_ELEM(
     MODELE=MODELE,
     DISCRET=(
-        _F(CARA = 'K_T_D_L', REPERE='GLOBAL', GROUP_MA = 'RESSORT1', VALE = (98696., 0., 0.,)),
-        _F(CARA = 'M_T_L',   REPERE='GLOBAL', GROUP_MA = 'RESSORT1',
-           VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0., 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
-        _F(CARA = 'M_T_D_N',  GROUP_MA = 'MASSES1', VALE = 25.),
+        _F(CARA="K_T_D_L", REPERE="GLOBAL", GROUP_MA="RESSORT1", VALE=(98696.0, 0.0, 0.0)),
+        _F(
+            CARA="M_T_L",
+            REPERE="GLOBAL",
+            GROUP_MA="RESSORT1",
+            VALE=(
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+            ),
+        ),
+        _F(CARA="M_T_D_N", GROUP_MA="MASSES1", VALE=25.0),
     ),
-    ORIENTATION=_F(GROUP_MA='MASSES1', CARA='VECT_X_Y', VALE=(-1.0,0.0,0.0, 0.0,1.0,0.0),)
+    ORIENTATION=_F(GROUP_MA="MASSES1", CARA="VECT_X_Y", VALE=(-1.0, 0.0, 0.0, 0.0, 1.0, 0.0)),
 )
 
 ASSEMBLAGE(
-    MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,
+    MODELE=MODELE,
+    CHARGE=CON_LIM,
+    CARA_ELEM=CARA_ELE,
     NUME_DDL=CO("NUM"),
     MATR_ASSE=(
-        _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
-        _F(  MATRICE = CO("MASSE"),     OPTION = 'MASS_MECA'))
+        _F(MATRICE=CO("RIGIDITE"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
+    ),
 )
 
-CHAM_NO=AFFE_CHAR_MECA(
-    MODELE=MODELE,
-    PESANTEUR=_F(GRAVITE=1.0, DIRECTION=(-1.0, 0.0, 0.0,),)
-)
+CHAM_NO = AFFE_CHAR_MECA(MODELE=MODELE, PESANTEUR=_F(GRAVITE=1.0, DIRECTION=(-1.0, 0.0, 0.0)))
 
-MODE=CALC_MODES(
+MODE = CALC_MODES(
     MATR_RIGI=RIGIDITE,
-    OPTION='BANDE',
-    CALC_FREQ=_F(FREQ=(1.,30.,), ),
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(1.0, 30.0)),
     MATR_MASS=MASSE,
-    SOLVEUR_MODAL=_F(MODE_RIGIDE='NON', METHODE='TRI_DIAG', ),
+    SOLVEUR_MODAL=_F(MODE_RIGIDE="NON", METHODE="TRI_DIAG"),
 )
 
-MODE=NORM_MODE(reuse=MODE, MODE=MODE, NORME='MASS_GENE' )
+MODE = NORM_MODE(reuse=MODE, MODE=MODE, NORME="MASS_GENE")
 
 # CALCUL DIRECT
 # -------------
 
-TRAN_DY1=DYNA_NON_LINE(
+TRAN_DY1 = DYNA_NON_LINE(
     MODELE=MODELE,
-    CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
-    MASS_DIAG='NON',
-    AMOR_MODAL=_F(MODE_MECA = MODE,  REAC_VITE = 'NON', AMOR_REDUIT = 0.0),
-    PROJ_MODAL=_F(MODE_MECA = MODE),
-    EXCIT=(
-        _F(CHARGE = CON_LIM),
-        _F(CHARGE = CHAM_NO, FONC_MULT= ACCELER1 ),
-    ),
+    CHAM_MATER=CH_MAT,
+    CARA_ELEM=CARA_ELE,
+    MASS_DIAG="NON",
+    AMOR_MODAL=_F(MODE_MECA=MODE, REAC_VITE="NON", AMOR_REDUIT=0.0),
+    PROJ_MODAL=_F(MODE_MECA=MODE),
+    EXCIT=(_F(CHARGE=CON_LIM), _F(CHARGE=CHAM_NO, FONC_MULT=ACCELER1)),
     COMPORTEMENT=(
-        _F(RELATION = 'ELAS',         GROUP_MA = 'RESSORT1'),
-        _F(RELATION = 'DIS_CONTACT',  GROUP_MA = 'MASSES1'),
+        _F(RELATION="ELAS", GROUP_MA="RESSORT1"),
+        _F(RELATION="DIS_CONTACT", GROUP_MA="MASSES1"),
     ),
-    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT', FORMULATION='ACCELERATION', STOP_CFL='NON',),
-    SOLVEUR=_F(METHODE = 'LDLT', ),
-    NEWTON= _F(REAC_ITER = 1),
-    INCREMENT=_F(LIST_INST = L_INST),
-    ARCHIVAGE=_F(LIST_INST = L_INST2),
+    SCHEMA_TEMPS=_F(SCHEMA="DIFF_CENT", FORMULATION="ACCELERATION", STOP_CFL="NON"),
+    SOLVEUR=_F(METHODE="LDLT"),
+    NEWTON=_F(REAC_ITER=1),
+    INCREMENT=_F(LIST_INST=L_INST),
+    ARCHIVAGE=_F(LIST_INST=L_INST2),
 )
 
 NOA_DXDR = RECU_FONCTION(
-    GROUP_NO= 'NO2',  NOM_CMP='DX' , NOM_CHAM='DEPL', LIST_INST=LISTIMP,
-    PROL_DROITE=  'LINEAIRE', PROL_GAUCHE= 'LINEAIRE', RESULTAT=  TRAN_DY1  )
+    GROUP_NO="NO2",
+    NOM_CMP="DX",
+    NOM_CHAM="DEPL",
+    LIST_INST=LISTIMP,
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    RESULTAT=TRAN_DY1,
+)
 NOA_DXVR = RECU_FONCTION(
-    GROUP_NO= 'NO2' , NOM_CMP='DX' , NOM_CHAM='VITE', LIST_INST=LISTIMP,
-    PROL_DROITE=  'LINEAIRE', PROL_GAUCHE= 'LINEAIRE', RESULTAT= TRAN_DY1   )
+    GROUP_NO="NO2",
+    NOM_CMP="DX",
+    NOM_CHAM="VITE",
+    LIST_INST=LISTIMP,
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    RESULTAT=TRAN_DY1,
+)
 NOA_DXAR = RECU_FONCTION(
-    GROUP_NO= 'NO2',  NOM_CMP='DX' , NOM_CHAM='ACCE', LIST_INST=LISTIMP,
-    PROL_DROITE=  'LINEAIRE', PROL_GAUCHE= 'LINEAIRE', RESULTAT=  TRAN_DY1  )
+    GROUP_NO="NO2",
+    NOM_CMP="DX",
+    NOM_CHAM="ACCE",
+    LIST_INST=LISTIMP,
+    PROL_DROITE="LINEAIRE",
+    PROL_GAUCHE="LINEAIRE",
+    RESULTAT=TRAN_DY1,
+)
 
 
 TEST_FONCTION(
     VALEUR=(
-        _F(VALE_CALC=-1.565203E-4, VALE_PARA=0.1, FONCTION=NOA_DXDR, ),
-        _F(VALE_CALC=-5.148320E-4, VALE_PARA=0.2, FONCTION=NOA_DXDR, ),
-        _F(VALE_CALC= 2.812914E-4, VALE_PARA=0.3, FONCTION=NOA_DXDR, ),
-        _F(VALE_CALC=-4.493425E-4, VALE_PARA=0.4, FONCTION=NOA_DXDR, ),
-        _F(VALE_CALC=-3.757078E-4, VALE_PARA=0.5, FONCTION=NOA_DXDR, ),
-    ),
+        _F(VALE_CALC=-1.565203e-4, VALE_PARA=0.1, FONCTION=NOA_DXDR),
+        _F(VALE_CALC=-5.148320e-4, VALE_PARA=0.2, FONCTION=NOA_DXDR),
+        _F(VALE_CALC=2.812914e-4, VALE_PARA=0.3, FONCTION=NOA_DXDR),
+        _F(VALE_CALC=-4.493425e-4, VALE_PARA=0.4, FONCTION=NOA_DXDR),
+        _F(VALE_CALC=-3.757078e-4, VALE_PARA=0.5, FONCTION=NOA_DXDR),
+    )
 )
-
 
 
 """
@@ -257,4 +298,4 @@ for calc in [1,2]:
     DETRUIRE(NOM=TABRES1,),)
     #
 """
-FIN( )
+FIN()

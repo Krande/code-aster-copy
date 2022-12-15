@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,9 @@ from .sd_nume_ddl_gene import sd_nume_ddl_gene
 
 class sd_cham_gene(AsBase):
     nomj = SDNom(fin=19)
-    REFE = AsVK24(lonmax=2, )
-    VALE = AsObject(
-        genr='V', xous='S', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), )
-    DESC = AsVI(docu='VGEN', )
+    REFE = AsVK24(lonmax=2)
+    VALE = AsObject(genr="V", xous="S", type=Parmi("C", "R"), ltyp=Parmi(16, 8))
+    DESC = AsVI(docu="VGEN")
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre

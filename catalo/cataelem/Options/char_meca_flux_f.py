@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: sylvie.granet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -30,15 +29,21 @@ import cataelem.Commons.attributes as AT
 PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PCNSETO = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-                         comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
 PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PLONCHA = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-                         comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
 
 
 PLSN = InputParameter(phys=PHY.NEUT_R)
@@ -79,14 +84,12 @@ CHAR_MECA_FLUX_F = Option(
         SP.PTEMPSR,
         SP.PHEAVNO,
     ),
-    para_out=(
-        SP.PVECTUR,
-    ),
+    para_out=(SP.PVECTUR,),
     condition=(
-      CondCalcul('+', ((AT.PHENO, 'ME'),(AT.TYPMOD2, 'THM'),(AT.BORD, '-1'))),
-      CondCalcul('+', ((AT.PHENO, 'ME'),(AT.TYPMOD2, 'JHMS'),(AT.BORD, '-1'))),
-      CondCalcul('+', ((AT.PHENO, 'ME'),(AT.TYPMOD2, 'XFEM_HM'),(AT.BORD, '-1'))),
-      CondCalcul('+', ((AT.PHENO, 'ME'),(AT.TYPMOD2, 'XFEM_HM'),(AT.CONTACT,'OUI'))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "THM"), (AT.BORD, "-1"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "JHMS"), (AT.BORD, "-1"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "XFEM_HM"), (AT.BORD, "-1"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.TYPMOD2, "XFEM_HM"), (AT.CONTACT, "OUI"))),
     ),
     comment=""" CHAR_MECA_FLUX_F (MOT-CLE FLUX_THM_REP) : CALCUL DU SECOND MEMBRE
            CORRESPONDANT A UN FLUX DE CHALEUR ET/OU UN APPORT DE MASSE FLUIDE

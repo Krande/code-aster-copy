@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,21 +20,23 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""Le groupe de noeud %(k1)s définissant le fond de fissure contient %(i1)d noeuds.
-Il devrait contenir un unique noeud."""),
-
-    2 : _("""Il n'est pas possible de sélectionner un matériau pour le noeud de fond de fissure.
+    1: _(
+        """Le groupe de noeud %(k1)s définissant le fond de fissure contient %(i1)d noeuds.
+Il devrait contenir un unique noeud."""
+    ),
+    2: _(
+        """Il n'est pas possible de sélectionner un matériau pour le noeud de fond de fissure.
 Plusieurs matériaux sont définis sur les éléments connexes. If faut que les éléments connexes soit affecté par le même matériau.
-"""),
-
-    3 : _("""La loi de ténacité %(k1)s n'a pas été trouvé pour le matériau en fond de fissure.
+"""
+    ),
+    3: _(
+        """La loi de ténacité %(k1)s n'a pas été trouvé pour le matériau en fond de fissure.
 
 Conseils :
-Vérifiez que le matériau utilisé est bien défini avec le mot-clé facteur %(k1)s."""),
-
-    4 : _("""Il n'a pas été possible de récupérer le matériau en fond de fissure."""),
-
-    5 : _("""On ne trouve pas de champ matériau dans le résultat fourni sous le mot clé RESULTAT."""),
-
+Vérifiez que le matériau utilisé est bien défini avec le mot-clé facteur %(k1)s."""
+    ),
+    4: _("""Il n'a pas été possible de récupérer le matériau en fond de fissure."""),
+    5: _(
+        """On ne trouve pas de champ matériau dans le résultat fourni sous le mot clé RESULTAT."""
+    ),
 }

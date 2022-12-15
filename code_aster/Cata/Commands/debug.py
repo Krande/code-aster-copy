@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,29 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEBUG=PROC(nom="DEBUG",op=137,
-               fr=tr("Permettre de changer entre 2 commandes quelques variables globales de debug"),
-
-     SDVERI          =SIMP(fr=tr("vérifie la conformité des SD produites par les commandes"),
-                           statut='f',typ='TXM',into=('OUI','NON')),
-     JXVERI          =SIMP(fr=tr("vérifie l intégrité de la segmentation mémoire"),
-                           statut='f',typ='TXM',into=('OUI','NON')),
-     JEVEUX          =SIMP(fr=tr("force les déchargement sur disque"),
-                           statut='f',typ='TXM',into=('OUI','NON')),
-     IMPR_MACRO      =SIMP(fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
-                           statut='f',typ='TXM',into=("OUI","NON")),
- );
+DEBUG = PROC(
+    nom="DEBUG",
+    op=137,
+    fr=tr("Permettre de changer entre 2 commandes quelques variables globales de debug"),
+    SDVERI=SIMP(
+        fr=tr("vérifie la conformité des SD produites par les commandes"),
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+    ),
+    JXVERI=SIMP(
+        fr=tr("vérifie l intégrité de la segmentation mémoire"),
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+    ),
+    JEVEUX=SIMP(
+        fr=tr("force les déchargement sur disque"), statut="f", typ="TXM", into=("OUI", "NON")
+    ),
+    IMPR_MACRO=SIMP(
+        fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
+        statut="f",
+        typ="TXM",
+        into=("OUI", "NON"),
+    ),
+)

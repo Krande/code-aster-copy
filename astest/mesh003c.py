@@ -47,9 +47,9 @@ test.assertEqual(cMesh1.getNumberOfNodes(), 197)
 test.assertEqual(cMesh1.getNumberOfCells(), 973)
 test.assertSequenceEqual(sorted(cMesh1.getGroupsOfNodes()), ["CUBE"])
 test.assertSequenceEqual(sorted(cMesh1.getGroupsOfCells()), [])
-test.assertTrue( cMesh1.hasGroupOfNodes("CUBE") )
-test.assertFalse( cMesh1.hasGroupOfNodes("UCBE") )
-test.assertFalse( cMesh1.hasGroupOfCells("CUBE") )
+test.assertTrue(cMesh1.hasGroupOfNodes("CUBE"))
+test.assertFalse(cMesh1.hasGroupOfNodes("UCBE"))
+test.assertFalse(cMesh1.hasGroupOfCells("CUBE"))
 test.assertSequenceEqual(sorted(cMesh1.getCells("CUBE")), [])
 
 
@@ -61,9 +61,9 @@ test.assertEqual(cMesh2.getNumberOfNodes(), 197)
 test.assertEqual(cMesh2.getNumberOfCells(), 973)
 test.assertSequenceEqual(sorted(cMesh2.getGroupsOfCells()), ["CUBE"])
 test.assertSequenceEqual(sorted(cMesh2.getGroupsOfNodes()), [])
-test.assertTrue( cMesh2.hasGroupOfCells("CUBE") )
-test.assertFalse( cMesh2.hasGroupOfCells("UCBE") )
-test.assertFalse( cMesh2.hasGroupOfNodes("CUBE") )
+test.assertTrue(cMesh2.hasGroupOfCells("CUBE"))
+test.assertFalse(cMesh2.hasGroupOfCells("UCBE"))
+test.assertFalse(cMesh2.hasGroupOfNodes("CUBE"))
 
 
 # Test ConnectionMesh - a part mesh
@@ -73,10 +73,17 @@ test.assertEqual(cMesh3.getDimension(), 3)
 test.assertEqual(cMesh3.getNumberOfNodes(), 11)
 test.assertEqual(cMesh3.getNumberOfCells(), 20)
 test.assertSequenceEqual(sorted(cMesh3.getGroupsOfNodes()), ["N0", "N2"])
-test.assertSequenceEqual(sorted(cMesh3.getCells()), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
+test.assertSequenceEqual(
+    sorted(cMesh3.getCells()),
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+)
 test.assertSequenceEqual(sorted(cMesh3.getCells("CUBE")), [])
-test.assertSequenceEqual(cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135])
-test.assertSequenceEqual(sorted(cMesh3.getNodesLocalNumbering()), [1, 2, 11, 12, 13, 18, 18, 25, 33, 45, 66])
+test.assertSequenceEqual(
+    cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135]
+)
+test.assertSequenceEqual(
+    sorted(cMesh3.getNodesLocalNumbering()), [1, 2, 11, 12, 13, 18, 18, 25, 33, 45, 66]
+)
 
 # Test ConnectionMesh - a part mesh
 print("cMesh4", flush=True)
@@ -152,10 +159,10 @@ test.assertEqual(cMesh11.getNumberOfNodes(), 197)
 test.assertEqual(cMesh11.getNumberOfCells(), 973)
 test.assertSequenceEqual(sorted(cMesh11.getGroupsOfNodes()), ["CUBE"])
 test.assertSequenceEqual(sorted(cMesh11.getGroupsOfCells()), ["CUBE"])
-test.assertTrue( cMesh11.hasGroupOfCells("CUBE") )
-test.assertTrue( cMesh11.hasGroupOfNodes("CUBE") )
-test.assertFalse( cMesh11.hasGroupOfCells("UCBE") )
-test.assertFalse( cMesh11.hasGroupOfNodes("UCBE") )
+test.assertTrue(cMesh11.hasGroupOfCells("CUBE"))
+test.assertTrue(cMesh11.hasGroupOfNodes("CUBE"))
+test.assertFalse(cMesh11.hasGroupOfCells("UCBE"))
+test.assertFalse(cMesh11.hasGroupOfNodes("UCBE"))
 
 
 # Test ConnectionMesh - The full mesh
@@ -170,8 +177,7 @@ test.assertSequenceEqual(sorted(cMesh12.getGroupsOfCells()), ["ALL_SEG", "S1", "
 
 # Test ConnectionMesh
 print("cMesh13", flush=True)
-cMesh13 = ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], \
-                            ["ALL_SEG", "BAS", "HAUT", "SUD", "XXX"])
+cMesh13 = ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], ["ALL_SEG", "BAS", "HAUT", "SUD", "XXX"])
 test.assertEqual(cMesh13.getParallelMesh().getName(), pMesh.getName())
 test.assertEqual(cMesh13.getDimension(), 3)
 test.assertEqual(cMesh13.getNumberOfNodes(), 174)
@@ -180,14 +186,15 @@ test.assertSequenceEqual(sorted(cMesh13.getGroupsOfNodes()), ["N0", "N1", "N2"])
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfCells()), ["ALL_SEG", "BAS", "HAUT", "SUD"])
 
 # Test model
-cModel = AFFE_MODELE(MAILLAGE=cMesh13,
-                    AFFE=(_F(TOUT='OUI', PHENOMENE='MECANIQUE',
-                                         MODELISATION="3D",),
-                          _F(TOUT='OUI', PHENOMENE='MECANIQUE',
-                                         MODELISATION='DIS_T',),
-                        ),
-                    VERI_JACOBIEN='NON',
-                    DISTRIBUTION=_F(METHODE='CENTRALISE',),)
+cModel = AFFE_MODELE(
+    MAILLAGE=cMesh13,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+    ),
+    VERI_JACOBIEN="NON",
+    DISTRIBUTION=_F(METHODE="CENTRALISE"),
+)
 
 test.assertEqual(cMesh13.getName(), cModel.getMesh().getName())
 

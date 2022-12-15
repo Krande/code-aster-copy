@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
+
 code_aster.init("--test")
 
 test = code_aster.TestCase()
@@ -30,20 +31,17 @@ monMaillage.readMedFile("zzzz503a.mmed")
 
 # Definition du modele Aster
 monModel = code_aster.Model(monMaillage)
-monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
-                              code_aster.Modelings.Tridimensional)
+monModel.addModelingOnMesh(code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional)
 
 monModel.build()
 
 charCine = code_aster.MechanicalDirichletBC(monModel)
-charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx,
-                                           0., "Bas")
-test.assertEqual( charCine.getType(), "CHAR_CINE_MECA" )
+charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0.0, "Bas")
+test.assertEqual(charCine.getType(), "CHAR_CINE_MECA")
 
 # Impossible d'affecter un blocage en temperature sur un DEPL
-with test.assertRaises( RuntimeError ):
-    charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Temp,
-                                               0., "Haut")
+with test.assertRaises(RuntimeError):
+    charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Temp, 0.0, "Haut")
 
 charCine.build()
 

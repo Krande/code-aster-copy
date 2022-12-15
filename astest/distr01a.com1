@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,24 +18,28 @@
 # --------------------------------------------------------------------
 
 #
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 # Uniquement pour les besoins du cas-test.
 # On prend la moyenne pour minimiser l'impact de la valeur près
 # de l'encastrement.
-tabtest=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE_ARITH',
-                                INTITULE='Moyenne',
-                                RESULTAT=RESU,
-                                NOM_CHAM='SIEQ_NOEU',
-                                GROUP_NO='Lsup'),)
+tabtest = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="MOYENNE_ARITH",
+        INTITULE="Moyenne",
+        RESULTAT=RESU,
+        NOM_CHAM="SIEQ_NOEU",
+        GROUP_NO="Lsup",
+    )
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC= 9.99783295E+05,
-           VALE_REFE=1.E6,
-           NOM_PARA='MOYENNE',
-           TABLE=tabtest,
-           FILTRE=_F(NOM_PARA='CMP',
-                     VALE_K='VMIS',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC=9.99783295e05,
+    VALE_REFE=1.0e6,
+    NOM_PARA="MOYENNE",
+    TABLE=tabtest,
+    FILTRE=_F(NOM_PARA="CMP", VALE_K="VMIS"),
+)
 
 FIN()

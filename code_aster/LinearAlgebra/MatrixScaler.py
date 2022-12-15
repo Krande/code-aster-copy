@@ -40,19 +40,20 @@ from ..Objects import (
 from ..Utilities import logger
 from ..Supervis import AsterError
 
-def _busymscalinf(A:Mat, niter, atol):
+
+def _busymscalinf(A: Mat, niter, atol):
     """
-    Compute the scaling of the matrix to have all rows and cols in 
+    Compute the scaling of the matrix to have all rows and cols in
     the scaled matrix As to have inf-norm equal to 1
     Arguments:
         A (petsc matrix) : the matrix to scale
         niter (int) : max number of iteration
         atol (float) : convergence tolerance
     Returns:
-        As (petsc matrix) : the scaled matrix 
+        As (petsc matrix) : the scaled matrix
         Dl (petsc vector) : the left scaling vector
         Dr (petsc vector) : the right scaling vector
-    
+
     References: A symmetry preserving algorithm for matrix scaling
                 Daniel Ruiz and Bora Ucar
                 http://perso.ens-lyon.fr/bora.ucar/codes.html
@@ -61,20 +62,24 @@ def _busymscalinf(A:Mat, niter, atol):
     # the scaled matrix
     As = A.duplicate(copy=True)
     # the scaling vectors
-    Dl = As.getVecLeft();  Dl.set(1.)
-    Dr = As.getVecRight(); Dr.set(1.)
-    # auxilliary vecs to store the square of Dr, Dl 
+    Dl = As.getVecLeft()
+    Dl.set(1.0)
+    Dr = As.getVecRight()
+    Dr.set(1.0)
+    # auxilliary vecs to store the square of Dr, Dl
     Dr_2 = Dr.duplicate()
     Dl_2 = Dl.duplicate()
     # auxilliary vecs to store the scaling to return
-    DDr = Dr.duplicate(); DDr.set(1.)
-    DDl = Dl.duplicate(); DDl.set(1.)
+    DDr = Dr.duplicate()
+    DDr.set(1.0)
+    DDl = Dl.duplicate()
+    DDl.set(1.0)
     # usefull func to evaluate convergence
     def _isConverged(Dr, Dl, atol, Dr_2, Dl_2):
         Dr_2.pointwiseMult(Dr, Dr)
         Dl_2.pointwiseMult(Dl, Dl)
-        Dr_2 = Dr_2 - 1.
-        Dl_2 = Dl_2 - 1.
+        Dr_2 = Dr_2 - 1.0
+        Dl_2 = Dl_2 - 1.0
         Dr_2.abs()
         Dl_2.abs()
         ErrR = Dr_2.max()[-1]
@@ -84,7 +89,7 @@ def _busymscalinf(A:Mat, niter, atol):
 
     itrn = 0
     nrow, _ = As.getSize()
-    while not _isConverged(Dr, Dl, atol, Dr_2, Dl_2) and itrn<niter or itrn==0:
+    while not _isConverged(Dr, Dl, atol, Dr_2, Dl_2) and itrn < niter or itrn == 0:
         # inverse pointwise
         Dl.reciprocal()
         Dr.reciprocal()
@@ -97,34 +102,37 @@ def _busymscalinf(A:Mat, niter, atol):
         As.transpose()  # switch back
         for i in range(nrow):
             Dl[i] = np.sqrt(np.max(np.abs(As.getRow(i)[-1])))
-        
+
         DDr.pointwiseMult(DDr, Dr)
         DDl.pointwiseMult(DDl, Dl)
 
-        itrn+=1
+        itrn += 1
     DDl.reciprocal()
     DDr.reciprocal()
-    
+
     return As, DDl, DDr
 
 
 class MatrixScaler:
-    """ Helper object to scale matrices or vectors according to [1].
-        The scaling is computed and applied by groups of components aka for a 
-        thermo-hydro-mechanical problem, all displacement dofs are scaled by the same
-        value ; the same for the temperature and pressure dofs. This way, the nature of 
-        the underlying pde is preserved.
+    """Helper object to scale matrices or vectors according to [1].
+    The scaling is computed and applied by groups of components aka for a
+    thermo-hydro-mechanical problem, all displacement dofs are scaled by the same
+    value ; the same for the temperature and pressure dofs. This way, the nature of
+    the underlying pde is preserved.
 
-        [1] A symmetry preserving algorithm for matrix scaling
-                Daniel Ruiz and Bora Ucar
-                http://perso.ens-lyon.fr/bora.ucar/codes.html
-"""
+    [1] A symmetry preserving algorithm for matrix scaling
+            Daniel Ruiz and Bora Ucar
+            http://perso.ens-lyon.fr/bora.ucar/codes.html"""
+
     def __init__(self) -> None:
         self.lvect = None
         self.rvect = None
 
-    def computeScaling(self, A:AssemblyMatrixDisplacementReal or AssemblyMatrixTemperatureReal, 
-                       merge_dof=[['DX', 'DY', 'DZ'], ['DRX', 'DRY', 'DRZ']]):
+    def computeScaling(
+        self,
+        A: AssemblyMatrixDisplacementReal or AssemblyMatrixTemperatureReal,
+        merge_dof=[["DX", "DY", "DZ"], ["DRX", "DRY", "DRZ"]],
+    ):
         """Compute and store the entries of the right and left scaling vectors.
 
         Arguments:
@@ -134,7 +142,7 @@ class MatrixScaler:
         nmbrg = A.getDOFNumbering()
         pA = A.toPetsc()
 
-        dof2row=nmbrg.getDictComponentsToRows(local=False)
+        dof2row = nmbrg.getDictComponentsToRows(local=False)
 
         # Helper function to merge some dof if needed
         def merge_keys(data: Dict[str, Set[int]], *merge_list: List[Tuple[str, str]]):
@@ -144,9 +152,11 @@ class MatrixScaler:
             {'1+2': [0, 1, 0, 1, 2], '3': [0, 1, 3]}"""
             merged_data = {}
             merge_list = [dof for dof in merge_list if dof in data.keys()]
-            in_list = list(chain(*map(lambda k: list(data.get(k, {})) if k in merge_list else [], data)))
-            merged_data['+'.join(merge_list)] = in_list
-            not_merged_data = {k:data[k] for k in data if k not in merge_list}
+            in_list = list(
+                chain(*map(lambda k: list(data.get(k, {})) if k in merge_list else [], data))
+            )
+            merged_data["+".join(merge_list)] = in_list
+            not_merged_data = {k: data[k] for k in data if k not in merge_list}
             ret = {**merged_data, **not_merged_data}
             ret_clean = {k: v for k, v in ret.items() if v}
             return ret_clean
@@ -156,16 +166,19 @@ class MatrixScaler:
         for dof in merge_dof:
             merged_dof = merge_keys(merged_dof, *dof)
         ndof = len(merged_dof.keys())
-        logger.debug(f"<{self.__class__.__name__}> Considering the components {list(merged_dof.keys())}")
+        logger.debug(
+            f"<{self.__class__.__name__}> Considering the components {list(merged_dof.keys())}"
+        )
 
         # Create matrix that contains the norm of the block of dof
         norm_mat = Mat().create(comm=petsc4py.PETSc.COMM_SELF)
         norm_mat.setType(petsc4py.PETSc.Mat.Type.SEQDENSE)
-        norm_mat.setSizes(ndof,ndof)
+        norm_mat.setSizes(ndof, ndof)
         norm_mat.setUp()
         # Dict giving the dofs associated to row of the norm_mat
-        norm_dof2row = {sdof:row for row, (dof, _) in enumerate(merged_dof.items()) \
-                                                                for sdof in dof.split('+')}
+        norm_dof2row = {
+            sdof: row for row, (dof, _) in enumerate(merged_dof.items()) for sdof in dof.split("+")
+        }
         for row, (_, val_row) in enumerate(merged_dof.items()):
             indx_row = IS().createGeneral(val_row)
             for col, (_, val_col) in enumerate(merged_dof.items()):
@@ -174,12 +187,16 @@ class MatrixScaler:
                 norm_mat.setValue(row, col, nrm)
 
         norm_mat.assemble()
-        logger.debug(f"<{self.__class__.__name__}> Initial norm matrix of considered " +\
-                     f"components \n{norm_mat.getValues(range(ndof), range(ndof))}")
+        logger.debug(
+            f"<{self.__class__.__name__}> Initial norm matrix of considered "
+            + f"components \n{norm_mat.getValues(range(ndof), range(ndof))}"
+        )
 
-        norm_mat_scaled, nmat_lvect, nmat_rvect = _busymscalinf(norm_mat, 100, 1.e-6)
-        logger.debug(f"<{self.__class__.__name__}> Scaled norm matrix of considered " +\
-                     f"components \n{norm_mat_scaled.getValues(range(ndof), range(ndof))}")
+        norm_mat_scaled, nmat_lvect, nmat_rvect = _busymscalinf(norm_mat, 100, 1.0e-6)
+        logger.debug(
+            f"<{self.__class__.__name__}> Scaled norm matrix of considered "
+            + f"components \n{norm_mat_scaled.getValues(range(ndof), range(ndof))}"
+        )
 
         # the scaling vectors - they have the same shape as the local matrix
         lsize = A.size(local=True)[0]
@@ -197,34 +214,33 @@ class MatrixScaler:
         except AsterError:
             pass
         if has_DirichletBC:
-            lvect[np.where(np.array(A.getDirichletBCDOFs())==1)]=1.
-            rvect[np.where(np.array(A.getDirichletBCDOFs())==1)]=1.
+            lvect[np.where(np.array(A.getDirichletBCDOFs()) == 1)] = 1.0
+            rvect[np.where(np.array(A.getDirichletBCDOFs()) == 1)] = 1.0
 
         self.lvect = lvect
         self.rvect = rvect
 
-
-    def scaleMatrix(self, matrix:AssemblyMatrixDisplacementReal or AssemblyMatrixTemperatureReal):
+    def scaleMatrix(self, matrix: AssemblyMatrixDisplacementReal or AssemblyMatrixTemperatureReal):
         """Scale the matrix in argument using the previously computed scaling vectors
         (from initial to normalized)."""
         if self.rvect is None or self.lvect is None:
-            raise ValueError('The scaling must be computed before using it')
+            raise ValueError("The scaling must be computed before using it")
         return matrix.scale(self.lvect, self.rvect)
 
-    def scaleRHS(self, rhs:FieldOnNodesReal):
+    def scaleRHS(self, rhs: FieldOnNodesReal):
         """Scale the rhs in argument using the previously computed scaling vectors
         (from initial to normalized)."""
         if self.rvect is None or self.lvect is None:
-            raise ValueError('The scaling must be computed before using it')
-        return rhs.scale(1/self.rvect)
+            raise ValueError("The scaling must be computed before using it")
+        return rhs.scale(1 / self.rvect)
 
-    def unscaleSolution(self, sol:FieldOnNodesReal):
+    def unscaleSolution(self, sol: FieldOnNodesReal):
         """Unscale the solution in argument using the previously computed scaling vectors
         (from normalized to initial)."""
         if self.rvect is None or self.lvect is None:
-            raise ValueError('The scaling must be computed before using it')
+            raise ValueError("The scaling must be computed before using it")
         return sol.scale(self.lvect)
-    
+
     def getScalingVectors(self):
         """Return the left and right scaling vectors (in this order)."""
         return self.lvect, self.rvect

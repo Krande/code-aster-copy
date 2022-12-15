@@ -73,56 +73,46 @@
 # . Information
 # . 2 adaptations avec des variantes
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',
-              ),
-      DEBUG=_F(SDVERI='OUI',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #
 # 1. DEFINITION DU MATERIAU
 
-MATER2=DEFI_MATERIAU(ELAS=_F(E=220000.,
-                             NU=0.33,
-                             RHO=8300.,
-                             ALPHA=16.E-6,),)
+MATER2 = DEFI_MATERIAU(ELAS=_F(E=220000.0, NU=0.33, RHO=8300.0, ALPHA=16.0e-6))
 
 #
 #
 # 2. LECTURE DU MAILLAGE ET TEST DE LA MACRO SUR L'INFORMATION
 
-M00=LIRE_MAILLAGE(FORMAT='MED',
-                  NOM_MED='3x3___________________________00',)
+M00 = LIRE_MAILLAGE(FORMAT="MED", NOM_MED="3x3___________________________00")
 
 #
 
 # Attention : le test d'interpenetration peut etre long (voir la documentation).
-MACR_INFO_MAIL(MAILLAGE=M00,
-               NOMBRE='OUI',
-               QUALITE='OUI',
-               CONNEXITE='OUI',
-               TAILLE='OUI',
-               INTERPENETRATION='OUI',
-               PROP_CALCUL='OUI',)
+MACR_INFO_MAIL(
+    MAILLAGE=M00,
+    NOMBRE="OUI",
+    QUALITE="OUI",
+    CONNEXITE="OUI",
+    TAILLE="OUI",
+    INTERPENETRATION="OUI",
+    PROP_CALCUL="OUI",
+)
 
 #
 # 3. CALCUL SUR LE MAILLAGE 00
 # 3.1. MODELE MECANIQUE
 
-MODE00=AFFE_MODELE(MAILLAGE=M00,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+MODE00 = AFFE_MODELE(MAILLAGE=M00, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-M00=MODI_MAILLAGE(reuse =M00,
-                  MAILLAGE=M00,
-                  ORIE_PEAU=_F(GROUP_MA_PEAU=('X_0','X_MAX','Y_MI_MA','Z_MI_MA',),),)
+M00 = MODI_MAILLAGE(
+    reuse=M00, MAILLAGE=M00, ORIE_PEAU=_F(GROUP_MA_PEAU=("X_0", "X_MAX", "Y_MI_MA", "Z_MI_MA"))
+)
 
 #
 # 3.2. MISE EN PLACE DU MATERIAU
 
-MATE00=AFFE_MATERIAU(MAILLAGE=M00,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MATER2,),)
+MATE00 = AFFE_MATERIAU(MAILLAGE=M00, AFFE=_F(TOUT="OUI", MATER=MATER2))
 
 #
 # 3.3. CHARGEMENTS
@@ -135,99 +125,82 @@ PRES_0 = 1e-14
 
 #
 
-CHAR00=AFFE_CHAR_MECA(MODELE=MODE00,
-                      PESANTEUR=_F(GRAVITE=G,
-                                   DIRECTION=(4.,6.,-1.,),),
-                      FACE_IMPO=_F(GROUP_MA='X_0',
-                                   DX=0.,
-                                   DY=0.,
-                                   DZ=0.,),
-                      PRES_REP=(_F(GROUP_MA='X_MAX',
-                                   PRES=PRE,),
-                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
-                                   PRES=PRES_0,),),)
+CHAR00 = AFFE_CHAR_MECA(
+    MODELE=MODE00,
+    PESANTEUR=_F(GRAVITE=G, DIRECTION=(4.0, 6.0, -1.0)),
+    FACE_IMPO=_F(GROUP_MA="X_0", DX=0.0, DY=0.0, DZ=0.0),
+    PRES_REP=(_F(GROUP_MA="X_MAX", PRES=PRE), _F(GROUP_MA=("Y_MI_MA", "Z_MI_MA"), PRES=PRES_0)),
+)
 
 #
 # 3.4. RESOLUTION
 
-RESU00=MECA_STATIQUE(MODELE=MODE00,
-                     CHAM_MATER=MATE00,
-                     EXCIT=_F(CHARGE=CHAR00,),)
+RESU00 = MECA_STATIQUE(MODELE=MODE00, CHAM_MATER=MATE00, EXCIT=_F(CHARGE=CHAR00))
 
 #
 # 3.5. INDICATEUR D'ERREUR
 
-RESU00=CALC_ERREUR(reuse =RESU00,
-                   RESULTAT=RESU00,
-                   OPTION=('ERME_ELEM',),)
+RESU00 = CALC_ERREUR(reuse=RESU00, RESULTAT=RESU00, OPTION=("ERME_ELEM",))
 
 #
 # 3.6. IMPRESSION
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU00,),)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU00,),)
 
 
 #
 # 4. ADAPTATION DU MAILLAGE DE 00 VERS 01 SELON L'INDICATEUR D'ERREUR
 
-MACR_ADAP_MAIL(MAILLAGE_N=M00,
-               MAILLAGE_NP1=CO('M01'),
-               ADAPTATION='RAFFINEMENT',
-               RESULTAT_N=RESU00,
-               NOM_CHAM='ERME_ELEM',
-               NOM_CMP='ERREST',
-               MAJ_CHAM=_F(CHAM_MAJ=CO('DEPL1'),
-                           TYPE_CHAM='NOEU_DEPL_R',
-                           RESULTAT=RESU00,
-                           NOM_CHAM='DEPL',
-                           NUME_ORDRE=1,),
-               CRIT_RAFF_PE=0.1,
-               QUALITE='OUI',
-               CONNEXITE='OUI',
-               TAILLE='OUI',)
+MACR_ADAP_MAIL(
+    MAILLAGE_N=M00,
+    MAILLAGE_NP1=CO("M01"),
+    ADAPTATION="RAFFINEMENT",
+    RESULTAT_N=RESU00,
+    NOM_CHAM="ERME_ELEM",
+    NOM_CMP="ERREST",
+    MAJ_CHAM=_F(
+        CHAM_MAJ=CO("DEPL1"),
+        TYPE_CHAM="NOEU_DEPL_R",
+        RESULTAT=RESU00,
+        NOM_CHAM="DEPL",
+        NUME_ORDRE=1,
+    ),
+    CRIT_RAFF_PE=0.1,
+    QUALITE="OUI",
+    CONNEXITE="OUI",
+    TAILLE="OUI",
+)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(CHAM_GD=DEPL1,),)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(CHAM_GD=DEPL1,),)
 
 #
 # 5. CALCUL SUR LE MAILLAGE 01
 # 5.1. MODELE MECANIQUE
 
-MODE01=AFFE_MODELE(MAILLAGE=M01,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+MODE01 = AFFE_MODELE(MAILLAGE=M01, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 #
 # 5.2. MISE EN PLACE DES MATERIAUX
 
-MATE01=AFFE_MATERIAU(MAILLAGE=M01,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MATER2,),)
+MATE01 = AFFE_MATERIAU(MAILLAGE=M01, AFFE=_F(TOUT="OUI", MATER=MATER2))
 
 #
 # 5.3. CHARGEMENTS
 
-CHAR01=AFFE_CHAR_MECA(MODELE=MODE01,
-                      PESANTEUR=_F(GRAVITE=G,
-                                   DIRECTION=(4.,6.,-1.,),),
-                      FACE_IMPO=_F(GROUP_MA='X_0',
-                                   DX=0.,
-                                   DY=0.,
-                                   DZ=0.,),
-                      PRES_REP=(_F(GROUP_MA='X_MAX',
-                                   PRES=PRE,),
-                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
-                                   PRES=PRES_0,),),)
+CHAR01 = AFFE_CHAR_MECA(
+    MODELE=MODE01,
+    PESANTEUR=_F(GRAVITE=G, DIRECTION=(4.0, 6.0, -1.0)),
+    FACE_IMPO=_F(GROUP_MA="X_0", DX=0.0, DY=0.0, DZ=0.0),
+    PRES_REP=(_F(GROUP_MA="X_MAX", PRES=PRE), _F(GROUP_MA=("Y_MI_MA", "Z_MI_MA"), PRES=PRES_0)),
+)
 
 #
 # 5.4. RESOLUTION
 
-RESU01=MECA_STATIQUE(MODELE=MODE01,
-                     CHAM_MATER=MATE01,
-                     EXCIT=_F(CHARGE=CHAR01,),)
+RESU01 = MECA_STATIQUE(MODELE=MODE01, CHAM_MATER=MATE01, EXCIT=_F(CHARGE=CHAR01))
 
 #
 # 5.5. IMPRESSION
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RESU01,),)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RESU01,),)
 
 
 #
@@ -240,86 +213,84 @@ RESU01=MECA_STATIQUE(MODELE=MODE01,
 #    ET 12 TETRAEDRES. CELA PERMET DE TESTER LES INTERPOLATIONS SUR
 #    LE NOEUD CENTRAL QUI EST CREE.
 
-MACR_ADAP_MAIL(MAILLAGE_N=M01,
-               MAILLAGE_NP1=CO('M02'),
-               ADAPTATION='RAFF_DERA_ZONE',
-               ZONE=(_F(TYPE='BOITE',
-                       X_MINI= 3.99,
-                       X_MAXI= 4.01,
-                       Y_MINI= 3.99,
-                       Y_MAXI= 4.01,
-                       Z_MINI=-0.01,
-                       Z_MAXI= 2.01,),
-                     _F(TYPE='BOITE',
-                       X_MINI= 3.99,
-                       X_MAXI= 6.01,
-                       Y_MINI= 5.99,
-                       Y_MAXI= 6.01,
-                       Z_MINI=-0.01,
-                       Z_MAXI= 0.01,),
-                     _F(TYPE='BOITE',
-                       X_MINI= 5.99,
-                       X_MAXI= 6.01,
-                       Y_MINI= 3.99,
-                       Y_MAXI= 6.01,
-                       Z_MINI= 1.99,
-                       Z_MAXI= 2.01,),),
-               MAJ_CHAM=_F(CHAM_MAJ=CO('DEPL2'),
-                           TYPE_CHAM='NOEU_DEPL_R',
-                           RESULTAT=RESU01,
-                           NOM_CHAM='DEPL',
-                           NUME_ORDRE=1,),
-               QUALITE='OUI',)
+MACR_ADAP_MAIL(
+    MAILLAGE_N=M01,
+    MAILLAGE_NP1=CO("M02"),
+    ADAPTATION="RAFF_DERA_ZONE",
+    ZONE=(
+        _F(
+            TYPE="BOITE",
+            X_MINI=3.99,
+            X_MAXI=4.01,
+            Y_MINI=3.99,
+            Y_MAXI=4.01,
+            Z_MINI=-0.01,
+            Z_MAXI=2.01,
+        ),
+        _F(
+            TYPE="BOITE",
+            X_MINI=3.99,
+            X_MAXI=6.01,
+            Y_MINI=5.99,
+            Y_MAXI=6.01,
+            Z_MINI=-0.01,
+            Z_MAXI=0.01,
+        ),
+        _F(
+            TYPE="BOITE",
+            X_MINI=5.99,
+            X_MAXI=6.01,
+            Y_MINI=3.99,
+            Y_MAXI=6.01,
+            Z_MINI=1.99,
+            Z_MAXI=2.01,
+        ),
+    ),
+    MAJ_CHAM=_F(
+        CHAM_MAJ=CO("DEPL2"),
+        TYPE_CHAM="NOEU_DEPL_R",
+        RESULTAT=RESU01,
+        NOM_CHAM="DEPL",
+        NUME_ORDRE=1,
+    ),
+    QUALITE="OUI",
+)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(CHAM_GD=DEPL2,),)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(CHAM_GD=DEPL2,),)
 #
 # 7. CALCUL SUR LE MAILLAGE 02
 # 7.1. MODELE MECANIQUE
 
-MODE02=AFFE_MODELE(MAILLAGE=M02,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+MODE02 = AFFE_MODELE(MAILLAGE=M02, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 #
 # 7.2. MISE EN PLACE DES MATERIAUX
 
-MATE02=AFFE_MATERIAU(MAILLAGE=M02,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MATER2,),)
+MATE02 = AFFE_MATERIAU(MAILLAGE=M02, AFFE=_F(TOUT="OUI", MATER=MATER2))
 
 #
 # 7.3. CHARGEMENTS
 
-CHAR02=AFFE_CHAR_MECA(MODELE=MODE02,
-                      PESANTEUR=_F(GRAVITE=G,
-                                   DIRECTION=(4.,6.,-1.,),),
-                      FACE_IMPO=_F(GROUP_MA='X_0',
-                                   DX=0.,
-                                   DY=0.,
-                                   DZ=0.,),
-                      PRES_REP=(_F(GROUP_MA='X_MAX',
-                                   PRES=PRE,),
-                                _F(GROUP_MA=('Y_MI_MA','Z_MI_MA',),
-                                   PRES=PRES_0,),),)
+CHAR02 = AFFE_CHAR_MECA(
+    MODELE=MODE02,
+    PESANTEUR=_F(GRAVITE=G, DIRECTION=(4.0, 6.0, -1.0)),
+    FACE_IMPO=_F(GROUP_MA="X_0", DX=0.0, DY=0.0, DZ=0.0),
+    PRES_REP=(_F(GROUP_MA="X_MAX", PRES=PRE), _F(GROUP_MA=("Y_MI_MA", "Z_MI_MA"), PRES=PRES_0)),
+)
 
 #
 # 7.4. RESOLUTION
 
-RESU02=MECA_STATIQUE(MODELE=MODE02,
-                     CHAM_MATER=MATE02,
-                     EXCIT=_F(CHARGE=CHAR02,),)
+RESU02 = MECA_STATIQUE(MODELE=MODE02, CHAM_MATER=MATE02, EXCIT=_F(CHARGE=CHAR02))
 
 #
 # 7.5. INDICATEUR D'ERREUR
 
-RESU02=CALC_ERREUR(reuse =RESU02,
-                   RESULTAT=RESU02,
-                   OPTION=('ERME_ELEM','ERME_ELNO','ERME_NOEU',),)
+RESU02 = CALC_ERREUR(reuse=RESU02, RESULTAT=RESU02, OPTION=("ERME_ELEM", "ERME_ELNO", "ERME_NOEU"))
 
 # 7.6. IMPRESSION
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=RESU02,),)
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU02,),)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=RESU02,),)
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU02,),)
 
 # 8. TESTS DE NON-REGRESSION
 #    ON CREE DEUX GROUPES DE NOEUD CONTENANT CHACUN UN DES NOEUDS CREES AU CENTRE
@@ -327,51 +298,58 @@ RESU02=CALC_ERREUR(reuse =RESU02,
 #    NUMEROTATION DES NOEUDS DANS HOMARD ET DE PERENISER LES TESTS
 #    REMARQUE : LEUR NOM EST CELUI DU NOEUD POUR LA VERSION 10.02.20
 #
-M02=DEFI_GROUP( reuse =M02,
-                MAILLAGE=M02,
-                CREA_GROUP_NO=(_F(NOM='N55',
-                                  OPTION='ENV_SPHERE',
-                                  POINT=(3.,3.,1.),
-                                  PRECISION=1/200.,
-                                  RAYON=1/200.),
-                              _F(NOM='N56',
-                                  OPTION='ENV_SPHERE',
-                                  POINT=(5.,5.,1.),
-                                  PRECISION=1/200.,
-                                  RAYON=1/200.),),
-                INFO=2 )
+M02 = DEFI_GROUP(
+    reuse=M02,
+    MAILLAGE=M02,
+    CREA_GROUP_NO=(
+        _F(
+            NOM="N55",
+            OPTION="ENV_SPHERE",
+            POINT=(3.0, 3.0, 1.0),
+            PRECISION=1 / 200.0,
+            RAYON=1 / 200.0,
+        ),
+        _F(
+            NOM="N56",
+            OPTION="ENV_SPHERE",
+            POINT=(5.0, 5.0, 1.0),
+            PRECISION=1 / 200.0,
+            RAYON=1 / 200.0,
+        ),
+    ),
+    INFO=2,
+)
 
-#IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=M02,),)
+# IMPR_RESU(FORMAT="RESULTAT",FORMAT='MED',RESU=_F(MAILLAGE=M02,),)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='A',
-                   RESULTAT=RESU02,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-17.3329132,
-                   CRITERE='RELATIF',
-                   ),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='A',
-                   RESULTAT=RESU02,
-                   NOM_CHAM='ERME_NOEU',
-                   NOM_CMP='ERREST',
-                   VALE_CALC=5.1818753E4,
-                   CRITERE='RELATIF',
-                   ),
-                ),)
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="A",
+            RESULTAT=RESU02,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            VALE_CALC=-17.3329132,
+            CRITERE="RELATIF",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            GROUP_NO="A",
+            RESULTAT=RESU02,
+            NOM_CHAM="ERME_NOEU",
+            NOM_CMP="ERREST",
+            VALE_CALC=5.1818753e4,
+            CRITERE="RELATIF",
+        ),
+    )
+)
 
-TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
-                      NOM_CMP='DX',
-                      GROUP_NO='N55',
-                      CHAM_GD=DEPL2,
-                      VALE_CALC=6.036338,),
-                   _F(CRITERE='RELATIF',
-                      NOM_CMP='DZ',
-                      GROUP_NO='N56',
-                      CHAM_GD=DEPL2,
-                      VALE_CALC=-14.0615426,),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(CRITERE="RELATIF", NOM_CMP="DX", GROUP_NO="N55", CHAM_GD=DEPL2, VALE_CALC=6.036338),
+        _F(CRITERE="RELATIF", NOM_CMP="DZ", GROUP_NO="N56", CHAM_GD=DEPL2, VALE_CALC=-14.0615426),
+    )
+)
 
 FIN()

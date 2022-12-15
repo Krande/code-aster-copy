@@ -20,143 +20,117 @@
 import code_aster
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA = LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED')
+MA = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-TAN_E = 1E8
+TAN_E = 1e8
 
 TEMP0 = 20
 PARA0 = 1.0
 DELTA_TEMP = 1.0
 
-TEMP1 = TEMP0+DELTA_TEMP
-PARA1 = PARA0+TAN_E*DELTA_TEMP
+TEMP1 = TEMP0 + DELTA_TEMP
+PARA1 = PARA0 + TAN_E * DELTA_TEMP
 INST0, INST1 = 0, 1
 
-ZERO = DEFI_CONSTANTE(VALE = 0)
-NU = DEFI_CONSTANTE(VALE = 0.3)
+ZERO = DEFI_CONSTANTE(VALE=0)
+NU = DEFI_CONSTANTE(VALE=0.3)
 
-PARA = DEFI_FONCTION(NOM_PARA='TEMP',
-                     VALE=(TEMP0, PARA0,
-                           TEMP1, PARA1))
+PARA = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(TEMP0, PARA0, TEMP1, PARA1))
 
-PARABIDON = DEFI_CONSTANTE(VALE = 50)
+PARABIDON = DEFI_CONSTANTE(VALE=50)
 
-#Pour avoir l'équivalence en thermique PARM_THETA doit etre = 1
+# Pour avoir l'équivalence en thermique PARM_THETA doit etre = 1
 THETA = 1
 
-MAT_FONC = DEFI_MATERIAU(ELAS_FO=_F(E=PARA,
-                                    NU=NU,
-                                    ALPHA=ZERO,
-                                    TEMP_DEF_ALPHA=TEMP0),
-                         THER_FO=_F(LAMBDA=PARA,
-                                    RHO_CP=ZERO))
+MAT_FONC = DEFI_MATERIAU(
+    ELAS_FO=_F(E=PARA, NU=NU, ALPHA=ZERO, TEMP_DEF_ALPHA=TEMP0),
+    THER_FO=_F(LAMBDA=PARA, RHO_CP=ZERO),
+)
 
 
-MAT_TEMP0 = DEFI_MATERIAU(ELAS=_F(E=PARA(TEMP0),
-                                  NU=NU(TEMP0),
-                                  ALPHA=PARABIDON(TEMP0)),
-                          THER=_F(LAMBDA=PARA(TEMP0),
-                                  RHO_CP=PARABIDON(TEMP0)))
+MAT_TEMP0 = DEFI_MATERIAU(
+    ELAS=_F(E=PARA(TEMP0), NU=NU(TEMP0), ALPHA=PARABIDON(TEMP0)),
+    THER=_F(LAMBDA=PARA(TEMP0), RHO_CP=PARABIDON(TEMP0)),
+)
 
-MAT_TEMP1 = DEFI_MATERIAU(ELAS=_F(E=PARA(TEMP1),
-                                  NU=NU(TEMP1),
-                                  ALPHA=PARABIDON(TEMP1)),
-                          THER=_F(LAMBDA=PARA(TEMP1),
-                                  RHO_CP=PARABIDON(TEMP1)))
+MAT_TEMP1 = DEFI_MATERIAU(
+    ELAS=_F(E=PARA(TEMP1), NU=NU(TEMP1), ALPHA=PARABIDON(TEMP1)),
+    THER=_F(LAMBDA=PARA(TEMP1), RHO_CP=PARABIDON(TEMP1)),
+)
 
-MODME = AFFE_MODELE(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='plaque',
-                             MODELISATION='3D',
-                             PHENOMENE='MECANIQUE'),
-                    ))
+MODME = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="plaque", MODELISATION="3D", PHENOMENE="MECANIQUE"),)
+)
 
-MODTH = AFFE_MODELE(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='plaque',
-                             MODELISATION='3D',
-                             PHENOMENE='THERMIQUE'),
-                    ))
+MODTH = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=(_F(GROUP_MA="plaque", MODELISATION="3D", PHENOMENE="THERMIQUE"),)
+)
 
-CHINTEMP0 = CREA_CHAMP(TYPE_CHAM = 'NOEU_TEMP_R',
-                       OPERATION = 'AFFE',
-                       MAILLAGE = MA,
-                       AFFE = _F(GROUP_MA='plaque',
-                                 NOM_CMP = 'TEMP',
-                                 VALE = TEMP0))
+CHINTEMP0 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA="plaque", NOM_CMP="TEMP", VALE=TEMP0),
+)
 
-CHINTEMP1 = CREA_CHAMP(TYPE_CHAM = 'NOEU_TEMP_R',
-                       OPERATION = 'AFFE',
-                       MAILLAGE = MA,
-                       AFFE = _F(GROUP_MA='plaque',
-                                 NOM_CMP = 'TEMP',
-                                 VALE = TEMP1))
+CHINTEMP1 = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA,
+    AFFE=_F(GROUP_MA="plaque", NOM_CMP="TEMP", VALE=TEMP1),
+)
 
-CHAUFFE = CREA_RESU(OPERATION='AFFE',
-                    TYPE_RESU='EVOL_THER',
-                    NOM_CHAM='TEMP',
-                    AFFE=(_F(CHAM_GD = CHINTEMP0, INST = INST0),
-                          _F(CHAM_GD = CHINTEMP1, INST = INST1),
-                    ))
+CHAUFFE = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=CHINTEMP0, INST=INST0), _F(CHAM_GD=CHINTEMP1, INST=INST1)),
+)
 
 
-CHMATTH_FONC = AFFE_MATERIAU(MODELE=MODTH,
-                             AFFE= (_F(GROUP_MA='plaque',
-                                       MATER=MAT_FONC)),
-                             AFFE_VARC = _F(GROUP_MA='plaque',
-                                            NOM_VARC = 'TEMP',
-                                            EVOL = CHAUFFE,
-                                            NOM_CHAM = 'TEMP',
-                                            VALE_REF = TEMP0))
+CHMATTH_FONC = AFFE_MATERIAU(
+    MODELE=MODTH,
+    AFFE=(_F(GROUP_MA="plaque", MATER=MAT_FONC)),
+    AFFE_VARC=_F(GROUP_MA="plaque", NOM_VARC="TEMP", EVOL=CHAUFFE, NOM_CHAM="TEMP", VALE_REF=TEMP0),
+)
 
-CHMATTH_TEMP0 = AFFE_MATERIAU(MODELE=MODTH,
-                              AFFE= (_F(GROUP_MA='plaque',
-                                        MATER=MAT_TEMP0)))
+CHMATTH_TEMP0 = AFFE_MATERIAU(MODELE=MODTH, AFFE=(_F(GROUP_MA="plaque", MATER=MAT_TEMP0)))
 
-CHMATTH_TEMP1 = AFFE_MATERIAU(MODELE=MODTH,
-                              AFFE= (_F(GROUP_MA='plaque',
-                                        MATER=MAT_TEMP1)))
+CHMATTH_TEMP1 = AFFE_MATERIAU(MODELE=MODTH, AFFE=(_F(GROUP_MA="plaque", MATER=MAT_TEMP1)))
 
-CHMATME_FONC = AFFE_MATERIAU(MODELE=MODME,
-                             AFFE= (_F(GROUP_MA='plaque',
-                                       MATER=MAT_FONC)),
-                             AFFE_VARC = _F(GROUP_MA='plaque',
-                                            NOM_VARC = 'TEMP',
-                                            EVOL = CHAUFFE,
-                                            NOM_CHAM = 'TEMP',
-                                            VALE_REF = TEMP0))
+CHMATME_FONC = AFFE_MATERIAU(
+    MODELE=MODME,
+    AFFE=(_F(GROUP_MA="plaque", MATER=MAT_FONC)),
+    AFFE_VARC=_F(GROUP_MA="plaque", NOM_VARC="TEMP", EVOL=CHAUFFE, NOM_CHAM="TEMP", VALE_REF=TEMP0),
+)
 
-CHMATME_TEMP0 = AFFE_MATERIAU(MODELE=MODME,
-                              AFFE= (_F(GROUP_MA='plaque',
-                                        MATER=MAT_TEMP0)))
+CHMATME_TEMP0 = AFFE_MATERIAU(MODELE=MODME, AFFE=(_F(GROUP_MA="plaque", MATER=MAT_TEMP0)))
 
-CHMATME_TEMP1 = AFFE_MATERIAU(MODELE=MODME,
-                              AFFE= (_F(GROUP_MA='plaque',
-                                        MATER=MAT_TEMP1)))
+CHMATME_TEMP1 = AFFE_MATERIAU(MODELE=MODME, AFFE=(_F(GROUP_MA="plaque", MATER=MAT_TEMP1)))
 
 
-ANTI_MECA_31 = AFFE_CHAR_CINE(MODELE=MODME,
-                              MECA_IMPO=(
-                                  _F(GROUP_MA='face_xmin', DZ=0.0, DY=0.0),
-                                  _F(GROUP_MA='face_ymin', DY=0.0),
-                                  _F(GROUP_MA='face_zmin', DX=0.0, DY=0.0),
-                                  _F(GROUP_MA='face_xmax', DZ=0.0, DY=0.0),
-                                  _F(GROUP_MA='face_ymax', DY=0.0),
-                                  _F(GROUP_MA='face_zmax', DX=0.0, DY=0.0)
-                              ))
+ANTI_MECA_31 = AFFE_CHAR_CINE(
+    MODELE=MODME,
+    MECA_IMPO=(
+        _F(GROUP_MA="face_xmin", DZ=0.0, DY=0.0),
+        _F(GROUP_MA="face_ymin", DY=0.0),
+        _F(GROUP_MA="face_zmin", DX=0.0, DY=0.0),
+        _F(GROUP_MA="face_xmax", DZ=0.0, DY=0.0),
+        _F(GROUP_MA="face_ymax", DY=0.0),
+        _F(GROUP_MA="face_zmax", DX=0.0, DY=0.0),
+    ),
+)
 
-CHAR31 = AFFE_CHAR_MECA(MODELE=MODME,
-                        PRE_EPSI=_F(GROUP_MA='plaque', EPXZ=-1.0))
+CHAR31 = AFFE_CHAR_MECA(MODELE=MODME, PRE_EPSI=_F(GROUP_MA="plaque", EPXZ=-1.0))
 
 
-SYME_THER_11 = AFFE_CHAR_CINE(MODELE=MODTH,
-                              THER_IMPO=(
-                                  _F(GROUP_MA='face_xmin', TEMP=0.0),
-                                  _F(GROUP_MA='face_xmax', TEMP=0.0)))
+SYME_THER_11 = AFFE_CHAR_CINE(
+    MODELE=MODTH, THER_IMPO=(_F(GROUP_MA="face_xmin", TEMP=0.0), _F(GROUP_MA="face_xmax", TEMP=0.0))
+)
 
-CHAR1=AFFE_CHAR_THER(MODELE=MODTH,
-                     PRE_GRAD_TEMP=_F(GROUP_MA='plaque', FLUX_X=-1.0))
+CHAR1 = AFFE_CHAR_THER(MODELE=MODTH, PRE_GRAD_TEMP=_F(GROUP_MA="plaque", FLUX_X=-1.0))
 
 
 L_INST = DEFI_LIST_REEL(VALE=(INST0, INST1))
@@ -164,46 +138,52 @@ L_INST = DEFI_LIST_REEL(VALE=(INST0, INST1))
 
 #######STATIQUE
 
-DEPL31_FONC = MECA_STATIQUE(MODELE=MODME,
-                            CHAM_MATER=CHMATME_FONC,
-                            LIST_INST=L_INST,
-                            EXCIT=(_F(CHARGE=CHAR31),
-                                   _F(CHARGE=ANTI_MECA_31)))
+DEPL31_FONC = MECA_STATIQUE(
+    MODELE=MODME,
+    CHAM_MATER=CHMATME_FONC,
+    LIST_INST=L_INST,
+    EXCIT=(_F(CHARGE=CHAR31), _F(CHARGE=ANTI_MECA_31)),
+)
 
-DEPL31_TEMP0 = MECA_STATIQUE(MODELE=MODME,
-                             CHAM_MATER=CHMATME_TEMP0,
-                             EXCIT=(_F(CHARGE=CHAR31),
-                                    _F(CHARGE=ANTI_MECA_31)))
+DEPL31_TEMP0 = MECA_STATIQUE(
+    MODELE=MODME, CHAM_MATER=CHMATME_TEMP0, EXCIT=(_F(CHARGE=CHAR31), _F(CHARGE=ANTI_MECA_31))
+)
 
-DEPL31_TEMP1 = MECA_STATIQUE(MODELE=MODME,
-                             CHAM_MATER=CHMATME_TEMP1,
-                             EXCIT=(_F(CHARGE=CHAR31),
-                                    _F(CHARGE=ANTI_MECA_31)))
+DEPL31_TEMP1 = MECA_STATIQUE(
+    MODELE=MODME, CHAM_MATER=CHMATME_TEMP1, EXCIT=(_F(CHARGE=CHAR31), _F(CHARGE=ANTI_MECA_31))
+)
 
 #######THERMIQUE
 
-TEMP_FONC = THER_LINEAIRE(MODELE=MODTH,
-                          CHAM_MATER=CHMATTH_FONC,
-                          PARM_THETA=THETA,
-                          INCREMENT=_F(LIST_INST=L_INST),
-                          EXCIT=(_F(CHARGE=CHAR1),
-                                 _F(CHARGE=SYME_THER_11)))
+TEMP_FONC = THER_LINEAIRE(
+    MODELE=MODTH,
+    CHAM_MATER=CHMATTH_FONC,
+    PARM_THETA=THETA,
+    INCREMENT=_F(LIST_INST=L_INST),
+    EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=SYME_THER_11)),
+)
 
-TEMP_TEMP0 = THER_LINEAIRE(MODELE=MODTH,
-                           CHAM_MATER=CHMATTH_TEMP0,
-                           EXCIT=(_F(CHARGE=CHAR1),
-                                  _F(CHARGE=SYME_THER_11)))
+TEMP_TEMP0 = THER_LINEAIRE(
+    MODELE=MODTH, CHAM_MATER=CHMATTH_TEMP0, EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=SYME_THER_11))
+)
 
-TEMP_TEMP1 = THER_LINEAIRE(MODELE=MODTH,
-                           CHAM_MATER=CHMATTH_TEMP1,
-                           EXCIT=(_F(CHARGE=CHAR1),
-                                  _F(CHARGE=SYME_THER_11)))
+TEMP_TEMP1 = THER_LINEAIRE(
+    MODELE=MODTH, CHAM_MATER=CHMATTH_TEMP1, EXCIT=(_F(CHARGE=CHAR1), _F(CHARGE=SYME_THER_11))
+)
 
-norm_diff_depl_t0 = (DEPL31_FONC.getFieldOnNodesReal('DEPL',1) - DEPL31_TEMP0.getFieldOnNodesReal('DEPL',1)).norm('NORM_2')
-norm_diff_depl_t1 = (DEPL31_FONC.getFieldOnNodesReal('DEPL',2) - DEPL31_TEMP1.getFieldOnNodesReal('DEPL',1)).norm('NORM_2')
+norm_diff_depl_t0 = (
+    DEPL31_FONC.getFieldOnNodesReal("DEPL", 1) - DEPL31_TEMP0.getFieldOnNodesReal("DEPL", 1)
+).norm("NORM_2")
+norm_diff_depl_t1 = (
+    DEPL31_FONC.getFieldOnNodesReal("DEPL", 2) - DEPL31_TEMP1.getFieldOnNodesReal("DEPL", 1)
+).norm("NORM_2")
 
-norm_diff_temp_t0 = (TEMP_FONC.getFieldOnNodesReal('TEMP',0) - TEMP_TEMP0.getFieldOnNodesReal('TEMP',1)).norm('NORM_2')
-norm_diff_temp_t1 = (TEMP_FONC.getFieldOnNodesReal('TEMP',1) - TEMP_TEMP1.getFieldOnNodesReal('TEMP',1)).norm('NORM_2')
+norm_diff_temp_t0 = (
+    TEMP_FONC.getFieldOnNodesReal("TEMP", 0) - TEMP_TEMP0.getFieldOnNodesReal("TEMP", 1)
+).norm("NORM_2")
+norm_diff_temp_t1 = (
+    TEMP_FONC.getFieldOnNodesReal("TEMP", 1) - TEMP_TEMP1.getFieldOnNodesReal("TEMP", 1)
+).norm("NORM_2")
 
 
 test = code_aster.TestCase()

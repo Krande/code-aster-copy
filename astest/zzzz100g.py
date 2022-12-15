@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,23 +34,27 @@ def macro_test_ops(self, VALE, **kwargs):
     """Macro de test."""
     from code_aster.Commands import FORMULE
 
-    vale_x = NP.arange(5.)
-    vale_y = NP.arange(5.) * 2 * VALE
+    vale_x = NP.arange(5.0)
+    vale_y = NP.arange(5.0) * 2 * VALE
 
-    result = FORMULE(NOM_PARA='X', VALE='user_func(X, vale_x, vale_y)',
-             user_func=user_func, vale_x=vale_x, vale_y=vale_y)
+    result = FORMULE(
+        NOM_PARA="X",
+        VALE="user_func(X, vale_x, vale_y)",
+        user_func=user_func,
+        vale_x=vale_x,
+        vale_y=vale_y,
+    )
 
     return result
 
 
-MACRO_TEST_CATA=FORM(
+MACRO_TEST_CATA = FORM(
     nom="MACRO_TEST",
     op=macro_test_ops,
     sd_prod=formule,
     fr=tr("Macro de test"),
-    regles=(UN_PARMI('VALE', 'VALE_C',),),
-    VALE=SIMP(statut='o', typ='R'),
+    regles=(UN_PARMI("VALE", "VALE_C"),),
+    VALE=SIMP(statut="o", typ="R"),
 )
 
-MACRO_TEST = UserMacro("MACRO_TEST", MACRO_TEST_CATA,
-                       macro_test_ops)
+MACRO_TEST = UserMacro("MACRO_TEST", MACRO_TEST_CATA, macro_test_ops)

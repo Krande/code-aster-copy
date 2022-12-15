@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,18 +25,20 @@ from ...Objects import Table
 from ...Supervis import ExecuteCommand
 
 DETEC_FRONT_CATA = OPER(
-    nom="DETEC_FRONT", op=139, sd_prod=table_sdaster, reentrant='n',
+    nom="DETEC_FRONT",
+    op=139,
+    sd_prod=table_sdaster,
+    reentrant="n",
     fr="Detection de front cohesif avec X-FEM",
-
-    FISSURE=SIMP(statut='o', typ=fiss_xfem),
-    NB_POINT_FOND=SIMP(statut='f', typ='I', val_min=2),
-    RESULTAT=SIMP(statut='o', typ=evol_noli),
-
+    FISSURE=SIMP(statut="o", typ=fiss_xfem),
+    NB_POINT_FOND=SIMP(statut="f", typ="I", val_min=2),
+    RESULTAT=SIMP(statut="o", typ=evol_noli),
 )
 
+
 class DetecFront(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "DETEC_FRONT"
     command_cata = DETEC_FRONT_CATA
 
@@ -47,5 +49,6 @@ class DetecFront(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Table()
+
 
 DETEC_FRONT = DetecFront.run

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,29 +20,34 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    8: _("""
+    8: _(
+        """
   Il faut autant d'indices en I et J.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
   Il faut autant de composantes en I et J.
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
   Il faut autant de composantes que de noeuds.
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
   Nombre de tirages supérieur a la taille de l'échantillon.
-"""),
-
-    12: _("""
+"""
+    ),
+    12: _(
+        """
   Le facteur de pic vaut %(r1).3f
-"""),
-
-    13: _("""
+"""
+    ),
+    13: _(
+        """
   -------------------  Tirage %(i1)d  ---------------------
-"""),
-
+"""
+    ),
 }

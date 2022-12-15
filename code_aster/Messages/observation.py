@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,36 +21,39 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    3 : _("""
+    3: _(
+        """
  Observations: il y aura, au maximum, %(i1)d observations à chaque instant sélectionné pour cela.
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
  Erreur dans les données d'observation
  pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s
-"""),
-
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
  Variation de la déformation supérieure au seuil fixé :
     seuil en valeur relative : %(r1)f
     entité : %(k1)s
     composante : %(k2)s
     numéro ordre : %(i1)d
-"""),
-
-    37 : _("""
+"""
+    ),
+    37: _(
+        """
   Observations: %(i1)d réalisations pour ce pas de temps
-"""),
-
-    38 : _("""
+"""
+    ),
+    38: _(
+        """
   Observations: une réalisation pour ce pas de temps
-"""),
-
-    39 : _("""
+"""
+    ),
+    39: _(
+        """
   Observations: pas de réalisation pour ce pas de temps
-"""),
-
-
+"""
+    ),
 }

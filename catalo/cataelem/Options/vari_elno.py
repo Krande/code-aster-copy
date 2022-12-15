@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,38 +20,32 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCOMPOR = InputParameter(
+    phys=PHY.COMPOR, container="RESU!COMPORTEMENT!N", comment="""  PCOMPOR : COMPORTEMENT """
+)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR, container='RESU!COMPORTEMENT!N',
-comment="""  PCOMPOR : COMPORTEMENT """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS """
+)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS """)
-
-
-PVARINR  = OutputParameter(phys=PHY.VARI_R, type='ELNO',
-comment="""  PVARIGR : VARIABLES INTERNES PAR ELEMENTS AUX NOEUDS """)
+PVARINR = OutputParameter(
+    phys=PHY.VARI_R,
+    type="ELNO",
+    comment="""  PVARIGR : VARIABLES INTERNES PAR ELEMENTS AUX NOEUDS """,
+)
 
 
 VARI_ELNO = Option(
-    para_in=(
-           PCOMPOR,
-           PNBSP_I,
-        SP.PVARIGR,
-    ),
-    para_out=(
-           PVARINR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(PCOMPOR, PNBSP_I, SP.PVARIGR),
+    para_out=(PVARINR,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  VARI_ELNO : CALCUL DES VARIABLES INTERNES PAR ELEMENTS AUX NOEUDS """,
 )

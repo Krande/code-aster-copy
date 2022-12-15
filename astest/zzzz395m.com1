@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 ####################################################################################################
 #
@@ -26,51 +26,58 @@ POURSUITE(CODE='OUI')
 #
 ####################################################################################################
 
-TEST_RESU(RESU=(
-                _F(RESULTAT=base_p,
-                   NUME_ORDRE= 1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N27',
-                   NOM_CMP='DX',
-                   VALE_CALC=-0.0257251188973,
-                   ),
-                _F(RESULTAT=base_p,
-                   NUME_ORDRE= 1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N27',
-                   NOM_CMP='DY',
-                   VALE_CALC=-0.0734358940147,
-                   ),
-                _F(RESULTAT=base_p,
-                   NUME_ORDRE= 1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N27',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.195501268186,
-                   ),
-                _F(RESULTAT=base_p,
-                   NUME_ORDRE= 2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N27',
-                   NOM_CMP='DX',
-                   VALE_CALC=-0.000562278273951,
-                   ),
-                _F(RESULTAT=base_p,
-                   NUME_ORDRE= 2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N27',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.00520149316886,
-                   ),
-                _F(RESULTAT=base_p,
-                   NUME_ORDRE= 2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N27',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.0201730121515,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N27",
+            NOM_CMP="DX",
+            VALE_CALC=-0.0257251188973,
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N27",
+            NOM_CMP="DY",
+            VALE_CALC=-0.0734358940147,
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N27",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.195501268186,
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N27",
+            NOM_CMP="DX",
+            VALE_CALC=-0.000562278273951,
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N27",
+            NOM_CMP="DY",
+            VALE_CALC=0.00520149316886,
+        ),
+        _F(
+            RESULTAT=base_p,
+            NUME_ORDRE=2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N27",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.0201730121515,
+        ),
+    )
+)
 
 ####################################################################################################
 #
@@ -78,47 +85,62 @@ TEST_RESU(RESU=(
 #
 ####################################################################################################
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
-                        CARA        = 'NB_GROUP_MA',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 7,
-                        VALE_CALC_I = 7,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh,
+        CARA="NB_GROUP_MA",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=7,
+        VALE_CALC_I=7,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
-                        CARA        = 'NB_GROUP_MA',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 7,
-                        VALE_CALC_I = 7)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh,
+        CARA="NB_GROUP_MA",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=7,
+        VALE_CALC_I=7,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
-                        CARA        = 'NB_GROUP_NO',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 3,
-                        VALE_CALC_I = 3,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh,
+        CARA="NB_GROUP_NO",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=3,
+        VALE_CALC_I=3,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
-                        CARA        = 'NB_MA_GROUP_MA',
-                        NOM_GROUP_MA= 'RID',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 117,
-                        VALE_CALC_I = 117,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh,
+        CARA="NB_MA_GROUP_MA",
+        NOM_GROUP_MA="RID",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=117,
+        VALE_CALC_I=117,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
-                        CARA        = 'NB_NO_GROUP_NO',
-                        NOM_GROUP_NO= 'INF',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 1,
-                        VALE_CALC_I = 1,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="INF",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=1,
+        VALE_CALC_I=1,
+    )
+)
 
 ####################################################################################################
 #
@@ -126,56 +148,74 @@ TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
 #
 ####################################################################################################
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
-                        CARA        = 'NB_GROUP_MA',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 7,
-                        VALE_CALC_I = 7,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh2,
+        CARA="NB_GROUP_MA",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=7,
+        VALE_CALC_I=7,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
-                        CARA        = 'NB_GROUP_MA',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 7,
-                        VALE_CALC_I = 7)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh2,
+        CARA="NB_GROUP_MA",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=7,
+        VALE_CALC_I=7,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
-                        CARA        = 'NB_GROUP_NO',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 4,
-                        VALE_CALC_I = 4,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh2,
+        CARA="NB_GROUP_NO",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=4,
+        VALE_CALC_I=4,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
-                        CARA        = 'NB_MA_GROUP_MA',
-                        NOM_GROUP_MA= 'RID',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 51,
-                        VALE_CALC_I = 51,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh2,
+        CARA="NB_MA_GROUP_MA",
+        NOM_GROUP_MA="RID",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=51,
+        VALE_CALC_I=51,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
-                        CARA        = 'NB_NO_GROUP_NO',
-                        NOM_GROUP_NO= 'INF',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 30,
-                        VALE_CALC_I = 30,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="INF",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=30,
+        VALE_CALC_I=30,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
-                        CARA        = 'NB_NO_GROUP_NO',
-                        NOM_GROUP_NO= 'SUB',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 46,
-                        VALE_CALC_I = 46,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh2,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="SUB",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=46,
+        VALE_CALC_I=46,
+    )
+)
 
 ####################################################################################################
 #
@@ -183,38 +223,50 @@ TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh2,
 #
 ####################################################################################################
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh3,
-                        CARA        = 'NB_GROUP_MA',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 7,
-                        VALE_CALC_I = 7)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh3,
+        CARA="NB_GROUP_MA",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=7,
+        VALE_CALC_I=7,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh3,
-                        CARA        = 'NB_GROUP_NO',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 3,
-                        VALE_CALC_I = 3,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh3,
+        CARA="NB_GROUP_NO",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=3,
+        VALE_CALC_I=3,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh3,
-                        CARA        = 'NB_MA_GROUP_MA',
-                        NOM_GROUP_MA= 'RID',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 57,
-                        VALE_CALC_I = 57,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh3,
+        CARA="NB_MA_GROUP_MA",
+        NOM_GROUP_MA="RID",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=57,
+        VALE_CALC_I=57,
+    )
+)
 
-TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh3,
-                        CARA        = 'NB_NO_GROUP_NO',
-                        NOM_GROUP_NO= 'INF',
-                        REFERENCE   = 'ANALYTIQUE',
-                        CRITERE     = 'ABSOLU',
-                        VALE_REFE_I = 21,
-                        VALE_CALC_I = 21,)
-          )
+TEST_RESU(
+    MAILLAGE=_F(
+        MAILLAGE=mesh3,
+        CARA="NB_NO_GROUP_NO",
+        NOM_GROUP_NO="INF",
+        REFERENCE="ANALYTIQUE",
+        CRITERE="ABSOLU",
+        VALE_REFE_I=21,
+        VALE_CALC_I=21,
+    )
+)
 
 FIN()

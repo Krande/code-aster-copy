@@ -17,114 +17,117 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # PANNEAU CYLINDRIQUE SOUMIS A SON PROPRE POIDS
 # MAILLAGE 1/8 DE CYLINDRE
 #
 # MODELISATION MEC3TR7H: 625 NOEUDS -- 288 MAILLES TRIA7
-#=======================================================================
+# =======================================================================
 #
 
 
-MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 3.00E+10, NU = 0.0, RHO = 2.08333E+4))
+MATERI_1 = DEFI_MATERIAU(ELAS=_F(E=3.00e10, NU=0.0, RHO=2.08333e4))
 
-MAILLA_1=LIRE_MAILLAGE(FORMAT='MED',   )
+MAILLA_1 = LIRE_MAILLAGE(FORMAT="MED")
 
-MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MAILLA_1 = DEFI_GROUP(reuse=MAILLA_1, MAILLAGE=MAILLA_1, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
-                            AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
+CH_MAT_1 = AFFE_MATERIAU(MAILLAGE=MAILLA_1, AFFE=_F(TOUT="OUI", MATER=MATERI_1))
 
-MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1,
-                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
-                                PHENOMENE = 'MECANIQUE') )
+MODELE_1 = AFFE_MODELE(
+    MAILLAGE=MAILLA_1, AFFE=_F(TOUT="OUI", MODELISATION="COQUE_3D", PHENOMENE="MECANIQUE")
+)
 
-CINE=AFFE_CHAR_MECA(MODELE=MODELE_1,DDL_IMPO=(
-                  _F( GROUP_NO = 'AD',       DX = 0.,  DY = 0.,
-                                                     DRZ = 0.),
-                           _F( GROUP_NO = 'CDSANSCD', DY = 0.,
-                                              DRX = 0., DRZ = 0.),
-                           _F( GROUP_NO = 'BC',       DZ = 0.,
-                                              DRX = 0., DRY = 0.),
-                           _F( GROUP_NO = 'C',        DY = 0., DRZ = 0.)))
+CINE = AFFE_CHAR_MECA(
+    MODELE=MODELE_1,
+    DDL_IMPO=(
+        _F(GROUP_NO="AD", DX=0.0, DY=0.0, DRZ=0.0),
+        _F(GROUP_NO="CDSANSCD", DY=0.0, DRX=0.0, DRZ=0.0),
+        _F(GROUP_NO="BC", DZ=0.0, DRX=0.0, DRY=0.0),
+        _F(GROUP_NO="C", DY=0.0, DRZ=0.0),
+    ),
+)
 
-CHFX=AFFE_CHAR_MECA(MODELE=MODELE_1,
-                  FORCE_COQUE=_F(
-       GROUP_MA = 'TOUT',
-      FX = -6250.) )
+CHFX = AFFE_CHAR_MECA(MODELE=MODELE_1, FORCE_COQUE=_F(GROUP_MA="TOUT", FX=-6250.0))
 
-CHPE=AFFE_CHAR_MECA(MODELE=MODELE_1,
-                    PESANTEUR=_F(GRAVITE=10.,
-                                 DIRECTION=(-1., 0., 0.,),),)
+CHPE = AFFE_CHAR_MECA(MODELE=MODELE_1, PESANTEUR=_F(GRAVITE=10.0, DIRECTION=(-1.0, 0.0, 0.0)))
 
-CARAC__1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
-                               COQUE=_F(
-       GROUP_MA = 'TOUT',
-  EPAIS = 0.030,
-                                  A_CIS = 0.83333333333333) )
+CARAC__1 = AFFE_CARA_ELEM(
+    MODELE=MODELE_1, COQUE=_F(GROUP_MA="TOUT", EPAIS=0.030, A_CIS=0.83333333333333)
+)
 
-MATELE_1=CALC_MATR_ELEM(   MODELE=MODELE_1,     CHARGE=CINE,
-                               CARA_ELEM=CARAC__1,
-                               CHAM_MATER=CH_MAT_1,
-                               OPTION='RIGI_MECA' )
+MATELE_1 = CALC_MATR_ELEM(
+    MODELE=MODELE_1, CHARGE=CINE, CARA_ELEM=CARAC__1, CHAM_MATER=CH_MAT_1, OPTION="RIGI_MECA"
+)
 
-VEFX=CALC_VECT_ELEM(   CHARGE=(CINE, CHFX,),   CARA_ELEM=CARAC__1,
-                          CHAM_MATER=CH_MAT_1,  OPTION='CHAR_MECA' )
+VEFX = CALC_VECT_ELEM(
+    CHARGE=(CINE, CHFX), CARA_ELEM=CARAC__1, CHAM_MATER=CH_MAT_1, OPTION="CHAR_MECA"
+)
 
-VEPE=CALC_VECT_ELEM(   CHARGE=(CINE, CHPE,),   CARA_ELEM=CARAC__1,
-                          CHAM_MATER=CH_MAT_1,  OPTION='CHAR_MECA' )
+VEPE = CALC_VECT_ELEM(
+    CHARGE=(CINE, CHPE), CARA_ELEM=CARAC__1, CHAM_MATER=CH_MAT_1, OPTION="CHAR_MECA"
+)
 
-NU=NUME_DDL(   MATR_RIGI=MATELE_1 )
+NU = NUME_DDL(MATR_RIGI=MATELE_1)
 
-MATASS=ASSE_MATRICE(   MATR_ELEM=MATELE_1,   NUME_DDL=NU )
+MATASS = ASSE_MATRICE(MATR_ELEM=MATELE_1, NUME_DDL=NU)
 
-VEFXAS=ASSE_VECTEUR(   VECT_ELEM=VEFX,       NUME_DDL=NU )
+VEFXAS = ASSE_VECTEUR(VECT_ELEM=VEFX, NUME_DDL=NU)
 
-VEPEAS=ASSE_VECTEUR(   VECT_ELEM=VEPE,       NUME_DDL=NU )
+VEPEAS = ASSE_VECTEUR(VECT_ELEM=VEPE, NUME_DDL=NU)
 
-MATASS=FACTORISER( reuse=MATASS,  MATR_ASSE=MATASS )
+MATASS = FACTORISER(reuse=MATASS, MATR_ASSE=MATASS)
 
-DEFX=RESOUDRE( MATR=MATASS,     CHAM_NO=VEFXAS)
+DEFX = RESOUDRE(MATR=MATASS, CHAM_NO=VEFXAS)
 
-DEPE=RESOUDRE( MATR=MATASS,     CHAM_NO=VEPEAS)
+DEPE = RESOUDRE(MATR=MATASS, CHAM_NO=VEPEAS)
 
-TEST_RESU(CHAM_NO=(_F(GROUP_NO='NO000002',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DX',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEFX,
-                      VALE_CALC=-0.036036929,
-                      VALE_REFE=-0.0361,
-                      REFERENCE='NON_DEFINI',),
-                   _F(CRITERE='RELATIF',
-                      NOM_CMP='DX',
-                      GROUP_NO='C',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEFX,
-                      VALE_CALC= 5.39626956E-03,
-                      VALE_REFE=5.4099999999999999E-3,
-                      REFERENCE='NON_DEFINI',),
-                   _F(GROUP_NO='NO000002',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DX',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEPE,
-                      VALE_CALC=-0.036036871,
-                      VALE_REFE=-0.0361,
-                      REFERENCE='NON_DEFINI',),
-                   _F(CRITERE='RELATIF',
-                      NOM_CMP='DX',
-                      GROUP_NO='C',
-                      PRECISION=1.E-2,
-                      CHAM_GD=DEPE,
-                      VALE_CALC= 5.39626092E-03,
-                      VALE_REFE=5.4099999999999999E-3,
-                      REFERENCE='NON_DEFINI',),
-                   ),
-          )
+TEST_RESU(
+    CHAM_NO=(
+        _F(
+            GROUP_NO="NO000002",
+            CRITERE="RELATIF",
+            NOM_CMP="DX",
+            PRECISION=1.0e-2,
+            CHAM_GD=DEFX,
+            VALE_CALC=-0.036036929,
+            VALE_REFE=-0.0361,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NOM_CMP="DX",
+            GROUP_NO="C",
+            PRECISION=1.0e-2,
+            CHAM_GD=DEFX,
+            VALE_CALC=5.39626956e-03,
+            VALE_REFE=5.4099999999999999e-3,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            GROUP_NO="NO000002",
+            CRITERE="RELATIF",
+            NOM_CMP="DX",
+            PRECISION=1.0e-2,
+            CHAM_GD=DEPE,
+            VALE_CALC=-0.036036871,
+            VALE_REFE=-0.0361,
+            REFERENCE="NON_DEFINI",
+        ),
+        _F(
+            CRITERE="RELATIF",
+            NOM_CMP="DX",
+            GROUP_NO="C",
+            PRECISION=1.0e-2,
+            CHAM_GD=DEPE,
+            VALE_CALC=5.39626092e-03,
+            VALE_REFE=5.4099999999999999e-3,
+            REFERENCE="NON_DEFINI",
+        ),
+    )
+)
 
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 FIN()
 #

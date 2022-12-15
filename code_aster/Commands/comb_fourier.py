@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class CombFourier(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.CombinedFourierResult`"""
+
     command_name = "COMB_FOURIER"
 
     def create_result(self, keywords):
@@ -47,8 +48,10 @@ class CombFourier(ExecuteCommand):
         else:
             self._result.setMesh(keywords["RESULTAT"].getMesh())
 
-        self._result.build(keywords["RESULTAT"].getFiniteElementDescriptors(
-        ), keywords["RESULTAT"].getFieldOnNodesDescriptions())
+        self._result.build(
+            keywords["RESULTAT"].getFiniteElementDescriptors(),
+            keywords["RESULTAT"].getFieldOnNodesDescriptions(),
+        )
 
 
 COMB_FOURIER = CombFourier.run

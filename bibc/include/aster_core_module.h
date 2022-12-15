@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -28,37 +28,36 @@
  *
  */
 
-extern PyObject* PyInit_aster_core(void);
+extern PyObject *PyInit_aster_core( void );
 
 ASTERINTEGER DEFS( JDCGET, jdcget, _IN char *, STRING_SIZE );
 extern void DEFSP( JDCSET, jdcset, _IN char *, STRING_SIZE, _IN ASTERINTEGER * );
-extern PyObject* GetJdcAttr(_IN char *);
+extern PyObject *GetJdcAttr( _IN char * );
 extern double get_tpmax();
-extern void DEFP(RDTMAX, rdtmax, ASTERDOUBLE *);
+extern void DEFP( RDTMAX, rdtmax, ASTERDOUBLE * );
 
-extern PyObject* asterc_getopt(_IN char *);
-extern long asterc_getopt_long(_IN char *, _OUT int *);
-extern double asterc_getopt_double(_IN char *, _OUT int *);
-extern char* asterc_getopt_string(_IN char *, _OUT int *);
-extern void DEFSPP(GTOPTI,gtopti, _IN char *, STRING_SIZE,
-                   _OUT ASTERINTEGER *, _OUT ASTERINTEGER *);
-extern void DEFSPP(GTOPTR,gtoptr, _IN char *, STRING_SIZE,
-                   _OUT ASTERDOUBLE *, _OUT ASTERINTEGER *);
-extern void DEFSSP(GTOPTK,gtoptk, _IN char *, STRING_SIZE, _OUT char *, STRING_SIZE,
-                   _OUT ASTERINTEGER *);
+extern PyObject *asterc_getopt( _IN char * );
+extern long asterc_getopt_long( _IN char *, _OUT int * );
+extern double asterc_getopt_double( _IN char *, _OUT int * );
+extern char *asterc_getopt_string( _IN char *, _OUT int * );
+extern void DEFSPP( GTOPTI, gtopti, _IN char *, STRING_SIZE, _OUT ASTERINTEGER *,
+                    _OUT ASTERINTEGER * );
+extern void DEFSPP( GTOPTR, gtoptr, _IN char *, STRING_SIZE, _OUT ASTERDOUBLE *,
+                    _OUT ASTERINTEGER * );
+extern void DEFSSP( GTOPTK, gtoptk, _IN char *, STRING_SIZE, _OUT char *, STRING_SIZE,
+                    _OUT ASTERINTEGER * );
 
-extern void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *, _IN STRING_SIZE, _IN ASTERINTEGER *,
-                         _IN char *, _IN STRING_SIZE,
-                         _IN ASTERINTEGER *, _IN char *, _IN STRING_SIZE, _IN ASTERINTEGER *,
-                         _IN ASTERINTEGER *, _IN ASTERINTEGER *, _IN ASTERDOUBLE *,
-                         _IN char*, _IN STRING_SIZE);
-extern void DEFPP(CHKMSG,chkmsg, _IN ASTERINTEGER *, _OUT ASTERINTEGER *);
-extern void DEFSSP(CHEKSD,cheksd,_IN char *,_IN STRING_SIZE, _IN char *, _IN STRING_SIZE,
-                   _OUT ASTERINTEGER *);
+extern void DEFSPSPSPPPPS( UTPRIN, utprin, _IN char *, _IN STRING_SIZE, _IN ASTERINTEGER *,
+                           _IN char *, _IN STRING_SIZE, _IN ASTERINTEGER *, _IN char *,
+                           _IN STRING_SIZE, _IN ASTERINTEGER *, _IN ASTERINTEGER *,
+                           _IN ASTERINTEGER *, _IN ASTERDOUBLE *, _IN char *, _IN STRING_SIZE );
+extern void DEFPP( CHKMSG, chkmsg, _IN ASTERINTEGER *, _OUT ASTERINTEGER * );
+extern void DEFSSP( CHEKSD, cheksd, _IN char *, _IN STRING_SIZE, _IN char *, _IN STRING_SIZE,
+                    _OUT ASTERINTEGER * );
 
-extern void DEFP(PRHEAD,prhead, _IN ASTERINTEGER *);
+extern void DEFP( PRHEAD, prhead, _IN ASTERINTEGER * );
 
-extern PyObject* aster_matfpe(PyObject*, PyObject *);
+extern PyObject *aster_matfpe( PyObject *, PyObject * );
 
 /* FIN ASTER_CORE_H */
 #endif

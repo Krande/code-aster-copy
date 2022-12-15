@@ -20,172 +20,197 @@
 # Ce test utilise Mumps comme préconditionneur depuis PETSc.
 # Penser à reconstruire PETSc en cas de changement de version de MUMPS.
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),
-               )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
-                          NU=0.3,),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=202702.7, NU=0.3))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
-                                 DZ=0.0,),
-                              _F(GROUP_NO='GRNO8',
-                                 DY=0.0,),),)
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MO, DDL_IMPO=(_F(GROUP_NO="GRNO1", DZ=0.0), _F(GROUP_NO="GRNO8", DY=0.0))
+)
 
 
-CHA2=AFFE_CHAR_CINE(MODELE=MO,
-                    MECA_IMPO=_F(GROUP_NO='GRNO7',
-                                 DX=0.0,
-                                 DY=0.01,),)
+CHA2 = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_NO="GRNO7", DX=0.0, DY=0.01))
 # REFERENCE = calcul MUMPS
-VECREF=MECA_STATIQUE(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHA1,),
-                           _F(CHARGE=CHA2,),),
-                    SOLVEUR=_F(METHODE='MUMPS'),)
+VECREF = MECA_STATIQUE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHA1), _F(CHARGE=CHA2)),
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
 
-TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'XX1', GROUP_NO = ('NO2958', 'NO2974'), OPERATION = 'EXTRACTION',
-                                RESULTAT = VECREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = ('DX','DY','DZ') ))
+TREF = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="XX1",
+        GROUP_NO=("NO2958", "NO2974"),
+        OPERATION="EXTRACTION",
+        RESULTAT=VECREF,
+        NUME_ORDRE=1,
+        NOM_CHAM="DEPL",
+        NOM_CMP=("DX", "DY", "DZ"),
+    )
+)
 
 #
-VECAS=MECA_STATIQUE(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHA1,),
-                           _F(CHARGE=CHA2,),),
-                    SOLVEUR=_F(METHODE='PETSC',
-                               PRE_COND='BLOC_LAGR',
-                               ALGORITHME='FGMRES',
-                               RESI_RELA=1.E-07),)
-VECAS2=MECA_STATIQUE(INFO=2, MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHA1,),
-                           _F(CHARGE=CHA2,),),
-                    SOLVEUR=_F(METHODE='PETSC',
-                               PRE_COND='BLOC_LAGR',
-                               ALGORITHME='GMRES',
-                               RESI_RELA=1.E-07),)
+VECAS = MECA_STATIQUE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHA1), _F(CHARGE=CHA2)),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="BLOC_LAGR", ALGORITHME="FGMRES", RESI_RELA=1.0e-07),
+)
+VECAS2 = MECA_STATIQUE(
+    INFO=2,
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=(_F(CHARGE=CHA1), _F(CHARGE=CHA2)),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="BLOC_LAGR", ALGORITHME="GMRES", RESI_RELA=1.0e-07),
+)
 #
-TEST_RESU(RESU=(_F(RESULTAT=VECAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.0100000000439,
-                   VALE_REFE=TREF['DY',1],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.000102958209453,
-                   VALE_REFE=TREF['DZ',1],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.0100000000439,
-                   VALE_REFE=TREF['DY',1],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=0.00430057930822,
-                   VALE_REFE=TREF['DX',2],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=0.00928897504797,
-                   VALE_REFE=TREF['DY',2],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-               _F(RESULTAT=VECAS,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=-2.91729396912E-05,
-                   VALE_REFE=TREF['DZ',2],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-               ),)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=VECAS,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.0100000000439,
+            VALE_REFE=TREF["DY", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.000102958209453,
+            VALE_REFE=TREF["DZ", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.0100000000439,
+            VALE_REFE=TREF["DY", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00430057930822,
+            VALE_REFE=TREF["DX", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00928897504797,
+            VALE_REFE=TREF["DY", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2974",
+            VALE_CALC=-2.91729396912e-05,
+            VALE_REFE=TREF["DZ", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
 #
-TEST_RESU(RESU=(_F(RESULTAT=VECAS2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.0100000000108,
-                   VALE_REFE=TREF['DY',1],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.000102958205751,
-                   VALE_REFE=TREF['DZ',1],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2958',
-                   VALE_CALC=0.0100000000108,
-                   VALE_REFE=TREF['DY',1],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=0.00430057989223,
-                   VALE_REFE=TREF['DX',2],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=VECAS2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=0.00928897521706,
-                   VALE_REFE=TREF['DY',2],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-               _F(RESULTAT=VECAS2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='NO2974',
-                   VALE_CALC=-2.91729293048E-05,
-                   VALE_REFE=TREF['DZ',2],
-                   PRECISION=1.E-06,
-                   REFERENCE='AUTRE_ASTER',),
-               ),)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.0100000000108,
+            VALE_REFE=TREF["DY", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.000102958205751,
+            VALE_REFE=TREF["DZ", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2958",
+            VALE_CALC=0.0100000000108,
+            VALE_REFE=TREF["DY", 1],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00430057989223,
+            VALE_REFE=TREF["DX", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="NO2974",
+            VALE_CALC=0.00928897521706,
+            VALE_REFE=TREF["DY", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+        _F(
+            RESULTAT=VECAS2,
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DZ",
+            GROUP_NO="NO2974",
+            VALE_CALC=-2.91729293048e-05,
+            VALE_REFE=TREF["DZ", 2],
+            PRECISION=1.0e-06,
+            REFERENCE="AUTRE_ASTER",
+        ),
+    )
+)
 
 FIN()

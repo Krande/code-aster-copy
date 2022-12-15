@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class RestModeNonl(ExecuteCommand):
-    """Command REST_MODE_NONL
-    """
+    """Command REST_MODE_NONL"""
+
     command_name = "REST_MODE_NONL"
 
     def create_result(self, keywords):
@@ -35,9 +35,9 @@ class RestModeNonl(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
 
-        if keywords["TYPE_RESU"] == 'DYNA_TRANS':
+        if keywords["TYPE_RESU"] == "DYNA_TRANS":
             self._result = FullTransientResult()
-        elif keywords["TYPE_RESU"] ==  'MODE_MECA' :
+        elif keywords["TYPE_RESU"] == "MODE_MECA":
             self._result = ModeResult()
 
 

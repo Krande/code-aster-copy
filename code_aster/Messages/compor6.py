@@ -78,5 +78,4 @@ Cette combinaison est connue comme donnant des résultats imprécis voir faux, e
         L'intégration locale de loi de comportement DRUCK_PRAG_N_A n'admet pas une unique solution : vérifier les données matériaux. 
         """
     ),
-
 }

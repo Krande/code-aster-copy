@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -20,14 +20,14 @@
 #include "aster.h"
 
 #ifdef ASTER_PLATFORM_POSIX
-# ifdef __FreeBSD__
-#   include <kvm.h>
-#   include <sys/param.h>
-#   include <sys/sysctl.h>
-#   include <sys/user.h>
-#   include <err.h>
-# endif
-#   include <fcntl.h>
+#ifdef __FreeBSD__
+#include <err.h>
+#include <kvm.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+#endif
+#include <fcntl.h>
 #endif
 
 /*
@@ -38,88 +38,88 @@
 **
 ** Le numero du processus est recupere par getpid
 */
-ASTERINTEGER DEFP (MEMPID, mempid, ASTERINTEGER *val)
-{
+ASTERINTEGER DEFP( MEMPID, mempid, ASTERINTEGER *val ) {
     static char filename[80];
     static char sbuf[1024];
-    char* S;
+    char *S;
     int fd, num_read;
     ASTERINTEGER iret;
     pid_t numpro;
 
 #if defined ASTER_PLATFORM_POSIX && defined ASTER_ENABLE_PROC_STATUS
 
-    pid_t getpid(void);
+    pid_t getpid( void );
     numpro = getpid();
 
-# if defined ASTER_PLATFORM_FREEBSD
-/*
-** FreeBSD and some others without /proc ?
-*/
+#if defined ASTER_PLATFORM_FREEBSD
+    /*
+    ** FreeBSD and some others without /proc ?
+    */
 
-#define B2K(x) ((x) >> 10) /* bytes to kbytes */
+#define B2K( x ) ( ( x ) >> 10 ) /* bytes to kbytes */
 
     char errbuf[_POSIX2_LINE_MAX];
     struct kinfo_proc *kp;
     kvm_t *kd;
     int count;
-    kd = kvm_openfiles(NULL, "/dev/null", NULL, O_RDONLY, errbuf);
-    if (kd == NULL)
-        errx(1, "kvm_openfiles: %s", errbuf);
+    kd = kvm_openfiles( NULL, "/dev/null", NULL, O_RDONLY, errbuf );
+    if ( kd == NULL )
+        errx( 1, "kvm_openfiles: %s", errbuf );
 
-    kp = kvm_getprocs(kd, KERN_PROC_PID, numpro, &count);
-    if (kp == NULL) {
-        (void)fprintf(stderr, "kvm_getprocs: %s", kvm_geterr(kd));
-        kvm_close(kd);
+    kp = kvm_getprocs( kd, KERN_PROC_PID, numpro, &count );
+    if ( kp == NULL ) {
+        (void)fprintf( stderr, "kvm_getprocs: %s", kvm_geterr( kd ) );
+        kvm_close( kd );
         return -1;
     }
 
-    kvm_close(kd);
+    kvm_close( kd );
 
     /* VmSize */
-    val[0] = B2K((uintmax_t)kp->ki_size);
+    val[0] = B2K( (uintmax_t)kp->ki_size );
     /* VmPeak - not defined in /compat/linux/proc/pid/status */
     val[1] = -1;
     iret = 0;
 
-# elif defined ASTER_PLATFORM_DARWIN
+#elif defined ASTER_PLATFORM_DARWIN
 
-/*
-OS X does not support retrieving memory consumptions through /proc or kvm library
-*/
+    /*
+    OS X does not support retrieving memory consumptions through /proc or kvm library
+    */
 
     val[0] = 0;
     val[1] = 0;
     iret = 0;
 
-# else /* Linux */
+#else /* Linux */
 
-    sprintf(filename, "/proc/%ld/status", (long)numpro);
-    fd = open(filename, O_RDONLY, 0);
-    if (fd==-1) return -1;
-    num_read=read(fd,sbuf,(sizeof sbuf)-1);
-/*  printf (" contenu du buffer = %s\n",sbuf); */
-    close(fd);
+    sprintf( filename, "/proc/%ld/status", (long)numpro );
+    fd = open( filename, O_RDONLY, 0 );
+    if ( fd == -1 )
+        return -1;
+    num_read = read( fd, sbuf, ( sizeof sbuf ) - 1 );
+    /*  printf (" contenu du buffer = %s\n",sbuf); */
+    close( fd );
 
-    S=strstr(sbuf,"VmSize:")+8;
-    val[0] = (ASTERINTEGER)atoi(S);
+    S = strstr( sbuf, "VmSize:" ) + 8;
+    val[0] = (ASTERINTEGER)atoi( S );
 
-    if ( strstr(sbuf,"VmPeak:") != NULL ) {
-        S=strstr(sbuf,"VmPeak:")+8;
-        val[1] = atoi(S);
+    if ( strstr( sbuf, "VmPeak:" ) != NULL ) {
+        S = strstr( sbuf, "VmPeak:" ) + 8;
+        val[1] = atoi( S );
     } else {
         val[1] = -1;
     }
 
     iret = 0;
-# endif
+#endif
 
     return iret;
 
 #else
-/*
-** Pour retourner des valeurs sous Windows
-*/
+    /*
+    ** Pour retourner des valeurs sous Windows
+    */
     val[0] = 0;
     val[1] = 0;
     return 0;

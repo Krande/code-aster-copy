@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,16 @@ from ...Messages import UTMESS
 
 from ...Behaviours import catalc
 from ...Cata.Syntax import _F
-from ...Commands import (CREA_TABLE, DEFI_FICHIER, DEFI_FONCTION,
-                         DEFI_LIST_INST, DEFI_LIST_REEL,
-                         IMPR_FONCTION, INFO_EXEC_ASTER, SIMU_POINT_MAT)
+from ...Commands import (
+    CREA_TABLE,
+    DEFI_FICHIER,
+    DEFI_FONCTION,
+    DEFI_LIST_INST,
+    DEFI_LIST_REEL,
+    IMPR_FONCTION,
+    INFO_EXEC_ASTER,
+    SIMU_POINT_MAT,
+)
 from ..Utils.calc_point_mat import CALC_POINT_MAT
 
 
@@ -45,8 +52,8 @@ def SomListStr(liststr):
     """
     str_tmp = ""
     for cpt in liststr:
-       assert type(cpt) is str
-       str_tmp += "'%s', " %(cpt)
+        assert type(cpt) is str
+        str_tmp += "'%s', " % (cpt)
 
     return str_tmp[:-2]
 
@@ -93,8 +100,7 @@ def int_2_str(i, lon):
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
 # --------------------------------------------------------------
-def affiche_infos_essai(str_n_essai, type_essai, \
-                        val_PRES_CONF, val2, val3=0.):
+def affiche_infos_essai(str_n_essai, type_essai, val_PRES_CONF, val2, val3=0.0):
     """
     Objet: Afficher des informations sur l'essai
     """
@@ -146,57 +152,58 @@ def affiche_infos_essai(str_n_essai, type_essai, \
         mesg4 = "  > SIGM_DECH   = "
     # Pour nouvel essai
     # elif type_essai == "XXX":
-        # mesg2 = "  > PRES_CONF = "
-        # mesg3 = "  > XXX       = "
+    # mesg2 = "  > PRES_CONF = "
+    # mesg3 = "  > XXX       = "
     else:
         assert False
 
-    mesg2 += str("%E" %(val_PRES_CONF)) + " "
+    mesg2 += str("%E" % (val_PRES_CONF)) + " "
 
-    if val2 < 0.:
-        mesg3 += str("%E" %(val2)) + " "
+    if val2 < 0.0:
+        mesg3 += str("%E" % (val2)) + " "
     else:
-        mesg3 += " " + str("%E" %(val2)) + " "
-    if val3 == 0.:
+        mesg3 += " " + str("%E" % (val2)) + " "
+    if val3 == 0.0:
         mesg4 = ""
     else:
-        mesg4 += str("%E" %(val3)) + " "
+        mesg4 += str("%E" % (val3)) + " "
 
     lonmax = max(len(mesg2), len(mesg3), len(mesg4))
     lonmax = max(len(mesg1), lonmax)
 
     separ1 = "\n  "
-    separ2 = "-" * (lonmax+2)
+    separ2 = "-" * (lonmax + 2)
     separ3 = "|"
 
     mesg = separ1
-    mesg+= separ2 + separ1
-    mesg+= separ3 + mesg1 + " " * (lonmax - len(mesg1)) + separ3 + separ1
-    mesg+= separ2 + separ1
-    mesg+= separ3 + mesg2 + " " * (lonmax - len(mesg2)) + separ3 + separ1
-    mesg+= separ3 + mesg3 + " " * (lonmax - len(mesg3)) + separ3 + separ1
+    mesg += separ2 + separ1
+    mesg += separ3 + mesg1 + " " * (lonmax - len(mesg1)) + separ3 + separ1
+    mesg += separ2 + separ1
+    mesg += separ3 + mesg2 + " " * (lonmax - len(mesg2)) + separ3 + separ1
+    mesg += separ3 + mesg3 + " " * (lonmax - len(mesg3)) + separ3 + separ1
 
     if len(mesg4) != 0:
-        mesg += separ3 + mesg4 +\
-                " " * (lonmax-len(mesg4)) + separ3 + separ1
+        mesg += separ3 + mesg4 + " " * (lonmax - len(mesg4)) + separ3 + separ1
     mesg += separ2
 
-    aster.affiche('MESSAGE', mesg)
+    aster.affiche("MESSAGE", mesg)
 
 
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
 # --------------------------------------------------------------
-def verif_essais(COMPORTEMENT,
-                 ESSAI_TRIA_DR_M_D,
-                 ESSAI_TRIA_ND_M_D,
-                 ESSAI_CISA_DR_C_D,
-                 ESSAI_TRIA_ND_C_F,
-                 ESSAI_TRIA_ND_C_D,
-                 ESSAI_TRIA_DR_C_D,
-                 ESSAI_OEDO_DR_C_F,
-                 ESSAI_ISOT_DR_C_F,):
-                 # ESSAI_XXX,):
+def verif_essais(
+    COMPORTEMENT,
+    ESSAI_TRIA_DR_M_D,
+    ESSAI_TRIA_ND_M_D,
+    ESSAI_CISA_DR_C_D,
+    ESSAI_TRIA_ND_C_F,
+    ESSAI_TRIA_ND_C_D,
+    ESSAI_TRIA_DR_C_D,
+    ESSAI_OEDO_DR_C_F,
+    ESSAI_ISOT_DR_C_F,
+):
+    # ESSAI_XXX,):
     """
     Objet: Verification de certaines donnees d'entree de la macro
            ne pouvant etre faites dans le catalogue
@@ -213,8 +220,8 @@ def verif_essais(COMPORTEMENT,
     # ---
     if ESSAI_TRIA_DR_M_D is not None:
 
-        typ_essai   = "ESSAI_TRIA_DR_M_D"
-        List_essais+= ESSAI_TRIA_DR_M_D.List_F()
+        typ_essai = "ESSAI_TRIA_DR_M_D"
+        List_essais += ESSAI_TRIA_DR_M_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_DR_M_D.List_F()):
 
@@ -222,50 +229,51 @@ def verif_essais(COMPORTEMENT,
             # PRES_CONF, EPSI_IMPOSE, TABLE_RESU ?
             # ------------------------------------------------------------------------
             char = "<PRES_CONF>, <EPSI_IMPOSE>"
-            test = len(DicoEssai['PRES_CONF']) == len(DicoEssai['EPSI_IMPOSE'])
+            test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["EPSI_IMPOSE"])
 
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
                 char += ", <TABLE_RESU>"
 
-                test = test and\
-                       (len(DicoEssai['PRES_CONF']) == len(DicoEssai['TABLE_RESU']))
+                test = test and (len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"]))
 
             if not test:
-                UTMESS('F', 'COMPOR2_31', valk=(typ_essai, char), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_31", valk=(typ_essai, char), vali=(iocc + 1))
 
             # on s'assure que tous les PRES_CONF et EPSI_IMPOSE sont bien > 0.
             # ------------------------------------------------------------------------
-            for i in range(len(DicoEssai['PRES_CONF'])):
+            for i in range(len(DicoEssai["PRES_CONF"])):
 
-                if DicoEssai['PRES_CONF'][i] <= 0.:
+                if DicoEssai["PRES_CONF"][i] <= 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                        valk=(typ_essai, "PRES_CONF",),
-                        vali=(iocc+1),
-                        valr=(DicoEssai['PRES_CONF'][i]))
+                    valargs = _F(
+                        valk=(typ_essai, "PRES_CONF"),
+                        vali=(iocc + 1),
+                        valr=(DicoEssai["PRES_CONF"][i]),
+                    )
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
-                if DicoEssai['EPSI_IMPOSE'][i] == 0.:
+                if DicoEssai["EPSI_IMPOSE"][i] == 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
+                    valargs = _F(
                         valk=(typ_essai, "EPSI_IMPOSE"),
-                        vali=(iocc+1),
-                        valr=(DicoEssai['EPSI_IMPOSE'][i]))
+                        vali=(iocc + 1),
+                        valr=(DicoEssai["EPSI_IMPOSE"][i]),
+                    )
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai TRIA_ND_M_D
     # ---
     if ESSAI_TRIA_ND_M_D is not None:
 
-        typ_essai    = "ESSAI_TRIA_ND_M_D"
+        typ_essai = "ESSAI_TRIA_ND_M_D"
         List_essais += ESSAI_TRIA_ND_M_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_M_D.List_F()):
@@ -274,146 +282,134 @@ def verif_essais(COMPORTEMENT,
             # -> PRES_CONF, EPSI_IMPOSE, TABLE_RESU ?
             # ------------------------------------------------------------------------
             char = "<PRES_CONF>, <EPSI_IMPOSE>"
-            test = len(DicoEssai['PRES_CONF']) == len(DicoEssai['EPSI_IMPOSE'])
+            test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["EPSI_IMPOSE"])
 
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
                 char += ", <TABLE_RESU>"
-                test = test and\
-                   len(DicoEssai['PRES_CONF']) == len(DicoEssai['TABLE_RESU'])
+                test = test and len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"])
 
             if not test:
-                UTMESS('F', 'COMPOR2_31',
-                       valk=(typ_essai, char),
-                       vali=(iocc+1))
+                UTMESS("F", "COMPOR2_31", valk=(typ_essai, char), vali=(iocc + 1))
 
             # on s'assure que tous les PRES_CONF et EPSI_IMPOSE sont bien > 0.
             # ------------------------------------------------------------------------
-            for i in range(len(DicoEssai['PRES_CONF'])):
+            for i in range(len(DicoEssai["PRES_CONF"])):
 
-                if DicoEssai['PRES_CONF'][i] == 0.:
+                if DicoEssai["PRES_CONF"][i] == 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(DicoEssai['PRES_CONF'][i]),
-                           vali=(iocc+1))
+                    valargs = _F(
+                        valk=(typ_essai, "PRES_CONF"),
+                        valr=(DicoEssai["PRES_CONF"][i]),
+                        vali=(iocc + 1),
+                    )
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
-                if DicoEssai['EPSI_IMPOSE'][i] == 0.:
+                if DicoEssai["EPSI_IMPOSE"][i] == 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "EPSI_IMPOSE"),
-                           valr=(DicoEssai['EPSI_IMPOSE'][i]),
-                           vali=(iocc+1))
+                    valargs = _F(
+                        valk=(typ_essai, "EPSI_IMPOSE"),
+                        valr=(DicoEssai["EPSI_IMPOSE"][i]),
+                        vali=(iocc + 1),
+                    )
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
             # on s'assure que 0. < BIOT_COEF <= 1
             # ------------------------------------------------------------------------
-            biot = DicoEssai['BIOT_COEF']
-            if biot <= 0. or biot > 1.:
+            biot = DicoEssai["BIOT_COEF"]
+            if biot <= 0.0 or biot > 1.0:
 
-                UTMESS('F', 'COMPOR2_33',
-                       valk=(typ_essai),
-                       valr=(biot),
-                       vali=(iocc+1))
+                UTMESS("F", "COMPOR2_33", valk=(typ_essai), valr=(biot), vali=(iocc + 1))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai CISA_DR_C_D
     # ---
     if ESSAI_CISA_DR_C_D is not None:
 
-        typ_essai    = "ESSAI_CISA_DR_C_D"
+        typ_essai = "ESSAI_CISA_DR_C_D"
         List_essais += ESSAI_CISA_DR_C_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_CISA_DR_C_D.List_F()):
 
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
-                n1 = len(DicoEssai['PRES_CONF'])
-                n2 = len(DicoEssai['TABLE_RESU'])
+                n1 = len(DicoEssai["PRES_CONF"])
+                n2 = len(DicoEssai["TABLE_RESU"])
 
-                if not n2 == n1+1:
+                if not n2 == n1 + 1:
 
-                    UTMESS('F', 'COMPOR2_35',
-                           valk=(typ_essai),
-                           vali=(iocc+1, n1, n1+1, n2))
+                    UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1 + 1, n2))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
 
             # on s'assure que tous les PRES_CONF sont bien > 0.
             # ------------------------------------------------------------------------
-            for pconf in DicoEssai['PRES_CONF']:
+            for pconf in DicoEssai["PRES_CONF"]:
 
-                if pconf <= 0.:
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(pconf),
-                           vali=(iocc+1))
+                if pconf <= 0.0:
+                    valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
             # on s'assure que tous les GAMMA_IMPOSE,GAMMA_ELAS sont bien > 0.
             # ------------------------------------------------------------------------
-            for epsimpo in DicoEssai['GAMMA_IMPOSE']:
+            for epsimpo in DicoEssai["GAMMA_IMPOSE"]:
 
-                if epsimpo <= 0.:
-                    UTMESS('F', 'COMPOR2_34',
-                           valk=(typ_essai, "GAMMA_IMPOSE"),
-                           valr=(epsimpo),
-                           vali=(iocc+1))
+                if epsimpo <= 0.0:
+                    valargs = _F(valk=(typ_essai, "GAMMA_IMPOSE"), valr=(epsimpo), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_34", **valargs)
 
-            if DicoEssai['GAMMA_ELAS'] <= 0.:
+            if DicoEssai["GAMMA_ELAS"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "GAMMA_ELAS"),
-                       valr=(DicoEssai['GAMMA_ELAS']),
-                       vali=(iocc+1))
+                valargs = _F(
+                    valk=(typ_essai, "GAMMA_ELAS"), valr=(DicoEssai["GAMMA_ELAS"]), vali=(iocc + 1)
+                )
+                UTMESS("F", "COMPOR2_34", **valargs)
 
             # on s'assure que la liste des GAMMA_IMPOSE est croissante
             # ------------------------------------------------------------------------
-            clef = 'GAMMA_IMPOSE'
+            clef = "GAMMA_IMPOSE"
             list_tmp = list(DicoEssai[clef])
             list_tmp.sort()
 
-            if (len(list_tmp) > 1) and (not(tuple(DicoEssai[clef]) == tuple(list_tmp))):
-                UTMESS('F', 'COMPOR2_38',
+            if (len(list_tmp) > 1) and (not (tuple(DicoEssai[clef]) == tuple(list_tmp))):
+                valargs = _F(
                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "croissante"),
-                    vali=(iocc+1))
+                    vali=(iocc + 1),
+                )
+                UTMESS("F", "COMPOR2_38", **valargs)
     # ---
     # Essai TRIA_ND_C_F
     # ---
     if ESSAI_TRIA_ND_C_F is not None:
 
-        typ_essai    = "ESSAI_TRIA_ND_C_F"
+        typ_essai = "ESSAI_TRIA_ND_C_F"
         List_essais += ESSAI_TRIA_ND_C_F.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_F.List_F()):
 
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
-                n1 = len(DicoEssai['PRES_CONF'])
-                n2 = len(DicoEssai['TABLE_RESU'])
+                n1 = len(DicoEssai["PRES_CONF"])
+                n2 = len(DicoEssai["TABLE_RESU"])
 
-                if not n2 == n1+1:
+                if not n2 == n1 + 1:
 
-                    UTMESS('F', 'COMPOR2_35',
-                        valk=(typ_essai),
-                        vali=(iocc+1, n1, n1+1, n2))
+                    UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1 + 1, n2))
 
             # on s'assure que SIGM_IMPOSE > 0.
             # ------------------------------------------------------------------------
@@ -421,280 +417,271 @@ def verif_essais(COMPORTEMENT,
             # 06 oct. 2018: on permet de commencer a charger en traction
             # ============
             # ------------------------------------------------------------------------
-#             for sigimpo in DicoEssai['SIGM_IMPOSE']:
-#
-#                 if sigimpo <= 0.:
-#                     UTMESS('F', 'COMPOR2_34',
-#                            valk=(typ_essai, "SIGM_IMPOSE"),
-#                            valr=(sigimpo),
-#                            vali=(iocc+1))
+            #             for sigimpo in DicoEssai['SIGM_IMPOSE']:
+            #
+            #                 if sigimpo <= 0.:
+            #                     UTMESS('F', 'COMPOR2_34',
+            #                            valk=(typ_essai, "SIGM_IMPOSE"),
+            #                            valr=(sigimpo),
+            #                            vali=(iocc+1))
 
             # on s'assure que PRES_CONF > 0. et PRES_CONF+SIGM_IMPOSE < 0.
             # ------------------------------------------------------------------------
-            for pconf in DicoEssai['PRES_CONF']:
+            for pconf in DicoEssai["PRES_CONF"]:
 
-                if pconf <= 0.:
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(pconf),
-                           vali=(iocc+1))
-#
-#                 for sigimpo in DicoEssai['SIGM_IMPOSE']:
-#
-#                     if pconf+sigimpo >= 0.:
-#                         UTMESS('F', 'COMPOR2_37',
-#                                valk=(typ_essai),
-#                                vali=(iocc+1),
-#                                valr=(pconf, sigimpo, pconf+sigimpo))
+                if pconf <= 0.0:
+                    valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
+            #
+            #                 for sigimpo in DicoEssai['SIGM_IMPOSE']:
+            #
+            #                     if pconf+sigimpo >= 0.:
+            #                         UTMESS('F', 'COMPOR2_37',
+            #                                valk=(typ_essai),
+            #                                vali=(iocc+1),
+            #                                valr=(pconf, sigimpo, pconf+sigimpo))
 
             # on s'assure que KZERO et UN_SUR_K sont > 0. et 0. < BIOT_COEF <= 1
             # ------------------------------------------------------------------------
-            if DicoEssai['UN_SUR_K'] <= 0.:
+            if DicoEssai["UN_SUR_K"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "UN_SUR_K"),
-                       valr=(DicoEssai['UN_SUR_K']),
-                       vali=(iocc+1))
+                valargs = _F(
+                    valk=(typ_essai, "UN_SUR_K"), valr=(DicoEssai["UN_SUR_K"]), vali=(iocc + 1)
+                )
+                UTMESS("F", "COMPOR2_34", **valargs)
 
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
 
-            biot = DicoEssai['BIOT_COEF']
+            biot = DicoEssai["BIOT_COEF"]
 
-            if biot <= 0. or biot > 1.:
+            if biot <= 0.0 or biot > 1.0:
 
-                UTMESS('F', 'COMPOR2_33',
-                       valk=(typ_essai),
-                       valr=(biot),
-                       vali=(iocc+1))
+                UTMESS("F", "COMPOR2_33", valk=(typ_essai), valr=(biot), vali=(iocc + 1))
 
             # on s'assure que 0. < RU_MAX <= 1
             # ------------------------------------------------------------------------
-            n1 = len(DicoEssai['CRIT_LIQUEFACTION'])
-            n2 = len(DicoEssai['VALE_CRIT'])
+            n1 = len(DicoEssai["CRIT_LIQUEFACTION"])
+            n2 = len(DicoEssai["VALE_CRIT"])
 
             if n1 != n2:
 
-               UTMESS('F', 'COMPOR2_35', valk=(typ_essai),
-                        vali=(iocc+1, n1, n1, n2))
+                UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1, n2))
 
-            for i,t in enumerate(DicoEssai['CRIT_LIQUEFACTION']):
+            for i, t in enumerate(DicoEssai["CRIT_LIQUEFACTION"]):
 
-               if t == 'RU_MAX':
+                if t == "RU_MAX":
 
-                  if DicoEssai['VALE_CRIT'][i] <= 0. or DicoEssai['VALE_CRIT'][i] > 1.:
+                    if DicoEssai["VALE_CRIT"][i] <= 0.0 or DicoEssai["VALE_CRIT"][i] > 1.0:
 
-                     UTMESS('F', 'COMPOR2_33',
-                       valk=(typ_essai, t),
-                       valr=(DicoEssai['VALE_CRIT'][i]),
-                       vali=(iocc+1))
+                        UTMESS(
+                            "F",
+                            "COMPOR2_33",
+                            valk=(typ_essai, t),
+                            valr=(DicoEssai["VALE_CRIT"][i]),
+                            vali=(iocc + 1),
+                        )
 
-               elif t == 'EPSI_ABS0_MAX':
+                elif t == "EPSI_ABS0_MAX":
 
-                  if DicoEssai['VALE_CRIT'][i] < -.5 or DicoEssai['VALE_CRIT'][i] > .5:
+                    if DicoEssai["VALE_CRIT"][i] < -0.5 or DicoEssai["VALE_CRIT"][i] > 0.5:
 
-                     UTMESS('F', 'COMPOR2_33',
-                       valk=(typ_essai, t),
-                       valr=(DicoEssai['VALE_CRIT'][i]),
-                       vali=(iocc+1))
+                        UTMESS(
+                            "F",
+                            "COMPOR2_33",
+                            valk=(typ_essai, t),
+                            valr=(DicoEssai["VALE_CRIT"][i]),
+                            vali=(iocc + 1),
+                        )
 
-               elif t == 'EPSI_RELA_MAX':
+                elif t == "EPSI_RELA_MAX":
 
-                  if DicoEssai['VALE_CRIT'][i] <= 0. or DicoEssai['VALE_CRIT'][i] > .5:
+                    if DicoEssai["VALE_CRIT"][i] <= 0.0 or DicoEssai["VALE_CRIT"][i] > 0.5:
 
-                     UTMESS('F', 'COMPOR2_33',
-                       valk=(typ_essai, t),
-                       valr=(DicoEssai['VALE_CRIT'][i]),
-                       vali=(iocc+1))
+                        UTMESS(
+                            "F",
+                            "COMPOR2_33",
+                            valk=(typ_essai, t),
+                            valr=(DicoEssai["VALE_CRIT"][i]),
+                            vali=(iocc + 1),
+                        )
 
             # on s'assure que la liste des SIGM_IMPOSE est croissante
             # ------------------------------------------------------------------------
-            clef = 'SIGM_IMPOSE'
+            clef = "SIGM_IMPOSE"
             list_tmp = list(DicoEssai[clef])
             list_tmp.sort()
 
-            if (len(list_tmp) > 1) and (not(tuple(DicoEssai[clef]) == tuple(list_tmp))):
+            if (len(list_tmp) > 1) and (not (tuple(DicoEssai[clef]) == tuple(list_tmp))):
 
-                UTMESS('F', 'COMPOR2_38',
+                valargs = _F(
                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "croissante"),
-                    vali=(iocc+1))
+                    vali=(iocc + 1),
+                )
+                UTMESS("F", "COMPOR2_38", **valargs)
     # ---
     # Essai TRIA_DR_C_D
     # ---
     if ESSAI_TRIA_DR_C_D is not None:
 
-        typ_essai    = "ESSAI_TRIA_DR_C_D"
+        typ_essai = "ESSAI_TRIA_DR_C_D"
         List_essais += ESSAI_TRIA_DR_C_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_DR_C_D.List_F()):
 
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
-                n1 = len(DicoEssai['PRES_CONF'])
-                n2 = len(DicoEssai['TABLE_RESU'])
+                n1 = len(DicoEssai["PRES_CONF"])
+                n2 = len(DicoEssai["TABLE_RESU"])
 
-                if not n2 == n1+1:
-                    UTMESS('F', 'COMPOR2_35',
-                           valk=(typ_essai),
-                           vali=(iocc+1, n1, n1+1, n2))
+                if not n2 == n1 + 1:
+                    UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1 + 1, n2))
 
             # on s'assure que:
             # * len (EPSI_MAXI) = len(EPSI_MINI)
             # * EPSI_MAXI > EPSI_MINI
             # * EPSI_ELAS sont > 0.
             # ------------------------------------------------------------------------
-            n1 = len(DicoEssai['EPSI_MAXI'])
-            n2 = len(DicoEssai['EPSI_MINI'])
+            n1 = len(DicoEssai["EPSI_MAXI"])
+            n2 = len(DicoEssai["EPSI_MINI"])
 
             if n2 != n1:
-               UTMESS('F', 'COMPOR2_35',
-                      valk=(typ_essai),
-                      vali=(iocc+1, n1, n1, n2))
+                UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1, n2))
 
-            for j,epsmaxi in enumerate(DicoEssai['EPSI_MAXI']):
+            for j, epsmaxi in enumerate(DicoEssai["EPSI_MAXI"]):
 
-                epsmini = DicoEssai['EPSI_MINI'][j]
+                epsmini = DicoEssai["EPSI_MINI"][j]
 
                 if epsmaxi <= epsmini:
 
-                    UTMESS('F', 'COMPOR2_34',
-                           valk=(typ_essai, "EPSI_MAXI-EPSI_MINI"),
-                           valr=(epsmaxi-epsmini),
-                           vali=(iocc+1))
+                    valargs = _F(
+                        valk=(typ_essai, "EPSI_MAXI-EPSI_MINI"),
+                        valr=(epsmaxi - epsmini),
+                        vali=(iocc + 1),
+                    )
+                    UTMESS("F", "COMPOR2_34", **valargs)
 
-            if DicoEssai['EPSI_ELAS'] <= 0.:
+            if DicoEssai["EPSI_ELAS"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "EPSI_ELAS"),
-                       valr=(DicoEssai['EPSI_ELAS']),
-                       vali=(iocc+1))
+                valargs = _F(
+                    valk=(typ_essai, "EPSI_ELAS"), valr=(DicoEssai["EPSI_ELAS"]), vali=(iocc + 1)
+                )
+                UTMESS("F", "COMPOR2_34", **valargs)
 
             # on s'assure que PRES_CONF < 0.
             # ------------------------------------------------------------------------
-            for pconf in DicoEssai['PRES_CONF']:
+            for pconf in DicoEssai["PRES_CONF"]:
 
-                if pconf <= 0.:
+                if pconf <= 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(pconf),
-                           vali=(iocc+1))
+                    valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
             # on s'assure que la liste des EPSI_IMPOSE est DECROISSANTE
             # ------------------------------------------------------------------------
-# M. Jaquet souhaite nelever cette condition
-#
-#             clef = 'EPSI_MINI'
-#             list_tmp = list(DicoEssai[clef])
-#             list_tmp.sort()
-#             #list_tmp.reverse()
-#
-#             if not(DicoEssai[clef] == tuple(list_tmp)):
-#
-#                 UTMESS('F', 'COMPOR2_38',
-#                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "decroissante"),
-#                     vali=(iocc+1))
+            # M. Jaquet souhaite nelever cette condition
+            #
+            #             clef = 'EPSI_MINI'
+            #             list_tmp = list(DicoEssai[clef])
+            #             list_tmp.sort()
+            #             #list_tmp.reverse()
+            #
+            #             if not(DicoEssai[clef] == tuple(list_tmp)):
+            #
+            #                 UTMESS('F', 'COMPOR2_38',
+            #                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "decroissante"),
+            #                     vali=(iocc+1))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai TRIA_ND_C_D
     # ---
     if ESSAI_TRIA_ND_C_D is not None:
 
-        typ_essai    = "ESSAI_TRIA_ND_C_D"
+        typ_essai = "ESSAI_TRIA_ND_C_D"
         List_essais += ESSAI_TRIA_ND_C_D.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_TRIA_ND_C_D.List_F()):
 
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
             # ------------------------------------------------------------------------
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
-                n1 = len(DicoEssai['PRES_CONF'])
-                n2 = len(DicoEssai['TABLE_RESU'])
+                n1 = len(DicoEssai["PRES_CONF"])
+                n2 = len(DicoEssai["TABLE_RESU"])
 
-                if not n2 == n1+1:
-                    UTMESS('F', 'COMPOR2_35',
-                           valk=(typ_essai),
-                           vali=(iocc+1, n1, n1+1, n2))
+                if not n2 == n1 + 1:
+                    UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1 + 1, n2))
 
             # on s'assure que:
             # * len (EPSI_MAXI) = len(EPSI_MINI)
             # * EPSI_MAXI > EPSI_MINI
             # * EPSI_ELAS sont > 0.
             # ------------------------------------------------------------------------
-            n1 = len(DicoEssai['EPSI_MAXI'])
-            n2 = len(DicoEssai['EPSI_MINI'])
+            n1 = len(DicoEssai["EPSI_MAXI"])
+            n2 = len(DicoEssai["EPSI_MINI"])
 
             if n2 != n1:
-               UTMESS('F', 'COMPOR2_35',
-                      valk=(typ_essai),
-                      vali=(iocc+1, n1, n1, n2))
+                UTMESS("F", "COMPOR2_35", valk=(typ_essai), vali=(iocc + 1, n1, n1, n2))
 
-            for j,epsmaxi in enumerate(DicoEssai['EPSI_MAXI']):
+            for j, epsmaxi in enumerate(DicoEssai["EPSI_MAXI"]):
 
-                epsmini = DicoEssai['EPSI_MINI'][j]
+                epsmini = DicoEssai["EPSI_MINI"][j]
 
                 if epsmaxi <= epsmini:
 
-                    UTMESS('F', 'COMPOR2_34',
-                           valk=(typ_essai, "EPSI_MAXI-EPSI_MINI"),
-                           valr=(epsmaxi-epsmini),
-                           vali=(iocc+1))
+                    valargs = _F(
+                        valk=(typ_essai, "EPSI_MAXI-EPSI_MINI"),
+                        valr=(epsmaxi - epsmini),
+                        vali=(iocc + 1),
+                    )
+                    UTMESS("F", "COMPOR2_34", **valargs)
 
             # on s'assure que PRES_CONF < 0.
             # ------------------------------------------------------------------------
-            for pconf in DicoEssai['PRES_CONF']:
+            for pconf in DicoEssai["PRES_CONF"]:
 
-                if pconf <= 0.:
+                if pconf <= 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(pconf),
-                           vali=(iocc+1))
+                    valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
             # on s'assure que la liste des EPSI_IMPOSE est DECROISSANTE
             # ------------------------------------------------------------------------
-# M. Jacquet: souhaite enlever cette condition
-#
-#             clef = 'EPSI_MINI'
-#             list_tmp = list(DicoEssai[clef])
-#             list_tmp.sort()
-#             #list_tmp.reverse()
-#
-#             if not(DicoEssai[clef] == tuple(list_tmp)):
-#
-#                 UTMESS('F', 'COMPOR2_38',
-#                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "decroissante"),
-#                     vali=(iocc+1))
+            # M. Jacquet: souhaite enlever cette condition
+            #
+            #             clef = 'EPSI_MINI'
+            #             list_tmp = list(DicoEssai[clef])
+            #             list_tmp.sort()
+            #             #list_tmp.reverse()
+            #
+            #             if not(DicoEssai[clef] == tuple(list_tmp)):
+            #
+            #                 UTMESS('F', 'COMPOR2_38',
+            #                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "decroissante"),
+            #                     vali=(iocc+1))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai OEDO_DR_C_F
     # ---
     if ESSAI_OEDO_DR_C_F is not None:
 
-        typ_essai    = "ESSAI_OEDO_DR_C_F"
+        typ_essai = "ESSAI_OEDO_DR_C_F"
         List_essais += ESSAI_OEDO_DR_C_F.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_OEDO_DR_C_F.List_F()):
@@ -703,87 +690,80 @@ def verif_essais(COMPORTEMENT,
             # -> PRES_CONF, SIGM_DECH, TABLE_RESU ?
             # ------------------------------------------------------------------------
             char = "<PRES_CONF>, <SIGM_DECH>"
-            test = len(DicoEssai['PRES_CONF']) == len(DicoEssai['SIGM_DECH'])
+            test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["SIGM_DECH"])
 
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
                 char += ", <TABLE_RESU>"
-                test = test and\
-                       len(DicoEssai['PRES_CONF']) == len(DicoEssai['TABLE_RESU'])
+                test = test and len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"])
 
             if not test:
 
-                UTMESS('F', 'COMPOR2_31',
-                       valk=(typ_essai, char),
-                       vali=(iocc+1))
+                UTMESS("F", "COMPOR2_31", valk=(typ_essai, char), vali=(iocc + 1))
 
             # on s'assure que SIGM_IMPOSE < 0.
             # ------------------------------------------------------------------------
-#             for sigimpo in DicoEssai['SIGM_IMPOSE']:
-#
-#                 if sigimpo <= 0.:
-#                     UTMESS('F', 'COMPOR2_32',
-#                            valk=(typ_essai, "SIGM_IMPOSE"),
-#                            valr=(sigimpo),
-#                            vali=(iocc+1))
+            #             for sigimpo in DicoEssai['SIGM_IMPOSE']:
+            #
+            #                 if sigimpo <= 0.:
+            #                     UTMESS('F', 'COMPOR2_32',
+            #                            valk=(typ_essai, "SIGM_IMPOSE"),
+            #                            valr=(sigimpo),
+            #                            vali=(iocc+1))
 
             # on s'assure que tous les PRES_CONF et SIGM_DECH sont bien < 0. et que
             # PRES_CONF+SIGM_IMPOSE < =SIGM_DECH
             # ------------------------------------------------------------------------
-            for j,pconf in enumerate(DicoEssai['PRES_CONF']):
+            for j, pconf in enumerate(DicoEssai["PRES_CONF"]):
 
-                if pconf <= 0.:
+                if pconf <= 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(pconf),
-                           vali=(iocc+1))
+                    valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
-                sdech = DicoEssai['SIGM_DECH'][j]
+                sdech = DicoEssai["SIGM_DECH"][j]
 
-                if sdech <= 0.:
+                if sdech <= 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "SIGM_DECH"),
-                           valr=(sdech),
-                           vali=(iocc+1))
+                    valargs = _F(valk=(typ_essai, "SIGM_DECH"), valr=(sdech), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
-                for sigimpo in DicoEssai['SIGM_IMPOSE']:
+                for sigimpo in DicoEssai["SIGM_IMPOSE"]:
 
-                    #if pconf+sigimpo < sdech:
+                    # if pconf+sigimpo < sdech:
                     if sigimpo < sdech:
 
-                        UTMESS('F', 'COMPOR2_47',
-                               valk=(typ_essai),
-                               vali=(iocc+1),
-                               valr=(pconf, sigimpo, pconf+sigimpo, sdech))
+                        valargs = _F(
+                            valk=(typ_essai),
+                            vali=(iocc + 1),
+                            valr=(pconf, sigimpo, pconf + sigimpo, sdech),
+                        )
+                        UTMESS("F", "COMPOR2_47", **valargs)
 
             # on s'assure que la liste des SIGM_IMPOSE est décroissante
             # ------------------------------------------------------------------------
-#             clef = 'SIGM_IMPOSE'
-#             list_tmp = list(DicoEssai[clef])
-#             list_tmp.sort(reverse=True)
-#
-#             if not(DicoEssai[clef] == tuple(list_tmp)):
-#
-#                 UTMESS('F', 'COMPOR2_38',
-#                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "décroissante"),
-#                     vali=(iocc+1))
+            #             clef = 'SIGM_IMPOSE'
+            #             list_tmp = list(DicoEssai[clef])
+            #             list_tmp.sort(reverse=True)
+            #
+            #             if not(DicoEssai[clef] == tuple(list_tmp)):
+            #
+            #                 UTMESS('F', 'COMPOR2_38',
+            #                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "décroissante"),
+            #                     vali=(iocc+1))
 
             # on s'assure que KZERO est > 0
             # ------------------------------------------------------------------------
-            if DicoEssai['KZERO'] <= 0.:
+            if DicoEssai["KZERO"] <= 0.0:
 
-                UTMESS('F', 'COMPOR2_34',
-                       valk=(typ_essai, "KZERO"),
-                       valr=(DicoEssai['KZERO']),
-                       vali=(iocc+1))
+                valargs = _F(valk=(typ_essai, "KZERO"), valr=(DicoEssai["KZERO"]), vali=(iocc + 1))
+                UTMESS("F", "COMPOR2_34", **valargs)
     # ---
     # Essai ISOT_DR_C_F
     # ---
     if ESSAI_ISOT_DR_C_F is not None:
 
-        typ_essai    = "ESSAI_ISOT_DR_C_F"
+        typ_essai = "ESSAI_ISOT_DR_C_F"
         List_essais += ESSAI_ISOT_DR_C_F.List_F()
 
         for iocc, DicoEssai in enumerate(ESSAI_ISOT_DR_C_F.List_F()):
@@ -792,62 +772,62 @@ def verif_essais(COMPORTEMENT,
             # -> PRES_CONF, SIGM_DECH, TABLE_RESU ?
             # ------------------------------------------------------------------------
             char = "<PRES_CONF>, <SIGM_DECH>"
-            test = len(DicoEssai['PRES_CONF']) == len(DicoEssai['SIGM_DECH'])
+            test = len(DicoEssai["PRES_CONF"]) == len(DicoEssai["SIGM_DECH"])
 
-            if 'TABLE_RESU' in DicoEssai:
+            if "TABLE_RESU" in DicoEssai:
 
                 char += ", <TABLE_RESU>"
-                test = test and\
-                   len(DicoEssai['PRES_CONF']) == len(DicoEssai['TABLE_RESU'])
+                test = test and len(DicoEssai["PRES_CONF"]) == len(DicoEssai["TABLE_RESU"])
 
             if not test:
-                UTMESS('F', 'COMPOR2_31',
-                       valk=(typ_essai, char),
-                       vali=(iocc+1))
+                UTMESS("F", "COMPOR2_31", valk=(typ_essai, char), vali=(iocc + 1))
 
             # on s'assure que SIGM_IMPOSE < 0.
             # ------------------------------------------------------------------------
-            for sigimpo in DicoEssai['SIGM_IMPOSE']:
-                if sigimpo <= 0.:
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "SIGM_IMPOSE"),
-                           valr=(sigimpo),
-                           vali=(iocc+1))
+            for sigimpo in DicoEssai["SIGM_IMPOSE"]:
+                if sigimpo <= 0.0:
+                    UTMESS(
+                        "F",
+                        "COMPOR2_32",
+                        valk=(typ_essai, "SIGM_IMPOSE"),
+                        valr=(sigimpo),
+                        vali=(iocc + 1),
+                    )
 
             # on s'assure que tous les PRES_CONF sont bien < 0. et que
             # PRES_CONF+SIGM_IMPOSE <= SIGM_DECH
             # ------------------------------------------------------------------------
-            for pconf in DicoEssai['PRES_CONF']:
+            for pconf in DicoEssai["PRES_CONF"]:
 
-                if pconf <= 0.:
+                if pconf <= 0.0:
 
-                    UTMESS('F', 'COMPOR2_32',
-                           valk=(typ_essai, "PRES_CONF"),
-                           valr=(pconf),
-                           vali=(iocc+1))
+                    valargs = _F(valk=(typ_essai, "PRES_CONF"), valr=(pconf), vali=(iocc + 1))
+                    UTMESS("F", "COMPOR2_32", **valargs)
 
-                sdech = DicoEssai['SIGM_DECH'][DicoEssai['PRES_CONF'].index(pconf)]
+                sdech = DicoEssai["SIGM_DECH"][DicoEssai["PRES_CONF"].index(pconf)]
 
-                for sigimpo in DicoEssai['SIGM_IMPOSE']:
+                for sigimpo in DicoEssai["SIGM_IMPOSE"]:
 
-                    if pconf+sigimpo < sdech:
+                    if pconf + sigimpo < sdech:
 
-                        UTMESS('F', 'COMPOR2_47',
-                               valk=(typ_essai),
-                               vali=(iocc+1),
-                               valr=(pconf, sigimpo, pconf+sigimpo, sdech))
+                        valargs = _F(
+                            valk=(typ_essai),
+                            vali=(iocc + 1),
+                            valr=(pconf, sigimpo, pconf + sigimpo, sdech),
+                        )
+                        UTMESS("F", "COMPOR2_47", **valargs)
 
             # on s'assure que la liste des SIGM_IMPOSE est décroissante
             # ------------------------------------------------------------------------
-#             clef = 'SIGM_IMPOSE'
-#             list_tmp = list(DicoEssai[clef])
-#             list_tmp.sort(reverse=True)
-#
-#             if not(DicoEssai[clef] == tuple(list_tmp)):
-#
-#                 UTMESS('F', 'COMPOR2_38',
-#                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "décroissante"),
-#                     vali=(iocc+1))
+    #             clef = 'SIGM_IMPOSE'
+    #             list_tmp = list(DicoEssai[clef])
+    #             list_tmp.sort(reverse=True)
+    #
+    #             if not(DicoEssai[clef] == tuple(list_tmp)):
+    #
+    #                 UTMESS('F', 'COMPOR2_38',
+    #                     valk=(typ_essai, clef, ListR_2_Str(DicoEssai[clef]), "décroissante"),
+    #                     vali=(iocc+1))
     # ---
     # Essai "XXX"
     # ---
@@ -862,38 +842,37 @@ def verif_essais(COMPORTEMENT,
     # --------------------------------------------------------------
     for DicoEssai in List_essais:
 
-        if 'TABLE_REF' in DicoEssai:
+        if "TABLE_REF" in DicoEssai:
 
-            for table_tmp in DicoEssai['TABLE_REF']:
+            for table_tmp in DicoEssai["TABLE_REF"]:
 
                 # on s'assure chaque TABLE_REF est bien construite...
                 # ------------------------------------------------------------------------
                 table_ref = table_tmp.EXTR_TABLE().values()
                 nom_tbref = table_tmp.getName()
 
-                list_paras = ['TYPE','LEGENDE','ABSCISSE','ORDONNEE']
+                list_paras = ["TYPE", "LEGENDE", "ABSCISSE", "ORDONNEE"]
 
                 if not set(table_ref.keys()) == set(list_paras):
 
-                    UTMESS('F', 'COMPOR2_44',
-                           valk=(nom_tbref, SomListStr(table_ref.keys())))
+                    UTMESS("F", "COMPOR2_44", valk=(nom_tbref, SomListStr(table_ref.keys())))
 
-                typc = table_ref['TYPE']
+                typc = table_ref["TYPE"]
                 logi_typc = [x is None for x in typc]
                 logi_typc[0] = type(typc[0]) is str
 
                 if not logi_typc == [True] * len(typc):
-                    UTMESS('F', 'COMPOR2_45', valk=(nom_tbref, 'TYPE'))
+                    UTMESS("F", "COMPOR2_45", valk=(nom_tbref, "TYPE"))
 
-                lege = table_ref['LEGENDE']
+                lege = table_ref["LEGENDE"]
                 logi_lege = [x is None for x in lege]
                 logi_lege[0] = type(lege[0]) is str
 
                 if not logi_lege == [True] * len(lege):
-                    UTMESS('F', 'COMPOR2_45', valk=(nom_tbref, 'LEGENDE'))
+                    UTMESS("F", "COMPOR2_45", valk=(nom_tbref, "LEGENDE"))
 
-                absc = table_ref['ABSCISSE']
-                ordo = table_ref['ORDONNEE']
+                absc = table_ref["ABSCISSE"]
+                ordo = table_ref["ORDONNEE"]
                 logi_absc = [type(x) is float for x in absc]
                 logi_ordo = [type(x) is float for x in ordo]
                 test = len(absc) == len(ordo)
@@ -901,21 +880,20 @@ def verif_essais(COMPORTEMENT,
                 test = test and logi_ordo == [True] * len(absc)
 
                 if not test:
-                    UTMESS('F', 'COMPOR2_46', valk=(nom_tbref))
+                    UTMESS("F", "COMPOR2_46", valk=(nom_tbref))
 
                 # on s'assure que le TYPE indique dans chaque TABLE_REF figure bien dans
                 # la liste des GRAPHIQUE demandes en sortie pour l'esssai courant
                 # ------------------------------------------------------------------------
-                if not typc[0].replace(" ", "") in DicoEssai['GRAPHIQUE']:
-                    UTMESS('F', 'COMPOR2_43',
-                        valk=(nom_tbref, typc[0],SomListStr(DicoEssai['GRAPHIQUE'])))
+                if not typc[0].replace(" ", "") in DicoEssai["GRAPHIQUE"]:
+                    valk = (nom_tbref, typc[0], SomListStr(DicoEssai["GRAPHIQUE"]))
+                    UTMESS("F", "COMPOR2_43", valk=valk)
 
 
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
 # --------------------------------------------------------------
-def affiche_alarm_TRIA_ND_C_F(str_n_essai, pres, dsig, codret, NB_CYCLE, \
-                              ncycrit, ncyerro):
+def affiche_alarm_TRIA_ND_C_F(str_n_essai, pres, dsig, codret, NB_CYCLE, ncycrit, ncyerro):
     """
     Objet: Gestionnaire des alarmes pour l'essai TRIA_ND_C_F
 
@@ -925,7 +903,7 @@ def affiche_alarm_TRIA_ND_C_F(str_n_essai, pres, dsig, codret, NB_CYCLE, \
                     | 3 : CALC_POINT_MAT s'arrete en ConvergenceError et critere non atteint
     """
 
-    assert codret in ['0', '1', '2', '3']
+    assert codret in ["0", "1", "2", "3"]
 
     charg1 = str("%E" % (pres))
     charg2 = str("%E" % (dsig))
@@ -934,25 +912,24 @@ def affiche_alarm_TRIA_ND_C_F(str_n_essai, pres, dsig, codret, NB_CYCLE, \
 
     kval_char1 = "  > PRES_CONF   = " + charg1 + "\n"
     kval_char2 = "  > SIGM_IMPOSE = " + charg2 + "\n"
-    kval_cycl  = "  > NB_CYCLE    = " + str(NB_CYCLE) + "\n"
+    kval_cycl = "  > NB_CYCLE    = " + str(NB_CYCLE) + "\n"
 
     Lk = [nom_essai, str_n_essai, kval_char1, kval_char2, kval_cycl]
 
-    if codret == '1':
-        UTMESS('A', 'COMPOR2_40', valk=Lk, vali=NB_CYCLE)
+    if codret == "1":
+        UTMESS("A", "COMPOR2_40", valk=Lk, vali=NB_CYCLE)
 
-    elif codret == '2':
-        UTMESS('A', 'COMPOR2_41', valk=Lk, vali=(ncyerro, ncycrit))
+    elif codret == "2":
+        UTMESS("A", "COMPOR2_41", valk=Lk, vali=(ncyerro, ncycrit))
 
-    elif codret == '3':
-        UTMESS('A', 'COMPOR2_42', valk=Lk, vali=ncyerro)
+    elif codret == "3":
+        UTMESS("A", "COMPOR2_42", valk=Lk, vali=ncyerro)
 
 
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
 # --------------------------------------------------------------
-def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich,\
-                       Leg_x, Leg_y, Ech_x, Ech_y,):
+def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich, Leg_x, Leg_y, Ech_x, Ech_y):
     """
     Objet: Formatter les graphiques a imprimer dans XMGRACE
 
@@ -1005,18 +982,26 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich,\
               * Ech_x  Ech_y
     """
 
-    ext              =".agr"
-    list_cmp_niveau1 =('G_SUR_GMAX','DAMPING','NCYCL','DSIGM','DEPSI',
-                       'E_SUR_EMAX','RU_MAX','E_SUR_EMAX',)
+    ext = ".agr"
+    list_cmp_niveau1 = (
+        "G_SUR_GMAX",
+        "DAMPING",
+        "NCYCL",
+        "DSIGM",
+        "DEPSI",
+        "E_SUR_EMAX",
+        "RU_MAX",
+        "E_SUR_EMAX",
+    )
 
     # Courbes NIVEAU 1 recapitulatives pour les essais cycliques
     # --------------------------------------------------------------
-    if niveau == '1':
+    if niveau == "1":
 
-        for TypGraph in DicoEssai['GRAPHIQUE']:
+        for TypGraph in DicoEssai["GRAPHIQUE"]:
 
-            nom_fichier =str_fich + TypGraph + ext
-            nom_fichier =nom_fichier.lower()
+            nom_fichier = str_fich + TypGraph + ext
+            nom_fichier = nom_fichier.lower()
 
             if TypGraph == "GAMMA-G_SUR_GMAX":
                 Courbes[TypGraph] = []
@@ -1081,19 +1066,19 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich,\
                 Ech_y[TypGraph] = "LIN"
 
             # if TypGraph == "XXX" :
-                # Courbes[TypGraph]  = []
-                # NomsFich[TypGraph] = str_fich+TypGraph+ext
-                # Leg_x[TypGraph]    = "XXX"
-                # Leg_y[TypGraph]    = "XXX"
+            # Courbes[TypGraph]  = []
+            # NomsFich[TypGraph] = str_fich+TypGraph+ext
+            # Leg_x[TypGraph]    = "XXX"
+            # Leg_y[TypGraph]    = "XXX"
 
     # Courbes NIVEAU2 pour chaque valeurs chargement
     # ---------------------------------------------------------
-    elif niveau == '2':
+    elif niveau == "2":
 
-        for TypGraph in DicoEssai['GRAPHIQUE']:
+        for TypGraph in DicoEssai["GRAPHIQUE"]:
 
-            nom_fichier =str_fich + TypGraph + ext
-            nom_fichier =nom_fichier.lower()
+            nom_fichier = str_fich + TypGraph + ext
+            nom_fichier = nom_fichier.lower()
 
             if TypGraph == "P-Q":
                 Courbes[TypGraph] = []
@@ -1168,28 +1153,28 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich,\
                 Leg_y[TypGraph] = "EPS_VOL"
 
             # elif TypGraph == "XXX" :
-                # Courbes[TypGraph]  = []
-                # NomsFich[TypGraph] = str_fich+TypGraph+ext
-                # Leg_x[TypGraph]    = "XXX"
-                # Leg_y[TypGraph]    = "XXX"
+            # Courbes[TypGraph]  = []
+            # NomsFich[TypGraph] = str_fich+TypGraph+ext
+            # Leg_x[TypGraph]    = "XXX"
+            # Leg_y[TypGraph]    = "XXX"
 
             else:
 
-                li  = TypGraph.split('-')
+                li = TypGraph.split("-")
 
-                if len(li)==2:
+                if len(li) == 2:
 
-                   impr=True
-                   for c in list_cmp_niveau1:
-                     if (li[0]==c) or (li[1]==c):
-                       impr=False
-                       break
+                    impr = True
+                    for c in list_cmp_niveau1:
+                        if (li[0] == c) or (li[1] == c):
+                            impr = False
+                            break
 
-                   if impr:
-                     Courbes[TypGraph] = []
-                     NomsFich[TypGraph] = nom_fichier
-                     Leg_x[TypGraph] = li[0]
-                     Leg_y[TypGraph] = li[1]
+                    if impr:
+                        Courbes[TypGraph] = []
+                        NomsFich[TypGraph] = nom_fichier
+                        Leg_x[TypGraph] = li[0]
+                        Leg_y[TypGraph] = li[1]
 
     else:
         assert False
@@ -1198,9 +1183,9 @@ def preparer_graphique(niveau, DicoEssai, str_fich, Courbes, NomsFich,\
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
 # --------------------------------------------------------------
-def remplir_graphique(DicoEssai, Courbes, Resu_x, Resu_y, \
-                      str_leg, TypGraph_in,
-                      color=-1, mark=-1, style=-1,):
+def remplir_graphique(
+    DicoEssai, Courbes, Resu_x, Resu_y, str_leg, TypGraph_in, color=-1, mark=-1, style=-1
+):
     """
     Objet: Creation de la liste des courbes a tracer
 
@@ -1262,46 +1247,45 @@ def remplir_graphique(DicoEssai, Courbes, Resu_x, Resu_y, \
     # les listes de resultats sont vides
     # -------------------------------------------
     if (not Resu_x) or (not Resu_y):
-       return
+        return
 
-    if mark<0:
-       mark = 0
+    if mark < 0:
+        mark = 0
 
-    if style<0:
-       style= 1
+    if style < 0:
+        style = 1
 
-    if TypGraph_in in DicoEssai['GRAPHIQUE']:
+    if TypGraph_in in DicoEssai["GRAPHIQUE"]:
 
         dico_tmp = {}
-        dico_tmp['LEGENDE']  = str_leg
-        dico_tmp['ABSCISSE'] = Resu_x
-        dico_tmp['ORDONNEE'] = Resu_y
-        if color>-1:
-           dico_tmp['COULEUR' ] = color%16
-        dico_tmp['MARQUEUR'] = mark%11
-        dico_tmp['STYLE']    = style%9
+        dico_tmp["LEGENDE"] = str_leg
+        dico_tmp["ABSCISSE"] = Resu_x
+        dico_tmp["ORDONNEE"] = Resu_y
+        if color > -1:
+            dico_tmp["COULEUR"] = color % 16
+        dico_tmp["MARQUEUR"] = mark % 11
+        dico_tmp["STYLE"] = style % 9
 
         Courbes[TypGraph_in].append(dico_tmp)
-
 
 
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
 # --------------------------------------------------------------
-def impr_graphique(self, DicoEssai, Courbes, NomsFich,
-                   Leg_x, Leg_y, Ech_x, Ech_y, Titre="", graph=0,):
+def impr_graphique(
+    self, DicoEssai, Courbes, NomsFich, Leg_x, Leg_y, Ech_x, Ech_y, Titre="", graph=0
+):
     """
     Objet: Tracer une liste de courbes au format XMGRACE
     """
-    #import os
-
+    # import os
 
     # Recuperation des options d'impression
     # -----------------------------------------
-    if 'PREFIXE_FICHIER' in DicoEssai:
-       prefixe= DicoEssai['PREFIXE_FICHIER']
+    if "PREFIXE_FICHIER" in DicoEssai:
+        prefixe = DicoEssai["PREFIXE_FICHIER"]
     else:
-       prefixe= None
+        prefixe = None
 
     # [10,90] = domaine de validite des unites logiques pour IMPR_FONCTION
     # -> On passe par la boucle ci-dessous pour trouver une unite libre car
@@ -1309,9 +1293,9 @@ def impr_graphique(self, DicoEssai, Courbes, NomsFich,
     #    hors de ce domaine de validite...
     # ------------------------------------------
     unite = None
-    for iul in range(10, 90+1):
-        __ULINFO = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', UNITE=iul)
-        if __ULINFO['ETAT_UNITE', 1] == 'FERME   ':
+    for iul in range(10, 90 + 1):
+        __ULINFO = INFO_EXEC_ASTER(LISTE_INFO="ETAT_UNITE", UNITE=iul)
+        if __ULINFO["ETAT_UNITE", 1] == "FERME   ":
             unite = iul
             break
 
@@ -1320,11 +1304,11 @@ def impr_graphique(self, DicoEssai, Courbes, NomsFich,
     # ---
     # boucle sur les types de graphiques demandes en sortie
     # ---
-    for i,cle in enumerate(Courbes):
+    for i, cle in enumerate(Courbes):
 
         curve = Courbes[cle]
 
-        number= randint(0,1.e+6)
+        number = randint(0, 1.0e6)
 
         # on passe a l'iteration suivante
         # si les listes de resultats sont vides
@@ -1335,91 +1319,94 @@ def impr_graphique(self, DicoEssai, Courbes, NomsFich,
         # superposition aux resultats
         # des courbes issues de TABLE_REF
         # ------------------------------------------
-        if 'TABLE_REF' in DicoEssai:
+        if "TABLE_REF" in DicoEssai:
 
-           for table_tmp in DicoEssai['TABLE_REF']:
+            for table_tmp in DicoEssai["TABLE_REF"]:
 
-              table_ref = table_tmp.EXTR_TABLE().values()
+                table_ref = table_tmp.EXTR_TABLE().values()
 
-              typr = table_ref['TYPE'][0].replace(" ", "")
-              lege = table_ref['LEGENDE'][0]
-              absc = table_ref['ABSCISSE']
-              ordo = table_ref['ORDONNEE']
+                typr = table_ref["TYPE"][0].replace(" ", "")
+                lege = table_ref["LEGENDE"][0]
+                absc = table_ref["ABSCISSE"]
+                ordo = table_ref["ORDONNEE"]
 
-              if cle == typr:
-                  dico_tmp = dict()
-                  dico_tmp['LEGENDE'] = lege
-                  dico_tmp['ABSCISSE']= absc
-                  dico_tmp['ORDONNEE']= ordo
-                  curve.append(dico_tmp)
+                if cle == typr:
+                    dico_tmp = dict()
+                    dico_tmp["LEGENDE"] = lege
+                    dico_tmp["ABSCISSE"] = absc
+                    dico_tmp["ORDONNEE"] = ordo
+                    curve.append(dico_tmp)
 
-           DEFI_FICHIER(ACTION ='ASSOCIER',
-                     FICHIER   ='./%s' %('tmp_%d' %(number),),
-                     UNITE     =unite,)
+            DEFI_FICHIER(ACTION="ASSOCIER", FICHIER="./%s" % ("tmp_%d" % (number),), UNITE=unite)
         else:
 
-           DEFI_FICHIER(ACTION ='ASSOCIER',
-                     FICHIER   ='./%s' %('tmp_%d' %(number),),
-                     UNITE     =unite,)
+            DEFI_FICHIER(ACTION="ASSOCIER", FICHIER="./%s" % ("tmp_%d" % (number),), UNITE=unite)
 
         if cle in Ech_x and cle in Ech_y:
 
-            IMPR_FONCTION(FORMAT='XMGRACE', UNITE=unite,
-                          COURBE   =curve,
-                          LEGENDE_X=Leg_x[cle],
-                          LEGENDE_Y=Leg_y[cle],
-                          ECHELLE_X=Ech_x[cle],
-                          ECHELLE_Y=Ech_y[cle],
-                          SOUS_TITRE=Titre,)
+            IMPR_FONCTION(
+                FORMAT="XMGRACE",
+                UNITE=unite,
+                COURBE=curve,
+                LEGENDE_X=Leg_x[cle],
+                LEGENDE_Y=Leg_y[cle],
+                ECHELLE_X=Ech_x[cle],
+                ECHELLE_Y=Ech_y[cle],
+                SOUS_TITRE=Titre,
+            )
         else:
-            IMPR_FONCTION(FORMAT='XMGRACE', UNITE=unite,
-                          COURBE   =curve,
-                          LEGENDE_X=Leg_x[cle],
-                          LEGENDE_Y=Leg_y[cle],
-                          SOUS_TITRE=Titre,)
+            IMPR_FONCTION(
+                FORMAT="XMGRACE",
+                UNITE=unite,
+                COURBE=curve,
+                LEGENDE_X=Leg_x[cle],
+                LEGENDE_Y=Leg_y[cle],
+                SOUS_TITRE=Titre,
+            )
 
-        DEFI_FICHIER(ACTION='LIBERER', UNITE=unite,)
+        DEFI_FICHIER(ACTION="LIBERER", UNITE=unite)
 
         #
         # Incrementation des numeros de graphiques dans les
         # courbes xmagrace
         # ---------------------------------------------------
-        filein   = open('tmp_%d' %(number),'r')
+        filein = open("tmp_%d" % (number), "r")
         contents = filein.readlines()
 
         if prefixe:
-           fileout = open('./REPE_OUT/%s_%s' %(prefixe,NomsFich[cle],),'w')
+            fileout = open("./REPE_OUT/%s_%s" % (prefixe, NomsFich[cle]), "w")
         else:
-           fileout = open('./REPE_OUT/%s' %(NomsFich[cle],),'w')
+            fileout = open("./REPE_OUT/%s" % (NomsFich[cle],), "w")
 
         for s in contents:
 
-           if not (graph+i):
+            if not (graph + i):
 
-              fileout.write(s)
+                fileout.write(s)
 
-           elif s.find('@g0')>=0:
+            elif s.find("@g0") >= 0:
 
-              fileout.write(s.replace('@g0','@g%d' %(graph+i)))
+                fileout.write(s.replace("@g0", "@g%d" % (graph + i)))
 
-           elif s.find('to g0')>=0:
+            elif s.find("to g0") >= 0:
 
-              fileout.write(s.replace('to g0','to g%d' %(graph+i)))
+                fileout.write(s.replace("to g0", "to g%d" % (graph + i)))
 
-           elif s.find('@with g0')>=0:
+            elif s.find("@with g0") >= 0:
 
-              fileout.write(s.replace('@with g0','@with g%d' %(graph+i)))
+                fileout.write(s.replace("@with g0", "@with g%d" % (graph + i)))
 
-           elif s.find('@target g0.s')>=0:
+            elif s.find("@target g0.s") >= 0:
 
-              fileout.write(s.replace('@target g0.s','@target g%d.s' %(graph+i)))
+                fileout.write(s.replace("@target g0.s", "@target g%d.s" % (graph + i)))
 
-           else:
+            else:
 
-              fileout.write(s)
+                fileout.write(s)
 
         filein.close()
         fileout.close()
+
 
 # --------------------------------------------------------------
 # -Debut--------------------------------------------------------
@@ -1429,557 +1416,577 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
     Objet: Construction des tableaux de resultats du fichier .resu
     """
 
-    if 'TABLE_RESU' in DicoEssai:
-
+    if "TABLE_RESU" in DicoEssai:
 
         # Recuperation des variables supplementaires a imprimer
         # (si existantes) contenues sous le mot-cle 'NOM_CMP'
         # -----------------------------------------------------------
-        if 'NOM_CMP' in DicoEssai:
+        if "NOM_CMP" in DicoEssai:
 
-           List_Resu_Supp = list(DicoEssai['NOM_CMP'])
+            List_Resu_Supp = list(DicoEssai["NOM_CMP"])
 
         else:
-           List_Resu_Supp = []
-# -----------------------------------------------------------
-# Essai TRIA_DR_M_D
-# -----------------------------------------------------------
+            List_Resu_Supp = []
+        # -----------------------------------------------------------
+        # Essai TRIA_DR_M_D
+        # -----------------------------------------------------------
         if typ_essai == "TRIA_DR_M_D":
 
-            PRES_CONF   = DicoEssai['PRES_CONF']
-            EPSI_IMPOSE = DicoEssai['EPSI_IMPOSE']
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            EPSI_IMPOSE = DicoEssai["EPSI_IMPOSE"]
 
-            param_predef = ['INST','EPS_AXI','EPS_LAT','EPS_VOL',
-                            'SIG_AXI','SIG_LAT','P','Q',]
+            param_predef = ["INST", "EPS_AXI", "EPS_LAT", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P", "Q"]
 
-            for i,sig0 in enumerate(PRES_CONF):
+            for i, sig0 in enumerate(PRES_CONF):
 
-                titre_table = "Resultats bruts : ESSAI %s NUMERO %s"\
-                              %(typ_essai,str_n_essai,) +\
-                              " | PRES_CONF = %E\n" %(sig0)
-
-                LdicoRes =[_F(LISTE_R=EPSI_IMPOSE[i], PARA='EPSI_IMPOSE'),
-                        _F(LISTE_R=Resu_in['INST'][i], PARA='INST'),
-                        _F(LISTE_R=Resu_in['EPS_AXI'][i], PARA='EPS_AXI'),
-                        _F(LISTE_R=Resu_in['EPS_LAT'][i], PARA='EPS_LAT'),
-                        _F(LISTE_R=Resu_in['EPS_VOL'][i], PARA='EPS_VOL'),
-                        _F(LISTE_R=Resu_in['SIG_AXI'][i], PARA='SIG_AXI'),
-                        _F(LISTE_R=Resu_in['SIG_LAT'][i], PARA='SIG_LAT'),
-                        _F(LISTE_R=Resu_in['P'][i], PARA='P'),
-                        _F(LISTE_R=Resu_in['Q'][i], PARA='Q'),]
-
-                for c in List_Resu_Supp:
-
-                   if Resu_in[c][i] and (not c in param_predef):
-                      LdicoRes +=[_F(LISTE_R=Resu_in[c][i], PARA=c),]
-
-                   else:
-                      message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                      try:
-                        for t in Resu_in['LIST_CMP']:
-                           message +=\
-  '  !             %8s                                          !\n' %(t)
-                      finally:
-                        message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                      print()
-                      print(message)
-                      print()
-
-                TABLRES = CREA_TABLE(TITRE=titre_table,
-                                     LISTE=LdicoRes,)
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
-
-# -----------------------------------------------------------
-# Essai TRIA_ND_M_D
-# -----------------------------------------------------------
-        elif typ_essai == "TRIA_ND_M_D":
-
-            PRES_CONF   = DicoEssai['PRES_CONF']
-            EPSI_IMPOSE = DicoEssai['EPSI_IMPOSE']
-
-            param_predef = ['INST','EPS_AXI','EPS_LAT',
-                            'SIG_AXI','SIG_LAT','P','Q','PRE_EAU',]
-
-            for i,sig0 in enumerate(PRES_CONF):
-
-                titre_table = "Resultats bruts : ESSAI %s NUMERO %s"\
-                              %(typ_essai,str_n_essai,) +\
-                              " | PRES_CONF = %E\n" %(sig0)
-
-                LdicoRes =[_F(LISTE_R=EPSI_IMPOSE[i], PARA='EPSI_IMPOSE'),
-                        _F(LISTE_R=Resu_in['INST'][i], PARA='INST'),
-                        _F(LISTE_R=Resu_in['EPS_AXI'][i], PARA='EPS_AXI'),
-                        _F(LISTE_R=Resu_in['EPS_LAT'][i], PARA='EPS_LAT'),
-                        _F(LISTE_R=Resu_in['SIG_AXI'][i], PARA='SIG_AXI'),
-                        _F(LISTE_R=Resu_in['SIG_LAT'][i], PARA='SIG_LAT'),
-                        _F(LISTE_R=Resu_in['P'][i], PARA='P'),
-                        _F(LISTE_R=Resu_in['Q'][i], PARA='Q'),
-                        _F(LISTE_R=Resu_in['PRE_EAU'][i], PARA='PRE_EAU'),]
-
-                for c in List_Resu_Supp:
-
-                   if Resu_in[c][i] and (not c in param_predef):
-                      LdicoRes +=[_F(LISTE_R=Resu_in[c][i], PARA=c),]
-
-                   else:
-                      message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                      try:
-                        for t in Resu_in['LIST_CMP']:
-                           message +=\
-  '  !             %8s                                          !\n' %(t)
-                      finally:
-                        message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                      print()
-                      print(message)
-                      print()
-
-                TABLRES = CREA_TABLE(TITRE=titre_table,
-                                     LISTE=LdicoRes,)
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
-
-# -----------------------------------------------------------
-# Essai CISA_DR_C_D
-# -----------------------------------------------------------
-        elif typ_essai == "CISA_DR_C_D":
-
-            PRES_CONF    = DicoEssai['PRES_CONF']
-            GAMMA_IMPOSE = DicoEssai['GAMMA_IMPOSE']
-            LdicoResGlob = []
-
-            param_predef = ['INST','GAMMA','SIG_XY',]
-
-            for i,sig0 in enumerate(PRES_CONF):
-
-                # Impression NIVEAU 2
-                # ----------------------------------------------------------
-                titre_table = "Resultats bruts : ESSAI %s NUMERO %s"\
-                              %(typ_essai,str_n_essai,) +\
-                              " | PRES_CONF = %E\n" %(sig0)
-
-                LdicoRes = []
-                for j,eps0 in enumerate(GAMMA_IMPOSE):
-
-                    stjp1 = int_2_str(j+1, len(GAMMA_IMPOSE))
-
-                    LdicoRes += [
-                        {'PARA': 'GAMMA_IMPOSE_' + stjp1, 'LISTE_R': [eps0]}] +\
-                                [
-                        {'PARA': 'INST_' + stjp1, 'LISTE_R': Resu_in['INST'][i][j]}] +\
-                                [
-                        {'PARA': 'GAMMA_' + stjp1, 'LISTE_R': Resu_in['GAMMA'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_XY_' + stjp1, 'LISTE_R': Resu_in['SIG_XY'][i][j]}]
-
-                    for c in List_Resu_Supp:
-
-                      if Resu_in[c][i] and (not c in param_predef):
-                         LdicoRes +=[_F(LISTE_R=Resu_in[c][i][j], PARA='%s_' %(c)+stjp1),]
-
-                      else:
-                         message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                         try:
-                           for t in Resu_in['LIST_CMP']:
-                              message +=\
-  '  !             %8s                                          !\n' %(t)
-                         finally:
-                           message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                         print()
-                         print(message)
-                         print()
-
-                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
-
-                # Impression NIVEAU 1
-                # ----------------------------------------------------------
-                stip1 = int_2_str(i+1, len(PRES_CONF))
-
-                LdicoResGlob += [
-                    {'PARA': 'PRES_CONF_' + stip1, 'LISTE_R': [sig0]}] +\
-                                [
-                    {'PARA': 'GAMMA_IMPOSE_' + stip1, 'LISTE_R': GAMMA_IMPOSE}] +\
-                                [
-                    {'PARA': 'G_SUR_GMAX_' + stip1, 'LISTE_R': Resu_in['G_SUR_GMAX'][i]}] +\
-                                [
-                    {'PARA': 'DAMPING_' + stip1, 'LISTE_R': Resu_in['DAMPING'][i]}]
-
-            # Impression NIVEAU 1 dans le dernier element de la table
-            # ----------------------------------------------------------
-            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" %(typ_essai,str_n_essai)
-
-            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob),)
-            self.register_result(TABLRES, DicoEssai['TABLE_RESU'][-1])
-
-# ----------------------------------------------------
-# Essai TRIA_ND_C_F
-# ----------------------------------------------------
-        elif typ_essai == "TRIA_ND_C_F":
-
-            PRES_CONF   = DicoEssai['PRES_CONF']
-            SIGM_IMPOSE = DicoEssai['SIGM_IMPOSE']
-            LdicoResGlob= []
-
-            param_predef = ['INST','EPS_AXI','EPS_LAT','EPS_VOL',
-                            'SIG_AXI','SIG_LAT','P','Q','PRE_EAU','RU',]
-
-            for i,sig0 in enumerate(PRES_CONF):
-
-                # Impression NIVEAU 2
-                # ----------------------------------------------------------
-                titre_table = "Resultats bruts : ESSAI %s NUMERO %s"\
-                              %(typ_essai,str_n_essai,) +\
-                              " | PRES_CONF = %E\n" %(sig0)
-
-                LdicoRes = []
-                for j,dsig in enumerate(SIGM_IMPOSE):
-
-                    stjp1 = int_2_str(j+1, len(SIGM_IMPOSE))
-
-                    LdicoRes += [
-                        {'PARA': 'SIGM_IMPOSE_' + stjp1, 'LISTE_R': [dsig]}] +\
-                                [
-                        {'PARA': 'INST_' + stjp1, 'LISTE_R': Resu_in['INST'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_AXI_' + stjp1, 'LISTE_R': Resu_in['EPS_AXI'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_LAT_' + stjp1, 'LISTE_R': Resu_in['EPS_LAT'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_VOL_' + stjp1, 'LISTE_R': Resu_in['EPS_VOL'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_AXI_' + stjp1, 'LISTE_R': Resu_in['SIG_AXI'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_LAT_' + stjp1, 'LISTE_R': Resu_in['SIG_LAT'][i][j]}] +\
-                                [
-                        {'PARA': 'P_' + stjp1, 'LISTE_R': Resu_in['P'][i][j]}] +\
-                                [
-                        {'PARA': 'Q_' + stjp1, 'LISTE_R': Resu_in['Q'][i][j]}] +\
-                                [
-                        {'PARA': 'PRE_EAU_' + stjp1, 'LISTE_R': Resu_in['PRE_EAU'][i][j]}] +\
-                                [
-                        {'PARA': 'RU_' + stjp1, 'LISTE_R': Resu_in['RU'][i][j]}]
-
-                    for c in List_Resu_Supp:
-
-                      if Resu_in[c][i] and (not c in param_predef):
-                         LdicoRes +=[_F(LISTE_R=Resu_in[c][i][j], PARA='%s_' %(c)+stjp1),]
-
-                      else:
-                         message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                         try:
-                           for t in Resu_in['LIST_CMP']:
-                              message +=\
-  '  !             %8s                                          !\n' %(t)
-                         finally:
-                           message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                         print()
-                         print(message)
-                         print()
-
-                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
-
-                # Impression NIVEAU 1
-                # ----------------------------------------------------------
-                stip1 = int_2_str(i+1, len(PRES_CONF))
-
-                LdicoResGlob += [
-                    {'PARA': 'PRES_CONF_' + stip1, 'LISTE_R': [sig0]}] +\
-                                [
-                    {'PARA': 'NCYCL_' + stip1, 'LISTE_I': Resu_in['NCYCL'][i]}] +\
-                                [
-                    {'PARA': 'CRR_' + stip1, 'LISTE_R': Resu_in['DSIGM'][i]}]
-
-            # Impression NIVEAU 1 dans le dernier element de la table
-            # ----------------------------------------------------------
-            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" %(typ_essai,str_n_essai,)
-
-            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob),)
-            self.register_result(TABLRES, DicoEssai['TABLE_RESU'][-1])
-
-# -------------------------------------------------------
-# Essai TRIA_DR_C_D
-# -------------------------------------------------------
-        elif typ_essai == "TRIA_DR_C_D":
-
-            PRES_CONF = DicoEssai['PRES_CONF']
-            EPSI_MAXI = DicoEssai['EPSI_MAXI']
-            EPSI_MINI = DicoEssai['EPSI_MINI']
-
-            EPSI_IMPOSE = abs( array(EPSI_MAXI)-array(EPSI_MINI) )
-            EPSI_IMPOSE = list(EPSI_IMPOSE)
-
-            LdicoResGlob = []
-
-            param_predef = ['INST','EPS_AXI','EPS_LAT','EPS_VOL',
-                            'SIG_AXI','SIG_LAT','P','Q',]
-
-            for i,sig0 in enumerate(PRES_CONF):
-
-                # Impression NIVEAU 2
-                # ----------------------------------------------------------
-                titre_table = "Resultats bruts : ESSAI %s NUMERO %s"\
-                              %(typ_essai,str_n_essai,) +\
-                              " | PRES_CONF = %E\n" %(sig0)
-
-                LdicoRes = []
-                for j,eps0 in enumerate(EPSI_MINI):
-
-                    stjp1 = int_2_str(j+1, len(EPSI_MINI))
-
-                    LdicoRes += [
-                        {'PARA': 'EPSI_IMPOSE_' + stjp1, 'LISTE_R': [eps0]}] +\
-                                [
-                        {'PARA': 'INST_' + stjp1, 'LISTE_R': Resu_in['INST'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_AXI_' + stjp1, 'LISTE_R': Resu_in['EPS_AXI'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_LAT_' + stjp1, 'LISTE_R': Resu_in['EPS_LAT'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_VOL_' + stjp1, 'LISTE_R': Resu_in['EPS_VOL'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_AXI_' + stjp1, 'LISTE_R': Resu_in['SIG_AXI'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_LAT_' + stjp1, 'LISTE_R': Resu_in['SIG_LAT'][i][j]}] +\
-                                [
-                        {'PARA': 'P_' + stjp1, 'LISTE_R': Resu_in['P'][i][j]}] +\
-                                [
-                        {'PARA': 'Q_' + stjp1, 'LISTE_R': Resu_in['Q'][i][j]}]
-
-                    for c in List_Resu_Supp:
-
-                      if Resu_in[c][i] and (not c in param_predef):
-                         LdicoRes +=[_F(LISTE_R=Resu_in[c][i][j], PARA='%s_' %(c)+stjp1),]
-
-                      else:
-                         message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                         try:
-                           for t in Resu_in['LIST_CMP']:
-                              message +=\
-  '  !             %8s                                          !\n' %(t)
-                         finally:
-                           message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                         print()
-                         print(message)
-                         print()
-
-                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
-
-                # Impression NIVEAU 1
-                # ----------------------------------------------------------
-                stip1 = int_2_str(i+1, len(PRES_CONF))
-
-                LdicoResGlob += [
-                    {'PARA': 'PRES_CONF_' + stip1, 'LISTE_R': [sig0]}] +\
-                                [
-                    {'PARA': 'EPSI_IMPOSE_' + stip1, 'LISTE_R': EPSI_IMPOSE}] +\
-                                [
-                    {'PARA': 'E_SUR_EMAX_' + stip1, 'LISTE_R': Resu_in['E_SUR_EMAX'][i]}] +\
-                                [
-                    {'PARA': 'DAMPING_' + stip1, 'LISTE_R': Resu_in['DAMPING'][i]}]
-
-            # Impression NIVEAU 1 dans le dernier element de la table
-            # ----------------------------------------------------------
-            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" %(typ_essai,str_n_essai,)
-
-            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob))
-            self.register_result(TABLRES, DicoEssai['TABLE_RESU'][-1])
-
-
-
-# ----------------------------------------------------
-# Essai TRIA_ND_C_D
-# ----------------------------------------------------
-        elif typ_essai == "TRIA_ND_C_D":
-
-            PRES_CONF   = DicoEssai['PRES_CONF']
-            EPSI_MAXI   = DicoEssai['EPSI_MAXI']
-            EPSI_MINI   = DicoEssai['EPSI_MINI']
-
-            EPSI_IMPOSE = abs( array(EPSI_MAXI)-array(EPSI_MINI) )
-            EPSI_IMPOSE = list(EPSI_IMPOSE)
-
-            LdicoResGlob= []
-
-            param_predef = ['INST','EPS_AXI','EPS_LAT','EPS_VOL',
-                            'SIG_AXI','SIG_LAT','P','Q','PRE_EAU','RU',]
-
-            for i,sig0 in enumerate(PRES_CONF):
-
-                # Impression NIVEAU 2
-                # ----------------------------------------------------------
-                titre_table = "Resultats bruts : ESSAI %s NUMERO %s"\
-                              %(typ_essai,str_n_essai,) +\
-                              " | PRES_CONF = %E\n" %(sig0)
-
-                LdicoRes = []
-                for j,eps0 in enumerate(EPSI_MINI):
-
-                    stjp1 = int_2_str(j+1, len(EPSI_MINI))
-
-                    LdicoRes += [
-                        {'PARA': 'EPSI_IMPOSE_' + stjp1, 'LISTE_R': [eps0]}] +\
-                                [
-                        {'PARA': 'INST_' + stjp1, 'LISTE_R': Resu_in['INST'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_AXI_' + stjp1, 'LISTE_R': Resu_in['EPS_AXI'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_LAT_' + stjp1, 'LISTE_R': Resu_in['EPS_LAT'][i][j]}] +\
-                                [
-                        {'PARA': 'EPS_VOL_' + stjp1, 'LISTE_R': Resu_in['EPS_VOL'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_AXI_' + stjp1, 'LISTE_R': Resu_in['SIG_AXI'][i][j]}] +\
-                                [
-                        {'PARA': 'SIG_LAT_' + stjp1, 'LISTE_R': Resu_in['SIG_LAT'][i][j]}] +\
-                                [
-                        {'PARA': 'P_' + stjp1, 'LISTE_R': Resu_in['P'][i][j]}] +\
-                                [
-                        {'PARA': 'Q_' + stjp1, 'LISTE_R': Resu_in['Q'][i][j]}] +\
-                                [
-                        {'PARA': 'PRE_EAU_' + stjp1, 'LISTE_R': Resu_in['PRE_EAU'][i][j]}] +\
-                                [
-                        {'PARA': 'RU_' + stjp1, 'LISTE_R': Resu_in['RU'][i][j]}]
-
-                    for c in List_Resu_Supp:
-
-                      if Resu_in[c][i] and (not c in param_predef):
-                         LdicoRes +=[_F(LISTE_R=Resu_in[c][i][j], PARA='%s_' %(c)+stjp1),]
-
-                      else:
-                         message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                         try:
-                           for t in Resu_in['LIST_CMP']:
-                              message +=\
-  '  !             %8s                                          !\n' %(t)
-                         finally:
-                           message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                         print()
-                         print(message)
-                         print()
-
-                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
-
-                # Impression NIVEAU 1
-                # ----------------------------------------------------------
-                stip1 = int_2_str(i+1, len(PRES_CONF))
-
-                LdicoResGlob += [
-                    {'PARA': 'PRES_CONF_' + stip1, 'LISTE_R': [sig0]}] +\
-                                [
-                    {'PARA': 'EPSI_IMPOSE_' + stip1, 'LISTE_R': EPSI_IMPOSE}] +\
-                                [
-                    {'PARA': 'E_SUR_EMAX_' + stip1, 'LISTE_R': Resu_in['E_SUR_EMAX'][i]}] +\
-                                [
-                    {'PARA': 'DAMPING_' + stip1, 'LISTE_R': Resu_in['DAMPING'][i]}] +\
-                                [
-                    {'PARA': 'NCYCL_' + stip1, 'LISTE_I': Resu_in['NCYCL'][i]}] +\
-                                [
-                    {'PARA': 'RU_MAX_' + stip1, 'LISTE_R': Resu_in['RU_MAX'][i]}]
-
-            # Impression NIVEAU 1 dans le dernier element de la table
-            # ----------------------------------------------------------
-            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" %(typ_essai,str_n_essai,)
-
-            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob),)
-            self.register_result(TABLRES, DicoEssai['TABLE_RESU'][-1])
-
-# -------------------------------------------------------
-# Essais OEDO_CDR_C_F ou ISOT_DR_C_F
-# -------------------------------------------------------
-        elif typ_essai == "OEDO_DR_C_F" or typ_essai == "ISOT_DR_C_F":
-
-            PRES_CONF   = DicoEssai['PRES_CONF']
-            SIGM_DECH   = DicoEssai['SIGM_DECH']
-
-            param_predef = ['INST','EPS_VOL','SIG_AXI','SIG_LAT','P',]
-
-            for i,sig0 in enumerate(PRES_CONF):
-
-                # Impression NIVEAU 2
-                # ----------------------------------------------------------
-                titre_table = " ESSAI %s NUMERO %s" %(typ_essai,str_n_essai)+\
-                              " | PRES_CONF = %E" %(sig0) +\
-                              " | SIGM_DECH = %E\n" %(SIGM_DECH[i])
-
-                stip1 = int_2_str(i+1, len(PRES_CONF))
+                titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
+                    typ_essai,
+                    str_n_essai,
+                ) + " | PRES_CONF = %E\n" % (sig0)
 
                 LdicoRes = [
-                    {'PARA': 'INST_' + stip1, 'LISTE_R': Resu_in['INST'][i]}] +\
-                            [
-                    {'PARA': 'EPS_VOL_' + stip1, 'LISTE_R': Resu_in['EPS_VOL'][i]}] +\
-                            [
-                    {'PARA': 'P_' + stip1, 'LISTE_R': Resu_in['P'][i]}] +\
-                            [
-                    {'PARA': 'SIG_AXI_' + stip1, 'LISTE_R': Resu_in['SIG_AXI'][i]}] +\
-                            [
-                    {'PARA': 'SIG_LAT_' + stip1, 'LISTE_R': Resu_in['SIG_LAT'][i]}]
+                    _F(LISTE_R=EPSI_IMPOSE[i], PARA="EPSI_IMPOSE"),
+                    _F(LISTE_R=Resu_in["INST"][i], PARA="INST"),
+                    _F(LISTE_R=Resu_in["EPS_AXI"][i], PARA="EPS_AXI"),
+                    _F(LISTE_R=Resu_in["EPS_LAT"][i], PARA="EPS_LAT"),
+                    _F(LISTE_R=Resu_in["EPS_VOL"][i], PARA="EPS_VOL"),
+                    _F(LISTE_R=Resu_in["SIG_AXI"][i], PARA="SIG_AXI"),
+                    _F(LISTE_R=Resu_in["SIG_LAT"][i], PARA="SIG_LAT"),
+                    _F(LISTE_R=Resu_in["P"][i], PARA="P"),
+                    _F(LISTE_R=Resu_in["Q"][i], PARA="Q"),
+                ]
 
                 for c in List_Resu_Supp:
 
-                  if Resu_in[c][i] and (not c in param_predef):
-                     LdicoRes +=[_F(LISTE_R=Resu_in[c][i], PARA="%s_%s" %(c,stip1,),),]
+                    if Resu_in[c][i] and (not c in param_predef):
+                        LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA=c)]
 
-                  else:
-                     message =\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n' +\
-  '  !                                                               !\n' +\
-  '  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n' %(c) +\
-  '  !                                                               !\n' +\
-  '  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n'
-                     try:
-                       for t in Resu_in['LIST_CMP']:
-                          message +=\
-  '  !             %8s                                          !\n' %(t)
-                     finally:
-                       message +=\
-  '  !                                                               !\n' +\
-  '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-                     print()
-                     print(message)
-                     print()
+                    else:
+                        message = (
+                            "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                            + "  !                                                               !\n"
+                            + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                            % (c)
+                            + "  !                                                               !\n"
+                            + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                        )
+                        try:
+                            for t in Resu_in["LIST_CMP"]:
+                                message += (
+                                    "  !             %8s                                          !\n"
+                                    % (t)
+                                )
+                        finally:
+                            message += (
+                                "  !                                                               !\n"
+                                + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                            )
+                        print()
+                        print(message)
+                        print()
+
+                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=LdicoRes)
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
+
+        # -----------------------------------------------------------
+        # Essai TRIA_ND_M_D
+        # -----------------------------------------------------------
+        elif typ_essai == "TRIA_ND_M_D":
+
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            EPSI_IMPOSE = DicoEssai["EPSI_IMPOSE"]
+
+            param_predef = ["INST", "EPS_AXI", "EPS_LAT", "SIG_AXI", "SIG_LAT", "P", "Q", "PRE_EAU"]
+
+            for i, sig0 in enumerate(PRES_CONF):
+
+                titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
+                    typ_essai,
+                    str_n_essai,
+                ) + " | PRES_CONF = %E\n" % (sig0)
+
+                LdicoRes = [
+                    _F(LISTE_R=EPSI_IMPOSE[i], PARA="EPSI_IMPOSE"),
+                    _F(LISTE_R=Resu_in["INST"][i], PARA="INST"),
+                    _F(LISTE_R=Resu_in["EPS_AXI"][i], PARA="EPS_AXI"),
+                    _F(LISTE_R=Resu_in["EPS_LAT"][i], PARA="EPS_LAT"),
+                    _F(LISTE_R=Resu_in["SIG_AXI"][i], PARA="SIG_AXI"),
+                    _F(LISTE_R=Resu_in["SIG_LAT"][i], PARA="SIG_LAT"),
+                    _F(LISTE_R=Resu_in["P"][i], PARA="P"),
+                    _F(LISTE_R=Resu_in["Q"][i], PARA="Q"),
+                    _F(LISTE_R=Resu_in["PRE_EAU"][i], PARA="PRE_EAU"),
+                ]
+
+                for c in List_Resu_Supp:
+
+                    if Resu_in[c][i] and (not c in param_predef):
+                        LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA=c)]
+
+                    else:
+                        message = (
+                            "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                            + "  !                                                               !\n"
+                            + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                            % (c)
+                            + "  !                                                               !\n"
+                            + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                        )
+                        try:
+                            for t in Resu_in["LIST_CMP"]:
+                                message += (
+                                    "  !             %8s                                          !\n"
+                                    % (t)
+                                )
+                        finally:
+                            message += (
+                                "  !                                                               !\n"
+                                + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                            )
+                        print()
+                        print(message)
+                        print()
+
+                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=LdicoRes)
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
+
+        # -----------------------------------------------------------
+        # Essai CISA_DR_C_D
+        # -----------------------------------------------------------
+        elif typ_essai == "CISA_DR_C_D":
+
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            GAMMA_IMPOSE = DicoEssai["GAMMA_IMPOSE"]
+            LdicoResGlob = []
+
+            param_predef = ["INST", "GAMMA", "SIG_XY"]
+
+            for i, sig0 in enumerate(PRES_CONF):
+
+                # Impression NIVEAU 2
+                # ----------------------------------------------------------
+                titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
+                    typ_essai,
+                    str_n_essai,
+                ) + " | PRES_CONF = %E\n" % (sig0)
+
+                LdicoRes = []
+                for j, eps0 in enumerate(GAMMA_IMPOSE):
+
+                    stjp1 = int_2_str(j + 1, len(GAMMA_IMPOSE))
+
+                    LdicoRes += (
+                        [{"PARA": "GAMMA_IMPOSE_" + stjp1, "LISTE_R": [eps0]}]
+                        + [{"PARA": "INST_" + stjp1, "LISTE_R": Resu_in["INST"][i][j]}]
+                        + [{"PARA": "GAMMA_" + stjp1, "LISTE_R": Resu_in["GAMMA"][i][j]}]
+                        + [{"PARA": "SIG_XY_" + stjp1, "LISTE_R": Resu_in["SIG_XY"][i][j]}]
+                    )
+
+                    for c in List_Resu_Supp:
+
+                        if Resu_in[c][i] and (not c in param_predef):
+                            LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
+
+                        else:
+                            message = (
+                                "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                                + "  !                                                               !\n"
+                                + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                                % (c)
+                                + "  !                                                               !\n"
+                                + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                            )
+                            try:
+                                for t in Resu_in["LIST_CMP"]:
+                                    message += (
+                                        "  !             %8s                                          !\n"
+                                        % (t)
+                                    )
+                            finally:
+                                message += (
+                                    "  !                                                               !\n"
+                                    + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                                )
+                            print()
+                            print(message)
+                            print()
+
+                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
+
+                # Impression NIVEAU 1
+                # ----------------------------------------------------------
+                stip1 = int_2_str(i + 1, len(PRES_CONF))
+
+                LdicoResGlob += (
+                    [{"PARA": "PRES_CONF_" + stip1, "LISTE_R": [sig0]}]
+                    + [{"PARA": "GAMMA_IMPOSE_" + stip1, "LISTE_R": GAMMA_IMPOSE}]
+                    + [{"PARA": "G_SUR_GMAX_" + stip1, "LISTE_R": Resu_in["G_SUR_GMAX"][i]}]
+                    + [{"PARA": "DAMPING_" + stip1, "LISTE_R": Resu_in["DAMPING"][i]}]
+                )
+
+            # Impression NIVEAU 1 dans le dernier element de la table
+            # ----------------------------------------------------------
+            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" % (typ_essai, str_n_essai)
+
+            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob))
+            self.register_result(TABLRES, DicoEssai["TABLE_RESU"][-1])
+
+        # ----------------------------------------------------
+        # Essai TRIA_ND_C_F
+        # ----------------------------------------------------
+        elif typ_essai == "TRIA_ND_C_F":
+
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            SIGM_IMPOSE = DicoEssai["SIGM_IMPOSE"]
+            LdicoResGlob = []
+
+            param_predef = [
+                "INST",
+                "EPS_AXI",
+                "EPS_LAT",
+                "EPS_VOL",
+                "SIG_AXI",
+                "SIG_LAT",
+                "P",
+                "Q",
+                "PRE_EAU",
+                "RU",
+            ]
+
+            for i, sig0 in enumerate(PRES_CONF):
+
+                # Impression NIVEAU 2
+                # ----------------------------------------------------------
+                titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
+                    typ_essai,
+                    str_n_essai,
+                ) + " | PRES_CONF = %E\n" % (sig0)
+
+                LdicoRes = []
+                for j, dsig in enumerate(SIGM_IMPOSE):
+
+                    stjp1 = int_2_str(j + 1, len(SIGM_IMPOSE))
+
+                    LdicoRes += (
+                        [{"PARA": "SIGM_IMPOSE_" + stjp1, "LISTE_R": [dsig]}]
+                        + [{"PARA": "INST_" + stjp1, "LISTE_R": Resu_in["INST"][i][j]}]
+                        + [{"PARA": "EPS_AXI_" + stjp1, "LISTE_R": Resu_in["EPS_AXI"][i][j]}]
+                        + [{"PARA": "EPS_LAT_" + stjp1, "LISTE_R": Resu_in["EPS_LAT"][i][j]}]
+                        + [{"PARA": "EPS_VOL_" + stjp1, "LISTE_R": Resu_in["EPS_VOL"][i][j]}]
+                        + [{"PARA": "SIG_AXI_" + stjp1, "LISTE_R": Resu_in["SIG_AXI"][i][j]}]
+                        + [{"PARA": "SIG_LAT_" + stjp1, "LISTE_R": Resu_in["SIG_LAT"][i][j]}]
+                        + [{"PARA": "P_" + stjp1, "LISTE_R": Resu_in["P"][i][j]}]
+                        + [{"PARA": "Q_" + stjp1, "LISTE_R": Resu_in["Q"][i][j]}]
+                        + [{"PARA": "PRE_EAU_" + stjp1, "LISTE_R": Resu_in["PRE_EAU"][i][j]}]
+                        + [{"PARA": "RU_" + stjp1, "LISTE_R": Resu_in["RU"][i][j]}]
+                    )
+
+                    for c in List_Resu_Supp:
+
+                        if Resu_in[c][i] and (not c in param_predef):
+                            LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
+
+                        else:
+                            message = (
+                                "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                                + "  !                                                               !\n"
+                                + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                                % (c)
+                                + "  !                                                               !\n"
+                                + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                            )
+                            try:
+                                for t in Resu_in["LIST_CMP"]:
+                                    message += (
+                                        "  !             %8s                                          !\n"
+                                        % (t)
+                                    )
+                            finally:
+                                message += (
+                                    "  !                                                               !\n"
+                                    + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                                )
+                            print()
+                            print(message)
+                            print()
+
+                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
+
+                # Impression NIVEAU 1
+                # ----------------------------------------------------------
+                stip1 = int_2_str(i + 1, len(PRES_CONF))
+
+                LdicoResGlob += (
+                    [{"PARA": "PRES_CONF_" + stip1, "LISTE_R": [sig0]}]
+                    + [{"PARA": "NCYCL_" + stip1, "LISTE_I": Resu_in["NCYCL"][i]}]
+                    + [{"PARA": "CRR_" + stip1, "LISTE_R": Resu_in["DSIGM"][i]}]
+                )
+
+            # Impression NIVEAU 1 dans le dernier element de la table
+            # ----------------------------------------------------------
+            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" % (typ_essai, str_n_essai)
+
+            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob))
+            self.register_result(TABLRES, DicoEssai["TABLE_RESU"][-1])
+
+        # -------------------------------------------------------
+        # Essai TRIA_DR_C_D
+        # -------------------------------------------------------
+        elif typ_essai == "TRIA_DR_C_D":
+
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            EPSI_MAXI = DicoEssai["EPSI_MAXI"]
+            EPSI_MINI = DicoEssai["EPSI_MINI"]
+
+            EPSI_IMPOSE = abs(array(EPSI_MAXI) - array(EPSI_MINI))
+            EPSI_IMPOSE = list(EPSI_IMPOSE)
+
+            LdicoResGlob = []
+
+            param_predef = ["INST", "EPS_AXI", "EPS_LAT", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P", "Q"]
+
+            for i, sig0 in enumerate(PRES_CONF):
+
+                # Impression NIVEAU 2
+                # ----------------------------------------------------------
+                titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
+                    typ_essai,
+                    str_n_essai,
+                ) + " | PRES_CONF = %E\n" % (sig0)
+
+                LdicoRes = []
+                for j, eps0 in enumerate(EPSI_MINI):
+
+                    stjp1 = int_2_str(j + 1, len(EPSI_MINI))
+
+                    LdicoRes += (
+                        [{"PARA": "EPSI_IMPOSE_" + stjp1, "LISTE_R": [eps0]}]
+                        + [{"PARA": "INST_" + stjp1, "LISTE_R": Resu_in["INST"][i][j]}]
+                        + [{"PARA": "EPS_AXI_" + stjp1, "LISTE_R": Resu_in["EPS_AXI"][i][j]}]
+                        + [{"PARA": "EPS_LAT_" + stjp1, "LISTE_R": Resu_in["EPS_LAT"][i][j]}]
+                        + [{"PARA": "EPS_VOL_" + stjp1, "LISTE_R": Resu_in["EPS_VOL"][i][j]}]
+                        + [{"PARA": "SIG_AXI_" + stjp1, "LISTE_R": Resu_in["SIG_AXI"][i][j]}]
+                        + [{"PARA": "SIG_LAT_" + stjp1, "LISTE_R": Resu_in["SIG_LAT"][i][j]}]
+                        + [{"PARA": "P_" + stjp1, "LISTE_R": Resu_in["P"][i][j]}]
+                        + [{"PARA": "Q_" + stjp1, "LISTE_R": Resu_in["Q"][i][j]}]
+                    )
+
+                    for c in List_Resu_Supp:
+
+                        if Resu_in[c][i] and (not c in param_predef):
+                            LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
+
+                        else:
+                            message = (
+                                "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                                + "  !                                                               !\n"
+                                + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                                % (c)
+                                + "  !                                                               !\n"
+                                + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                            )
+                            try:
+                                for t in Resu_in["LIST_CMP"]:
+                                    message += (
+                                        "  !             %8s                                          !\n"
+                                        % (t)
+                                    )
+                            finally:
+                                message += (
+                                    "  !                                                               !\n"
+                                    + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                                )
+                            print()
+                            print(message)
+                            print()
+
+                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
+
+                # Impression NIVEAU 1
+                # ----------------------------------------------------------
+                stip1 = int_2_str(i + 1, len(PRES_CONF))
+
+                LdicoResGlob += (
+                    [{"PARA": "PRES_CONF_" + stip1, "LISTE_R": [sig0]}]
+                    + [{"PARA": "EPSI_IMPOSE_" + stip1, "LISTE_R": EPSI_IMPOSE}]
+                    + [{"PARA": "E_SUR_EMAX_" + stip1, "LISTE_R": Resu_in["E_SUR_EMAX"][i]}]
+                    + [{"PARA": "DAMPING_" + stip1, "LISTE_R": Resu_in["DAMPING"][i]}]
+                )
+
+            # Impression NIVEAU 1 dans le dernier element de la table
+            # ----------------------------------------------------------
+            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" % (typ_essai, str_n_essai)
+
+            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob))
+            self.register_result(TABLRES, DicoEssai["TABLE_RESU"][-1])
+
+        # ----------------------------------------------------
+        # Essai TRIA_ND_C_D
+        # ----------------------------------------------------
+        elif typ_essai == "TRIA_ND_C_D":
+
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            EPSI_MAXI = DicoEssai["EPSI_MAXI"]
+            EPSI_MINI = DicoEssai["EPSI_MINI"]
+
+            EPSI_IMPOSE = abs(array(EPSI_MAXI) - array(EPSI_MINI))
+            EPSI_IMPOSE = list(EPSI_IMPOSE)
+
+            LdicoResGlob = []
+
+            param_predef = [
+                "INST",
+                "EPS_AXI",
+                "EPS_LAT",
+                "EPS_VOL",
+                "SIG_AXI",
+                "SIG_LAT",
+                "P",
+                "Q",
+                "PRE_EAU",
+                "RU",
+            ]
+
+            for i, sig0 in enumerate(PRES_CONF):
+
+                # Impression NIVEAU 2
+                # ----------------------------------------------------------
+                titre_table = "Resultats bruts : ESSAI %s NUMERO %s" % (
+                    typ_essai,
+                    str_n_essai,
+                ) + " | PRES_CONF = %E\n" % (sig0)
+
+                LdicoRes = []
+                for j, eps0 in enumerate(EPSI_MINI):
+
+                    stjp1 = int_2_str(j + 1, len(EPSI_MINI))
+
+                    LdicoRes += (
+                        [{"PARA": "EPSI_IMPOSE_" + stjp1, "LISTE_R": [eps0]}]
+                        + [{"PARA": "INST_" + stjp1, "LISTE_R": Resu_in["INST"][i][j]}]
+                        + [{"PARA": "EPS_AXI_" + stjp1, "LISTE_R": Resu_in["EPS_AXI"][i][j]}]
+                        + [{"PARA": "EPS_LAT_" + stjp1, "LISTE_R": Resu_in["EPS_LAT"][i][j]}]
+                        + [{"PARA": "EPS_VOL_" + stjp1, "LISTE_R": Resu_in["EPS_VOL"][i][j]}]
+                        + [{"PARA": "SIG_AXI_" + stjp1, "LISTE_R": Resu_in["SIG_AXI"][i][j]}]
+                        + [{"PARA": "SIG_LAT_" + stjp1, "LISTE_R": Resu_in["SIG_LAT"][i][j]}]
+                        + [{"PARA": "P_" + stjp1, "LISTE_R": Resu_in["P"][i][j]}]
+                        + [{"PARA": "Q_" + stjp1, "LISTE_R": Resu_in["Q"][i][j]}]
+                        + [{"PARA": "PRE_EAU_" + stjp1, "LISTE_R": Resu_in["PRE_EAU"][i][j]}]
+                        + [{"PARA": "RU_" + stjp1, "LISTE_R": Resu_in["RU"][i][j]}]
+                    )
+
+                    for c in List_Resu_Supp:
+
+                        if Resu_in[c][i] and (not c in param_predef):
+                            LdicoRes += [_F(LISTE_R=Resu_in[c][i][j], PARA="%s_" % (c) + stjp1)]
+
+                        else:
+                            message = (
+                                "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                                + "  !                                                               !\n"
+                                + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                                % (c)
+                                + "  !                                                               !\n"
+                                + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                            )
+                            try:
+                                for t in Resu_in["LIST_CMP"]:
+                                    message += (
+                                        "  !             %8s                                          !\n"
+                                        % (t)
+                                    )
+                            finally:
+                                message += (
+                                    "  !                                                               !\n"
+                                    + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                                )
+                            print()
+                            print(message)
+                            print()
+
+                TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
+
+                # Impression NIVEAU 1
+                # ----------------------------------------------------------
+                stip1 = int_2_str(i + 1, len(PRES_CONF))
+
+                LdicoResGlob += (
+                    [{"PARA": "PRES_CONF_" + stip1, "LISTE_R": [sig0]}]
+                    + [{"PARA": "EPSI_IMPOSE_" + stip1, "LISTE_R": EPSI_IMPOSE}]
+                    + [{"PARA": "E_SUR_EMAX_" + stip1, "LISTE_R": Resu_in["E_SUR_EMAX"][i]}]
+                    + [{"PARA": "DAMPING_" + stip1, "LISTE_R": Resu_in["DAMPING"][i]}]
+                    + [{"PARA": "NCYCL_" + stip1, "LISTE_I": Resu_in["NCYCL"][i]}]
+                    + [{"PARA": "RU_MAX_" + stip1, "LISTE_R": Resu_in["RU_MAX"][i]}]
+                )
+
+            # Impression NIVEAU 1 dans le dernier element de la table
+            # ----------------------------------------------------------
+            titre_table = "Resultats globaux : ESSAI %s NUMERO %s\n" % (typ_essai, str_n_essai)
+
+            TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoResGlob))
+            self.register_result(TABLRES, DicoEssai["TABLE_RESU"][-1])
+
+        # -------------------------------------------------------
+        # Essais OEDO_CDR_C_F ou ISOT_DR_C_F
+        # -------------------------------------------------------
+        elif typ_essai == "OEDO_DR_C_F" or typ_essai == "ISOT_DR_C_F":
+
+            PRES_CONF = DicoEssai["PRES_CONF"]
+            SIGM_DECH = DicoEssai["SIGM_DECH"]
+
+            param_predef = ["INST", "EPS_VOL", "SIG_AXI", "SIG_LAT", "P"]
+
+            for i, sig0 in enumerate(PRES_CONF):
+
+                # Impression NIVEAU 2
+                # ----------------------------------------------------------
+                titre_table = (
+                    " ESSAI %s NUMERO %s" % (typ_essai, str_n_essai)
+                    + " | PRES_CONF = %E" % (sig0)
+                    + " | SIGM_DECH = %E\n" % (SIGM_DECH[i])
+                )
+
+                stip1 = int_2_str(i + 1, len(PRES_CONF))
+
+                LdicoRes = (
+                    [{"PARA": "INST_" + stip1, "LISTE_R": Resu_in["INST"][i]}]
+                    + [{"PARA": "EPS_VOL_" + stip1, "LISTE_R": Resu_in["EPS_VOL"][i]}]
+                    + [{"PARA": "P_" + stip1, "LISTE_R": Resu_in["P"][i]}]
+                    + [{"PARA": "SIG_AXI_" + stip1, "LISTE_R": Resu_in["SIG_AXI"][i]}]
+                    + [{"PARA": "SIG_LAT_" + stip1, "LISTE_R": Resu_in["SIG_LAT"][i]}]
+                )
+
+                for c in List_Resu_Supp:
+
+                    if Resu_in[c][i] and (not c in param_predef):
+                        LdicoRes += [_F(LISTE_R=Resu_in[c][i], PARA="%s_%s" % (c, stip1))]
+
+                    else:
+                        message = (
+                            "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+                            + "  !                                                               !\n"
+                            + "  ! ATTENTION : La composante %4s n appartient pas au resultat   !\n"
+                            % (c)
+                            + "  !                                                               !\n"
+                            + "  ! LISTE DES COMPOSANTES ADMISSIBLES:                            !\n"
+                        )
+                        try:
+                            for t in Resu_in["LIST_CMP"]:
+                                message += (
+                                    "  !             %8s                                          !\n"
+                                    % (t)
+                                )
+                        finally:
+                            message += (
+                                "  !                                                               !\n"
+                                + "  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                            )
+                        print()
+                        print(message)
+                        print()
 
                 # si il n'y a aucun resultat ds LdicoRes on cree une table vide
                 # ----------------------------------------------------------
@@ -1987,7 +1994,7 @@ def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
                     TABLRES = CREA_TABLE(TITRE=titre_table)
                 else:
                     TABLRES = CREA_TABLE(TITRE=titre_table, LISTE=(LdicoRes))
-                self.register_result(TABLRES, DicoEssai['TABLE_RESU'][i])
+                self.register_result(TABLRES, DicoEssai["TABLE_RESU"][i])
 
         # ---
         # Pour nouvel essai
@@ -2009,62 +2016,35 @@ def Calc_Gs_max(self, GAMMA_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVERG
            (EPSI_ELAS doit etre telle qu'on reste bien dans le domaine elastique)
     """
 
+    __RLIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-    __RLIST = DEFI_LIST_REEL(DEBUT=0.,
-                             INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),)
+    __DLIST = DEFI_LIST_INST(
+        DEFI_LIST=_F(LIST_INST=__RLIST),
+        ECHEC=_F(SUBD_METHODE="MANUEL", SUBD_PAS=10, SUBD_NIVEAU=10),
+    )
 
-    __DLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__RLIST),
-                             ECHEC=_F(SUBD_METHODE='MANUEL',
-                                      SUBD_PAS    =10,
-                                      SUBD_NIVEAU =10,),)
+    __CHAR1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, -0.5 * GAMMA_ELAS))
 
-    __CHAR1 = DEFI_FONCTION(NOM_PARA='INST',
-                            VALE=(0., 0.,
-                                  1., -0.5*GAMMA_ELAS,),)
+    __CHAR2 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, KZERO * PRES_CONF, 1.0, KZERO * PRES_CONF))
 
-    __CHAR2 = DEFI_FONCTION(NOM_PARA='INST',
-                            VALE=(0., KZERO * PRES_CONF,
-                                  1., KZERO * PRES_CONF,),)
-
-    __CHAR3 = DEFI_FONCTION(NOM_PARA='INST',
-                            VALE=(0., PRES_CONF,
-                                  1., PRES_CONF,),)
+    __CHAR3 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, PRES_CONF, 1.0, PRES_CONF))
 
     __EVOL = SIMU_POINT_MAT(
         COMPORTEMENT=COMPORTEMENT.List_F(),
-
         CONVERGENCE=CONVERGENCE.List_F(),
-
         MATER=MATER,
-
-        INCREMENT=_F(LIST_INST=__DLIST,
-                     INST_INIT=0.,
-                     INST_FIN =1.,),
-
-        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-
-        ARCHIVAGE=_F(LIST_INST=__RLIST,),
-
-        SIGM_IMPOSE=_F(SIXX=__CHAR2,
-                       SIYY=__CHAR2,
-                       SIZZ=__CHAR3,),
-
-        EPSI_IMPOSE=_F(EPXY=__CHAR1,),
-
-        SIGM_INIT=_F(SIXX=KZERO * PRES_CONF,
-                     SIYY=KZERO * PRES_CONF,
-                     SIZZ=PRES_CONF,),
-
-        EPSI_INIT=_F(EPXX=0,
-                     EPYY=0,
-                     EPZZ=0,
-                     EPXY=0,
-                     EPXZ=0,
-                     EPYZ=0,),)
+        INCREMENT=_F(LIST_INST=__DLIST, INST_INIT=0.0, INST_FIN=1.0),
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        ARCHIVAGE=_F(LIST_INST=__RLIST),
+        SIGM_IMPOSE=_F(SIXX=__CHAR2, SIYY=__CHAR2, SIZZ=__CHAR3),
+        EPSI_IMPOSE=_F(EPXY=__CHAR1),
+        SIGM_INIT=_F(SIXX=KZERO * PRES_CONF, SIYY=KZERO * PRES_CONF, SIZZ=PRES_CONF),
+        EPSI_INIT=_F(EPXX=0, EPYY=0, EPZZ=0, EPXY=0, EPXZ=0, EPYZ=0),
+    )
 
     TabRes = __EVOL.EXTR_TABLE().values()
-    sig_xy = TabRes['SIXY'][-1]
-    eps_xy = TabRes['EPXY'][-1]
+    sig_xy = TabRes["SIXY"][-1]
+    eps_xy = TabRes["EPXY"][-1]
 
     return 0.5 * sig_xy / eps_xy
 
@@ -2079,62 +2059,40 @@ def Calc_Es_max(self, EPSI_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVERGE
            dans le domaine elastique)
     """
 
+    __RLIST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=5.0, NOMBRE=5))
 
-    __RLIST = DEFI_LIST_REEL(DEBUT=0.,
-                             INTERVALLE=_F(JUSQU_A=5., NOMBRE=5,),)
+    __DLIST = DEFI_LIST_INST(
+        DEFI_LIST=_F(LIST_INST=__RLIST), ECHEC=_F(SUBD_METHODE="MANUEL", SUBD_PAS=2, SUBD_NIVEAU=10)
+    )
 
-    __DLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__RLIST),
-                             ECHEC=_F(SUBD_METHODE='MANUEL',
-                                      SUBD_PAS    =2,
-                                      SUBD_NIVEAU =10,),)
+    __CHAR1 = DEFI_FONCTION(
+        NOM_PARA="INST",
+        VALE=(0.0, 0.0, 1.0, -1.0 * EPSI_ELAS, 3.0, +1.0 * EPSI_ELAS, 5.0, -1.0 * EPSI_ELAS),
+    )
 
-    __CHAR1 = DEFI_FONCTION(NOM_PARA='INST',
-                            VALE=(0., 0.,
-                                  1., -1.*EPSI_ELAS,
-                                  3., +1.*EPSI_ELAS,
-                                  5., -1.*EPSI_ELAS),)
+    __CHAR2 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, KZERO * PRES_CONF, 5.0, KZERO * PRES_CONF))
 
-    __CHAR2 = DEFI_FONCTION(NOM_PARA='INST',
-                            VALE=(0., KZERO*PRES_CONF,
-                                  5., KZERO*PRES_CONF,),)
-
-    __EVOL = SIMU_POINT_MAT(COMPORTEMENT=COMPORTEMENT.List_F(),
-
+    __EVOL = SIMU_POINT_MAT(
+        COMPORTEMENT=COMPORTEMENT.List_F(),
         CONVERGENCE=CONVERGENCE.List_F(),
-
         MATER=MATER,
-
-        INCREMENT=_F(LIST_INST=__DLIST,
-                     INST_INIT=0.,
-                     INST_FIN =5.,),
-
-        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-
-        ARCHIVAGE=_F(LIST_INST=__RLIST,),
-
-        SIGM_IMPOSE=_F(SIXX=__CHAR2,
-                       SIYY=__CHAR2,),
-
-        EPSI_IMPOSE=_F(EPZZ=__CHAR1,),
-
-        SIGM_INIT=_F(SIXX=KZERO*PRES_CONF,
-                     SIYY=KZERO*PRES_CONF,
-                     SIZZ=PRES_CONF,),
-
-        EPSI_INIT=_F(EPXX=0.,
-                     EPYY=0.,
-                     EPZZ=0.,
-                     EPXY=0.,
-                     EPXZ=0.,
-                     EPYZ=0.,),)
+        INCREMENT=_F(LIST_INST=__DLIST, INST_INIT=0.0, INST_FIN=5.0),
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        ARCHIVAGE=_F(LIST_INST=__RLIST),
+        SIGM_IMPOSE=_F(SIXX=__CHAR2, SIYY=__CHAR2),
+        EPSI_IMPOSE=_F(EPZZ=__CHAR1),
+        SIGM_INIT=_F(SIXX=KZERO * PRES_CONF, SIYY=KZERO * PRES_CONF, SIZZ=PRES_CONF),
+        EPSI_INIT=_F(EPXX=0.0, EPYY=0.0, EPZZ=0.0, EPXY=0.0, EPXZ=0.0, EPYZ=0.0),
+    )
 
     TabRes = __EVOL.EXTR_TABLE().values()
-    inst   = TabRes['INST']
-    sig_zz = NP.array(TabRes['SIZZ'])
-    sig_xx = NP.array(TabRes['SIXX'])
-    q      = sig_zz - sig_xx
+    inst = TabRes["INST"]
+    sig_zz = NP.array(TabRes["SIZZ"])
+    sig_xx = NP.array(TabRes["SIXX"])
+    q = sig_zz - sig_xx
 
-    return 0.5*abs(q[inst.index(5.)] - q[inst.index(3.)]) / EPSI_ELAS
+    return 0.5 * abs(q[inst.index(5.0)] - q[inst.index(3.0)]) / EPSI_ELAS
+
 
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
@@ -2145,9 +2103,22 @@ def Calc_Es_max(self, EPSI_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVERGE
 # Date:    31/03/2015 -----------------------
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
-def essai_TRIA_ND_C_D_mono(self, inst_init, sigm, epsi, vari, DicoEssai,
-                     PRES_CONF, MATER, COMPORTEMENT, CONVERGENCE, INFO,
-                     nombre=400, inst_epsi=100., epsi_max=.04):
+def essai_TRIA_ND_C_D_mono(
+    self,
+    inst_init,
+    sigm,
+    epsi,
+    vari,
+    DicoEssai,
+    PRES_CONF,
+    MATER,
+    COMPORTEMENT,
+    CONVERGENCE,
+    INFO,
+    nombre=400,
+    inst_epsi=100.0,
+    epsi_max=0.04,
+):
     """
     Objet: Essai TRIAxial Non Draine Cyclique a Force imposee (TRIA_ND_C_F)
            Poursuite en monotone avec deformation verticale controlee
@@ -2156,107 +2127,93 @@ def essai_TRIA_ND_C_D_mono(self, inst_init, sigm, epsi, vari, DicoEssai,
            de la ligne d' instabilite
     """
 
-
-    UN_SUR_K   = DicoEssai['UN_SUR_K']
-    KZERO      = DicoEssai['KZERO']
-    K_EAU      = 1./UN_SUR_K
-    calc_ok    = True
+    UN_SUR_K = DicoEssai["UN_SUR_K"]
+    KZERO = DicoEssai["KZERO"]
+    K_EAU = 1.0 / UN_SUR_K
+    calc_ok = True
 
     # Chargement lineaire par morceaux ou sinusoidal?
     # ------------------------------------------------
-    sinusoidal = DicoEssai['TYPE_CHARGE'] == 'SINUSOIDAL'
+    sinusoidal = DicoEssai["TYPE_CHARGE"] == "SINUSOIDAL"
 
-    __rlist = DEFI_LIST_REEL(DEBUT=inst_init,
-                 INTERVALLE=_F(JUSQU_A=inst_init+inst_epsi, NOMBRE=nombre,),
-                 INFO=INFO)
+    __rlist = DEFI_LIST_REEL(
+        DEBUT=inst_init, INTERVALLE=_F(JUSQU_A=inst_init + inst_epsi, NOMBRE=nombre), INFO=INFO
+    )
 
-    __dlist = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__rlist),
-                 ECHEC=_F(SUBD_METHODE='MANUEL',
-                          SUBD_PAS    =2,
-                          SUBD_NIVEAU =10,),
-                 INFO=INFO,)
+    __dlist = DEFI_LIST_INST(
+        DEFI_LIST=_F(LIST_INST=__rlist),
+        ECHEC=_F(SUBD_METHODE="MANUEL", SUBD_PAS=2, SUBD_NIVEAU=10),
+        INFO=INFO,
+    )
 
     if sinusoidal:
 
-       abscisse = [inst_init +\
-                   inst_epsi*k/3./nombre for k in range(3*nombre+1)]
+        abscisse = [inst_init + inst_epsi * k / 3.0 / nombre for k in range(3 * nombre + 1)]
 
-       # absc_cos varie de 0 a Pi sur l'intervalle
-       # [inst_init ; inst_init+inst_epsi]
-       # (COsinus varie de 1 a -1)
-       # -------------------------------------------------------------
-       absc_cos = M.pi*(NP.array(abscisse)-inst_init)/inst_epsi
+        # absc_cos varie de 0 a Pi sur l'intervalle
+        # [inst_init ; inst_init+inst_epsi]
+        # (COsinus varie de 1 a -1)
+        # -------------------------------------------------------------
+        absc_cos = M.pi * (NP.array(abscisse) - inst_init) / inst_epsi
 
-       epsi_mean  = epsi[2]+0.5*epsi_max
+        epsi_mean = epsi[2] + 0.5 * epsi_max
 
-       depsi      = 0.5*epsi_max
+        depsi = 0.5 * epsi_max
 
-       ordonnee   = epsi_mean - NP.cos(absc_cos)*depsi
+        ordonnee = epsi_mean - NP.cos(absc_cos) * depsi
 
     else:
-       abscisse = [inst_init, inst_init+inst_epsi,]
-       ordonnee = [epsi[2]  , epsi[2]+epsi_max,]
+        abscisse = [inst_init, inst_init + inst_epsi]
+        ordonnee = [epsi[2], epsi[2] + epsi_max]
 
-    __CHARV = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
-                            ABSCISSE=abscisse,
-                            ORDONNEE=list(ordonnee),)
+    __CHARV = DEFI_FONCTION(INFO=INFO, NOM_PARA="INST", ABSCISSE=abscisse, ORDONNEE=list(ordonnee))
 
-    __CHARH = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
-                        VALE=(inst_init          , KZERO*PRES_CONF,
-                              inst_init+inst_epsi, KZERO*PRES_CONF,),)
+    __CHARH = DEFI_FONCTION(
+        INFO=INFO,
+        NOM_PARA="INST",
+        VALE=(inst_init, KZERO * PRES_CONF, inst_init + inst_epsi, KZERO * PRES_CONF),
+    )
     try:
-      __EVOLM = CALC_POINT_MAT(INFO=INFO,
-
-        COMPORTEMENT=COMPORTEMENT.List_F(),
-
-        CONVERGENCE=CONVERGENCE.List_F(),
-
-        MATER=MATER,
-
-        INCREMENT=_F(LIST_INST=__dlist,
-                     INST_INIT=inst_init,
-                     INST_FIN =inst_init+inst_epsi,),
-
-        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-
-        ARCHIVAGE=_F(LIST_INST=__rlist,),
-
-        VECT_IMPO=(_F(NUME_LIGNE=1, VALE=__CHARH),
-                   _F(NUME_LIGNE=2, VALE=__CHARH),
-                   _F(NUME_LIGNE=3, VALE=__CHARV),),
-
-        MATR_C1=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=1.),
-                 _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=1.),),
-
-        MATR_C2=(_F(NUME_LIGNE=1,
-                    NUME_COLONNE=1, VALE=K_EAU),
-                 _F(NUME_LIGNE=1,
-                    NUME_COLONNE=2, VALE=K_EAU),
-                 _F(NUME_LIGNE=1,
-                    NUME_COLONNE=3, VALE=K_EAU),
-                 _F(NUME_LIGNE=2,
-                    NUME_COLONNE=1, VALE=K_EAU),
-                 _F(NUME_LIGNE=2,
-                    NUME_COLONNE=2, VALE=K_EAU),
-                 _F(NUME_LIGNE=2,
-                    NUME_COLONNE=3, VALE=K_EAU),
-                 _F(NUME_LIGNE=3,
-                    NUME_COLONNE=3, VALE=1.),),
-
-        SIGM_INIT= _F(SIXX=sigm[0], SIYY=sigm[1], SIZZ=sigm[2],
-                      SIXY=sigm[3], SIXZ=sigm[4], SIYZ=sigm[5],),
-
-        EPSI_INIT= _F(EPXX=epsi[0], EPYY=epsi[1], EPZZ=epsi[2],
-                      EPXY=epsi[3], EPXZ=epsi[4], EPYZ=epsi[5],),
-
-        VARI_INIT= _F(VALE=vari,),);
+        __EVOLM = CALC_POINT_MAT(
+            INFO=INFO,
+            COMPORTEMENT=COMPORTEMENT.List_F(),
+            CONVERGENCE=CONVERGENCE.List_F(),
+            MATER=MATER,
+            INCREMENT=_F(LIST_INST=__dlist, INST_INIT=inst_init, INST_FIN=inst_init + inst_epsi),
+            NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+            ARCHIVAGE=_F(LIST_INST=__rlist),
+            VECT_IMPO=(
+                _F(NUME_LIGNE=1, VALE=__CHARH),
+                _F(NUME_LIGNE=2, VALE=__CHARH),
+                _F(NUME_LIGNE=3, VALE=__CHARV),
+            ),
+            MATR_C1=(
+                _F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=1.0),
+                _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=1.0),
+            ),
+            MATR_C2=(
+                _F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=K_EAU),
+                _F(NUME_LIGNE=1, NUME_COLONNE=2, VALE=K_EAU),
+                _F(NUME_LIGNE=1, NUME_COLONNE=3, VALE=K_EAU),
+                _F(NUME_LIGNE=2, NUME_COLONNE=1, VALE=K_EAU),
+                _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=K_EAU),
+                _F(NUME_LIGNE=2, NUME_COLONNE=3, VALE=K_EAU),
+                _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=1.0),
+            ),
+            SIGM_INIT=_F(
+                SIXX=sigm[0], SIYY=sigm[1], SIZZ=sigm[2], SIXY=sigm[3], SIXZ=sigm[4], SIYZ=sigm[5]
+            ),
+            EPSI_INIT=_F(
+                EPXX=epsi[0], EPYY=epsi[1], EPZZ=epsi[2], EPXY=epsi[3], EPXZ=epsi[4], EPYZ=epsi[5]
+            ),
+            VARI_INIT=_F(VALE=vari),
+        )
 
     except AsterError as message:
 
-      print('\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s'\
-            %(message))
+        print("\n   !!!(@_@)!!! Arret pour la raison suivante !!!(@_@)!!!\n%s" % (message))
 
-      calc_ok = False
-      __EVOLM = self.get_last_concept()
+        calc_ok = False
+        __EVOLM = self.get_last_concept()
 
-    return __EVOLM,calc_ok,
+    return __EVOLM, calc_ok

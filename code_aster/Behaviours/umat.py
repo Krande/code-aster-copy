@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'UMAT',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """loi de comportement dont la routine d'intégration est fournie par l'utilisateur."""              ,
-    num_lc         = 50,
-    nb_vari        = 0,
-    nom_vari       = None,
-    mc_mater       = ('UMAT',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GDEF_LOG',),
-    algo_inte      = ('SANS_OBJET',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('MECANIQUE',),
-    regu_visc      = ('No',),
+    nom="UMAT",
+    lc_type=("MECANIQUE",),
+    doc="""loi de comportement dont la routine d'intégration est fournie par l'utilisateur.""",
+    num_lc=50,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=("UMAT",),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GDEF_LOG"),
+    algo_inte=("SANS_OBJET",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("MECANIQUE",),
+    regu_visc=("No",),
 )

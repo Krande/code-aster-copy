@@ -20,26 +20,17 @@
 # person_in_charge: jessica.haelewyn at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
 CHAR_THER_FLUN_R = Option(
-    para_in=(
-        SP.PFLUXNR,
-        SP.PGEOMER,
-        SP.PTEMPSR,
-    ),
-    para_out=(
-        SP.PVECTTR,
-    ),
+    para_in=(SP.PFLUXNR, SP.PGEOMER, SP.PTEMPSR),
+    para_out=(SP.PVECTTR,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'-1'),)),
-      CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
+        CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "-1"))),
+        CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"), (AT.COQUE, "OUI"))),
     ),
 )

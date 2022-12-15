@@ -23,305 +23,322 @@
 # >>> Shear test with SIMU_POINT_MAT with the KH_CSSM model
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Definition of the material
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-k=100.e6
-g=60.e6
-e=9.*k*g/(3.*k+g)
-nu=(3.*k-2.*g)/2./(3.*k+g)
+k = 100.0e6
+g = 60.0e6
+e = 9.0 * k * g / (3.0 * k + g)
+nu = (3.0 * k - 2.0 * g) / 2.0 / (3.0 * k + g)
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=e,
-                            NU=nu,
-                            ALPHA=0.,),
-                    KH_CSSM=_F(BulkModulus=k,
-                            ShearModulus=g,
-                            SwellingIndex=200.,
-                            InitPreconsPress=5.e4,
-                            InitTensionPress=5.e3,
-                            CamClayCSS=1.,
-                            YieldSurfLinCoef=1.,
-                            YieldSurfCapCoef=2.,
-                            PlastCompIndex=50.,
-                            KHModulus=60.e6,
-                            KHIndex=1.,),)
+MATER = DEFI_MATERIAU(
+    ELAS=_F(E=e, NU=nu, ALPHA=0.0),
+    KH_CSSM=_F(
+        BulkModulus=k,
+        ShearModulus=g,
+        SwellingIndex=200.0,
+        InitPreconsPress=5.0e4,
+        InitTensionPress=5.0e3,
+        CamClayCSS=1.0,
+        YieldSurfLinCoef=1.0,
+        YieldSurfCapCoef=2.0,
+        PlastCompIndex=50.0,
+        KHModulus=60.0e6,
+        KHIndex=1.0,
+    ),
+)
 
 ### >>>>>>>>>>>>>>
 ### >>> Time steps
 ### <<<<<<<<<<<<<<
 
-LI1=DEFI_LIST_REEL(DEBUT=-1.0,
-                   INTERVALLE=(_F(JUSQU_A=0.0,
-                                  NOMBRE=5,),
-                               _F(JUSQU_A=50.,
-                                  NOMBRE=400,),),)
+LI1 = DEFI_LIST_REEL(
+    DEBUT=-1.0, INTERVALLE=(_F(JUSQU_A=0.0, NOMBRE=5), _F(JUSQU_A=50.0, NOMBRE=400))
+)
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LI1,),
-                         ECHEC=_F(EVENEMENT='ERREUR',
-                                  ACTION='DECOUPE',
-                                  SUBD_METHODE='AUTO',),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI1), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="AUTO")
+)
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Isotropic loading until p0
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-p0=5e4
-COEF0 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(-1.0,0.,
-                             0.0,-p0,),)
+p0 = 5e4
+COEF0 = DEFI_FONCTION(NOM_PARA="INST", PROL_DROITE="CONSTANT", VALE=(-1.0, 0.0, 0.0, -p0))
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Cyclic shear loading with epxy_max = 2e-5
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-epxy_max=2e-5
-COEF1 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(-1.0,0.,
-                             0.0,0., 
-                            10.0,-epxy_max,
-                            20.0,0.,
-                            30.0,+epxy_max,
-                            40.0,0.,
-                            50.0,-epxy_max),)
+epxy_max = 2e-5
+COEF1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    VALE=(
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        10.0,
+        -epxy_max,
+        20.0,
+        0.0,
+        30.0,
+        +epxy_max,
+        40.0,
+        0.0,
+        50.0,
+        -epxy_max,
+    ),
+)
 
 ### >>>>>>>>>>>>
 ### >>> Solution
 ### <<<<<<<<<<<<
 
-RESU1=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='KH_CSSM',
-                                   RESI_INTE_RELA=1.e-14,
-                                   ITER_INTE_MAXI=100,),
-                  MATER=MATER,
-                  INCREMENT=_F(LIST_INST=DEFLIST),
-                  NEWTON=_F(MATRICE = 'TANGENTE',
-                            REAC_ITER=1,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-                                 RESI_GLOB_RELA=1.e-10,),
-                  SIGM_IMPOSE=_F(SIXX=COEF0,
-                                 SIYY=COEF0,
-                                 SIZZ=COEF0,),
-                  EPSI_IMPOSE=_F(EPXY=COEF1,),)
+RESU1 = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION="KH_CSSM", RESI_INTE_RELA=1.0e-14, ITER_INTE_MAXI=100),
+    MATER=MATER,
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-10),
+    SIGM_IMPOSE=_F(SIXX=COEF0, SIYY=COEF0, SIZZ=COEF0),
+    EPSI_IMPOSE=_F(EPXY=COEF1),
+)
 
 ### >>>>>>>>>
 ### >>> Tests
 ### <<<<<<<<<
 
 ### >>>>>> SXY at INST=10 for which epxy=-2e-5
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU1,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.,),
-           VALE_CALC=-1546.180983475907,
-           VALE_REFE=-1546.70760215983,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU1,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=10.0),
+    VALE_CALC=-1546.180983475907,
+    VALE_REFE=-1546.70760215983,
+)
 ### >>>>>> SXY at INST=20 for which epxy=0
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU1,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=20.,),
-           VALE_CALC=939.8418459843689,
-           VALE_REFE=939.78983469073,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU1,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=20.0),
+    VALE_CALC=939.8418459843689,
+    VALE_REFE=939.78983469073,
+)
 ### >>>>>> SXY at INST=30 for which epxy=+2e-5
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU1,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,),
-           VALE_CALC=2010.2437830504575,
-           VALE_REFE=2010.49850082677,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU1,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0),
+    VALE_CALC=2010.2437830504575,
+    VALE_REFE=2010.49850082677,
+)
 ### >>>>>> SXY at INST=40 for which epxy=0
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU1,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.,),
-           VALE_CALC=-629.7562169495205,
-           VALE_REFE=-629.501499339416,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU1,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=40.0),
+    VALE_CALC=-629.7562169495205,
+    VALE_REFE=-629.501499339416,
+)
 ### >>>>>> SXY at INST=50 for which epxy=-2e-5
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU1,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=50.,),
-           VALE_CALC=-2061.303129141949,
-           VALE_REFE=-2061.47827567706,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU1,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=50.0),
+    VALE_CALC=-2061.303129141949,
+    VALE_REFE=-2061.47827567706,
+)
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Cyclic shear loading with epxy_max = 2e-4
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-epxy_max=2e-4
-COEF2 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(-1.0,0.,
-                             0.0,0., 
-                            10.0,-epxy_max,
-                            20.0,0.,
-                            30.0,+epxy_max,
-                            40.0,0.,
-                            50.0,-epxy_max),)
+epxy_max = 2e-4
+COEF2 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    VALE=(
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        10.0,
+        -epxy_max,
+        20.0,
+        0.0,
+        30.0,
+        +epxy_max,
+        40.0,
+        0.0,
+        50.0,
+        -epxy_max,
+    ),
+)
 
 ### >>>>>>>>>>>>
 ### >>> Solution
 ### <<<<<<<<<<<<
 
-RESU2=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='KH_CSSM',
-                                   RESI_INTE_RELA=1.e-14,
-                                   ITER_INTE_MAXI=100,),
-                  MATER=MATER,
-                  INCREMENT=_F(LIST_INST=DEFLIST),
-                  NEWTON=_F(MATRICE = 'TANGENTE',
-                            REAC_ITER=1,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-                                 RESI_GLOB_RELA=1.e-10,),
-                  SIGM_IMPOSE=_F(SIXX=COEF0,
-                                 SIYY=COEF0,
-                                 SIZZ=COEF0,),
-                  EPSI_IMPOSE=_F(EPXY=COEF2,),)
+RESU2 = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION="KH_CSSM", RESI_INTE_RELA=1.0e-14, ITER_INTE_MAXI=100),
+    MATER=MATER,
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-10),
+    SIGM_IMPOSE=_F(SIXX=COEF0, SIYY=COEF0, SIZZ=COEF0),
+    EPSI_IMPOSE=_F(EPXY=COEF2),
+)
 
 ### >>>>>>>>>
 ### >>> Tests
 ### <<<<<<<<<
 
 ### >>>>>> SXY at INST=10 for which epxy=-2e-4
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU2,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.,),
-           VALE_CALC=-4985.4643588091485,
-           VALE_REFE=-4988.38375666692,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU2,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=10.0),
+    VALE_CALC=-4985.4643588091485,
+    VALE_REFE=-4988.38375666692,
+)
 ### >>>>>> SXY at INST=20 for which epxy=0
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU2,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=20.,),
-           VALE_CALC=5872.49286196861,
-           VALE_REFE=5875.27174541971,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU2,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=20.0),
+    VALE_CALC=5872.49286196861,
+    VALE_REFE=5875.27174541971,
+)
 ### >>>>>> SXY at INST=30 for which epxy=+2e-4
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU2,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,),
-           VALE_CALC=7152.291689019338,
-           VALE_REFE=7154.25659121969,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU2,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0),
+    VALE_CALC=7152.291689019338,
+    VALE_REFE=7154.25659121969,
+)
 ### >>>>>> SXY at INST=40 for which epxy=0
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU2,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.,),
-           VALE_CALC=-7048.864712680437,
-           VALE_REFE=-7052.86093937813,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU2,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=40.0),
+    VALE_CALC=-7048.864712680437,
+    VALE_REFE=-7052.86093937813,
+)
 ### >>>>>> SXY at INST=50 for which epxy=-2e-4
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU2,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=50.,),
-           VALE_CALC=-8347.019318685356,
-           VALE_REFE=-8348.75544552664,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU2,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=50.0),
+    VALE_CALC=-8347.019318685356,
+    VALE_REFE=-8348.75544552664,
+)
 
 
 ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ### >>> Cyclic shear loading with epxy_max = 2e-3
 ### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-epxy_max=2e-3
-COEF3 = DEFI_FONCTION(NOM_PARA='INST',
-                      PROL_DROITE='CONSTANT',
-                      VALE=(-1.0,0.,
-                             0.0,0., 
-                            10.0,-epxy_max,
-                            20.0,0.,
-                            30.0,+epxy_max,
-                            40.0,0.,
-                            50.0,-epxy_max),)
+epxy_max = 2e-3
+COEF3 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_DROITE="CONSTANT",
+    VALE=(
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        10.0,
+        -epxy_max,
+        20.0,
+        0.0,
+        30.0,
+        +epxy_max,
+        40.0,
+        0.0,
+        50.0,
+        -epxy_max,
+    ),
+)
 
 ### >>>>>>>>>>>>
 ### >>> Solution
 ### <<<<<<<<<<<<
 
-RESU3=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION='KH_CSSM',
-                                   RESI_INTE_RELA=1.e-14,
-                                   ITER_INTE_MAXI=100,),
-                  MATER=MATER,
-                  INCREMENT=_F(LIST_INST=DEFLIST),
-                  NEWTON=_F(MATRICE = 'TANGENTE',
-                            REAC_ITER=1,),
-                  CONVERGENCE=_F(ITER_GLOB_MAXI=20,
-                                 RESI_GLOB_RELA=1.e-10,),
-                  SIGM_IMPOSE=_F(SIXX=COEF0,
-                                 SIYY=COEF0,
-                                 SIZZ=COEF0,),
-                  EPSI_IMPOSE=_F(EPXY=COEF3,),)
+RESU3 = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION="KH_CSSM", RESI_INTE_RELA=1.0e-14, ITER_INTE_MAXI=100),
+    MATER=MATER,
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1.0e-10),
+    SIGM_IMPOSE=_F(SIXX=COEF0, SIYY=COEF0, SIZZ=COEF0),
+    EPSI_IMPOSE=_F(EPXY=COEF3),
+)
 
 ### >>>>>>>>>
 ### >>> Tests
 ### <<<<<<<<<
 
 ### >>>>>> SXY at INST=10 for which epxy=-2e-3
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU3,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=10.,),
-           VALE_CALC=-11767.394362137633,
-           VALE_REFE=-11776.6973624923,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU3,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=10.0),
+    VALE_CALC=-11767.394362137633,
+    VALE_REFE=-11776.6973624923,
+)
 ### >>>>>> SXY at INST=20 for which epxy=0
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU3,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=20.,),
-           VALE_CALC=14696.125038989041,
-           VALE_REFE=14703.7243124063,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU3,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=20.0),
+    VALE_CALC=14696.125038989041,
+    VALE_REFE=14703.7243124063,
+)
 ### >>>>>> SXY at INST=30 for which epxy=+2e-3
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU3,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=30.,),
-           VALE_CALC=17007.806338141014,
-           VALE_REFE=17014.019664487,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU3,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=30.0),
+    VALE_CALC=17007.806338141014,
+    VALE_REFE=17014.019664487,
+)
 ### >>>>>> SXY at INST=40 for which epxy=0
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU3,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=40.,),
-           VALE_CALC=-18512.394142203008,
-           VALE_REFE=-18518.3348800971,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU3,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=40.0),
+    VALE_CALC=-18512.394142203008,
+    VALE_REFE=-18518.3348800971,
+)
 ### >>>>>> SXY at INST=50 for which epxy=-2e-3
-TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           TABLE=RESU3,
-           NOM_PARA='SIXY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=50.,),
-           VALE_CALC=-20014.088506671505,
-           VALE_REFE=-20019.3010258594,
-           )
+TEST_TABLE(
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=RESU3,
+    NOM_PARA="SIXY",
+    FILTRE=_F(NOM_PARA="INST", VALE=50.0),
+    VALE_CALC=-20014.088506671505,
+    VALE_REFE=-20019.3010258594,
+)
 
 FIN()

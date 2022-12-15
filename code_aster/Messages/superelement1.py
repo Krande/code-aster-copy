@@ -20,12 +20,7 @@
 from ..Utilities import _
 
 cata_msg = {
-
-     1 : _("""La masse du MACR_ELEM n'a pas encore été calculée."""),
-
-     2 : _("""La rigidité du MACR_ELEM n'a pas encore été calculée."""),
-
-     3 : _(""" L'amortissement du MACR_ELEM n'a pas encore été calculé. """),
-
-
+    1: _("""La masse du MACR_ELEM n'a pas encore été calculée."""),
+    2: _("""La rigidité du MACR_ELEM n'a pas encore été calculée."""),
+    3: _(""" L'amortissement du MACR_ELEM n'a pas encore été calculé. """),
 }

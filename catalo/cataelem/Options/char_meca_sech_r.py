@@ -24,16 +24,19 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-PVARCPR  = InputParameter(phys=PHY.VARI_R,
-    comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
+PVARCPR = InputParameter(phys=PHY.VARI_R, comment="""  PVARCPR : VARIABLES DE COMMANDE  """)
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE, TUYAU ...  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE, TUYAU ...  """,
+)
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-    comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS  """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I : NOMBRE DE SOUS_POINTS  """
+)
 
 
 CHAR_MECA_SECH_R = Option(
@@ -41,28 +44,26 @@ CHAR_MECA_SECH_R = Option(
         SP.PCAGNBA,
         SP.PCAGNPO,
         SP.PCAMASS,
-           PCAORIE,
-           PCOMPOR,
-           PNBSP_I,
+        PCAORIE,
+        PCOMPOR,
+        PNBSP_I,
         SP.PFIBRES,
         SP.PGEOMER,
         SP.PMATERC,
         SP.PTEMPSR,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
     ),
-    para_out=(
-        SP.PVECTUR,
-    ),
+    para_out=(SP.PVECTUR,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-#     Les elements d'interface ne sont pas concernes (issue24099) :
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.INTERFACE,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.FLUIDE,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'AFI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'PFI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D2D'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),
+        #     Les elements d'interface ne sont pas concernes (issue24099) :
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.INTERFACE, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.FLUIDE, "OUI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "3FI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "AFI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "PFI"))),
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.MODELI, "D2D"))),
     ),
     comment=""" CHAR_MECA_SECH_R: (MOT-CLE : SECH_CALCULEE): CALCUL DU SECOND
            MEMBRE ELEMENTAIRE CORRESPONDANT AU CHAMP DE SECHAGE """,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ from ..Messages import UTMESS
 def defi_list_freq_ops(self, **args):
 
     RAFFINEMENT = args.get("RAFFINEMENT")
-    if RAFFINEMENT is not None: args.pop("RAFFINEMENT")
-
+    if RAFFINEMENT is not None:
+        args.pop("RAFFINEMENT")
 
     # 1. Construction de la liste des fréquences "de base"
     motscle = {}
@@ -39,20 +39,20 @@ def defi_list_freq_ops(self, **args):
     l_freq0 = __co_l_freq0.getValues()
 
     # 2. Récuperation des données liées au raffinement
-    if RAFFINEMENT.get('CRITERE') in ('RELATIF', 'ABSOLU'):
-        dispersion = RAFFINEMENT.get('DISPERSION')
+    if RAFFINEMENT.get("CRITERE") in ("RELATIF", "ABSOLU"):
+        dispersion = RAFFINEMENT.get("DISPERSION")
 
     haveAmor = False
-    if RAFFINEMENT.get('CRITERE') == 'LARGEUR_3DB':
+    if RAFFINEMENT.get("CRITERE") == "LARGEUR_3DB":
         haveAmor = True
-        if RAFFINEMENT.get('AMOR_REDUIT') is not None:
-            l_amor = list(RAFFINEMENT.get('AMOR_REDUIT'))
+        if RAFFINEMENT.get("AMOR_REDUIT") is not None:
+            l_amor = list(RAFFINEMENT.get("AMOR_REDUIT"))
         else:
-            l_amor = RAFFINEMENT.get('LIST_AMOR').getValues()
+            l_amor = RAFFINEMENT.get("LIST_AMOR").getValues()
 
-    dfMin = RAFFINEMENT.get('PAS_MINI')
-    nbPtsRaf = RAFFINEMENT.get('NB_POINTS')
-    l_freq = RAFFINEMENT.get('LIST_RAFFINE')
+    dfMin = RAFFINEMENT.get("PAS_MINI")
+    nbPtsRaf = RAFFINEMENT.get("NB_POINTS")
+    l_freq = RAFFINEMENT.get("LIST_RAFFINE")
 
     # Si le nombre d'amortissements donnés est inférieur au nombre de fréquences données
     # dans LIST_RAFFINE, les amortissements des fréquences supplémentaires sont
@@ -93,13 +93,12 @@ def defi_list_freq_ops(self, **args):
                 df = 2 * l_amor[i] * l_freq[i]
             else:
                 df = 0.01 * l_freq[i]
-        elif RAFFINEMENT.get('CRITERE') == 'RELATIF':
+        elif RAFFINEMENT.get("CRITERE") == "RELATIF":
             df = dispersion * l_freq[i]
-        elif RAFFINEMENT.get('CRITERE') == 'ABSOLU':
+        elif RAFFINEMENT.get("CRITERE") == "ABSOLU":
             df = dispersion
 
-        ltemp = [l_freq[i] - df / 2. + j * df / (nbPtsRaf - 1)
-                 for j in range(0, nbPtsRaf)]
+        ltemp = [l_freq[i] - df / 2.0 + j * df / (nbPtsRaf - 1) for j in range(0, nbPtsRaf)]
 
         if i > 1:
             # on vérifie s'il y a un recouvrement d'intervalle
@@ -108,9 +107,8 @@ def defi_list_freq_ops(self, **args):
                 freq_imoins1 = l_freq[i - 1]
                 if haveAmor:
                     freq_i = l_freq[i] / sqrt(1 - 2 * l_amor[i] ** 2)
-                    freq_imoins1 = l_freq[i - 1] / sqrt(
-                        1 - 2 * l_amor[i - 1] ** 2)
-                UTMESS('I', 'DYNAMIQUE_26', valr=(freq_imoins1, freq_i))
+                    freq_imoins1 = l_freq[i - 1] / sqrt(1 - 2 * l_amor[i - 1] ** 2)
+                UTMESS("I", "DYNAMIQUE_26", valr=(freq_imoins1, freq_i))
 
         if haveAmor:
             # si le nombre de points à ajouter est pair :
@@ -132,14 +130,14 @@ def defi_list_freq_ops(self, **args):
     i = 1
     while i < len(l_raf):
         if (l_raf[i] - l_raf[i - 1]) < dfMin:
-            if (l_raf[i - 1] in l_freq_ok and l_raf[i] not in l_freq_ok):
+            if l_raf[i - 1] in l_freq_ok and l_raf[i] not in l_freq_ok:
                 l_raf.remove(l_raf[i])
                 i -= 1
-            elif (l_raf[i] in l_freq_ok and l_raf[i - 1] not in l_freq_ok):
+            elif l_raf[i] in l_freq_ok and l_raf[i - 1] not in l_freq_ok:
                 l_raf.remove(l_raf[i - 1])
                 i -= 1
-            elif (l_raf[i] in l_freq_ok and l_raf[i - 1] in l_freq_ok):
-                UTMESS('I', 'DYNAMIQUE_27', valr=(l_raf[i - 1], l_raf[i]))
+            elif l_raf[i] in l_freq_ok and l_raf[i - 1] in l_freq_ok:
+                UTMESS("I", "DYNAMIQUE_27", valr=(l_raf[i - 1], l_raf[i]))
             else:
                 l_raf.remove(l_raf[i])
                 i -= 1

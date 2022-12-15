@@ -23,30 +23,41 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEFI_MODELE_GENE=OPER(nom="DEFI_MODELE_GENE",op= 126,sd_prod=modele_gene,
-                      reentrant='n',
-            fr=tr("Créer la structure globale à partir des sous-structures en sous-structuration dynamique"),
-         SOUS_STRUC      =FACT(statut='o',max='**',
-           NOM             =SIMP(statut='o',typ='TXM' ),
-           MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna ),
-           ANGL_NAUT       =SIMP(statut='o',typ='R',max=3),
-           TRANS           =SIMP(statut='o',typ='R',max=3),
-         ),
-         LIAISON         =FACT(statut='o',max='**',
-           SOUS_STRUC_1    =SIMP(statut='o',typ='TXM' ),
-           INTERFACE_1     =SIMP(statut='o',typ='TXM' ),
-           SOUS_STRUC_2    =SIMP(statut='o',typ='TXM' ),
-           INTERFACE_2     =SIMP(statut='o',typ='TXM' ),
-           regles=(EXCLUS('GROUP_MA_MAIT_1','GROUP_MA_MAIT_2',),),
-           GROUP_MA_MAIT_1   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           GROUP_MA_MAIT_2   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           OPTION            =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("REDUIT","CLASSIQUE") ),
-         ),
-         VERIF           =FACT(statut='f',max='**',
-#  dans la doc U stop_erreur est obligatoire
-           STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
-           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-         ),
-         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-)  ;
+DEFI_MODELE_GENE = OPER(
+    nom="DEFI_MODELE_GENE",
+    op=126,
+    sd_prod=modele_gene,
+    reentrant="n",
+    fr=tr(
+        "Créer la structure globale à partir des sous-structures en sous-structuration dynamique"
+    ),
+    SOUS_STRUC=FACT(
+        statut="o",
+        max="**",
+        NOM=SIMP(statut="o", typ="TXM"),
+        MACR_ELEM_DYNA=SIMP(statut="o", typ=macr_elem_dyna),
+        ANGL_NAUT=SIMP(statut="o", typ="R", max=3),
+        TRANS=SIMP(statut="o", typ="R", max=3),
+    ),
+    LIAISON=FACT(
+        statut="o",
+        max="**",
+        SOUS_STRUC_1=SIMP(statut="o", typ="TXM"),
+        INTERFACE_1=SIMP(statut="o", typ="TXM"),
+        SOUS_STRUC_2=SIMP(statut="o", typ="TXM"),
+        INTERFACE_2=SIMP(statut="o", typ="TXM"),
+        regles=(EXCLUS("GROUP_MA_MAIT_1", "GROUP_MA_MAIT_2"),),
+        GROUP_MA_MAIT_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_MA_MAIT_2=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        OPTION=SIMP(statut="f", typ="TXM", defaut="CLASSIQUE", into=("REDUIT", "CLASSIQUE")),
+    ),
+    VERIF=FACT(
+        statut="f",
+        max="**",
+        #  dans la doc U stop_erreur est obligatoire
+        STOP_ERREUR=SIMP(statut="f", typ="TXM", defaut="OUI", into=("OUI", "NON")),
+        PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-3),
+        CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+    ),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+)

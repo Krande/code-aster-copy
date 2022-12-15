@@ -21,18 +21,27 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-NUME_DDL = MACRO(nom="NUME_DDL",
-                 op=OPS("code_aster.MacroCommands.nume_ddl_ops.nume_ddl_ops"),
-                 sd_prod=nume_ddl_sdaster, reentrant='n',
-                 fr=tr(
-                     "Etablissement de la numérotation des ddl avec ou sans renumérotation et du stockage de la matrice"),
-                 regles=(UN_PARMI('MATR_RIGI', 'MODELE'),),
-                 MATR_RIGI=SIMP(statut='f', validators=NoRepeat(), max=100,
-                                typ=(matr_elem_depl_r, matr_elem_depl_c, matr_elem_temp_r, matr_elem_pres_c)),
-                 MODELE=SIMP(statut='f', typ=modele_sdaster),
-                 b_modele=BLOC(condition="""exists("MODELE")""",
-                               CHARGE=SIMP(statut='f', validators=NoRepeat(),
-                                           max='**', typ=(char_meca, char_ther, char_acou, ),),
-                               ),
-                 INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),
-                 )
+NUME_DDL = MACRO(
+    nom="NUME_DDL",
+    op=OPS("code_aster.MacroCommands.nume_ddl_ops.nume_ddl_ops"),
+    sd_prod=nume_ddl_sdaster,
+    reentrant="n",
+    fr=tr(
+        "Etablissement de la numérotation des ddl avec ou sans renumérotation et du stockage de la matrice"
+    ),
+    regles=(UN_PARMI("MATR_RIGI", "MODELE"),),
+    MATR_RIGI=SIMP(
+        statut="f",
+        validators=NoRepeat(),
+        max=100,
+        typ=(matr_elem_depl_r, matr_elem_depl_c, matr_elem_temp_r, matr_elem_pres_c),
+    ),
+    MODELE=SIMP(statut="f", typ=modele_sdaster),
+    b_modele=BLOC(
+        condition="""exists("MODELE")""",
+        CHARGE=SIMP(
+            statut="f", validators=NoRepeat(), max="**", typ=(char_meca, char_ther, char_acou)
+        ),
+    ),
+    INFO=SIMP(statut="f", typ="I", into=(1, 2), defaut=1),
+)

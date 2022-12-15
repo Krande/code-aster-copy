@@ -17,449 +17,400 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM=('CALCULEL4_24'),
-)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("CALCULEL4_24"))
 
 # MODELISATIONS LINEIQUES ET DISCRETS
-MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",    UNITE=20 )
+MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
-MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( GROUP_MA = 'POU1',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_E'
-                            ),
-                          _F( GROUP_MA = 'POU2',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_T'
-                            ),
-                          _F( GROUP_MA = 'POU3',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_T'
-                            ),
-                          _F( GROUP_MA = 'POU4',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_TG'
-                            ),
-                          _F( GROUP_MA = 'POU5',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_T_GD'
-                            ),
-                          _F( GROUP_MA = 'POU6',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_EM'
-                            ),
-                          _F( GROUP_MA = 'POU7',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'POU_D_TGM'
-                            ),
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(
+        _F(GROUP_MA="POU1", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+        _F(GROUP_MA="POU2", PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),
+        _F(GROUP_MA="POU3", PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),
+        _F(GROUP_MA="POU4", PHENOMENE="MECANIQUE", MODELISATION="POU_D_TG"),
+        _F(GROUP_MA="POU5", PHENOMENE="MECANIQUE", MODELISATION="POU_D_T_GD"),
+        _F(GROUP_MA="POU6", PHENOMENE="MECANIQUE", MODELISATION="POU_D_EM"),
+        _F(GROUP_MA="POU7", PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM"),
+        _F(GROUP_MA=("DISN1", "DISL1"), PHENOMENE="MECANIQUE", MODELISATION="DIS_T"),
+        _F(GROUP_MA=("DISN2", "DISL2"), PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+        _F(GROUP_MA=("TUY31",), PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M"),
+        _F(GROUP_MA="TUY32", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_6M"),
+    ),
+)
 
-                          _F( GROUP_MA = ('DISN1','DISL1',),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DIS_T'
-                            ),
-                          _F( GROUP_MA = ('DISN2','DISL2'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'DIS_TR'
-                            ),
-
-                          _F( GROUP_MA = ('TUY31',
-                          ),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'TUYAU_3M'
-                            ),
-                          _F( GROUP_MA = 'TUY32',
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'TUYAU_6M'
-                            ),
-                         ),
-                  )
-
-GF=DEFI_GEOM_FIBRE( INFO=1,
-                    FIBRE = (_F(GROUP_FIBRE='SBET',
-                                COOR_AXE_POUTRE = (0.,0.,),
-                                VALE =( 0., 0., 0.1256,),
-                               ),
-                             ),
-                   )
-
+GF = DEFI_GEOM_FIBRE(
+    INFO=1, FIBRE=(_F(GROUP_FIBRE="SBET", COOR_AXE_POUTRE=(0.0, 0.0), VALE=(0.0, 0.0, 0.1256)),)
+)
 
 
 #
-CARAELEM=AFFE_CARA_ELEM(INFO=2,
-                      MODELE=MODELE,
-                      POUTRE=(_F(GROUP_MA=('POU1','POU2','POU3','POU4','POU5','POU6','POU7',
-                                         'TUY31','TUY32',),
-                                 SECTION='CERCLE',
-                                 CARA= 'R',VALE=0.20,
-                                 ),
-                             ),
-
-                      DISCRET=(_F(GROUP_MA = 'DISN1',
-                                  CARA='K_T_D_N',
-                                  VALE=(1.0,1.0,1.0),
-                                 ),
-                               _F(GROUP_MA = 'DISN2',
-                                  CARA='K_TR_D_N',
-                                  VALE=(1.0,1.0,1.0,1.0,1.0,1.0),
-                                 ),
-                               _F(GROUP_MA = 'DISL1',
-                                  CARA='K_T_D_L',
-                                  VALE=(1.0,1.0,1.0),
-                                 ),
-                               _F(GROUP_MA = 'DISL2',
-                                  CARA='K_TR_D_L',
-                                  VALE=(1.0,1.0,1.0,1.0,1.0,1.0),
-                                 ),
-                              ),
-
-                      ORIENTATION=(_F(GROUP_MA=('POU1','POU2','POU3','POU4','POU5','POU6','POU7'),
-                                     CARA='ANGL_VRIL',
-                                     VALE=90.0,),
-                                   _F(GROUP_MA=('DISL1','DISL2',),
-                                     CARA='ANGL_VRIL',
-                                     VALE=-90.0,),
-                                   _F(GROUP_NO='N010',
-                                     #GROUP_MA=('TUY31','TUY32',),
-                                     CARA='GENE_TUYAU',
-                                     VALE=(0.,0.,1.)),
-                                   _F(GROUP_MA=('DISN1','DISN2',),
-                                     CARA='ANGL_NAUT',
-                                     VALE=(90,-90.0,90.0)),
-                                  ),
-                      GEOM_FIBRE=GF,
-                      MULTIFIBRE=(_F( GROUP_MA=('POU6','POU7'),   PREC_AIRE=6.0E-04, PREC_INERTIE=1.1, GROUP_FIBRE=('SBET',)  ),  )
+CARAELEM = AFFE_CARA_ELEM(
+    INFO=2,
+    MODELE=MODELE,
+    POUTRE=(
+        _F(
+            GROUP_MA=("POU1", "POU2", "POU3", "POU4", "POU5", "POU6", "POU7", "TUY31", "TUY32"),
+            SECTION="CERCLE",
+            CARA="R",
+            VALE=0.20,
+        ),
+    ),
+    DISCRET=(
+        _F(GROUP_MA="DISN1", CARA="K_T_D_N", VALE=(1.0, 1.0, 1.0)),
+        _F(GROUP_MA="DISN2", CARA="K_TR_D_N", VALE=(1.0, 1.0, 1.0, 1.0, 1.0, 1.0)),
+        _F(GROUP_MA="DISL1", CARA="K_T_D_L", VALE=(1.0, 1.0, 1.0)),
+        _F(GROUP_MA="DISL2", CARA="K_TR_D_L", VALE=(1.0, 1.0, 1.0, 1.0, 1.0, 1.0)),
+    ),
+    ORIENTATION=(
+        _F(
+            GROUP_MA=("POU1", "POU2", "POU3", "POU4", "POU5", "POU6", "POU7"),
+            CARA="ANGL_VRIL",
+            VALE=90.0,
+        ),
+        _F(GROUP_MA=("DISL1", "DISL2"), CARA="ANGL_VRIL", VALE=-90.0),
+        _F(
+            GROUP_NO="N010",
+            # GROUP_MA=('TUY31','TUY32',),
+            CARA="GENE_TUYAU",
+            VALE=(0.0, 0.0, 1.0),
+        ),
+        _F(GROUP_MA=("DISN1", "DISN2"), CARA="ANGL_NAUT", VALE=(90, -90.0, 90.0)),
+    ),
+    GEOM_FIBRE=GF,
+    MULTIFIBRE=(
+        _F(GROUP_MA=("POU6", "POU7"), PREC_AIRE=6.0e-04, PREC_INERTIE=1.1, GROUP_FIBRE=("SBET",)),
+    ),
 )
 
-IMPR_CONCEPT(FORMAT="RESULTAT",
-             CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='ELEM',MODELE=MODELE
-                      ))
+IMPR_CONCEPT(FORMAT="RESULTAT", CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE))
 
 
-DEFI_FICHIER(UNITE=82, FICHIER='./fort.82', TYPE = 'BINARY')
+DEFI_FICHIER(UNITE=82, FICHIER="./fort.82", TYPE="BINARY")
 
-IMPR_CONCEPT(FORMAT='MED',UNITE=82,
-             CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='ELEM',MODELE=MODELE
-                      ))
+IMPR_CONCEPT(
+    FORMAT="MED", UNITE=82, CONCEPT=_F(CARA_ELEM=CARAELEM, REPERE_LOCAL="ELEM", MODELE=MODELE)
+)
 
 
-DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
+DEFI_FICHIER(UNITE=82, ACTION="LIBERER")
 
 REPLO_1 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000004.REPLO_1',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000004.REPLO_1",
+    NOM_CMP_IDEM="OUI",
+)
 REPLO_2 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000004.REPLO_2',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000004.REPLO_2",
+    NOM_CMP_IDEM="OUI",
+)
 REPLO_3 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 82,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODELE,
-                      NOM_MED     = '00000004.REPLO_3',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=82,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODELE,
+    NOM_MED="00000004.REPLO_3",
+    NOM_CMP_IDEM="OUI",
+)
 
 # VECTEUR x local
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='POU1',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='POU3',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='POU5',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='POU7',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DISL1',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='TUY32',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_1,
-                        GROUP_MA='DISN2',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=1.0E0,
-                        VALE_REFE=1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="POU1",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="POU3",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="POU5",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="POU7",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DISL1",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="TUY32",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_1,
+            GROUP_MA="DISN2",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
 # VECTEUR y local
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='POU2',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=1.0E0,
-                        VALE_REFE=1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='POU4',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=1.0E0,
-                        VALE_REFE=1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='POU6',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=1.0E0,
-                        VALE_REFE=1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='DISL2',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=-1.0E0,
-                        VALE_REFE=-1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='TUY31',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=-0.707106781186E0,
-                        VALE_REFE=-0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLO_2,
-                        GROUP_MA='DISN1',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=-1.0E0,
-                        VALE_REFE=-1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="POU2",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="POU4",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="POU6",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=1.0e0,
+            VALE_REFE=1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="DISL2",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=-1.0e0,
+            VALE_REFE=-1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="TUY31",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=-0.707106781186e0,
+            VALE_REFE=-0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLO_2,
+            GROUP_MA="DISN1",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=-1.0e0,
+            VALE_REFE=-1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
 # ON TEST LES TUYAUX SUR SEG4 A PART, CAR INCOMPATIBLE AVEC LES TUYAUX SEG3
 
 
-
-MODTUY4=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( GROUP_MA = ('TUY41'),
-                              PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'TUYAU_3M'
-                            ),
-                         ),
-                  )
-
+MODTUY4 = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    AFFE=(_F(GROUP_MA=("TUY41"), PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M"),),
+)
 
 
 #
-CARATUY4=AFFE_CARA_ELEM(INFO=2,
-                      MODELE=MODTUY4,
-                      POUTRE=(_F(GROUP_MA=('TUY41'),
-                                 SECTION='CERCLE',
-                                 CARA= 'R',VALE=0.20,
-                                 ),
-                             ),
-                      ORIENTATION=(
-                                   _F(GROUP_NO='N014',
-                                      CARA='GENE_TUYAU',
-                                     VALE=(0.,0.,1.)),
-                                  ),
-                         )
+CARATUY4 = AFFE_CARA_ELEM(
+    INFO=2,
+    MODELE=MODTUY4,
+    POUTRE=(_F(GROUP_MA=("TUY41"), SECTION="CERCLE", CARA="R", VALE=0.20),),
+    ORIENTATION=(_F(GROUP_NO="N014", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0)),),
+)
 
-IMPR_CONCEPT(FORMAT="RESULTAT",
-             CONCEPT=_F(CARA_ELEM=CARATUY4,REPERE_LOCAL='ELEM',MODELE=MODTUY4,
-                       ))
+IMPR_CONCEPT(FORMAT="RESULTAT", CONCEPT=_F(CARA_ELEM=CARATUY4, REPERE_LOCAL="ELEM", MODELE=MODTUY4))
 
 
-DEFI_FICHIER(UNITE=83, FICHIER='./fort.83', TYPE = 'BINARY')
+DEFI_FICHIER(UNITE=83, FICHIER="./fort.83", TYPE="BINARY")
 
-IMPR_CONCEPT(FORMAT='MED',UNITE=83,
-             CONCEPT=_F(CARA_ELEM=CARATUY4,REPERE_LOCAL='ELEM',MODELE=MODTUY4,
-                      ))
+IMPR_CONCEPT(
+    FORMAT="MED", UNITE=83, CONCEPT=_F(CARA_ELEM=CARATUY4, REPERE_LOCAL="ELEM", MODELE=MODTUY4)
+)
 
 
-DEFI_FICHIER(UNITE=83, ACTION='LIBERER')
+DEFI_FICHIER(UNITE=83, ACTION="LIBERER")
 
 REPLTU1 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 83,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODTUY4,
-                      NOM_MED     = '00000009.REPLO_1',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=83,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODTUY4,
+    NOM_MED="00000009.REPLO_1",
+    NOM_CMP_IDEM="OUI",
+)
 REPLTU2 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 83,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODTUY4,
-                      NOM_MED     = '00000009.REPLO_2',
-                      NOM_CMP_IDEM='OUI',
-                     )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=83,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODTUY4,
+    NOM_MED="00000009.REPLO_2",
+    NOM_CMP_IDEM="OUI",
+)
 REPLTU3 = LIRE_CHAMP(
-                      TYPE_CHAM   = 'ELEM_GEOM_R',
-                      UNITE       = 83,
-                      NUME_PT     = 0,
-                      NUME_ORDRE  = 0,
-                      MAILLAGE    = MAILLAGE,
-                      MODELE      = MODTUY4,
-                      NOM_MED     = '00000009.REPLO_3',
-                      NOM_CMP_IDEM='OUI',
-                     )
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLTU1,
-                        GROUP_MA='TUY41',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLTU1,
-                        GROUP_MA='TUY41',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+    TYPE_CHAM="ELEM_GEOM_R",
+    UNITE=83,
+    NUME_PT=0,
+    NUME_ORDRE=0,
+    MAILLAGE=MAILLAGE,
+    MODELE=MODTUY4,
+    NOM_MED="00000009.REPLO_3",
+    NOM_CMP_IDEM="OUI",
+)
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLTU1,
+            GROUP_MA="TUY41",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLTU1,
+            GROUP_MA="TUY41",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLTU2,
-                        GROUP_MA='TUY41',
-                        POINT= 1,
-                        NOM_CMP = 'X',
-                        VALE_CALC=0.707106781186E0,
-                        VALE_REFE=0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                      _F(
-                        CHAM_GD = REPLTU2,
-                        GROUP_MA='TUY41',
-                        POINT= 1,
-                        NOM_CMP = 'Y',
-                        VALE_CALC=-0.707106781186E0,
-                        VALE_REFE=-0.707106781186E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
-                    ),
-         )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLTU2,
+            GROUP_MA="TUY41",
+            POINT=1,
+            NOM_CMP="X",
+            VALE_CALC=0.707106781186e0,
+            VALE_REFE=0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+        _F(
+            CHAM_GD=REPLTU2,
+            GROUP_MA="TUY41",
+            POINT=1,
+            NOM_CMP="Y",
+            VALE_CALC=-0.707106781186e0,
+            VALE_REFE=-0.707106781186e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
-TEST_RESU(CHAM_ELEM=(_F(
-                        CHAM_GD = REPLTU3,
-                        GROUP_MA='TUY41',
-                        POINT= 1,
-                        NOM_CMP = 'Z',
-                        VALE_CALC=-1.0E0,
-                        VALE_REFE=-1.0E0,
-                        REFERENCE = 'ANALYTIQUE',
-                        PRECISION = 1.E-8
-                       ),
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            CHAM_GD=REPLTU3,
+            GROUP_MA="TUY41",
+            POINT=1,
+            NOM_CMP="Z",
+            VALE_CALC=-1.0e0,
+            VALE_REFE=-1.0e0,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=1.0e-8,
+        ),
+    )
+)
 
-                    ),
-         )
 
+MAILLAGE = MODI_MAILLAGE(
+    reuse=MAILLAGE, MAILLAGE=MAILLAGE, ABSC_CURV=_F(GROUP_MA="TUY41", GROUP_NO_ORIG=("N017",))
+)
 
-MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
-                       MAILLAGE=MAILLAGE,
-                       ABSC_CURV=_F(GROUP_MA='TUY41',
-                       GROUP_NO_ORIG=('N017',),),
-                      )
+CHABSC = CREA_CHAMP(
+    OPERATION="EXTR", TYPE_CHAM="CART_ABSC_R", NOM_CHAM="ABSC_CURV", MAILLAGE=MAILLAGE
+)
 
-CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
-                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAILLAGE , )
-
-TEST_RESU(CARTE=_F(CHAM_GD=CHABSC, GROUP_MA='TUY41', REFERENCE='ANALYTIQUE',
-                   NOM_CMP='ABSC4',  VALE_REFE=1.4142135623730954,   VALE_CALC= 1.4142135623730954 ))
-
+TEST_RESU(
+    CARTE=_F(
+        CHAM_GD=CHABSC,
+        GROUP_MA="TUY41",
+        REFERENCE="ANALYTIQUE",
+        NOM_CMP="ABSC4",
+        VALE_REFE=1.4142135623730954,
+        VALE_CALC=1.4142135623730954,
+    )
+)
 
 
 FIN()

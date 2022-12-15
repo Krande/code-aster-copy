@@ -32,9 +32,9 @@ static long ISUND = LONG_MAX;
 #endif
 
 #ifdef ASTER_HAVE_64_BITS
-static int R8UND[2] = { 0x00000000, 0x7ff80000 };
+static int R8UND[2] = {0x00000000, 0x7ff80000};
 #else
-static long R8UND[2] = { 0x00000000, 0x7ff80000 };
+static long R8UND[2] = {0x00000000, 0x7ff80000};
 #endif
 
 /* entier max, réel max, réel min, précision en réel simple et double */
@@ -143,16 +143,18 @@ ASTERDOUBLE DEF0( R8T0, r8t0 ) { return (ASTERDOUBLE)R8_T0; }
 ASTERDOUBLE DEF0( R8PI, r8pi ) { return (ASTERDOUBLE)R8_PI; }
 
 /* -------------------------------------------------- VALXEM 2PI*/
-ASTERDOUBLE DEF0( R8DEPI, r8depi ) { return (ASTERDOUBLE)( (ASTERDOUBLE)2. * (ASTERDOUBLE)R8_PI ); }
+ASTERDOUBLE DEF0( R8DEPI, r8depi ) {
+    return ( ASTERDOUBLE )( (ASTERDOUBLE)2. * (ASTERDOUBLE)R8_PI );
+}
 
 /* ------------------------------------------------- VALXEM DGRD*/
 ASTERDOUBLE DEF0( R8DGRD, r8dgrd ) {
-    return (ASTERDOUBLE)( (ASTERDOUBLE)R8_PI / (ASTERDOUBLE)180. );
+    return ( ASTERDOUBLE )( (ASTERDOUBLE)R8_PI / (ASTERDOUBLE)180. );
 }
 
 /* ------------------------------------------------- VALXEM RDDG*/
 ASTERDOUBLE DEF0( R8RDDG, r8rddg ) {
-    return (ASTERDOUBLE)( (ASTERDOUBLE)180. / (ASTERDOUBLE)R8_PI );
+    return ( ASTERDOUBLE )( (ASTERDOUBLE)180. / (ASTERDOUBLE)R8_PI );
 }
 
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */

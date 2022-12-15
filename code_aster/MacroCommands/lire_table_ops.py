@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,21 +32,20 @@ from .Utils.TableReader import TableReaderFactory, unique_parameters
 
 
 def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, **args):
-    """Méthode corps de la macro LIRE_TABLE
-    """
+    """Méthode corps de la macro LIRE_TABLE"""
 
-    RENOMME_PARA = args.get('RENOMME_PARA')
-    TITRE = args.get('TITRE')
-    INFO = args.get('INFO')
+    RENOMME_PARA = args.get("RENOMME_PARA")
+    TITRE = args.get("TITRE")
+    INFO = args.get("INFO")
 
     # On importe les definitions des commandes a utiliser dans la macro
 
     # Lecture de la table dans un fichier d unité logique UNITE
     nomfich = LogicalUnitFile.filename_from_unit(UNITE)
     if not osp.isfile(nomfich):
-        UTMESS('F', 'FONCT0_41', valk=nomfich)
+        UTMESS("F", "FONCT0_41", valk=nomfich)
 
-    with open(nomfich, 'r') as f:
+    with open(nomfich, "r") as f:
         texte = f.read()
 
     check_para = None
@@ -57,17 +56,16 @@ def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, **args):
     try:
         tab = reader.read(NUME_TABLE, check_para=check_para)
     except TypeError as exc:
-        UTMESS('F', 'TABLE0_45', valk=str(exc))
+        UTMESS("F", "TABLE0_45", valk=str(exc))
     except AsterError:
         raise
 
-    UTMESS('I', 'TABLE0_44', valk=("", tab.titr),
-           vali=(len(tab.rows), len(tab.para)))
+    UTMESS("I", "TABLE0_44", valk=("", tab.titr), vali=(len(tab.rows), len(tab.para)))
 
     # création de la table ASTER :
     motscles = tab.dict_CREA_TABLE()
     if TITRE:
-        motscles['TITRE'] = TITRE
+        motscles["TITRE"] = TITRE
     ut_tab = CREA_TABLE(**motscles)
 
     return ut_tab

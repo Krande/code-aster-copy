@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,53 +28,52 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-fsin = FORMULE(NOM_PARA='INST', VALE='sin(INST)')
+fsin = FORMULE(NOM_PARA="INST", VALE="sin(INST)")
 
 with test.assertRaises(RuntimeError):
     fsin.setContext(None)
 
-test.assertSequenceEqual(fsin.getVariables(), ['INST', ])
-test.assertEqual(fsin.getExpression(), 'sin(INST)')
+test.assertSequenceEqual(fsin.getVariables(), ["INST"])
+test.assertEqual(fsin.getExpression(), "sin(INST)")
 test.assertTrue("sin" in fsin.getContext())
 test.assertTrue("pow" in fsin.getContext())
 
 prop = fsin.getProperties()
-test.assertEqual(prop[1:5], ['INTERPRE', '', 'TOUTRESU', 'II'])
+test.assertEqual(prop[1:5], ["INTERPRE", "", "TOUTRESU", "II"])
 
-test.assertEqual(fsin(0.), 0.)
-test.assertAlmostEqual(fsin(pi / 6.), 0.5)
-test.assertEqual(fsin(pi / 2.), 1.)
+test.assertEqual(fsin(0.0), 0.0)
+test.assertAlmostEqual(fsin(pi / 6.0), 0.5)
+test.assertEqual(fsin(pi / 2.0), 1.0)
 
 n = 12
-valx = numpy.arange(n) * 2. * pi / n
+valx = numpy.arange(n) * 2.0 * pi / n
 
-ftest = CALC_FONC_INTERP(FONCTION=fsin,
-                         VALE_PARA=valx)
+ftest = CALC_FONC_INTERP(FONCTION=fsin, VALE_PARA=valx)
 ftest.debugPrint()
 
-test.assertEqual(ftest(0.), 0.)
-test.assertAlmostEqual(ftest(pi / 6.), 0.5)
-test.assertEqual(ftest(pi / 2.), 1.)
+test.assertEqual(ftest(0.0), 0.0)
+test.assertAlmostEqual(ftest(pi / 6.0), 0.5)
+test.assertEqual(ftest(pi / 2.0), 1.0)
 
 # check for formula with context
-f2x = FORMULE(NOM_PARA='INST', VALE='cst * INST', cst=2)
-test.assertEqual(f2x(2.5), 5.)
+f2x = FORMULE(NOM_PARA="INST", VALE="cst * INST", cst=2)
+test.assertEqual(f2x(2.5), 5.0)
 
-fsin2 = FORMULE(NOM_PARA='INST', VALE='fsin(INST)**2', fsin=fsin)
-test.assertEqual(fsin2(0.), 0.)
-test.assertAlmostEqual(fsin2(pi / 6.), 0.25)
-test.assertEqual(fsin2(pi / 2.), 1.)
+fsin2 = FORMULE(NOM_PARA="INST", VALE="fsin(INST)**2", fsin=fsin)
+test.assertEqual(fsin2(0.0), 0.0)
+test.assertAlmostEqual(fsin2(pi / 6.0), 0.25)
+test.assertEqual(fsin2(pi / 2.0), 1.0)
 
 
 def fcos2(var):
     """Cosinus"""
     return cos(var) ** 2
 
-fone = FORMULE(NOM_PARA='INST', VALE='fsin2(INST) + fcos2(INST)',
-               fsin2=fsin2, fcos2=fcos2)
-test.assertEqual(fone(0.), 1.)
-test.assertEqual(fone(pi / 6.), 1.)
-test.assertEqual(fone(12.3456), 1.)
+
+fone = FORMULE(NOM_PARA="INST", VALE="fsin2(INST) + fcos2(INST)", fsin2=fsin2, fcos2=fcos2)
+test.assertEqual(fone(0.0), 1.0)
+test.assertEqual(fone(pi / 6.0), 1.0)
+test.assertEqual(fone(12.3456), 1.0)
 
 test.printSummary()
 

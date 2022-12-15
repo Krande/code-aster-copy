@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,44 +23,48 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PCONTPR = InputParameter(
+    phys=PHY.SIEF_R,
+    container="RESU!SIEF_ELGA!N",
+    comment="""  PCONTRR : CONTRAINTES INSTANT ACTUEL """,
+)
 
 
-PCONTPR  = InputParameter(phys=PHY.SIEF_R, container='RESU!SIEF_ELGA!N',
-comment="""  PCONTRR : CONTRAINTES INSTANT ACTUEL """)
+PVARIPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="RESU!VARI_ELGA!N",
+    comment="""  PVARIPR : VARIABLES INTERNES AUX POINTS DE GAUSS """,
+)
 
 
-PVARIPR  = InputParameter(phys=PHY.VARI_R, container='RESU!VARI_ELGA!N',
-comment="""  PVARIPR : VARIABLES INTERNES AUX POINTS DE GAUSS """)
+PCOMPOR = InputParameter(
+    phys=PHY.COMPOR, container="RESU!COMPORTEMENT!N", comment=""" PCOMPOR  :  COMPORTEMENT """
+)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR, container='RESU!COMPORTEMENT!N',
-comment=""" PCOMPOR  :  COMPORTEMENT """)
-
-
-PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
-comment="""  PVARCPR : TEMPERATURES INSTANT ACTUEL """)
+PVARCPR = InputParameter(
+    phys=PHY.VARI_R,
+    container="VOLA!&&CCPARA.VARI_INT_N",
+    comment="""  PVARCPR : TEMPERATURES INSTANT ACTUEL """,
+)
 
 
 # ======================================================================
-#  Option utilisée dans CALC_GP 
+#  Option utilisée dans CALC_GP
 # ======================================================================
 ENTR_ELEM = Option(
     para_in=(
         SP.PCACOQU,
-           PCOMPOR,
-           PCONTPR,
+        PCOMPOR,
+        PCONTPR,
         SP.PDEPLR,
         SP.PGEOMER,
         SP.PMATERC,
-           PVARCPR,
+        PVARCPR,
         SP.PVARCRR,
-           PVARIPR,
+        PVARIPR,
     ),
-    para_out=(
-        SP.PENTRD1,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_out=(SP.PENTRD1,),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
     comment="""  ENTR_ELEM : ENERGIE ELASTIQUE MODIFIEE PAR ELEMENT (TRACTION)""",
 )

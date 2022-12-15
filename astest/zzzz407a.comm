@@ -20,25 +20,30 @@
 from code_aster.Commands import *
 from code_aster import AsterError
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ),
-      ERREUR=_F(ERREUR_F='EXCEPTION',))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), ERREUR=_F(ERREUR_F="EXCEPTION"))
 
 import aster
 from code_aster.Messages import MessageLog
 import re
-fmt_raison='-'*80+"""
+
+fmt_raison = (
+    "-" * 80
+    + """
 
    Exception interceptee
    Raison : %s
 
-"""+'-'*80+'\n'
+"""
+    + "-" * 80
+    + "\n"
+)
 
 
 # Lecture des maillages
-MA=LIRE_MAILLAGE(UNITE=20, FORMAT='ASTER',)
+MA = LIRE_MAILLAGE(UNITE=20, FORMAT="ASTER")
 #
-MSec22a=LIRE_MAILLAGE(UNITE=22, FORMAT='ASTER',)  # Pas la bonne section caractéristiques <=0
-MSec22b=LIRE_MAILLAGE(UNITE=82, FORMAT='MED',)    # La bonne section
+MSec22a = LIRE_MAILLAGE(UNITE=22, FORMAT="ASTER")  # Pas la bonne section caractéristiques <=0
+MSec22b = LIRE_MAILLAGE(UNITE=82, FORMAT="MED")  # La bonne section
 
 is_11 = 0
 is_12 = 0
@@ -46,13 +51,15 @@ is_13 = 0
 is_86 = 0
 #
 # Alarmes  POUTRE0_12 et POUTRE0_13
-TSec22b=MACR_CARA_POUTRE(
-    MAILLAGE=MSec22b, TABLE_CARA='OUI', GROUP_MA_BORD='Bord', NOM='TAB22b', GROUP_NO='N1',)
+TSec22b = MACR_CARA_POUTRE(
+    MAILLAGE=MSec22b, TABLE_CARA="OUI", GROUP_MA_BORD="Bord", NOM="TAB22b", GROUP_NO="N1"
+)
 #
 # POUTRE0_11  doit être émise ou pas suivant la machine
 try:
-    TSec22a=MACR_CARA_POUTRE(
-        MAILLAGE=MSec22a, TABLE_CARA='OUI', GROUP_MA_BORD='BORDLIB', NOM='TAB22a', GROUP_NO='N1',)
+    TSec22a = MACR_CARA_POUTRE(
+        MAILLAGE=MSec22a, TABLE_CARA="OUI", GROUP_MA_BORD="BORDLIB", NOM="TAB22a", GROUP_NO="N1"
+    )
 except AsterError as err:
     print(fmt_raison % str(err))
 
@@ -63,28 +70,29 @@ except AsterError as err:
 # ==================================================================================================
 # Utilisation des sections pour vérification du déplacement et de la rotation
 #
-MODELE=AFFE_MODELE(MAILLAGE=MA,
-    AFFE=_F(GROUP_MA=('GrSect22',), PHENOMENE='MECANIQUE', MODELISATION='POU_D_TGM',),)
+MODELE = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(GROUP_MA=("GrSect22",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_TGM")
+)
 #
 # --------------------------------------------------------------------------------------------------
 # cas n°1 : on ne tourne pas et on ne déplace pas la section
-GF_1=DEFI_GEOM_FIBRE(
+GF_1 = DEFI_GEOM_FIBRE(
     SECTION=(
-        _F(GROUP_FIBRE='GrFib22', TOUT_SECT='OUI', MAILLAGE_SECT=MSec22b,
-           COOR_AXE_POUTRE = (0.0, 0.0),
+        _F(
+            GROUP_FIBRE="GrFib22",
+            TOUT_SECT="OUI",
+            MAILLAGE_SECT=MSec22b,
+            COOR_AXE_POUTRE=(0.0, 0.0),
         ),
-    ),
+    )
 )
 # On se fait arrêter par "MODELISA8_6" car dans GF_1 la section n'est pas dans le repère principal
 try:
-    CARA1=AFFE_CARA_ELEM(
+    CARA1 = AFFE_CARA_ELEM(
         MODELE=MODELE,
         GEOM_FIBRE=GF_1,
-        POUTRE=(
-            _F(SECTION='GENERALE', GROUP_MA='GrSect22', TABLE_CARA=TSec22b, NOM_SEC='TAB22b',),),
-        MULTIFIBRE=(
-            _F(GROUP_FIBRE='GrFib22', GROUP_MA = ('GrSect22',),),
-        ),
+        POUTRE=(_F(SECTION="GENERALE", GROUP_MA="GrSect22", TABLE_CARA=TSec22b, NOM_SEC="TAB22b"),),
+        MULTIFIBRE=(_F(GROUP_FIBRE="GrFib22", GROUP_MA=("GrSect22",)),),
     )
 except AsterError as err:
     print(fmt_raison % str(err))
@@ -97,54 +105,77 @@ except AsterError as err:
 # Alarme POUTRE0_13
 infos = MessageLog.get_info_alarm()
 for alr in infos:
-    if (alr[0] == 'POUTRE0_12'): is_12 = alr[1]
-    if (alr[0] == 'POUTRE0_13'): is_13 = alr[1]
+    if alr[0] == "POUTRE0_12":
+        is_12 = alr[1]
+    if alr[0] == "POUTRE0_13":
+        is_13 = alr[1]
 
 #
 # --------------------------------------------------------------------------------------------------
 # cas n°2 : on tourne et on déplace la section
-GF_2=DEFI_GEOM_FIBRE(
+GF_2 = DEFI_GEOM_FIBRE(
     SECTION=(
-        _F(GROUP_FIBRE='GrFib22', TOUT_SECT='OUI', MAILLAGE_SECT=MSec22b,
-           COOR_AXE_POUTRE = (0.0, 6.532536e-02), ANGLE=-90.0,
+        _F(
+            GROUP_FIBRE="GrFib22",
+            TOUT_SECT="OUI",
+            MAILLAGE_SECT=MSec22b,
+            COOR_AXE_POUTRE=(0.0, 6.532536e-02),
+            ANGLE=-90.0,
         ),
-    ),
+    )
 )
 # Ca passe car tout est bien fait dans GF_2
-CARA2=AFFE_CARA_ELEM(
+CARA2 = AFFE_CARA_ELEM(
     MODELE=MODELE,
     GEOM_FIBRE=GF_2,
-    POUTRE=(
-        _F(SECTION='GENERALE', GROUP_MA='GrSect22', TABLE_CARA=TSec22b, NOM_SEC='TAB22b',),),
-    MULTIFIBRE=(
-        _F(GROUP_FIBRE='GrFib22', GROUP_MA = ('GrSect22',),),
-    ),
+    POUTRE=(_F(SECTION="GENERALE", GROUP_MA="GrSect22", TABLE_CARA=TSec22b, NOM_SEC="TAB22b"),),
+    MULTIFIBRE=(_F(GROUP_FIBRE="GrFib22", GROUP_MA=("GrSect22",)),),
 )
 
 #
 # ==================================================================================================
 # TEST_RESU
-TAB1=CREA_TABLE(
+TAB1 = CREA_TABLE(
     LISTE=(
-        _F(PARA='TEST',TYPE_K='K8',LISTE_K=('VAL11','VAL13','VAL12','VAL86'),),
-        _F(PARA='BOOLEEN',LISTE_I=(is_11,is_13,is_12,is_86 ),),
-    ),
+        _F(PARA="TEST", TYPE_K="K8", LISTE_K=("VAL11", "VAL13", "VAL12", "VAL86")),
+        _F(PARA="BOOLEEN", LISTE_I=(is_11, is_13, is_12, is_86)),
+    )
 )
 
-TEST_TABLE(TABLE=TAB1,
-    REFERENCE='ANALYTIQUE', VALE_CALC_I=is_11, VALE_REFE_I=is_11, NOM_PARA='BOOLEEN',
-    FILTRE=_F(NOM_PARA='TEST', VALE_K='VAL11',), )
+TEST_TABLE(
+    TABLE=TAB1,
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=is_11,
+    VALE_REFE_I=is_11,
+    NOM_PARA="BOOLEEN",
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VAL11"),
+)
 
-TEST_TABLE(TABLE=TAB1,
-    REFERENCE='ANALYTIQUE', VALE_CALC_I=is_12, VALE_REFE_I=is_12, NOM_PARA='BOOLEEN',
-    FILTRE=_F(NOM_PARA='TEST', VALE_K='VAL12',), )
+TEST_TABLE(
+    TABLE=TAB1,
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=is_12,
+    VALE_REFE_I=is_12,
+    NOM_PARA="BOOLEEN",
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VAL12"),
+)
 
-TEST_TABLE(TABLE=TAB1,
-    REFERENCE='ANALYTIQUE', VALE_CALC_I=is_13, VALE_REFE_I=is_13, NOM_PARA='BOOLEEN',
-    FILTRE=_F(NOM_PARA='TEST', VALE_K='VAL13',), )
+TEST_TABLE(
+    TABLE=TAB1,
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=is_13,
+    VALE_REFE_I=is_13,
+    NOM_PARA="BOOLEEN",
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VAL13"),
+)
 
-TEST_TABLE(TABLE=TAB1,
-    REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA='BOOLEEN',
-    FILTRE=_F(NOM_PARA='TEST', VALE_K='VAL86',), )
+TEST_TABLE(
+    TABLE=TAB1,
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VAL86"),
+)
 
 FIN()

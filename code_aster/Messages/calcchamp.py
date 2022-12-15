@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  Le champ %(k1)s est déjà présent dans la structure de données
  à tous les instants demandés.
  Aucun calcul ne sera donc réalisé pour cette option.
@@ -31,59 +31,67 @@ cata_msg = {
 Conseil :
  Si vous souhaitez réellement calculer à nouveau cette option,
  créez une nouvelle structure de données.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
  L'option %(k1)s nécessaire au calcul de l'option %(k2)s est
  manquante dans les structures de données résultat %(k3)s et
  %(k4)s pour le numéro d'ordre %(i1)d.
 
  Le calcul de cette option n'est donc pas possible.
  L'option demandée n'est calculable sur les éléments du modèle.
-"""),
-
-    3 : _("""L'utilisation de COEF_MULT n'est permise qu'avec des éléments de poutre."""),
-
-4 : _("""
+"""
+    ),
+    3: _("""L'utilisation de COEF_MULT n'est permise qu'avec des éléments de poutre."""),
+    4: _(
+        """
 Les contributions de l'amortissement liées à la vitesse pour les
 réactions nodales sont négligées dans la version actuelle du code.
-"""),
-
-5: _("""
+"""
+    ),
+    5: _(
+        """
 La récupération des chargements concernant le résultat %(k1)s n'est actuellement pas possible.
 Code_Aster ne peut donc pas vérifier la cohérence des chargements.
 
 Conseil : Si vous utilisez une commande avec une option qui nécessite la redéfinition des chargements,
 il faut vérifier la cohérence des chargements.
-"""),
-
-6: _("""
+"""
+    ),
+    6: _(
+        """
 Le mot clef EXCIT de la commande n'est pas renseigné et la récupération des chargements concernant
 le résultat %(k1)s n'est actuellement pas possible.
 
 Conseil : Il faut renseigner le mot clef EXCIT de la commande CALC_CHAMP,
-"""),
-
-7 : _("""
+"""
+    ),
+    7: _(
+        """
 Le champ STRX_ELGA n'est pas possible sur une modélisation XFEM.
-"""),
-
-8 : _("""Il y a des chargements pilotées dans le résultat, mais on ne peut pas récupérer la valeur du coefficient de pilotage."""),
-
-19 : _("""
+"""
+    ),
+    8: _(
+        """Il y a des chargements pilotées dans le résultat, mais on ne peut pas récupérer la valeur du coefficient de pilotage."""
+    ),
+    19: _(
+        """
 Problème lors de l'appel de l'option %(k1)s.
 
 Contactez le support technique.
-"""),
-
-
-23: _("""Le modèle doit être le même sur tous les pas de temps pour ce post-traitement.
-      Conseil : il faut séparer le post-traitement en le découpant pour garder le même modèle"""),
-
-24: _("""Le chargement doit être le même sur tous les pas de temps pour ce post-traitement.
-      Conseil : il faut séparer le post-traitement en le découpant pour garder le même chargement"""),
-
-89: _("""
+"""
+    ),
+    23: _(
+        """Le modèle doit être le même sur tous les pas de temps pour ce post-traitement.
+      Conseil : il faut séparer le post-traitement en le découpant pour garder le même modèle"""
+    ),
+    24: _(
+        """Le chargement doit être le même sur tous les pas de temps pour ce post-traitement.
+      Conseil : il faut séparer le post-traitement en le découpant pour garder le même chargement"""
+    ),
+    89: _(
+        """
  Le champ  %(k1)s  n'a pas pu être calculé.
  Risques & conseils :
    * Si le champ est un champ par éléments, c'est que le calcul élémentaire n'est pas disponible
@@ -94,6 +102,6 @@ Contactez le support technique.
      n'existe pas sur les éléments spécifiés.
      Par exemple, le calcul de SIGM_NOEU sur les éléments de bord est impossible.
 
-"""),
-
+"""
+    ),
 }

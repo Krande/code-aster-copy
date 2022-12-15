@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,8 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 CHAR_ACOU_VFAC_C = Option(
-    para_in=(
-        SP.PGEOMER,
-        SP.PMATERC,
-        SP.PVITEFC,
-    ),
-    para_out=(
-        SP.PVECTTC,
-    ),
-    condition=(
-        CondCalcul('+', ((AT.PHENO, 'AC'), (AT.BORD, '-1'),)),
-    ),
+    para_in=(SP.PGEOMER, SP.PMATERC, SP.PVITEFC),
+    para_out=(SP.PVECTTC,),
+    condition=(CondCalcul("+", ((AT.PHENO, "AC"), (AT.BORD, "-1"))),),
     comment=""" Elementary vector of right-hand side for load VITE_FACE (acoustic, complex)""",
 )

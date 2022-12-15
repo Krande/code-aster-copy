@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,89 +39,87 @@ Le fichier de paramètres contient les variables suivantes :
 import code_aster
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 import os
 
-fpara = 'fort.70'
-unite_in    = 71
-unite_out   = 72
+fpara = "fort.70"
+unite_in = 71
+unite_out = 72
 
 # -----------------------------------------------------------------------------
 # version de Code_Aster
 from code_aster.Utilities import get_version
+
 vers = get_version()
 
 # -----------------------------------------------------------------------------
 # lecture du fichier de paramètres
 if os.path.exists(fpara):
-   s_para = open(fpara, 'r').read()
-   print(("""
+    s_para = open(fpara, "r").read()
+    print(
+        (
+            """
 # ========================================= #
 #           FICHIER DE PARAMETRES           #
 
 %s
 # ========================================= #
-""" % s_para))
-   exec(compile(open(fpara).read(), fpara, 'exec'))
+"""
+            % s_para
+        )
+    )
+    exec(compile(open(fpara).read(), fpara, "exec"))
 else:
-   raise code_aster.AsterError(""" <meshtool> File not found : %s
-            It should have been created by meshtool script...""" % fpara)
+    raise code_aster.AsterError(
+        """ <meshtool> File not found : %s
+            It should have been created by meshtool script..."""
+        % fpara
+    )
 
 # -----------------------------------------------------------------------------
 unite_mail = 20
-if format_in in ('aster', 'med'):
-   # lecture directe du fichier IN
-   unite_mail = unite_in
+if format_in in ("aster", "med"):
+    # lecture directe du fichier IN
+    unite_mail = unite_in
 
 # -----------------------------------------------------------------------------
 # conversion du maillage
-if format_in == 'gibi':
-   PRE_GIBI(UNITE_GIBI=unite_in,
-            UNITE_MAILLAGE=unite_mail)
-elif format_in == 'gmsh':
-   PRE_GMSH(UNITE_GMSH=unite_in,
-            UNITE_MAILLAGE=unite_mail)
-elif format_in == 'ideas':
-   PRE_IDEAS(UNITE_IDEAS=unite_in,
-             UNITE_MAILLAGE=unite_mail)
+if format_in == "gibi":
+    PRE_GIBI(UNITE_GIBI=unite_in, UNITE_MAILLAGE=unite_mail)
+elif format_in == "gmsh":
+    PRE_GMSH(UNITE_GMSH=unite_in, UNITE_MAILLAGE=unite_mail)
+elif format_in == "ideas":
+    PRE_IDEAS(UNITE_IDEAS=unite_in, UNITE_MAILLAGE=unite_mail)
 
 # -----------------------------------------------------------------------------
 # lecture directe
-if format_in == 'med':
-   ma = LIRE_MAILLAGE(UNITE=unite_mail,
-                      FORMAT='MED',
-                      INFO=info_cmd)
+if format_in == "med":
+    ma = LIRE_MAILLAGE(UNITE=unite_mail, FORMAT="MED", INFO=info_cmd)
 else:
-   ma = LIRE_MAILLAGE(INFO=1,
-                      FORMAT='ASTER',
-                      UNITE=71,)
+    ma = LIRE_MAILLAGE(INFO=1, FORMAT="ASTER", UNITE=71)
 
 # -----------------------------------------------------------------------------
 # sortie du maillage
 if format_out == "gibi":
-   format_out = "castem"
+    format_out = "castem"
 format_out = format_out.upper()
 
-IMPR_RESU(FORMAT=format_out,
-          UNITE=unite_out,
-          RESU=_F(MAILLAGE=ma),
-          INFO=info_cmd)
+IMPR_RESU(FORMAT=format_out, UNITE=unite_out, RESU=_F(MAILLAGE=ma), INFO=info_cmd)
 
 # -----------------------------------------------------------------------------
 # analyse du maillage par homard
-code_aster.onFatalError('EXCEPTION')
+code_aster.onFatalError("EXCEPTION")
 if info_mail:
     # options
-    opts_info_mail = { 'LANGUE' : lang }
-    opts_info_mail['ELEMENTS_ACCEPTES'] = 'IGNORE_PYRA'
+    opts_info_mail = {"LANGUE": lang}
+    opts_info_mail["ELEMENTS_ACCEPTES"] = "IGNORE_PYRA"
     try:
-        MACR_INFO_MAIL(MAILLAGE=ma,
-                       **opts_info_mail)
+        MACR_INFO_MAIL(MAILLAGE=ma, **opts_info_mail)
     except code_aster.AsterError as msg:
         print("""Erreur lors de l'appel à HOMARD...""")
         print(msg)
 
-code_aster.onFatalError('ABORT')
+code_aster.onFatalError("ABORT")
 
 FIN()

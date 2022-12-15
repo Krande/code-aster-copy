@@ -60,5 +60,6 @@ class FullResultStateBuilder(ResultStateBuilder):
 @injector(FullResult)
 class ExtentedFullResult:
     """Object for FullResult."""
+
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = FullResultStateBuilder

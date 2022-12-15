@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class MeshCreator(ExecuteCommand):
     """Command that creates mesh."""
+
     command_name = "CREA_MAILLAGE"
 
     def create_result(self, keywords):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'KIT_HHM',
-    lc_type        = ('KIT_THM',),
-    doc            =   """KIT associé au comportement des milieux poreux (modélisations thermo-hydro-mécanique).
+    nom="KIT_HHM",
+    lc_type=("KIT_THM",),
+    doc="""KIT associé au comportement des milieux poreux (modélisations thermo-hydro-mécanique).
    Pour plus de détails sur les modélisations thermo-hydro-mécaniques et les modèles de comportement,
    on pourra consulter les documents [R7.01.10] et [R7.01.11], ainsi que la notice d'utilisation [U2.04.05].
    Les relations KIT_XXXX permettent de résoudre simultanément de deux à quatre équations d'équilibre.
@@ -40,19 +40,28 @@ loi = LoiComportement(
    un composant (en pratique de l'eau), mais que ce composant peut être sous forme liquide ou vapeur.
    Il n'y a alors qu'une équation de conservation de ce composant, donc un seul degré de liberté pression,
    mais il y a un flux liquide et un flux vapeur.
-   """              ,
-    num_lc         = 0,
-    nb_vari        = 0,
-    nom_vari       = None,
-    mc_mater       = None,
-    modelisation   = ('D_PLAN_HHM','D_PLAN_HHMS','D_PLAN_HHMD','AXIS_HHM','AXIS_HHMS',
-        'AXIS_HHMD','3D_HHM','3D_HHMS','3D_HHMD',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('SANS_OBJET',),
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   """,
+    num_lc=0,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=None,
+    modelisation=(
+        "D_PLAN_HHM",
+        "D_PLAN_HHMS",
+        "D_PLAN_HHMD",
+        "AXIS_HHM",
+        "AXIS_HHMS",
+        "AXIS_HHMD",
+        "3D_HHM",
+        "3D_HHMS",
+        "3D_HHMD",
+    ),
+    deformation=("PETIT",),
+    algo_inte=("SANS_OBJET",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

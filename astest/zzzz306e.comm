@@ -17,11 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-              IGNORE_ALARM=('MODELISA4_1',))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("MODELISA4_1",))
 # MODELISA4_1 : le maillage est forme de 2 pyramides disjointes
 
-#----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
 # L'OBJECTIF DE CE TEST EST DE VALIDER LA PROGRAMMATION DES ROUTINES
 # ECLA2D.F ET ECLA3D.F POUR TOUS LES SCHEMAS DE POINTS DE GAUSS DISPONIBLES.
 #
@@ -32,263 +31,206 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 #   PYRAMIDE / FPG5
 #   PYRAMIDE / FPG27
 #
-#----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
 
-MA1 = LIRE_MAILLAGE(FORMAT="ASTER", )
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MA1,  LINE_QUAD=_F(GROUP_MA='M2',),);
+MA1 = LIRE_MAILLAGE(FORMAT="ASTER")
+MAILLAGE = CREA_MAILLAGE(MAILLAGE=MA1, LINE_QUAD=_F(GROUP_MA="M2"))
 
-MODELE   = AFFE_MODELE(  MAILLAGE =    MAILLAGE, INFO=2,
-           AFFE=(
-              _F( GROUP_MA='M1', PHENOMENE = 'MECANIQUE', MODELISATION = '3D', ),
-              _F( GROUP_MA='M2', PHENOMENE = 'MECANIQUE', MODELISATION = '3D', ),
-          ))
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE,
+    INFO=2,
+    AFFE=(
+        _F(GROUP_MA="M1", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="M2", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+    ),
+)
 
-SIGXX = FORMULE(VALE='2.*(X+0.2) +5.*(Y+1.2)*(Y+1.2)  +7.3*(Z+1.85)',
-                NOM_PARA=['X', 'Y', 'Z'],)
-CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR',
-                MAILLAGE=MAILLAGE, NOM_CHAM='GEOMETRIE',);
-CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R', OPERATION='DISC',
-                MODELE=MODELE, CHAM_GD=CHXN,);
+SIGXX = FORMULE(VALE="2.*(X+0.2) +5.*(Y+1.2)*(Y+1.2)  +7.3*(Z+1.85)", NOM_PARA=["X", "Y", "Z"])
+CHXN = CREA_CHAMP(
+    TYPE_CHAM="NOEU_GEOM_R", OPERATION="EXTR", MAILLAGE=MAILLAGE, NOM_CHAM="GEOMETRIE"
+)
+CHXG = CREA_CHAMP(TYPE_CHAM="ELGA_GEOM_R", OPERATION="DISC", MODELE=MODELE, CHAM_GD=CHXN)
 
-SIEFINI1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F', OPERATION='AFFE', MODELE=MODELE, PROL_ZERO='OUI',
-                    AFFE=_F(TOUT='OUI', NOM_CMP=('X1',), VALE_F=(SIGXX,),),);
+SIEFINI1 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_NEUT_F",
+    OPERATION="AFFE",
+    MODELE=MODELE,
+    PROL_ZERO="OUI",
+    AFFE=_F(TOUT="OUI", NOM_CMP=("X1",), VALE_F=(SIGXX,)),
+)
 
-SIEFINI2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R', OPERATION='EVAL', CHAM_F=SIEFINI1, CHAM_PARA=CHXG,);
+SIEFINI2 = CREA_CHAMP(TYPE_CHAM="ELGA_NEUT_R", OPERATION="EVAL", CHAM_F=SIEFINI1, CHAM_PARA=CHXG)
 
-CH1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='ASSE', MODELE=MODELE, PROL_ZERO='OUI',
-                    ASSE=_F(TOUT='OUI', CHAM_GD=SIEFINI2, NOM_CMP=('X1',), NOM_CMP_RESU=('SIXX',),),);
+CH1 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=MODELE,
+    PROL_ZERO="OUI",
+    ASSE=_F(TOUT="OUI", CHAM_GD=SIEFINI2, NOM_CMP=("X1",), NOM_CMP_RESU=("SIXX",)),
+)
 
-CH2=PROJ_CHAMP(CHAM_GD=CH1,MODELE_1=MODELE, MODELE_2=MODELE,METHODE='ECLA_PG', DISTANCE_ALARME=1.e-1)
+CH2 = PROJ_CHAMP(
+    CHAM_GD=CH1, MODELE_1=MODELE, MODELE_2=MODELE, METHODE="ECLA_PG", DISTANCE_ALARME=1.0e-1
+)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=CH1,NOM_CMP='SIXX',),)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=CH2,NOM_CMP='SIXX',),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=CH1, NOM_CMP="SIXX"))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=CH2, NOM_CMP="SIXX"))
 
 
 # 1.1 TEST_RESU POUR PYRAMIDE / FPG5 :
-#---------------------------------------
-TEST_RESU(CHAM_ELEM=(_F(
-                        POINT=1,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M1',
-                        CHAM_GD=CH1,
-                        VALE_CALC=23.223180539316999,),
-                     _F(
-                        POINT=2,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M1',
-                        CHAM_GD=CH1,
-                        VALE_CALC=29.473180539316999,),
-                     _F(
-                        POINT=3,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M1',
-                        CHAM_GD=CH1,
-                        VALE_CALC=21.223180539316999,),
-                     _F(
-                        POINT=4,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M1',
-                        CHAM_GD=CH1,
-                        VALE_CALC=17.473180539316999,),
-                     _F(
-                        POINT=5,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M1',
-                        CHAM_GD=CH1,
-                        VALE_CALC=25.757277842731,),
-                     ),
-          )
+# ---------------------------------------
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(POINT=1, NOM_CMP="SIXX", GROUP_MA="M1", CHAM_GD=CH1, VALE_CALC=23.223180539316999),
+        _F(POINT=2, NOM_CMP="SIXX", GROUP_MA="M1", CHAM_GD=CH1, VALE_CALC=29.473180539316999),
+        _F(POINT=3, NOM_CMP="SIXX", GROUP_MA="M1", CHAM_GD=CH1, VALE_CALC=21.223180539316999),
+        _F(POINT=4, NOM_CMP="SIXX", GROUP_MA="M1", CHAM_GD=CH1, VALE_CALC=17.473180539316999),
+        _F(POINT=5, NOM_CMP="SIXX", GROUP_MA="M1", CHAM_GD=CH1, VALE_CALC=25.757277842731),
+    )
+)
 
-TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
-                        POINT=1,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M1',
-                        CHAM_GD=CH2,
-                        VALE_CALC=23.2231805393,
-                        VALE_REFE=23.223180539316999,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=2,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M1',
-                        CHAM_GD=CH2,
-                        VALE_CALC=29.4731805393,
-                        VALE_REFE=29.473180539316999,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=3,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M1',
-                        CHAM_GD=CH2,
-                        VALE_CALC=21.2231805393,
-                        VALE_REFE=21.223180539316999,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=4,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M1',
-                        CHAM_GD=CH2,
-                        VALE_CALC=17.4731805393,
-                        VALE_REFE=17.473180539316999,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=5,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M1',
-                        CHAM_GD=CH2,
-                        VALE_CALC=25.7572778427,
-                        VALE_REFE=25.757277842731,),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M1",
+            CHAM_GD=CH2,
+            VALE_CALC=23.2231805393,
+            VALE_REFE=23.223180539316999,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=2,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M1",
+            CHAM_GD=CH2,
+            VALE_CALC=29.4731805393,
+            VALE_REFE=29.473180539316999,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=3,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M1",
+            CHAM_GD=CH2,
+            VALE_CALC=21.2231805393,
+            VALE_REFE=21.223180539316999,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=4,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M1",
+            CHAM_GD=CH2,
+            VALE_CALC=17.4731805393,
+            VALE_REFE=17.473180539316999,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=5,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M1",
+            CHAM_GD=CH2,
+            VALE_CALC=25.7572778427,
+            VALE_REFE=25.757277842731,
+        ),
+    )
+)
 
 # 1.2 TEST_RESU POUR PYRAMIDE / FPG10 :
-#---------------------------------------
-TEST_RESU(CHAM_ELEM=(
-                     _F(
-                        POINT=1,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=46.05171928451398,),
-                     _F(
-                        POINT=2,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=34.675578478204585,),
-                     _F(
-                        POINT=3,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=37.3074464667106,),
-                     _F(
-                        POINT=4,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=30.26051135347789,),
-                     _F(
-                        POINT=5,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=43.14154563852399,),
-                     _F(
-                        POINT=6,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=34.03340384902838,),
-                     _F(
-                        POINT=7,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=41.8403825257389,),
-                     _F(
-                        POINT=8,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=35.334566961813465,),
-                     _F(
-                        POINT=9,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=36.618499757626005,),
-                     _F(
-                        POINT=10,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH1,
-                        VALE_CALC=40.648799358854355,),
-                        )
-          )
+# ---------------------------------------
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(POINT=1, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=46.05171928451398),
+        _F(POINT=2, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=34.675578478204585),
+        _F(POINT=3, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=37.3074464667106),
+        _F(POINT=4, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=30.26051135347789),
+        _F(POINT=5, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=43.14154563852399),
+        _F(POINT=6, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=34.03340384902838),
+        _F(POINT=7, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=41.8403825257389),
+        _F(POINT=8, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=35.334566961813465),
+        _F(POINT=9, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=36.618499757626005),
+        _F(POINT=10, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH1, VALE_CALC=40.648799358854355),
+    )
+)
 
 # 1.2.1 Pour les points 1, 2, 3, 4, 10 on doit trouver ce qu'ils portaient "avant"
-TEST_RESU(CHAM_ELEM=(_F(REFERENCE='AUTRE_ASTER',
-                        POINT=1,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=46.05171928451398,
-                        VALE_REFE=46.05171928451398,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=2,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=34.675578478204585,
-                        VALE_REFE=34.675578478204585,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=3,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=37.3074464667106,
-                        VALE_REFE=37.3074464667106,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=4,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=30.26051135347789,
-                        VALE_REFE=30.26051135347789,),
-                     _F(REFERENCE='AUTRE_ASTER',
-                        POINT=10,
-                        NOM_CMP='SIXX',
-                        PRECISION=1.0000000000000001E-09,
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=40.648799358854355,
-                        VALE_REFE=40.648799358854355,),
-                    )
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=1,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M2",
+            CHAM_GD=CH2,
+            VALE_CALC=46.05171928451398,
+            VALE_REFE=46.05171928451398,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=2,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M2",
+            CHAM_GD=CH2,
+            VALE_CALC=34.675578478204585,
+            VALE_REFE=34.675578478204585,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=3,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M2",
+            CHAM_GD=CH2,
+            VALE_CALC=37.3074464667106,
+            VALE_REFE=37.3074464667106,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=4,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M2",
+            CHAM_GD=CH2,
+            VALE_CALC=30.26051135347789,
+            VALE_REFE=30.26051135347789,
+        ),
+        _F(
+            REFERENCE="AUTRE_ASTER",
+            POINT=10,
+            NOM_CMP="SIXX",
+            PRECISION=1.0000000000000001e-09,
+            GROUP_MA="M2",
+            CHAM_GD=CH2,
+            VALE_CALC=40.648799358854355,
+            VALE_REFE=40.648799358854355,
+        ),
+    )
+)
 
 # 1.2.2 Pour les autres points on doit trouver l'une des valeurs des points :
-# 5 est sur une arete entre les mailles 1 et 2 => trouvé dans la maille 1 (point original 3)
+# 5 est sur une arete entre les mailles 1 et 2 => trouvé dans la maille 1 (point original 3)
 # 6 est sur une arete entre les mailles 3 et 4 => trouvé dans la maille 3 (point original 2)
 # 7 est sur une arete entre les mailles 2 et 3 => trouvé dans la maille 2 (point original 1)
 # 8 est sur une arete entre les mailles 1 et 4 => trouvé dans la maille 1 (point original 3)
 # 9 est sur l'arete commune entre les mailles 1, 2, 3 et 4 => trouvé dans la maille 1 (point original 3)
-TEST_RESU(CHAM_ELEM=(_F(
-                        POINT=5,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=37.307446466710594,),
-                     _F(
-                        POINT=6,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=34.675578478204585,),
-                     _F(
-                        POINT=7,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=46.05171928451397,),
-                     _F(
-                        POINT=8,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=37.3074464667106,),
-                     _F(
-                        POINT=9,
-                        NOM_CMP='SIXX',
-                        GROUP_MA='M2',
-                        CHAM_GD=CH2,
-                        VALE_CALC=37.3074464667106,),
-                     ),
-          )
+TEST_RESU(
+    CHAM_ELEM=(
+        _F(POINT=5, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH2, VALE_CALC=37.307446466710594),
+        _F(POINT=6, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH2, VALE_CALC=34.675578478204585),
+        _F(POINT=7, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH2, VALE_CALC=46.05171928451397),
+        _F(POINT=8, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH2, VALE_CALC=37.3074464667106),
+        _F(POINT=9, NOM_CMP="SIXX", GROUP_MA="M2", CHAM_GD=CH2, VALE_CALC=37.3074464667106),
+    )
+)
 
 FIN()

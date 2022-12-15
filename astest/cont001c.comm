@@ -42,12 +42,10 @@ Mail = MODI_MAILLAGE(
 
 
 MODI = AFFE_MODELE(
-    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"),
-                           PHENOMENE="MECANIQUE", MODELISATION="DKT")
+    MAILLAGE=Mail, AFFE=_F(GROUP_MA=("Haut", "Bas"), PHENOMENE="MECANIQUE", MODELISATION="DKT")
 )
 
-CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(
-    GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
+CARAMECA = AFFE_CARA_ELEM(MODELE=MODI, COQUE=_F(GROUP_MA=("Haut", "Bas"), EPAIS=0.01))
 
 DF1 = DEFI_FONCTION(
     NOM_PARA="INST",
@@ -235,8 +233,7 @@ fricParam.hasFriction = True
 test.assertTrue(fricParam.hasFriction)
 
 fricParam.setAlgorithm(code_aster.FrictionAlgo.Penalization)
-test.assertEqual(fricParam.getAlgorithm(),
-                 code_aster.FrictionAlgo.Penalization)
+test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Penalization)
 
 fricParam.setType(code_aster.FrictionType.Tresca)
 test.assertEqual(fricParam.getType(), code_aster.FrictionType.Tresca)
@@ -300,8 +297,7 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     pairParam.setDistanceRatio(0.1)
     test.assertEqual(pairParam.getDistanceRatio(), 0.1)
 
-    test.assertEqual(pairParam.getInitialState(),
-                     code_aster.InitialState.Interpenetrated)
+    test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
     pairParam.setInitialState(code_aster.InitialState.Yes)
 
 

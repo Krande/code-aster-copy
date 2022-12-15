@@ -26,25 +26,43 @@ test = code_aster.TestCase()
 
 mesh = code_aster.Mesh.buildCube()
 
-mesh = DEFI_GROUP(reuse=mesh,
-                  MAILLAGE=mesh,
-                  CREA_GROUP_NO=(
-                      _F(GROUP_MA=('TOP', 'BOTTOM')),
-                      _F(NOM='TEST', INTERSEC=('TOP', 'BOTTOM'))
-                  ))
+mesh = DEFI_GROUP(
+    reuse=mesh,
+    MAILLAGE=mesh,
+    CREA_GROUP_NO=(_F(GROUP_MA=("TOP", "BOTTOM")), _F(NOM="TEST", INTERSEC=("TOP", "BOTTOM"))),
+)
 
 gnodes = sorted(mesh.getGroupsOfNodes())
 
-gnodes_ref = sorted(['N2', 'N3', 'N4', 'N6', 'N5',
-                    'N7', 'N1', 'N8', 'TOP', 'BOTTOM'])
+gnodes_ref = sorted(["N2", "N3", "N4", "N6", "N5", "N7", "N1", "N8", "TOP", "BOTTOM"])
 
 test.assertSequenceEqual(gnodes_ref, gnodes)
 
 gcells = sorted(mesh.getGroupsOfCells())
 
-gcells_ref = sorted(['S13', 'S21', 'S51', 'S26', 'S24', 'S37', 'S34', 'S84', 'S75',
-                     'S56', 'S68', 'S78', 'BACK', 'BOTTOM', 'RIGHT', 'FRONT', 'LEFT',
-                     'TOP', 'VOLUME'])
+gcells_ref = sorted(
+    [
+        "S13",
+        "S21",
+        "S51",
+        "S26",
+        "S24",
+        "S37",
+        "S34",
+        "S84",
+        "S75",
+        "S56",
+        "S68",
+        "S78",
+        "BACK",
+        "BOTTOM",
+        "RIGHT",
+        "FRONT",
+        "LEFT",
+        "TOP",
+        "VOLUME",
+    ]
+)
 
 test.assertSequenceEqual(gcells_ref, gcells)
 

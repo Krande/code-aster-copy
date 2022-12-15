@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,110 +21,69 @@
 # MAILLAGE G2, MATERIAU M1
 #
 
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED', )
+MA = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF="OUI"), FORMAT="MED")
 
-MO=AFFE_MODELE(     MAILLAGE=MA,
-                                 AFFE=_F(  TOUT = 'OUI',
-                                        PHENOMENE = 'MECANIQUE',
-                                        MODELISATION = 'C_PLAN')
-                        )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN"))
 
 #
-MAT1=DEFI_MATERIAU(    ELAS=_F(  E = 2.E12,
-                                     NU = 0.30,
-                                     RHO = 0.,
-                                     ALPHA = 0.)
-                          )
+MAT1 = DEFI_MATERIAU(ELAS=_F(E=2.0e12, NU=0.30, RHO=0.0, ALPHA=0.0))
 
 #
-MAT2=DEFI_MATERIAU(    ELAS=_F(  E = 8.E12,
-                                     NU = 0.30,
-                                     RHO = 0.,
-                                     ALPHA = 0.)
-                          )
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=8.0e12, NU=0.30, RHO=0.0, ALPHA=0.0))
 
 #
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
-                                  _F(  GROUP_MA = 'VTOT1',
-                                        MATER = MAT1),
-                                  _F(  GROUP_MA = 'LEVR_SUP',
-                                     MATER = MAT1),
-                                  _F(  GROUP_MA = 'LPB1PA1',
-                                        MATER = MAT1),
-                                  _F(  GROUP_MA = 'VTOT2',
-                                        MATER = MAT2),
-                                  _F(  GROUP_MA = 'LEVR_INF',
-                                     MATER = MAT2),
-                                  _F(  GROUP_MA = 'LPA2PB2',
-                                        MATER = MAT2))
-                          )
+CHMAT = AFFE_MATERIAU(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA="VTOT1", MATER=MAT1),
+        _F(GROUP_MA="LEVR_SUP", MATER=MAT1),
+        _F(GROUP_MA="LPB1PA1", MATER=MAT1),
+        _F(GROUP_MA="VTOT2", MATER=MAT2),
+        _F(GROUP_MA="LEVR_INF", MATER=MAT2),
+        _F(GROUP_MA="LPA2PB2", MATER=MAT2),
+    ),
+)
 
 #
-MA=DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
-                     CREA_GROUP_NO=_F(  GROUP_MA = ( 'LPB1PA1',  'LPA2PB2',  ))
-                 )
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(GROUP_MA=("LPB1PA1", "LPA2PB2")))
 
 #
-CH=AFFE_CHAR_MECA(           MODELE=MO,DDL_IMPO=(
-                                    _F(  GROUP_NO = 'PA',
-                                               DX = 0.,
-                                               DY = 0.),
-                                             _F(  GROUP_NO = 'PB',
-                                               DY = 0.)),FORCE_CONTOUR=(
-                               _F(  GROUP_MA = 'LPB1PA1',
-                                               FY = 75.E6),
-                                             _F(  GROUP_MA = 'LPA2PB2',
-                                               FY = -75.E6))
-                           )
+CH = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(_F(GROUP_NO="PA", DX=0.0, DY=0.0), _F(GROUP_NO="PB", DY=0.0)),
+    FORCE_CONTOUR=(_F(GROUP_MA="LPB1PA1", FY=75.0e6), _F(GROUP_MA="LPA2PB2", FY=-75.0e6)),
+)
 
 #
-CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
-                              CHAM_MATER=CHMAT,
-                                   EXCIT=_F( CHARGE = CH)
-                          )
+CHAMDEPL = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CH))
 #
-FOND1=DEFI_FOND_FISS(    MAILLAGE=MA, SYME='NON',
-                            FOND_FISS=_F( GROUP_NO = ('P0',)),
-                            LEVRE_SUP=_F(GROUP_MA = 'LEVR_SUP',),
-                            LEVRE_INF=_F(GROUP_MA = 'LEVR_INF',),
-                       )
+FOND1 = DEFI_FOND_FISS(
+    MAILLAGE=MA,
+    SYME="NON",
+    FOND_FISS=_F(GROUP_NO=("P0",)),
+    LEVRE_SUP=_F(GROUP_MA="LEVR_SUP"),
+    LEVRE_INF=_F(GROUP_MA="LEVR_INF"),
+)
 
 
 #
-G0=CALC_G(         RESULTAT=CHAMDEPL,
-                   THETA=_F(
-                            R_INF=1.25E-5,
-                            FISSURE=FOND1,
-                            R_SUP=5.E-4,
-                            ),
-                   OPTION='G'
-                    )
+G0 = CALC_G(RESULTAT=CHAMDEPL, THETA=_F(R_INF=1.25e-5, FISSURE=FOND1, R_SUP=5.0e-4), OPTION="G")
 
 #
-GK01=CALC_G(       RESULTAT=CHAMDEPL,
-                   THETA=_F(   R_INF = 1.25E-5,
-                               R_SUP = 5.E-4,
-                               FISSURE=FOND1),
-                   OPTION='K'
-                      )
+GK01 = CALC_G(RESULTAT=CHAMDEPL, THETA=_F(R_INF=1.25e-5, R_SUP=5.0e-4, FISSURE=FOND1), OPTION="K")
 
 #
 # COMPARAISON AVEC LES VALEURS ISSUES DE CASTEM 2000
 #
 # Une solution analytique existe ( cf MURAKAMI case 8.20)
 
-TEST_TABLE(VALE_CALC=39.098260876,
-           NOM_PARA='G',
-           TABLE=G0,)
+TEST_TABLE(VALE_CALC=39.098260876, NOM_PARA="G", TABLE=G0)
 
 #
 
-TEST_TABLE(
-           VALE_CALC=39.0930239363,
-           NOM_PARA='G_IRWIN',
-           TABLE=GK01,)
+TEST_TABLE(VALE_CALC=39.0930239363, NOM_PARA="G_IRWIN", TABLE=GK01)
 
 #
 FIN()

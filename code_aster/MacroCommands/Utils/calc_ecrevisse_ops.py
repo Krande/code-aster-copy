@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,16 @@ from math import atan, atan2, cos, degrees, pi, radians, sin, sqrt
 import aster
 
 from ...Cata.Syntax import _F
-from ...Commands import (AFFE_CHAR_MECA_F, AFFE_CHAR_THER_F, CREA_TABLE,
-                         DEFI_FICHIER, DEFI_FONCTION, DEFI_GROUP,
-                         IMPR_TABLE, POST_RELEVE_T)
+from ...Commands import (
+    AFFE_CHAR_MECA_F,
+    AFFE_CHAR_THER_F,
+    CREA_TABLE,
+    DEFI_FICHIER,
+    DEFI_FONCTION,
+    DEFI_GROUP,
+    IMPR_TABLE,
+    POST_RELEVE_T,
+)
 from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ...Objects.table_py import Table, merge
 from ...Supervis import CO
@@ -54,10 +61,10 @@ def dirfiss(Xa, Ya, Xb, Yb):
     xeb = Xb[-1]
     yeb = Yb[-1]
 
-    xi = (xia + xib) / 2.
-    yi = (yia + yib) / 2.
-    xe = (xea + xeb) / 2.
-    ye = (yea + yeb) / 2.
+    xi = (xia + xib) / 2.0
+    yi = (yia + yib) / 2.0
+    xe = (xea + xeb) / 2.0
+    ye = (yea + yeb) / 2.0
 
     dx = xe - xi
     dy = ye - yi
@@ -65,30 +72,30 @@ def dirfiss(Xa, Ya, Xb, Yb):
     try:
         tangA = dy / dx
     except ZeroDivisionError:
-        if (dy > 0.):
-            theta = 0.
-            beta = 90.
+        if dy > 0.0:
+            theta = 0.0
+            beta = 90.0
         else:
-            theta = 180.
-            beta = -90.
+            theta = 180.0
+            beta = -90.0
     else:
         beta = atan2(dy, dx)
         beta = degrees(beta)
-        theta = 90. - beta
-        if (theta > 180.):
-            theta = theta - 360.
+        theta = 90.0 - beta
+        if theta > 180.0:
+            theta = theta - 360.0
 
-    if (abs(beta) < 45. or abs(beta) > 135.):
-        DIR_PREV = 'X'
+    if abs(beta) < 45.0 or abs(beta) > 135.0:
+        DIR_PREV = "X"
     else:
-        DIR_PREV = 'Y'
+        DIR_PREV = "Y"
 
-    if (round(abs(beta)) == 0. or round(abs(beta)) == 180.):
-        DIR_FISS = 'X'
-    elif (round(abs(beta)) == 90.):
-        DIR_FISS = 'Y'
+    if round(abs(beta)) == 0.0 or round(abs(beta)) == 180.0:
+        DIR_FISS = "X"
+    elif round(abs(beta)) == 90.0:
+        DIR_FISS = "Y"
     else:
-        DIR_FISS = 'GEN'
+        DIR_FISS = "GEN"
 
     return DIR_FISS, DIR_PREV, beta, theta, xi, yi
 
@@ -96,21 +103,17 @@ def dirfiss(Xa, Ya, Xb, Yb):
 # Determination de l ouverture de la fissure
 def ouvFiss(DIR_FISS, beta, Xa, Ya, Xb, Yb):
 
-    if DIR_FISS == 'X':
+    if DIR_FISS == "X":
         Ouv = list(map(lambda y1, y2: abs(y2 - y1), Ya, Yb))
         Gli = list(map(lambda x1, x2: abs(x2 - x1), Xa, Xb))
-    elif DIR_FISS == 'Y':
+    elif DIR_FISS == "Y":
         Ouv = list(map(lambda x1, x2: abs(x2 - x1), Xa, Xb))
         Gli = list(map(lambda y1, y2: abs(y2 - y1), Ya, Yb))
     else:
-        Xa2 = [x * cos(radians(beta)) + y * sin(radians(beta))
-               for (x, y) in zip(Xa, Ya)]
-        Ya2 = [-x * sin(radians(beta)) + y * cos(radians(beta))
-               for (x, y) in zip(Xa, Ya)]
-        Xb2 = [x * cos(radians(beta)) + y * sin(radians(beta))
-               for (x, y) in zip(Xb, Yb)]
-        Yb2 = [-x * sin(radians(beta)) + y * cos(radians(beta))
-               for (x, y) in zip(Xb, Yb)]
+        Xa2 = [x * cos(radians(beta)) + y * sin(radians(beta)) for (x, y) in zip(Xa, Ya)]
+        Ya2 = [-x * sin(radians(beta)) + y * cos(radians(beta)) for (x, y) in zip(Xa, Ya)]
+        Xb2 = [x * cos(radians(beta)) + y * sin(radians(beta)) for (x, y) in zip(Xb, Yb)]
+        Yb2 = [-x * sin(radians(beta)) + y * cos(radians(beta)) for (x, y) in zip(Xb, Yb)]
         Ouv = list(map(lambda x, y: abs(y - x), Ya2, Yb2))
         Gli = list(map(lambda x, y: abs(y - x), Xa2, Xb2))
     return Ouv, Gli
@@ -121,11 +124,10 @@ def ouvFiss(DIR_FISS, beta, Xa, Ya, Xb, Yb):
 #     dans T_EC, l'appel a ecrevisse
 def calc_ecrevisse_ops(self, **args):
     """
-        Procedure de couplage Aster-Ecrevisse
-        Recuperation du profil de la fissure , appel de MACR_ECRE_CALC,
-        creation des tableaux de resultats et des chargements pour AsterGeneration par Aster
+    Procedure de couplage Aster-Ecrevisse
+    Recuperation du profil de la fissure , appel de MACR_ECRE_CALC,
+    creation des tableaux de resultats et des chargements pour AsterGeneration par Aster
     """
-
 
     CHARGE_MECA = args.get("CHARGE_MECA")
     CHARGE_THER1 = args.get("CHARGE_THER1")
@@ -162,7 +164,7 @@ def calc_ecrevisse_ops(self, **args):
     tmp_ecrevisse = "tmp_ecrevisse"
 
     # Info
-    info2 = (INFO == 2)
+    info2 = INFO == 2
     InfoAster = 1
     if debug:
         info2 = True
@@ -191,9 +193,9 @@ def calc_ecrevisse_ops(self, **args):
             del dCONVERGENCE[i]
 
     # INSTANTS
-    _l_inst = dRESULTAT['MECANIQUE'].LIST_VARI_ACCES()
-    if 'INST' in dRESULTAT:
-        Inst_Ecrevisse = dRESULTAT['INST']
+    _l_inst = dRESULTAT["MECANIQUE"].LIST_VARI_ACCES()
+    if "INST" in dRESULTAT:
+        Inst_Ecrevisse = dRESULTAT["INST"]
     else:
         pass
 
@@ -226,97 +228,120 @@ def calc_ecrevisse_ops(self, **args):
 
         # On cree les group_no correspondant aux group_ma des levres de la
         # fissure dans le cas ou ils n'existent pas deja
-        if not dFISSURE['GROUP_MA'][0] in _lgno:
-            DEFI_GROUP(reuse=MODELE_MECA.getMesh(),
-                       MAILLAGE=MODELE_MECA.getMesh(),
-                       CREA_GROUP_NO=_F(GROUP_MA=(dFISSURE['GROUP_MA'][0]),),)
+        if not dFISSURE["GROUP_MA"][0] in _lgno:
+            DEFI_GROUP(
+                reuse=MODELE_MECA.getMesh(),
+                MAILLAGE=MODELE_MECA.getMesh(),
+                CREA_GROUP_NO=_F(GROUP_MA=(dFISSURE["GROUP_MA"][0])),
+            )
 
-        if not dFISSURE['GROUP_MA'][1] in _lgno:
-            DEFI_GROUP(reuse=MODELE_MECA.getMesh(),
-                       MAILLAGE=MODELE_MECA.getMesh(),
-                       CREA_GROUP_NO=_F(GROUP_MA=(dFISSURE['GROUP_MA'][1]),),)
+        if not dFISSURE["GROUP_MA"][1] in _lgno:
+            DEFI_GROUP(
+                reuse=MODELE_MECA.getMesh(),
+                MAILLAGE=MODELE_MECA.getMesh(),
+                CREA_GROUP_NO=_F(GROUP_MA=(dFISSURE["GROUP_MA"][1])),
+            )
 
         # Test sur le nombre de caracteres du nom des group_ma
-        if (len(dFISSURE['GROUP_MA'][0]) > 7 or len(dFISSURE['GROUP_MA'][1]) > 7):
+        if len(dFISSURE["GROUP_MA"][0]) > 7 or len(dFISSURE["GROUP_MA"][1]) > 7:
             sys.exit(1)
 
         # Creation des group_no ordonnes des levres des fissures
-        _nom_gno_1 = '_' + dFISSURE['GROUP_MA'][0]
+        _nom_gno_1 = "_" + dFISSURE["GROUP_MA"][0]
         if not _nom_gno_1 in _lgno:
-            DEFI_GROUP(reuse=MODELE_MECA.getMesh(),
-                       MAILLAGE=MODELE_MECA.getMesh(),
-                       CREA_GROUP_NO=_F(OPTION='SEGM_DROI_ORDO',
-                                        NOM=_nom_gno_1,
-                                        GROUP_NO=dFISSURE['GROUP_MA'][0],
-                                        GROUP_NO_ORIG=dFISSURE[
-                                            'GROUP_NO_ORIG'][0],
-                                        GROUP_NO_EXTR=dFISSURE[
-                                            'GROUP_NO_EXTR'][0],
-                                        PRECISION=0.01,
-                                        CRITERE='RELATIF',),
-                       INFO=InfoAster,)
+            DEFI_GROUP(
+                reuse=MODELE_MECA.getMesh(),
+                MAILLAGE=MODELE_MECA.getMesh(),
+                CREA_GROUP_NO=_F(
+                    OPTION="SEGM_DROI_ORDO",
+                    NOM=_nom_gno_1,
+                    GROUP_NO=dFISSURE["GROUP_MA"][0],
+                    GROUP_NO_ORIG=dFISSURE["GROUP_NO_ORIG"][0],
+                    GROUP_NO_EXTR=dFISSURE["GROUP_NO_EXTR"][0],
+                    PRECISION=0.01,
+                    CRITERE="RELATIF",
+                ),
+                INFO=InfoAster,
+            )
 
-        _nom_gno_2 = '_' + dFISSURE['GROUP_MA'][1]
+        _nom_gno_2 = "_" + dFISSURE["GROUP_MA"][1]
         if not _nom_gno_2 in _lgno:
-            DEFI_GROUP(reuse=MODELE_MECA.getMesh(),
-                       MAILLAGE=MODELE_MECA.getMesh(),
-                       CREA_GROUP_NO=_F(OPTION='SEGM_DROI_ORDO',
-                                        NOM=_nom_gno_2,
-                                        GROUP_NO=dFISSURE['GROUP_MA'][1],
-                                        GROUP_NO_ORIG=dFISSURE[
-                                        'GROUP_NO_ORIG'][1],
-                                        GROUP_NO_EXTR=dFISSURE[
-                                        'GROUP_NO_EXTR'][1],
-                                        PRECISION=0.01,
-                                        CRITERE='RELATIF',),
-                       INFO=InfoAster,)
+            DEFI_GROUP(
+                reuse=MODELE_MECA.getMesh(),
+                MAILLAGE=MODELE_MECA.getMesh(),
+                CREA_GROUP_NO=_F(
+                    OPTION="SEGM_DROI_ORDO",
+                    NOM=_nom_gno_2,
+                    GROUP_NO=dFISSURE["GROUP_MA"][1],
+                    GROUP_NO_ORIG=dFISSURE["GROUP_NO_ORIG"][1],
+                    GROUP_NO_EXTR=dFISSURE["GROUP_NO_EXTR"][1],
+                    PRECISION=0.01,
+                    CRITERE="RELATIF",
+                ),
+                INFO=InfoAster,
+            )
 
         # EXTRACTIONS DE QUANTITES NECESSAIRES DES RESULTATS THERMIQUE ET MECANIQUE
         #  On cree les chargements Aster --> Ecrevisse :
         #     ouverture de fissure et temperature sur le materiau
         # premiere levre de fissure
-        _T_DPL = POST_RELEVE_T(ACTION=_F(INTITULE='DEP_FIS1',
-                                         GROUP_NO=_nom_gno_1,
-                                         RESULTAT=dRESULTAT['MECANIQUE'],
-                                         NOM_CHAM='DEPL',
-                                         NOM_CMP=('DX', 'DY',),
-                               INST=Inst_Ecrevisse,
-                                         OPERATION='EXTRACTION',),
-                               )
+        _T_DPL = POST_RELEVE_T(
+            ACTION=_F(
+                INTITULE="DEP_FIS1",
+                GROUP_NO=_nom_gno_1,
+                RESULTAT=dRESULTAT["MECANIQUE"],
+                NOM_CHAM="DEPL",
+                NOM_CMP=("DX", "DY"),
+                INST=Inst_Ecrevisse,
+                OPERATION="EXTRACTION",
+            )
+        )
 
-        _T_TEMP = POST_RELEVE_T(ACTION=_F(INTITULE='TEMP_FI1',
-                                          GROUP_NO=_nom_gno_1,
-                                          RESULTAT=dRESULTAT['THERMIQUE'],
-                                          NOM_CHAM='TEMP',
-                                          TOUT_CMP='OUI',
-                                          INST=Inst_Ecrevisse,
-                                          OPERATION='EXTRACTION',),)
+        _T_TEMP = POST_RELEVE_T(
+            ACTION=_F(
+                INTITULE="TEMP_FI1",
+                GROUP_NO=_nom_gno_1,
+                RESULTAT=dRESULTAT["THERMIQUE"],
+                NOM_CHAM="TEMP",
+                TOUT_CMP="OUI",
+                INST=Inst_Ecrevisse,
+                OPERATION="EXTRACTION",
+            )
+        )
 
         # deuxieme levre de la fissure
-        _T_DPL_B = POST_RELEVE_T(ACTION=_F(INTITULE='DEP_FIS2',
-                                           GROUP_NO=_nom_gno_2,
-                                           RESULTAT=dRESULTAT['MECANIQUE'],
-                                           NOM_CHAM='DEPL',
-                                           NOM_CMP=('DX', 'DY',),
-                                           INST=Inst_Ecrevisse,
-                                           OPERATION='EXTRACTION',),)
+        _T_DPL_B = POST_RELEVE_T(
+            ACTION=_F(
+                INTITULE="DEP_FIS2",
+                GROUP_NO=_nom_gno_2,
+                RESULTAT=dRESULTAT["MECANIQUE"],
+                NOM_CHAM="DEPL",
+                NOM_CMP=("DX", "DY"),
+                INST=Inst_Ecrevisse,
+                OPERATION="EXTRACTION",
+            )
+        )
 
-        _T_TEMPB = POST_RELEVE_T(ACTION=_F(INTITULE='TEMP_FI2',
-                                           GROUP_NO=_nom_gno_2,
-                                           RESULTAT=dRESULTAT['THERMIQUE'],
-                                           NOM_CHAM='TEMP',
-                                           TOUT_CMP='OUI',
-                                           INST=Inst_Ecrevisse,
-                                           OPERATION='EXTRACTION',),)
+        _T_TEMPB = POST_RELEVE_T(
+            ACTION=_F(
+                INTITULE="TEMP_FI2",
+                GROUP_NO=_nom_gno_2,
+                RESULTAT=dRESULTAT["THERMIQUE"],
+                NOM_CHAM="TEMP",
+                TOUT_CMP="OUI",
+                INST=Inst_Ecrevisse,
+                OPERATION="EXTRACTION",
+            )
+        )
 
-        if (debug):
-            print('_T_DPL ===================================================')
+        if debug:
+            print("_T_DPL ===================================================")
             print(_T_DPL.EXTR_TABLE())
-            print('_T_DPL_B =================================================')
+            print("_T_DPL_B =================================================")
             print(_T_DPL_B.EXTR_TABLE())
-            print('_T_TEMP =================================================')
+            print("_T_TEMP =================================================")
             print(_T_TEMP.EXTR_TABLE())
-            print('_T_TEMP_B ===============================================')
+            print("_T_TEMP_B ===============================================")
             print(_T_TEMPB.EXTR_TABLE())
 
         # Extraction des tables Temperatures + deplacement levres fissure
@@ -327,247 +352,273 @@ def calc_ecrevisse_ops(self, **args):
 
         # --Determination des cotes a donner a ecrevisse--
         #   a partir des resultats mecanique et thermique :
-        _l_tang = _tbl_dpl.values()['ABSC_CURV']
-        _l_tang_b = _tbl_dpl_b.values()['ABSC_CURV']
+        _l_tang = _tbl_dpl.values()["ABSC_CURV"]
+        _l_tang_b = _tbl_dpl_b.values()["ABSC_CURV"]
         try:
             _l_absz_m = list(map(lambda x, y: 0.5 * (x + y), _l_tang, _l_tang_b))
         except TypeError:
-            UTMESS('F', 'ECREVISSE0_40')
+            UTMESS("F", "ECREVISSE0_40")
         #
-        _l_tang_t = _tbl_temp.values()['ABSC_CURV']
-        _l_tang_t_b = _tbl_temp_b.values()['ABSC_CURV']
+        _l_tang_t = _tbl_temp.values()["ABSC_CURV"]
+        _l_tang_t_b = _tbl_temp_b.values()["ABSC_CURV"]
         _l_absz_t = list(map(lambda x, y: 0.5 * (x + y), _l_tang_t, _l_tang_t_b))
 
-       # Coordonnees des points des levres (initiales et a l instant actuel
-        _X0 = _tbl_dpl.values()['COOR_X']
-        _Y0 = _tbl_dpl.values()['COOR_Y']
-        _X0_b = _tbl_dpl_b.values()['COOR_X']
-        _Y0_b = _tbl_dpl_b.values()['COOR_Y']
-        _X = [x + y for (x, y) in zip(_tbl_dpl.values()['DX'], _X0)]
-        _Y = [x + y for (x, y) in zip(_tbl_dpl.values()['DY'], _Y0)]
-        _X_b = [x + y for (x, y) in zip(_tbl_dpl_b.values()['DX'], _X0_b)]
-        _Y_b = [x + y for (x, y) in zip(_tbl_dpl_b.values()['DY'], _Y0_b)]
+        # Coordonnees des points des levres (initiales et a l instant actuel
+        _X0 = _tbl_dpl.values()["COOR_X"]
+        _Y0 = _tbl_dpl.values()["COOR_Y"]
+        _X0_b = _tbl_dpl_b.values()["COOR_X"]
+        _Y0_b = _tbl_dpl_b.values()["COOR_Y"]
+        _X = [x + y for (x, y) in zip(_tbl_dpl.values()["DX"], _X0)]
+        _Y = [x + y for (x, y) in zip(_tbl_dpl.values()["DY"], _Y0)]
+        _X_b = [x + y for (x, y) in zip(_tbl_dpl_b.values()["DX"], _X0_b)]
+        _Y_b = [x + y for (x, y) in zip(_tbl_dpl_b.values()["DY"], _Y0_b)]
 
         # Determination de la direction de la fissure
-        (DIR_FISS, DIR_PREV, beta, theta, _xi,
-         _yi) = dirfiss(_X, _Y, _X_b, _Y_b)
+        (DIR_FISS, DIR_PREV, beta, theta, _xi, _yi) = dirfiss(_X, _Y, _X_b, _Y_b)
         if oldVersion:
-            (DIR_FISS, DIR_PREV, beta, theta, _xi,
-             _yi) = dirfiss(_X0, _Y0, _X0_b, _Y0_b)
+            (DIR_FISS, DIR_PREV, beta, theta, _xi, _yi) = dirfiss(_X0, _Y0, _X0_b, _Y0_b)
 
-        if (DIR_FISS == 'GEN') and oldVersion:
-            UTMESS('F', 'ECREVISSE0_23', valr=[theta])
+        if (DIR_FISS == "GEN") and oldVersion:
+            UTMESS("F", "ECREVISSE0_23", valr=[theta])
 
         # --Calcul de l ouverture de fissure--
         #     une fissure refermee a une ouverture
         #     egale a l'ouverture remanente
         (_l_ouv0, _l_gli0) = ouvFiss(DIR_FISS, beta, _X0, _Y0, _X0_b, _Y0_b)
         for i in range(len(_l_ouv0)):
-            if _l_ouv0[i] < dFISSURE['OUVERT_REMANENTE']:
-                UTMESS('A', 'ECREVISSE0_39')
+            if _l_ouv0[i] < dFISSURE["OUVERT_REMANENTE"]:
+                UTMESS("A", "ECREVISSE0_39")
 
         (_l_ouv, _l_gli) = ouvFiss(DIR_FISS, beta, _X, _Y, _X_b, _Y_b)
-        if dFISSURE['OUVERT_REMANENTE']:
-            _l_ouv = [max(dFISSURE['OUVERT_REMANENTE'], x) for x in _l_ouv]
+        if dFISSURE["OUVERT_REMANENTE"]:
+            _l_ouv = [max(dFISSURE["OUVERT_REMANENTE"], x) for x in _l_ouv]
             if info2:
-                nbOuvRem = _l_ouv.count(dFISSURE['OUVERT_REMANENTE'])
+                nbOuvRem = _l_ouv.count(dFISSURE["OUVERT_REMANENTE"])
                 if nbOuvRem != 0:
-                    UTMESS('I', 'ECREVISSE0_41', valr=[nbOuvRem])
+                    UTMESS("I", "ECREVISSE0_41", valr=[nbOuvRem])
 
         # Controle sur l entite du glissement entre les levres
-        DeltaMaille = [abs(y - x)
-                       for (x, y) in zip(_l_absz_m[1:len(_l_absz_m)], _l_absz_m[0:len(_l_absz_m) - 1])]
+        DeltaMaille = [
+            abs(y - x)
+            for (x, y) in zip(_l_absz_m[1 : len(_l_absz_m)], _l_absz_m[0 : len(_l_absz_m) - 1])
+        ]
         for i in range(len(DeltaMaille)):
             deltamai = DeltaMaille[i]
             if (deltamai <= _l_gli[i]) or (deltamai <= _l_gli[i + 1]):
-                UTMESS('A', 'ECREVISSE0_38')
+                UTMESS("A", "ECREVISSE0_38")
                 break
 
         # -- Calcul de la temperature sur le materiau (levres de la fissure) --
         #     on fait la moyenne des temperatures des deux levres
-        _l_t2 = _tbl_temp.values()['TEMP']
-        _l_t2_b = _tbl_temp_b.values()['TEMP']
+        _l_t2 = _tbl_temp.values()["TEMP"]
+        _l_t2_b = _tbl_temp_b.values()["TEMP"]
         _l_temp_aster = list(map(lambda x, y: 0.5 * (x + y), _l_t2_b, _l_t2))
 
         # Infos / Debug : fichier .mess ou .resu
-        if (info2):
-            UTMESS('I', 'ECREVISSE0_1', valk=["Premiere levre"],
-                   valr=[Inst_Ecrevisse, min(_l_tang_t), max(_l_tang_t), min(_l_t2), max(_l_t2), min(_l_tang), max(_l_tang)])
-            UTMESS('I', 'ECREVISSE0_1', valk=["Deuxieme levre"],
-                   valr=[Inst_Ecrevisse, min(_l_tang_t_b), max(_l_tang_t_b), min(_l_t2_b), max(_l_t2_b), min(_l_tang_b), max(_l_tang_b)])
-            UTMESS('I', 'ECREVISSE0_2',
-                   valr=[Inst_Ecrevisse, min(_l_absz_t), max(_l_absz_t), min(_l_temp_aster), max(_l_temp_aster), min(_l_absz_m), max(_l_absz_m), min(_l_ouv), max(_l_ouv), min(_l_gli), max(_l_gli)])
+        if info2:
+            valr = [
+                Inst_Ecrevisse,
+                min(_l_tang_t),
+                max(_l_tang_t),
+                min(_l_t2),
+                max(_l_t2),
+                min(_l_tang),
+                max(_l_tang),
+            ]
+            UTMESS("I", "ECREVISSE0_1", valk=["Premiere levre"], valr=valr)
+            valr = [
+                Inst_Ecrevisse,
+                min(_l_tang_t_b),
+                max(_l_tang_t_b),
+                min(_l_t2_b),
+                max(_l_t2_b),
+                min(_l_tang_b),
+                max(_l_tang_b),
+            ]
+            UTMESS("I", "ECREVISSE0_1", valk=["Deuxieme levre"], valr=valr)
+            valr = [
+                Inst_Ecrevisse,
+                min(_l_absz_t),
+                max(_l_absz_t),
+                min(_l_temp_aster),
+                max(_l_temp_aster),
+                min(_l_absz_m),
+                max(_l_absz_m),
+                min(_l_ouv),
+                max(_l_ouv),
+                min(_l_gli),
+                max(_l_gli),
+            ]
+            UTMESS("I", "ECREVISSE0_2", valr=valr)
 
-        if (debug):
+        if debug:
             print("\n INFORMATIONS DE DEBUG: ")
-            print('Inst_Ecrevisse=', Inst_Ecrevisse)
-            print('theta:', theta)
-            print('beta:', beta)
-            print('DIR_FISS:', DIR_FISS)
-            print('DIR_PREV:', DIR_PREV)
-            print('point initial de la fissure: (xi,yi) :', _xi, _yi)
-            print(len(_X0),   '_X0  =', _X0)
-            print(len(_X0_b), '_X0_b=', _X0_b)
-            print(len(_Y0),   '_Y0  =', _Y0)
-            print(len(_Y0_b), '_Y0_b=', _Y0_b)
-            print(len(_X),    '_X   =', _X)
-            print(len(_Y),    '_Y   =', _Y)
-            print(len(_X_b),  '_X_b =', _X_b)
-            print(len(_Y_b),  '_Y_b =', _Y_b)
-            print('Controle sur les abszisses curvilignes (mecaniques/thermiques) ')
-            print('_l_absz_m==_l_absz_t?', _l_absz_m == _l_absz_t)
-            print('_l_absz_m=', len(_l_absz_m), _l_absz_m)
-            print('_l_absz_t=', len(_l_absz_t), _l_absz_t)
-            print('_l_temp_aster=', len(_l_temp_aster), _l_temp_aster)
-            print('_l_ouv=', len(_l_ouv), _l_ouv)
-            print('_l_gli=', len(_l_gli), _l_gli)
-            print('_l_tang=', _l_tang)
-            print('_l_tang_b=', _l_tang)
+            print("Inst_Ecrevisse=", Inst_Ecrevisse)
+            print("theta:", theta)
+            print("beta:", beta)
+            print("DIR_FISS:", DIR_FISS)
+            print("DIR_PREV:", DIR_PREV)
+            print("point initial de la fissure: (xi,yi) :", _xi, _yi)
+            print(len(_X0), "_X0  =", _X0)
+            print(len(_X0_b), "_X0_b=", _X0_b)
+            print(len(_Y0), "_Y0  =", _Y0)
+            print(len(_Y0_b), "_Y0_b=", _Y0_b)
+            print(len(_X), "_X   =", _X)
+            print(len(_Y), "_Y   =", _Y)
+            print(len(_X_b), "_X_b =", _X_b)
+            print(len(_Y_b), "_Y_b =", _Y_b)
+            print("Controle sur les abszisses curvilignes (mecaniques/thermiques) ")
+            print("_l_absz_m==_l_absz_t?", _l_absz_m == _l_absz_t)
+            print("_l_absz_m=", len(_l_absz_m), _l_absz_m)
+            print("_l_absz_t=", len(_l_absz_t), _l_absz_t)
+            print("_l_temp_aster=", len(_l_temp_aster), _l_temp_aster)
+            print("_l_ouv=", len(_l_ouv), _l_ouv)
+            print("_l_gli=", len(_l_gli), _l_gli)
+            print("_l_tang=", _l_tang)
+            print("_l_tang_b=", _l_tang)
 
-# ----------------------------------------------------------------------------
-#       PREPARATION ET LANCEMENT D ECREVISSE
+        # ----------------------------------------------------------------------------
+        #       PREPARATION ET LANCEMENT D ECREVISSE
         # TESTS de non divergence, les messages sont assez explicites :
         # Si toutes les listes sont bien definies
         if len(_l_absz_m) * len(_l_ouv) * len(_l_absz_t) * len(_l_temp_aster) == 0:
-            UTMESS('F', 'ECREVISSE0_3', valr=[Inst_Ecrevisse])
+            UTMESS("F", "ECREVISSE0_3", valr=[Inst_Ecrevisse])
             __TAB = None
             break
         # Si les ouvertures ne sont pas trop faibles
         elif min(_l_ouv) < 1e-20:
-            UTMESS('F', 'ECREVISSE0_4', valr=[Inst_Ecrevisse, min(_l_ouv)])
+            UTMESS("F", "ECREVISSE0_4", valr=[Inst_Ecrevisse, min(_l_ouv)])
             __TAB = None
             break
         elif max(_l_t2) > 700:
-            UTMESS('F', 'ECREVISSE0_5', valr=[Inst_Ecrevisse, max(_l_t2)])
+            UTMESS("F", "ECREVISSE0_5", valr=[Inst_Ecrevisse, max(_l_t2)])
             __TAB = None
             break
         elif max(_l_t2_b) > 700:
-            UTMESS('F', 'ECREVISSE0_5', valr=[Inst_Ecrevisse, max(_l_t2_b)])
+            UTMESS("F", "ECREVISSE0_5", valr=[Inst_Ecrevisse, max(_l_t2_b)])
             __TAB = None
             break
         elif min(_l_t2) < 0:
-            UTMESS('F', 'ECREVISSE0_6', valr=[Inst_Ecrevisse, min(_l_t2)])
+            UTMESS("F", "ECREVISSE0_6", valr=[Inst_Ecrevisse, min(_l_t2)])
             __TAB = None
             break
         elif min(_l_t2_b) < 0:
-            UTMESS('F', 'ECREVISSE0_6', valr=[Inst_Ecrevisse, min(_l_t2_b)])
+            UTMESS("F", "ECREVISSE0_6", valr=[Inst_Ecrevisse, min(_l_t2_b)])
             __TAB = None
             break
-        elif abs(float(dECOULEMENT['PRES_ENTREE']) - float(dECOULEMENT['PRES_SORTIE'])) < 5:
-            UTMESS('F', 'ECREVISSE0_7', valr=[Inst_Ecrevisse, abs(
-                float(dECOULEMENT['PRES_ENTREE']) - float(dECOULEMENT['PRES_SORTIE']))])
+        elif abs(float(dECOULEMENT["PRES_ENTREE"]) - float(dECOULEMENT["PRES_SORTIE"])) < 5:
+            valr = [
+                Inst_Ecrevisse,
+                abs(float(dECOULEMENT["PRES_ENTREE"]) - float(dECOULEMENT["PRES_SORTIE"])),
+            ]
+            UTMESS("F", "ECREVISSE0_7", valr=valr)
             __TAB = None
             break
         # On lance Ecrevisse!
         else:
-            UTMESS('I', 'ECREVISSE0_8', valr=[Inst_Ecrevisse])
+            UTMESS("I", "ECREVISSE0_8", valr=[Inst_Ecrevisse])
 
             # On efface le rep
             try:
                 for fic in os.listdir(os.path.join(os.getcwd(), tmp_ecrevisse)):
                     try:
-                        os.remove(
-                            os.path.join(os.getcwd(), tmp_ecrevisse) + '/' + fic)
+                        os.remove(os.path.join(os.getcwd(), tmp_ecrevisse) + "/" + fic)
                     except:
                         pass
             except:
                 pass
 
             # Recalcul des cotes par rapport a la tortuoiste
-            tort = dFISSURE['TORTUOSITE']
+            tort = dFISSURE["TORTUOSITE"]
             try:
                 _l_absz_m = [x / tort for x in _l_absz_m]
                 _l_absz_t = [x / tort for x in _l_absz_t]
             except ZeroDivisionError:
-                UTMESS('F', 'ECREVISSE0_42')
+                UTMESS("F", "ECREVISSE0_42")
 
-            if 'LISTE_COTES_BL' in dFISSURE:
-                __LISTE_COTES_BL = dFISSURE['LISTE_COTES_BL']
+            if "LISTE_COTES_BL" in dFISSURE:
+                __LISTE_COTES_BL = dFISSURE["LISTE_COTES_BL"]
             else:
-                __LISTE_COTES_BL = (0., max(_l_absz_m))
+                __LISTE_COTES_BL = (0.0, max(_l_absz_m))
 
             # Mot-cle ECOULEMENT
             txt = {}
-            txt = {'PRES_ENTREE': dECOULEMENT['PRES_ENTREE'],
-                   'PRES_SORTIE': dECOULEMENT['PRES_SORTIE'],
-                   'FLUIDE_ENTREE': dECOULEMENT['FLUIDE_ENTREE'],
-                   }
-            if int(dECOULEMENT['FLUIDE_ENTREE']) in [1, 3, 4, 6]:
-                txt['TEMP_ENTREE'] = dECOULEMENT['TEMP_ENTREE']
-            if int(dECOULEMENT['FLUIDE_ENTREE']) in [2, 5]:
-                txt['TITR_MASS'] = dECOULEMENT['TITR_MASS']
-            if int(dECOULEMENT['FLUIDE_ENTREE']) in [4, 5]:
-                txt['PRES_PART'] = dECOULEMENT['PRES_PART']
+            txt = {
+                "PRES_ENTREE": dECOULEMENT["PRES_ENTREE"],
+                "PRES_SORTIE": dECOULEMENT["PRES_SORTIE"],
+                "FLUIDE_ENTREE": dECOULEMENT["FLUIDE_ENTREE"],
+            }
+            if int(dECOULEMENT["FLUIDE_ENTREE"]) in [1, 3, 4, 6]:
+                txt["TEMP_ENTREE"] = dECOULEMENT["TEMP_ENTREE"]
+            if int(dECOULEMENT["FLUIDE_ENTREE"]) in [2, 5]:
+                txt["TITR_MASS"] = dECOULEMENT["TITR_MASS"]
+            if int(dECOULEMENT["FLUIDE_ENTREE"]) in [4, 5]:
+                txt["PRES_PART"] = dECOULEMENT["PRES_PART"]
 
             # Traitement des cas ou les mots cles reynold, xminch, etc... ne doivent pas apparaitre
             # Mot-cle MODELE_ECRE
             txt2 = {}
-            txt2['ECOULEMENT'] = dMODELE_ECRE['ECOULEMENT']
-            if dMODELE_ECRE['ECOULEMENT'] == 'GELE':
-                txt2['PRESS_EBULLITION'] = dMODELE_ECRE['PRESS_EBULLITION']
+            txt2["ECOULEMENT"] = dMODELE_ECRE["ECOULEMENT"]
+            if dMODELE_ECRE["ECOULEMENT"] == "GELE":
+                txt2["PRESS_EBULLITION"] = dMODELE_ECRE["PRESS_EBULLITION"]
 
-            txt2['FROTTEMENT'] = dMODELE_ECRE['FROTTEMENT']
+            txt2["FROTTEMENT"] = dMODELE_ECRE["FROTTEMENT"]
 
-            if int(dMODELE_ECRE['FROTTEMENT']) in [-4, -3, -2, -1]:
-                txt2['REYNOLDS_LIM'] = dMODELE_ECRE['REYNOLDS_LIM']
-                txt2['FROTTEMENT_LIM'] = dMODELE_ECRE['FROTTEMENT_LIM']
+            if int(dMODELE_ECRE["FROTTEMENT"]) in [-4, -3, -2, -1]:
+                txt2["REYNOLDS_LIM"] = dMODELE_ECRE["REYNOLDS_LIM"]
+                txt2["FROTTEMENT_LIM"] = dMODELE_ECRE["FROTTEMENT_LIM"]
 
-            txt2['TRANSFERT_CHAL'] = dMODELE_ECRE['TRANSFERT_CHAL']
-            if int(dMODELE_ECRE['TRANSFERT_CHAL']) < 0:
-                txt2['XMINCH'] = dMODELE_ECRE['XMINCH']
-                txt2['XMAXCH'] = dMODELE_ECRE['XMAXCH']
+            txt2["TRANSFERT_CHAL"] = dMODELE_ECRE["TRANSFERT_CHAL"]
+            if int(dMODELE_ECRE["TRANSFERT_CHAL"]) < 0:
+                txt2["XMINCH"] = dMODELE_ECRE["XMINCH"]
+                txt2["XMAXCH"] = dMODELE_ECRE["XMAXCH"]
 
             try:
-                if dMODELE_ECRE['IVENAC'] in [0, 1]:
-                    txt2['IVENAC'] = dMODELE_ECRE['IVENAC']
+                if dMODELE_ECRE["IVENAC"] in [0, 1]:
+                    txt2["IVENAC"] = dMODELE_ECRE["IVENAC"]
                 else:
-                    txt2['IVENAC'] = 0
+                    txt2["IVENAC"] = 0
             except:
-                txt2['IVENAC'] = 0
+                txt2["IVENAC"] = 0
 
-            motscle2 = {'ECOULEMENT': txt, 'MODELE_ECRE': txt2}
+            motscle2 = {"ECOULEMENT": txt, "MODELE_ECRE": txt2}
 
-            __TAB_i = CO('TAB2')
-            __DEB_i = CO('DEB2')
+            __TAB_i = CO("TAB2")
+            __DEB_i = CO("DEB2")
 
-            MACR_ECRE_CALC(TABLE=__TAB_i,
-                           DEBIT=__DEB_i,
-                           ENTETE=ENTETE,
-                           COURBES=COURBES,
-                           IMPRESSION=IMPRESSION,
-                           INFO=INFO,
-                           LOGICIEL=LOGICIEL,
-                           VERSION=VERSION,
-                           FISSURE=_F(LONGUEUR=max(_l_absz_m),
-                                      ANGLE=theta,
-                                      RUGOSITE=dFISSURE[
-                                      'RUGOSITE'],
-                                      ZETA=dFISSURE[
-                                      'ZETA'],
-                                      SECTION=dFISSURE[
-                                      'SECTION'],
-                                      LISTE_COTES_AH=_l_absz_m,
-                                      LISTE_VAL_AH=_l_ouv,
-                                      LISTE_COTES_BL=__LISTE_COTES_BL,
-                                      LISTE_VAL_BL=dFISSURE[
-                                      'LISTE_VAL_BL'],
-                                      ),
-                           TEMPERATURE=_F(GRADIENT='FOURNI',
-                                          LISTE_COTES_TEMP=_l_absz_t,
-                                          LISTE_VAL_TEMP=_l_temp_aster,
-                                          ),
-                           CONVERGENCE=_F(
-                               KGTEST=dCONVERGENCE['KGTEST'],
-                           ITER_GLOB_MAXI=dCONVERGENCE[
-                           'ITER_GLOB_MAXI'],
-                           CRIT_CONV_DEBI=dCONVERGENCE[
-                           'CRIT_CONV_DEBI'],
-                           ),
-                           **motscle2
-                           )
+            MACR_ECRE_CALC(
+                TABLE=__TAB_i,
+                DEBIT=__DEB_i,
+                ENTETE=ENTETE,
+                COURBES=COURBES,
+                IMPRESSION=IMPRESSION,
+                INFO=INFO,
+                LOGICIEL=LOGICIEL,
+                VERSION=VERSION,
+                FISSURE=_F(
+                    LONGUEUR=max(_l_absz_m),
+                    ANGLE=theta,
+                    RUGOSITE=dFISSURE["RUGOSITE"],
+                    ZETA=dFISSURE["ZETA"],
+                    SECTION=dFISSURE["SECTION"],
+                    LISTE_COTES_AH=_l_absz_m,
+                    LISTE_VAL_AH=_l_ouv,
+                    LISTE_COTES_BL=__LISTE_COTES_BL,
+                    LISTE_VAL_BL=dFISSURE["LISTE_VAL_BL"],
+                ),
+                TEMPERATURE=_F(
+                    GRADIENT="FOURNI", LISTE_COTES_TEMP=_l_absz_t, LISTE_VAL_TEMP=_l_temp_aster
+                ),
+                CONVERGENCE=_F(
+                    KGTEST=dCONVERGENCE["KGTEST"],
+                    ITER_GLOB_MAXI=dCONVERGENCE["ITER_GLOB_MAXI"],
+                    CRIT_CONV_DEBI=dCONVERGENCE["CRIT_CONV_DEBI"],
+                ),
+                **motscle2
+            )
 
-#-------------------------------------------------------------
-#           EXTRACTION DES RESULTATS D ECREVISSE
+            # -------------------------------------------------------------
+            #           EXTRACTION DES RESULTATS D ECREVISSE
             # Creation de la table
             __TABFISS_i = TAB2.EXTR_TABLE()
 
@@ -576,158 +627,164 @@ def calc_ecrevisse_ops(self, **args):
             # tortuosite)
             _lst_c = __TABFISS_i.COTES.values()
             _l_cotes = [x * tort for x in _lst_c]
-            dictTab = __TABFISS_i.dict_CREA_TABLE()['LISTE']
+            dictTab = __TABFISS_i.dict_CREA_TABLE()["LISTE"]
 
-            __TABFISS_i = CREA_TABLE(LISTE=(
-                _F(PARA="COTES",     LISTE_R=_l_cotes,),
-                _F(PARA="FLUX",      LISTE_R=dictTab[
-                               1]['LISTE_R'],),
-                _F(PARA="PRESSION",  LISTE_R=dictTab[
-                               2]['LISTE_R'],),
-                _F(PARA="TEMP",      LISTE_R=dictTab[
-                               3]['LISTE_R'],),
-                _F(PARA="COEF_CONV", LISTE_R=dictTab[
-                               4]['LISTE_R'],),
-            ),)
+            __TABFISS_i = CREA_TABLE(
+                LISTE=(
+                    _F(PARA="COTES", LISTE_R=_l_cotes),
+                    _F(PARA="FLUX", LISTE_R=dictTab[1]["LISTE_R"]),
+                    _F(PARA="PRESSION", LISTE_R=dictTab[2]["LISTE_R"]),
+                    _F(PARA="TEMP", LISTE_R=dictTab[3]["LISTE_R"]),
+                    _F(PARA="COEF_CONV", LISTE_R=dictTab[4]["LISTE_R"]),
+                )
+            )
 
-            if (debug):
-                os.system(
-                    'ls -al ' + os.path.join(os.getcwd(), tmp_ecrevisse))
+            if debug:
+                os.system("ls -al " + os.path.join(os.getcwd(), tmp_ecrevisse))
 
-            if dFISSURE['PREFIXE_FICHIER']:
-                pref_fic = dFISSURE['PREFIXE_FICHIER']
+            if dFISSURE["PREFIXE_FICHIER"]:
+                pref_fic = dFISSURE["PREFIXE_FICHIER"]
             else:
-                pref_fic = 'FISSURE' + str(k + 1)
+                pref_fic = "FISSURE" + str(k + 1)
 
             # Ecriture du fichier debits en fonction du temps:
             # try:
-                # on lit le fichier debit produit par ecrevisse
-                # f_ast = open(os.path.join(tmp_ecrevisse, 'debits'),'r')
-                #_txt = f_ast.read()
-                # f_ast.close()
-                # nomfic = str(pref_fic) + '_debits'
-                # on concatene
-                # fw = open( os.getcwd() + os.sep + 'REPE_OUT' + os.sep + nomfic, 'a')
-                # fw.write( str(Inst_Ecrevisse) + ' ' + _txt )
-                # fw.close()
-                # On recopie le fichier debits pour reprise ulterieure
-                # nomfic2 = 'debits_dernier'
-                # fw = open( os.getcwd() + os.sep + 'REPE_OUT' + os.sep + nomfic2, 'w')
-                # fw.write( _txt )
-                # fw.close()
+            # on lit le fichier debit produit par ecrevisse
+            # f_ast = open(os.path.join(tmp_ecrevisse, 'debits'),'r')
+            # _txt = f_ast.read()
+            # f_ast.close()
+            # nomfic = str(pref_fic) + '_debits'
+            # on concatene
+            # fw = open( os.getcwd() + os.sep + 'REPE_OUT' + os.sep + nomfic, 'a')
+            # fw.write( str(Inst_Ecrevisse) + ' ' + _txt )
+            # fw.close()
+            # On recopie le fichier debits pour reprise ulterieure
+            # nomfic2 = 'debits_dernier'
+            # fw = open( os.getcwd() + os.sep + 'REPE_OUT' + os.sep + nomfic2, 'w')
+            # fw.write( _txt )
+            # fw.close()
             # except Exception, e:
-                # print e
+            # print e
 
             # CREATION DES COURBES:
             if COURBES != "AUCUNE":
                 # Pour masquer certaines alarmes
 
-                MasquerAlarme('TABLE0_6')
+                MasquerAlarme("TABLE0_6")
 
-                nomfic = os.path.join(os.getcwd(), 'REPE_OUT', str(
-                    pref_fic) + '_flux' + '_' + str(Inst_Ecrevisse))
+                nomfic = os.path.join(
+                    os.getcwd(), "REPE_OUT", str(pref_fic) + "_flux" + "_" + str(Inst_Ecrevisse)
+                )
                 if not os.path.isfile(nomfic):
-                    acces = 'NEW'
+                    acces = "NEW"
                 else:
-                    acces = 'APPEND'
+                    acces = "APPEND"
 
-                DEFI_FICHIER(ACTION='ASSOCIER', UNITE=55,
-                             TYPE='ASCII', ACCES=acces, FICHIER=nomfic)
-                IMPR_TABLE(FORMAT='XMGRACE',
-                           TABLE=__TABFISS_i,
-                           UNITE=55,
-                           PILOTE=COURBES,
-                           NOM_PARA=('COTES', 'FLUX',),
-                           TITRE='Flux de chaleur a l\'instant %s' % Inst_Ecrevisse,
-                           LEGENDE_X='Abscisse curviligne (m)',
-                           LEGENDE_Y='Flux (W/m2)',
-                           COULEUR = 1,
-                           MARQUEUR = 1,
-                           )
-                DEFI_FICHIER(ACTION='LIBERER', UNITE=55)
+                DEFI_FICHIER(ACTION="ASSOCIER", UNITE=55, TYPE="ASCII", ACCES=acces, FICHIER=nomfic)
+                IMPR_TABLE(
+                    FORMAT="XMGRACE",
+                    TABLE=__TABFISS_i,
+                    UNITE=55,
+                    PILOTE=COURBES,
+                    NOM_PARA=("COTES", "FLUX"),
+                    TITRE="Flux de chaleur a l'instant %s" % Inst_Ecrevisse,
+                    LEGENDE_X="Abscisse curviligne (m)",
+                    LEGENDE_Y="Flux (W/m2)",
+                    COULEUR=1,
+                    MARQUEUR=1,
+                )
+                DEFI_FICHIER(ACTION="LIBERER", UNITE=55)
 
-                nomfic = os.path.join(os.getcwd(), 'REPE_OUT', str(
-                    pref_fic) + '_temperature' + '_' + str(Inst_Ecrevisse))
+                nomfic = os.path.join(
+                    os.getcwd(),
+                    "REPE_OUT",
+                    str(pref_fic) + "_temperature" + "_" + str(Inst_Ecrevisse),
+                )
                 if not os.path.isfile(nomfic):
-                    acces = 'NEW'
+                    acces = "NEW"
                 else:
-                    acces = 'APPEND'
+                    acces = "APPEND"
 
-                DEFI_FICHIER(ACTION='ASSOCIER', UNITE=55,
-                             TYPE='ASCII', ACCES=acces, FICHIER=nomfic)
-                IMPR_TABLE(FORMAT='XMGRACE',
-                           TABLE=__TABFISS_i,
-                           UNITE=55,
-                           PILOTE=COURBES,
-                           NOM_PARA=('COTES', 'TEMP',),
-                           TITRE='Temperature a l\'instant %s' % Inst_Ecrevisse,
-                           LEGENDE_X='Abscisse curviligne (m)',
-                           LEGENDE_Y='Temperature (degres C)',
-                           COULEUR = 2,
-                           MARQUEUR = 2,
-                           )
-                DEFI_FICHIER(ACTION='LIBERER', UNITE=55)
+                DEFI_FICHIER(ACTION="ASSOCIER", UNITE=55, TYPE="ASCII", ACCES=acces, FICHIER=nomfic)
+                IMPR_TABLE(
+                    FORMAT="XMGRACE",
+                    TABLE=__TABFISS_i,
+                    UNITE=55,
+                    PILOTE=COURBES,
+                    NOM_PARA=("COTES", "TEMP"),
+                    TITRE="Temperature a l'instant %s" % Inst_Ecrevisse,
+                    LEGENDE_X="Abscisse curviligne (m)",
+                    LEGENDE_Y="Temperature (degres C)",
+                    COULEUR=2,
+                    MARQUEUR=2,
+                )
+                DEFI_FICHIER(ACTION="LIBERER", UNITE=55)
 
-                nomfic = os.path.join(os.getcwd(), 'REPE_OUT', str(
-                    pref_fic) + '_coeffconv' + '_' + str(Inst_Ecrevisse))
+                nomfic = os.path.join(
+                    os.getcwd(),
+                    "REPE_OUT",
+                    str(pref_fic) + "_coeffconv" + "_" + str(Inst_Ecrevisse),
+                )
                 if not os.path.isfile(nomfic):
-                    acces = 'NEW'
+                    acces = "NEW"
                 else:
-                    acces = 'APPEND'
+                    acces = "APPEND"
 
-                DEFI_FICHIER(ACTION='ASSOCIER', UNITE=55,
-                             TYPE='ASCII', ACCES=acces, FICHIER=nomfic)
-                IMPR_TABLE(FORMAT='XMGRACE',
-                           TABLE=__TABFISS_i,
-                           UNITE=55,
-                           PILOTE=COURBES,
-                           NOM_PARA=('COTES', 'COEF_CONV',),
-                           TITRE='Coefficient de convection a l\'instant %s' % Inst_Ecrevisse,
-                           LEGENDE_X='Abscisse curviligne (m)',
-                           LEGENDE_Y='Coefficient de convection (W/m2/K)',
-                           COULEUR = 3,
-                           MARQUEUR = 3,
-                           )
-                DEFI_FICHIER(ACTION='LIBERER', UNITE=55)
+                DEFI_FICHIER(ACTION="ASSOCIER", UNITE=55, TYPE="ASCII", ACCES=acces, FICHIER=nomfic)
+                IMPR_TABLE(
+                    FORMAT="XMGRACE",
+                    TABLE=__TABFISS_i,
+                    UNITE=55,
+                    PILOTE=COURBES,
+                    NOM_PARA=("COTES", "COEF_CONV"),
+                    TITRE="Coefficient de convection a l'instant %s" % Inst_Ecrevisse,
+                    LEGENDE_X="Abscisse curviligne (m)",
+                    LEGENDE_Y="Coefficient de convection (W/m2/K)",
+                    COULEUR=3,
+                    MARQUEUR=3,
+                )
+                DEFI_FICHIER(ACTION="LIBERER", UNITE=55)
 
-                nomfic = os.path.join(os.getcwd(), 'REPE_OUT', str(
-                    pref_fic) + '_pression' + '_' + str(Inst_Ecrevisse))
+                nomfic = os.path.join(
+                    os.getcwd(), "REPE_OUT", str(pref_fic) + "_pression" + "_" + str(Inst_Ecrevisse)
+                )
                 if not os.path.isfile(nomfic):
-                    acces = 'NEW'
+                    acces = "NEW"
                 else:
-                    acces = 'APPEND'
+                    acces = "APPEND"
 
-                DEFI_FICHIER(ACTION='ASSOCIER', UNITE=55,
-                             TYPE='ASCII', ACCES=acces, FICHIER=nomfic)
-                IMPR_TABLE(FORMAT='XMGRACE',
-                           TABLE=__TABFISS_i,
-                           UNITE=55,
-                           PILOTE=COURBES,
-                           NOM_PARA=('COTES', 'PRESSION',),
-                           TITRE='Pression a l\'instant %s' % Inst_Ecrevisse,
-                           LEGENDE_X='Abscisse curviligne (m)',
-                           LEGENDE_Y='Pression (Pa)',
-                           COULEUR = 4,
-                           MARQUEUR = 4,
-                           )
-                DEFI_FICHIER(ACTION='LIBERER', UNITE=55)
+                DEFI_FICHIER(ACTION="ASSOCIER", UNITE=55, TYPE="ASCII", ACCES=acces, FICHIER=nomfic)
+                IMPR_TABLE(
+                    FORMAT="XMGRACE",
+                    TABLE=__TABFISS_i,
+                    UNITE=55,
+                    PILOTE=COURBES,
+                    NOM_PARA=("COTES", "PRESSION"),
+                    TITRE="Pression a l'instant %s" % Inst_Ecrevisse,
+                    LEGENDE_X="Abscisse curviligne (m)",
+                    LEGENDE_Y="Pression (Pa)",
+                    COULEUR=4,
+                    MARQUEUR=4,
+                )
+                DEFI_FICHIER(ACTION="LIBERER", UNITE=55)
 
                 # Pour la gestion des alarmes
-                RetablirAlarme('TABLE0_6')
+                RetablirAlarme("TABLE0_6")
 
             # On recopie dans REPE_OUT les fichiers resultats d'Ecrevisse
             tmp_ecrevisse_absolu = os.path.join(os.getcwd(), tmp_ecrevisse)
-            repe_out_absolu = os.path.join(os.getcwd(), 'REPE_OUT')
+            repe_out_absolu = os.path.join(os.getcwd(), "REPE_OUT")
             for file in os.listdir(tmp_ecrevisse_absolu):
-                if not file in ['ecrevisse', 'ecrevisse.sh']:
+                if not file in ["ecrevisse", "ecrevisse.sh"]:
                     old_file = os.path.join(tmp_ecrevisse_absolu, file)
-                    new_file = os.path.join(repe_out_absolu, str(
-                        pref_fic) + '_' + file + '_' + str(Inst_Ecrevisse))
+                    new_file = os.path.join(
+                        repe_out_absolu, str(pref_fic) + "_" + file + "_" + str(Inst_Ecrevisse)
+                    )
                     shutil.copy(old_file, new_file)
 
             # Creation de la table resultat sur toutes les fissures :
             #  Nom de la fissure
-            nom_fiss = dFISSURE['GROUP_MA'][0] + "-" + dFISSURE['GROUP_MA'][1]
+            nom_fiss = dFISSURE["GROUP_MA"][0] + "-" + dFISSURE["GROUP_MA"][1]
             __TABFISS_i = __TABFISS_i.EXTR_TABLE()
             __DEBFISS_i = DEB2.EXTR_TABLE()
             __TABFISS_i["FISSURE"] = [nom_fiss] * nb_lignes_table
@@ -740,12 +797,11 @@ def calc_ecrevisse_ops(self, **args):
                 __TABFISS_tot = merge(__TABFISS_tot, __TABFISS_i)
                 __DEBFISS_tot = merge(__DEBFISS_tot, __DEBFISS_i)
 
-            if (debug):
-                os.system(
-                    'ls -al ' + os.path.join(os.getcwd(), tmp_ecrevisse))
+            if debug:
+                os.system("ls -al " + os.path.join(os.getcwd(), tmp_ecrevisse))
 
-#--------------------------------------------------------------
-#           CREATIONS DES CHARGEMENTS ASTER
+            # --------------------------------------------------------------
+            #           CREATIONS DES CHARGEMENTS ASTER
 
             # Recuperation des valeurs dans la table (voir si il y a plus
             # simple)
@@ -782,13 +838,13 @@ def calc_ecrevisse_ops(self, **args):
                     # epsilon pour le decalage :
                     #   le chargement est uniforme par maille
                     if _X0[1] >= _X0[0]:
-                        epsx = 1.e-8
+                        epsx = 1.0e-8
                     else:
-                        epsx = -1.e-8
+                        epsx = -1.0e-8
                     if _Y0[1] >= _Y0[0]:
-                        epsy = 1.e-8
+                        epsy = 1.0e-8
                     else:
-                        epsy = -1.e-8
+                        epsy = -1.0e-8
 
                     _lst_x0 = []
                     _lst_y0 = []
@@ -844,32 +900,40 @@ def calc_ecrevisse_ops(self, **args):
                     _lst_t = ly3
                     _lst_cc = ly4
                 else:
-                    _lst_x0 = [(x1 + x2) * 0.5 for (x1, x2) in zip(
-                        _X0[0:len(_X0) - 1], _X0[1:len(_X0)])]
-                    _lst_y0 = [(x1 + x2) * 0.5 for (x1, x2) in zip(
-                        _Y0[0:len(_Y0) - 1], _Y0[1:len(_Y0)])]
-                    _lst_x0_b = [(x1 + x2) * 0.5 for (x1, x2) in zip(
-                        _X0_b[0:len(_X0_b) - 1], _X0_b[1:len(_X0_b)])]
-                    _lst_y0_b = [(x1 + x2) * 0.5 for (x1, x2) in zip(
-                        _Y0_b[0:len(_Y0_b) - 1], _Y0_b[1:len(_Y0_b)])]
+                    _lst_x0 = [
+                        (x1 + x2) * 0.5
+                        for (x1, x2) in zip(_X0[0 : len(_X0) - 1], _X0[1 : len(_X0)])
+                    ]
+                    _lst_y0 = [
+                        (x1 + x2) * 0.5
+                        for (x1, x2) in zip(_Y0[0 : len(_Y0) - 1], _Y0[1 : len(_Y0)])
+                    ]
+                    _lst_x0_b = [
+                        (x1 + x2) * 0.5
+                        for (x1, x2) in zip(_X0_b[0 : len(_X0_b) - 1], _X0_b[1 : len(_X0_b)])
+                    ]
+                    _lst_y0_b = [
+                        (x1 + x2) * 0.5
+                        for (x1, x2) in zip(_Y0_b[0 : len(_Y0_b) - 1], _Y0_b[1 : len(_Y0_b)])
+                    ]
                     _lst_x0.append(_X0[-1])
                     _lst_x0_b.append(_X0_b[-1])
                     _lst_y0.append(_Y0[-1])
                     _lst_y0_b.append(_Y0_b[-1])
 
                 # ANCIENNE VERSION (TRANSMISSION DES FLUX THERMIQUES
-                if(oldVersion):
+                if oldVersion:
                     alpha = round(theta)
-                    if DIR_FISS == 'X':
-                        levre1pos = ((_Y0[0] - _yi) >= 0.)
-                        if alpha == -90.:
+                    if DIR_FISS == "X":
+                        levre1pos = (_Y0[0] - _yi) >= 0.0
+                        if alpha == -90.0:
                             _lst_x0.reverse()
                             _lst_p.reverse()
                             _lst_f.reverse()
                         _lst_dir = _lst_x0
                     else:
-                        levre1pos = ((_X0[0] - _xi) >= 0.)
-                        if abs(alpha) == 180.:
+                        levre1pos = (_X0[0] - _xi) >= 0.0
+                        if abs(alpha) == 180.0:
                             _lst_y0.reverse()
                             _lst_p.reverse()
                             _lst_f.reverse()
@@ -888,52 +952,49 @@ def calc_ecrevisse_ops(self, **args):
 
                         _tmp2.append(_lst_p[i])
                         if levre1pos:
-                            #_tmp1.append( -1*_lst_f[i] )
-                            #_tmp3.append( _lst_f[i] )
+                            # _tmp1.append( -1*_lst_f[i] )
+                            # _tmp3.append( _lst_f[i] )
                             _tmp1.append(_lst_f[i])
                             _tmp3.append(-1 * _lst_f[i])
                         else:
-                            #_tmp1.append( _lst_f[i] )
-                            #_tmp3.append( -1*_lst_f[i] )
+                            # _tmp1.append( _lst_f[i] )
+                            # _tmp3.append( -1*_lst_f[i] )
                             _tmp1.append(-1 * _lst_f[i])
                             _tmp3.append(_lst_f[i])
 
                     # Flux en provenance d'Ecrevisse
-                    _L_F1 = DEFI_FONCTION(NOM_PARA=DIR_FISS,
-                                          VALE=_tmp1,
-                                          PROL_GAUCHE='LINEAIRE',
-                                          PROL_DROITE='LINEAIRE')
+                    _L_F1 = DEFI_FONCTION(
+                        NOM_PARA=DIR_FISS,
+                        VALE=_tmp1,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    _L_F2 = DEFI_FONCTION(NOM_PARA=DIR_FISS,
-                                          VALE=_tmp3,
-                                          PROL_GAUCHE='LINEAIRE',
-                                          PROL_DROITE='LINEAIRE')
+                    _L_F2 = DEFI_FONCTION(
+                        NOM_PARA=DIR_FISS,
+                        VALE=_tmp3,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    if DIR_FISS == 'X':
-                        l_FLUX_REP_F1.append(
-                            _F(GROUP_MA=dFISSURE['GROUP_MA'][0],
-                               FLUX_Y=_L_F1,))
-                        l_FLUX_REP_F2.append(
-                            _F(GROUP_MA=dFISSURE['GROUP_MA'][1],
-                               FLUX_Y=_L_F2,))
+                    if DIR_FISS == "X":
+                        l_FLUX_REP_F1.append(_F(GROUP_MA=dFISSURE["GROUP_MA"][0], FLUX_Y=_L_F1))
+                        l_FLUX_REP_F2.append(_F(GROUP_MA=dFISSURE["GROUP_MA"][1], FLUX_Y=_L_F2))
                     else:
-                        l_FLUX_REP_F1.append(
-                            _F(GROUP_MA=dFISSURE['GROUP_MA'][0],
-                               FLUX_X=_L_F1,))
-                        l_FLUX_REP_F2.append(
-                            _F(GROUP_MA=dFISSURE['GROUP_MA'][1],
-                               FLUX_X=_L_F2,))
+                        l_FLUX_REP_F1.append(_F(GROUP_MA=dFISSURE["GROUP_MA"][0], FLUX_X=_L_F1))
+                        l_FLUX_REP_F2.append(_F(GROUP_MA=dFISSURE["GROUP_MA"][1], FLUX_X=_L_F2))
 
                     # Pressions en provenance d'Ecrevisse
-                    _L_P = DEFI_FONCTION(NOM_PARA=DIR_FISS,
-                                         VALE=_tmp2,
-                                         PROL_GAUCHE='LINEAIRE',
-                                         PROL_DROITE='LINEAIRE')
+                    _L_P = DEFI_FONCTION(
+                        NOM_PARA=DIR_FISS,
+                        VALE=_tmp2,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
                     l_PRES_REP.append(
-                        _F(GROUP_MA=(dFISSURE[
-                            'GROUP_MA'][0], dFISSURE['GROUP_MA'][1]),
-                           PRES=_L_P,))
+                        _F(GROUP_MA=(dFISSURE["GROUP_MA"][0], dFISSURE["GROUP_MA"][1]), PRES=_L_P)
+                    )
 
                 # NOUVELLE VERSION
                 else:
@@ -958,7 +1019,7 @@ def calc_ecrevisse_ops(self, **args):
                         if _Y0[1] < _Y0[0]:
                             iy = len(_lst_f) - 1 - i
 
-                        if (DIR_PREV == 'X'):
+                        if DIR_PREV == "X":
                             _tmp1.append(_lst_x0[ix])
                             _tmp1.append(_lst_t[ix])
                             _tmp3.append(_lst_x0[ix])
@@ -987,94 +1048,99 @@ def calc_ecrevisse_ops(self, **args):
 
                     # Couplage thermique : Temperature et coefficients
                     # d'echange en provenance d'Ecrevisse
-                    _L_T1 = DEFI_FONCTION(NOM_PARA=DIR_PREV,
-                                          VALE=_tmp1,
-                                          PROL_GAUCHE='LINEAIRE',
-                                          PROL_DROITE='LINEAIRE')
+                    _L_T1 = DEFI_FONCTION(
+                        NOM_PARA=DIR_PREV,
+                        VALE=_tmp1,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    _L_T2 = DEFI_FONCTION(NOM_PARA=DIR_PREV,
-                                          VALE=_tmp2,
-                                          PROL_GAUCHE='LINEAIRE',
-                                          PROL_DROITE='LINEAIRE')
+                    _L_T2 = DEFI_FONCTION(
+                        NOM_PARA=DIR_PREV,
+                        VALE=_tmp2,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    _L_CC1 = DEFI_FONCTION(NOM_PARA=DIR_PREV,
-                                           VALE=_tmp3,
-                                           PROL_GAUCHE='LINEAIRE',
-                                           PROL_DROITE='LINEAIRE')
+                    _L_CC1 = DEFI_FONCTION(
+                        NOM_PARA=DIR_PREV,
+                        VALE=_tmp3,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    _L_CC2 = DEFI_FONCTION(NOM_PARA=DIR_PREV,
-                                           VALE=_tmp4,
-                                           PROL_GAUCHE='LINEAIRE',
-                                           PROL_DROITE='LINEAIRE')
+                    _L_CC2 = DEFI_FONCTION(
+                        NOM_PARA=DIR_PREV,
+                        VALE=_tmp4,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    l_ECHANGE_F1.append(_F(GROUP_MA=dFISSURE['GROUP_MA'][0],
-                                           TEMP_EXT=_L_T1,
-                                           COEF_H=_L_CC2))
+                    l_ECHANGE_F1.append(
+                        _F(GROUP_MA=dFISSURE["GROUP_MA"][0], TEMP_EXT=_L_T1, COEF_H=_L_CC2)
+                    )
 
-                    l_ECHANGE_F2.append(_F(GROUP_MA=dFISSURE['GROUP_MA'][1],
-                                           TEMP_EXT=_L_T2,
-                                           COEF_H=_L_CC2))
+                    l_ECHANGE_F2.append(
+                        _F(GROUP_MA=dFISSURE["GROUP_MA"][1], TEMP_EXT=_L_T2, COEF_H=_L_CC2)
+                    )
 
                     # Couplage mecanique : Pressions en provenance d'Ecrevisse
-                    _L_P1 = DEFI_FONCTION(NOM_PARA=DIR_PREV,
-                                          VALE=_tmp5,
-                                          PROL_GAUCHE='LINEAIRE',
-                                          PROL_DROITE='LINEAIRE')
+                    _L_P1 = DEFI_FONCTION(
+                        NOM_PARA=DIR_PREV,
+                        VALE=_tmp5,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    _L_P2 = DEFI_FONCTION(NOM_PARA=DIR_PREV,
-                                          VALE=_tmp6,
-                                          PROL_GAUCHE='LINEAIRE',
-                                          PROL_DROITE='LINEAIRE')
+                    _L_P2 = DEFI_FONCTION(
+                        NOM_PARA=DIR_PREV,
+                        VALE=_tmp6,
+                        PROL_GAUCHE="LINEAIRE",
+                        PROL_DROITE="LINEAIRE",
+                    )
 
-                    l_PRES_REP.append(_F(GROUP_MA=(dFISSURE['GROUP_MA'][0]),
-                                         PRES=_L_P1,))
-                    l_PRES_REP.append(_F(GROUP_MA=(dFISSURE['GROUP_MA'][1]),
-                                         PRES=_L_P2,))
+                    l_PRES_REP.append(_F(GROUP_MA=(dFISSURE["GROUP_MA"][0]), PRES=_L_P1))
+                    l_PRES_REP.append(_F(GROUP_MA=(dFISSURE["GROUP_MA"][1]), PRES=_L_P2))
 
             # Fin extraction des conditions limites du calcul Ecrevisse
             # ----------------------------------------------------------
 
         if debug:
-            print('FISSURE-' + str(k + 1))
-            print('_lst_c:', len(_lst_c),        _lst_c)
-            print('_lst_f:', len(_lst_f),        _lst_f)
-            print('_lst_p:', len(_lst_p),        _lst_p)
-            print('_lst_t:',  len(_lst_t),       _lst_t)
-            print('_lst_cc:', len(_lst_cc),      _lst_cc)
-            print('_lst_x0:', len(_lst_x0),      _lst_x0)
-            print('_lst_x0_b :', len(_lst_x0_b), _lst_x0_b)
-            print('_lst_y0:', len(_lst_y0),      _lst_y0)
-            print('_lst_y0_b :', len(_lst_y0_b), _lst_y0_b)
-            print('_tmp1 :', len(_tmp1),     _tmp1)
-            print('_tmp2 :', len(_tmp2),     _tmp2)
-            print('_tmp3 :', len(_tmp3),     _tmp3)
-            if (not oldVersion):
-                print('_tmp4 :', len(_tmp4),  _tmp4)
-                print('_tmp5 :', len(_tmp5),  _tmp5)
-                print('_tmp6 :', len(_tmp6),  _tmp6)
+            print("FISSURE-" + str(k + 1))
+            print("_lst_c:", len(_lst_c), _lst_c)
+            print("_lst_f:", len(_lst_f), _lst_f)
+            print("_lst_p:", len(_lst_p), _lst_p)
+            print("_lst_t:", len(_lst_t), _lst_t)
+            print("_lst_cc:", len(_lst_cc), _lst_cc)
+            print("_lst_x0:", len(_lst_x0), _lst_x0)
+            print("_lst_x0_b :", len(_lst_x0_b), _lst_x0_b)
+            print("_lst_y0:", len(_lst_y0), _lst_y0)
+            print("_lst_y0_b :", len(_lst_y0_b), _lst_y0_b)
+            print("_tmp1 :", len(_tmp1), _tmp1)
+            print("_tmp2 :", len(_tmp2), _tmp2)
+            print("_tmp3 :", len(_tmp3), _tmp3)
+            if not oldVersion:
+                print("_tmp4 :", len(_tmp4), _tmp4)
+                print("_tmp5 :", len(_tmp5), _tmp5)
+                print("_tmp6 :", len(_tmp6), _tmp6)
 
         # Fin du boucle sur la fissure for k
 
     # Assemblage des concepts sortants
-    if(oldVersion):
-        __ECR_F1 = AFFE_CHAR_THER_F(MODELE=MODELE_THER,
-                                    FLUX_REP=l_FLUX_REP_F1)
+    if oldVersion:
+        __ECR_F1 = AFFE_CHAR_THER_F(MODELE=MODELE_THER, FLUX_REP=l_FLUX_REP_F1)
         self.register_result(__ECR_F1, CHARGE_THER1)
 
-        __ECR_F2 = AFFE_CHAR_THER_F(MODELE=MODELE_THER,
-                                    FLUX_REP=l_FLUX_REP_F2)
+        __ECR_F2 = AFFE_CHAR_THER_F(MODELE=MODELE_THER, FLUX_REP=l_FLUX_REP_F2)
         self.register_result(__ECR_F2, CHARGE_THER2)
     else:
-        __ECR_F1 = AFFE_CHAR_THER_F(MODELE=MODELE_THER,
-                                    ECHANGE=l_ECHANGE_F1)
+        __ECR_F1 = AFFE_CHAR_THER_F(MODELE=MODELE_THER, ECHANGE=l_ECHANGE_F1)
         self.register_result(__ECR_F1, CHARGE_THER1)
 
-        __ECR_F2 = AFFE_CHAR_THER_F(MODELE=MODELE_THER,
-                                    ECHANGE=l_ECHANGE_F2)
+        __ECR_F2 = AFFE_CHAR_THER_F(MODELE=MODELE_THER, ECHANGE=l_ECHANGE_F2)
         self.register_result(__ECR_F2, CHARGE_THER2)
 
-    __ECR_P = AFFE_CHAR_MECA_F(MODELE=MODELE_MECA,
-                               PRES_REP=l_PRES_REP)
+    __ECR_P = AFFE_CHAR_MECA_F(MODELE=MODELE_MECA, PRES_REP=l_PRES_REP)
     self.register_result(__ECR_P, CHARGE_MECA)
 
     # Table resultat
@@ -1087,4 +1153,4 @@ def calc_ecrevisse_ops(self, **args):
         __DEB = CREA_TABLE(**debprod)
         self.register_result(__DEB, DEBIT)
     except:
-        UTMESS('F', 'ECREVISSE0_9', valr=[Inst_Ecrevisse])
+        UTMESS("F", "ECREVISSE0_9", valr=[Inst_Ecrevisse])

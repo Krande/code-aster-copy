@@ -18,52 +18,31 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # Read the mesh (with GROUP_MA for RID)
-mesh=LIRE_MAILLAGE(FORMAT='MED',)
+mesh = LIRE_MAILLAGE(FORMAT="MED")
 
-mesh=MODI_MAILLAGE(reuse =mesh,
-                   MAILLAGE=mesh,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU='S_e',),)
+mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU="S_e"))
 
 # Define the material
-steel=DEFI_MATERIAU(
-          ELAS=     _F(E= 210000., NU = 0.3),
-          ECRO_LINE=_F(D_SIGM_EPSI=100., SY=100.,),
-          )
+steel = DEFI_MATERIAU(ELAS=_F(E=210000.0, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=100.0, SY=100.0))
 
-chmat=AFFE_MATERIAU(MAILLAGE=mesh,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=steel,),)
+chmat = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=steel))
 # Mechanic model
-model=AFFE_MODELE(MAILLAGE=mesh,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),)
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
 # Boundary condition
-chg_b=AFFE_CHAR_CINE(MODELE=model,
-                      MECA_IMPO=_F(GROUP_MA='S_inf',
-                                 DX=0,DY=0.0,DZ=0),
-                     )
+chg_b = AFFE_CHAR_CINE(MODELE=model, MECA_IMPO=_F(GROUP_MA="S_inf", DX=0, DY=0.0, DZ=0))
 
-chg_p=AFFE_CHAR_MECA(MODELE=model,
-                     PRES_REP=_F(GROUP_MA='S_e',
-                                 PRES = 1000,),
-                    )
+chg_p = AFFE_CHAR_MECA(MODELE=model, PRES_REP=_F(GROUP_MA="S_e", PRES=1000))
 
 # Time discretization
-list_t=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=10.0,
-                                    PAS=1.0,),)
+list_t = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=10.0, PAS=1.0))
 
-list_i=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=list_t,),)
+list_i = DEFI_LIST_INST(METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=list_t))
 
-rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                                          10.,1.,
-                   ),)
+rampe = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 10.0, 1.0))
 
 ####################################################################################################
 #
@@ -72,75 +51,57 @@ rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 ####################################################################################################
 
 # Read the primal base
-base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
-                 FORMAT     = 'MED',
-                 MODELE     = model,
-                 UNITE      = 70,
-                 FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__DEPL',
-                                NOM_CHAM     = 'DEPL',),
-                 NUME_ORDRE = (1, 2,),)
+base_p = LIRE_RESU(
+    TYPE_RESU="MODE_EMPI",
+    FORMAT="MED",
+    MODELE=model,
+    UNITE=70,
+    FORMAT_MED=_F(NOM_CHAM_MED="base_p__DEPL", NOM_CHAM="DEPL"),
+    NUME_ORDRE=(1, 2),
+)
 
 # Re-create GROUP_MA
-mesh=DEFI_GROUP(reuse=mesh,
-                MAILLAGE=mesh,
-                CREA_GROUP_MA=_F(NOM='S_e_rid',
-                               INTERSEC=('RID','S_e',),),)
+mesh = DEFI_GROUP(
+    reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="S_e_rid", INTERSEC=("RID", "S_e"))
+)
 
-mesh=DEFI_GROUP(reuse=mesh,
-                MAILLAGE=mesh,
-                CREA_GROUP_MA=_F(NOM='S_inf_rid',
-                                 INTERSEC=('RID','S_inf',),),)
+mesh = DEFI_GROUP(
+    reuse=mesh, MAILLAGE=mesh, CREA_GROUP_MA=_F(NOM="S_inf_rid", INTERSEC=("RID", "S_inf"))
+)
 
 # Mechanic model
-model_r=AFFE_MODELE(MAILLAGE=mesh,
-               AFFE=_F(GROUP_MA='RID',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),)
+model_r = AFFE_MODELE(
+    MAILLAGE=mesh, AFFE=_F(GROUP_MA="RID", PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
 # Truncation of base
-base_t=DEFI_BASE_REDUITE(OPERATION='TRONCATURE',
-                         MODELE_REDUIT = model_r,
-                         BASE = base_p,
-                         INFO=2)
+base_t = DEFI_BASE_REDUITE(OPERATION="TRONCATURE", MODELE_REDUIT=model_r, BASE=base_p, INFO=2)
 
 # Boundary condition
-chg_b_r=AFFE_CHAR_CINE(MODELE=model_r,
-                      MECA_IMPO=_F(GROUP_MA='S_inf_rid',
-                                 DX=0,DY=0.0,DZ=0),
-                     )
+chg_b_r = AFFE_CHAR_CINE(MODELE=model_r, MECA_IMPO=_F(GROUP_MA="S_inf_rid", DX=0, DY=0.0, DZ=0))
 
-chg_p_r=AFFE_CHAR_MECA(MODELE=model_r,
-                     PRES_REP=_F(GROUP_MA='S_e_rid',
-                                 PRES = 1000,),
-                    )
+chg_p_r = AFFE_CHAR_MECA(MODELE=model_r, PRES_REP=_F(GROUP_MA="S_e_rid", PRES=1000))
 
-IMPR_RESU(FORMAT='MED',UNITE=84,RESU=_F(MAILLAGE=mesh))
+IMPR_RESU(FORMAT="MED", UNITE=84, RESU=_F(MAILLAGE=mesh))
 
 ####################################################################################################
 #
 # Calcul hyper-réduit
 #
 ####################################################################################################
-redu=STAT_NON_LINE(MODELE=model_r,
-                   CHAM_MATER=chmat,
-                   EXCIT=(_F(CHARGE=chg_b_r,),
-                          _F(CHARGE=chg_p_r,FONC_MULT=rampe),
-                         ),
-                   INCREMENT=_F(LIST_INST=list_i,),
-                    METHODE='MODELE_REDUIT',
-                   MODELE_REDUIT=_F(
-                    REAC_ITER=1,
-                    BASE_PRIMAL     = base_t,
-                    DOMAINE_REDUIT  = 'OUI',
-                    GROUP_NO_INTERF = 'INF',
-                    ),
-                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
+redu = STAT_NON_LINE(
+    MODELE=model_r,
+    CHAM_MATER=chmat,
+    EXCIT=(_F(CHARGE=chg_b_r), _F(CHARGE=chg_p_r, FONC_MULT=rampe)),
+    INCREMENT=_F(LIST_INST=list_i),
+    METHODE="MODELE_REDUIT",
+    MODELE_REDUIT=_F(REAC_ITER=1, BASE_PRIMAL=base_t, DOMAINE_REDUIT="OUI", GROUP_NO_INTERF="INF"),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+)
 
-redu=CALC_CHAMP(reuse=redu,
-                RESULTAT=redu,
-                CONTRAINTE='SIEF_NOEU',)
+redu = CALC_CHAMP(reuse=redu, RESULTAT=redu, CONTRAINTE="SIEF_NOEU")
 
-IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=redu))
+IMPR_RESU(FORMAT="MED", UNITE=82, RESU=_F(RESULTAT=redu))
 
 ####################################################################################################
 #
@@ -149,25 +110,23 @@ IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=redu))
 ####################################################################################################
 
 # Read the dual base
-base_d=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
-                 FORMAT     = 'MED',
-                 MODELE     = model,
-                 UNITE      = 71,
-                 FORMAT_MED =_F(NOM_CHAM_MED = 'base_d__SIEF_ELGA',
-                                NOM_CHAM     = 'SIEF_ELGA',),
-                 NUME_ORDRE=(1,2,3),)
+base_d = LIRE_RESU(
+    TYPE_RESU="MODE_EMPI",
+    FORMAT="MED",
+    MODELE=model,
+    UNITE=71,
+    FORMAT_MED=_F(NOM_CHAM_MED="base_d__SIEF_ELGA", NOM_CHAM="SIEF_ELGA"),
+    NUME_ORDRE=(1, 2, 3),
+)
 
 
 # Reconstruction tout le domaine par Gappy-POD
 reduR = REST_REDUIT_COMPLET(
-    MODELE           = model,
-    RESULTAT_REDUIT  = redu,
-    CHAM_GD          = (
-                        _F(NOM_CHAM         = 'SIEF_ELGA',
-                           BASE             = base_d,
-                           OPERATION        = 'GAPPY_POD',),
-                       ),
-    INFO             = 2,)
+    MODELE=model,
+    RESULTAT_REDUIT=redu,
+    CHAM_GD=(_F(NOM_CHAM="SIEF_ELGA", BASE=base_d, OPERATION="GAPPY_POD"),),
+    INFO=2,
+)
 
 
 ####################################################################################################
@@ -176,52 +135,65 @@ reduR = REST_REDUIT_COMPLET(
 #
 ####################################################################################################
 
-stnl=STAT_NON_LINE(MODELE=model,
-                   CHAM_MATER=chmat,
-                   EXCIT=(_F(CHARGE=chg_b,),
-                          _F(CHARGE=chg_p,FONC_MULT=rampe),
-                         ),
-                   INCREMENT=_F(LIST_INST=list_i,),
-                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
+stnl = STAT_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=chmat,
+    EXCIT=(_F(CHARGE=chg_b), _F(CHARGE=chg_p, FONC_MULT=rampe)),
+    INCREMENT=_F(LIST_INST=list_i),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+)
 
 # Cosntruction sur SIXX uniquement
-baseSIEF_SIXX = DEFI_BASE_REDUITE(INFO      = 2,
-                            OPERATION = 'POD',
-                            RESULTAT  = stnl,
-                            NOM_CHAM  = 'SIEF_ELGA',
-                            NOM_CMP   = 'SIXX',
-                            TOLE_SVD  = 0.001,
-                            )
+baseSIEF_SIXX = DEFI_BASE_REDUITE(
+    INFO=2, OPERATION="POD", RESULTAT=stnl, NOM_CHAM="SIEF_ELGA", NOM_CMP="SIXX", TOLE_SVD=0.001
+)
 
 # Reconstruction tout le domaine par Gappy-POD
 resuSIEF_SIXX = REST_REDUIT_COMPLET(
-    MODELE           = model,
-    RESULTAT_REDUIT  = redu,
-    CHAM_GD          = (
-                        _F(NOM_CHAM         = 'SIEF_ELGA',
-                           BASE             = baseSIEF_SIXX,
-                           OPERATION        = 'GAPPY_POD',),
-                       ),
-    INFO             = 2,)
+    MODELE=model,
+    RESULTAT_REDUIT=redu,
+    CHAM_GD=(_F(NOM_CHAM="SIEF_ELGA", BASE=baseSIEF_SIXX, OPERATION="GAPPY_POD"),),
+    INFO=2,
+)
 
 # Reconstruction tout le domaine par combinaison linéaire
-MODE1s = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSIEF_SIXX, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=1)
-MODE2s = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSIEF_SIXX, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=2)
-MODE3s = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=baseSIEF_SIXX, NOM_CHAM='SIEF_ELGA',NUME_ORDRE=3)
+MODE1s = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=baseSIEF_SIXX,
+    NOM_CHAM="SIEF_ELGA",
+    NUME_ORDRE=1,
+)
+MODE2s = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=baseSIEF_SIXX,
+    NOM_CHAM="SIEF_ELGA",
+    NUME_ORDRE=2,
+)
+MODE3s = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="EXTR",
+    RESULTAT=baseSIEF_SIXX,
+    NOM_CHAM="SIEF_ELGA",
+    NUME_ORDRE=3,
+)
 
 # Valeurs extraites de la table COOR_REDUIT
 comb1 = -108950.59263472102
 comb2 = -15280.860912969722
-comb3 =   20485.486855804837
+comb3 = 20485.486855804837
 
-combSIEF_SIXX=CREA_CHAMP( OPERATION = 'ASSE',
-                   MODELE    =  model,
-                   TYPE_CHAM = 'ELGA_SIEF_R',
-
-                   ASSE=(_F(TOUT      = 'OUI',CHAM_GD=MODE1s,COEF_R=comb1),
-                         _F(TOUT      = 'OUI',CHAM_GD=MODE2s,COEF_R=comb2),
-                         _F(TOUT      = 'OUI',CHAM_GD=MODE3s,COEF_R=comb3),
-),)
+combSIEF_SIXX = CREA_CHAMP(
+    OPERATION="ASSE",
+    MODELE=model,
+    TYPE_CHAM="ELGA_SIEF_R",
+    ASSE=(
+        _F(TOUT="OUI", CHAM_GD=MODE1s, COEF_R=comb1),
+        _F(TOUT="OUI", CHAM_GD=MODE2s, COEF_R=comb2),
+        _F(TOUT="OUI", CHAM_GD=MODE3s, COEF_R=comb3),
+    ),
+)
 
 
 FIN()

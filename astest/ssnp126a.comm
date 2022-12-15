@@ -19,334 +19,320 @@
 
 #       (liaison acier - beton) en 2D plan
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",VERI_MAIL=_F(VERIF='NON'),
-                 INFO = 2, )
+MA = LIRE_MAILLAGE(FORMAT="ASTER", VERI_MAIL=_F(VERIF="NON"), INFO=2)
 
 
-MO=AFFE_MODELE(
-                MAILLAGE=MA,
-
-                AFFE= (
-                _F(
-                        GROUP_MA = ('CUBE','DROITE'),
-                        PHENOMENE = 'MECANIQUE',
-                        MODELISATION = 'D_PLAN'
-                     ),
-                 _F(
-                   GROUP_MA = 'CUBEDEG',
-                   PHENOMENE = 'MECANIQUE',
-                   MODELISATION = 'PLAN_JOINT'
-                   )
-                 )
-              )
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        _F(GROUP_MA=("CUBE", "DROITE"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+        _F(GROUP_MA="CUBEDEG", PHENOMENE="MECANIQUE", MODELISATION="PLAN_JOINT"),
+    ),
+)
 
 
-ACIER=DEFI_MATERIAU(
-     ELAS=_F(
-              E =  2.1E+6,
-              NU = 0.0),
-            )
+ACIER = DEFI_MATERIAU(ELAS=_F(E=2.1e6, NU=0.0))
 
 
-BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
-                           NU=0.17,),
-                   JOINT_BA=_F(  HPEN   =  0.64,     #mm
-                                 GTT    =  6.65E+3,  #MPa
-                                 GAMD0  =  5.E-4,
-                                 AD1    =  1.0,      #MPa
-                                 BD1    =  0.5,
-                                 GAMD2  =  0.96,
-                                 AD2    =  6.E-5,    #MPa
-                                 BD2    =  1.0,
-                                 VIFROT =  10.0,     #MPa-1
-                                 FA     =  4.E-1,
-                                 FC     =  1.0,
-                                 EPSTR0 =  0.9,
-                                 ADN    =  1.E-9,
-                                 BDN    =  1.5,
-                                    ),)
+BOND = DEFI_MATERIAU(
+    ELAS=_F(E=1.55e4, NU=0.17),
+    JOINT_BA=_F(
+        HPEN=0.64,  # mm
+        GTT=6.65e3,  # MPa
+        GAMD0=5.0e-4,
+        AD1=1.0,  # MPa
+        BD1=0.5,
+        GAMD2=0.96,
+        AD2=6.0e-5,  # MPa
+        BD2=1.0,
+        VIFROT=10.0,  # MPa-1
+        FA=4.0e-1,
+        FC=1.0,
+        EPSTR0=0.9,
+        ADN=1.0e-9,
+        BDN=1.5,
+    ),
+)
 
 
-
-CM=AFFE_MATERIAU(
-               MAILLAGE=MA,
-               AFFE=(_F(
-                       TOUT = 'OUI',
-                       MATER = ACIER),
-                     _F(GROUP_MA = 'CUBEDEG',
-                        MATER=BOND,),
-                        ),)
+CM = AFFE_MATERIAU(
+    MAILLAGE=MA, AFFE=(_F(TOUT="OUI", MATER=ACIER), _F(GROUP_MA="CUBEDEG", MATER=BOND))
+)
 
 
+LIAISON = AFFE_CHAR_MECA(MODELE=MO, FACE_IMPO=(_F(GROUP_MA="GAUCHE2", DX=0, DY=0),))
 
-LIAISON=AFFE_CHAR_MECA(
-  MODELE=MO,
-  FACE_IMPO= (
-    _F(GROUP_MA='GAUCHE2', DX=0, DY=0),
-    ),)
-
-TRACTION=AFFE_CHAR_MECA(
-  MODELE=MO,
-  FACE_IMPO= (
-    _F(GROUP_MA='DROITE', DX=0.5, DY=-0.86602540378444),
-    ),)
+TRACTION = AFFE_CHAR_MECA(
+    MODELE=MO, FACE_IMPO=(_F(GROUP_MA="DROITE", DX=0.5, DY=-0.86602540378444),)
+)
 
 
-L_INST=DEFI_LIST_REEL(DEBUT   = 0,
-     INTERVALLE=(
-      _F( JUSQU_A = 1.0,      NOMBRE =  10 ),
-      _F( JUSQU_A = 30.0,     NOMBRE =  290 ),
-      ),)
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0, INTERVALLE=(_F(JUSQU_A=1.0, NOMBRE=10), _F(JUSQU_A=30.0, NOMBRE=290))
+)
 
 
 FC1 = DEFI_FONCTION(
-  NOM_PARA = 'INST',
-  VALE     = (0, 0,
-              1, 0.1),
-  PROL_DROITE = 'LINEAIRE',
-  PROL_GAUCHE='LINEAIRE',
-  )
+    NOM_PARA="INST", VALE=(0, 0, 1, 0.1), PROL_DROITE="LINEAIRE", PROL_GAUCHE="LINEAIRE"
+)
 
 
-U=STAT_NON_LINE(
-  MODELE     = MO,
-  CHAM_MATER = CM,
-  EXCIT      = (
-    _F(CHARGE = LIAISON , ),
-    _F(CHARGE = TRACTION, FONC_MULT = FC1),
-  ),
-  COMPORTEMENT  = (
-          _F(RELATION = 'JOINT_BA',
-             GROUP_MA = 'CUBEDEG',
-             RESI_INTE_RELA = 1.E-6,
-             ITER_INTE_MAXI  = 15, ),
-          _F(RELATION = 'ELAS',
-             GROUP_MA = 'CUBE',),
-          ),
-  INCREMENT  = _F(LIST_INST = L_INST,
-                  INST_FIN = 30.,),
-  NEWTON     = _F(MATRICE = 'TANGENTE',
-                  PAS_MINI_ELAS = 0.0001,
-                  REAC_ITER=1),
-  )
+U = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM,
+    EXCIT=(_F(CHARGE=LIAISON), _F(CHARGE=TRACTION, FONC_MULT=FC1)),
+    COMPORTEMENT=(
+        _F(RELATION="JOINT_BA", GROUP_MA="CUBEDEG", RESI_INTE_RELA=1.0e-6, ITER_INTE_MAXI=15),
+        _F(RELATION="ELAS", GROUP_MA="CUBE"),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=30.0),
+    NEWTON=_F(MATRICE="TANGENTE", PAS_MINI_ELAS=0.0001, REAC_ITER=1),
+)
 
 
-U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA'),RESULTAT=U)
+U = CALC_CHAMP(reuse=U, CONTRAINTE=("SIGM_ELNO"), DEFORMATION=("EPSI_ELGA"), RESULTAT=U)
 
 
-
-L_CAST=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
-                             12.,14.,16.,18.,20.,
-                             22.,24.,26.,28.,30.,),)
+L_CAST = DEFI_LIST_REEL(
+    VALE=(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0)
+)
 
 # ---------------- Resultats ----------------------
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U,
-                  NOM_CHAM='SIGM_ELNO',
-                  LIST_INST=L_CAST,
-                  FORM_TABL='OUI',
-                  GROUP_MA = 'CUBEDEG',
-                  IMPR_COOR='NON',),)
+IMPR_RESU(
+    FORMAT="RESULTAT",
+    RESU=_F(
+        RESULTAT=U,
+        NOM_CHAM="SIGM_ELNO",
+        LIST_INST=L_CAST,
+        FORM_TABL="OUI",
+        GROUP_MA="CUBEDEG",
+        IMPR_COOR="NON",
+    ),
+)
 
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,
-                  NOM_CHAM='SIEF_ELGA',
-                  TOUT_CMP='OUI',
-                  LIST_INST=L_CAST,
-                  FORM_TABL='OUI',
-                  GROUP_MA = 'CUBEDEG',
-                  IMPR_COOR='NON',),
-                  ),)
+IMPR_RESU(
+    FORMAT="RESULTAT",
+    RESU=(
+        _F(
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            TOUT_CMP="OUI",
+            LIST_INST=L_CAST,
+            FORM_TABL="OUI",
+            GROUP_MA="CUBEDEG",
+            IMPR_COOR="NON",
+        ),
+    ),
+)
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=U,
-                  NOM_CHAM='VARI_ELGA',
-                  TOUT_CMP='OUI',
-                  LIST_INST=L_CAST,
-                  FORM_TABL='OUI',
-                  GROUP_MA = 'CUBEDEG',
-                  IMPR_COOR='NON',),
-                  ),)
+IMPR_RESU(
+    FORMAT="RESULTAT",
+    RESU=(
+        _F(
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            TOUT_CMP="OUI",
+            LIST_INST=L_CAST,
+            FORM_TABL="OUI",
+            GROUP_MA="CUBEDEG",
+            IMPR_COOR="NON",
+        ),
+    ),
+)
 
 # --------- Comparaison des Resultats avec FEAP ----------------
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIGN',
-                   VALE_CALC=-0.100975841,
-                   VALE_REFE=-0.099407999999999996,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=80,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIGN',
-                   VALE_CALC=-0.152327869,
-                   VALE_REFE=-0.15456,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=120,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIGN',
-                   VALE_CALC=-0.147200095,
-                   VALE_REFE=-0.14405999999999999,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=300,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIGN',
-                   VALE_CALC=-0.106914072,
-                   VALE_REFE=-0.10692,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=20,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIGN",
+            VALE_CALC=-0.100975841,
+            VALE_REFE=-0.099407999999999996,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=80,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIGN",
+            VALE_CALC=-0.152327869,
+            VALE_REFE=-0.15456,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=120,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIGN",
+            VALE_CALC=-0.147200095,
+            VALE_REFE=-0.14405999999999999,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=300,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIGN",
+            VALE_CALC=-0.106914072,
+            VALE_REFE=-0.10692,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SITX',
-                   VALE_CALC=-7.657676084,
-                   VALE_REFE=-7.5890000000000004,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=80,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SITX',
-                   VALE_CALC=-11.552056827,
-                   VALE_REFE=-11.795999999999999,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=120,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SITX',
-                   VALE_CALC=-11.163183057,
-                   VALE_REFE=-10.994999999999999,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=300,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SITX',
-                   VALE_CALC=-8.108020029,
-                   VALE_REFE=-8.1593999999999998,
-                   PRECISION=0.050000000000000003,
-                   GROUP_MA='CUBEDEG',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=20,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SITX",
+            VALE_CALC=-7.657676084,
+            VALE_REFE=-7.5890000000000004,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=80,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SITX",
+            VALE_CALC=-11.552056827,
+            VALE_REFE=-11.795999999999999,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=120,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SITX",
+            VALE_CALC=-11.163183057,
+            VALE_REFE=-10.994999999999999,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=300,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SITX",
+            VALE_CALC=-8.108020029,
+            VALE_REFE=-8.1593999999999998,
+            PRECISION=0.050000000000000003,
+            GROUP_MA="CUBEDEG",
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   VALE_CALC=0.997202782,
-                   VALE_REFE=0.99720299999999995,
-                   PRECISION=1.E-3,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=80,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   VALE_CALC=0.998915385,
-                   VALE_REFE=0.99894799999999995,
-                   PRECISION=1.E-3,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=120,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   VALE_CALC=0.999309044,
-                   VALE_REFE=0.99936899999999995,
-                   PRECISION=1.E-3,
-                   GROUP_MA='CUBEDEG',),
-                _F(NUME_ORDRE=300,
-                   REFERENCE='SOURCE_EXTERNE',
-                   POINT=1,
-                   RESULTAT=U,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   VALE_CALC=0.999821236,
-                   VALE_REFE=0.99985400000000002,
-                   PRECISION=1.E-3,
-                   GROUP_MA='CUBEDEG',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=20,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V2",
+            VALE_CALC=0.997202782,
+            VALE_REFE=0.99720299999999995,
+            PRECISION=1.0e-3,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=80,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V2",
+            VALE_CALC=0.998915385,
+            VALE_REFE=0.99894799999999995,
+            PRECISION=1.0e-3,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=120,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V2",
+            VALE_CALC=0.999309044,
+            VALE_REFE=0.99936899999999995,
+            PRECISION=1.0e-3,
+            GROUP_MA="CUBEDEG",
+        ),
+        _F(
+            NUME_ORDRE=300,
+            REFERENCE="SOURCE_EXTERNE",
+            POINT=1,
+            RESULTAT=U,
+            NOM_CHAM="VARI_ELGA",
+            NOM_CMP="V2",
+            VALE_CALC=0.999821236,
+            VALE_REFE=0.99985400000000002,
+            PRECISION=1.0e-3,
+            GROUP_MA="CUBEDEG",
+        ),
+    )
+)
 
 # ---------------- fonctions ----------------------
 
 # ---- f(deplacement)
 
-UXP=RECU_FONCTION(RESULTAT=U,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  GROUP_NO='TOUTSEUL',
-                  LIST_INST=L_CAST,
-                  )
+UXP = RECU_FONCTION(
+    RESULTAT=U, NOM_CHAM="DEPL", NOM_CMP="DX", GROUP_NO="TOUTSEUL", LIST_INST=L_CAST
+)
 
-SXYLI1=RECU_FONCTION(RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SITX',
-                   GROUP_MA ='CUBEDEG',
-                   POINT = 1,
-                   LIST_INST=L_CAST,
-                   )
+SXYLI1 = RECU_FONCTION(
+    RESULTAT=U, NOM_CHAM="SIEF_ELGA", NOM_CMP="SITX", GROUP_MA="CUBEDEG", POINT=1, LIST_INST=L_CAST
+)
 
-SXYLI2=RECU_FONCTION(RESULTAT=U,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SITX',
-                   GROUP_MA ='CUBEDEG',
-                   POINT = 2,
-                   LIST_INST=L_CAST,
-                   )
+SXYLI2 = RECU_FONCTION(
+    RESULTAT=U, NOM_CHAM="SIEF_ELGA", NOM_CMP="SITX", GROUP_MA="CUBEDEG", POINT=2, LIST_INST=L_CAST
+)
 
 
 # ---- f(variables internes)
 
-V21D=RECU_FONCTION(RESULTAT=U,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   GROUP_MA ='CUBEDEG',
-                   POINT = 1,
-                   LIST_INST=L_CAST,
-                   )
+V21D = RECU_FONCTION(
+    RESULTAT=U, NOM_CHAM="VARI_ELGA", NOM_CMP="V2", GROUP_MA="CUBEDEG", POINT=1, LIST_INST=L_CAST
+)
 
-V22D=RECU_FONCTION(RESULTAT=U,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   GROUP_MA ='CUBEDEG',
-                   POINT = 2,
-                   LIST_INST=L_CAST,
-                   )
+V22D = RECU_FONCTION(
+    RESULTAT=U, NOM_CHAM="VARI_ELGA", NOM_CMP="V2", GROUP_MA="CUBEDEG", POINT=2, LIST_INST=L_CAST
+)
 
 # ---------- en format AGRAF ----------
 #
@@ -354,29 +340,26 @@ V22D=RECU_FONCTION(RESULTAT=U,
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
 
-IMPR_FONCTION( UNITE=25,
-            FORMAT='AGRAF',
-            TITRE='CONTRAINTE TANGENTIELLE EN FONCTION DE UX ',
-            LEGENDE_X='UX(mm)',
-            LEGENDE_Y='CONTRAINTE (MPa)',
-            COURBE=(_F(FONC_X=UXP,
-                       FONC_Y=SXYLI1,),
-                    _F(FONC_X=UXP,
-                       FONC_Y=SXYLI2,),
-                      ),)
+IMPR_FONCTION(
+    UNITE=25,
+    FORMAT="AGRAF",
+    TITRE="CONTRAINTE TANGENTIELLE EN FONCTION DE UX ",
+    LEGENDE_X="UX(mm)",
+    LEGENDE_Y="CONTRAINTE (MPa)",
+    COURBE=(_F(FONC_X=UXP, FONC_Y=SXYLI1), _F(FONC_X=UXP, FONC_Y=SXYLI2)),
+)
 
 # COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
 
 
-IMPR_FONCTION( UNITE=27, UNITE_DIGR=28,
-            FORMAT='AGRAF',
-            TITRE='ENDOMMAGEMENT EN FONCTION DE UX ',
-            LEGENDE_X='UX(mm)',
-            LEGENDE_Y='VARIABLE D''ENDOMMAGEMENT TANGENTIEL (D)',
-            COURBE=(_F(FONC_X=UXP,
-                       FONC_Y=V21D,),
-                    _F(FONC_X=UXP,
-                       FONC_Y=V22D,),
-                       ),)
+IMPR_FONCTION(
+    UNITE=27,
+    UNITE_DIGR=28,
+    FORMAT="AGRAF",
+    TITRE="ENDOMMAGEMENT EN FONCTION DE UX ",
+    LEGENDE_X="UX(mm)",
+    LEGENDE_Y="VARIABLE D" "ENDOMMAGEMENT TANGENTIEL (D)",
+    COURBE=(_F(FONC_X=UXP, FONC_Y=V21D), _F(FONC_X=UXP, FONC_Y=V22D)),
+)
 
 FIN()

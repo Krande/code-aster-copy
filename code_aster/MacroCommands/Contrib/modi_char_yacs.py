@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,24 +21,28 @@
 #
 #  RECUPERATION DES EFFORTS VIA YACS POUR COUPLAGE IFS
 #
-#TODO ExecuteCommand
+# TODO ExecuteCommand
 
 from ...Cata.DataStructure import *
 from ...Cata.Syntax import *
 
-MODI_CHAR_YACS=OPER(nom            = "MODI_CHAR_YACS",
-                   op              = 112,
-                   sd_prod         = char_meca,
-                   reentrant       = 'o',
-                   fr              = tr("Reception des forces nodales via YACS lors du couplage de  Code_Aster et Saturne"),
-                   CHAR_MECA       = SIMP(statut ='o', typ = char_meca),
-                   MATR_PROJECTION = SIMP(statut ='o', typ = corresp_2_mailla,),
-                   NOM_CMP_IFS     = SIMP(statut ='o', typ = 'TXM',validators = NoRepeat(), max = '**'),
-                   VIS_A_VIS       = FACT(statut ='o', max = '**',
-                                   GROUP_MA_1 = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-                                   GROUP_NO_2 = SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**'),),
-                   INST            = SIMP(statut='o',typ='R', ),
-                   PAS             = SIMP(statut='o',typ='R', ),
-                   NUME_ORDRE_YACS = SIMP(statut='o', typ='I',),
-                   INFO            = SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-);
+MODI_CHAR_YACS = OPER(
+    nom="MODI_CHAR_YACS",
+    op=112,
+    sd_prod=char_meca,
+    reentrant="o",
+    fr=tr("Reception des forces nodales via YACS lors du couplage de  Code_Aster et Saturne"),
+    CHAR_MECA=SIMP(statut="o", typ=char_meca),
+    MATR_PROJECTION=SIMP(statut="o", typ=corresp_2_mailla),
+    NOM_CMP_IFS=SIMP(statut="o", typ="TXM", validators=NoRepeat(), max="**"),
+    VIS_A_VIS=FACT(
+        statut="o",
+        max="**",
+        GROUP_MA_1=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_NO_2=SIMP(statut="o", typ=grno, validators=NoRepeat(), max="**"),
+    ),
+    INST=SIMP(statut="o", typ="R"),
+    PAS=SIMP(statut="o", typ="R"),
+    NUME_ORDRE_YACS=SIMP(statut="o", typ="I"),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,75 +25,61 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('PRES','PHI',))
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("PRES", "PHI"))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
-EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y','W',))
+EGGEOP_R = LocatedComponents(
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
+)
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class MEFASE2(Element):
     """Please document this element"""
+
     meshType = MT.SEG2
-    elrefe =(
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','FPG1=FPG1',), mater=('RIGI','FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG2", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)
     calculs = (
-
-        OP.COOR_ELGA(te=478,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        OP.COOR_ELGA(
+            te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
-
-        OP.IMPE_ABSO(te=550,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PVITENT, DDL_MECA), (SP.PVITPLU, DDL_MECA),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
+        OP.IMPE_ABSO(
+            te=550,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PVITENT, DDL_MECA),
+                (SP.PVITPLU, DDL_MECA),
+            ),
+            para_out=((SP.PVECTUR, MVECTUR),),
         ),
-
-        OP.IMPE_MECA(te=258,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDR, LC.EIMPEDR),
-                     (SP.PMATERC, LC.CMATERC), ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
+        OP.IMPE_MECA(
+            te=258,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDR, LC.EIMPEDR), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
-
-        OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-        ),
-
-        OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), ),
-        ),
-
-
-        OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
-
+        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
     )
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class MEFASE3(MEFASE2):
     """Please document this element"""
+
     meshType = MT.SEG3
-    elrefe =(
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('RIGI','FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("RIGI", "FPG1")),)

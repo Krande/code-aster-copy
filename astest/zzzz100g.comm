@@ -21,8 +21,7 @@
 import numpy as np
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',), )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 from zzzz100g import MACRO_TEST
 
@@ -61,7 +60,7 @@ ymax = 100.0
 Lcx = 40.0
 Lcy = 40.0
 beta_E = 0.2
-cov_E = sqrt(exp(beta_E ** 2) - 1.0)
+cov_E = sqrt(exp(beta_E**2) - 1.0)
 Esol = 18885000000
 Am_E = Esol
 nbmod = 60

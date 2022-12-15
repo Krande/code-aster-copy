@@ -34,47 +34,48 @@ Voir issue18751
 import numpy as NP
 from numpy import linalg as LA
 
+
 def store(lst, array):
     """Store value of `array` in a list of float."""
     lst.extend(array.real.ravel())
     if array.dtype == NP.complex:
         lst.extend(array.imag.ravel())
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 vale = []
 
-mat = NP.array([[ 1.83531490-0.j, 1.83502967+0.j],
-                [ 1.83502967-0.j, 1.83531490-0.j]])
+mat = NP.array([[1.83531490 - 0.0j, 1.83502967 + 0.0j], [1.83502967 - 0.0j, 1.83531490 - 0.0j]])
 a, b = LA.eig(mat)
 store(vale, a)
 store(vale, b)
-print('EIG : ',  a, b)
+print("EIG : ", a, b)
 
 iv = NP.linalg.inv(mat)
 store(vale, iv)
-print('INVERSE : ', iv)
+print("INVERSE : ", iv)
 
 # cholesky matrice reelle
 matrc = LA.cholesky(mat.real)
 store(vale, matrc)
-print('TEST CHOL R', matrc)
+print("TEST CHOL R", matrc)
 
 # cholesky matrice complexe
 matc = LA.cholesky(mat)
 store(vale, matc)
-print('TEST CHOL', matc)
+print("TEST CHOL", matc)
 
-mati = NP.array([[ 0.31830989-0.j,         0.15522542+0.12818923j],
-                 [ 0.15522542-0.12818923j, 0.15915494-0.j]])
+mati = NP.array(
+    [[0.31830989 - 0.0j, 0.15522542 + 0.12818923j], [0.15522542 - 0.12818923j, 0.15915494 - 0.0j]]
+)
 matc = LA.cholesky(mati)
 store(vale, matc)
-print('TEST CHOL', matc)
+print("TEST CHOL", matc)
 
-tab = CREA_TABLE(LISTE=(_F(PARA='I',
-                           LISTE_I=list(range(len(vale)))),
-                        _F(PARA='VALE',
-                           LISTE_R=vale)))
+tab = CREA_TABLE(
+    LISTE=(_F(PARA="I", LISTE_I=list(range(len(vale)))), _F(PARA="VALE", LISTE_R=vale))
+)
 
 """
 Les resultats sont :
@@ -90,496 +91,457 @@ TEST CHOL [[ 0.56418959+0.j          0.00000000+0.j        ]
  [ 0.27512989-0.22720949j  0.17842177+0.j        ]]
 """
 
-#for i, xval in enumerate(vale):
-    #crit = abs(xval) < 1.e-8 and 'ABSOLU' or 'RELATIF'
-    #print """
-#TEST_TABLE(TABLE=tab,
-           #FILTRE=_F(NOM_PARA='I',
-                     #VALE_I=%d),
-           #NOM_PARA='VALE',
-           #VALE=%.8e,
-           #CRITERE=%r,
-           #PRECISION=1.e-6,
-           #REFERENCE='ANALYTIQUE',)""" % (i, xval, crit)
+# for i, xval in enumerate(vale):
+# crit = abs(xval) < 1.e-8 and 'ABSOLU' or 'RELATIF'
+# print """
+# TEST_TABLE(TABLE=tab,
+# FILTRE=_F(NOM_PARA='I',
+# VALE_I=%d),
+# NOM_PARA='VALE',
+# VALE=%.8e,
+# CRITERE=%r,
+# PRECISION=1.e-6,
+# REFERENCE='ANALYTIQUE',)""" % (i, xval, crit)
 
 # Vecteurs et matrices sont mis bout a bout dans 'vale'. On teste chaque terme.
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=3.670344570,
-           VALE_REFE=3.6703445700000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=0,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 2.85230000E-04,
-           VALE_REFE=2.8522999999999998E-4,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=1,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=2,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=3,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=0.707106781,
-           VALE_REFE=0.70710678100000002,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=4,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=0.707106781,
-           VALE_REFE=0.70710678100000002,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=5,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=0.707106781,
-           VALE_REFE=0.70710678100000002,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=6,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=-0.707106781,
-           VALE_REFE=-0.70710678100000002,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=7,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=8,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=9,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=10,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=-0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=11,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 1.75310751E+03,
-           VALE_REFE=1753.10751,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=12,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=-1.75283506E+03,
-           VALE_REFE=-1752.8350600000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=13,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=-1.75283506E+03,
-           VALE_REFE=-1752.8350600000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=14,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 1.75310751E+03,
-           VALE_REFE=1753.10751,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=15,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=16,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=17,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=18,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=19,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=1.354737945,
-           VALE_REFE=1.3547379500000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=20,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=21,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=1.354527403,
-           VALE_REFE=1.3545274,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=22,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=0.023883376,
-           VALE_REFE=0.023883376500000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=23,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=1.354737945,
-           VALE_REFE=1.3547379500000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=24,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=25,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=1.354527403,
-           VALE_REFE=1.3545274,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=26,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=0.023883376,
-           VALE_REFE=0.023883376500000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=27,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=28,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=29,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=30,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=31,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=0.564189587,
-           VALE_REFE=0.56418958699999999,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=32,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=33,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=0.275129892,
-           VALE_REFE=0.27512989199999999,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=34,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC=0.178421773,
-           VALE_REFE=0.17842177300000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=35,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=9.9999999999999995E-07,
-
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=36,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=37,),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC=-0.227209493,
-           VALE_REFE=-0.22720949300000001,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=38,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-
-           PRECISION=9.9999999999999995E-07,
-           VALE_CALC= 0.00000000E+00,
-           VALE_REFE=0.0,
-           NOM_PARA='VALE',
-           TABLE=tab,
-           FILTRE=_F(NOM_PARA='I',
-                     VALE_I=39,),
-           )
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=3.670344570,
+    VALE_REFE=3.6703445700000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=0),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=2.85230000e-04,
+    VALE_REFE=2.8522999999999998e-4,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=1),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=2),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=3),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.707106781,
+    VALE_REFE=0.70710678100000002,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=4),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.707106781,
+    VALE_REFE=0.70710678100000002,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=5),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.707106781,
+    VALE_REFE=0.70710678100000002,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=6),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=-0.707106781,
+    VALE_REFE=-0.70710678100000002,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=7),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=8),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=9),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=10),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=-0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=11),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=1.75310751e03,
+    VALE_REFE=1753.10751,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=12),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=-1.75283506e03,
+    VALE_REFE=-1752.8350600000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=13),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=-1.75283506e03,
+    VALE_REFE=-1752.8350600000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=14),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=1.75310751e03,
+    VALE_REFE=1753.10751,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=15),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=16),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=17),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=18),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=19),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=1.354737945,
+    VALE_REFE=1.3547379500000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=20),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=21),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=1.354527403,
+    VALE_REFE=1.3545274,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=22),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.023883376,
+    VALE_REFE=0.023883376500000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=23),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=1.354737945,
+    VALE_REFE=1.3547379500000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=24),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=25),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=1.354527403,
+    VALE_REFE=1.3545274,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=26),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.023883376,
+    VALE_REFE=0.023883376500000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=27),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=28),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=29),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=30),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=31),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.564189587,
+    VALE_REFE=0.56418958699999999,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=32),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=33),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.275129892,
+    VALE_REFE=0.27512989199999999,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=34),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.178421773,
+    VALE_REFE=0.17842177300000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=35),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=36),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=37),
+)
+
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=-0.227209493,
+    VALE_REFE=-0.22720949300000001,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=38),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=9.9999999999999995e-07,
+    VALE_CALC=0.00000000e00,
+    VALE_REFE=0.0,
+    NOM_PARA="VALE",
+    TABLE=tab,
+    FILTRE=_F(NOM_PARA="I", VALE_I=39),
+)
 
 FIN()

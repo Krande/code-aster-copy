@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,30 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'JONC_ENDO_PLAS',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement dediee aux jonctions voile-planchers (comportement elasto-plastique endommageable en rotation autour de l'axe z local) pour des elements discrets"""              ,
-    num_lc         = 0,
-    nb_vari        = 9,
-    nom_vari       = ('ROTATOTA','ROTAPLAS','ROTAPLUS','ROTAMOIN','XCIN_MZZ','DISSTOTA','ENDOPLUS','ENDOMOIN','INISEUIL'),  
-    mc_mater       = None,
-    modelisation   = ('DIS_TR'), #('DIS_TR','2D_DIS_TR',),
-    deformation    = ('PETIT',), #('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('SPECIFIQUE',),
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="JONC_ENDO_PLAS",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement dediee aux jonctions voile-planchers (comportement elasto-plastique endommageable en rotation autour de l'axe z local) pour des elements discrets""",
+    num_lc=0,
+    nb_vari=9,
+    nom_vari=(
+        "ROTATOTA",
+        "ROTAPLAS",
+        "ROTAPLUS",
+        "ROTAMOIN",
+        "XCIN_MZZ",
+        "DISSTOTA",
+        "ENDOPLUS",
+        "ENDOMOIN",
+        "INISEUIL",
+    ),
+    mc_mater=None,
+    modelisation=("DIS_TR"),  # ('DIS_TR','2D_DIS_TR',),
+    deformation=("PETIT",),  # ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte=("SPECIFIQUE",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

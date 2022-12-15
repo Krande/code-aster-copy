@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,19 +31,21 @@ from .CalcEssai.cata_ce import CalcEssaiObjects
 from .CalcEssai.ce_test import MessageBox, TestCalcEssai
 
 
-def calc_essai_ops(self,
-                   UNITE_RESU=None,
-                   EXPANSION=None,
-                   IDENTIFICATION=None,
-                   MODIFSTRUCT=None,
-                   TRAITEMENTSIG=None,
-                   GROUP_NO_CAPTEURS=None,
-                   GROUP_NO_EXTERIEUR=None,
-                   RESU_IDENTIFICATION=None,
-                   RESU_MODIFSTRU=None,
-                   **args):
+def calc_essai_ops(
+    self,
+    UNITE_RESU=None,
+    EXPANSION=None,
+    IDENTIFICATION=None,
+    MODIFSTRUCT=None,
+    TRAITEMENTSIG=None,
+    GROUP_NO_CAPTEURS=None,
+    GROUP_NO_EXTERIEUR=None,
+    RESU_IDENTIFICATION=None,
+    RESU_MODIFSTRU=None,
+    **args
+):
     if MODIFSTRUCT:
-        UTMESS('F', 'CALCESSAI0_2')
+        UTMESS("F", "CALCESSAI0_2")
 
     # 1: exec_, 2: run_, 3: run, 4: user
     context = get_caller_context(4)
@@ -54,11 +56,13 @@ def calc_essai_ops(self,
     table_fonction = []
     if RESU_IDENTIFICATION:
         for res in RESU_IDENTIFICATION:
-            table_fonction.append(res['TABLE'])
-    out_identification = {"Register": self.register_result,
-                          "TypeTables": 'TABLE_FONCTION',
-                          "ComptTable": 0,
-                          "TablesOut": table_fonction}
+            table_fonction.append(res["TABLE"])
+    out_identification = {
+        "Register": self.register_result,
+        "TypeTables": "TABLE_FONCTION",
+        "ComptTable": 0,
+        "TablesOut": table_fonction,
+    }
 
     out_modifstru = RESU_MODIFSTRU or {}
 
@@ -68,17 +72,18 @@ def calc_essai_ops(self,
     objects.recup_objects(context)
 
     # importation des concepts aster existants de la memoire jeveux
-    TestCalcEssai(  self,
-                    mess,
-                    out_identification,
-                    out_modifstru,
-                    objects,
-                    EXPANSION,
-                    IDENTIFICATION,
-                    MODIFSTRUCT,
-                    GROUP_NO_CAPTEURS,
-                    GROUP_NO_EXTERIEUR
-                )
+    TestCalcEssai(
+        self,
+        mess,
+        out_identification,
+        out_modifstru,
+        objects,
+        EXPANSION,
+        IDENTIFICATION,
+        MODIFSTRUCT,
+        GROUP_NO_CAPTEURS,
+        GROUP_NO_EXTERIEUR,
+    )
 
     mess.close_file()
     onFatalError(prev)

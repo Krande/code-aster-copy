@@ -44,12 +44,18 @@ test.assertSequenceEqual(nodes_nume[rank], mesh.getNodes(localNumbering=False))
 mesh_raf = CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI"))
 nb_nodes_raf = [15, 12]
 nb_cells_raf = [18, 14]
-nodes_rank_raf = [[0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-                   0, 0, 1, 0], [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1]]
-nodes_nume_raf = [[0, 1, 2, 14, 3, 15, 4, 5, 6, 7, 8, 9, 10, 19, 11],
-                  [12, 13, 14, 15, 6, 16, 17, 8, 18, 19, 11, 20]]
-cells_rank_raf = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                   0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1]]
+nodes_rank_raf = [
+    [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+    [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+]
+nodes_nume_raf = [
+    [0, 1, 2, 14, 3, 15, 4, 5, 6, 7, 8, 9, 10, 19, 11],
+    [12, 13, 14, 15, 6, 16, 17, 8, 18, 19, 11, 20],
+]
+cells_rank_raf = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1],
+]
 test.assertEqual(nb_nodes_raf[rank], mesh_raf.getNumberOfNodes())
 test.assertEqual(nb_cells_raf[rank], mesh_raf.getNumberOfCells())
 test.assertTrue(mesh_raf.isParallel())

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,13 +19,13 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (AcousticDirichletBC, MechanicalDirichletBC,
-                       ThermalDirichletBC)
+from ..Objects import AcousticDirichletBC, MechanicalDirichletBC, ThermalDirichletBC
 from ..Supervis import ExecuteCommand
 
 
 class DirichletBCDefinition(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.DirichletBC`."""
+
     command_name = "AFFE_CHAR_CINE"
 
     def create_result(self, keywords):
@@ -35,18 +35,18 @@ class DirichletBCDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         model = keywords["MODELE"]
-        if keywords.get( "MECA_IMPO" ) is not None:
+        if keywords.get("MECA_IMPO") is not None:
             self._result = MechanicalDirichletBC(model)
-        elif keywords.get( "THER_IMPO" ) is not None:
+        elif keywords.get("THER_IMPO") is not None:
             self._result = ThermalDirichletBC(model)
-        elif keywords.get( "ACOU_IMPO" ) is not None:
+        elif keywords.get("ACOU_IMPO") is not None:
             self._result = AcousticDirichletBC(model)
-        elif keywords.get( "EVOL_IMPO" ) is not None:
-            if (keywords.get( "EVOL_IMPO" ).getType() in ('EVOL_ELAS', 'EVOL_NOLI')):
+        elif keywords.get("EVOL_IMPO") is not None:
+            if keywords.get("EVOL_IMPO").getType() in ("EVOL_ELAS", "EVOL_NOLI"):
                 self._result = MechanicalDirichletBC(model)
-            elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_THER':
+            elif keywords.get("EVOL_IMPO").getType() == "EVOL_THER":
                 self._result = ThermalDirichletBC(model)
-            elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_ACOU':
+            elif keywords.get("EVOL_IMPO").getType() == "EVOL_ACOU":
                 self._result = AcousticDirichletBC(model)
             else:
                 raise NotImplementedError("Must be implemented")

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ from . import *
 
 class sd_reperage_1d(AsBase):
     nomj = SDNom(fin=19)
-    TYPE = AsVI(SDNom(debut=19), )
-    EXTR = AsVR(SDNom(debut=19), )
-    ORIG = AsVR(SDNom(debut=19), )
+    TYPE = AsVI(SDNom(debut=19))
+    EXTR = AsVR(SDNom(debut=19))
+    ORIG = AsVR(SDNom(debut=19))
 
     def check_1(self, checker):
         type = self.TYPE.get()

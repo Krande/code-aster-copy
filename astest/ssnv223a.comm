@@ -17,61 +17,60 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-E       = 30000.
-NU      = 0.2
-ft      = 3.
-Gf      = 0.1
-D       = 50.
-p       = 5.
-fc      = 15.
-tau     = 4.
+E = 30000.0
+NU = 0.2
+ft = 3.0
+Gf = 0.1
+D = 50.0
+p = 5.0
+fc = 15.0
+tau = 4.0
 
 
-wy   = 0.5*ft**2/E
-k    = 0.75*Gf/D
-m    = k/wy
-C    = 0.375*Gf*D
-pena = 1.E3 * k
-comp = (fc-ft)*tau*(1+NU)*3**0.5/(2*ft*fc*(1-2*NU))
-coef = (fc+ft)*tau*(1+NU)*3**0.5/(2*ft*fc*(1+NU))
-volu = (coef**2-1)*2*(1+NU)/(1-2*NU)
+wy = 0.5 * ft**2 / E
+k = 0.75 * Gf / D
+m = k / wy
+C = 0.375 * Gf * D
+pena = 1.0e3 * k
+comp = (fc - ft) * tau * (1 + NU) * 3**0.5 / (2 * ft * fc * (1 - 2 * NU))
+coef = (fc + ft) * tau * (1 + NU) * 3**0.5 / (2 * ft * fc * (1 + NU))
+volu = (coef**2 - 1) * 2 * (1 + NU) / (1 - 2 * NU)
 
 
 # solution analytique pour a = 0.6
 # --------------------------------
 
-cS = E/2./( (1-2*NU)*comp + (1+NU)*(volu/2*(1-2*NU)/(1+NU)+1)**0.5 )**2
+cS = (
+    E
+    / 2.0
+    / ((1 - 2 * NU) * comp + (1 + NU) * (volu / 2 * (1 - 2 * NU) / (1 + NU) + 1) ** 0.5) ** 2
+)
 cT = comp * cS**0.5
-cH = volu * cS * 0.5*(1+NU)/(1-2*NU)
+cH = volu * cS * 0.5 * (1 + NU) / (1 - 2 * NU)
 
-a    = 0.6
-Da   = m*(a-1)*(a+1+2*p*a)/( (1-a)**2 + m*a*(1+p*a) )**2
-Geps = -k/Da
-eps  = Geps**0.5 / (cT+(cH+cS)**0.5)
+a = 0.6
+Da = m * (a - 1) * (a + 1 + 2 * p * a) / ((1 - a) ** 2 + m * a * (1 + p * a)) ** 2
+Geps = -k / Da
+eps = Geps**0.5 / (cT + (cH + cS) ** 0.5)
 
 
 # Orientation en biais de la sollicitation
 
-nx =  1./5**0.5
-ny =  2./5**0.5
+nx = 1.0 / 5**0.5
+ny = 2.0 / 5**0.5
 
 
 # -----------------------------------------------------
 #                 MAILLAGE ET MODELE
 # -----------------------------------------------------
 
-MA  =  LIRE_MAILLAGE(FORMAT="ASTER",)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 MO = AFFE_MODELE(
-  MAILLAGE = MA,
-  AFFE     = _F(
-    GROUP_MA     = 'MATIERE',
-    PHENOMENE    = 'MECANIQUE',
-    MODELISATION = 'D_PLAN_GRAD_VARI'
-    ),
-  )
+    MAILLAGE=MA, AFFE=_F(GROUP_MA="MATIERE", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_GRAD_VARI")
+)
 
 
 # -----------------------------------------------------
@@ -79,18 +78,12 @@ MO = AFFE_MODELE(
 # -----------------------------------------------------
 
 BETON = DEFI_MATERIAU(
-  ELAS          = _F(E=E, NU=NU),
-  ENDO_SCALAIRE = _F(K=k,M=m,P=p,C_VOLU=volu,C_COMP=comp),
-  NON_LOCAL     = _F(C_GRAD_VARI = C, PENA_LAGR = pena),
-  )
+    ELAS=_F(E=E, NU=NU),
+    ENDO_SCALAIRE=_F(K=k, M=m, P=p, C_VOLU=volu, C_COMP=comp),
+    NON_LOCAL=_F(C_GRAD_VARI=C, PENA_LAGR=pena),
+)
 
-CHMAT = AFFE_MATERIAU(
-  MAILLAGE = MA,
-  AFFE = _F(
-    GROUP_MA = 'MATIERE',
-    MATER    =  BETON
-    ),
-  )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(GROUP_MA="MATIERE", MATER=BETON))
 
 
 # -----------------------------------------------------
@@ -100,88 +93,78 @@ CHMAT = AFFE_MATERIAU(
 dx = {}
 dy = {}
 dz = {}
-for i in [0,1,2]:
-  for j in [0,1,2]:
-    dx[i*10+j] = eps*(nx*i+ny*j)*nx
-    dy[i*10+j] = eps*(nx*i+ny*j)*ny
+for i in [0, 1, 2]:
+    for j in [0, 1, 2]:
+        dx[i * 10 + j] = eps * (nx * i + ny * j) * nx
+        dy[i * 10 + j] = eps * (nx * i + ny * j) * ny
 
 
 TRACTION = AFFE_CHAR_MECA(
-  MODELE = MO,
-  DDL_IMPO = (
-    _F(GROUP_NO='G00',DX=dx[00],DY=dy[00]),
-    _F(GROUP_NO='G20',DX=dx[20],DY=dy[20]),
-    _F(GROUP_NO='G22',DX=dx[22],DY=dy[22]),
-    _F(GROUP_NO='G02',DX=dx[0o2],DY=dy[0o2]),
-    _F(GROUP_NO='G10',DX=dx[10],DY=dy[10]),
-    _F(GROUP_NO='G21',DX=dx[21],DY=dy[21]),
-    _F(GROUP_NO='G12',DX=dx[12],DY=dy[12]),
-    _F(GROUP_NO='G01',DX=dx[0o1],DY=dy[0o1]),
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="G00", DX=dx[00], DY=dy[00]),
+        _F(GROUP_NO="G20", DX=dx[20], DY=dy[20]),
+        _F(GROUP_NO="G22", DX=dx[22], DY=dy[22]),
+        _F(GROUP_NO="G02", DX=dx[0o2], DY=dy[0o2]),
+        _F(GROUP_NO="G10", DX=dx[10], DY=dy[10]),
+        _F(GROUP_NO="G21", DX=dx[21], DY=dy[21]),
+        _F(GROUP_NO="G12", DX=dx[12], DY=dy[12]),
+        _F(GROUP_NO="G01", DX=dx[0o1], DY=dy[0o1]),
     ),
-  )
+)
 
 
-INSTANTS = DEFI_LIST_REEL(
-  DEBUT = 0,
-  INTERVALLE = (
-    _F(JUSQU_A = 100, NOMBRE = 100)
-    )
-  )
+INSTANTS = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=100, NOMBRE=100)))
 
 EVOL = STAT_NON_LINE(
-  MODELE     = MO,
-  CHAM_MATER = CHMAT,
-  EXCIT      = _F(CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO'),
-  PILOTAGE   = _F(
-    TYPE           = 'PRED_ELAS',
-    SELECTION      = 'MIXTE',
-    COEF_MULT      =  10,
-    ETA_PILO_R_MIN =   0,
-    ETA_PILO_R_MAX =  10,
-    ETA_PILO_MAX   =   1,
-    PROJ_BORNES    = 'OUI',
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=TRACTION, TYPE_CHARGE="FIXE_PILO"),
+    PILOTAGE=_F(
+        TYPE="PRED_ELAS",
+        SELECTION="MIXTE",
+        COEF_MULT=10,
+        ETA_PILO_R_MIN=0,
+        ETA_PILO_R_MAX=10,
+        ETA_PILO_MAX=1,
+        PROJ_BORNES="OUI",
     ),
-  COMPORTEMENT = _F(RELATION  = 'ENDO_SCALAIRE'),
-  INCREMENT = _F(LIST_INST = INSTANTS),
-  NEWTON    = _F(MATRICE='TANGENTE', REAC_ITER = 1),
-  CONVERGENCE = _F(
-    SIGM_REFE      = ft,
-    VARI_REFE      = 1.,
-    LAGR_REFE      = k,
-    RESI_REFE_RELA = 1.E-5,
-    ITER_GLOB_MAXI = 15,
+    COMPORTEMENT=_F(RELATION="ENDO_SCALAIRE"),
+    INCREMENT=_F(LIST_INST=INSTANTS),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(
+        SIGM_REFE=ft, VARI_REFE=1.0, LAGR_REFE=k, RESI_REFE_RELA=1.0e-5, ITER_GLOB_MAXI=15
     ),
-  SOLVEUR   = _F(
-    METHODE     = 'MUMPS',
+    SOLVEUR=_F(METHODE="MUMPS"),
+)
 
-    ),
-  )
-
-tfin_pilo = 6.
+tfin_pilo = 6.0
 
 # -----------------------------------------------------
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
 # -----------------------------------------------------
 
-EVOL=CALC_CHAMP(reuse =EVOL,
-                RESULTAT=EVOL,
-                CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO'),
-                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'))
+EVOL = CALC_CHAMP(
+    reuse=EVOL,
+    RESULTAT=EVOL,
+    CONTRAINTE=("SIGM_ELGA", "SIGM_ELNO", "SIEF_ELNO"),
+    VARI_INTERNE=("VARI_ELNO", "VARI_NOEU"),
+)
 
 # -----------------------------------------------------
 #     EXTRACTION SUR LA FACE DROITE DU QUADGRANGLE
 # -----------------------------------------------------
 
 RESU = POST_RELEVE_T(
-  ACTION = _F(
-    INTITULE  = 'RESULTAT',
-    OPERATION = 'EXTRACTION',
-    RESULTAT  =  EVOL,
-    NOM_CHAM  = 'VARI_NOEU',
-    NOM_CMP   = 'V1',
-    GROUP_NO  = ('G20','G21','G22'),
-    ),
-  )
+    ACTION=_F(
+        INTITULE="RESULTAT",
+        OPERATION="EXTRACTION",
+        RESULTAT=EVOL,
+        NOM_CHAM="VARI_NOEU",
+        NOM_CMP="V1",
+        GROUP_NO=("G20", "G21", "G22"),
+    )
+)
 
 IMPR_TABLE(TABLE=RESU)
 
@@ -190,44 +173,35 @@ IMPR_TABLE(TABLE=RESU)
 # -----------------------------------------------------
 
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
-           VALE_CALC=0.599999732,
-           VALE_REFE=0.59999999999999998,
-           NOM_PARA='V1',
-           TABLE=RESU,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=6.0,),
-                   _F(NOM_PARA='COOR_Y',
-                      VALE=0,),
-                   ),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-3,
+    VALE_CALC=0.599999732,
+    VALE_REFE=0.59999999999999998,
+    NOM_PARA="V1",
+    TABLE=RESU,
+    FILTRE=(_F(NOM_PARA="INST", VALE=6.0), _F(NOM_PARA="COOR_Y", VALE=0)),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
-           VALE_CALC=0.599999732,
-           VALE_REFE=0.59999999999999998,
-           NOM_PARA='V1',
-           TABLE=RESU,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=6.0,),
-                   _F(NOM_PARA='COOR_Y',
-                      VALE=1,),
-                   ),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-3,
+    VALE_CALC=0.599999732,
+    VALE_REFE=0.59999999999999998,
+    NOM_PARA="V1",
+    TABLE=RESU,
+    FILTRE=(_F(NOM_PARA="INST", VALE=6.0), _F(NOM_PARA="COOR_Y", VALE=1)),
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-3,
-           VALE_CALC=0.599999732,
-           VALE_REFE=0.59999999999999998,
-           NOM_PARA='V1',
-           TABLE=RESU,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=6.0,),
-                   _F(NOM_PARA='COOR_Y',
-                      VALE=2,),
-                   ),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-3,
+    VALE_CALC=0.599999732,
+    VALE_REFE=0.59999999999999998,
+    NOM_PARA="V1",
+    TABLE=RESU,
+    FILTRE=(_F(NOM_PARA="INST", VALE=6.0), _F(NOM_PARA="COOR_Y", VALE=2)),
+)
 
 
 FIN()

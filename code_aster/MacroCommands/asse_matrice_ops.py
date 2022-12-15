@@ -27,7 +27,7 @@ from ..Objects import (
     ElementaryMatrixDisplacementReal,
     ElementaryMatrixDisplacementComplex,
     ElementaryMatrixTemperatureReal,
-    ElementaryMatrixPressureComplex
+    ElementaryMatrixPressureComplex,
 )
 from ..Utilities import force_list
 
@@ -47,13 +47,13 @@ def asse_matrice_ops(self, **args):
 
     # Create result
     matr_elem = force_list(args["MATR_ELEM"])
-    if (isinstance(matr_elem[0], ElementaryMatrixDisplacementReal)):
+    if isinstance(matr_elem[0], ElementaryMatrixDisplacementReal):
         matr = AssemblyMatrixDisplacementReal()
-    elif(isinstance(matr_elem[0], ElementaryMatrixDisplacementComplex)):
+    elif isinstance(matr_elem[0], ElementaryMatrixDisplacementComplex):
         matr = AssemblyMatrixDisplacementComplex()
-    elif(isinstance(matr_elem[0], ElementaryMatrixTemperatureReal)):
+    elif isinstance(matr_elem[0], ElementaryMatrixTemperatureReal):
         matr = AssemblyMatrixTemperatureReal()
-    elif(isinstance(matr_elem[0], ElementaryMatrixPressureComplex)):
+    elif isinstance(matr_elem[0], ElementaryMatrixPressureComplex):
         matr = AssemblyMatrixPressureComplex()
     else:
         raise RuntimeError("Unexpected matrix")

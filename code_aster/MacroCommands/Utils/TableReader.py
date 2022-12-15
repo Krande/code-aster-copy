@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,18 +30,14 @@ from ...Utilities import cut_long_lines, maximize_lines
 from ...Utilities.misc import _printDBG, set_debug
 
 # Aster type : regular expression
-FMT = {
-    'I': r'([0-9\-\+]+)',
-    'R': r'([0-9\.,\-\+eEdD]+)',
-    'K': '(.{%(len)s})'
-}
+FMT = {"I": r"([0-9\-\+]+)", "R": r"([0-9\.,\-\+eEdD]+)", "K": "(.{%(len)s})"}
 
 
 def msplit(chaine, separ):
     """Similar to str.split(separ) with one or several occurrences
     of the separator.
     """
-    return re.split('%s+' % re.escape(separ), chaine.strip(separ))
+    return re.split("%s+" % re.escape(separ), chaine.strip(separ))
 
 
 def convert(valk):
@@ -54,7 +50,7 @@ def convert(valk):
                 val = float(valk)
         except ValueError:
             # try with ',' as decimal separator
-            val = float(valk.replace(',', '.'))
+            val = float(valk.replace(",", "."))
     except ValueError:
         val = valk
     return val
@@ -63,9 +59,10 @@ def convert(valk):
 class TableReader(object):
 
     """Standard reader of a Table."""
-    id_vide = ''
 
-    def __init__(self, text, separator=' ', debug=False):
+    id_vide = ""
+
+    def __init__(self, text, separator=" ", debug=False):
         """Initialization"""
         self.text = text
         self.sep = separator
@@ -88,7 +85,7 @@ class TableReader(object):
 
     def read_line_i(self, i, line):
         """Read a line."""
-        raise NotImplementedError('must be defined in a derivated class')
+        raise NotImplementedError("must be defined in a derivated class")
 
     def read_all_lines(self):
         """Loop on the lines and add values to the Table."""
@@ -99,7 +96,7 @@ class TableReader(object):
     def read(self, nblock=None, check_para=None):
         """Read and create the Table.
         'check_para' is a function to check the list of the parameters."""
-        raise NotImplementedError('must be defined in a derivated class')
+        raise NotImplementedError("must be defined in a derivated class")
 
 
 class TableReaderFree(TableReader):
@@ -108,14 +105,12 @@ class TableReaderFree(TableReader):
 
     def split_tab(self, nblock):
         """Split the text to extract the 'nblock'-th block."""
-        all_lines = [
-            line for line in self.text.splitlines() if line.strip() != '']
-        stat = [[], ]
+        all_lines = [line for line in self.text.splitlines() if line.strip() != ""]
+        stat = [[]]
         nbcol = 0
         curblock = 0
-        _printDBG("NB: Les lignes sont numérotées après la suppression "
-                  "des lignes vides.")
-        _printDBG("Début de la table {} à la ligne {}".format(curblock+1, 1) )
+        _printDBG("NB: Les lignes sont numérotées après la suppression " "des lignes vides.")
+        _printDBG("Début de la table {} à la ligne {}".format(curblock + 1, 1))
         curblock_hasvalue = False
         for i, line in enumerate(all_lines):
             cur = len(msplit(line, self.sep))
@@ -124,7 +119,7 @@ class TableReaderFree(TableReader):
                 cur = 0
             elif nbcol > 1 and cur < nbcol:
                 # less fields = new block
-                _printDBG("Début de la table {} à la ligne {}".format(curblock+2, i+1) )
+                _printDBG("Début de la table {} à la ligne {}".format(curblock + 2, i + 1))
                 if curblock >= nblock and not self.debug:
                     break
                 curblock += 1
@@ -137,7 +132,7 @@ class TableReaderFree(TableReader):
         nbtab = len(stat)
         _printDBG("Nombre de blocs lus :", nbtab, pformat(stat))
         if nblock > nbtab:
-            raise error('TABLE0_10', None, (nblock, nbtab))
+            raise error("TABLE0_10", None, (nblock, nbtab))
         return stat[nblock - 1]
 
     def extract_lines(self, stat):
@@ -151,10 +146,9 @@ class TableReaderFree(TableReader):
             else:
                 ltit.append(line)
         ltit = cut_long_lines(os.linesep.join(ltit), 80)
-        self.title = os.linesep.join(
-            maximize_lines(ltit.splitlines(), 80, ' '))
+        self.title = os.linesep.join(maximize_lines(ltit.splitlines(), 80, " "))
         _printDBG("TITLE:", self.title)
-        _printDBG("LINES:", '\n', self.lines)
+        _printDBG("LINES:", "\n", self.lines)
         return nbcol
 
     def read_line_i(self, i, line):
@@ -169,9 +163,9 @@ class TableReaderFree(TableReader):
         line_para = self.lines.pop(0)
         para = msplit(line_para, self.sep)
         if len(para) != nbcol:
-            raise error('TABLE0_43', line_para, nbcol)
+            raise error("TABLE0_43", line_para, nbcol)
         # if sep != ' ', parameter may contain a space (not valid in Table)
-        para = [p.replace(' ', '_') for p in para]
+        para = [p.replace(" ", "_") for p in para]
         if callable(check_para):
             para = check_para(para)
         _printDBG("PARAMS:", para)
@@ -183,21 +177,23 @@ class TableReaderFree(TableReader):
 class TableReaderTableau(TableReaderFree):
 
     """Table reader in TABLEAU format."""
-    id_vide = '-'
+
+    id_vide = "-"
 
     def is_comment(self, line):
         """Tell if 'line' is a comment"""
         # _printDBG('is_comment : %s : %s' % (line.startswith('#'), line))
-        return line.startswith('#')
+        return line.startswith("#")
 
 
 class TableReaderAster(TableReader):
 
     """Table reader in ASTER format."""
-    idt_deb = '#DEBUT_TABLE\n'
-    idt_fin = '#FIN_TABLE\n'
-    idt_tit = '#TITRE'
-    id_vide = '-'
+
+    idt_deb = "#DEBUT_TABLE\n"
+    idt_fin = "#FIN_TABLE\n"
+    idt_tit = "#TITRE"
+    id_vide = "-"
 
     def _build_row(self, values):
         """Make a dict line."""
@@ -213,27 +209,29 @@ class TableReaderAster(TableReader):
 
     def split_tab(self, nblock):
         """Split the text to extract the 'nblock'-th block."""
-        expr = re.escape(self.idt_deb) + '(.*?)' + re.escape(self.idt_fin)
+        expr = re.escape(self.idt_deb) + "(.*?)" + re.escape(self.idt_fin)
         re_split_tab = re.compile(expr, re.MULTILINE | re.DOTALL)
         l_txttab = re_split_tab.findall(self.text)
         nbtab = len(l_txttab)
         if nblock > nbtab:
-            raise error('TABLE0_10', None, (nblock, nbtab))
+            raise error("TABLE0_10", None, (nblock, nbtab))
         self.text = l_txttab[nblock - 1]
         _printDBG("TEXT:", self.text)
 
     def set_title(self):
         """Extract the title"""
-        exp = re.compile(re.escape(self.idt_tit) + '(.*)$', re.M)
-        self.title = os.linesep.join(
-            [s.strip(self.sep) for s in exp.findall(self.text)])
+        exp = re.compile(re.escape(self.idt_tit) + "(.*)$", re.M)
+        self.title = os.linesep.join([s.strip(self.sep) for s in exp.findall(self.text)])
         _printDBG("TITLE:", self.title)
 
     def extract_lines(self):
         """Extract the text of the lines"""
-        self.lines = [line for line in self.text.splitlines()
-                      if line.strip(self.sep) != '' and not line.startswith(self.idt_tit)]
-        _printDBG("LINES:", '\n', self.lines)
+        self.lines = [
+            line
+            for line in self.text.splitlines()
+            if line.strip(self.sep) != "" and not line.startswith(self.idt_tit)
+        ]
+        _printDBG("LINES:", "\n", self.lines)
 
     def read_line_i(self, i, line):
         """Read a line."""
@@ -241,12 +239,11 @@ class TableReaderAster(TableReader):
         mat = re.search(self.re_line, line)
         _printDBG(line, len(para), mat)
         if mat is None or len(para) != len(mat.groups()):
-            lerr = [error('TABLE0_11', vali=i + 1),
-                    error('TABLE0_13', vali=len(para))]
+            lerr = [error("TABLE0_11", vali=i + 1), error("TABLE0_13", vali=len(para))]
             if mat is not None:
-                lerr.append(error('TABLE0_12', vali=len(mat.groups())))
+                lerr.append(error("TABLE0_12", vali=len(mat.groups())))
             else:
-                lerr.append(error('TABLE0_15', valk=(line, self.re_line)))
+                lerr.append(error("TABLE0_15", valk=(line, self.re_line)))
             raise error(lerr)
         return mat.groups()
 
@@ -266,8 +263,8 @@ class TableReaderAster(TableReader):
         _printDBG("TYPES:", types)
         self.tab = Table(para=para, typ=types, titr=self.title)
 
-        lfmt = [FMT[typ[0]] % {'len': typ[1:]} for typ in types]
-        self.re_line = ('%s+' % re.escape(self.sep)).join(lfmt)
+        lfmt = [FMT[typ[0]] % {"len": typ[1:]} for typ in types]
+        self.re_line = ("%s+" % re.escape(self.sep)).join(lfmt)
         _printDBG("REGEXP:", self.re_line)
 
         self.read_all_lines()
@@ -276,9 +273,9 @@ class TableReaderAster(TableReader):
 
 def TableReaderFactory(text, fmt, separator, debug=False):
     """Return the appropriate reader."""
-    if fmt == 'ASTER':
+    if fmt == "ASTER":
         return TableReaderAster(text, separator, debug)
-    elif fmt == 'TABLEAU':
+    elif fmt == "TABLEAU":
         return TableReaderTableau(text, separator, debug)
     else:
         return TableReaderFree(text, separator, debug)
@@ -292,12 +289,12 @@ def unique_parameters(l_para):
         i = 0
         while newp in res:
             i += 1
-            newp = '%s_%d' % (par, i)
+            newp = "%s_%d" % (par, i)
         res.append(newp)
     return res
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     txt = """
 A B C
 1. 2. nom

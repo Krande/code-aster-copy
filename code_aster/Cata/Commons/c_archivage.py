@@ -23,15 +23,21 @@ from ..Language.DataStructure import listr8_sdaster
 from ..Language.Syntax import BLOC, EXCLUS, FACT, SIMP, NoRepeat
 
 
-def C_ARCHIVAGE() : return FACT(statut='d',max=1,
-    regles         = (EXCLUS('PAS_ARCH','LIST_INST','INST'),),
-    LIST_INST      = SIMP(statut='f',typ=(listr8_sdaster) ),
-    INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-    PAS_ARCH       = SIMP(statut='f',typ='I' ),
-    CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-           b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-           b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-              PRECISION       =SIMP(statut='o',typ='R',),),
-    CHAM_EXCLU     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',),
-)
+def C_ARCHIVAGE():
+    return FACT(
+        statut="d",
+        max=1,
+        regles=(EXCLUS("PAS_ARCH", "LIST_INST", "INST"),),
+        LIST_INST=SIMP(statut="f", typ=(listr8_sdaster)),
+        INST=SIMP(statut="f", typ="R", validators=NoRepeat(), max="**"),
+        PAS_ARCH=SIMP(statut="f", typ="I"),
+        CRITERE=SIMP(statut="f", typ="TXM", defaut="RELATIF", into=("RELATIF", "ABSOLU")),
+        b_prec_rela=BLOC(
+            condition="""(equal_to("CRITERE", 'RELATIF'))""",
+            PRECISION=SIMP(statut="f", typ="R", defaut=1.0e-6),
+        ),
+        b_prec_abso=BLOC(
+            condition="""(equal_to("CRITERE", 'ABSOLU'))""", PRECISION=SIMP(statut="o", typ="R")
+        ),
+        CHAM_EXCLU=SIMP(statut="f", typ="TXM", validators=NoRepeat(), max="**"),
+    )

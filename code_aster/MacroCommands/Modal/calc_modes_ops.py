@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,113 +34,109 @@ from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS
 
 def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
     """
-       Macro-command CALC_MODES, main file
+    Macro-command CALC_MODES, main file
     """
 
     args = _F(args)
     VERI_MODE = args.get("VERI_MODE")
-    l_multi_bandes = False # logical indicating if the computation is performed
-                           # for DYNAMICAL modes on several bands
+    l_multi_bandes = False  # logical indicating if the computation is performed
+    # for DYNAMICAL modes on several bands
     sys.stdout.flush()
 
     # to prepare the work of AMELIORATION='OUI'
-    stop_erreur= None
-    sturm     = None
-    if (AMELIORATION=='OUI'):
-        if OPTION in ('SEPARE', 'AJUSTE', 'PROCHE'):
-            UTMESS('F', 'ALGELINE5_21')
-        stop_erreur='NON'
-        sturm      ='NON'
+    stop_erreur = None
+    sturm = None
+    if AMELIORATION == "OUI":
+        if OPTION in ("SEPARE", "AJUSTE", "PROCHE"):
+            UTMESS("F", "ALGELINE5_21")
+        stop_erreur = "NON"
+        sturm = "NON"
         # Warnings from op/op0045.F90 & algeline/vpcntl.F90
-        MasquerAlarme('ALGELINE2_74')
-        MasquerAlarme('ALGELINE5_15')
-        MasquerAlarme('ALGELINE5_16')
-        MasquerAlarme('ALGELINE5_17')
-        MasquerAlarme('ALGELINE5_18')
-        MasquerAlarme('ALGELINE5_20')
-        MasquerAlarme('ALGELINE5_23')
-        MasquerAlarme('ALGELINE5_24')
-        MasquerAlarme('ALGELINE5_25')
-        MasquerAlarme('ALGELINE5_26')
-        MasquerAlarme('ALGELINE5_77')
-        MasquerAlarme('ALGELINE5_78')
-        MasquerAlarme('ALGELINE6_23')
-        MasquerAlarme('ALGELINE6_24')
+        MasquerAlarme("ALGELINE2_74")
+        MasquerAlarme("ALGELINE5_15")
+        MasquerAlarme("ALGELINE5_16")
+        MasquerAlarme("ALGELINE5_17")
+        MasquerAlarme("ALGELINE5_18")
+        MasquerAlarme("ALGELINE5_20")
+        MasquerAlarme("ALGELINE5_23")
+        MasquerAlarme("ALGELINE5_24")
+        MasquerAlarme("ALGELINE5_25")
+        MasquerAlarme("ALGELINE5_26")
+        MasquerAlarme("ALGELINE5_77")
+        MasquerAlarme("ALGELINE5_78")
+        MasquerAlarme("ALGELINE6_23")
+        MasquerAlarme("ALGELINE6_24")
     else:
-        stop_erreur=VERI_MODE['STOP_ERREUR']
-        sturm      =VERI_MODE['STURM']
+        stop_erreur = VERI_MODE["STOP_ERREUR"]
+        sturm = VERI_MODE["STURM"]
 
+    if TYPE_RESU == "DYNAMIQUE":
 
-    if (TYPE_RESU == 'DYNAMIQUE'):
-
-        if (OPTION == 'BANDE'):
-            if len(args['CALC_FREQ']['FREQ']) > 2:
+        if OPTION == "BANDE":
+            if len(args["CALC_FREQ"]["FREQ"]) > 2:
                 l_multi_bandes = True
                 # modes computation over several frequency bands,
                 # with optional parallelization of the bands
-                modes = calc_modes_multi_bandes(self, stop_erreur,
-                                                sturm, INFO, **args)
+                modes = calc_modes_multi_bandes(self, stop_erreur, sturm, INFO, **args)
 
     if not l_multi_bandes:
-        if OPTION in ('PLUS_PETITE', 'PLUS_GRANDE', 'CENTRE', 'BANDE', 'TOUT'):
+        if OPTION in ("PLUS_PETITE", "PLUS_GRANDE", "CENTRE", "BANDE", "TOUT"):
             # call the MODE_ITER_SIMULT command
-            modes = calc_modes_simult(self, stop_erreur, sturm, TYPE_RESU,
-                                      OPTION, INFO, **args)
+            modes = calc_modes_simult(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args)
 
-        elif OPTION in ('SEPARE', 'AJUSTE', 'PROCHE'):
+        elif OPTION in ("SEPARE", "AJUSTE", "PROCHE"):
             # call the MODE_ITER_INV command
-            modes = calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION,
-                                   INFO, **args)
+            modes = calc_modes_inv(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args)
 
-    if AMELIORATION=='OUI':
+    if AMELIORATION == "OUI":
         # after a 1st modal computation, achieve a 2nd computation with MODE_ITER_INV
         # and option 'PROCHE' to refine the modes
-        RetablirAlarme('ALGELINE2_74')
-        RetablirAlarme('ALGELINE5_15')
-        RetablirAlarme('ALGELINE5_16')
-        RetablirAlarme('ALGELINE5_17')
-        RetablirAlarme('ALGELINE5_18')
-        RetablirAlarme('ALGELINE5_20')
-        RetablirAlarme('ALGELINE5_23')
-        RetablirAlarme('ALGELINE5_24')
-        RetablirAlarme('ALGELINE5_25')
-        RetablirAlarme('ALGELINE5_26')
-        RetablirAlarme('ALGELINE5_77')
-        RetablirAlarme('ALGELINE5_78')
-        RetablirAlarme('ALGELINE6_23')
-        RetablirAlarme('ALGELINE6_24')
+        RetablirAlarme("ALGELINE2_74")
+        RetablirAlarme("ALGELINE5_15")
+        RetablirAlarme("ALGELINE5_16")
+        RetablirAlarme("ALGELINE5_17")
+        RetablirAlarme("ALGELINE5_18")
+        RetablirAlarme("ALGELINE5_20")
+        RetablirAlarme("ALGELINE5_23")
+        RetablirAlarme("ALGELINE5_24")
+        RetablirAlarme("ALGELINE5_25")
+        RetablirAlarme("ALGELINE5_26")
+        RetablirAlarme("ALGELINE5_77")
+        RetablirAlarme("ALGELINE5_78")
+        RetablirAlarme("ALGELINE6_23")
+        RetablirAlarme("ALGELINE6_24")
         modes = calc_modes_amelioration(self, modes, TYPE_RESU, INFO, **args)
 
     ##################
     # post-traitements
     ##################
-    if (TYPE_RESU == 'DYNAMIQUE'):
+    if TYPE_RESU == "DYNAMIQUE":
 
-        lmatphys = False # logical indicating if the matrices are physical or not (generalized)
+        lmatphys = False  # logical indicating if the matrices are physical or not (generalized)
         if args["MATR_RIGI"].getType() == "MATR_ASSE_DEPL_R":
             lmatphys = True
 
         if lmatphys:
             norme_mode = None
-            if args['NORM_MODE'] is not None:
-                norme_mode = args['NORM_MODE']
+            if args["NORM_MODE"] is not None:
+                norme_mode = args["NORM_MODE"]
             filtre_mode = None
-            if args['FILTRE_MODE'] is not None:
-                filtre_mode = args['FILTRE_MODE']
+            if args["FILTRE_MODE"] is not None:
+                filtre_mode = args["FILTRE_MODE"]
             impression = None
-            if args['IMPRESSION'] is not None:
-                impression = args['IMPRESSION']
+            if args["IMPRESSION"] is not None:
+                impression = args["IMPRESSION"]
             if (norme_mode is not None) or (filtre_mode is not None) or (impression is not None):
                 modes = calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression)
 
     else:
         norme_mode = None
-        if args['NORM_MODE'] is not None:
-            norme_mode = args['NORM_MODE']
+        if args["NORM_MODE"] is not None:
+            norme_mode = args["NORM_MODE"]
         lmatphys = False
         filtre_mode = None
         impression = None
-        if (norme_mode is not None):
+        if norme_mode is not None:
             modes = calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression)
 
     matrRigi = args.get("MATR_RIGI")

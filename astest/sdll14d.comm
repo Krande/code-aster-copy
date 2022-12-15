@@ -22,106 +22,111 @@
 #  - MODELISATION AVEC DES ELEMENTS 'TUYAU'
 #  - CALCUL DE LA PLUS GRANDE FREQUENCE PROPRE
 #    AVEC L'OPTION 'PLUS_GRANDE'
-#---------------------------------------------------------------------
-DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
-       IGNORE_ALARM=('ALGELINE3_58',),)
+# ---------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("ALGELINE3_58",))
 
 #
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',   INFO=2)
+MAILLAGE = LIRE_MAILLAGE(FORMAT="MED", INFO=2)
 
 #
-MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,         MAILLAGE=MAILLAGE,CREA_GROUP_NO=(
-                          _F(  NOM = 'A',  GROUP_NO = 'NO23'),
-                          _F(  NOM = 'B',  GROUP_NO = 'NO2'),
-                          _F(  NOM = 'C',  GROUP_NO = 'NO40'),
-                          _F(  NOM = 'D',  GROUP_NO = 'NO1')))
+MAILLAGE = DEFI_GROUP(
+    reuse=MAILLAGE,
+    MAILLAGE=MAILLAGE,
+    CREA_GROUP_NO=(
+        _F(NOM="A", GROUP_NO="NO23"),
+        _F(NOM="B", GROUP_NO="NO2"),
+        _F(NOM="C", GROUP_NO="NO40"),
+        _F(NOM="D", GROUP_NO="NO1"),
+    ),
+)
 
-MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
-                            AFFE=_F( TOUT = 'OUI',
-                                  PHENOMENE = 'MECANIQUE',
-                                  MODELISATION = 'TUYAU_3M')
-                     )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="TUYAU_3M")
+)
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        CARACTERISTIQUES ELEMENTAIRES
-#---------------------------------------------------------------------
-CARELEM=AFFE_CARA_ELEM(   MODELE=MODELE,
-                           POUTRE=_F( GROUP_MA = 'TOUT_ELE',
-                                   SECTION = 'CERCLE',
-                                   CARA = ('R', 'EP',),
-                                   VALE = (0.010, 0.002,),
-                          MODI_METRIQUE = 'OUI'),
-                            ORIENTATION=_F( GROUP_NO = 'D',
-                                         CARA = 'GENE_TUYAU',
-                                         VALE = (0., 0., 1.,))
-                          )
+# ---------------------------------------------------------------------
+CARELEM = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    POUTRE=_F(
+        GROUP_MA="TOUT_ELE",
+        SECTION="CERCLE",
+        CARA=("R", "EP"),
+        VALE=(0.010, 0.002),
+        MODI_METRIQUE="OUI",
+    ),
+    ORIENTATION=_F(GROUP_NO="D", CARA="GENE_TUYAU", VALE=(0.0, 0.0, 1.0)),
+)
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        CARACTERISTIQUES MATERIAUX
-#---------------------------------------------------------------------
-MATER=DEFI_MATERIAU(   ELAS=_F( E = 2.1E+11, NU = 0.3, RHO = 7800.))
+# ---------------------------------------------------------------------
+MATER = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, RHO=7800.0))
 
 #
-AFF_MAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
-                               AFFE=_F( TOUT = 'OUI', MATER = MATER)
-                         )
+AFF_MAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE, AFFE=_F(TOUT="OUI", MATER=MATER))
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        CHARGEMENTS
-#---------------------------------------------------------------------
-COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
-                             _F( GROUP_NO = ('C', 'D',),
-                                BLOCAGE = ('DEPLACEMENT','ROTATION','TUYAU_FOURIER'),),
-                             _F( GROUP_NO = 'B',
-                                      DX = 0., DZ = 0.),
-                             _F( GROUP_NO = 'A',
-                                      DY = 0., DZ = 0.))
-                          )
+# ---------------------------------------------------------------------
+COND_LIM = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(GROUP_NO=("C", "D"), BLOCAGE=("DEPLACEMENT", "ROTATION", "TUYAU_FOURIER")),
+        _F(GROUP_NO="B", DX=0.0, DZ=0.0),
+        _F(GROUP_NO="A", DY=0.0, DZ=0.0),
+    ),
+)
 
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        RESOLUTION
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 ## CALCUL DE LA PLUS GRANDE FREQUENCE PROPRE
 # - avec l'option 'PLUS_GRANDE'
-ASSEMBLAGE(MODELE=MODELE,
-           CHAM_MATER=AFF_MAT,
-           CARA_ELEM=CARELEM,
-           CHARGE=COND_LIM,
-           NUME_DDL=CO('NUM'),
-           MATR_ASSE=(_F(MATRICE=CO('MATASSR'),
-                         OPTION='RIGI_MECA',),
-                      _F(MATRICE=CO('MATASSM'),
-                         OPTION='MASS_MECA',),),
-           )
+ASSEMBLAGE(
+    MODELE=MODELE,
+    CHAM_MATER=AFF_MAT,
+    CARA_ELEM=CARELEM,
+    CHARGE=COND_LIM,
+    NUME_DDL=CO("NUM"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATASSR"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MATASSM"), OPTION="MASS_MECA"),
+    ),
+)
 
-MODE_PG=CALC_MODES(MATR_RIGI=MATASSR,
-                   VERI_MODE=_F(STURM='NON',
-                                ),
-                   OPTION='PLUS_GRANDE',
-                   MATR_MASS=MATASSM,
-                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
-                                    ),
-                   )
+MODE_PG = CALC_MODES(
+    MATR_RIGI=MATASSR,
+    VERI_MODE=_F(STURM="NON"),
+    OPTION="PLUS_GRANDE",
+    MATR_MASS=MATASSM,
+    SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
+)
 
 
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 # LA VALEUR DE REFERENCE EST DONNEE PAR LA MODELISATION SDLL14E
-TEST_RESU(RESU=(
-                _F(RESULTAT = MODE_PG,
-                   PARA = 'FREQ',
-                   CRITERE = 'RELATIF',
-                   NUME_ORDRE = 1,
-                   VALE_CALC = 3.0520927416196E+05,
-                   REFERENCE='AUTRE_ASTER',
-                   VALE_REFE=3.05197690121E+05),
-    ),)
+TEST_RESU(
+    RESU=(
+        _F(
+            RESULTAT=MODE_PG,
+            PARA="FREQ",
+            CRITERE="RELATIF",
+            NUME_ORDRE=1,
+            VALE_CALC=3.0520927416196e05,
+            REFERENCE="AUTRE_ASTER",
+            VALE_REFE=3.05197690121e05,
+        ),
+    )
+)
 
 #
 FIN()

@@ -17,46 +17,33 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # DEFINITION DU PROBLEME
 # =======================
 
-MA0 = LIRE_MAILLAGE(FORMAT='MED',)
+MA0 = LIRE_MAILLAGE(FORMAT="MED")
 
-MA = CREA_MAILLAGE(MAILLAGE=MA0,
-                   MODI_HHO=_F(TOUT='OUI',
-                                PREF_NOEUD='NV',
-                                PREF_NUME=1,),
-                   INFO=1,)
+MA = CREA_MAILLAGE(MAILLAGE=MA0, MODI_HHO=_F(TOUT="OUI", PREF_NOEUD="NV", PREF_NUME=1), INFO=1)
 
 E = 200000.0
 
-MATERIAU = DEFI_MATERIAU(ELAS=_F(E=E,
-                                 NU=0.3,),
-                         ECRO_LINE=_F(D_SIGM_EPSI=1000.0,
-                                      SY=200.0,),)
+MATERIAU = DEFI_MATERIAU(ELAS=_F(E=E, NU=0.3), ECRO_LINE=_F(D_SIGM_EPSI=1000.0, SY=200.0))
 
-CH_MATER = AFFE_MATERIAU(MAILLAGE=MA,
-                         AFFE=_F(TOUT='OUI',
-                                 MATER=MATERIAU,),)
+CH_MATER = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATERIAU))
 
-INSTANTS = DEFI_LIST_REEL(DEBUT=0.0,
-                          INTERVALLE=(_F(JUSQU_A=0.1,
-                                         NOMBRE=8,),
-                                      _F(JUSQU_A=1.0,
-                                         NOMBRE=8,),),)
+INSTANTS = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=0.1, NOMBRE=8), _F(JUSQU_A=1.0, NOMBRE=8))
+)
 
-RAMPE = DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.0, 0.0,
-                            1.0, 1.0,),)
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=INSTANTS),
-                         ECHEC=_F(EVENEMENT='ERREUR',
-                                  ACTION='DECOUPE',
-                                  SUBD_METHODE='MANUEL',
-                                  SUBD_PAS=4,
-                                  SUBD_PAS_MINI=0.001),)
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=INSTANTS),
+    ECHEC=_F(
+        EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=4, SUBD_PAS_MINI=0.001
+    ),
+)
 
 coor1 = [0.0, 1.53224, 3.2689, 3.80797, 4.40378, 5.0]
 
@@ -75,128 +62,165 @@ Test6 = [440.5433244921241]
 Test7 = [-0.07225561795836133]
 
 
-MO = AFFE_MODELE(MAILLAGE=MA,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='3D_HHO',
-                         FORMULATION='LINEAIRE'),)
+MO = AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_HHO", FORMULATION="LINEAIRE"),
+)
 
-SYM = AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=(_F(GROUP_MA=('LCD_FACE', 'LBC_FACE',),
-                                   DY=0.0,),
-                                _F(GROUP_MA=('LDE_FACE', 'LEF_FACE',),
-                                    DX=0.0,),),)
+SYM = AFFE_CHAR_CINE(
+    MODELE=MO,
+    MECA_IMPO=(
+        _F(GROUP_MA=("LCD_FACE", "LBC_FACE"), DY=0.0),
+        _F(GROUP_MA=("LDE_FACE", "LEF_FACE"), DX=0.0),
+    ),
+)
 
-APPUI = AFFE_CHAR_CINE(MODELE=MO,
-                       MECA_IMPO=_F(TOUT='OUI',
-                                DZ=0.0,),)
+APPUI = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(TOUT="OUI", DZ=0.0))
 
-TRAC = AFFE_CHAR_CINE(MODELE=MO,
-                      MECA_IMPO=_F(GROUP_MA='LFG_FACE',
-                                DY=0.1,),)
+TRAC = AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F(GROUP_MA="LFG_FACE", DY=0.1))
 
 # CALCUL
 # ========
 
-RESU = STAT_NON_LINE(MODELE=MO,
-                     CHAM_MATER=CH_MATER,
-                     EXCIT=(_F(CHARGE=TRAC,
-                               FONC_MULT=RAMPE,),
-                            _F(CHARGE=SYM,),
-                            _F(CHARGE=APPUI,),),
-                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-                     INCREMENT=_F(LIST_INST=DEFLIST),
-                     SOLVEUR=_F(METHODE='MUMPS',),
-                     NEWTON=_F(REAC_ITER=1,),
-                     HHO=_F(STABILISATION='MANUEL', COEF_STAB=50 *
-                            E, OPTIMISATION='TEMPS',),
-                     ARCHIVAGE=_F(LIST_INST=INSTANTS,),)
+RESU = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CH_MATER,
+    EXCIT=(_F(CHARGE=TRAC, FONC_MULT=RAMPE), _F(CHARGE=SYM), _F(CHARGE=APPUI)),
+    COMPORTEMENT=_F(RELATION="VMIS_ISOT_LINE"),
+    INCREMENT=_F(LIST_INST=DEFLIST),
+    SOLVEUR=_F(METHODE="MUMPS"),
+    NEWTON=_F(REAC_ITER=1),
+    HHO=_F(STABILISATION="MANUEL", COEF_STAB=50 * E, OPTIMISATION="TEMPS"),
+    ARCHIVAGE=_F(LIST_INST=INSTANTS),
+)
 
 # POST TRAITEMENT
 # =================
 
-RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU,
-                  CONTRAINTE=('SIGM_ELNO', 'SIGM_NOEU',),)
+RESU = CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE=("SIGM_ELNO", "SIGM_NOEU"))
 
-S_T = MACR_LIGN_COUPE(RESULTAT=RESU, INST=1.0, NOM_CHAM='SIGM_NOEU',
-                      LIGN_COUPE=(
-                          _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(
-                              coor1[0], 1.0, 0.0,), COOR_EXTR=(coor1[1], 1.0, 0.0,),),
-                          _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(
-                              coor1[1], 1.0, 0.0,), COOR_EXTR=(coor1[2], 1.0, 0.0,),),
-                          _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(
-                              coor1[2], 1.0, 0.0,), COOR_EXTR=(coor1[3], 1.0, 0.0,),),
-                          _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(
-                              coor1[3], 1.0, 0.0,), COOR_EXTR=(coor1[4], 1.0, 0.0,),),
-                          _F(TYPE='SEGMENT', NB_POINTS=2, COOR_ORIG=(
-                              coor1[4], 1.0, 0.0,), COOR_EXTR=(coor1[5], 1.0, 0.0,),),
-                      ))
+S_T = MACR_LIGN_COUPE(
+    RESULTAT=RESU,
+    INST=1.0,
+    NOM_CHAM="SIGM_NOEU",
+    LIGN_COUPE=(
+        _F(
+            TYPE="SEGMENT",
+            NB_POINTS=2,
+            COOR_ORIG=(coor1[0], 1.0, 0.0),
+            COOR_EXTR=(coor1[1], 1.0, 0.0),
+        ),
+        _F(
+            TYPE="SEGMENT",
+            NB_POINTS=2,
+            COOR_ORIG=(coor1[1], 1.0, 0.0),
+            COOR_EXTR=(coor1[2], 1.0, 0.0),
+        ),
+        _F(
+            TYPE="SEGMENT",
+            NB_POINTS=2,
+            COOR_ORIG=(coor1[2], 1.0, 0.0),
+            COOR_EXTR=(coor1[3], 1.0, 0.0),
+        ),
+        _F(
+            TYPE="SEGMENT",
+            NB_POINTS=2,
+            COOR_ORIG=(coor1[3], 1.0, 0.0),
+            COOR_EXTR=(coor1[4], 1.0, 0.0),
+        ),
+        _F(
+            TYPE="SEGMENT",
+            NB_POINTS=2,
+            COOR_ORIG=(coor1[4], 1.0, 0.0),
+            COOR_EXTR=(coor1[5], 1.0, 0.0),
+        ),
+    ),
+)
 
 # TESTS
 # =======
 
 # ON TESTE PAR RAPPORT A LA MODELISATION B : ELEMENTS QUASI-INCOMPRESSIBLES
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
-           FILTRE=(
-               _F(NOM_PARA='COOR_X',    VALE=coor1[0],),
-               _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
-           VALE_REFE=234.12162679423, VALE_CALC=Test1, PRECISION=3.E-2,
-           )
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    TABLE=S_T,
+    NOM_PARA="SIYY",
+    FILTRE=(_F(NOM_PARA="COOR_X", VALE=coor1[0]), _F(NOM_PARA="ABSC_CURV", VALE=0.0)),
+    VALE_REFE=234.12162679423,
+    VALE_CALC=Test1,
+    PRECISION=3.0e-2,
+)
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
-           FILTRE=(
-               _F(NOM_PARA='COOR_X',    VALE=coor1[1],),
-               _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
-           VALE_REFE=256.98783319353, VALE_CALC=Test2, PRECISION=2.E-2,
-           )
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    TABLE=S_T,
+    NOM_PARA="SIYY",
+    FILTRE=(_F(NOM_PARA="COOR_X", VALE=coor1[1]), _F(NOM_PARA="ABSC_CURV", VALE=0.0)),
+    VALE_REFE=256.98783319353,
+    VALE_CALC=Test2,
+    PRECISION=2.0e-2,
+)
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
-           FILTRE=(
-               _F(NOM_PARA='COOR_X',    VALE=coor1[2],),
-               _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
-           VALE_REFE=300.28717383814, VALE_CALC=Test3, PRECISION=1.E-2,
-           )
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    TABLE=S_T,
+    NOM_PARA="SIYY",
+    FILTRE=(_F(NOM_PARA="COOR_X", VALE=coor1[2]), _F(NOM_PARA="ABSC_CURV", VALE=0.0)),
+    VALE_REFE=300.28717383814,
+    VALE_CALC=Test3,
+    PRECISION=1.0e-2,
+)
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
-           FILTRE=(
-               _F(NOM_PARA='COOR_X',    VALE=coor1[3],),
-               _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
-           VALE_REFE=267.55482695734, VALE_CALC=Test4, PRECISION=1.E-2,
-           )
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    TABLE=S_T,
+    NOM_PARA="SIYY",
+    FILTRE=(_F(NOM_PARA="COOR_X", VALE=coor1[3]), _F(NOM_PARA="ABSC_CURV", VALE=0.0)),
+    VALE_REFE=267.55482695734,
+    VALE_CALC=Test4,
+    PRECISION=1.0e-2,
+)
 
-TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
-           FILTRE=(
-               _F(NOM_PARA='COOR_X',    VALE=coor1[4],),
-               _F(NOM_PARA='ABSC_CURV', VALE=0.0,)),
-           VALE_REFE=183.4984987651, VALE_CALC=Test5, PRECISION=0.33,
-           )
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    TABLE=S_T,
+    NOM_PARA="SIYY",
+    FILTRE=(_F(NOM_PARA="COOR_X", VALE=coor1[4]), _F(NOM_PARA="ABSC_CURV", VALE=0.0)),
+    VALE_REFE=183.4984987651,
+    VALE_CALC=Test5,
+    PRECISION=0.33,
+)
 
 # --------------------------------------------------------------------------------
 #
 #  TEST SUR LES CONTRAINTES AU POINT B
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  RESULTAT=RESU,
-                  NOM_CHAM='SIGM_ELNO',
-                  GROUP_NO='N5',
-                  NOM_CMP='SIYY',
-                  VALE_CALC=Test6,
-                  CRITERE='RELATIF',
-                  GROUP_MA='M1294',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=RESU,
+        NOM_CHAM="SIGM_ELNO",
+        GROUP_NO="N5",
+        NOM_CMP="SIYY",
+        VALE_CALC=Test6,
+        CRITERE="RELATIF",
+        GROUP_MA="M1294",
+    )
+)
 
-TEST_RESU(RESU=_F(INST=1.0,
-                  RESULTAT=RESU,
-                  NOM_CHAM='SIGM_ELNO',
-                  GROUP_NO='N5',
-                  NOM_CMP='SIXX',
-                  VALE_CALC=Test7,
-                  CRITERE='RELATIF',
-                  GROUP_MA='M1294',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        INST=1.0,
+        RESULTAT=RESU,
+        NOM_CHAM="SIGM_ELNO",
+        GROUP_NO="N5",
+        NOM_CMP="SIXX",
+        VALE_CALC=Test7,
+        CRITERE="RELATIF",
+        GROUP_MA="M1294",
+    )
+)
 
 
 FIN()

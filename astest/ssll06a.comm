@@ -23,207 +23,170 @@
 #
 # LOADING CASE : LCAS_1 /  (Thermal expansion)
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 #
 # MESH AND FE-MODEL DEFINITIONS ##########
-MESH     = LIRE_MAILLAGE(FORMAT   = 'MED',);
-MESH     = MODI_MAILLAGE(reuse    = MESH,
-                         MAILLAGE = MESH,
-                         ECHELLE  = 1.E-3,
-                         #ABSC_CURV = _F(NOEUD_ORIG = 'PT_5',
-                         #               GROUP_MA   = ['BRAD_PT_10'])
-                         );
+MESH = LIRE_MAILLAGE(FORMAT="MED")
+MESH = MODI_MAILLAGE(
+    reuse=MESH,
+    MAILLAGE=MESH,
+    ECHELLE=1.0e-3,
+    # ABSC_CURV = _F(NOEUD_ORIG = 'PT_5',
+    #               GROUP_MA   = ['BRAD_PT_10'])
+)
 #
 #
-MODEL    = AFFE_MODELE  (MAILLAGE = MESH,
-                         AFFE     = (
-                                     _F(GROUP_MA   = ['BRAD_PT_10'],
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'POU_D_T',),
-                                    ),);
+MODEL = AFFE_MODELE(
+    MAILLAGE=MESH,
+    AFFE=(_F(GROUP_MA=["BRAD_PT_10"], PHENOMENE="MECANIQUE", MODELISATION="POU_D_T"),),
+)
 #
 # MATERIAL DEFINITIONS ##########
 #
 # MAT_1 : MAT_1 (Elastic (temperature-dependant))
-D1       = DEFI_CONSTANTE(VALE = 7869.328);
+D1 = DEFI_CONSTANTE(VALE=7869.328)
 #
-E1       = DEFI_FONCTION (NOM_PARA = 'TEMP',
-                          PROL_DROITE = 'CONSTANT',
-                          PROL_GAUCHE = 'CONSTANT',
-                          VALE        =   (21.1, 2e+11,
-                                        21.101, 2e+11,));
+E1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(21.1, 2e11, 21.101, 2e11)
+)
 #
-V1       = DEFI_FONCTION (NOM_PARA = 'TEMP',
-                          PROL_DROITE = 'CONSTANT',
-                          PROL_GAUCHE = 'CONSTANT',
-                          VALE        =   (21.1, 0.3,
-                                        21.101, 0.3,));
+V1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(21.1, 0.3, 21.101, 0.3)
+)
 #
-A1       = DEFI_FONCTION (NOM_PARA = 'TEMP',
-                          PROL_DROITE = 'CONSTANT',
-                          PROL_GAUCHE = 'CONSTANT',
-                          VALE        =   (21.1, 0,
-                                        21.101, 0,));
+A1 = DEFI_FONCTION(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(21.1, 0, 21.101, 0)
+)
 #
-MAT_1    = DEFI_MATERIAU(ELAS_FO = _F(RHO            = D1,
-                                      E              = E1,
-                                      NU             = V1,
-                                      ALPHA          = A1,
-                                      TEMP_DEF_ALPHA = 20.0),);
+MAT_1 = DEFI_MATERIAU(ELAS_FO=_F(RHO=D1, E=E1, NU=V1, ALPHA=A1, TEMP_DEF_ALPHA=20.0))
 #
 # TEMPERATURE FIELD ##########
-TEMP_IMP = CREA_CHAMP(MODELE = MODEL,
-                      TYPE_CHAM = 'CART_TEMP_R',
-                      OPERATION = 'AFFE',
-                      AFFE      = (
-                                      _F(GROUP_MA = ['BRAD_PT_10'],
-                                         NOM_CMP  = 'TEMP',
-                                         VALE     = 21.1),
-                                  ),);
+TEMP_IMP = CREA_CHAMP(
+    MODELE=MODEL,
+    TYPE_CHAM="CART_TEMP_R",
+    OPERATION="AFFE",
+    AFFE=(_F(GROUP_MA=["BRAD_PT_10"], NOM_CMP="TEMP", VALE=21.1),),
+)
 #
 # ASSIGNING MATERIAL TO ELEMENTS ##########
-MATER_F  = AFFE_MATERIAU(MAILLAGE  = MESH,
-                         AFFE      = (
-                                      _F(GROUP_MA = ['BRAD_PT_10'],
-                                         MATER    = MAT_1,),
-                                     ),
-                         # THERMAL EXPANSION
-                         AFFE_VARC = (
-                                       _F(TOUT     = 'OUI',
-                                          NOM_VARC ='TEMP',
-                                          VALE_REF = 20.0,
-                                          CHAM_GD  = TEMP_IMP,),
-                                      ),
-                         );
+MATER_F = AFFE_MATERIAU(
+    MAILLAGE=MESH,
+    AFFE=(_F(GROUP_MA=["BRAD_PT_10"], MATER=MAT_1),),
+    # THERMAL EXPANSION
+    AFFE_VARC=(_F(TOUT="OUI", NOM_VARC="TEMP", VALE_REF=20.0, CHAM_GD=TEMP_IMP),),
+)
 #
 # FINITE ELEMENTS CARACTERISTICS (DIAMETER, THICKNESS) ##########
-FE_CAR   = AFFE_CARA_ELEM(MODELE      = MODEL,
-                          POUTRE      = (
-                                         _F(GROUP_MA = ['BRAD_PT_10'],
-                                            SECTION  = 'CERCLE',
-                                            CARA     = ('R','EP'),
-                                            VALE     = (20.0*0.5E-3,
-                                                        2.0*1.E-3,
-                                                        ),),
-                                         ##############################################################################
-                                         # F L E X I B I L I T Y    C O E F F I C I E N T S
-                                         ##############################################################################
-                                         _F(GROUP_MA = 'BRAD_PT_10',
-                                            SECTION  = 'COUDE',
-                                            COEF_FLEX= 1.0,),
-                                        ),
-                          COQUE       = (
-                                        ),
-                          ORIENTATION = (
-                                        ),
-                          DISCRET     = (
-                                        ),
-                           );
+FE_CAR = AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    POUTRE=(
+        _F(
+            GROUP_MA=["BRAD_PT_10"],
+            SECTION="CERCLE",
+            CARA=("R", "EP"),
+            VALE=(20.0 * 0.5e-3, 2.0 * 1.0e-3),
+        ),
+        ##############################################################################
+        # F L E X I B I L I T Y    C O E F F I C I E N T S
+        ##############################################################################
+        _F(GROUP_MA="BRAD_PT_10", SECTION="COUDE", COEF_FLEX=1.0),
+    ),
+    COQUE=(),
+    ORIENTATION=(),
+    DISCRET=(),
+)
 #
 # MECHANICAL BOUNDARY CONDITIONS ##########
-BOUND_C  = AFFE_CHAR_MECA(MODELE   = MODEL,
-                          DDL_IMPO = (
-                                      _F(GROUP_NO = "ANCH_PT_5",
-                                         LIAISON  = 'ENCASTRE'),
-                                     ),
-                          DDL_POUTRE = (
-                                       ),
-                          LIAISON_DDL = (
-                                        ),
-                          # THERMAL STRATIFICATION (FANNY)
-                          PRE_EPSI = (
-                                       #KY and KZ are exchanged because of the local axis chosen (local Y and local Z are axchanged)
-                                      ),
-                          );
+BOUND_C = AFFE_CHAR_MECA(
+    MODELE=MODEL,
+    DDL_IMPO=(_F(GROUP_NO="ANCH_PT_5", LIAISON="ENCASTRE"),),
+    DDL_POUTRE=(),
+    LIAISON_DDL=(),
+    # THERMAL STRATIFICATION (FANNY)
+    PRE_EPSI=(
+        # KY and KZ are exchanged because of the local axis chosen (local Y and local Z are axchanged)
+    ),
+)
 #
 # EXTERNAL FORCES AND CHARGING #############
 #
 # FOR_2 : FORC_PT_10_CA_1 (Force)
-FOR_2    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "FORC_PT_10_CA_1",
-                                            FX       =  10.0,
-                                            FY       =  0.0,
-                                            FZ       =  0.0),);
+FOR_2 = AFFE_CHAR_MECA(
+    MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="FORC_PT_10_CA_1", FX=10.0, FY=0.0, FZ=0.0)
+)
 #
 # FOR_3 : PC 3 (Force)
-FOR_3    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "PC_3",
-                                            FX       =  0.0,
-                                            FY       =  5.0,
-                                            FZ       =  0.0),);
+FOR_3 = AFFE_CHAR_MECA(MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="PC_3", FX=0.0, FY=5.0, FZ=0.0))
 #
 # FOR_4 : MOMT_PT_10_CA_1 (Moment)
-FOR_4    = AFFE_CHAR_MECA(MODELE       = MODEL,
-                          FORCE_NODALE = _F(GROUP_NO = "MOMT_PT_10_CA_1",
-                                            MX       =  0.0,
-                                            MY       =  0.0,
-                                            MZ       =  8.0),);
+FOR_4 = AFFE_CHAR_MECA(
+    MODELE=MODEL, FORCE_NODALE=_F(GROUP_NO="MOMT_PT_10_CA_1", MX=0.0, MY=0.0, MZ=8.0)
+)
 #
 # LINEAR STATIC SOLVER ####################
-STATIC   = MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATER_F,
-                         CARA_ELEM  = FE_CAR,
-                         EXCIT      = (
-                                       _F(CHARGE    = BOUND_C,),
-                                       _F(CHARGE    = FOR_2),
-                                       _F(CHARGE    = FOR_3),
-                                       _F(CHARGE    = FOR_4),
-                                      ),
-                         SOLVEUR = _F(RESI_RELA=1e-05, NPREC=-1));
+STATIC = MECA_STATIQUE(
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    EXCIT=(_F(CHARGE=BOUND_C), _F(CHARGE=FOR_2), _F(CHARGE=FOR_3), _F(CHARGE=FOR_4)),
+    SOLVEUR=_F(RESI_RELA=1e-05, NPREC=-1),
+)
 #
 # EXTRA FIELD CALCULATIONS FROM THE RESULT AND THE FE-MODEL #########
-elem_groups = ['BRAD_PT_10']
-pts_groups = ['PT_5', 'PT_10', 'ANCH_PT_5', 'FORC_PT_10_CA_1', 'PC_3', 'MOMT_PT_10_CA_1']
-MESH  = DEFI_GROUP(reuse    = MESH,
-                   MAILLAGE = MESH,
-                   CREA_GROUP_NO =  _F(NOM   = 'ALL_PTS',
-                                       UNION = pts_groups))
-STATIC   = CALC_CHAMP(reuse      = STATIC,
-                      RESULTAT   = STATIC,
-                      MODELE     = MODEL,
-                      CHAM_MATER = MATER_F,
-                      CARA_ELEM  = FE_CAR,
-                      GROUP_MA   = elem_groups,
-                      # TOUT       = 'OUI',
-                      CONTRAINTE = ('EFGE_ELNO'),
-                      FORCE      = ('REAC_NODA', 'FORC_NODA'),
-                      );
+elem_groups = ["BRAD_PT_10"]
+pts_groups = ["PT_5", "PT_10", "ANCH_PT_5", "FORC_PT_10_CA_1", "PC_3", "MOMT_PT_10_CA_1"]
+MESH = DEFI_GROUP(reuse=MESH, MAILLAGE=MESH, CREA_GROUP_NO=_F(NOM="ALL_PTS", UNION=pts_groups))
+STATIC = CALC_CHAMP(
+    reuse=STATIC,
+    RESULTAT=STATIC,
+    MODELE=MODEL,
+    CHAM_MATER=MATER_F,
+    CARA_ELEM=FE_CAR,
+    GROUP_MA=elem_groups,
+    # TOUT       = 'OUI',
+    CONTRAINTE=("EFGE_ELNO"),
+    FORCE=("REAC_NODA", "FORC_NODA"),
+)
 # TEST DEPL
-TEST_RESU(RESU=(
-_F(NUME_ORDRE= 1,
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP='DX',
-                   GROUP_NO='PT_10',                   
-                   RESULTAT=STATIC,
-                   VALE_CALC=0.37907619112538027,
-                   VALE_REFE=379.1/1000.,
-                   REFERENCE='SOURCE_EXTERNE',
-                   CRITERE='RELATIF',
-                   #PRECISION=6.280368E-03/100.0,
-                   ),
-_F(NUME_ORDRE= 1,
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='PT_10',                   
-                   RESULTAT=STATIC,
-                   VALE_CALC=0.24174010038909674 ,
-                   VALE_REFE=241.7/1000.,
-                   REFERENCE='SOURCE_EXTERNE',
-                   CRITERE='RELATIF',
-                   #PRECISION=1.659319E-02/100.0,
-                   ),
-_F(NUME_ORDRE= 1,
-                   NOM_CHAM = 'DEPL',
-                   NOM_CMP='DRZ',
-                   GROUP_NO='PT_10',                   
-                   RESULTAT=STATIC,
-                   VALE_CALC=0.16539079576583812,
-                   VALE_REFE=0.1654,
-                   REFERENCE='SOURCE_EXTERNE',
-                   CRITERE='RELATIF',
-                   #PRECISION=5.564834E-03/100.0,
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            GROUP_NO="PT_10",
+            RESULTAT=STATIC,
+            VALE_CALC=0.37907619112538027,
+            VALE_REFE=379.1 / 1000.0,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            # PRECISION=6.280368E-03/100.0,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DY",
+            GROUP_NO="PT_10",
+            RESULTAT=STATIC,
+            VALE_CALC=0.24174010038909674,
+            VALE_REFE=241.7 / 1000.0,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            # PRECISION=1.659319E-02/100.0,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            NOM_CHAM="DEPL",
+            NOM_CMP="DRZ",
+            GROUP_NO="PT_10",
+            RESULTAT=STATIC,
+            VALE_CALC=0.16539079576583812,
+            VALE_REFE=0.1654,
+            REFERENCE="SOURCE_EXTERNE",
+            CRITERE="RELATIF",
+            # PRECISION=5.564834E-03/100.0,
+        ),
+    )
+)
 #
-FIN();
+FIN()

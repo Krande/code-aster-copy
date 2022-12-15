@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,198 +19,207 @@
 
 #       CAS_TEST SSNV128: 2D, ELEMENTS Q8, METHODE CONTINUE
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-IGNORE_ALARM=('MODELE1_63'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("MODELE1_63"), DEBUG=_F(SDVERI="OUI"))
 
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 #  LE MODELE PROVOQUANT CES ALARMES CONTIENT UNE SURFACE RIGIDE POUR LE CONTACT
 
-#......................................................
+# ......................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD8
 #  PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
-#......................................................
+# ......................................................
 
-MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'))
+MA = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='LCONTA',
-                                OPTION='NOEUD_ORDO',
-                                NOM='RELEVE',
-                                GROUP_NO_ORIG='PPA',
-                                GROUP_NO_EXTR='PPS')))
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=(
+        _F(
+            GROUP_MA="LCONTA",
+            OPTION="NOEUD_ORDO",
+            NOM="RELEVE",
+            GROUP_NO_ORIG="PPA",
+            GROUP_NO_EXTR="PPS",
+        )
+    ),
+)
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'D_PLAN'))
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
-MA=MODI_MAILLAGE(reuse=MA,
-                 MAILLAGE=MA,
-                 ORIE_PEAU=(_F(GROUP_MA_PEAU = 'LPRESV'),
-                               _F(GROUP_MA_PEAU = 'LPRESH')))
+MA = MODI_MAILLAGE(
+    reuse=MA, MAILLAGE=MA, ORIE_PEAU=(_F(GROUP_MA_PEAU="LPRESV"), _F(GROUP_MA_PEAU="LPRESH"))
+)
 
-MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
-                             NU = 0.2))
+MATPLA = DEFI_MATERIAU(ELAS=_F(E=1.3e11, NU=0.2))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT = 'OUI',
-                             MATER = MATPLA))
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATPLA))
 
-CHA0=AFFE_CHAR_CINE(MODELE=MO,
-                    MECA_IMPO=(_F(GROUP_MA = 'LBATI',  DX = 0.0, DY = 0.0),
-                              _F(GROUP_NO = 'PPS',    DX = 0.0, DY = 0.0),
-                              _F(GROUP_MA = 'LBLOCX', DX = 0.0)),)
+CHA0 = AFFE_CHAR_CINE(
+    MODELE=MO,
+    MECA_IMPO=(
+        _F(GROUP_MA="LBATI", DX=0.0, DY=0.0),
+        _F(GROUP_NO="PPS", DX=0.0, DY=0.0),
+        _F(GROUP_MA="LBLOCX", DX=0.0),
+    ),
+)
 
-CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07),
-                              _F(GROUP_MA = 'LPRESH', PRES = 15.E07)))
+CHA1 = AFFE_CHAR_MECA(
+    MODELE=MO, PRES_REP=(_F(GROUP_MA="LPRESV", PRES=5.0e07), _F(GROUP_MA="LPRESH", PRES=15.0e07))
+)
 
-CHA2=DEFI_CONTACT(MODELE=MO,
-                  FORMULATION='CONTINUE',
-                  FROTTEMENT='COULOMB',
-                    ALGO_RESO_CONT = 'NEWTON',
-                    ALGO_RESO_GEOM = 'NEWTON',
-                    ALGO_RESO_FROT = 'NEWTON',
-                    #ADAPT_COEF     = 'OUI',
-                  RESI_FROT=1e-3,
-                  ZONE=_F(SANS_GROUP_NO='PPS',
-                          GROUP_MA_MAIT='LBATI',
-                          GROUP_MA_ESCL='LCONTA',
-                          CONTACT_INIT='INTERPENETRE',
-                          COULOMB=1,
-                          SEUIL_INIT=1e-1,
-                          ALGO_FROT ='STANDARD',
-                          ADAPTATION='CYCLAGE',
-                          #COEF_CONT =1.e2,
-                          COEF_FROT =1.e8,
-                          #COEF_PENA_FROT =1.e9,
-                           ),
-                              )
-
+CHA2 = DEFI_CONTACT(
+    MODELE=MO,
+    FORMULATION="CONTINUE",
+    FROTTEMENT="COULOMB",
+    ALGO_RESO_CONT="NEWTON",
+    ALGO_RESO_GEOM="NEWTON",
+    ALGO_RESO_FROT="NEWTON",
+    # ADAPT_COEF     = 'OUI',
+    RESI_FROT=1e-3,
+    ZONE=_F(
+        SANS_GROUP_NO="PPS",
+        GROUP_MA_MAIT="LBATI",
+        GROUP_MA_ESCL="LCONTA",
+        CONTACT_INIT="INTERPENETRE",
+        COULOMB=1,
+        SEUIL_INIT=1e-1,
+        ALGO_FROT="STANDARD",
+        ADAPTATION="CYCLAGE",
+        # COEF_CONT =1.e2,
+        COEF_FROT=1.0e8,
+        # COEF_PENA_FROT =1.e9,
+    ),
+)
 
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    PROL_GAUCHE='LINEAIRE',
-                    PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,0.2,1.,0.8,0.0,1.0,0.0))
+RAMPE = DEFI_FONCTION(
+    NOM_PARA="INST",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    VALE=(0.0, 0.0, 0.2, 1.0, 0.8, 0.0, 1.0, 0.0),
+)
 
-LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5))
+LINST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=5))
 
-L_INST=DEFI_LIST_INST(METHODE='MANUEL',
-                      DEFI_LIST=_F(LIST_INST=LINST,),
-                      ECHEC=_F(EVENEMENT='ERREUR',
-                              ACTION='DECOUPE',
-                              SUBD_METHODE = 'MANUEL',
-                              SUBD_PAS=5,
-                              SUBD_NIVEAU=10,),)
+L_INST = DEFI_LIST_INST(
+    METHODE="MANUEL",
+    DEFI_LIST=_F(LIST_INST=LINST),
+    ECHEC=_F(
+        EVENEMENT="ERREUR", ACTION="DECOUPE", SUBD_METHODE="MANUEL", SUBD_PAS=5, SUBD_NIVEAU=10
+    ),
+)
 
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 
-U2M=STAT_NON_LINE(MODELE     = MO,
-                  CHAM_MATER = CHMAT,
-                  MESURE     = _F(TABLE='OUI',UNITE=50),
-                  EXCIT=(_F(CHARGE=CHA1,
-                           FONC_MULT=RAMPE,),
-                         _F(CHARGE=CHA0,),),
-                  CONTACT=CHA2,
-                  COMPORTEMENT  = _F(RELATION = 'ELAS'),
-                  INCREMENT  = _F(LIST_INST = L_INST, ),
-                  NEWTON=_F(REAC_ITER=1,),
-                  AFFICHAGE=_F(INFO_TEMPS='OUI'),
-                  SOLVEUR=_F(NPREC=-1,
-                                 POSTTRAITEMENTS='FORCE',
-                                 RESI_RELA=-1.0,
-                                 STOP_SINGULIER='NON',),
-                  CONVERGENCE= _F(ARRET = 'OUI',
-                                 ITER_GLOB_MAXI = 30,
-                                 RESI_GLOB_MAXI = 1.0E-4),
-#                  INFO=2,
-               )
+U2M = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    MESURE=_F(TABLE="OUI", UNITE=50),
+    EXCIT=(_F(CHARGE=CHA1, FONC_MULT=RAMPE), _F(CHARGE=CHA0)),
+    CONTACT=CHA2,
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(REAC_ITER=1),
+    AFFICHAGE=_F(INFO_TEMPS="OUI"),
+    SOLVEUR=_F(NPREC=-1, POSTTRAITEMENTS="FORCE", RESI_RELA=-1.0, STOP_SINGULIER="NON"),
+    CONVERGENCE=_F(ARRET="OUI", ITER_GLOB_MAXI=30, RESI_GLOB_MAXI=1.0e-4),
+    #                  INFO=2,
+)
 
 
 TAB = POST_RELEVE_T(
-        ACTION = _F(
-               OPERATION  = 'MOYENNE_ARITH',
-               #OPERATION = 'EXTRACTION',
-               INTITULE = 'somme des SIEQ_NOEU sur la surf. dudgeonnée',
-               GROUP_NO = ('RELEVE'),
-               RESULTAT = U2M,
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'LAGS_C',
-               TOUT_ORDRE = 'OUI',
-               ))
-IMPR_TABLE(TABLE=TAB,UNITE=6)
-fonc1=RECU_FONCTION(TABLE=TAB,
-                   PARA_X='INST',
-                   PARA_Y='MOYENNE',
-                   INTERPOL='LIN')
+    ACTION=_F(
+        OPERATION="MOYENNE_ARITH",
+        # OPERATION = 'EXTRACTION',
+        INTITULE="somme des SIEQ_NOEU sur la surf. dudgeonnée",
+        GROUP_NO=("RELEVE"),
+        RESULTAT=U2M,
+        NOM_CHAM="DEPL",
+        NOM_CMP="LAGS_C",
+        TOUT_ORDRE="OUI",
+    )
+)
+IMPR_TABLE(TABLE=TAB, UNITE=6)
+fonc1 = RECU_FONCTION(TABLE=TAB, PARA_X="INST", PARA_Y="MOYENNE", INTERPOL="LIN")
 
 TAB2 = POST_RELEVE_T(
-        ACTION = _F(
-               OPERATION  = 'MOYENNE_ARITH',
-               #OPERATION = 'EXTRACTION',
-               INTITULE = 'somme des SIEQ_NOEU sur la surf. dudgeonnée',
-               GROUP_NO = ('RELEVE'),
-               RESULTAT = U2M,
-               NOM_CHAM = 'DEPL',
-               NOM_CMP = 'DY',
-               TOUT_ORDRE = 'OUI',
-               ))
+    ACTION=_F(
+        OPERATION="MOYENNE_ARITH",
+        # OPERATION = 'EXTRACTION',
+        INTITULE="somme des SIEQ_NOEU sur la surf. dudgeonnée",
+        GROUP_NO=("RELEVE"),
+        RESULTAT=U2M,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
+        TOUT_ORDRE="OUI",
+    )
+)
 
-fonc2=RECU_FONCTION(TABLE=TAB2,
-                   PARA_X='INST',
-                   PARA_Y='MOYENNE',
-                   INTERPOL='LIN')
+fonc2 = RECU_FONCTION(TABLE=TAB2, PARA_X="INST", PARA_Y="MOYENNE", INTERPOL="LIN")
 
 IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONC_X=fonc2,FONC_Y=fonc1,
-                       COULEUR= 0, LEGENDE= 'LAGS_C(DY)',),
-                    #_F(FONCTION=FTRACPLA,
-                       #COULEUR= 1, LEGENDE= 'Courbe de traction',),
-                    ),
-            UNITE=25,
-            TITRE='LAGS_C(DY(t))')
+    FORMAT="XMGRACE",
+    COURBE=(
+        _F(FONC_X=fonc2, FONC_Y=fonc1, COULEUR=0, LEGENDE="LAGS_C(DY)"),
+        # _F(FONCTION=FTRACPLA,
+        # COULEUR= 1, LEGENDE= 'Courbe de traction',),
+    ),
+    UNITE=25,
+    TITRE="LAGS_C(DY(t))",
+)
 
 
-inst =  1.0
-CHNEUTRN=CREA_CHAMP(INST = inst,
-   OPERATION='EXTR', TYPE_CHAM='NOEU_INFC_R',RESULTAT=U2M, NOM_CHAM='CONT_NOEU')
+inst = 1.0
+CHNEUTRN = CREA_CHAMP(
+    INST=inst, OPERATION="EXTR", TYPE_CHAM="NOEU_INFC_R", RESULTAT=U2M, NOM_CHAM="CONT_NOEU"
+)
 
 CHSIEFN = CREA_CHAMP(
-    OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R', MODELE=MO,
-    ASSE=_F(GROUP_MA='LCONTA', CHAM_GD = CHNEUTRN,
-            NOM_CMP      = ('JEU',  'RN',  'R', ),
-            NOM_CMP_RESU = ('DX','DY','DZ',),),)
+    OPERATION="ASSE",
+    TYPE_CHAM="NOEU_DEPL_R",
+    MODELE=MO,
+    ASSE=_F(
+        GROUP_MA="LCONTA",
+        CHAM_GD=CHNEUTRN,
+        NOM_CMP=("JEU", "RN", "R"),
+        NOM_CMP_RESU=("DX", "DY", "DZ"),
+    ),
+)
 
-U2=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_NOLI', NOM_CHAM='DEPL',
-                AFFE=_F(CHAM_GD=CHSIEFN,INST=inst,),)
+U2 = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_NOLI", NOM_CHAM="DEPL", AFFE=_F(CHAM_GD=CHSIEFN, INST=inst)
+)
 
 
 TABDIAG = POST_RELEVE_T(
-        ACTION = _F(
-               OPERATION = 'EXTRACTION',
-               INTITULE = 'RESU',
-               GROUP_NO = ('RELEVE'),
-               RESULTAT = U2,
-               NOM_CHAM = 'DEPL',
-               INST = inst,
-               RESULTANTE = 'DY',
-               ))
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="RESU",
+        GROUP_NO=("RELEVE"),
+        RESULTAT=U2,
+        NOM_CHAM="DEPL",
+        INST=inst,
+        RESULTANTE="DY",
+    )
+)
 
 
-TEST_RESU(RESU=(_F(GROUP_NO='PPS',
-                   INST=0.2,
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U2M,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='LAGS_C',
-                   VALE_CALC= 0.0,
-                   VALE_REFE=0.0,
-                   PRECISION=0.050000000000000003,
-                   ),))
+TEST_RESU(
+    RESU=(
+        _F(
+            GROUP_NO="PPS",
+            INST=0.2,
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U2M,
+            NOM_CHAM="DEPL",
+            NOM_CMP="LAGS_C",
+            VALE_CALC=0.0,
+            VALE_REFE=0.0,
+            PRECISION=0.050000000000000003,
+        ),
+    )
+)
 
 FIN()
 #

@@ -105,7 +105,7 @@ def calc_comb_modes(__tbresul, myintitule_by_num, comb_modes, resu, b_extrac, re
                     fpart = l_fact_by_spacedir[space_dir][nume_ordre - 1]
                     for inte_comp in inte_by_efge.keys():
                         r_i = l_ri_by_comp[inte_comp][nume_ordre - 1]
-                        R_i = r_i * fpart * acce / (omega**2)
+                        R_i = r_i * fpart * acce / (omega ** 2)
                         l_Ri_by_inte_by_space[space_dir][inte_comp].append(R_i)
                         paras.append(inte_comp)
                         vales.append(R_i)
@@ -127,9 +127,9 @@ def calc_comb_modes(__tbresul, myintitule_by_num, comb_modes, resu, b_extrac, re
                     csi_j = l_amor[j - 1]
                     eta = omega_j / omega_i
                     rho_ij = (8 * eta * math.sqrt(csi_i * csi_j * eta) * (csi_i + csi_j * eta)) / (
-                        (1 - eta**2) ** 2
-                        + 4 * eta * csi_i * csi_j * (1 + eta**2)
-                        + 4 * eta**2 * (csi_i**2 + csi_j**2)
+                        (1 - eta ** 2) ** 2
+                        + 4 * eta * csi_i * csi_j * (1 + eta ** 2)
+                        + 4 * eta ** 2 * (csi_i ** 2 + csi_j ** 2)
                     )
                     for space_dir in space_dirs:
                         for inte_comp in inte_by_efge.keys():

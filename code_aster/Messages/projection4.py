@@ -22,26 +22,24 @@
 from ..Utilities import _
 
 cata_msg = {
-
-     1 : _("""Type de maille non-supporté dans la projection. Il faut demander un développement."""),
-
-     2 : _("""Dans le cadre de la projection ponctuelle, on n'a pas trouvé de maille POI1
+    1: _("""Type de maille non-supporté dans la projection. Il faut demander un développement."""),
+    2: _(
+        """Dans le cadre de la projection ponctuelle, on n'a pas trouvé de maille POI1
 suffisamment proche du noeud %(k1)s.
 
 Distance à la maille POI1 la plus proche  : %(r1)f
 Distance maximale autorisée (DISTANCE_0D) : %(r2)f
 
-"""),
-    54 : _("""Il n'y a aucun noeud sur lesquels projeter."""),
-
-    55 : _("""Il n'y a pas de mailles à projeter ou en correspondance.
+"""
+    ),
+    54: _("""Il n'y a aucun noeud sur lesquels projeter."""),
+    55: _(
+        """Il n'y a pas de mailles à projeter ou en correspondance.
  Dans le cas de l'utilisation de AFFE_CHAR_MECA / LIAISON_MAIL, les mailles maîtres
  doivent avoir la même dimension que l'espace de modélisation :
  - mailles volumiques pour un modèle 3D
  - mailles surfaciques pour un modèle 2D
-"""),
-
-    56 : _("""Le noeud %(k1)s n'a pas été trouvé lors de la projection. """),
-
-
+"""
+    ),
+    56: _("""Le noeud %(k1)s n'a pas été trouvé lors de la projection. """),
 }

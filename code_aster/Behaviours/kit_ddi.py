@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'KIT_DDI',
-    lc_type        = ('KIT_DDI',),
-    doc            =   """Double Deformation Incrementale"""            ,
-    num_lc         = 8000,
-    nb_vari        = 0,
-    nom_vari       = None,
-    mc_mater       = None,
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('SPECIFIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = ('ELTSIZE1','ELTSIZE2',),
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="KIT_DDI",
+    lc_type=("KIT_DDI",),
+    doc="""Double Deformation Incrementale""",
+    num_lc=8000,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=None,
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("SPECIFIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=("ELTSIZE1", "ELTSIZE2"),
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

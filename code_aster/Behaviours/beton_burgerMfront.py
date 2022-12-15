@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@
 from .cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-    nom            = 'BETON_BURGER',
-    symbol_mfront  = 'asterbeton_burger',
-    lc_type        = None,
-    doc            =   """Comportement de fluage propre du beton selon modele de burger avec non linearite sur le fluide de Maxwell (R7.01.35)"""          ,
-    num_lc         = 58,
-    nb_vari        = 0,
-    nom_vari       = None,
-    mc_mater       = None,
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GDEF_LOG',),
-    algo_inte      = ('NEWTON_PERT',),
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('MECANIQUE',),
-    regu_visc      = ('No',),
+    nom="BETON_BURGER",
+    symbol_mfront="asterbeton_burger",
+    lc_type=None,
+    doc="""Comportement de fluage propre du beton selon modele de burger avec non linearite sur le fluide de Maxwell (R7.01.35)""",
+    num_lc=58,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=None,
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GDEF_LOG"),
+    algo_inte=("NEWTON_PERT",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("MECANIQUE",),
+    regu_visc=("No",),
 )

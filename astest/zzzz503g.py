@@ -37,14 +37,13 @@ monModel.build()
 YOUNG = 200000.0
 POISSON = 0.3
 
-acier = DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                              NU=POISSON,),)
+acier = DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON))
 # acier.debugPrint(6)
 test.assertEqual(acier.getType(), "MATER_SDASTER")
 
 affectMat = code_aster.MaterialField(monMaillage)
 affectMat.addMaterialOnMesh(acier)
-affectMat.addMaterialOnGroupOfCells(acier, ['Haut', 'Bas'])
+affectMat.addMaterialOnGroupOfCells(acier, ["Haut", "Bas"])
 affectMat.build()
 test.assertEqual(affectMat.getType(), "CHAM_MATER")
 
@@ -58,7 +57,7 @@ CharMeca1.build()
 test.assertEqual(CharMeca1.getType(), "CHAR_MECA")
 
 imposedPres1 = code_aster.PressureReal()
-imposedPres1.setValue(code_aster.PhysicalQuantityComponent.Pres, 1000.)
+imposedPres1.setValue(code_aster.PhysicalQuantityComponent.Pres, 1000.0)
 CharMeca2 = code_aster.DistributedPressureReal(monModel)
 CharMeca2.setValue(imposedPres1, "Haut")
 CharMeca2.build()
@@ -72,9 +71,7 @@ test.assertTrue(study.computeListOfLoads())
 test.assertTrue(study.computeDOFNumbering())
 listLoads = study.getListOfLoads()
 dofNume = study.getDOFNumbering()
-study.computeBehaviourProperty(COMPORTEMENT=(
-        _F(RELATION="VMIS_ISOT_LINE",
-           TOUT="OUI"),))
+study.computeBehaviourProperty(COMPORTEMENT=(_F(RELATION="VMIS_ISOT_LINE", TOUT="OUI"),))
 dofNume = study.getBehaviourProperty()
 
 

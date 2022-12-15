@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -107,10 +107,7 @@ class sd_char_dual(AsBase):
 class sd_char_chme(AsBase):
     nomj = SDNom(fin=13)
 
-    MODEL_NOMO = AsVK8(
-        SDNom(nomj=".MODEL.NOMO"),
-        lonmax=1,
-    )
+    MODEL_NOMO = AsVK8(SDNom(nomj=".MODEL.NOMO"), lonmax=1)
 
     LIGRE = Facultatif(sd_ligrel())
 
@@ -143,28 +140,10 @@ class sd_char_chme(AsBase):
     ONDPR = Facultatif(sd_carte())
     EFOND = Facultatif(sd_carte())
 
-    VEASS = Facultatif(
-        AsVK8(
-            lonmax=1,
-        )
-    )
-    VEISS = Facultatif(
-        AsVK24(
-            lonmax=8,
-        )
-    )
-    EVOL_CHAR = Facultatif(
-        AsVK8(
-            SDNom(nomj=".EVOL.CHAR"),
-            lonmax=1,
-        )
-    )
-    TEMPE_TEMP = Facultatif(
-        AsVK8(
-            SDNom(nomj=".TEMPE.TEMP"),
-            lonmax=1,
-        )
-    )
+    VEASS = Facultatif(AsVK8(lonmax=1))
+    VEISS = Facultatif(AsVK24(lonmax=8))
+    EVOL_CHAR = Facultatif(AsVK8(SDNom(nomj=".EVOL.CHAR"), lonmax=1))
+    TEMPE_TEMP = Facultatif(AsVK8(SDNom(nomj=".TEMPE.TEMP"), lonmax=1))
 
 
 class sd_char_meca(AsBase):
@@ -175,26 +154,10 @@ class sd_char_meca(AsBase):
     CHME = Facultatif(sd_char_chme())
     DUAL = Facultatif(sd_char_dual())
 
-    TRANS01 = Facultatif(
-        AsVR(
-            lonmax=6,
-        )
-    )
-    TRANS02 = Facultatif(
-        AsVR(
-            lonmax=6,
-        )
-    )
-    LISMA01 = Facultatif(
-        AsVI(
-            lonmax=12,
-        )
-    )
-    LISMA02 = Facultatif(
-        AsVI(
-            lonmax=12,
-        )
-    )
+    TRANS01 = Facultatif(AsVR(lonmax=6))
+    TRANS02 = Facultatif(AsVR(lonmax=6))
+    LISMA01 = Facultatif(AsVI(lonmax=12))
+    LISMA02 = Facultatif(AsVI(lonmax=12))
     POIDS_MAILLE = Facultatif(AsVR())
     lt = Facultatif(sd_l_table(SDNom(nomj="")))
 
@@ -207,10 +170,7 @@ class sd_char_meca(AsBase):
 
 class sd_parallel_char_chme(AsBase):
     nomj = SDNom(fin=13)
-    MODEL_NOMO = AsVK8(
-        SDNom(nomj=".MODEL.NOMO"),
-        lonmax=1,
-    )
+    MODEL_NOMO = AsVK8(SDNom(nomj=".MODEL.NOMO"), lonmax=1)
     LIGRE = sd_ligrel()
     CIMPO = sd_carte()
     CMULT = sd_carte()

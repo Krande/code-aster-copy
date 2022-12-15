@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,18 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'WAECKEL',
-    lc_type        = ('MODELE_METALLURGIQUE',),
-    doc            =   """Modèle métallurgique standard pour l'acier"""            ,
-    num_lc         = 2,
-    nb_vari        = 3,
-    nom_vari       = ('TAILLE_GRAIN','TEMP','TEMP_MARTENSITE',
-        ),
-    mc_mater       = ('META_ACIER',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = None,
-    algo_inte      = None,
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = None,
-    exte_vari      = None,
+    nom="WAECKEL",
+    lc_type=("MODELE_METALLURGIQUE",),
+    doc="""Modèle métallurgique standard pour l'acier""",
+    num_lc=2,
+    nb_vari=3,
+    nom_vari=("TAILLE_GRAIN", "TEMP", "TEMP_MARTENSITE"),
+    mc_mater=("META_ACIER",),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=None,
+    algo_inte=None,
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=None,
+    exte_vari=None,
 )

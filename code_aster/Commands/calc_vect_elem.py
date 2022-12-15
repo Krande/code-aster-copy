@@ -19,9 +19,11 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (ElementaryVectorDisplacementReal,
-                       ElementaryVectorPressureComplex,
-                       ElementaryVectorTemperatureReal)
+from ..Objects import (
+    ElementaryVectorDisplacementReal,
+    ElementaryVectorPressureComplex,
+    ElementaryVectorTemperatureReal,
+)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
@@ -29,6 +31,7 @@ from ..Utilities import force_list
 class ComputeElementaryVector(ExecuteCommand):
 
     """Command that creates elementary vectors."""
+
     command_name = "CALC_VECT_ELEM"
 
     def create_result(self, keywords):
@@ -37,10 +40,14 @@ class ComputeElementaryVector(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        if keywords['OPTION'] == "CHAR_MECA": self._result = ElementaryVectorDisplacementReal()
-        elif keywords['OPTION'] == "CHAR_THER": self._result = ElementaryVectorTemperatureReal()
-        elif keywords['OPTION'] == "CHAR_ACOU": self._result = ElementaryVectorPressureComplex()
-        else: raise NotImplementedError("Must be implemented")
+        if keywords["OPTION"] == "CHAR_MECA":
+            self._result = ElementaryVectorDisplacementReal()
+        elif keywords["OPTION"] == "CHAR_THER":
+            self._result = ElementaryVectorTemperatureReal()
+        elif keywords["OPTION"] == "CHAR_ACOU":
+            self._result = ElementaryVectorPressureComplex()
+        else:
+            raise NotImplementedError("Must be implemented")
 
     def post_exec(self, keywords):
         """Store references to ElementaryVector objects.
@@ -66,5 +73,6 @@ class ComputeElementaryVector(ExecuteCommand):
         veass = self._result.getVeass()
         if veass is not None:
             veass.build()
+
 
 CALC_VECT_ELEM = ComputeElementaryVector.run

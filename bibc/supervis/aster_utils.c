@@ -180,8 +180,8 @@ int conv_un_c8( _IN PyObject *tup, _OUT ASTERDOUBLE *val ) {
             *( val + 1 ) = (ASTERDOUBLE)y;
         } else {
             /* representation RHO,THETA (les angles sont fournis en degres) */
-            *val = (ASTERDOUBLE)( *rho * cos( *theta / 180. * CALL_R8PI() ) );
-            *( val + 1 ) = (ASTERDOUBLE)( *rho * sin( *theta / 180. * CALL_R8PI() ) );
+            *val = ( ASTERDOUBLE )( *rho * cos( *theta / 180. * CALL_R8PI() ) );
+            *( val + 1 ) = ( ASTERDOUBLE )( *rho * sin( *theta / 180. * CALL_R8PI() ) );
         }
     } else {
         MYABORT( "erreur dans la partie Python" );

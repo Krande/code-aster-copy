@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,18 +25,19 @@ from ...Objects import ConstantFieldOnCellsReal
 from ...Supervis import ExecuteCommand
 
 POST_VOISIN_CZM_CATA = OPER(
-
-    nom="POST_VOISIN_CZM", op=189,
-    docu="...", fr="...",
-    reentrant='n',
+    nom="POST_VOISIN_CZM",
+    op=189,
+    docu="...",
+    fr="...",
+    reentrant="n",
     sd_prod=carte_sdaster,
-    RESULTAT=SIMP(statut='o', typ=evol_noli, max=1,),
-
+    RESULTAT=SIMP(statut="o", typ=evol_noli, max=1),
 )
 
+
 class PostVoisinCzw(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "POST_VOISIN_CZM"
     command_cata = POST_VOISIN_CZM_CATA
 
@@ -47,5 +48,6 @@ class PostVoisinCzw(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = ConstantFieldOnCellsReal(keywords["RESULTAT"].getMesh())
+
 
 POST_VOISIN_CZM = PostVoisinCzw.run

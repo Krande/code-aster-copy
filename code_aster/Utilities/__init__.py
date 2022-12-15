@@ -28,13 +28,33 @@ No external import of other :py:mod:`code_aster` packages.
 from collections import defaultdict
 
 from .as_timer import ASTER_TIMER
-from .base_utils import (ReadOnlyDict, Singleton, accept_array, array_to_list,
-                         force_list, force_tuple, get_caller_context,
-                         import_object, is_complex, is_float, is_float_or_int,
-                         is_int, is_number, is_sequence, is_str,
-                         no_new_attributes, value_is_sequence)
-from .compatibility import (compat_listr8, deprecate, deprecated,
-                            remove_keyword, required, unsupported)
+from .base_utils import (
+    ReadOnlyDict,
+    Singleton,
+    accept_array,
+    array_to_list,
+    force_list,
+    force_tuple,
+    get_caller_context,
+    import_object,
+    is_complex,
+    is_float,
+    is_float_or_int,
+    is_int,
+    is_number,
+    is_sequence,
+    is_str,
+    no_new_attributes,
+    value_is_sequence,
+)
+from .compatibility import (
+    compat_listr8,
+    deprecate,
+    deprecated,
+    remove_keyword,
+    required,
+    unsupported,
+)
 from .ExecutionParameter import ExecutionParameter
 from .general import initial_context
 from .i18n import localization
@@ -47,9 +67,19 @@ from .mpi_utils import MPI, haveMPI
 from .options import Options
 from .report import CR
 from .statistics_manager import print_stats, profile
-from .strfunc import (center, clean_string, convert, copy_text_to,
-                      cut_long_lines, from_unicode, get_encoding,
-                      maximize_lines, textbox, to_unicode, ufmt)
+from .strfunc import (
+    center,
+    clean_string,
+    convert,
+    copy_text_to,
+    cut_long_lines,
+    from_unicode,
+    get_encoding,
+    maximize_lines,
+    textbox,
+    to_unicode,
+    ufmt,
+)
 from .Tester import TestCase
 from .transpose import transpose
 from .version import get_version, get_version_desc
@@ -61,6 +91,7 @@ except ImportError:
     version_info = ()
 try:
     from .aster_config import config as _cfg
+
     config = ReadOnlyDict(**_cfg)
     del _cfg
 except ImportError:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,137 +20,133 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I, container="CARA!.CANBSP", comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """
+)
 
 
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PPINTTO = InputParameter(phys=PHY.N132_R)
 
 
-PPINTTO  = InputParameter(phys=PHY.N132_R)
+PCNSETO = InputParameter(
+    phys=PHY.N1280I,
+    container="MODL!.TOPOSE.CNS",
+    comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """,
+)
 
 
-PCNSETO  = InputParameter(phys=PHY.N1280I, container='MODL!.TOPOSE.CNS',
-comment="""  XFEM - CONNECTIVITE DES SOUS-ELEMENTS  """)
+PHEAVTO = InputParameter(phys=PHY.N512_I)
 
 
-PHEAVTO  = InputParameter(phys=PHY.N512_I)
+PLONCHA = InputParameter(
+    phys=PHY.N120_I,
+    container="MODL!.TOPOSE.LON",
+    comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """,
+)
+
+PBASLOR = InputParameter(phys=PHY.NEUT_R)
+
+PLSN = InputParameter(phys=PHY.NEUT_R)
 
 
-PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
-comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
-
-PBASLOR  = InputParameter(phys=PHY.NEUT_R)
-
-PLSN     = InputParameter(phys=PHY.NEUT_R)
+PLST = InputParameter(phys=PHY.NEUT_R)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R)
+PPINTER = InputParameter(phys=PHY.N816_R)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R)
+PAINTER = InputParameter(phys=PHY.N1360R)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R)
+PCFACE = InputParameter(phys=PHY.N720_I)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I)
+PLONGCO = InputParameter(phys=PHY.N120_I)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I)
+PSTANO = InputParameter(phys=PHY.N120_I)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I)
+PPMILTO = InputParameter(phys=PHY.N792_R)
 
 
-PPMILTO  = InputParameter(phys=PHY.N792_R)
+PBASECO = InputParameter(phys=PHY.N2448R)
 
 
-PBASECO  = InputParameter(phys=PHY.N2448R)
+PFISNO = InputParameter(phys=PHY.NEUT_I)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I)
+PHEA_FA = InputParameter(phys=PHY.N240_I)
 
 
-PHEA_FA  = InputParameter(phys=PHY.N240_I)
+PHEA_NO = InputParameter(phys=PHY.N120_I)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I)
-
-
-PHEA_SE  = InputParameter(phys=PHY.N512_I)
+PHEA_SE = InputParameter(phys=PHY.N512_I)
 
 
 CHAR_MECA_PRES_R = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
+        PAINTER,
+        PBASECO,
         SP.PCACOQU,
         SP.PCAGEPO,
-           PCAORIE,
-           PCFACE,
-           PCNSETO,
-           PFISNO,
+        PCAORIE,
+        PCFACE,
+        PCNSETO,
+        PFISNO,
         SP.PGEOMER,
-           PHEAVTO,
-           PHEA_FA,
-           PHEA_NO,
-           PHEA_SE,
-           PLONCHA,
-           PLONGCO,
-           PLSN,
-           PLST,
-           PNBSP_I,
-           PPINTER,
-           PPINTTO,
-           PPMILTO,
+        PHEAVTO,
+        PHEA_FA,
+        PHEA_NO,
+        PHEA_SE,
+        PLONCHA,
+        PLONGCO,
+        PLSN,
+        PLST,
+        PNBSP_I,
+        PPINTER,
+        PPINTTO,
+        PPMILTO,
         SP.PPRESSR,
-           PSTANO,
+        PSTANO,
         SP.PTEMPSR,
         SP.PMATERC,
-           PBASLOR,
+        PBASLOR,
     ),
-    para_out=(
-        SP.PVECTUR,
-    ),
+    para_out=(SP.PVECTUR,),
     condition=(
-#     Pour le bord des elements massifs
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
-
-#     Pour les elements XFEM massifs
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
-
-#     Pour les elements coque/plaque ...
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
-
-#     ... mais pas pour leurs aretes!
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.COQUE,'OUI'),)),
-
-#     Pour les elements tuyau
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
-
-#     Pour les elements solid-shell, la contribution de la pression est volumique (pinching)
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'SSH'),)),
-
-#     Pour les elements membrane
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
-
-#     Pour les elements fluide, mais contribution nulle (te0099)
-      CondCalcul('+', ((AT.FLUIDE,'OUI'),(AT.BORD,'-1'),)),
-
-#     Pour les elements IFS
-      CondCalcul('+', ((AT.FSI,'OUI'),)),
-
+        #     Pour le bord des elements massifs
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "-1"))),
+        #     Pour les elements XFEM massifs
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.LXFEM, "OUI"))),
+        #     Pour les elements coque/plaque ...
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.COQUE, "OUI"))),
+        #     ... mais pas pour leurs aretes!
+        CondCalcul("-", ((AT.PHENO, "ME"), (AT.BORD, "-1"), (AT.COQUE, "OUI"))),
+        #     Pour les elements tuyau
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.TUYAU, "OUI"))),
+        #     Pour les elements solid-shell, la contribution de la pression est volumique (pinching)
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "SSH"))),
+        #     Pour les elements membrane
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "MMB"))),
+        #     Pour les elements fluide, mais contribution nulle (te0099)
+        CondCalcul("+", ((AT.FLUIDE, "OUI"), (AT.BORD, "-1"))),
+        #     Pour les elements IFS
+        CondCalcul("+", ((AT.FSI, "OUI"),)),
     ),
     comment=""" Second membre pour une pression """,
 )

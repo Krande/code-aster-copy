@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,11 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-   10 : _("""Consommation mémoire de la SVD: %(i1)d octets."""),
-
-   12 : _("""Calcul des coordonnées réduites."""),
-
-   14 : _("""Nombre final de clichés retenus dans l'algorithme incrémental: %(i1)d."""),
-   
-   33 : _("""La pente de décroissance des valeurs singulières de la POD: %(r1)13.6G."""), 
-  
-   37 : _("""La pente de décroissance des valeurs singulières de la POD n'a pu être calculée. Variance: %(r1)13.6G."""), 
-   
+    10: _("""Consommation mémoire de la SVD: %(i1)d octets."""),
+    12: _("""Calcul des coordonnées réduites."""),
+    14: _("""Nombre final de clichés retenus dans l'algorithme incrémental: %(i1)d."""),
+    33: _("""La pente de décroissance des valeurs singulières de la POD: %(r1)13.6G."""),
+    37: _(
+        """La pente de décroissance des valeurs singulières de la POD n'a pu être calculée. Variance: %(r1)13.6G."""
+    ),
 }

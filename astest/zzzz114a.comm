@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,163 +17,73 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-MA = LIRE_MAILLAGE(FORMAT = 'ASTER',)
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
-MA2 = CREA_MAILLAGE(MAILLAGE = MA,
-                    LINE_QUAD = _F(TOUT = 'OUI',),)
+MA2 = CREA_MAILLAGE(MAILLAGE=MA, LINE_QUAD=_F(TOUT="OUI"))
 
-MA3 = CREA_MAILLAGE(MAILLAGE = MA2,
-                    PENTA15_18 = _F(TOUT = 'OUI',
-                                    PREF_NOEUD='NT'),)
+MA3 = CREA_MAILLAGE(MAILLAGE=MA2, PENTA15_18=_F(TOUT="OUI", PREF_NOEUD="NT"))
 
-IMPR_RESU(FORMAT = 'ASTER',
-          RESU = _F(MAILLAGE = MA3,),)
+IMPR_RESU(FORMAT="ASTER", RESU=_F(MAILLAGE=MA3))
 
-CH = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-                OPERATION = 'AFFE',
-                MAILLAGE = MA3,
-                AFFE = (_F(NOEUD = 'N1',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (1., 101., 1001.,),),
-                        _F(NOEUD = 'N2',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (2., 102., 1002.,),),
-                        _F(NOEUD = 'N3',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (3., 103., 1003.,),),
-                        _F(NOEUD = 'N4',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (4., 104., 1004.,),),
-                        _F(NOEUD = 'N5',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (5., 105., 1005.,),),
-                        _F(NOEUD = 'N6',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (6., 106., 1006.,),),
-                        _F(NOEUD = 'NS1',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (7., 107., 1007.,),),
-                        _F(NOEUD = 'NS2',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (8., 108., 1008.,),),
-                        _F(NOEUD = 'NS3',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (9., 109., 1009.,),),
-                        _F(NOEUD = 'NS4',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (10., 110., 1010.,),),
-                        _F(NOEUD = 'NS5',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (11., 111., 1011.,),),
-                        _F(NOEUD = 'NS6',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (12., 112., 1012.,),),
-                        _F(NOEUD = 'NS7',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (13., 113., 1013.,),),
-                        _F(NOEUD = 'NS8',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (14., 114., 1014.,),),
-                        _F(NOEUD = 'NS9',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (15., 115., 1015.,),),
-                        _F(NOEUD = 'NT1',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (16., 116., 1016.,),),
-                        _F(NOEUD = 'NT2',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (17., 117., 1017.,),),
-                        _F(NOEUD = 'NT3',
-                           NOM_CMP = ('DX', 'DY', 'DZ',),
-                           VALE = (18., 118., 1018.,),),),)
+CH = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="AFFE",
+    MAILLAGE=MA3,
+    AFFE=(
+        _F(NOEUD="N1", NOM_CMP=("DX", "DY", "DZ"), VALE=(1.0, 101.0, 1001.0)),
+        _F(NOEUD="N2", NOM_CMP=("DX", "DY", "DZ"), VALE=(2.0, 102.0, 1002.0)),
+        _F(NOEUD="N3", NOM_CMP=("DX", "DY", "DZ"), VALE=(3.0, 103.0, 1003.0)),
+        _F(NOEUD="N4", NOM_CMP=("DX", "DY", "DZ"), VALE=(4.0, 104.0, 1004.0)),
+        _F(NOEUD="N5", NOM_CMP=("DX", "DY", "DZ"), VALE=(5.0, 105.0, 1005.0)),
+        _F(NOEUD="N6", NOM_CMP=("DX", "DY", "DZ"), VALE=(6.0, 106.0, 1006.0)),
+        _F(NOEUD="NS1", NOM_CMP=("DX", "DY", "DZ"), VALE=(7.0, 107.0, 1007.0)),
+        _F(NOEUD="NS2", NOM_CMP=("DX", "DY", "DZ"), VALE=(8.0, 108.0, 1008.0)),
+        _F(NOEUD="NS3", NOM_CMP=("DX", "DY", "DZ"), VALE=(9.0, 109.0, 1009.0)),
+        _F(NOEUD="NS4", NOM_CMP=("DX", "DY", "DZ"), VALE=(10.0, 110.0, 1010.0)),
+        _F(NOEUD="NS5", NOM_CMP=("DX", "DY", "DZ"), VALE=(11.0, 111.0, 1011.0)),
+        _F(NOEUD="NS6", NOM_CMP=("DX", "DY", "DZ"), VALE=(12.0, 112.0, 1012.0)),
+        _F(NOEUD="NS7", NOM_CMP=("DX", "DY", "DZ"), VALE=(13.0, 113.0, 1013.0)),
+        _F(NOEUD="NS8", NOM_CMP=("DX", "DY", "DZ"), VALE=(14.0, 114.0, 1014.0)),
+        _F(NOEUD="NS9", NOM_CMP=("DX", "DY", "DZ"), VALE=(15.0, 115.0, 1015.0)),
+        _F(NOEUD="NT1", NOM_CMP=("DX", "DY", "DZ"), VALE=(16.0, 116.0, 1016.0)),
+        _F(NOEUD="NT2", NOM_CMP=("DX", "DY", "DZ"), VALE=(17.0, 117.0, 1017.0)),
+        _F(NOEUD="NT3", NOM_CMP=("DX", "DY", "DZ"), VALE=(18.0, 118.0, 1018.0)),
+    ),
+)
 
-IMPR_CO(CONCEPT = _F(NOM = CH), UNITE = 10)
+IMPR_CO(CONCEPT=_F(NOM=CH), UNITE=10)
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(CHAM_GD = CH,),)
+IMPR_RESU(FORMAT="MED", RESU=_F(CHAM_GD=CH))
 
-CH2 = LIRE_CHAMP(MAILLAGE = MA3,
-                 FORMAT = 'MED',
-                 UNITE = 80,
-                 NOM_MED = 'CH',
-                 TYPE_CHAM = 'NOEU_DEPL_R',
-                 NOM_CMP_IDEM = 'OUI',)
+CH2 = LIRE_CHAMP(
+    MAILLAGE=MA3, FORMAT="MED", UNITE=80, NOM_MED="CH", TYPE_CHAM="NOEU_DEPL_R", NOM_CMP_IDEM="OUI"
+)
 
-IMPR_CO(CONCEPT = _F(NOM = CH2), UNITE = 11)
+IMPR_CO(CONCEPT=_F(NOM=CH2), UNITE=11)
 
-TEST_RESU(CHAM_NO=(_F(CHAM_GD = CH2,
-                      NOEUD = 'N1',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 1.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'N2',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 2.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'N3',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 3.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'N4',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 4.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'N5',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 5.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'N6',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 6.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS1',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 7.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS2',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 8.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS3',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 9.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS4',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 10.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS5',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 11.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS6',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 12.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS7',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 13.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS8',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 14.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NS9',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 15.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NT1',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 16.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NT2',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 17.),
-                   _F(CHAM_GD = CH2,
-                      NOEUD = 'NT3',
-                      NOM_CMP = 'DX',
-                      VALE_CALC = 18.),),)
+TEST_RESU(
+    CHAM_NO=(
+        _F(CHAM_GD=CH2, NOEUD="N1", NOM_CMP="DX", VALE_CALC=1.0),
+        _F(CHAM_GD=CH2, NOEUD="N2", NOM_CMP="DX", VALE_CALC=2.0),
+        _F(CHAM_GD=CH2, NOEUD="N3", NOM_CMP="DX", VALE_CALC=3.0),
+        _F(CHAM_GD=CH2, NOEUD="N4", NOM_CMP="DX", VALE_CALC=4.0),
+        _F(CHAM_GD=CH2, NOEUD="N5", NOM_CMP="DX", VALE_CALC=5.0),
+        _F(CHAM_GD=CH2, NOEUD="N6", NOM_CMP="DX", VALE_CALC=6.0),
+        _F(CHAM_GD=CH2, NOEUD="NS1", NOM_CMP="DX", VALE_CALC=7.0),
+        _F(CHAM_GD=CH2, NOEUD="NS2", NOM_CMP="DX", VALE_CALC=8.0),
+        _F(CHAM_GD=CH2, NOEUD="NS3", NOM_CMP="DX", VALE_CALC=9.0),
+        _F(CHAM_GD=CH2, NOEUD="NS4", NOM_CMP="DX", VALE_CALC=10.0),
+        _F(CHAM_GD=CH2, NOEUD="NS5", NOM_CMP="DX", VALE_CALC=11.0),
+        _F(CHAM_GD=CH2, NOEUD="NS6", NOM_CMP="DX", VALE_CALC=12.0),
+        _F(CHAM_GD=CH2, NOEUD="NS7", NOM_CMP="DX", VALE_CALC=13.0),
+        _F(CHAM_GD=CH2, NOEUD="NS8", NOM_CMP="DX", VALE_CALC=14.0),
+        _F(CHAM_GD=CH2, NOEUD="NS9", NOM_CMP="DX", VALE_CALC=15.0),
+        _F(CHAM_GD=CH2, NOEUD="NT1", NOM_CMP="DX", VALE_CALC=16.0),
+        _F(CHAM_GD=CH2, NOEUD="NT2", NOM_CMP="DX", VALE_CALC=17.0),
+        _F(CHAM_GD=CH2, NOEUD="NT3", NOM_CMP="DX", VALE_CALC=18.0),
+    )
+)
 
 FIN()

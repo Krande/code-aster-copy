@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-'''
+"""
 This module defines objects called from C (C to Python).
-'''
+"""
 
 import sys
 import time
@@ -29,8 +29,14 @@ import aster
 import numpy
 
 from ..Messages import UTMESS
-from ..Utilities import (ExecutionParameter, config, get_version,
-                         get_version_desc, localization, version_info)
+from ..Utilities import (
+    ExecutionParameter,
+    config,
+    get_version,
+    get_version_desc,
+    localization,
+    version_info,
+)
 
 
 def _print_alarm():
@@ -38,46 +44,43 @@ def _print_alarm():
     changes = version_info.changes
     uncommitted = version_info.uncommitted
     if changes:
-        UTMESS('I', 'SUPERVIS_41',
-               valk=get_version(), vali=changes)
+        UTMESS("I", "SUPERVIS_41", valk=get_version(), vali=changes)
     if uncommitted and type(uncommitted) is list:
-        fnames = ', '.join(uncommitted)
-        UTMESS('A', 'SUPERVIS_42',
-               valk=(version_info.parentid, fnames),)
+        fnames = ", ".join(uncommitted)
+        UTMESS("A", "SUPERVIS_42", valk=(version_info.parentid, fnames))
 
 
 def _print_header():
     """Appelé par entete.F90 pour afficher des informations sur
     la machine."""
-    lang_settings = '%s (%s)' % localization.get_current_settings()
+    lang_settings = "%s (%s)" % localization.get_current_settings()
     date_build = version_info.date
-    UTMESS('I', 'SUPERVIS2_4',
-           valk=get_version_desc())
-    UTMESS('I', 'SUPERVIS2_23',
-           valk=(get_version(),
-                 date_build,
-                 version_info.parentid[:12],
-                 version_info.branch),)
+    UTMESS("I", "SUPERVIS2_4", valk=get_version_desc())
+    valk = (get_version(), date_build, version_info.parentid[:12], version_info.branch)
+    UTMESS("I", "SUPERVIS2_23", valk=valk)
     params = ExecutionParameter()
-    UTMESS('I', 'SUPERVIS2_10',
-           valk=("1991", time.strftime('%Y'),
-                 time.strftime('%c'),
-                 params.get_option('hostname'),
-                 params.get_option('architecture'),
-                 params.get_option('processor'),
-                 params.get_option('osname'),
-                 lang_settings,),)
-    pyvers = '%s.%s.%s' % tuple(sys.version_info[:3])
-    UTMESS('I', 'SUPERVIS2_9', valk=(pyvers, numpy.__version__))
+    valk = (
+        "1991",
+        time.strftime("%Y"),
+        time.strftime("%c"),
+        params.get_option("hostname"),
+        params.get_option("architecture"),
+        params.get_option("processor"),
+        params.get_option("osname"),
+        lang_settings,
+    )
+    UTMESS("I", "SUPERVIS2_10", valk=valk)
+    pyvers = "%s.%s.%s" % tuple(sys.version_info[:3])
+    UTMESS("I", "SUPERVIS2_9", valk=(pyvers, numpy.__version__))
     # avertissement si la version a plus de 15 mois
     if config["ASTER_NO_EXPIR"] == 0:
         try:
-            d0, m0, y0 = list(map(int, date_build.split('/')))
+            d0, m0, y0 = list(map(int, date_build.split("/")))
             tbuild = datetime(y0, m0, d0)
             tnow = datetime.today()
             delta = (tnow - tbuild).days
             if delta > 550:
-                UTMESS('A', 'SUPERVIS2_2')
+                UTMESS("A", "SUPERVIS2_2")
         except ValueError:
             pass
 
@@ -113,10 +116,9 @@ def checksd(nomsd, typesd):
     # import
     iret = 4
     try:
-        sd_module = __import__("code_aster.SD.%s" % typesd, globals(), locals(),
-                               [typesd])
+        sd_module = __import__("code_aster.SD.%s" % typesd, globals(), locals(), [typesd])
     except ImportError:
-        UTMESS('F', 'SDVERI_1', valk=typesd)
+        UTMESS("F", "SDVERI_1", valk=typesd)
         return iret
     # on récupère la classe typesd
     clas = getattr(sd_module, typesd, None)
@@ -135,7 +137,7 @@ def check_ds_object(objsd):
         int: 0 in case of success.
     """
     chk = objsd.check()
-    ichk = min([1, ] + [level for level, _, _ in chk.msg])
+    ichk = min([1] + [level for level, _, _ in chk.msg])
     if ichk == 0:
         iret = 1
     else:
@@ -143,5 +145,5 @@ def check_ds_object(objsd):
     # print error messages (level=0):
     for level, obj, msg in chk.msg:
         if level == 0:
-            aster.affiche('MESSAGE', repr(obj) + " " + msg)
+            aster.affiche("MESSAGE", repr(obj) + " " + msg)
     return iret

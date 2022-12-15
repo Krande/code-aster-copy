@@ -19,184 +19,173 @@
 
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),
-      INFO=1)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), INFO=1)
 
-lisi=DEFI_LIST_REEL(DEBUT=0,
-                    INTERVALLE=_F(JUSQU_A=1,
-                                  PAS=1,),)
-LINST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi,),
-                 ECHEC=_F(EVENEMENT='ERREUR',
-                      ACTION='DECOUPE',),)
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1),)
+lisi = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=_F(JUSQU_A=1, PAS=1))
+LINST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lisi), ECHEC=_F(EVENEMENT="ERREUR", ACTION="DECOUPE"))
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 1, 1))
 
-mat1=DEFI_MATERIAU(ELAS=_F(E=2000,
-                           NU=0.3,),)
+mat1 = DEFI_MATERIAU(ELAS=_F(E=2000, NU=0.3))
 
-Mail = LIRE_MAILLAGE(UNITE=20,
-                     FORMAT='MED',)
-Mail=MODI_MAILLAGE(reuse =Mail,
-                   MAILLAGE=Mail,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_3','Group_4','Group_2','Group_1')),)
+Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+Mail = MODI_MAILLAGE(
+    reuse=Mail,
+    MAILLAGE=Mail,
+    ORIE_PEAU=_F(GROUP_MA_PEAU=("Group_3", "Group_4", "Group_2", "Group_1")),
+)
 
-Mail = DEFI_GROUP (reuse = Mail, MAILLAGE= Mail,
-                   CREA_GROUP_NO= (_F(GROUP_MA=('Group_2','Group_1'),)),
-                   )
+Mail = DEFI_GROUP(reuse=Mail, MAILLAGE=Mail, CREA_GROUP_NO=(_F(GROUP_MA=("Group_2", "Group_1"))))
 
-Mail2=CREA_MAILLAGE(MAILLAGE=Mail,
-                    DECOUPE_LAC=_F(GROUP_MA_ESCL='Group_2',
-                                 ), )
+Mail2 = CREA_MAILLAGE(MAILLAGE=Mail, DECOUPE_LAC=_F(GROUP_MA_ESCL="Group_2"))
 
-MODI=AFFE_MODELE(MAILLAGE=Mail2,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='AXIS',),)
+MODI = AFFE_MODELE(MAILLAGE=Mail2, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
-AFFE=AFFE_MATERIAU(MAILLAGE=Mail2,
-                   MODELE=MODI,
-                   AFFE=_F(TOUT='OUI',
-                           MATER=mat1,),)
+AFFE = AFFE_MATERIAU(MAILLAGE=Mail2, MODELE=MODI, AFFE=_F(TOUT="OUI", MATER=mat1))
 
-DEFICO=DEFI_CONTACT(MODELE=MODI,
-                    INFO=1,
-                    FORMULATION='CONTINUE',
-                    LISSAGE='OUI',
-                    ALGO_RESO_GEOM='NEWTON',
-                    ALGO_RESO_CONT='NEWTON',
-                    ZONE=_F(APPARIEMENT='MORTAR',
-                            GROUP_MA_MAIT='Group_1',
-                            GROUP_MA_ESCL='Group_2',
-                            ALGO_CONT='LAC',
-                            CONTACT_INIT='OUI',),)
+DEFICO = DEFI_CONTACT(
+    MODELE=MODI,
+    INFO=1,
+    FORMULATION="CONTINUE",
+    LISSAGE="OUI",
+    ALGO_RESO_GEOM="NEWTON",
+    ALGO_RESO_CONT="NEWTON",
+    ZONE=_F(
+        APPARIEMENT="MORTAR",
+        GROUP_MA_MAIT="Group_1",
+        GROUP_MA_ESCL="Group_2",
+        ALGO_CONT="LAC",
+        CONTACT_INIT="OUI",
+    ),
+)
 
-CHAR1=AFFE_CHAR_MECA(MODELE=MODI,
-                     DDL_IMPO=(_F(GROUP_MA='Symx',
-                                 DX=0,
-                                 ),
-                                _F(GROUP_MA='Symy',
-                                 DY=0,
-                                 ), ),)
-CHAR2=AFFE_CHAR_MECA(MODELE=MODI,
-                     PRES_REP=_F(GROUP_MA='Group_3',
-                                 PRES=25,),
-                       )
+CHAR1 = AFFE_CHAR_MECA(MODELE=MODI, DDL_IMPO=(_F(GROUP_MA="Symx", DX=0), _F(GROUP_MA="Symy", DY=0)))
+CHAR2 = AFFE_CHAR_MECA(MODELE=MODI, PRES_REP=_F(GROUP_MA="Group_3", PRES=25))
 
-RES=STAT_NON_LINE(INFO=1,
-                  AFFICHAGE=_F(INFO_RESIDU='OUI',),
-                  MODELE=MODI,
-                  CHAM_MATER=AFFE,
-                  EXCIT=(_F(CHARGE=CHAR1,
-                              FONC_MULT=RAMPE),
-                         _F(CHARGE=CHAR2,
-                            FONC_MULT=RAMPE,
-                            #TYPE_CHARGE='SUIV',
-                            ),),
-                  CONTACT=DEFICO,
-                  NEWTON=_F(REAC_ITER=1,),
-                  COMPORTEMENT=_F(RELATION='ELAS',
-                                  DEFORMATION='PETIT',
-                                  TOUT='OUI',),
-                  INCREMENT=_F(LIST_INST=LINST,),
-                  SOLVEUR=_F(ELIM_LAGR='NON',
-                             METHODE='MUMPS',
-                             PCENT_PIVOT= 30,),
-                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6,
-                                 ITER_GLOB_MAXI=50,))
+RES = STAT_NON_LINE(
+    INFO=1,
+    AFFICHAGE=_F(INFO_RESIDU="OUI"),
+    MODELE=MODI,
+    CHAM_MATER=AFFE,
+    EXCIT=(
+        _F(CHARGE=CHAR1, FONC_MULT=RAMPE),
+        _F(
+            CHARGE=CHAR2,
+            FONC_MULT=RAMPE,
+            # TYPE_CHARGE='SUIV',
+        ),
+    ),
+    CONTACT=DEFICO,
+    NEWTON=_F(REAC_ITER=1),
+    COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT", TOUT="OUI"),
+    INCREMENT=_F(LIST_INST=LINST),
+    SOLVEUR=_F(ELIM_LAGR="NON", METHODE="MUMPS", PCENT_PIVOT=30),
+    CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=50),
+)
 
-CALC_CHAMP(reuse=RES,
-           RESULTAT=RES,
-           CONTRAINTE=('SIEF_NOEU',),
-           CRITERES=('SIEQ_NOEU',),)
+CALC_CHAMP(reuse=RES, RESULTAT=RES, CONTRAINTE=("SIEF_NOEU",), CRITERES=("SIEQ_NOEU",))
 
 
-RES=CALC_PRESSION(MAILLAGE=Mail2,reuse=RES,
-                RESULTAT=RES,
-                GROUP_MA=('Group_2','Group_1',),
-                INST=1.0,
-                )
+RES = CALC_PRESSION(
+    MAILLAGE=Mail2, reuse=RES, RESULTAT=RES, GROUP_MA=("Group_2", "Group_1"), INST=1.0
+)
 
 
-post2= POST_RELEVE_T( ACTION =_F(
-                    INTITULE  = 'pres',
-                        RESULTAT=RES,
-                        INST=1.0,
-                        GROUP_NO='Group_2',
-                        NOM_CHAM   = 'PRES_NOEU',
-                        NOM_CMP   = 'PRES',
-                        OPERATION = 'EXTRACTION' ,) ,
-                    )
+post2 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="pres",
+        RESULTAT=RES,
+        INST=1.0,
+        GROUP_NO="Group_2",
+        NOM_CHAM="PRES_NOEU",
+        NOM_CMP="PRES",
+        OPERATION="EXTRACTION",
+    )
+)
 
-post1= POST_RELEVE_T( ACTION =_F(
-                    INTITULE  = 'pres',
-                        RESULTAT=RES,
-                        INST=1.0,
-                        GROUP_NO='Group_1',
-                        NOM_CHAM   = 'PRES_NOEU',
-                        NOM_CMP   = 'PRES',
-                        OPERATION = 'EXTRACTION' ,) ,
-                    )
+post1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="pres",
+        RESULTAT=RES,
+        INST=1.0,
+        GROUP_NO="Group_1",
+        NOM_CHAM="PRES_NOEU",
+        NOM_CMP="PRES",
+        OPERATION="EXTRACTION",
+    )
+)
 
-TEST_TABLE(TABLE=post2,
-           NOM_PARA='PRES',
-           TYPE_TEST='MIN',
-           LEGENDE='CALC_PRESSION esclave',
-           VALE_CALC=-4.89501722311,
-           VALE_REFE=-4.894178,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE',)
+TEST_TABLE(
+    TABLE=post2,
+    NOM_PARA="PRES",
+    TYPE_TEST="MIN",
+    LEGENDE="CALC_PRESSION esclave",
+    VALE_CALC=-4.89501722311,
+    VALE_REFE=-4.894178,
+    PRECISION=0.01,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=post2,
-           NOM_PARA='PRES',
-           TYPE_TEST='MAX',
-           LEGENDE='CALC_PRESSION esclave',
-           VALE_CALC=-4.88470006473,
-           VALE_REFE=-4.894178,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE',)
+TEST_TABLE(
+    TABLE=post2,
+    NOM_PARA="PRES",
+    TYPE_TEST="MAX",
+    LEGENDE="CALC_PRESSION esclave",
+    VALE_CALC=-4.88470006473,
+    VALE_REFE=-4.894178,
+    PRECISION=0.01,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=post1,
-           NOM_PARA='PRES',
-           TYPE_TEST='MIN',
-           LEGENDE='CALC_PRESSION maitre',
-           VALE_CALC=-4.88631208469,
-           VALE_REFE=-4.894178,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE',)
+TEST_TABLE(
+    TABLE=post1,
+    NOM_PARA="PRES",
+    TYPE_TEST="MIN",
+    LEGENDE="CALC_PRESSION maitre",
+    VALE_CALC=-4.88631208469,
+    VALE_REFE=-4.894178,
+    PRECISION=0.01,
+    REFERENCE="ANALYTIQUE",
+)
 
-TEST_TABLE(TABLE=post1,
-           NOM_PARA='PRES',
-           TYPE_TEST='MAX',
-           LEGENDE='CALC_PRESSION maitre',
-           VALE_CALC=-4.87625975077,
-           VALE_REFE=-4.894178,
-           PRECISION=0.01,
-           REFERENCE='ANALYTIQUE',)
+TEST_TABLE(
+    TABLE=post1,
+    NOM_PARA="PRES",
+    TYPE_TEST="MAX",
+    LEGENDE="CALC_PRESSION maitre",
+    VALE_CALC=-4.87625975077,
+    VALE_REFE=-4.894178,
+    PRECISION=0.01,
+    REFERENCE="ANALYTIQUE",
+)
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   TYPE_TEST='MIN',
-                   RESULTAT=RES,
-                   NOM_CHAM='DEPL',
-                   LEGENDE='LAGS_C',
-                   NOM_CMP='LAGS_C',
-                   VALE_CALC=-4.89418489293,
-                   VALE_REFE=-4.894178,
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',
-                   ),
-                _F(INST=1.0,
-                   TYPE_TEST='MAX',
-                   RESULTAT=RES,
-                   NOM_CHAM='DEPL',
-                   LEGENDE='LAGS_C',
-                   NOM_CMP='LAGS_C',
-                   VALE_CALC=-4.89416908631,
-                   VALE_REFE=-4.894178,
-                   PRECISION=0.01,
-                   REFERENCE='ANALYTIQUE',
-                   ),
-                ),
-      )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            TYPE_TEST="MIN",
+            RESULTAT=RES,
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_C",
+            NOM_CMP="LAGS_C",
+            VALE_CALC=-4.89418489293,
+            VALE_REFE=-4.894178,
+            PRECISION=0.01,
+            REFERENCE="ANALYTIQUE",
+        ),
+        _F(
+            INST=1.0,
+            TYPE_TEST="MAX",
+            RESULTAT=RES,
+            NOM_CHAM="DEPL",
+            LEGENDE="LAGS_C",
+            NOM_CMP="LAGS_C",
+            VALE_CALC=-4.89416908631,
+            VALE_REFE=-4.894178,
+            PRECISION=0.01,
+            REFERENCE="ANALYTIQUE",
+        ),
+    )
+)
 
 FIN()

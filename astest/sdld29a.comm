@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,306 +20,355 @@
 # DYNAMIQUE TRANSITOIRE SUR BASE MODALE SYSTEME MASSE ET RESSORT
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #
 
-RESSORT=LIRE_MAILLAGE(FORMAT="ASTER", )
+RESSORT = LIRE_MAILLAGE(FORMAT="ASTER")
 
 #
 
-MODELE=AFFE_MODELE(   MAILLAGE=RESSORT,
-                        AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'DIS_T')   )
+MODELE = AFFE_MODELE(
+    MAILLAGE=RESSORT, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_T")
+)
 
 #
 
-CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                 _F(  GROUP_MA = ('E1','E2','E3','E4','E5','E6','E7','E8','E9',),
-                           CARA = 'K_T_D_L', VALE = (1.E5, 1., 1.,)),
-                 _F(  GROUP_MA = ('E1','E2','E3','E4','E5','E6','E7','E8','E9',),
-                           CARA = 'M_T_L', VALE = (0., 0., 0., 0., 0., 0.,0., 0., 0.,
-                           0., 0., 0.,0., 0., 0.,0., 0., 0.,0., 0., 0.,)),
-
-                         _F(  GROUP_MA = 'E1',
-                           CARA = 'A_T_D_L', VALE = (250., 1., 1.,)),
-
-                         _F(  GROUP_MA = ('E2','E3','E4','E5','E6','E7','E8',),
-                           CARA = 'A_T_D_L', VALE = (50., 1., 1.,)),
-
-                         _F(  GROUP_MA = 'E9',
-                           CARA = 'A_T_D_L', VALE = (25., 1., 1.,)),
-
-                         _F(  GROUP_MA = ('P1','P2','P3','P4','P5','P6','P7','P8',),
-                           CARA = 'M_T_D_N', VALE = 10.))  )
-
-#
-
-CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                          _F(  TOUT = 'OUI', DY = 0.,  DZ = 0.),
-                                   _F(  GROUP_NO = ('N1','N10',),  DX = 0.0)) )
-
-#
-
-EFFORT=AFFE_CHAR_MECA(  MODELE=MODELE,
-                          FORCE_NODALE=_F(  GROUP_NO = 'N5',  FX = 1.)  )
-
-#
-
-RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='RIGI_MECA',
-                             CARA_ELEM=CHAMPCAR,  CHARGE=CHARGE  )
-
-MASSELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='MASS_MECA',
-                             CARA_ELEM=CHAMPCAR,  CHARGE=CHARGE  )
-
-AMORELEM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='AMOR_MECA',
-                             CARA_ELEM=CHAMPCAR,  CHARGE=CHARGE  )
-
-EFFOELEM=CALC_VECT_ELEM(  CHARGE=EFFORT,  OPTION='CHAR_MECA',
-                             CARA_ELEM=CHAMPCAR                  )
-
-#
-#
-
-NUMEROTA=NUME_DDL(  MATR_RIGI=RIGIELEM  )
+CHAMPCAR = AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    DISCRET=(
+        _F(
+            GROUP_MA=("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9"),
+            CARA="K_T_D_L",
+            VALE=(1.0e5, 1.0, 1.0),
+        ),
+        _F(
+            GROUP_MA=("E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9"),
+            CARA="M_T_L",
+            VALE=(
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+            ),
+        ),
+        _F(GROUP_MA="E1", CARA="A_T_D_L", VALE=(250.0, 1.0, 1.0)),
+        _F(
+            GROUP_MA=("E2", "E3", "E4", "E5", "E6", "E7", "E8"),
+            CARA="A_T_D_L",
+            VALE=(50.0, 1.0, 1.0),
+        ),
+        _F(GROUP_MA="E9", CARA="A_T_D_L", VALE=(25.0, 1.0, 1.0)),
+        _F(GROUP_MA=("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"), CARA="M_T_D_N", VALE=10.0),
+    ),
+)
 
 #
 
-MATRRIGI=ASSE_MATRICE(  MATR_ELEM=RIGIELEM,  NUME_DDL=NUMEROTA  )
+CHARGE = AFFE_CHAR_MECA(
+    MODELE=MODELE, DDL_IMPO=(_F(TOUT="OUI", DY=0.0, DZ=0.0), _F(GROUP_NO=("N1", "N10"), DX=0.0))
+)
 
-MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=NUMEROTA  )
+#
 
-MATRAMOR=ASSE_MATRICE(  MATR_ELEM=AMORELEM,  NUME_DDL=NUMEROTA  )
+EFFORT = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="N5", FX=1.0))
 
-VECTASS=ASSE_VECTEUR(  VECT_ELEM=EFFOELEM,  NUME_DDL=NUMEROTA  )
+#
+
+RIGIELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="RIGI_MECA", CARA_ELEM=CHAMPCAR, CHARGE=CHARGE)
+
+MASSELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="MASS_MECA", CARA_ELEM=CHAMPCAR, CHARGE=CHARGE)
+
+AMORELEM = CALC_MATR_ELEM(MODELE=MODELE, OPTION="AMOR_MECA", CARA_ELEM=CHAMPCAR, CHARGE=CHARGE)
+
+EFFOELEM = CALC_VECT_ELEM(CHARGE=EFFORT, OPTION="CHAR_MECA", CARA_ELEM=CHAMPCAR)
 
 #
 #
 
-MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
-                 OPTION='AJUSTE', SOLVEUR=_F(METHODE='MULT_FRONT'),
-                 CALC_FREQ=_F(FREQ=( 5.,10.,15.,20.,24.,27.,30.,32.,),
-                              ),
-                 MATR_MASS=MATRMASS,
-                 )
+NUMEROTA = NUME_DDL(MATR_RIGI=RIGIELEM)
+
+#
+
+MATRRIGI = ASSE_MATRICE(MATR_ELEM=RIGIELEM, NUME_DDL=NUMEROTA)
+
+MATRMASS = ASSE_MATRICE(MATR_ELEM=MASSELEM, NUME_DDL=NUMEROTA)
+
+MATRAMOR = ASSE_MATRICE(MATR_ELEM=AMORELEM, NUME_DDL=NUMEROTA)
+
+VECTASS = ASSE_VECTEUR(VECT_ELEM=EFFOELEM, NUME_DDL=NUMEROTA)
+
+#
+#
+
+MODES = CALC_MODES(
+    MATR_RIGI=MATRRIGI,
+    OPTION="AJUSTE",
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CALC_FREQ=_F(FREQ=(5.0, 10.0, 15.0, 20.0, 24.0, 27.0, 30.0, 32.0)),
+    MATR_MASS=MATRMASS,
+)
 
 
 #
 
-FONCTIO1=DEFI_FONCTION(  NOM_PARA='INST',   NOM_RESU='ALPHA',
-                           VALE=( 0., 1.,  1., 1.,  1.0000001, 0., ),
-                            PROL_DROITE='CONSTANT'               )
+FONCTIO1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="ALPHA",
+    VALE=(0.0, 1.0, 1.0, 1.0, 1.0000001, 0.0),
+    PROL_DROITE="CONSTANT",
+)
 
-#f
-PROJ_BASE(  BASE=MODES,
-            STOCKAGE = 'PLEIN',
-            MATR_ASSE_GENE=(
-             _F(
-                             MATRICE = CO("MASSEGEN"),
-                             MATR_ASSE = MATRMASS),
-             _F(
-                             MATRICE = CO("RIGIDGEN"),
-                             MATR_ASSE = MATRRIGI),
-             _F(
-                             MATRICE = CO("AMORTGEN"),
-                             MATR_ASSE = MATRAMOR,)),
-             VECT_ASSE_GENE=_F(
-                             VECTEUR = CO("EFFOGENE"),
-                             VECT_ASSE = VECTASS, TYPE_VECT='FORC') )
+# f
+PROJ_BASE(
+    BASE=MODES,
+    STOCKAGE="PLEIN",
+    MATR_ASSE_GENE=(
+        _F(MATRICE=CO("MASSEGEN"), MATR_ASSE=MATRMASS),
+        _F(MATRICE=CO("RIGIDGEN"), MATR_ASSE=MATRRIGI),
+        _F(MATRICE=CO("AMORTGEN"), MATR_ASSE=MATRAMOR),
+    ),
+    VECT_ASSE_GENE=_F(VECTEUR=CO("EFFOGENE"), VECT_ASSE=VECTASS, TYPE_VECT="FORC"),
+)
 
 #
 
-DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                              MATR_MASS=MASSEGEN,  MATR_RIGI=RIGIDGEN,
-                              MATR_AMOR=AMORTGEN,
-                              SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
-                             EXCIT=_F( VECT_ASSE_GENE = EFFOGENE,
-                                     FONC_MULT = FONCTIO1),
-                              INCREMENT=_F( INST_INIT = 0.,
-                                         INST_FIN = 1.5, PAS = 0.00001)
-                           )
+DYNAMODA = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="GENE",
+    MATR_MASS=MASSEGEN,
+    MATR_RIGI=RIGIDGEN,
+    MATR_AMOR=AMORTGEN,
+    SCHEMA_TEMPS=_F(SCHEMA="DIFF_CENTRE"),
+    EXCIT=_F(VECT_ASSE_GENE=EFFOGENE, FONC_MULT=FONCTIO1),
+    INCREMENT=_F(INST_INIT=0.0, INST_FIN=1.5, PAS=0.00001),
+)
 
 #
 # DEFINITION DES INSTANTS DE CALCUL DE LA SOLUTION
-#-------------------------------------------------
+# -------------------------------------------------
 
-LISTR8=DEFI_LIST_REEL(  DEBUT=0.09,INTERVALLE=(
-                          _F(  JUSQU_A = 0.81, NOMBRE = 8),
-                                     _F(  JUSQU_A = 0.91, NOMBRE = 1),
-                                     _F(  JUSQU_A = 0.99, NOMBRE = 1),
-                                     _F(  JUSQU_A = 1.45, NOMBRE = 1))  )
+LISTR8 = DEFI_LIST_REEL(
+    DEBUT=0.09,
+    INTERVALLE=(
+        _F(JUSQU_A=0.81, NOMBRE=8),
+        _F(JUSQU_A=0.91, NOMBRE=1),
+        _F(JUSQU_A=0.99, NOMBRE=1),
+        _F(JUSQU_A=1.45, NOMBRE=1),
+    ),
+)
 
 #
 IMPR_CO(CONCEPT=_F(NOM=LISTR8))
 
-DYNATRAN=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,    NOM_CHAM='DEPL',
-                             LIST_INST=LISTR8,   INTERPOL='LIN'    )
+DYNATRAN = REST_GENE_PHYS(RESU_GENE=DYNAMODA, NOM_CHAM="DEPL", LIST_INST=LISTR8, INTERPOL="LIN")
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=3.9540800310604E-05,
-                  VALE_REFE=3.97E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=3.9540800310604e-05,
+        VALE_REFE=3.97e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=5.1349962089102E-06,
-                  VALE_REFE=5.10E-06,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=5.1349962089102e-06,
+        VALE_REFE=5.10e-06,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=3.7679901539937E-05,
-                  VALE_REFE=3.77E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=3.7679901539937e-05,
+        VALE_REFE=3.77e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=7.3543939221051E-06,
-                  VALE_REFE=7.30E-06,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=7.3543939221051e-06,
+        VALE_REFE=7.30e-06,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=3.5853099895005E-05,
-                  VALE_REFE=3.59E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=3.5853099895005e-05,
+        VALE_REFE=3.59e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=6,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=8.8186557569975E-06,
-                  VALE_REFE=8.81E-06,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=6,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=8.8186557569975e-06,
+        VALE_REFE=8.81e-06,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=7,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=3.4658209166834E-05,
-                  VALE_REFE=3.47E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=7,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=3.4658209166834e-05,
+        VALE_REFE=3.47e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=1.0093823500351E-05,
-                  VALE_REFE=1.01E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=1.0093823500351e-05,
+        VALE_REFE=1.01e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=9,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=3.3621855347154E-05,
-                  VALE_REFE=3.36E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=9,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=3.3621855347154e-05,
+        VALE_REFE=3.36e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=1.1308412536534E-05,
-                  VALE_REFE=1.11E-05,
-                  PRECISION=2.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=1.1308412536534e-05,
+        VALE_REFE=1.11e-05,
+        PRECISION=2.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=11,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=3.2611054438841E-05,
-                  VALE_REFE=3.27E-05,
-                  PRECISION=1.E-2,
-                  REFERENCE='SOURCE_EXTERNE',
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=11,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=3.2611054438841e-05,
+        VALE_REFE=3.27e-05,
+        PRECISION=1.0e-2,
+        REFERENCE="SOURCE_EXTERNE",
+    )
+)
 
 #
 
-TEST_RESU(RESU=_F(NUME_ORDRE=12,
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N5',
-                  NOM_CMP='DX',
-                  VALE_CALC=-2.1924787510439E-05,
-                  ),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=12,
+        RESULTAT=DYNATRAN,
+        NOM_CHAM="DEPL",
+        GROUP_NO="N5",
+        NOM_CMP="DX",
+        VALE_CALC=-2.1924787510439e-05,
+    )
+)
 
 #
-FIN( )
+FIN()
 #

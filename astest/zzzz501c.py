@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
+
 code_aster.init("--test")
 
 test = code_aster.TestCase()
@@ -36,7 +37,7 @@ coord = monMaillage.getCoordinates()
 
 # check readonly access
 print("coord[3] ", coord[3])
-test.assertEqual( coord[3], 1.0 )
+test.assertEqual(coord[3], 1.0)
 
 with test.assertRaises(TypeError):
     coord[3] = 5.0
@@ -53,7 +54,7 @@ with test.assertRaises(NameError):
 
 # delete/overwrite monModel, coord object still exists
 monModel = 1
-test.assertEqual( coord[3], 1.0 )
+test.assertEqual(coord[3], 1.0)
 
 test.printSummary()
 

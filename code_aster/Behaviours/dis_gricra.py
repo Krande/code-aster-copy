@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,20 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'DIS_GRICRA',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement de la liaison grille-crayons des assemblages combustibles, applicable à des elements discrets"""              ,
-    num_lc         = 0,
-    nb_vari        = 7,
-    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5',
-        'IRVECU','DIS6',),
-    mc_mater       = None,
-    modelisation   = ('DIS_T','DIS_TR','2D_DIS_T','2D_DIS_TR',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = None,
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="DIS_GRICRA",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement de la liaison grille-crayons des assemblages combustibles, applicable à des elements discrets""",
+    num_lc=0,
+    nb_vari=7,
+    nom_vari=("DIS1", "DIS2", "DIS3", "DIS4", "DIS5", "IRVECU", "DIS6"),
+    mc_mater=None,
+    modelisation=("DIS_T", "DIS_TR", "2D_DIS_T", "2D_DIS_TR"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=None,
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

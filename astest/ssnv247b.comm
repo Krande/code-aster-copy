@@ -22,120 +22,103 @@
 import math
 import numpy as np
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   MAILLAGE
-#----------------------------------------------
+# ----------------------------------------------
 
 
-MAILLAG2=LIRE_MAILLAGE(FORMAT="ASTER",)
-#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAILLAG2,))
-#----------------------------------------------
+MAILLAG2 = LIRE_MAILLAGE(FORMAT="ASTER")
+# IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAILLAG2,))
+# ----------------------------------------------
 #                   MODELE ET FISSURE
-#----------------------------------------------
+# ----------------------------------------------
 
-MAILLAG2 = DEFI_GROUP( reuse = MAILLAG2, MAILLAGE = MAILLAG2,
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'NM123', NOEUD = 'NM123'),
-                                        _F( NOM = 'N51', NOEUD = 'N51'),
-                                        _F( NOM = 'NM8', NOEUD = 'NM8'),
-                                        _F( NOM = 'NM16', NOEUD = 'NM16'),
-                                        _F( NOM = 'N50', NOEUD = 'N50'),
-                                        _F( NOM = 'NM69', NOEUD = 'NM69'),
-                                        _F( NOM = 'NM122', NOEUD = 'NM122'),
-                                        _F( NOM = 'NM113', NOEUD = 'NM113'),
-                                        _F( NOM = 'N9', NOEUD = 'N9'),
-                                        _F( NOM = 'NM9', NOEUD = 'NM9'),
-                                        _F( NOM = 'NM36', NOEUD = 'NM36'),
-                                        _F( NOM = 'N37', NOEUD = 'N37'),
-                                        _F( NOM = 'N41', NOEUD = 'N41'),
-                                        _F( NOM = 'N44', NOEUD = 'N44'),
-                                        _F( NOM = 'NM91', NOEUD = 'NM91'),
-                                        _F( NOM = 'N11', NOEUD = 'N11'),
-                                        _F( NOM = 'NM72', NOEUD = 'NM72'),
-                                        _F( NOM = 'N28', NOEUD = 'N28'),
-                                        _F( NOM = 'NM32', NOEUD = 'NM32'),
-                                        _F( NOM = 'NM10', NOEUD = 'NM10'),
-                                        _F( NOM = 'NM12', NOEUD = 'NM12'),
-                                        _F( NOM = 'N12', NOEUD = 'N12'),
-                                        _F( NOM = 'NM51', NOEUD = 'NM51'),
-                                        _F( NOM = 'NM15', NOEUD = 'NM15'),
-                                        _F( NOM = 'NM76', NOEUD = 'NM76'),
-                                        _F( NOM = 'NM54', NOEUD = 'NM54'),
-                                        _F( NOM = 'NM29', NOEUD = 'NM29'),
-                                        _F( NOM = 'NM109', NOEUD = 'NM109'),
-                                        _F( NOM = 'N7', NOEUD = 'N7'),
-                                        _F( NOM = 'NM33', NOEUD = 'NM33'),
-                                        _F( NOM = 'NM94', NOEUD = 'NM94'),
-                                        _F( NOM = 'N8', NOEUD = 'N8'),
-                                        _F( NOM = 'NM112', NOEUD = 'NM112'),
-                                        _F( NOM = 'N21', NOEUD = 'N21'),
-                                        _F( NOM = 'N25', NOEUD = 'N25'),
-                                        _F( NOM = 'NM73', NOEUD = 'NM73'),
-                                        _F( NOM = 'N24', NOEUD = 'N24'),
-                                        _F( NOM = 'N40', NOEUD = 'N40'),
-                                        _F( NOM = 'N6', NOEUD = 'N6'),
-                                        _F( NOM = 'N10', NOEUD = 'N10'),
-                                        _F( NOM = 'NM17', NOEUD = 'NM17'),
-                                        _F( NOM = 'N5', NOEUD = 'N5'),
-                                        _F( NOM = 'NM121', NOEUD = 'NM121'),
-                                        _F( NOM = 'NM116', NOEUD = 'NM116'),
-                                     ),
-         )
+MAILLAG2 = DEFI_GROUP(
+    reuse=MAILLAG2,
+    MAILLAGE=MAILLAG2,
+    CREA_GROUP_NO=(
+        _F(NOM="NM123", NOEUD="NM123"),
+        _F(NOM="N51", NOEUD="N51"),
+        _F(NOM="NM8", NOEUD="NM8"),
+        _F(NOM="NM16", NOEUD="NM16"),
+        _F(NOM="N50", NOEUD="N50"),
+        _F(NOM="NM69", NOEUD="NM69"),
+        _F(NOM="NM122", NOEUD="NM122"),
+        _F(NOM="NM113", NOEUD="NM113"),
+        _F(NOM="N9", NOEUD="N9"),
+        _F(NOM="NM9", NOEUD="NM9"),
+        _F(NOM="NM36", NOEUD="NM36"),
+        _F(NOM="N37", NOEUD="N37"),
+        _F(NOM="N41", NOEUD="N41"),
+        _F(NOM="N44", NOEUD="N44"),
+        _F(NOM="NM91", NOEUD="NM91"),
+        _F(NOM="N11", NOEUD="N11"),
+        _F(NOM="NM72", NOEUD="NM72"),
+        _F(NOM="N28", NOEUD="N28"),
+        _F(NOM="NM32", NOEUD="NM32"),
+        _F(NOM="NM10", NOEUD="NM10"),
+        _F(NOM="NM12", NOEUD="NM12"),
+        _F(NOM="N12", NOEUD="N12"),
+        _F(NOM="NM51", NOEUD="NM51"),
+        _F(NOM="NM15", NOEUD="NM15"),
+        _F(NOM="NM76", NOEUD="NM76"),
+        _F(NOM="NM54", NOEUD="NM54"),
+        _F(NOM="NM29", NOEUD="NM29"),
+        _F(NOM="NM109", NOEUD="NM109"),
+        _F(NOM="N7", NOEUD="N7"),
+        _F(NOM="NM33", NOEUD="NM33"),
+        _F(NOM="NM94", NOEUD="NM94"),
+        _F(NOM="N8", NOEUD="N8"),
+        _F(NOM="NM112", NOEUD="NM112"),
+        _F(NOM="N21", NOEUD="N21"),
+        _F(NOM="N25", NOEUD="N25"),
+        _F(NOM="NM73", NOEUD="NM73"),
+        _F(NOM="N24", NOEUD="N24"),
+        _F(NOM="N40", NOEUD="N40"),
+        _F(NOM="N6", NOEUD="N6"),
+        _F(NOM="N10", NOEUD="N10"),
+        _F(NOM="NM17", NOEUD="NM17"),
+        _F(NOM="N5", NOEUD="N5"),
+        _F(NOM="NM121", NOEUD="NM121"),
+        _F(NOM="NM116", NOEUD="NM116"),
+    ),
+)
 
-MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),
-              )
+MO = AFFE_MODELE(MAILLAGE=MAILLAG2, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
-LS_N = FORMULE(VALE='sqrt(Z**2+X**2+Y**2)-1.5',
-               NOM_PARA=['X', 'Y', 'Z'],)
+LS_N = FORMULE(VALE="sqrt(Z**2+X**2+Y**2)-1.5", NOM_PARA=["X", "Y", "Z"])
 
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
-                    TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LS_N,),
-                    INFO=1,
-                   )
+FISS = DEFI_FISS_XFEM(
+    MAILLAGE=MAILLAG2, TYPE_DISCONTINUITE="INTERFACE", DEFI_FISS=_F(FONC_LN=LS_N), INFO=1
+)
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
-                         FISSURE=FISS,
-                         INFO=1,
-                         DECOUPE_FACETTE='SOUS_ELEMENTS',
-                        )
+MODELEK = MODI_MODELE_XFEM(MODELE_IN=MO, FISSURE=FISS, INFO=1, DECOUPE_FACETTE="SOUS_ELEMENTS")
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   MATERIAU
-#----------------------------------------------
+# ----------------------------------------------
 
-E=5800.0E6
-SOL  = DEFI_MATERIAU(ELAS      = _F(E           = E,
-                                    NU          = 0.,
-                                    ALPHA       = 0.0,),
-                    )
+E = 5800.0e6
+SOL = DEFI_MATERIAU(ELAS=_F(E=E, NU=0.0, ALPHA=0.0))
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
-                       MODELE=MODELEK,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=SOL,
-                              ),
-                      )
+CHAMPMAT = AFFE_MATERIAU(MAILLAGE=MAILLAG2, MODELE=MODELEK, AFFE=_F(TOUT="OUI", MATER=SOL))
 
-#----------------------------------------------
+# ----------------------------------------------
 #                   CHARGEMENTS
-#----------------------------------------------
-
-def depn(x,y,z) :
-   return 0.
-
-DEPL_N = FORMULE(VALE='depn(X,Y,Z)',
-                 depn=depn,
-                 NOM_PARA=['X', 'Y', 'Z'],)
+# ----------------------------------------------
 
 
-#CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+def depn(x, y, z):
+    return 0.0
+
+
+DEPL_N = FORMULE(VALE="depn(X,Y,Z)", depn=depn, NOM_PARA=["X", "Y", "Z"])
+
+
+# CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                  DDL_IMPO=(
 #                            _F(GROUP_NO='BAS',DZ=0.,),
 #                            _F(GROUP_NO='BAS',DZ=0.,H1Z=0.),
@@ -156,187 +139,162 @@ DEPL_N = FORMULE(VALE='depn(X,Y,Z)',
 #                  INFO=2,
 #                 )
 
-CH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                    DDL_IMPO=(
-                            _F(GROUP_NO='BAS',DZ=DEPL_N,),
-                            _F(GROUP_NO='X',DY=DEPL_N,),
-                            _F(GROUP_NO='Y',DX=DEPL_N,),
-                            _F(GROUP_NO='EXT',DX=DEPL_N,DY=DEPL_N,DZ=DEPL_N,H1X=DEPL_N,H1Y=DEPL_N,H1Z=DEPL_N,),
-                            _F(GROUP_NO='INT',DX=DEPL_N,DY=DEPL_N,DZ=DEPL_N,H1X=DEPL_N,H1Y=DEPL_N,H1Z=DEPL_N,),
-                           ),
-                    INFO=2,
-                   )
+CH = AFFE_CHAR_MECA_F(
+    MODELE=MODELEK,
+    DDL_IMPO=(
+        _F(GROUP_NO="BAS", DZ=DEPL_N),
+        _F(GROUP_NO="X", DY=DEPL_N),
+        _F(GROUP_NO="Y", DX=DEPL_N),
+        _F(GROUP_NO="EXT", DX=DEPL_N, DY=DEPL_N, DZ=DEPL_N, H1X=DEPL_N, H1Y=DEPL_N, H1Z=DEPL_N),
+        _F(GROUP_NO="INT", DX=DEPL_N, DY=DEPL_N, DZ=DEPL_N, H1X=DEPL_N, H1Y=DEPL_N, H1Z=DEPL_N),
+    ),
+    INFO=2,
+)
 
 
+CH1 = AFFE_CHAR_MECA(MODELE=MODELEK, PRES_REP=_F(FISSURE=FISS, PRES=10e5))
 
-CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      PRES_REP=_F(FISSURE=FISS,
-                                  PRES=10E5,
-                                 ),
-                    )
-
-#----------------------------------------------
+# ----------------------------------------------
 #                   RESOLUTION
-#----------------------------------------------
+# ----------------------------------------------
 
-MULT=DEFI_FONCTION(NOM_PARA='INST',
-                   PROL_DROITE='CONSTANT',
-                   PROL_GAUCHE='CONSTANT',
-                   VALE=( 0.0,  0.0,
-                          3.0,  1.0,)
-                  )
+MULT = DEFI_FONCTION(
+    NOM_PARA="INST", PROL_DROITE="CONSTANT", PROL_GAUCHE="CONSTANT", VALE=(0.0, 0.0, 3.0, 1.0)
+)
 
-L_INS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=1,),
-                    )
+L_INS = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=3.0, NOMBRE=1))
 
-UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
-                    CHAM_MATER  = CHAMPMAT,
-                    EXCIT       = (_F(CHARGE = CH   ),
-                                   _F(CHARGE = CH1,  FONC_MULT = MULT ),),
-                    COMPORTEMENT   = _F(RELATION       = 'ELAS',
-                                        RESI_INTE_RELA = 1.E-6,
-                                        ITER_INTE_PAS  = -10,
-                                        ITER_INTE_MAXI = 100,
-                                       ),
-                    NEWTON      = _F(MATRICE   = 'TANGENTE',
-                                     REAC_ITER = 1,
-                                    ),
-                    CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                                     ITER_GLOB_MAXI = 100,
-                                    ),
-                    INCREMENT   = _F(LIST_INST = L_INS,),
-                   )
+UTOT1 = STAT_NON_LINE(
+    MODELE=MODELEK,
+    CHAM_MATER=CHAMPMAT,
+    EXCIT=(_F(CHARGE=CH), _F(CHARGE=CH1, FONC_MULT=MULT)),
+    COMPORTEMENT=_F(RELATION="ELAS", RESI_INTE_RELA=1.0e-6, ITER_INTE_PAS=-10, ITER_INTE_MAXI=100),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=100),
+    INCREMENT=_F(LIST_INST=L_INS),
+)
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM))
+MA_XFEM = POST_MAIL_XFEM(MODELE=MODELEK)
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA_XFEM))
 
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=(_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),
-                    )
+MOD_VISU = AFFE_MODELE(
+    MAILLAGE=MA_XFEM, AFFE=(_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"),)
+)
 
-RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
-                      RESULTAT    = UTOT1,
-                     )
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES_X1,GROUP_NO='NFISSU'))
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,))
+RES_X1 = POST_CHAM_XFEM(MODELE_VISU=MOD_VISU, RESULTAT=UTOT1)
+# IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RES_X1,GROUP_NO='NFISSU'))
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=RES_X1))
 
 # -------------------------------------------------------------
 #            TEST_TABLE
 # -------------------------------------------------------------
 
-DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                             GROUP_NO=('NFISSU',),
-                             RESULTAT=RES_X1,
-                             NOM_CHAM='DEPL',
-                             NUME_ORDRE=1,
-                             TOUT_CMP='OUI',
-                             OPERATION='EXTRACTION',
-                            ),
-                  )
+DEP1 = POST_RELEVE_T(
+    ACTION=_F(
+        INTITULE="DEPLE",
+        GROUP_NO=("NFISSU",),
+        RESULTAT=RES_X1,
+        NOM_CHAM="DEPL",
+        NUME_ORDRE=1,
+        TOUT_CMP="OUI",
+        OPERATION="EXTRACTION",
+    )
+)
 
 
-#IMPR_TABLE(TABLE=DEP1,)
+# IMPR_TABLE(TABLE=DEP1,)
 
-DEP1P = CALC_TABLE(TABLE = DEP1,
-                   ACTION = (_F(OPERATION = 'FILTRE',
-                                NOM_PARA  = 'NOEUD',
-                                CRIT_COMP = 'REGEXP',
-                                VALE_K    = '^N[M]',
-                               ),
-                            ),
-                  )
+DEP1P = CALC_TABLE(
+    TABLE=DEP1,
+    ACTION=(_F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="REGEXP", VALE_K="^N[M]"),),
+)
 
-DEP1M = CALC_TABLE(TABLE = DEP1,
-                   ACTION = (_F(OPERATION = 'FILTRE',
-                                NOM_PARA  = 'NOEUD',
-                                CRIT_COMP = 'REGEXP',
-                                VALE_K    = '^N[P]',
-                               ),
-                            ),
-                  )
+DEP1M = CALC_TABLE(
+    TABLE=DEP1,
+    ACTION=(_F(OPERATION="FILTRE", NOM_PARA="NOEUD", CRIT_COMP="REGEXP", VALE_K="^N[P]"),),
+)
 
-deplr = FORMULE(VALE='(DX*X+DY*Y+DZ*Z)/sqrt(X**2+Y**2+Z**2)',
-                NOM_PARA=['DX', 'DY', 'DZ', 'X', 'Y', 'Z'],)
+deplr = FORMULE(
+    VALE="(DX*X+DY*Y+DZ*Z)/sqrt(X**2+Y**2+Z**2)", NOM_PARA=["DX", "DY", "DZ", "X", "Y", "Z"]
+)
 
 
-DEP1P=CALC_TABLE(reuse = DEP1P,
-                 TABLE = DEP1P,
-                 ACTION = (
-                           _F(OPERATION = 'RENOMME',
-                              NOM_PARA  = ('COOR_X','X')),
-                           _F(OPERATION = 'RENOMME',
-                              NOM_PARA  = ('COOR_Y','Y')),
-                           _F(OPERATION = 'RENOMME',
-                              NOM_PARA  = ('COOR_Z','Z')),
-                           _F(OPERATION = 'OPER',
-                              NOM_PARA  = 'DIST',
-                              FORMULE = deplr),
-                           _F(OPERATION = 'EXTR',
-                              NOM_PARA=('NOEUD','INST','DIST')),
-                            ))
+DEP1P = CALC_TABLE(
+    reuse=DEP1P,
+    TABLE=DEP1P,
+    ACTION=(
+        _F(OPERATION="RENOMME", NOM_PARA=("COOR_X", "X")),
+        _F(OPERATION="RENOMME", NOM_PARA=("COOR_Y", "Y")),
+        _F(OPERATION="RENOMME", NOM_PARA=("COOR_Z", "Z")),
+        _F(OPERATION="OPER", NOM_PARA="DIST", FORMULE=deplr),
+        _F(OPERATION="EXTR", NOM_PARA=("NOEUD", "INST", "DIST")),
+    ),
+)
 
-IMPR_TABLE(TABLE=DEP1P,)
+IMPR_TABLE(TABLE=DEP1P)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-2,
-           VALE_CALC=-0.000113936628274,
-           VALE_REFE=-1.142742582E-4,
-           NOM_PARA='DIST',
-           TYPE_TEST='MAX',
-           TABLE=DEP1P,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-2,
+    VALE_CALC=-0.000113936628274,
+    VALE_REFE=-1.142742582e-4,
+    NOM_PARA="DIST",
+    TYPE_TEST="MAX",
+    TABLE=DEP1P,
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-2,
-           VALE_CALC=-0.000114712889329,
-           VALE_REFE=-1.142742582E-4,
-           NOM_PARA='DIST',
-           TYPE_TEST='MIN',
-           TABLE=DEP1P,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-2,
+    VALE_CALC=-0.000114712889329,
+    VALE_REFE=-1.142742582e-4,
+    NOM_PARA="DIST",
+    TYPE_TEST="MIN",
+    TABLE=DEP1P,
+)
 
 
-DEP1M=CALC_TABLE(reuse = DEP1M,
-                 TABLE = DEP1M,
-                 ACTION = (_F(OPERATION = 'RENOMME',
-                              NOM_PARA  = ('COOR_X','X')),
-                           _F(OPERATION = 'RENOMME',
-                              NOM_PARA  = ('COOR_Y','Y')),
-                           _F(OPERATION = 'RENOMME',
-                              NOM_PARA  = ('COOR_Z','Z')),
-                           _F(OPERATION = 'OPER',
-                              NOM_PARA  = 'DIST',
-                              FORMULE = deplr),
-                           _F(OPERATION = 'EXTR',
-                              NOM_PARA=('NOEUD','INST','DIST')),
-                            ))
+DEP1M = CALC_TABLE(
+    reuse=DEP1M,
+    TABLE=DEP1M,
+    ACTION=(
+        _F(OPERATION="RENOMME", NOM_PARA=("COOR_X", "X")),
+        _F(OPERATION="RENOMME", NOM_PARA=("COOR_Y", "Y")),
+        _F(OPERATION="RENOMME", NOM_PARA=("COOR_Z", "Z")),
+        _F(OPERATION="OPER", NOM_PARA="DIST", FORMULE=deplr),
+        _F(OPERATION="EXTR", NOM_PARA=("NOEUD", "INST", "DIST")),
+    ),
+)
 
-IMPR_TABLE(TABLE=DEP1M,)
+IMPR_TABLE(TABLE=DEP1M)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-2,
-           VALE_CALC=6.17982451847E-05,
-           VALE_REFE=6.173526141E-5,
-           NOM_PARA='DIST',
-           TYPE_TEST='MAX',
-           TABLE=DEP1M,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-2,
+    VALE_CALC=6.17982451847e-05,
+    VALE_REFE=6.173526141e-5,
+    NOM_PARA="DIST",
+    TYPE_TEST="MAX",
+    TABLE=DEP1M,
+)
 
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=1.0E-2,
-           VALE_CALC=6.13610859106E-05,
-           VALE_REFE=6.173526141E-5,
-           NOM_PARA='DIST',
-           TYPE_TEST='MIN',
-           TABLE=DEP1M,)
+TEST_TABLE(
+    CRITERE="RELATIF",
+    REFERENCE="ANALYTIQUE",
+    PRECISION=1.0e-2,
+    VALE_CALC=6.13610859106e-05,
+    VALE_REFE=6.173526141e-5,
+    NOM_PARA="DIST",
+    TYPE_TEST="MIN",
+    TABLE=DEP1M,
+)
 
 
 FIN()

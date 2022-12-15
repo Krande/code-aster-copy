@@ -309,8 +309,6 @@ class PhysicalState:
         Returns:
             dict: Dict of fields.
         """
-        quantity, fld_type = self._primal.getPhysicalQuantity().split('_')
+        quantity, fld_type = self._primal.getPhysicalQuantity().split("_")
 
-        return {"SIEF_ELGA" : self._stress,
-                "VARI_ELGA" : self.internVar,
-                quantity : self._primal}
+        return {"SIEF_ELGA": self._stress, "VARI_ELGA": self.internVar, quantity: self._primal}

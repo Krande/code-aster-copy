@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,61 +17,65 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #
 ####################################
 #   OPERATIONS SUR LE MAILLAGE
 #
 ####################################
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI',
-                      PHENOMENE = 'MECANIQUE',
-                      MODELISATION = '3D_THM')
-                     )
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D_THM")
+)
 
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
-LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
-                       _F(  JUSQU_A = 1.E0,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E0,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E1,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E1,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E2,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E2,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E3,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E3,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E4,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E4,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E5,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E5,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E6,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E6,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E7,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E10, NOMBRE = 1))
-                     )
+LI = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0e0, NOMBRE=1),
+        _F(JUSQU_A=5.0e0, NOMBRE=1),
+        _F(JUSQU_A=1.0e1, NOMBRE=1),
+        _F(JUSQU_A=5.0e1, NOMBRE=1),
+        _F(JUSQU_A=1.0e2, NOMBRE=1),
+        _F(JUSQU_A=5.0e2, NOMBRE=1),
+        _F(JUSQU_A=1.0e3, NOMBRE=1),
+        _F(JUSQU_A=5.0e3, NOMBRE=1),
+        _F(JUSQU_A=1.0e4, NOMBRE=1),
+        _F(JUSQU_A=5.0e4, NOMBRE=1),
+        _F(JUSQU_A=1.0e5, NOMBRE=1),
+        _F(JUSQU_A=5.0e5, NOMBRE=1),
+        _F(JUSQU_A=1.0e6, NOMBRE=1),
+        _F(JUSQU_A=5.0e6, NOMBRE=1),
+        _F(JUSQU_A=1.0e7, NOMBRE=1),
+        _F(JUSQU_A=1.0e10, NOMBRE=1),
+    ),
+)
 
-ARCHI=DEFI_LIST_REEL(    DEBUT=0.,INTERVALLE=(
-                       _F(  JUSQU_A = 1.E0,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E0,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E1,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E1,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E2,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E2,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E3,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E3,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E4,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E4,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E5,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E5,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E6,  NOMBRE = 1),
-                       _F(  JUSQU_A = 5.E6,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E7,  NOMBRE = 1),
-                       _F(  JUSQU_A = 1.E10, NOMBRE = 1))
-                 )
+ARCHI = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=(
+        _F(JUSQU_A=1.0e0, NOMBRE=1),
+        _F(JUSQU_A=5.0e0, NOMBRE=1),
+        _F(JUSQU_A=1.0e1, NOMBRE=1),
+        _F(JUSQU_A=5.0e1, NOMBRE=1),
+        _F(JUSQU_A=1.0e2, NOMBRE=1),
+        _F(JUSQU_A=5.0e2, NOMBRE=1),
+        _F(JUSQU_A=1.0e3, NOMBRE=1),
+        _F(JUSQU_A=5.0e3, NOMBRE=1),
+        _F(JUSQU_A=1.0e4, NOMBRE=1),
+        _F(JUSQU_A=5.0e4, NOMBRE=1),
+        _F(JUSQU_A=1.0e5, NOMBRE=1),
+        _F(JUSQU_A=5.0e5, NOMBRE=1),
+        _F(JUSQU_A=1.0e6, NOMBRE=1),
+        _F(JUSQU_A=5.0e6, NOMBRE=1),
+        _F(JUSQU_A=1.0e7, NOMBRE=1),
+        _F(JUSQU_A=1.0e10, NOMBRE=1),
+    ),
+)
 
 ############################################
 #
@@ -82,248 +86,264 @@ ARCHI=DEFI_LIST_REEL(    DEBUT=0.,INTERVALLE=(
 # VISCOSITE LIQUIDE : UNITE : PA.S
 #
 ####
-VISCOLIQ=DEFI_CONSTANTE(    VALE=1.E-3)
+VISCOLIQ = DEFI_CONSTANTE(VALE=1.0e-3)
 
-VISCOGAZ=DEFI_CONSTANTE(    VALE=1.E-5)
+VISCOGAZ = DEFI_CONSTANTE(VALE=1.0e-5)
 
-DVISCOL=DEFI_CONSTANTE(    VALE=0.)
+DVISCOL = DEFI_CONSTANTE(VALE=0.0)
 
-DVISCOG=DEFI_CONSTANTE(    VALE=0.)
+DVISCOG = DEFI_CONSTANTE(VALE=0.0)
 
-DCONDLI = DEFI_CONSTANTE ( VALE = 0.   )
-CONDGAZ = DEFI_CONSTANTE ( VALE = 0.02 )
-DCONDGA = DEFI_CONSTANTE ( VALE = 0.   )
+DCONDLI = DEFI_CONSTANTE(VALE=0.0)
+CONDGAZ = DEFI_CONSTANTE(VALE=0.02)
+DCONDGA = DEFI_CONSTANTE(VALE=0.0)
 
-PERMGAZ=DEFI_CONSTANTE(    VALE=1.)
-DPERGSA=DEFI_CONSTANTE(    VALE=0.)
-DPERGPG=DEFI_CONSTANTE(    VALE=0.)
+PERMGAZ = DEFI_CONSTANTE(VALE=1.0)
+DPERGSA = DEFI_CONSTANTE(VALE=0.0)
+DPERGPG = DEFI_CONSTANTE(VALE=0.0)
 
 #####
-KINT=DEFI_CONSTANTE(    VALE=1.E-18)
+KINT = DEFI_CONSTANTE(VALE=1.0e-18)
 
-UN=DEFI_CONSTANTE(    VALE=1.)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
-ZERO=DEFI_CONSTANTE(    VALE=0.)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 
 THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
 
-MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
-   RHO = 1000.,
-   UN_SUR_K = 3.77E-9,
-   ALPHA = THMALP1,
-   CP = 2.85E6,
-   VISC = VISCOLIQ,
-   D_VISC_TEMP = DVISCOL,),
-                              THM_GAZ=_F(
-   MASS_MOL = 28.96E-3,
-   CP = 1000.,
-   VISC = UN,
-   D_VISC_TEMP = ZERO,),
-                              THM_DIFFU=_F(
-   R_GAZ = 8.315,
-   RHO = 1.6E3,
-   CP = 2.85E6,
-   BIOT_COEF = 1.,
-   SATU_PRES = UN,
-   D_SATU_PRES = ZERO,
-   PESA_X = 0.,
-   PESA_Y = 0.,
-   PESA_Z = -10.,
-   PERM_IN = KINT,
-   PERM_LIQU = UN,
-   D_PERM_LIQU_SATU = ZERO,
-   PERM_GAZ = PERMGAZ,
-   D_PERM_SATU_GAZ = DPERGSA,
-   D_PERM_PRES_GAZ = DPERGPG,
-   LAMB_T = UN,),
-                              THM_INIT=_F(
-   TEMP = 293.,
-   PRE1 = 0.,
-   PRE2 = 1.E5,
-   PORO = 0.4,
-   PRES_VAPE = 1.),
-                               COMP_THM = 'LIQU_SATU',
-                                     ELAS=_F(
-   E = 225.E6,
-   NU = 0.,
-   RHO = 2000.,
-   ALPHA = 8.E-6)
-   )
+MATERIAU = DEFI_MATERIAU(
+    THM_LIQU=_F(
+        RHO=1000.0, UN_SUR_K=3.77e-9, ALPHA=THMALP1, CP=2.85e6, VISC=VISCOLIQ, D_VISC_TEMP=DVISCOL
+    ),
+    THM_GAZ=_F(MASS_MOL=28.96e-3, CP=1000.0, VISC=UN, D_VISC_TEMP=ZERO),
+    THM_DIFFU=_F(
+        R_GAZ=8.315,
+        RHO=1.6e3,
+        CP=2.85e6,
+        BIOT_COEF=1.0,
+        SATU_PRES=UN,
+        D_SATU_PRES=ZERO,
+        PESA_X=0.0,
+        PESA_Y=0.0,
+        PESA_Z=-10.0,
+        PERM_IN=KINT,
+        PERM_LIQU=UN,
+        D_PERM_LIQU_SATU=ZERO,
+        PERM_GAZ=PERMGAZ,
+        D_PERM_SATU_GAZ=DPERGSA,
+        D_PERM_PRES_GAZ=DPERGPG,
+        LAMB_T=UN,
+    ),
+    THM_INIT=_F(TEMP=293.0, PRE1=0.0, PRE2=1.0e5, PORO=0.4, PRES_VAPE=1.0),
+    COMP_THM="LIQU_SATU",
+    ELAS=_F(E=225.0e6, NU=0.0, RHO=2000.0, ALPHA=8.0e-6),
+)
 
-CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                          AFFE=_F( TOUT = 'OUI',
-                        MATER = MATERIAU))
+CHMAT0 = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATERIAU))
 
-CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
-                          DDL_IMPO=(_F(  TOUT = 'OUI',
-                                    DX = 0.,
-                                    DY = 0.,
-                                    DZ = 0.,),
-                                    _F(GROUP_NO=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
-                                    TEMP = 0.),
-                                   ),)
+CHARHO = AFFE_CHAR_MECA(
+    MODELE=MODELE,
+    DDL_IMPO=(
+        _F(TOUT="OUI", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO=("NO1", "NO3", "NO8", "NO6", "NO13", "NO15", "NO20", "NO18"), TEMP=0.0),
+    ),
+)
 
-RESU0=STAT_NON_LINE(   MODELE=MODELE,
-            SOLVEUR=_F( METHODE = 'LDLT'),
-                          CHAM_MATER=CHMAT0,
-                          EXCIT=_F( CHARGE = CHARHO),
-                        SCHEMA_THM=_F(PARM_THETA=1.,),
-                          COMPORTEMENT=_F( RELATION = 'KIT_THM',
-                          RELATION_KIT = ('ELAS', 'LIQU_SATU', 'HYDR_UTIL',),
-                          ITER_INTE_MAXI = 5),
-                          INCREMENT=_F( LIST_INST = LI),
-                          NEWTON=_F( MATRICE = 'TANGENTE',
-                                  REAC_ITER = 121),
-                         CONVERGENCE=_F(
-                                     RESI_GLOB_RELA = 1.E-8,
-                                     ITER_GLOB_MAXI = 120),
-                          ARCHIVAGE=_F(  LIST_INST = ARCHI)
-                        )
+RESU0 = STAT_NON_LINE(
+    MODELE=MODELE,
+    SOLVEUR=_F(METHODE="LDLT"),
+    CHAM_MATER=CHMAT0,
+    EXCIT=_F(CHARGE=CHARHO),
+    SCHEMA_THM=_F(PARM_THETA=1.0),
+    COMPORTEMENT=_F(
+        RELATION="KIT_THM", RELATION_KIT=("ELAS", "LIQU_SATU", "HYDR_UTIL"), ITER_INTE_MAXI=5
+    ),
+    INCREMENT=_F(LIST_INST=LI),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=121),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=120),
+    ARCHIVAGE=_F(LIST_INST=ARCHI),
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO1',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=-0.039787482,
-                  VALE_REFE=-0.039787599999999999,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO1",
+        NOM_CMP="PRE1",
+        VALE_CALC=-0.039787482,
+        VALE_REFE=-0.039787599999999999,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO20',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=0.039787482,
-                  VALE_REFE=0.039787599999999999,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO20",
+        NOM_CMP="PRE1",
+        VALE_CALC=0.039787482,
+        VALE_REFE=0.039787599999999999,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO1',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=-0.198932343,
-                  VALE_REFE=-0.19893,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO1",
+        NOM_CMP="PRE1",
+        VALE_CALC=-0.198932343,
+        VALE_REFE=-0.19893,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO20',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=0.198932343,
-                  VALE_REFE=0.19893,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO20",
+        NOM_CMP="PRE1",
+        VALE_CALC=0.198932343,
+        VALE_REFE=0.19893,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO1',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=-0.397855506,
-                  VALE_REFE=-0.39878599999999997,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO1",
+        NOM_CMP="PRE1",
+        VALE_CALC=-0.397855506,
+        VALE_REFE=-0.39878599999999997,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO20',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=0.397855506,
-                  VALE_REFE=0.39878599999999997,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO20",
+        NOM_CMP="PRE1",
+        VALE_CALC=0.397855506,
+        VALE_REFE=0.39878599999999997,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO1',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=-1.988734424,
-                  VALE_REFE=-1.9888999999999999,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO1",
+        NOM_CMP="PRE1",
+        VALE_CALC=-1.988734424,
+        VALE_REFE=-1.9888999999999999,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO20',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=1.988734422,
-                  VALE_REFE=1.9888999999999999,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO20",
+        NOM_CMP="PRE1",
+        VALE_CALC=1.988734422,
+        VALE_REFE=1.9888999999999999,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO1',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=-192.586178707,
-                  VALE_REFE=-195.0,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=0.02,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO1",
+        NOM_CMP="PRE1",
+        VALE_CALC=-192.586178707,
+        VALE_REFE=-195.0,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=0.02,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=8,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO20',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=192.586132906,
-                  VALE_REFE=195.0,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=0.02,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=8,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO20",
+        NOM_CMP="PRE1",
+        VALE_CALC=192.586132906,
+        VALE_REFE=195.0,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=0.02,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=16,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO1',
-                  NOM_CMP='PRE1',
-                  VALE_CALC=-5.00001555E+03,
-                  VALE_REFE=-5000.0,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=16,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO1",
+        NOM_CMP="PRE1",
+        VALE_CALC=-5.00001555e03,
+        VALE_REFE=-5000.0,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=16,
-                  RESULTAT=RESU0,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='NO20',
-                  NOM_CMP='PRE1',
-                  VALE_CALC= 4.99998444E+03,
-                  VALE_REFE=5000.0,
-                  REFERENCE='NON_DEFINI',
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=16,
+        RESULTAT=RESU0,
+        NOM_CHAM="DEPL",
+        GROUP_NO="NO20",
+        NOM_CMP="PRE1",
+        VALE_CALC=4.99998444e03,
+        VALE_REFE=5000.0,
+        REFERENCE="NON_DEFINI",
+        CRITERE="RELATIF",
+        PRECISION=1.0e-2,
+    )
+)
 
 FIN()
 #

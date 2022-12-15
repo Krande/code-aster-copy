@@ -19,59 +19,70 @@
 
 # person_in_charge: david.haboussa at edf.fr
 # ELASTOPLASTICITE  ECROUISSAGE COMBINE VON MISES
-#......................................................................
+# ......................................................................
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 # donnee materiau et fonction
 
-#parametres elastiques
+# parametres elastiques
 YOUNG = 200000.0
 POISSON = 0.3
 
-#parametres loi ECMI_LINE
+# parametres loi ECMI_LINE
 SY = 437.0
 pente = 2024.74690664
 C_PRAG = 1486.9
 # def des materiaux
-ACIER = [None]*2
-#unite en Pa
-C_Pa = 1.e+6
+ACIER = [None] * 2
+# unite en Pa
+C_Pa = 1.0e6
 YOUNG_Pa = YOUNG * C_Pa
 pente_Pa = pente * C_Pa
 SY_Pa = SY * C_Pa
 C_PRAG_Pa = C_PRAG * C_Pa
-ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
-                               NU=POISSON,
-                               ALPHA=11.8e-6),
-                    ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa,
-                                 SY=SY_Pa,),
-                    PRAGER=_F(C=C_PRAG_Pa),
-                        )
-#unite en MPa
-ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                               NU=POISSON,
-                               ALPHA=11.8e-6),
-                    ECRO_LINE=_F(D_SIGM_EPSI=pente,
-                                 SY=SY,),
-                    PRAGER=_F(C=C_PRAG),
-                        )
+ACIER[0] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG_Pa, NU=POISSON, ALPHA=11.8e-6),
+    ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa, SY=SY_Pa),
+    PRAGER=_F(C=C_PRAG_Pa),
+)
+# unite en MPa
+ACIER[1] = DEFI_MATERIAU(
+    ELAS=_F(E=YOUNG, NU=POISSON, ALPHA=11.8e-6),
+    ECRO_LINE=_F(D_SIGM_EPSI=pente, SY=SY),
+    PRAGER=_F(C=C_PRAG),
+)
 
 
-ch_param=['V1','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','V3','V4','V5','V6']
+ch_param = [
+    "V1",
+    "VMIS",
+    "TRACE",
+    "SIXX",
+    "SIYY",
+    "SIZZ",
+    "SIXY",
+    "SIXZ",
+    "SIYZ",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+]
 
-compor='VMIS_ECMI_LINE'
+compor = "VMIS_ECMI_LINE"
 
-tabresu=TEST_COMPOR(OPTION='MECA',
-
-              COMPORTEMENT=_F(RELATION=compor,),
-              NEWTON=_F(REAC_ITER=1),
-              LIST_MATER=ACIER,
-              LIST_NPAS=4*[1] + [1, 5, 25],
-              VARI_TEST=('V1','VMIS','TRACE'),
-              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]
-              YOUNG=YOUNG,POISSON=POISSON,
-              )
+tabresu = TEST_COMPOR(
+    OPTION="MECA",
+    COMPORTEMENT=_F(RELATION=compor),
+    NEWTON=_F(REAC_ITER=1),
+    LIST_MATER=ACIER,
+    LIST_NPAS=4 * [1] + [1, 5, 25],
+    VARI_TEST=("V1", "VMIS", "TRACE"),
+    # LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]
+    YOUNG=YOUNG,
+    POISSON=POISSON,
+)
 
 IMPR_TABLE(TABLE=tabresu)
 

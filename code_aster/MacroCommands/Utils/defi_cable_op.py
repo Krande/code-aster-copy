@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -28,6 +28,7 @@ class DefiCableOp(ExecuteCommand):
     """Command that defines the
     :class:`~code_aster.Objects.PrestressingCable` on a
     :class:`~code_aster.Objects.Mesh`."""
+
     command_name = "DEFI_CABLE_OP"
     command_cata = DEFI_CABLE_OP_CATA
 
@@ -37,9 +38,9 @@ class DefiCableOp(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = PrestressingCable(keywords["MODELE"],
-                                                   keywords["CHAM_MATER"],
-                                                   keywords["CARA_ELEM"])
+        self._result = PrestressingCable(
+            keywords["MODELE"], keywords["CHAM_MATER"], keywords["CARA_ELEM"]
+        )
 
 
 DEFI_CABLE_OP = DefiCableOp.run

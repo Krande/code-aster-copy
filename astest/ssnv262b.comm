@@ -21,205 +21,139 @@
 #  TEST DE LA REGULARISATION VISQUEUSE (D_PLAN)
 # ---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 import math
 
 
-young = 200.e9
-nu    = 0.30
-tau   = 10.0
-k     = 0.5*young
-rate  = 1.e-3
-tbar  = 2.0
-tend  = tbar*tau
+young = 200.0e9
+nu = 0.30
+tau = 10.0
+k = 0.5 * young
+rate = 1.0e-3
+tbar = 2.0
+tend = tbar * tau
 
 
 # Solution analytique
 
-lbd = young*nu/(1+nu)/(1-2*nu)
-mu  = 0.5*young/(1+nu)
-ec  = lbd + 2*mu
+lbd = young * nu / (1 + nu) / (1 - 2 * nu)
+mu = 0.5 * young / (1 + nu)
+ec = lbd + 2 * mu
 
-epsend = tend*rate
-sigcb  = ec*epsend
-siv    = k*rate*tau*(1-math.exp(-tend/tau))
+epsend = tend * rate
+sigcb = ec * epsend
+siv = k * rate * tau * (1 - math.exp(-tend / tau))
 sigend = sigcb + siv
-sigtrv = lbd*epsend
+sigtrv = lbd * epsend
 
-wdiss = k*tau**2*rate**2*(tbar+2*math.exp(-tbar)-0.5*math.exp(-2*tbar)-1.5)
-welas = siv**2/(2*k)
+wdiss = k * tau**2 * rate**2 * (tbar + 2 * math.exp(-tbar) - 0.5 * math.exp(-2 * tbar) - 1.5)
+welas = siv**2 / (2 * k)
 
 
 MATE = DEFI_MATERIAU(
-    ELAS = _F(
-        E  = young,
-        NU = nu,
-        ),
-    ECRO_LINE = _F(
-        SY = 10*young*epsend,
-        D_SIGM_EPSI = 0.5*young,
-        ),
-    ENDO_LOCA_EXP = _F(
-        SIGC          = 10*young*epsend,
-        SIG0          = 10*young*epsend,
-        KAPPA         = 5.0,
-        P             = 1.0,
-        REST_RIGIDITE = 1.e4,
-        ),
-    VISC_ELAS = _F(
-        K   = k,
-        TAU = tau,
-        ),
-    )
+    ELAS=_F(E=young, NU=nu),
+    ECRO_LINE=_F(SY=10 * young * epsend, D_SIGM_EPSI=0.5 * young),
+    ENDO_LOCA_EXP=_F(
+        SIGC=10 * young * epsend, SIG0=10 * young * epsend, KAPPA=5.0, P=1.0, REST_RIGIDITE=1.0e4
+    ),
+    VISC_ELAS=_F(K=k, TAU=tau),
+)
 
 
-TEMPS1 = DEFI_LIST_REEL(
-    DEBUT      = 0.0,
-    INTERVALLE = _F(JUSQU_A = tend, NOMBRE  = 100),
-    )
+TEMPS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=tend, NOMBRE=100))
 
 
 DEFLIST1 = DEFI_LIST_INST(
-    DEFI_LIST = _F( LIST_INST=TEMPS1),
-    ECHEC     = _F( ACTION='DECOUPE', SUBD_PAS=4, SUBD_NIVEAU=2),
-    )
+    DEFI_LIST=_F(LIST_INST=TEMPS1), ECHEC=_F(ACTION="DECOUPE", SUBD_PAS=4, SUBD_NIVEAU=2)
+)
 
 
-HISTORY = DEFI_FONCTION(
-    NOM_PARA    = 'INST',
-    VALE        = (0.,0., tend, rate*tend),
-    )
+HISTORY = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, tend, rate * tend))
 
 
-ZERO  = DEFI_CONSTANTE( VALE =  0.0 )
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
 
-for ldc in ('VMIS_ISOT_LINE','ENDO_LOCA_EXP'):
+for ldc in ("VMIS_ISOT_LINE", "ENDO_LOCA_EXP"):
 
     EVOL_DP = SIMU_POINT_MAT(
-        SUPPORT       = 'ELEMENT',
-        MODELISATION  = 'D_PLAN',
-        COMPORTEMENT  = _F(
-            RELATION       = ldc,
-            REGU_VISC      = 'OUI',
-            ),
-        MATER      = MATE,
-        INCREMENT  = _F( LIST_INST=DEFLIST1,),
-        NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
-        CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-        ARCHIVAGE  = _F(LIST_INST = TEMPS1),
-        EPSI_IMPOSE= _F(
-            EPXX = HISTORY,
-            EPYY = ZERO,
-            EPZZ = ZERO,
-            EPXY = ZERO,
-            ),
-        )
+        SUPPORT="ELEMENT",
+        MODELISATION="D_PLAN",
+        COMPORTEMENT=_F(RELATION=ldc, REGU_VISC="OUI"),
+        MATER=MATE,
+        INCREMENT=_F(LIST_INST=DEFLIST1),
+        NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+        CONVERGENCE=_F(RESI_GLOB_MAXI=1.0e-6, ITER_GLOB_MAXI=10),
+        ARCHIVAGE=_F(LIST_INST=TEMPS1),
+        EPSI_IMPOSE=_F(EPXX=HISTORY, EPYY=ZERO, EPZZ=ZERO, EPXY=ZERO),
+    )
 
-
-    #----------------------------------------------------------------#
+    # ----------------------------------------------------------------#
     # TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
-    #----------------------------------------------------------------#
-
+    # ----------------------------------------------------------------#
 
     # Determination des numeros de variables internes requis (8 dernieres: viscosite)
-    col  = list(EVOL_DP.EXTR_TABLE().values().keys())
+    col = list(EVOL_DP.EXTR_TABLE().values().keys())
     nbvi = 0
-    while 'V'+repr(nbvi+1) in col:
+    while "V" + repr(nbvi + 1) in col:
         nbvi += 1
-    idx_visc = nbvi-8
-
-
-    TEST_TABLE(
-        TABLE     = EVOL_DP,
-        CRITERE   = 'RELATIF',
-        REFERENCE = 'ANALYTIQUE',
-        PRECISION = 1.E-6,
-        VALE_CALC = sigend,
-        VALE_REFE = sigend,
-        NOM_PARA  = 'SIXX',
-        FILTRE=_F(
-            NOM_PARA  = 'INST',
-            CRIT_COMP = 'EQ',
-            VALE      = tend,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-08,
-            ),
-        )
-
+    idx_visc = nbvi - 8
 
     TEST_TABLE(
-        TABLE     = EVOL_DP,
-        CRITERE   = 'RELATIF',
-        REFERENCE = 'ANALYTIQUE',
-        PRECISION = 1.E-6,
-        VALE_CALC = sigtrv,
-        VALE_REFE = sigtrv,
-        NOM_PARA  = 'SIYY',
-        FILTRE=_F(
-            NOM_PARA  = 'INST',
-            CRIT_COMP = 'EQ',
-            VALE      = tend,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-08,
-            ),
-        )
-
+        TABLE=EVOL_DP,
+        CRITERE="RELATIF",
+        REFERENCE="ANALYTIQUE",
+        PRECISION=1.0e-6,
+        VALE_CALC=sigend,
+        VALE_REFE=sigend,
+        NOM_PARA="SIXX",
+        FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=tend, CRITERE="RELATIF", PRECISION=1.0e-08),
+    )
 
     TEST_TABLE(
-        TABLE     = EVOL_DP,
-        CRITERE   = 'RELATIF',
-        REFERENCE = 'ANALYTIQUE',
-        PRECISION = 1.E-6,
-        VALE_CALC = siv,
-        VALE_REFE = siv,
-        NOM_PARA  = 'V' + repr(idx_visc+1), # vi visqueuse no 1
-        FILTRE=_F(
-            NOM_PARA  = 'INST',
-            CRIT_COMP = 'EQ',
-            VALE      = tend,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-08,
-            ),
-        )
-
+        TABLE=EVOL_DP,
+        CRITERE="RELATIF",
+        REFERENCE="ANALYTIQUE",
+        PRECISION=1.0e-6,
+        VALE_CALC=sigtrv,
+        VALE_REFE=sigtrv,
+        NOM_PARA="SIYY",
+        FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=tend, CRITERE="RELATIF", PRECISION=1.0e-08),
+    )
 
     TEST_TABLE(
-        TABLE     = EVOL_DP,
-        CRITERE   = 'RELATIF',
-        REFERENCE = 'ANALYTIQUE',
-        PRECISION = 1.E-6,
-        VALE_CALC = welas,
-        VALE_REFE = welas,
-        NOM_PARA  = 'V' + repr(idx_visc+7), # vi visqueuse no 7
-        FILTRE=_F(
-            NOM_PARA  = 'INST',
-            CRIT_COMP = 'EQ',
-            VALE      = tend,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-08,
-            ),
-        )
-
+        TABLE=EVOL_DP,
+        CRITERE="RELATIF",
+        REFERENCE="ANALYTIQUE",
+        PRECISION=1.0e-6,
+        VALE_CALC=siv,
+        VALE_REFE=siv,
+        NOM_PARA="V" + repr(idx_visc + 1),  # vi visqueuse no 1
+        FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=tend, CRITERE="RELATIF", PRECISION=1.0e-08),
+    )
 
     TEST_TABLE(
-        TABLE     = EVOL_DP,
-        CRITERE   = 'RELATIF',
-        REFERENCE = 'ANALYTIQUE',
-        PRECISION = 1.e-4,
-        VALE_CALC = 7614714.643956427,
-        VALE_REFE = wdiss,
-        NOM_PARA  = 'V' + repr(idx_visc+8), # vi visqueuse no 8
-        FILTRE=_F(
-            NOM_PARA  = 'INST',
-            CRIT_COMP = 'EQ',
-            VALE      = tend,
-            CRITERE   = 'RELATIF',
-            PRECISION = 1.E-8,
-            ),
-        )
+        TABLE=EVOL_DP,
+        CRITERE="RELATIF",
+        REFERENCE="ANALYTIQUE",
+        PRECISION=1.0e-6,
+        VALE_CALC=welas,
+        VALE_REFE=welas,
+        NOM_PARA="V" + repr(idx_visc + 7),  # vi visqueuse no 7
+        FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=tend, CRITERE="RELATIF", PRECISION=1.0e-08),
+    )
 
+    TEST_TABLE(
+        TABLE=EVOL_DP,
+        CRITERE="RELATIF",
+        REFERENCE="ANALYTIQUE",
+        PRECISION=1.0e-4,
+        VALE_CALC=7614714.643956427,
+        VALE_REFE=wdiss,
+        NOM_PARA="V" + repr(idx_visc + 8),  # vi visqueuse no 8
+        FILTRE=_F(NOM_PARA="INST", CRIT_COMP="EQ", VALE=tend, CRITERE="RELATIF", PRECISION=1.0e-8),
+    )
 
 
 FIN()

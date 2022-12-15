@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -31,30 +31,28 @@
 
 void abort();
 
-void hancpu (int sig);
+void hancpu( int sig );
 
 #if defined ASTER_PLATFORM_SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
-  void hanfpe(int sig, siginfo_t *sip, ucontext_t *uap);
+void hanfpe( int sig, siginfo_t *sip, ucontext_t *uap );
 
 #elif defined ASTER_PLATFORM_WINDOWS
 #include <float.h>
-  void hanfpe(int sig);
+void hanfpe( int sig );
 
 #elif defined ASTER_PLATFORM_POSIX
-  void hanfpe(int sig);
-  void stpusr1(int sig);
+void hanfpe( int sig );
+void stpusr1( int sig );
 #endif
 
 #if defined ASTER_PLATFORM_LINUX
-#   define _GNU_SOURCE 1
-#   include <fenv.h>
+#define _GNU_SOURCE 1
+#include <fenv.h>
 #endif
 
-
-void DEF0(INISIG, inisig)
-{
+void DEF0( INISIG, inisig ) {
 #if defined ASTER_PLATFORM_POSIX
     struct sigaction action_CPU_LIM;
 #else
@@ -65,35 +63,35 @@ void DEF0(INISIG, inisig)
 /* CPU LIMITE */
 /*            */
 #if defined ASTER_PLATFORM_POSIX
-   action_CPU_LIM.sa_handler=hancpu;
-   sigemptyset(&action_CPU_LIM.sa_mask);
-   action_CPU_LIM.sa_flags=0;
-   sigaction(SIGXCPU  ,&action_CPU_LIM,NULL);
+    action_CPU_LIM.sa_handler = hancpu;
+    sigemptyset( &action_CPU_LIM.sa_mask );
+    action_CPU_LIM.sa_flags = 0;
+    sigaction( SIGXCPU, &action_CPU_LIM, NULL );
 #endif
 
 /*                          */
 /* Floating point exception */
 /*                          */
 #if defined ASTER_PLATFORM_SOLARIS
-   ieee_handler("set","common",hanfpe);
-   ieee_handler("clear","invalid",hanfpe);
+    ieee_handler( "set", "common", hanfpe );
+    ieee_handler( "clear", "invalid", hanfpe );
 
 #elif defined ASTER_PLATFORM_LINUX
 
-   /* Enable some exceptions. At startup all exceptions are masked. */
-   feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
+    /* Enable some exceptions. At startup all exceptions are masked. */
+    feenableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
 
-   signal(SIGFPE,  hanfpe);
+    signal( SIGFPE, hanfpe );
 
 #elif defined ASTER_PLATFORM_WINDOWS
     _clearfp();
-    cw = _controlfp(0, 0);
-    cw &=~( EM_OVERFLOW | EM_ZERODIVIDE );
-    cwOrig = _controlfp(cw, MCW_EM);
+    cw = _controlfp( 0, 0 );
+    cw &= ~( EM_OVERFLOW | EM_ZERODIVIDE );
+    cwOrig = _controlfp( cw, MCW_EM );
 
-    signal(SIGFPE, hanfpe);
+    signal( SIGFPE, hanfpe );
 #else
-   signal(SIGFPE,  hanfpe);
+    signal( SIGFPE, hanfpe );
 #endif
 
 /*                          */
@@ -102,34 +100,30 @@ void DEF0(INISIG, inisig)
 /* Note : l'arret par SIGUSR1 ne fonctionne pas sous MSVC,
    il faudra essayer de trouver autre chose... */
 #if defined ASTER_PLATFORM_POSIX
-   signal(SIGUSR1,  stpusr1);
+    signal( SIGUSR1, stpusr1 );
 #endif
 }
 
-
 static ASTERINTEGER status_usr1 = 0;
 
-ASTERINTEGER DEF0(ETAUSR, etausr)
-{
+ASTERINTEGER DEF0( ETAUSR, etausr ) {
     /* ETAt USR1 :
      * Retourne la variable status_usr1 */
     return status_usr1;
 }
 
-void stpusr1 (int sig)
-{
+void stpusr1( int sig ) {
     /* SToP USR1 :
      * callback appelé lors de la réception du signal USR1.
      */
-    CALL_UTMESS("I", "SUPERVIS_96");
+    CALL_UTMESS( "I", "SUPERVIS_96" );
     status_usr1 = (ASTERINTEGER)1;
 }
 
-void DEF0(CLRUSR, clrusr)
-{
+void DEF0( CLRUSR, clrusr ) {
     /* CLeaR USR1 :
      * Réinitialise la valeur de status_usr1
      * Utile pour éviter la récursivité.
      */
-   status_usr1 = (ASTERINTEGER)0;
+    status_usr1 = (ASTERINTEGER)0;
 }

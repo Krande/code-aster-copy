@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -24,23 +24,23 @@
 #include "aster.h"
 
 /* declarations of pointers on MFRONT functions */
-#define FUNC_MFRONT(NAME)  void DEFMFRONTBEHAVIOUR(*NAME, \
-        ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
-            ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
-            ASTERINTEGER*, ASTERINTEGER*, ASTERDOUBLE*, ASTERINTEGER*, ASTERDOUBLE*, \
-            ASTERDOUBLE*, ASTERINTEGER*)
-#define FUNC_MFRONT_SET_DOUBLE(NAME)  void DEFMFRONTSETDOUBLE(*NAME, char*, \
-                                                              ASTERDOUBLE, STRING_SIZE)
-#define FUNC_MFRONT_SET_INTEGER(NAME)  void DEFMFRONTSETINTEGER(*NAME, char*, ASTERINTEGER, \
-                                                                STRING_SIZE)
-#define FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY(NAME) void DEFMFRONTSETOUTOFBOUNDSPOLICY(*NAME,\
-                                                                                    ASTERINTEGER)
+#define FUNC_MFRONT( NAME )                                                                        \
+    void DEFMFRONTBEHAVIOUR( *NAME, ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *,    \
+                             ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *, ASTERDOUBLE *,           \
+                             ASTERDOUBLE *, ASTERDOUBLE *, ASTERINTEGER *, ASTERINTEGER *,         \
+                             ASTERDOUBLE *, ASTERINTEGER *, ASTERDOUBLE *, ASTERDOUBLE *,          \
+                             ASTERINTEGER * )
+#define FUNC_MFRONT_SET_DOUBLE( NAME )                                                             \
+    void DEFMFRONTSETDOUBLE( *NAME, char *, ASTERDOUBLE, STRING_SIZE )
+#define FUNC_MFRONT_SET_INTEGER( NAME )                                                            \
+    void DEFMFRONTSETINTEGER( *NAME, char *, ASTERINTEGER, STRING_SIZE )
+#define FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY( NAME )                                                 \
+    void DEFMFRONTSETOUTOFBOUNDSPOLICY( *NAME, ASTERINTEGER )
 
 /*
  *   PUBLIC FUNCTIONS
  *
  */
-
 
 /*
  *   PRIVATE FUNCTIONS - UTILITIES
@@ -57,26 +57,24 @@
  * @param name      Pointer on the string containing the found symbol name,
  *                  it must be freed by the caller.
  */
-void mfront_name(
-         _IN char* libname, _IN char* symbol, _IN char* model,
-         _IN char* basename, _OUT char** name);
+void mfront_name( _IN char *libname, _IN char *symbol, _IN char *model, _IN char *basename,
+                  _OUT char **name );
 /**
  * \brief Raise an error 'symbol not found'
  */
-void error_symbol_not_found(const char* libname, const char* symbname);
+void error_symbol_not_found( const char *libname, const char *symbname );
 
 /**
  * \brief Clean parameter names: convert 'name[i]' into 'name_i'
  */
-void clean_parameter(_IN const char* src, _OUT char** dest);
+void clean_parameter( _IN const char *src, _OUT char **dest );
 
 /**
  * \brief Load MFRONT library and initialize pointers to MFRONT functions
  */
-int load_mfront_lib(const char* libname, const char* symbol);
+int load_mfront_lib( const char *libname, const char *symbol );
 
-char* test_mfront_symbol(const char* libname, char* name1, char* name2);
-
+char *test_mfront_symbol( const char *libname, char *name1, char *name2 );
 
 /* FIN DLL_MFRONT_H */
 #endif

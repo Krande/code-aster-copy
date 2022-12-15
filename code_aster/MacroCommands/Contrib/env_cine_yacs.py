@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,28 +21,38 @@
 #
 #  ENVOI DES CHAMPS CINEMATIQUES VIA YACS POUR COUPLAGE IFS
 #
-#TODO ExecuteCommand
+# TODO ExecuteCommand
 
 from ...Cata.DataStructure import *
 from ...Cata.Syntax import *
 
-ENV_CINE_YACS=PROC(nom             = "ENV_CINE_YACS",
-                   op              = 111,
-                   fr              = tr("Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne"),
-                   regles          = (EXCLUS('ETAT_INIT','RESULTAT',),),
-                   MATR_PROJECTION = SIMP(statut='o', typ=corresp_2_mailla,),
-                   VIS_A_VIS = FACT(statut='o', max='**',
-                                   GROUP_MA_1=SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                                   GROUP_NO_2=SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
-                   RESULTAT  = FACT(statut='f',
-                                   NUME_ORDRE=SIMP(statut='o', typ='I',              validators=NoRepeat()),
-                                   RESU      =SIMP(statut='o', typ=resultat_sdaster, validators=NoRepeat()),),
-                   ETAT_INIT = FACT(statut='f',
-                                    DEPL=SIMP(statut='f', typ=cham_no_sdaster,  validators=NoRepeat()),
-                                    VITE=SIMP(statut='f', typ=cham_no_sdaster,  validators=NoRepeat()),
-                                    ACCE=SIMP(statut='f', typ=cham_no_sdaster,  validators=NoRepeat()),),
-                   INST         = SIMP(statut='o',typ='R', ),
-                   PAS             = SIMP(statut='o',typ='R', ),
-                   NUME_ORDRE_YACS = SIMP(statut='o', typ='I',),
-                   INFO            = SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-) ;
+ENV_CINE_YACS = PROC(
+    nom="ENV_CINE_YACS",
+    op=111,
+    fr=tr(
+        "Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne"
+    ),
+    regles=(EXCLUS("ETAT_INIT", "RESULTAT"),),
+    MATR_PROJECTION=SIMP(statut="o", typ=corresp_2_mailla),
+    VIS_A_VIS=FACT(
+        statut="o",
+        max="**",
+        GROUP_MA_1=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        GROUP_NO_2=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+    ),
+    RESULTAT=FACT(
+        statut="f",
+        NUME_ORDRE=SIMP(statut="o", typ="I", validators=NoRepeat()),
+        RESU=SIMP(statut="o", typ=resultat_sdaster, validators=NoRepeat()),
+    ),
+    ETAT_INIT=FACT(
+        statut="f",
+        DEPL=SIMP(statut="f", typ=cham_no_sdaster, validators=NoRepeat()),
+        VITE=SIMP(statut="f", typ=cham_no_sdaster, validators=NoRepeat()),
+        ACCE=SIMP(statut="f", typ=cham_no_sdaster, validators=NoRepeat()),
+    ),
+    INST=SIMP(statut="o", typ="R"),
+    PAS=SIMP(statut="o", typ="R"),
+    NUME_ORDRE_YACS=SIMP(statut="o", typ="I"),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+)

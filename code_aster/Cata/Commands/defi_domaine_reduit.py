@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,30 +23,35 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 #
-DEFI_DOMAINE_REDUIT=OPER(nom="DEFI_DOMAINE_REDUIT",op=50,
-              sd_prod=maillage_sdaster,
-              reentrant='o:MAILLAGE',
-     reuse=SIMP(statut='c', typ=CO),
-     BASE_PRIMAL     = SIMP(statut='o',typ=mode_empi,max=1),
-     BASE_DUAL       = SIMP(statut='o',typ=mode_empi,max=1),
-     NOM_DOMAINE     = SIMP(statut='o',typ='TXM',max=1),
-     NB_COUCHE_SUPPL = SIMP(statut='f',typ='I',defaut=0),
-     GROUP_NO_INTERF = SIMP(statut='o',typ='TXM',max=1),
-     MAILLAGE        = SIMP(statut='o',typ=maillage_sdaster,fr=tr("Maillage réutlisé en entrée")),
-     DOMAINE_MINI   = FACT(statut='f',max=1,
-         GROUP_NO        = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-         NOEUD           = SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
-         GROUP_MA        = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-         MAILLE          = SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-     ),
-
-     DOMAINE_MAXI  = FACT(statut='f',max=1,
-        GROUP_MA           = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**')),
-
-     CORR_COMPLET  = SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
-     p_correcteur   =BLOC(condition="""(equal_to("CORR_COMPLET", 'OUI'))""",
-        GROUP_NO_ENCASTRE     = SIMP(statut='o',typ='TXM',max=1),
-        NB_COUCHE_ENCASTRE    = SIMP(statut='f',typ='I',defaut=0) ),
-     INFO          = SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-     TITRE         = SIMP(statut='f',typ='TXM'),
-);
+DEFI_DOMAINE_REDUIT = OPER(
+    nom="DEFI_DOMAINE_REDUIT",
+    op=50,
+    sd_prod=maillage_sdaster,
+    reentrant="o:MAILLAGE",
+    reuse=SIMP(statut="c", typ=CO),
+    BASE_PRIMAL=SIMP(statut="o", typ=mode_empi, max=1),
+    BASE_DUAL=SIMP(statut="o", typ=mode_empi, max=1),
+    NOM_DOMAINE=SIMP(statut="o", typ="TXM", max=1),
+    NB_COUCHE_SUPPL=SIMP(statut="f", typ="I", defaut=0),
+    GROUP_NO_INTERF=SIMP(statut="o", typ="TXM", max=1),
+    MAILLAGE=SIMP(statut="o", typ=maillage_sdaster, fr=tr("Maillage réutlisé en entrée")),
+    DOMAINE_MINI=FACT(
+        statut="f",
+        max=1,
+        GROUP_NO=SIMP(statut="f", typ=grno, validators=NoRepeat(), max="**"),
+        NOEUD=SIMP(statut="c", typ=no, validators=NoRepeat(), max="**"),
+        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
+        MAILLE=SIMP(statut="c", typ=ma, validators=NoRepeat(), max="**"),
+    ),
+    DOMAINE_MAXI=FACT(
+        statut="f", max=1, GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**")
+    ),
+    CORR_COMPLET=SIMP(statut="f", typ="TXM", defaut="NON", into=("OUI", "NON")),
+    p_correcteur=BLOC(
+        condition="""(equal_to("CORR_COMPLET", 'OUI'))""",
+        GROUP_NO_ENCASTRE=SIMP(statut="o", typ="TXM", max=1),
+        NB_COUCHE_ENCASTRE=SIMP(statut="f", typ="I", defaut=0),
+    ),
+    INFO=SIMP(statut="f", typ="I", defaut=1, into=(1, 2)),
+    TITRE=SIMP(statut="f", typ="TXM"),
+)

@@ -17,60 +17,63 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELE1_63','MODELE1_64',),)
+DEBUT(
+    CODE=_F(NIV_PUB_WEB="INTERNET"),
+    DEBUG=_F(SDVERI="OUI"),
+    IGNORE_ALARM=("MODELE1_63", "MODELE1_64"),
+)
 
-mail=LIRE_MAILLAGE(FORMAT="ASTER",)
+mail = LIRE_MAILLAGE(FORMAT="ASTER")
 
-modeldp=AFFE_MODELE(MAILLAGE=mail,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',MODELISATION='D_PLAN',), )
+modeldp = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
-modelcp=AFFE_MODELE(MAILLAGE=mail,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',MODELISATION='C_PLAN',), )
+modelcp = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="C_PLAN")
+)
 
-model3d=AFFE_MODELE(MAILLAGE=mail,
-                    AFFE=_F(GROUP_MA=('M5','M6',),
-                            PHENOMENE='MECANIQUE',MODELISATION='3D',), )
+model3d = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(GROUP_MA=("M5", "M6"), PHENOMENE="MECANIQUE", MODELISATION="3D")
+)
 
-modelFluidUPPHI=AFFE_MODELE(MAILLAGE=mail,
-                       AFFE=_F(TOUT='OUI',
-                               PHENOMENE='MECANIQUE',FORMULATION='U_P_PHI', MODELISATION='2D_FLUIDE',), )
+modelFluidUPPHI = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_P_PHI", MODELISATION="2D_FLUIDE"),
+)
 
-modelFluidUP=AFFE_MODELE(MAILLAGE=mail,
-                       AFFE=_F(TOUT='OUI',
-                               PHENOMENE='MECANIQUE',FORMULATION='U_P', MODELISATION='2D_FLUIDE',), )
+modelFluidUP = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_P", MODELISATION="2D_FLUIDE"),
+)
 
-modelFluidUPSI=AFFE_MODELE(MAILLAGE=mail,
-                       AFFE=_F(TOUT='OUI',
-                               PHENOMENE='MECANIQUE',FORMULATION='U_PSI', MODELISATION='2D_FLUIDE',), )
+modelFluidUPSI = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", FORMULATION="U_PSI", MODELISATION="2D_FLUIDE"),
+)
 
-bidon=DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2,),)
+bidon = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.2))
 
-mater=AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT='OUI', MATER=bidon,), )
+mater = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT="OUI", MATER=bidon))
 
 
-coordp=CALC_CHAM_ELEM(MODELE=modeldp, OPTION='COOR_ELGA',)
-coorcp=CALC_CHAM_ELEM(MODELE=modelcp, OPTION='COOR_ELGA',)
+coordp = CALC_CHAM_ELEM(MODELE=modeldp, OPTION="COOR_ELGA")
+coorcp = CALC_CHAM_ELEM(MODELE=modelcp, OPTION="COOR_ELGA")
 # Pour le 3D, on tourne le maillage de maniere a en faire un vrai maillage 3D
-mail=MODI_MAILLAGE(reuse=mail,
-                   MAILLAGE=mail,
-                   ROTATION=_F(POIN_1=(0,0,0,),
-                               DIR=(0,1,0,),
-                               ANGLE=30,),)
-coor3d=CALC_CHAM_ELEM(MODELE=model3d, OPTION='COOR_ELGA',)
-coorFluidUPPHI=CALC_CHAM_ELEM(MODELE=modelFluidUPPHI, OPTION='COOR_ELGA',)
-coorFluidUP=CALC_CHAM_ELEM(MODELE=modelFluidUP, OPTION='COOR_ELGA',)
-coorFluidUPSI=CALC_CHAM_ELEM(MODELE=modelFluidUPSI, OPTION='COOR_ELGA',)
+mail = MODI_MAILLAGE(
+    reuse=mail, MAILLAGE=mail, ROTATION=_F(POIN_1=(0, 0, 0), DIR=(0, 1, 0), ANGLE=30)
+)
+coor3d = CALC_CHAM_ELEM(MODELE=model3d, OPTION="COOR_ELGA")
+coorFluidUPPHI = CALC_CHAM_ELEM(MODELE=modelFluidUPPHI, OPTION="COOR_ELGA")
+coorFluidUP = CALC_CHAM_ELEM(MODELE=modelFluidUP, OPTION="COOR_ELGA")
+coorFluidUPSI = CALC_CHAM_ELEM(MODELE=modelFluidUPSI, OPTION="COOR_ELGA")
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coordp,),)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coorcp,),)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coor3d,),)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coorFluidUPPHI,),)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coorFluidUP,),)
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coorFluidUPSI,),)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=coordp))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=coorcp))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=coor3d))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=coorFluidUPPHI))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=coorFluidUP))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=coorFluidUPSI))
 
 # =============================================================================================
 #  On peut verifier que l'on obtient bien la bonne longueur de la maille M5

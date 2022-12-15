@@ -20,23 +20,22 @@
 import math
 
 try:
-  # Import du module de calcul symbolique Sympy
-  import sympy
-  sympy_available = True
-  # cet import inutile est du au plantage sur la machine clpaster
-  import numpy
+    # Import du module de calcul symbolique Sympy
+    import sympy
+
+    sympy_available = True
+    # cet import inutile est du au plantage sur la machine clpaster
+    import numpy
 except ImportError:
-  sympy_available = False
+    sympy_available = False
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM='MODELE1_63')
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM="MODELE1_63")
 
-#================================================================================================
+# ================================================================================================
 # Definition des caracteristiques du materiau
-#================================================================================================
-E=1
-NU=0.15
+# ================================================================================================
+E = 1
+NU = 0.15
 
 FIN()

@@ -28,73 +28,67 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
-MAIL= LIRE_MAILLAGE(FORMAT='MED',
-                       PARTITIONNEUR='PTSCOTCH',
-                       INFO=1,
-                       )
-DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
+MAIL = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO=1)
+DEFI_GROUP(reuse=MAIL, MAILLAGE=MAIL, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=10000.0,
-                            NU=0.,
-                            RHO=1.0,),
-                            )
+MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))
 
 affectMat = code_aster.MaterialField(MAIL)
 affectMat.addMaterialOnMesh(MATER)
 affectMat.build()
 
-MODT=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=_F(GROUP_MA=('S11',    'S31', 'S12',     'S32'),
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='D_PLAN',),)
+MODT = AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=_F(GROUP_MA=("S11", "S31", "S12", "S32"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"),
+)
 
 
-CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
-                      PESANTEUR=_F(GRAVITE=1.0,
-                                   DIRECTION=(0.0, -1.0, 0.0),),
-                      INFO=1,
-                      VERI_NORM='NON',)
+CHT1 = AFFE_CHAR_MECA(
+    MODELE=MODT, PESANTEUR=_F(GRAVITE=1.0, DIRECTION=(0.0, -1.0, 0.0)), INFO=1, VERI_NORM="NON"
+)
 
-charCine = AFFE_CHAR_CINE(MODELE=MODT,
-            MECA_IMPO=(_F(GROUP_MA=("Bas1"), DX=0., DY=1.),
-                       _F(GROUP_MA=("Bas3"), DX=0., DY=-1.),))
+charCine = AFFE_CHAR_CINE(
+    MODELE=MODT,
+    MECA_IMPO=(_F(GROUP_MA=("Bas1"), DX=0.0, DY=1.0), _F(GROUP_MA=("Bas3"), DX=0.0, DY=-1.0)),
+)
 
 
-resu=MECA_STATIQUE( MODELE=MODT,
-                        CHAM_MATER=affectMat,
-                        EXCIT  =(_F( CHARGE = CHT1), _F( CHARGE = charCine)),
-                       )
+resu = MECA_STATIQUE(
+    MODELE=MODT, CHAM_MATER=affectMat, EXCIT=(_F(CHARGE=CHT1), _F(CHARGE=charCine))
+)
 
 
 # resu.printMedFile('/tmp/test2_{}.resu.med'.format(rank))
 
 TEST_RESU(
     RESU=_F(
-        CRITERE='ABSOLU',
-        GROUP_NO='Point1',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
+        CRITERE="ABSOLU",
+        GROUP_NO="Point1",
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
         NUME_ORDRE=1,
-        PRECISION=1.e-6,
-        REFERENCE='AUTRE_ASTER',
+        PRECISION=1.0e-6,
+        REFERENCE="AUTRE_ASTER",
         RESULTAT=resu,
         VALE_CALC=0.999549999999998,
         VALE_REFE=0.999549999999998,
-    ))
+    )
+)
 
 TEST_RESU(
     RESU=_F(
-        CRITERE='ABSOLU',
-        GROUP_NO='Point4',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
+        CRITERE="ABSOLU",
+        GROUP_NO="Point4",
+        NOM_CHAM="DEPL",
+        NOM_CMP="DY",
         NUME_ORDRE=1,
-        PRECISION=1.e-6,
-        REFERENCE='AUTRE_ASTER',
+        PRECISION=1.0e-6,
+        REFERENCE="AUTRE_ASTER",
         RESULTAT=resu,
         VALE_CALC=-1.0004499999999994,
         VALE_REFE=-1.0004499999999994,
-    ))
+    )
+)
 
 
 test.printSummary()

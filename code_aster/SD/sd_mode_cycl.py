@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,22 +20,23 @@
 from . import *
 from .sd_interf_dyna_clas import sd_interf_dyna_clas
 from .sd_maillage import sd_maillage
+
 # from .sd_base_modale import sd_base_modale
 from .sd_mode_meca import sd_mode_meca
 from .sd_util import *
 
 
 class sd_mode_cycl(AsBase):
-#--------------------------
+    # --------------------------
     nomj = SDNom(fin=8)
-    CYCL_TYPE = AsVK8(lonmax=1, )
+    CYCL_TYPE = AsVK8(lonmax=1)
     CYCL_CMODE = AsVC()
-    CYCL_NBSC = AsVI(lonmax=1, )
+    CYCL_NBSC = AsVI(lonmax=1)
     CYCL_DIAM = AsVI()
-    CYCL_REFE = AsVK24(lonmax=3, )
-    CYCL_DESC = AsVI(lonmax=4, )
+    CYCL_REFE = AsVK24(lonmax=3)
+    CYCL_DESC = AsVI(lonmax=4)
     CYCL_FREQ = AsVR()
-    CYCL_NUIN = AsVI(lonmax=3, )
+    CYCL_NUIN = AsVI(lonmax=3)
 
     def u_dime(self):
         desc = self.CYCL_DESC.get()
@@ -58,7 +59,7 @@ class sd_mode_cycl(AsBase):
         sd2.check
         sd2 = sd_interf_dyna_clas(refe[1])
         sd2.check
-#        sd2=sd_base_modale(refe[2]); sd2.check
+        #        sd2=sd_base_modale(refe[2]); sd2.check
         sd2 = sd_mode_meca(refe[2])
         sd2.check
 
@@ -74,12 +75,11 @@ class sd_mode_cycl(AsBase):
 
     def check_TYPE(self, checker):
         type = self.CYCL_TYPE.get_stripped()
-        assert type[0] in ('MNEAL', 'CRAIGB', 'CB_HARMO', 'AUCUN'), type
+        assert type[0] in ("MNEAL", "CRAIGB", "CB_HARMO", "AUCUN"), type
 
     def check_CMODE(self, checker):
         nb_mod, nb_ddl, nb_ddli, nb_freq, nb_diam = self.u_dime()
-        assert self.CYCL_CMODE.lonmax == nb_diam * \
-            nb_freq * (nb_mod + nb_ddl + nb_ddli)
+        assert self.CYCL_CMODE.lonmax == nb_diam * nb_freq * (nb_mod + nb_ddl + nb_ddli)
 
     def check_DIAM(self, checker):
         diam = self.CYCL_DIAM.get()
@@ -93,7 +93,6 @@ class sd_mode_cycl(AsBase):
     def check_FREQ(self, checker):
         nb_mod, nb_ddl, nb_ddli, nb_freq, nb_diam = self.u_dime()
         freq = self.CYCL_FREQ.get()
-        assert len(freq) == nb_diam * nb_freq, (
-            self.CYCL_DESC.get(), len(freq))
+        assert len(freq) == nb_diam * nb_freq, (self.CYCL_DESC.get(), len(freq))
         for x in freq:
             assert x >= 0, freq

@@ -21,37 +21,42 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    2: _("""
+    2: _(
+        """
 Vous voulez une quadrature d'ordre %(i1)d ce qui supérieur au maximum autorisé (max = %(i2)d)
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 Vous voulez une quadrature d'ordre %(i1)d ce qui inférieur au minimum autorisé (min = 0)
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 Échec de la factorisation de Cholesky: la matrice n'est pas symétrique définie positive
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 Échec de la factorisation LU: la matrice n'est pas factorisable
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
 Bases HHO:
 Vous voulez une base de degré %(i1)d ce qui supérieur au maximum autorisé (max = %(i2)d)
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
 Bases HHO:
 Vous voulez une base de degré négatif %(i1)d ce qui inférieur au minimum autorisé (min = 0)
-"""),
-
-    12: _("""
+"""
+    ),
+    12: _(
+        """
 Quadratures HHO:
 Vous voulez une quadrature d'ordre supérieur au maximum autorisé par votre quadrature
-"""),
-
-
+"""
+    ),
 }

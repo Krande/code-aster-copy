@@ -28,6 +28,7 @@ from libaster import GeneralizedDOFNumbering
 from ..Utilities import injector
 from ..Objects.Serialization import InternalStateBuilder
 
+
 class GeneralizedDOFNumberingStateBuilder(InternalStateBuilder):
     """Class that returns the internal state of a *GeneralizedDOFNumbering*."""
 
@@ -43,7 +44,7 @@ class GeneralizedDOFNumberingStateBuilder(InternalStateBuilder):
         super().save(result)
         self._st["model"] = result.getGeneralizedModel()
         self._st["base"] = result.getModalBasis()
-        
+
         return self
 
     def restore(self, result):

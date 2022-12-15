@@ -21,208 +21,211 @@
 #  MODELISATION 'ACOUSTIQUE' PLANE AVEC ELEMENTS TRIA3 ET SEG2
 # VALIDATION INDEPENDANTE PAR LMS_NT (J.P.ROSSION)
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-MA = LIRE_MAILLAGE(FORMAT='IDEAS',
-                   UNITE=19,
-                   )
+MA = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=19)
 
-MO=AFFE_MODELE(
-         MAILLAGE=MA,
-         AFFE=_F( TOUT = 'OUI',
-              PHENOMENE = 'ACOUSTIQUE',
-              MODELISATION = 'PLAN')
-         )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="ACOUSTIQUE", MODELISATION="PLAN"))
 
 #
 # PROPRIETES MECANIQUES
 #
-AIR=DEFI_MATERIAU(
-          FLUIDE=_F( RHO = 1.3,
-                CELE_C = ('RI',343.0,0.,))
-         )
+AIR = DEFI_MATERIAU(FLUIDE=_F(RHO=1.3, CELE_C=("RI", 343.0, 0.0)))
 
-CHM=AFFE_MATERIAU(
-         MAILLAGE=MA,
-         AFFE=_F( TOUT = 'OUI',
-              MATER = AIR)
-         )
+CHM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=AIR))
 
 #
 # CONDITIONS AUX LIMITES
 #
-VELO=AFFE_CHAR_ACOU(
-         MODELE=MO,
-         VITE_FACE=_F( GROUP_MA = 'velo',
-                   VNOR = ('RI',0.014,0.0,))
-         )
+VELO = AFFE_CHAR_ACOU(MODELE=MO, VITE_FACE=_F(GROUP_MA="velo", VNOR=("RI", 0.014, 0.0)))
 
-IMPE=AFFE_CHAR_ACOU(
-         MODELE=MO,
-         IMPE_FACE=_F( GROUP_MA = 'impe',
-                   IMPE = ('RI',445.9,0.0,))
-         )
+IMPE = AFFE_CHAR_ACOU(MODELE=MO, IMPE_FACE=_F(GROUP_MA="impe", IMPE=("RI", 445.9, 0.0)))
 
 #
 # ASSEMBLAGE
 #
 ASSEMBLAGE(
-     MODELE=MO,
-     CHARGE=IMPE,
-     CHAM_MATER=CHM,
-     NUME_DDL=CO("NDDL"),
-     MATR_ASSE=(_F(  MATRICE = CO("MATK"), OPTION = 'RIGI_ACOU'),
-                _F(  MATRICE = CO("MATM"), OPTION = 'MASS_ACOU'),
-                _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU')),
-     VECT_ASSE=(_F(VECTEUR=CO("VECAS"),OPTION='CHAR_ACOU',CHARGE=VELO)),
-                )
+    MODELE=MO,
+    CHARGE=IMPE,
+    CHAM_MATER=CHM,
+    NUME_DDL=CO("NDDL"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MATK"), OPTION="RIGI_ACOU"),
+        _F(MATRICE=CO("MATM"), OPTION="MASS_ACOU"),
+        _F(MATRICE=CO("MATA"), OPTION="AMOR_ACOU"),
+    ),
+    VECT_ASSE=(_F(VECTEUR=CO("VECAS"), OPTION="CHAR_ACOU", CHARGE=VELO)),
+)
 
 #
 #  REPONSE HARMONIQUE
 #
-HARMO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
-         SOLVEUR=_F(METHODE='MUMPS'),
-         MATR_MASS=MATM,
-         MATR_RIGI=MATK,
-         MATR_AMOR=MATA,
-         FREQ=500.0,
-          EXCIT=_F( VECT_ASSE = VECAS,
-               COEF_MULT = -1.0,
-               PHAS_DEG = 90.0,
-               PUIS_PULS = 1)
-         )
+HARMO = DYNA_VIBRA(
+    TYPE_CALCUL="HARM",
+    BASE_CALCUL="PHYS",
+    SOLVEUR=_F(METHODE="MUMPS"),
+    MATR_MASS=MATM,
+    MATR_RIGI=MATK,
+    MATR_AMOR=MATA,
+    FREQ=500.0,
+    EXCIT=_F(VECT_ASSE=VECAS, COEF_MULT=-1.0, PHAS_DEG=90.0, PUIS_PULS=1),
+)
 
-HARMO=CALC_CHAMP(reuse=HARMO,
-                 TOUT_ORDRE='OUI',
-                 RESULTAT=HARMO,
-                 ACOUSTIQUE=('INTE_ELNO'),)
+HARMO = CALC_CHAMP(reuse=HARMO, TOUT_ORDRE="OUI", RESULTAT=HARMO, ACOUSTIQUE=("INTE_ELNO"))
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   VALE_CALC_C=-6.195008451+-0.015674841j,
-                   VALE_REFE_C=('RI', -6.2426000000000004, 0.0),
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=HARMO,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='N1',
-                   NOM_CMP='PRES',
-                   PRECISION=1.E-2,),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=-6.2444286280064+5.7609335152933E-03j,
-                   VALE_REFE_C=('RI', -6.2426000000000004, 0.0),
-                   PRECISION=1.E-3,
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=HARMO,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='N237',
-                   NOM_CMP='PRES',
-                   ),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C= 5.9654562396841+2.0109538478286j,
-                   VALE_REFE_C=('RI', 6.0236999999999998, 1.6387),
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=HARMO,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='N2',
-                   NOM_CMP='PRES',
-                   PRECISION=0.07,),
-                _F(NUME_ORDRE=1,
-                   VALE_CALC_C=5.919857621113+1.9838491756394j,
-                   VALE_REFE_C=('RI', 6.0236999999999998, 1.6387),
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=HARMO,
-                   NOM_CHAM='PRES',
-                   GROUP_NO='N205',
-                   NOM_CMP='PRES',
-                   PRECISION=0.06,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=-6.195008451 + -0.015674841j,
+            VALE_REFE_C=("RI", -6.2426000000000004, 0.0),
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=HARMO,
+            NOM_CHAM="PRES",
+            GROUP_NO="N1",
+            NOM_CMP="PRES",
+            PRECISION=1.0e-2,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=-6.2444286280064 + 5.7609335152933e-03j,
+            VALE_REFE_C=("RI", -6.2426000000000004, 0.0),
+            PRECISION=1.0e-3,
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=HARMO,
+            NOM_CHAM="PRES",
+            GROUP_NO="N237",
+            NOM_CMP="PRES",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=5.9654562396841 + 2.0109538478286j,
+            VALE_REFE_C=("RI", 6.0236999999999998, 1.6387),
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=HARMO,
+            NOM_CHAM="PRES",
+            GROUP_NO="N2",
+            NOM_CMP="PRES",
+            PRECISION=0.07,
+        ),
+        _F(
+            NUME_ORDRE=1,
+            VALE_CALC_C=5.919857621113 + 1.9838491756394j,
+            VALE_REFE_C=("RI", 6.0236999999999998, 1.6387),
+            REFERENCE="ANALYTIQUE",
+            RESULTAT=HARMO,
+            NOM_CHAM="PRES",
+            GROUP_NO="N205",
+            NOM_CMP="PRES",
+            PRECISION=0.06,
+        ),
+    )
+)
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.042486977108481,
-                   VALE_REFE=0.0437,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.03,
-                   GROUP_MA='M274',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N237',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.042825343625099,
-                   VALE_REFE=0.0437,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.025,
-                   GROUP_MA='M211',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N2',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.043273941081778,
-                   VALE_REFE=0.0437,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,
-                   GROUP_MA='M270',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N205',
-                   NOM_CMP='INTX_R',
-                   VALE_CALC=0.042824029890474,
-                   VALE_REFE=0.0437,
-                   REFERENCE='ANALYTIQUE',
-                   PRECISION=0.025,
-                   GROUP_MA='M240',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='INTX_I',
-                   VALE_REFE=0.0,
-                   VALE_CALC=5.6957927235331E-03,
-                   PRECISION=6E-3,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M274',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N237',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=6.4991431213681E-03,
-                   VALE_REFE=0.0,
-                   PRECISION=6.5E-3,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M211',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N2',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=-6.8145834372082E-03,
-                   VALE_REFE=0.0,
-                   PRECISION=7E-3,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M270',),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=HARMO,
-                   NOM_CHAM='INTE_ELNO',
-                   GROUP_NO='N205',
-                   NOM_CMP='INTX_I',
-                   VALE_CALC=-6.5365997379561E-03,
-                   VALE_REFE=0.0,
-                   PRECISION=7E-3,
-                   REFERENCE='ANALYTIQUE',
-                   CRITERE='ABSOLU',
-                   GROUP_MA='M240',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.042486977108481,
+            VALE_REFE=0.0437,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.03,
+            GROUP_MA="M274",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N237",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.042825343625099,
+            VALE_REFE=0.0437,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.025,
+            GROUP_MA="M211",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N2",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.043273941081778,
+            VALE_REFE=0.0437,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.01,
+            GROUP_MA="M270",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N205",
+            NOM_CMP="INTX_R",
+            VALE_CALC=0.042824029890474,
+            VALE_REFE=0.0437,
+            REFERENCE="ANALYTIQUE",
+            PRECISION=0.025,
+            GROUP_MA="M240",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="INTX_I",
+            VALE_REFE=0.0,
+            VALE_CALC=5.6957927235331e-03,
+            PRECISION=6e-3,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M274",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N237",
+            NOM_CMP="INTX_I",
+            VALE_CALC=6.4991431213681e-03,
+            VALE_REFE=0.0,
+            PRECISION=6.5e-3,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M211",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N2",
+            NOM_CMP="INTX_I",
+            VALE_CALC=-6.8145834372082e-03,
+            VALE_REFE=0.0,
+            PRECISION=7e-3,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M270",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=HARMO,
+            NOM_CHAM="INTE_ELNO",
+            GROUP_NO="N205",
+            NOM_CMP="INTX_I",
+            VALE_CALC=-6.5365997379561e-03,
+            VALE_REFE=0.0,
+            PRECISION=7e-3,
+            REFERENCE="ANALYTIQUE",
+            CRITERE="ABSOLU",
+            GROUP_MA="M240",
+        ),
+    )
+)
 
 FIN()

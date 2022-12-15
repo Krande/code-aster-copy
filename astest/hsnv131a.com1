@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,44 +21,43 @@
 import code_aster
 from code_aster.Commands import *
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 test = code_aster.TestCase()
 
 INCLUDE_MATERIAU(
-    NOM_AFNOR='Z2CND1712',
-    TYPE_MODELE='REF',
-    VARIANTE='A',
-    TYPE_VALE='NOMI',
-    UNITE_LONGUEUR='MM',
-    EXTRACTION=_F(TEMP_EVAL=30., COMPOR='THER'),
+    NOM_AFNOR="Z2CND1712",
+    TYPE_MODELE="REF",
+    VARIANTE="A",
+    TYPE_VALE="NOMI",
+    UNITE_LONGUEUR="MM",
+    EXTRACTION=_F(TEMP_EVAL=30.0, COMPOR="THER"),
 )
 
 idmess = ""
 try:
     INCLUDE_MATERIAU(
-        NOM_AFNOR='Z2CND1712',
-        TYPE_MODELE='REF',
-        VARIANTE='A',
-        TYPE_VALE='NOMI',
-        UNITE_LONGUEUR='MM',
-        EXTRACTION=_F(TEMP_EVAL=10., COMPOR='THER'),
+        NOM_AFNOR="Z2CND1712",
+        TYPE_MODELE="REF",
+        VARIANTE="A",
+        TYPE_VALE="NOMI",
+        UNITE_LONGUEUR="MM",
+        EXTRACTION=_F(TEMP_EVAL=10.0, COMPOR="THER"),
     )
 except code_aster.AsterError as exc:
     idmess = exc.id_message
 
-test.assertEqual(idmess, "FONCT0_29",
-                 msg="expecting exception with message 'FONCT0_29'")
+test.assertEqual(idmess, "FONCT0_29", msg="expecting exception with message 'FONCT0_29'")
 
 
 INCLUDE_MATERIAU(
-    NOM_AFNOR='Z2CND1712',
-    TYPE_MODELE='REF',
-    VARIANTE='A',
-    TYPE_VALE='NOMI',
-    UNITE_LONGUEUR='MM',
-    PROL_GAUCHE='CONSTANT',
-    EXTRACTION=_F(TEMP_EVAL=10., COMPOR='THER'),
+    NOM_AFNOR="Z2CND1712",
+    TYPE_MODELE="REF",
+    VARIANTE="A",
+    TYPE_VALE="NOMI",
+    UNITE_LONGUEUR="MM",
+    PROL_GAUCHE="CONSTANT",
+    EXTRACTION=_F(TEMP_EVAL=10.0, COMPOR="THER"),
 )
 
 test.printSummary()

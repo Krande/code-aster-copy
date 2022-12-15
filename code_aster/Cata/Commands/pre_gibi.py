@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,10 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-PRE_GIBI=PROC(nom="PRE_GIBI",op=49,
-              fr=tr("Conversion d'un fichier de maillage GIBI au format Aster"),
-         UNITE_GIBI      =SIMP(statut='f',typ=UnitType(),defaut=19, inout='in'),
-         UNITE_MAILLAGE  =SIMP(statut='f',typ=UnitType(),defaut=20, inout='out'),
-)  ;
+PRE_GIBI = PROC(
+    nom="PRE_GIBI",
+    op=49,
+    fr=tr("Conversion d'un fichier de maillage GIBI au format Aster"),
+    UNITE_GIBI=SIMP(statut="f", typ=UnitType(), defaut=19, inout="in"),
+    UNITE_MAILLAGE=SIMP(statut="f", typ=UnitType(), defaut=20, inout="out"),
+)

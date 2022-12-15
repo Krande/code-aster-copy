@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,30 +22,29 @@
 import os
 import code_aster
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 test = code_aster.TestCase()
 
-a = 2.
+a = 2.0
 
-mult2 = FORMULE(NOM_PARA='INST', VALE='INST * a', a=a)
+mult2 = FORMULE(NOM_PARA="INST", VALE="INST * a", a=a)
 
-print("mult2(2.) =", mult2(2.))
-test.assertEqual(mult2(2.), 4.)
+print("mult2(2.) =", mult2(2.0))
+test.assertEqual(mult2(2.0), 4.0)
 
-os.rename('fort.11', 'fort11.py')
+os.rename("fort.11", "fort11.py")
 from fort11 import formula_def
 
 mult3, mult2inc = formula_def(mult2)
 
-print("mult3(6.) =", mult3(6.))
-test.assertEqual(mult3(6.), 18.)
+print("mult3(6.) =", mult3(6.0))
+test.assertEqual(mult3(6.0), 18.0)
 
 # the *python* function objects can be not pickled, so ``funct3`` won't be
 # available to evaluate ``mult3`` in POURSUITE.
 
-freal = CALC_FONC_INTERP(FONCTION=mult3,
-                         VALE_PARA=(1., 2.))
+freal = CALC_FONC_INTERP(FONCTION=mult3, VALE_PARA=(1.0, 2.0))
 
 IMPR_FONCTION(COURBE=_F(FONCTION=freal), UNITE=6)
 

@@ -24,61 +24,52 @@ from code_aster.Commands import *
 
 # CE CAS-TEST S'INSPIRE DE SSLL105D : ON VERIFIE ICI L'EXCEPTION INSTABILITE
 #
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      ERREUR=_F(ERREUR_F='EXCEPTION',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="EXCEPTION"))
 
-mail=LIRE_MAILLAGE(FORMAT="ASTER",)
+mail = LIRE_MAILLAGE(FORMAT="ASTER")
 
-modele=AFFE_MODELE(MAILLAGE=mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_E',),)
+modele = AFFE_MODELE(
+    MAILLAGE=mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E")
+)
 
-cara_pou=AFFE_CARA_ELEM(MODELE=modele,
-                        POUTRE=_F(GROUP_MA='POUT',
-                                  SECTION='RECTANGLE',
-                                  CARA=('HY','HZ',),
-                                  VALE=(30.0,0.6,),),)
+cara_pou = AFFE_CARA_ELEM(
+    MODELE=modele,
+    POUTRE=_F(GROUP_MA="POUT", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(30.0, 0.6)),
+)
 
-alu=DEFI_MATERIAU(ELAS=_F(E=71240,
-                          NU=0.3,),)
+alu = DEFI_MATERIAU(ELAS=_F(E=71240, NU=0.3))
 
-ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=alu,),)
+ch_mat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(TOUT="OUI", MATER=alu))
 
-encast=AFFE_CHAR_MECA(MODELE=modele,
-                      DDL_IMPO=_F(GROUP_NO='A',
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=0.0,
-                                  DRX=0.0,
-                                  DRY=0.0,
-                                  DRZ=0.0,),)
+encast = AFFE_CHAR_MECA(
+    MODELE=modele, DDL_IMPO=_F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)
+)
 
-fonc=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(0.0,0.0,1.0,1.0,),)
+fonc = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
-listinst=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=_F(JUSQU_A=1.0,
-                                  NOMBRE=10,),)
+listinst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=10))
 
-effort2=AFFE_CHAR_MECA(MODELE=modele,
-                      FORCE_NODALE=_F(GROUP_NO='C',
-                                      FX=-1,),)
+effort2 = AFFE_CHAR_MECA(MODELE=modele, FORCE_NODALE=_F(GROUP_NO="C", FX=-1))
 
 #
 #  On teste l'arret propre EVENEMENT='INSTABILITE' sous DEFI_LIST_INST
 #
-list2=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = listinst),
-                        ECHEC=_F(EVENEMENT='INSTABILITE',ACTION='ARRET',),)
+list2 = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=listinst), ECHEC=_F(EVENEMENT="INSTABILITE", ACTION="ARRET")
+)
 import re
-fmt_raison='-'*80+"""
+
+fmt_raison = (
+    "-" * 80
+    + """
 
    Exception interceptee
    Raison : %s
 
-"""+'-'*80+'\n'
+"""
+    + "-" * 80
+    + "\n"
+)
 
 
 #
@@ -86,114 +77,111 @@ fmt_raison='-'*80+"""
 #  sous CRIT_STAB on met SIGNE = 'POSITIF_NEGATIF'
 #
 is_ok = 0
-try :
-  res2L_A=STAT_NON_LINE(MODELE=modele,
-                  CHAM_MATER=ch_mat,
-                  CARA_ELEM=cara_pou,
-                  EXCIT=(_F(CHARGE=encast,),
-                         _F(CHARGE=effort2,
-                            FONC_MULT=fonc,),),
-                  COMPORTEMENT=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),
-                  INCREMENT=_F(LIST_INST=list2,),
-                  NEWTON=_F(MATRICE='TANGENTE',),
-                  SOLVEUR=_F(METHODE='LDLT'),
-                  CRIT_STAB=_F(OPTION='BANDE',CHAR_CRIT=(0., 2.),SIGNE='POSITIF_NEGATIF',),
-                  )
+try:
+    res2L_A = STAT_NON_LINE(
+        MODELE=modele,
+        CHAM_MATER=ch_mat,
+        CARA_ELEM=cara_pou,
+        EXCIT=(_F(CHARGE=encast), _F(CHARGE=effort2, FONC_MULT=fonc)),
+        COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT"),
+        INCREMENT=_F(LIST_INST=list2),
+        NEWTON=_F(MATRICE="TANGENTE"),
+        SOLVEUR=_F(METHODE="LDLT"),
+        CRIT_STAB=_F(OPTION="BANDE", CHAR_CRIT=(0.0, 2.0), SIGNE="POSITIF_NEGATIF"),
+    )
 except AsterError as err:
-   print(fmt_raison % str(err))
-   # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_51":
-      is_ok = 1
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MECANONLINE9_51":
+        is_ok = 1
 # TEST_RESU
-TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
-                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  ',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
 #
 #  On teste avec l'arret sur valeur de charge critique 1 :
 #  sous CRIT_STAB on met SIGNE = 'POSITIF'
 #
 is_ok = 0
-try :
-  res2L_AN=STAT_NON_LINE(MODELE=modele,
-                  CHAM_MATER=ch_mat,
-                  CARA_ELEM=cara_pou,
-                  EXCIT=(_F(CHARGE=encast,),
-                         _F(CHARGE=effort2,
-                            FONC_MULT=fonc,),),
-                  COMPORTEMENT=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),
-                  INCREMENT=_F(LIST_INST=list2,),
-                  NEWTON=_F(MATRICE='TANGENTE',),
-                  SOLVEUR=_F(METHODE='LDLT'),
-                  CRIT_STAB=_F(OPTION='BANDE',CHAR_CRIT=(0., 2.),SIGNE='POSITIF',),
-                  )
+try:
+    res2L_AN = STAT_NON_LINE(
+        MODELE=modele,
+        CHAM_MATER=ch_mat,
+        CARA_ELEM=cara_pou,
+        EXCIT=(_F(CHARGE=encast), _F(CHARGE=effort2, FONC_MULT=fonc)),
+        COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT"),
+        INCREMENT=_F(LIST_INST=list2),
+        NEWTON=_F(MATRICE="TANGENTE"),
+        SOLVEUR=_F(METHODE="LDLT"),
+        CRIT_STAB=_F(OPTION="BANDE", CHAR_CRIT=(0.0, 2.0), SIGNE="POSITIF"),
+    )
 except AsterError as err:
-   print(fmt_raison % str(err))
-   # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_51":
-      is_ok = 1
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MECANONLINE9_51":
+        is_ok = 1
 # TEST_RESU
-TAB1N=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
-                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TAB1N = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TAB1N,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  ',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1N,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
-#DETRUIRE(NOM=(res2L_A, TAB1),)
+# DETRUIRE(NOM=(res2L_A, TAB1),)
 
 #
 #  On teste avec l'absence d'arret sur valeur de charge critique -1 :
 #  sous CRIT_STAB on met SIGNE = 'NEGATIF'
 #
 is_ok = 0
-try :
-  res2L_AP=STAT_NON_LINE(MODELE=modele,
-                  CHAM_MATER=ch_mat,
-                  CARA_ELEM=cara_pou,
-                  EXCIT=(_F(CHARGE=encast,),
-                         _F(CHARGE=effort2,
-                            FONC_MULT=fonc,),),
-                  COMPORTEMENT=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),
-                  INCREMENT=_F(LIST_INST=list2,),
-                  NEWTON=_F(MATRICE='TANGENTE',),
-                  SOLVEUR=_F(METHODE='LDLT'),
-                  CRIT_STAB=_F(OPTION='BANDE',CHAR_CRIT=(0., 2.),SIGNE='NEGATIF',),
-                  )
+try:
+    res2L_AP = STAT_NON_LINE(
+        MODELE=modele,
+        CHAM_MATER=ch_mat,
+        CARA_ELEM=cara_pou,
+        EXCIT=(_F(CHARGE=encast), _F(CHARGE=effort2, FONC_MULT=fonc)),
+        COMPORTEMENT=_F(RELATION="ELAS", DEFORMATION="PETIT"),
+        INCREMENT=_F(LIST_INST=list2),
+        NEWTON=_F(MATRICE="TANGENTE"),
+        SOLVEUR=_F(METHODE="LDLT"),
+        CRIT_STAB=_F(OPTION="BANDE", CHAR_CRIT=(0.0, 2.0), SIGNE="NEGATIF"),
+    )
 except AsterError as err:
-   print(fmt_raison % str(err))
-   # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE9_51":
-      is_ok = 1
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MECANONLINE9_51":
+        is_ok = 1
 # TEST_RESU
-TAB1P=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
-                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TAB1P = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=0,
-           VALE_REFE_I=0,
-           NOM_PARA='BOOLEEN',
-           TABLE=TAB1P,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  ',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=0,
+    VALE_REFE_I=0,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1P,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
-#DETRUIRE(NOM=(res2L_A, TAB1),)
+# DETRUIRE(NOM=(res2L_A, TAB1),)
 
 FIN()

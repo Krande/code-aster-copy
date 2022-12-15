@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -29,6 +29,7 @@ from ..Cata.Syntax import _F
 
 class ComputeGXFEM(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Table`"""
+
     command_name = "CALC_G_XFEM"
 
     def create_result(self, keywords):
@@ -38,6 +39,7 @@ class ComputeGXFEM(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Table()
+
 
 def calc_g_xfem_with_co(self, **args):
     """Wrapper around the original CALC_G_XFEM command to return an additional
@@ -52,36 +54,43 @@ def calc_g_xfem_with_co(self, **args):
     _result_calc_g_xfem = ComputeGXFEM.run(**args)
 
     # Extraction de la table qui contient G
-    _table_g_xfem = EXTR_TABLE(TYPE_RESU='TABLE_SDASTER',
-            TABLE=_result_calc_g_xfem, NOM_PARA='NOM_SD',
-            FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='TABLE_G'),
-        )
+    _table_g_xfem = EXTR_TABLE(
+        TYPE_RESU="TABLE_SDASTER",
+        TABLE=_result_calc_g_xfem,
+        NOM_PARA="NOM_SD",
+        FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="TABLE_G"),
+    )
 
     # On fait quoi de theta ?
     if "CHAM_THETA" in args:
         # number of CHAM_THETA fields
-        _nb_cham_theta = EXTR_TABLE(TYPE_RESU='ENTIER',
-                TABLE=_result_calc_g_xfem, NOM_PARA='NUME_ORDRE',
-                FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='NB_CHAM_THETA'),
-            )
+        _nb_cham_theta = EXTR_TABLE(
+            TYPE_RESU="ENTIER",
+            TABLE=_result_calc_g_xfem,
+            NOM_PARA="NUME_ORDRE",
+            FILTRE=_F(NOM_PARA="NOM_OBJET", VALE_K="NB_CHAM_THETA"),
+        )
 
         reuse = {}
         for i_cham in range(_nb_cham_theta):
             # get i-th CHAM_THETA field
-            _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
-                    TABLE=_result_calc_g_xfem, NOM_PARA='NOM_SD',
-                    FILTRE=(_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
-                            _F(NOM_PARA='NUME_ORDRE', VALE_I=i_cham+1))
-                )
+            _cham_theta_no = EXTR_TABLE(
+                TYPE_RESU="CHAM_NO_SDASTER",
+                TABLE=_result_calc_g_xfem,
+                NOM_PARA="NOM_SD",
+                FILTRE=(
+                    _F(NOM_PARA="NOM_OBJET", VALE_K="CHAM_THETA"),
+                    _F(NOM_PARA="NUME_ORDRE", VALE_I=i_cham + 1),
+                ),
+            )
 
             _cham_theta = CREA_RESU(
-                OPERATION='AFFE',
-                TYPE_RESU='EVOL_NOLI',
-                NOM_CHAM='DEPL',
-                AFFE=(_F(CHAM_GD=_cham_theta_no,
-                         MODELE=args["RESULTAT"].getModel(),
-                         INST=i_cham,),),
-                **reuse)
+                OPERATION="AFFE",
+                TYPE_RESU="EVOL_NOLI",
+                NOM_CHAM="DEPL",
+                AFFE=(_F(CHAM_GD=_cham_theta_no, MODELE=args["RESULTAT"].getModel(), INST=i_cham),),
+                **reuse
+            )
             # for next iteration
             reuse = dict(reuse=_cham_theta, RESULTAT=_cham_theta)
 

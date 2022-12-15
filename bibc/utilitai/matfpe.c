@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -26,41 +26,40 @@
    Problème rencontré sur Linux ia64 avec MKL 8.0.
 */
 #include "aster.h"
+
 #include <stdio.h>
 
 #if defined ASTER_HAVE_SUPPORT_FPE
 #include <signal.h>
 #define _GNU_SOURCE 1
 #include <fenv.h>
-void hanfpe (int sig);
+void hanfpe( int sig );
 
 static int compteur_fpe = 1;
 #endif
 
-void DEFP(MATFPE, matfpe, ASTERINTEGER *enable)
-{
+void DEFP( MATFPE, matfpe, ASTERINTEGER *enable ) {
 #if defined ASTER_HAVE_SUPPORT_FPE
 
-   /* permet juste de vérifier où on en est si besoin ! */
-   if (*enable == 0) {
-      printf("#MATFPE var = %ld (compteur %d)\n", *enable, compteur_fpe);
-      return;
-   }
+    /* permet juste de vérifier où on en est si besoin ! */
+    if ( *enable == 0 ) {
+        printf( "#MATFPE var = %ld (compteur %d)\n", *enable, compteur_fpe );
+        return;
+    }
 
-   compteur_fpe = compteur_fpe + *enable;
+    compteur_fpe = compteur_fpe + *enable;
 
-   if (compteur_fpe < 1) {
-      fedisableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
-      /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
-      signal(SIGFPE, hanfpe);
-   }
-   else if (compteur_fpe >= 1) {
-      /* avant de reactiver le controle des FPE, on abaisse les flags */
-      feclearexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
-      feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
-      /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
-      signal(SIGFPE, hanfpe);
-   }
+    if ( compteur_fpe < 1 ) {
+        fedisableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
+        signal( SIGFPE, hanfpe );
+    } else if ( compteur_fpe >= 1 ) {
+        /* avant de reactiver le controle des FPE, on abaisse les flags */
+        feclearexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        feenableexcept( FE_DIVBYZERO | FE_OVERFLOW | FE_INVALID );
+        /* définition du handler : hanfpe appelle UTMFPE qui fait UTMESS('F') */
+        signal( SIGFPE, hanfpe );
+    }
 
 #endif
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ from .sd_titre import sd_titre
 
 
 class sd_maillage(sd_titre):
-#-------------------------------
+    # -------------------------------
     nomj = SDNom(fin=8)
 
-    DIME = AsVI(lonmax=6, )
+    DIME = AsVI(lonmax=6)
 
     # un sd_maillage a toujours des noeuds :
     NOMNOE = AsPn(ltyp=8)
@@ -36,39 +36,35 @@ class sd_maillage(sd_titre):
 
     # normalement, un sd_maillage a toujours une "sd_l_table" contenant des
     # caractéristiques géométriques :
-    lt = sd_l_table(SDNom(nomj=''))
+    lt = sd_l_table(SDNom(nomj=""))
 
     # si le sd_maillage a des groupes :
-    GROUPENO = Facultatif(
-        AsColl(stockage='DISPERSE', modelong='VARIABLE', type='I', ))
-    GROUPEMA = Facultatif(
-        AsColl(stockage='DISPERSE', modelong='VARIABLE', type='I', ))
-    PTRNOMNOE = Facultatif(AsPn(type='K', ltyp=24))
-    PTRNOMMAI = Facultatif(AsPn(type='K', ltyp=24))
+    GROUPENO = Facultatif(AsColl(stockage="DISPERSE", modelong="VARIABLE", type="I"))
+    GROUPEMA = Facultatif(AsColl(stockage="DISPERSE", modelong="VARIABLE", type="I"))
+    PTRNOMNOE = Facultatif(AsPn(type="K", ltyp=24))
+    PTRNOMMAI = Facultatif(AsPn(type="K", ltyp=24))
 
     # si le sd_maillage a des mailles :
-    CONNEX = Facultatif(
-        AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
+    CONNEX = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
     TYPMAIL = Facultatif(AsVI())
     NOMMAI = Facultatif(AsPn(ltyp=8))
 
     # si le sd_maillage a des patchs:
-    PATCH  = Facultatif(AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
+    PATCH = Facultatif(AsColl(acces="NU", stockage="CONTIG", modelong="VARIABLE", type="I"))
     COMAPA = Facultatif(AsVI())
     CONOPA = Facultatif(AsVI())
     PTRNOMPAT = Facultatif(AsVK24())
 
     # si le sd_maillage a des super-mailles :
     NOMACR = Facultatif(AsVK8())
-    SUPMAIL = Facultatif(
-        AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', ))
+    SUPMAIL = Facultatif(AsColl(acces="NO", stockage="DISPERSE", modelong="VARIABLE", type="I"))
     PARA_R = Facultatif(AsVR())
     TYPL = Facultatif(AsVI())
 
     # si le sd_maillage est linéique (tube_GV) :
-    absc_curv = Facultatif(sd_carte(SDNom(nomj='.ABSC_CURV')))
+    absc_curv = Facultatif(sd_carte(SDNom(nomj=".ABSC_CURV")))
 
-    ADAPTATION = Facultatif(AsVI(lonmax=1, ))
+    ADAPTATION = Facultatif(AsVI(lonmax=1))
 
     # Ces objets sont nécessaires pour CREA_MAILLAGE RESTREINT
     CRNO = Facultatif(AsVI())
@@ -85,8 +81,8 @@ class sd_maillage(sd_titre):
         dim_coor = dime[5]
         return nb_no, nb_nl, nb_ma, nb_sm, nb_sm_mx, dim_coor
 
-# remarque :  la sd_maillage pouvant etre "volumineuse", on s'interdit (pour des raisons de temps CPU)
-#             de vérifier le contenu des gros objets.
+    # remarque :  la sd_maillage pouvant etre "volumineuse", on s'interdit (pour des raisons de temps CPU)
+    #             de vérifier le contenu des gros objets.
 
     def check_DIME(self, checker):
         nb_no, nb_nl, nb_ma, nb_sm, nb_sm_mx, dim_coor = self.u_dime()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,33 +20,29 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
-comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
 
 
 INI_STRX = Option(
-    para_in=(
-           PCAORIE,
-    ),
-    para_out=(
-        SP.PSTRX_R,
-    ),
+    para_in=(PCAORIE,),
+    para_out=(SP.PSTRX_R,),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'PDE'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'PDG'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'PDT'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'PFM'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'PGM'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'PGS'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "PDE"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "PDG"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "PDT"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "PFM"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "PGM"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.MODELI, "PGS"))),
     ),
     comment=""" INITIALISATION DU CHAMP STRX_ELGA""",
 )

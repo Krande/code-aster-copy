@@ -22,21 +22,21 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'LAIGLE',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement pour la modélisation des roches suivant le modèle de Laigle, cf. le document [R7.01.15].
-   Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS)."""              ,
-    num_lc         = 33,
-    nb_vari        = 4,
-    nom_vari       = ('EPSPEQ','EPSPVOL','DOMCOMP','INDIPLAS',),
-    mc_mater       = ('ELAS','LAIGLE',),
-    modelisation   = ('3D','AXIS','D_PLAN','THM',),
-    deformation    = ('PETIT','PETIT_REAC',),
-    algo_inte      = ('NEWTON',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('No',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="LAIGLE",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement pour la modélisation des roches suivant le modèle de Laigle, cf. le document [R7.01.15].
+   Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS).""",
+    num_lc=33,
+    nb_vari=4,
+    nom_vari=("EPSPEQ", "EPSPVOL", "DOMCOMP", "INDIPLAS"),
+    mc_mater=("ELAS", "LAIGLE"),
+    modelisation=("3D", "AXIS", "D_PLAN", "THM"),
+    deformation=("PETIT", "PETIT_REAC"),
+    algo_inte=("NEWTON",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("No",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

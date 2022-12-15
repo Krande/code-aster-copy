@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -23,13 +23,12 @@
 */
 
 #ifdef ASTER_PLATFORM_POSIX
-#include <sys/times.h>
 #include <sys/time.h>
+#include <sys/times.h>
 #include <unistd.h>
 #endif
 
 #include <time.h>
-
 
 /*
    On trouve parfois ceci :
@@ -42,34 +41,32 @@
 #ifdef CLK_TCK
 #define CLOCKS_PER_SEC_VALUE CLK_TCK
 #else
-#define CLOCKS_PER_SEC_VALUE sysconf(_SC_CLK_TCK)
+#define CLOCKS_PER_SEC_VALUE sysconf( _SC_CLK_TCK )
 #endif
-
 
 static ASTERDOUBLE _cache_t0 = -1.;
 
-void DEFP(UTTCSM, uttcsm, ASTERDOUBLE *t_csm)
-{
+void DEFP( UTTCSM, uttcsm, ASTERDOUBLE *t_csm ) {
     ASTERDOUBLE elaps;
 
 #ifdef ASTER_PLATFORM_POSIX
-/* calcul de elaps avec gettimeofday  */
+    /* calcul de elaps avec gettimeofday  */
     struct timeval tv;
     struct timezone tz;
-    gettimeofday(&tv,&tz);
-    elaps=(ASTERDOUBLE) tv.tv_sec + (ASTERDOUBLE) tv.tv_usec / 1000000.;
+    gettimeofday( &tv, &tz );
+    elaps = (ASTERDOUBLE)tv.tv_sec + (ASTERDOUBLE)tv.tv_usec / 1000000.;
 
 #else
-/* calcul de elaps : date depuis epoch en secondes
-   ce nombre est stocké dans un double
-   Parfois à la seconde près.
-   Sous WIN, gettimeofday n'existe pas.
-   Une implémentation : http://www.suacommunity.com/dictionary/gettimeofday-entry.php
-*/
-    time_t t1, t0, *pt1 ;
+    /* calcul de elaps : date depuis epoch en secondes
+       ce nombre est stocké dans un double
+       Parfois à la seconde près.
+       Sous WIN, gettimeofday n'existe pas.
+       Une implémentation : http://www.suacommunity.com/dictionary/gettimeofday-entry.php
+    */
+    time_t t1, t0, *pt1;
     t0 = 0;
-    t1 = time(NULL);
-    elaps = difftime(t1,t0);
+    t1 = time( NULL );
+    elaps = difftime( t1, t0 );
 #endif
 
     /* first call, store t0 */
@@ -78,16 +75,15 @@ void DEFP(UTTCSM, uttcsm, ASTERDOUBLE *t_csm)
     }
     t_csm[2] = elaps - _cache_t0;
 
-
 #ifdef ASTER_PLATFORM_POSIX
-   struct tms temps;
-   times (&temps);
-   t_csm[0]=(ASTERDOUBLE)temps.tms_utime/(ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;
-   t_csm[1]=(ASTERDOUBLE)temps.tms_stime/(ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;
+    struct tms temps;
+    times( &temps );
+    t_csm[0] = (ASTERDOUBLE)temps.tms_utime / (ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;
+    t_csm[1] = (ASTERDOUBLE)temps.tms_stime / (ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;
 
 #else
-   t_csm[0]=(ASTERDOUBLE)clock()/CLOCKS_PER_SEC_VALUE;
-   t_csm[1]=(ASTERDOUBLE)0.;
+    t_csm[0] = (ASTERDOUBLE)clock() / CLOCKS_PER_SEC_VALUE;
+    t_csm[1] = (ASTERDOUBLE)0.;
 
 #endif
 }

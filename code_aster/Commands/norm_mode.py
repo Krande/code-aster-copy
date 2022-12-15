@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,14 +19,14 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (BucklingModeResult, ModeResultComplex,
-                       ModeResult)
+from ..Objects import BucklingModeResult, ModeResultComplex, ModeResult
 from ..Supervis import ExecuteCommand
 from ..Utilities import logger
 
 
 class NormMode(ExecuteCommand):
     """Command that creates a :class:`~code_aster.Objects.DOFNumbering`."""
+
     command_name = "NORM_MODE"
 
     def create_result(self, keywords):

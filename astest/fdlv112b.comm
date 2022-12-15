@@ -19,172 +19,147 @@
 
 #  SOL-FLUIDE-STRUCTURE
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 #
 
-mail0=LIRE_MAILLAGE(FORMAT='MED',
-                    VERI_MAIL=_F(VERIF='OUI',),)
+mail0 = LIRE_MAILLAGE(FORMAT="MED", VERI_MAIL=_F(VERIF="OUI"))
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
 # placer les impedances sous la fondation du barrages.
 
-mail=CREA_MAILLAGE(MAILLAGE=mail0,
-                   CREA_POI1=(_F(NOM_GROUP_MA='PBASE',
-                                 GROUP_NO='N316',),
-                              _F(NOM_GROUP_MA='PFONDAT',
-                                 GROUP_MA='SURFBAS2',),),)
+mail = CREA_MAILLAGE(
+    MAILLAGE=mail0,
+    CREA_POI1=(
+        _F(NOM_GROUP_MA="PBASE", GROUP_NO="N316"),
+        _F(NOM_GROUP_MA="PFONDAT", GROUP_MA="SURFBAS2"),
+    ),
+)
 
 #
 # Modification du maillage pour creer des mailles a un noeud pour
 # placer les impedances sous la fondation du barrages.
 
-mail=DEFI_GROUP(reuse =mail,
-                MAILLAGE=mail,
-                CREA_GROUP_NO=_F(GROUP_MA='SURFBAS2',
-                                 NOM='ISOLSTR',),)
+mail = DEFI_GROUP(reuse=mail, MAILLAGE=mail, CREA_GROUP_NO=_F(GROUP_MA="SURFBAS2", NOM="ISOLSTR"))
 
 #
 # Orientation des elements d interface.
 
-mail=MODI_MAILLAGE(reuse =mail,
-                   MAILLAGE=mail,
-                   ORIE_NORM_COQUE=(_F(GROUP_MA='IFLUSOL2',
-                                       VECT_NORM=(0.,0.,1.,),
-                                       GROUP_NO='N963',),
-                                    _F(GROUP_MA='IFLUSTR2',
-                                       VECT_NORM=(1.,0.,0.,),
-                                       GROUP_NO='N221',),
-                                    _F(GROUP_MA='SURFBAS2',
-                                       VECT_NORM=(0.,0.,-1.,),
-                                       GROUP_NO='N316',),
-                                    _F(GROUP_MA='SLIBREM2',
-                                       VECT_NORM=(0.,0.,1.,),
-                                       GROUP_NO='N1043',),),)
+mail = MODI_MAILLAGE(
+    reuse=mail,
+    MAILLAGE=mail,
+    ORIE_NORM_COQUE=(
+        _F(GROUP_MA="IFLUSOL2", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="N963"),
+        _F(GROUP_MA="IFLUSTR2", VECT_NORM=(1.0, 0.0, 0.0), GROUP_NO="N221"),
+        _F(GROUP_MA="SURFBAS2", VECT_NORM=(0.0, 0.0, -1.0), GROUP_NO="N316"),
+        _F(GROUP_MA="SLIBREM2", VECT_NORM=(0.0, 0.0, 1.0), GROUP_NO="N1043"),
+    ),
+)
 
-modele=AFFE_MODELE(MAILLAGE=mail,
-                   AFFE=(_F(GROUP_MA='STRVOU2',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),
-                         _F(GROUP_MA='PBASE',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_TR',),),)
+modele = AFFE_MODELE(
+    MAILLAGE=mail,
+    AFFE=(
+        _F(GROUP_MA="STRVOU2", PHENOMENE="MECANIQUE", MODELISATION="3D"),
+        _F(GROUP_MA="PBASE", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR"),
+    ),
+)
 
 #
 
-mat1=DEFI_MATERIAU(ELAS=_F(E=3.6E+10,
-                           NU=0.2,
-                           RHO=2400.,),)
+mat1 = DEFI_MATERIAU(ELAS=_F(E=3.6e10, NU=0.2, RHO=2400.0))
 
 #
 
-champmat=AFFE_MATERIAU(MAILLAGE=mail,
-                       AFFE=_F(GROUP_MA='STRVOU2',
-                               MATER=mat1,),)
+champmat = AFFE_MATERIAU(MAILLAGE=mail, AFFE=_F(GROUP_MA="STRVOU2", MATER=mat1))
 
-cara_ele=AFFE_CARA_ELEM(MODELE=modele,
-                        DISCRET=(_F(REPERE='GLOBAL',
-                                    CARA='M_TR_D_N',
-                                    GROUP_MA='PBASE',
-                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
-                                 _F(REPERE='GLOBAL',
-                                    CARA='K_TR_D_N',
-                                    GROUP_MA='PBASE',
-                                    VALE=(0.,0.,0.,0.,0.,0.,),),),)
+cara_ele = AFFE_CARA_ELEM(
+    MODELE=modele,
+    DISCRET=(
+        _F(
+            REPERE="GLOBAL",
+            CARA="M_TR_D_N",
+            GROUP_MA="PBASE",
+            VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        ),
+        _F(REPERE="GLOBAL", CARA="K_TR_D_N", GROUP_MA="PBASE", VALE=(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+    ),
+)
 
 #
-#========================================
+# ========================================
 # ETAPE 1: Calul des impedances de sols
 # --------
-#========================================
+# ========================================
 #
 #
 # La structure est encastree a l interface
-#-----------------------------------------
+# -----------------------------------------
 
-cond_lim=AFFE_CHAR_MECA(MODELE=modele,
-                        DDL_IMPO=_F(GROUP_NO='N316',
-                                    DX=0.,
-                                    DY=0.,
-                                    DZ=0.,
-                                    DRX=0.,
-                                    DRY=0.,
-                                    DRZ=0.,),
-                        LIAISON_SOLIDE=_F(GROUP_NO='ISOLSTR',),)
+cond_lim = AFFE_CHAR_MECA(
+    MODELE=modele,
+    DDL_IMPO=_F(GROUP_NO="N316", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    LIAISON_SOLIDE=_F(GROUP_NO="ISOLSTR"),
+)
 
 #
 #
 # Calcul des matrices et vecteurs elementaires
-#----------------------------------------------
+# ----------------------------------------------
 
-rigi_ele=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=modele,
-                        CHAM_MATER=champmat,
-                        CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,)
+rigi_ele = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", MODELE=modele, CHAM_MATER=champmat, CARA_ELEM=cara_ele, CHARGE=cond_lim
+)
 
 #
 
-mass_ele=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                        MODELE=modele,
-                        CHAM_MATER=champmat,
-                        CARA_ELEM=cara_ele,
-                        CHARGE=cond_lim,)
+mass_ele = CALC_MATR_ELEM(
+    OPTION="MASS_MECA", MODELE=modele, CHAM_MATER=champmat, CARA_ELEM=cara_ele, CHARGE=cond_lim
+)
 
 #
 
-nume_ddl=NUME_DDL(MATR_RIGI=rigi_ele,)
+nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
 
 #
 # Assemblage des matrices et vecteurs
-#-------------------------------------
+# -------------------------------------
 
-MATRIGI=ASSE_MATRICE(MATR_ELEM=rigi_ele,
-                     NUME_DDL=nume_ddl,)
+MATRIGI = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
 
-MATMASS=ASSE_MATRICE(MATR_ELEM=mass_ele,
-                     NUME_DDL=nume_ddl,)
+MATMASS = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
 
 #
 # Calcul de la masse du barrage voute
-#-------------------------------------
+# -------------------------------------
 
-mass_bar=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
-                   MODELE=modele,
-                   CHAM_MATER=champmat,
-                   CARA_ELEM=cara_ele,
-                   INFO=1,)
+mass_bar = POST_ELEM(
+    MASS_INER=_F(TOUT="OUI"), MODELE=modele, CHAM_MATER=champmat, CARA_ELEM=cara_ele, INFO=1
+)
 
 #
 # calcul des modes
-#------------------
+# ------------------
 #
 #
 
-mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
-                    VERI_MODE=_F(STOP_ERREUR='NON',
-                                 ),
-                    NORM_MODE=_F(INFO=1,
-                                 NORME='TRAN_ROTA',),
-                    OPTION='BANDE',
-                    CALC_FREQ=_F(FREQ=(0.1,10.,20.,30.,40.,),
-                                 ),
-                    FILTRE_MODE=_F(SEUIL=0.0003,
-                                   ),
-                    MATR_MASS=MATMASS,
-                    )
+mode_rig = CALC_MODES(
+    MATR_RIGI=MATRIGI,
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+    NORM_MODE=_F(INFO=1, NORME="TRAN_ROTA"),
+    OPTION="BANDE",
+    CALC_FREQ=_F(FREQ=(0.1, 10.0, 20.0, 30.0, 40.0)),
+    FILTRE_MODE=_F(SEUIL=0.0003),
+    MATR_MASS=MATMASS,
+)
 
 #
-#Calcul  du macro-element Dynamique
-#-----------------------------------
+# Calcul  du macro-element Dynamique
+# -----------------------------------
 
-interdy=DEFI_INTERF_DYNA(NUME_DDL=nume_ddl,
-                         INTERFACE=_F(NOM='SOLBAR',
-                                      TYPE='CRAIGB',
-                                      GROUP_NO='N316',),)
+interdy = DEFI_INTERF_DYNA(
+    NUME_DDL=nume_ddl, INTERFACE=_F(NOM="SOLBAR", TYPE="CRAIGB", GROUP_NO="N316")
+)
 
 
 FIN()

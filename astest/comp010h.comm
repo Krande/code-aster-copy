@@ -21,289 +21,261 @@
 #
 # CAS-TEST DE REFERENCE : SSNP117A
 #
-#=====================================================================
+# =====================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
-#=====================================================================
+# =====================================================================
 #               INITIALISATIONS
-#=====================================================================
+# =====================================================================
 #
 
 import numpy as N
 
-NCAL  = 30
+NCAL = 30
 
-MATER = [None]*NCAL
-RESU  = [None]*NCAL
+MATER = [None] * NCAL
+RESU = [None] * NCAL
 
-TREF = 20.
-T0   = TREF
-Tmax = 800.
+TREF = 20.0
+T0 = TREF
+Tmax = 800.0
 
-epsi = 1.E-10
+epsi = 1.0e-10
 
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-UN   = DEFI_CONSTANTE(VALE=1.0)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
-tmax = 100.
+tmax = 100.0
 
-#parametre theta de schema numerique
-theta = 1.
+# parametre theta de schema numerique
+theta = 1.0
 
-compor='ROUSS_VISC'
+compor = "ROUSS_VISC"
 
 # Nombre de variables internes
 Nbvari = 5
 
-#=====================================================================
+# =====================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE
-#=====================================================================
+# =====================================================================
 
 # Parametres elastiques
-YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   210000.,
-                                         Tmax, 100000.,
-                                         ),)
+YOUN = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 210000.0, Tmax, 100000.0))
 
-ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 1.E-5,
-                                         Tmax, 2.E-5,
-                                         ),)
+ALPH = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 1.0e-5, Tmax, 2.0e-5))
 
 # Parametre de la loi de ROUSS_VISC
-S1_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 500,
-                                        # Tmax, 500,
-                                         Tmax, 450,
-                                         ),)
+S1_T = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        TREF,
+        500,
+        # Tmax, 500,
+        Tmax,
+        450,
+    ),
+)
 
-D_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.5,
-                                       # Tmax, 1.5,
-                                        Tmax, 2.5,
-                                         ),)
+D_T = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        TREF,
+        1.5,
+        # Tmax, 1.5,
+        Tmax,
+        2.5,
+    ),
+)
 
 #
-F0_T=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 5.E-4,
-                                       #  Tmax, 5.E-4,
-                                         Tmax, 3.E-4,
-                                         ),)
+F0_T = DEFI_FONCTION(
+    NOM_PARA="TEMP",
+    VALE=(
+        TREF,
+        5.0e-4,
+        #  Tmax, 5.E-4,
+        Tmax,
+        3.0e-4,
+    ),
+)
 #   necessaire pour l'interpolation de la courbe de traction
-SY0=800.
-SY1=600.
-#SY1=800.
-E0=YOUN(TREF)
-E1=YOUN(Tmax)
-eps0=SY0/E0
-eps1=SY1/E1
+SY0 = 800.0
+SY1 = 600.0
+# SY1=800.
+E0 = YOUN(TREF)
+E1 = YOUN(Tmax)
+eps0 = SY0 / E0
+eps1 = SY1 / E1
 
 
-FCT1=DEFI_FONCTION(
-               NOM_PARA='EPSI',
-               PROL_GAUCHE='LINEAIRE',
-               PROL_DROITE='LINEAIRE',
-               VALE=(
-               eps0,    SY0,
-               1.005,    1600.,
-               )
-             )
+FCT1 = DEFI_FONCTION(
+    NOM_PARA="EPSI", PROL_GAUCHE="LINEAIRE", PROL_DROITE="LINEAIRE", VALE=(eps0, SY0, 1.005, 1600.0)
+)
 
-FCT2=DEFI_FONCTION(
-               NOM_PARA='EPSI',
-               PROL_GAUCHE='LINEAIRE',
-               PROL_DROITE='LINEAIRE',
-               VALE=(
-               eps1,     SY1,
-               1.005,    1200.,
-               )
-             )
+FCT2 = DEFI_FONCTION(
+    NOM_PARA="EPSI", PROL_GAUCHE="LINEAIRE", PROL_DROITE="LINEAIRE", VALE=(eps1, SY1, 1.005, 1200.0)
+)
 
-CTRACB=DEFI_NAPPE(   NOM_PARA='TEMP',  PROL_DROITE='CONSTANT',
-                           PARA=(TREF,Tmax,),
-                           FONCTION=(FCT1,FCT2,)            )
+CTRACB = DEFI_NAPPE(
+    NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PARA=(TREF, Tmax), FONCTION=(FCT1, FCT2)
+)
 
 # fonctions Sigma=F(Epsilon_p)
-FP1=DEFI_FONCTION(
-               NOM_PARA='EPSI',
-               PROL_GAUCHE='LINEAIRE',
-               PROL_DROITE='LINEAIRE',
-               VALE=(
-               0.,    SY0,
-               1.005-1600./E0,    1600.,
-               )
-             )
-FP2=DEFI_FONCTION(
-               NOM_PARA='EPSI',
-               PROL_GAUCHE='LINEAIRE',
-               PROL_DROITE='LINEAIRE',
-               VALE=(
-               0.,     SY1,
-               1.005-1000./E1,    1200.,
-               )
-             )
+FP1 = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    VALE=(0.0, SY0, 1.005 - 1600.0 / E0, 1600.0),
+)
+FP2 = DEFI_FONCTION(
+    NOM_PARA="EPSI",
+    PROL_GAUCHE="LINEAIRE",
+    PROL_DROITE="LINEAIRE",
+    VALE=(0.0, SY1, 1.005 - 1000.0 / E1, 1200.0),
+)
 #  nappe Sigma(epsp, Temp) necessaire pour l'interpolation de la courbe de traction
-RP=DEFI_NAPPE(   NOM_PARA='TEMP',
-                 PROL_DROITE='CONSTANT',
-                 PARA=(TREF,Tmax,),
-                 FONCTION=(FP1,FP2,)
-              )
+RP = DEFI_NAPPE(NOM_PARA="TEMP", PROL_DROITE="CONSTANT", PARA=(TREF, Tmax), FONCTION=(FP1, FP2))
 
-MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
-                                NU=ZERO,
-                                TEMP_DEF_ALPHA=TREF,
-                                ALPHA=ALPH,),
-                     ROUSSELIER_FO=_F(SIGM_1   = S1_T,
-                                      D        = D_T,
-                                      BETA=1.,
-                                      PORO_INIT= F0_T,),
-                     VISC_SINH=_F(SIGM_0=SY0,
-                                  EPSI_0=1.E-2,
-                                  M=2.,),
-                     TRACTION=_F(SIGM=CTRACB,),
-                     )
+MATERI = DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    ROUSSELIER_FO=_F(SIGM_1=S1_T, D=D_T, BETA=1.0, PORO_INIT=F0_T),
+    VISC_SINH=_F(SIGM_0=SY0, EPSI_0=1.0e-2, M=2.0),
+    TRACTION=_F(SIGM=CTRACB),
+)
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=(_F(JUSQU_A=tmax,
-                                     NOMBRE=NCAL,),
-                                     ),
-                      )
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=tmax, NOMBRE=NCAL),))
 
-TIMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
-                   VALE=(  0. , T0, tmax , Tmax)
-                   )
+TIMP = DEFI_FONCTION(NOM_PARA="INST", NOM_RESU="TEMP", VALE=(0.0, T0, tmax, Tmax))
 
-U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,PARM_THETA=theta),
-                 MATER=MATERI,
-                 SUPPORT='ELEMENT',
-                   AFFE_VARC=(
-                   _F(  NOM_VARC='TEMP',
-                        VALE_FONC=TIMP,
-                        VALE_REF=TREF),
-                        ),
-                 INCREMENT=_F(LIST_INST=L_INST,),
-                 NEWTON=_F(PREDICTION='ELASTIQUE',
-                           MATRICE='TANGENTE',
-                           REAC_ITER=1,),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                RESI_GLOB_MAXI=1.E-06),
-                 EPSI_IMPOSE=_F(EPXX=ZERO,),
-                 INFO=1,)
+U = SIMU_POINT_MAT(
+    COMPORTEMENT=_F(RELATION=compor, PARM_THETA=theta),
+    MATER=MATERI,
+    SUPPORT="ELEMENT",
+    AFFE_VARC=(_F(NOM_VARC="TEMP", VALE_FONC=TIMP, VALE_REF=TREF),),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_MAXI=1.0e-06),
+    EPSI_IMPOSE=_F(EPXX=ZERO),
+    INFO=1,
+)
 
-IMPR_TABLE(TABLE=U,)
+IMPR_TABLE(TABLE=U)
 
 
-SXM = 0.
-EXM = 0.
+SXM = 0.0
+EXM = 0.0
 
 Vim = N.zeros(Nbvari)
 
-time = 0.
+time = 0.0
 
-def EXTR_FONC_NAP(nappe,temp,YOUN) :
-#   interpolation dans une nappe pour une temperature donnee
-#   en sortie, courbe de traction a cette temperature
-    epsmax=1.
-    npas=200
-    l=N.array(list(range(0,npas)))
-    labs=[]
-    lsig=[]
-    lepsp=l*epsmax/npas
-    for epsp in lepsp :
-       y=nappe(temp, epsp)
-       lsig.append(y)
-       labs.append(epsp+y/YOUN(temp))
-    fonc=DEFI_FONCTION(NOM_PARA='EPSI',ABSCISSE=labs,ORDONNEE=lsig,PROL_DROITE='LINEAIRE')
+
+def EXTR_FONC_NAP(nappe, temp, YOUN):
+    #   interpolation dans une nappe pour une temperature donnee
+    #   en sortie, courbe de traction a cette temperature
+    epsmax = 1.0
+    npas = 200
+    l = N.array(list(range(0, npas)))
+    labs = []
+    lsig = []
+    lepsp = l * epsmax / npas
+    for epsp in lepsp:
+        y = nappe(temp, epsp)
+        lsig.append(y)
+        labs.append(epsp + y / YOUN(temp))
+    fonc = DEFI_FONCTION(NOM_PARA="EPSI", ABSCISSE=labs, ORDONNEE=lsig, PROL_DROITE="LINEAIRE")
 
     return fonc
 
+
 for i in range(NCAL):
 
-          timem = time
+    timem = time
 
-          time = timem + tmax/NCAL
+    time = timem + tmax / NCAL
 
-          Ti = T0 + time/tmax * (Tmax - T0)
+    Ti = T0 + time / tmax * (Tmax - T0)
 
-          Tm = T0 + timem/tmax * (Tmax - T0)
+    Tm = T0 + timem / tmax * (Tmax - T0)
 
-          # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
+    # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 
-          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF))
+    epsimp = DEFI_CONSTANTE(VALE=-ALPH(Ti) * (Ti - TREF))
 
-          if i > 0 :
-             SXM = SXM *(YOUN(Ti)/YOUN(Tm))
+    if i > 0:
+        SXM = SXM * (YOUN(Ti) / YOUN(Tm))
 
-          COU_TRAC=EXTR_FONC_NAP(RP,Ti,YOUN)
+    COU_TRAC = EXTR_FONC_NAP(RP, Ti, YOUN)
 
-          MATER[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
-                                          NU=0.,
-                                          ALPHA=0.),
-                                 ROUSSELIER=_F(SIGM_1   = S1_T(Ti),
-                                               D        = D_T(Ti),
-                                               BETA=1.,
-                                               PORO_INIT= F0_T(Ti),
-                                               ),
-                                 VISC_SINH=_F(SIGM_0=SY0,
-                                              EPSI_0=1.E-2,
-                                              M=2.,),
-                                 TRACTION=_F(SIGM=COU_TRAC,),
-                                 )
+    MATER[i] = DEFI_MATERIAU(
+        ELAS=_F(E=YOUN(Ti), NU=0.0, ALPHA=0.0),
+        ROUSSELIER=_F(SIGM_1=S1_T(Ti), D=D_T(Ti), BETA=1.0, PORO_INIT=F0_T(Ti)),
+        VISC_SINH=_F(SIGM_0=SY0, EPSI_0=1.0e-2, M=2.0),
+        TRACTION=_F(SIGM=COU_TRAC),
+    )
 
-          listinst = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),)
+    listinst = DEFI_LIST_REEL(DEBUT=timem, INTERVALLE=(_F(JUSQU_A=time, NOMBRE=1),))
 
-          RESU[i]=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,PARM_THETA=theta,
-                                              ),
-                                 MATER=MATER[i],
-                                 SUPPORT='ELEMENT',
-                                 INCREMENT=_F(LIST_INST = listinst, ),
-                                 NEWTON=_F( PREDICTION='ELASTIQUE',
-                                             MATRICE='TANGENTE',
-                                             REAC_ITER=1,),
-                                 EPSI_IMPOSE=_F(EPXX=epsimp),
-                                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                                RESI_GLOB_MAXI=1.E-06),
-                                 SIGM_INIT=_F(SIXX=SXM),
-                                 EPSI_INIT=_F(EPXX=EXM, EPYY=0.,EPZZ=0.,EPXY=0.,EPXZ=0.,EPYZ=0.),
-                                 VARI_INIT=_F(VALE=[Vim[j] for j in range(Nbvari)]),
-                                 INFO=1,)
+    RESU[i] = SIMU_POINT_MAT(
+        COMPORTEMENT=_F(RELATION=compor, PARM_THETA=theta),
+        MATER=MATER[i],
+        SUPPORT="ELEMENT",
+        INCREMENT=_F(LIST_INST=listinst),
+        NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="TANGENTE", REAC_ITER=1),
+        EPSI_IMPOSE=_F(EPXX=epsimp),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=50, RESI_GLOB_MAXI=1.0e-06),
+        SIGM_INIT=_F(SIXX=SXM),
+        EPSI_INIT=_F(EPXX=EXM, EPYY=0.0, EPZZ=0.0, EPXY=0.0, EPXZ=0.0, EPYZ=0.0),
+        VARI_INIT=_F(VALE=[Vim[j] for j in range(Nbvari)]),
+        INFO=1,
+    )
 
-          # recuperation des valeurs initiales du futur pas de temps dans la table resultat
+    # recuperation des valeurs initiales du futur pas de temps dans la table resultat
 
-          EXM = RESU[i]['EPXX',2]
+    EXM = RESU[i]["EPXX", 2]
 
-          SXM = RESU[i]['SIXX',2]
+    SXM = RESU[i]["SIXX", 2]
 
-          for j in range(Nbvari):
-             Vim[j] = RESU[i]['V'+str(j+1),2]
+    for j in range(Nbvari):
+        Vim[j] = RESU[i]["V" + str(j + 1), 2]
 
-          IMPR_TABLE(TABLE=RESU[i])
+    IMPR_TABLE(TABLE=RESU[i])
 
-          DETRUIRE(NOM =epsimp)
-          DETRUIRE(NOM =listinst)
-          DETRUIRE(NOM =COU_TRAC)
+    DETRUIRE(NOM=epsimp)
+    DETRUIRE(NOM=listinst)
+    DETRUIRE(NOM=COU_TRAC)
 
-          TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA='VMIS',
-                     VALE_CALC=RESU[i]['VMIS',2],
-                     VALE_REFE=U['VMIS',i+2],
-                     FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',)
+    TEST_TABLE(
+        TABLE=RESU[i],
+        NOM_PARA="VMIS",
+        VALE_CALC=RESU[i]["VMIS", 2],
+        VALE_REFE=U["VMIS", i + 2],
+        FILTRE=_F(NOM_PARA="INST", VALE=time),
+        REFERENCE="AUTRE_ASTER",
+    )
 
-          TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA='TRACE',
-                     VALE_CALC=RESU[i]['TRACE',2],
-                     VALE_REFE=U['TRACE',i+2],
-                     FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',)
+    TEST_TABLE(
+        TABLE=RESU[i],
+        NOM_PARA="TRACE",
+        VALE_CALC=RESU[i]["TRACE", 2],
+        VALE_REFE=U["TRACE", i + 2],
+        FILTRE=_F(NOM_PARA="INST", VALE=time),
+        REFERENCE="AUTRE_ASTER",
+    )
 
-          for j in range(Nbvari):
-             nomvari='V'+str(j+1)
-             if U[nomvari,i+2] > epsi :
-                TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA=nomvari,
-                     VALE_CALC=RESU[i][nomvari,2],
-                     VALE_REFE=U[nomvari,i+2],
-                     FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',)
+    for j in range(Nbvari):
+        nomvari = "V" + str(j + 1)
+        if U[nomvari, i + 2] > epsi:
+            TEST_TABLE(
+                TABLE=RESU[i],
+                NOM_PARA=nomvari,
+                VALE_CALC=RESU[i][nomvari, 2],
+                VALE_REFE=U[nomvari, i + 2],
+                FILTRE=_F(NOM_PARA="INST", VALE=time),
+                REFERENCE="AUTRE_ASTER",
+            )
 
 FIN()

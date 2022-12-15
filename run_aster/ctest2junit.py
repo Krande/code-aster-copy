@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,9 @@ class XUnitReport:
         re_test_time = re.compile(
             r"^(?P<ctname>ASTER_[0-9\.]+_(?P<name>\S+)) +"
             r"(?P<ok>[0-9]+) +"
-            r"(?P<time>[0-9\.,]+)", re.M)
+            r"(?P<time>[0-9\.,]+)",
+            re.M,
+        )
         re_test = re.compile(r"^(\S+)", re.M)
         with open(cost, "r") as fcost:
             text = fcost.read()
@@ -77,10 +79,11 @@ class XUnitReport:
             log = flog.read()
         re_elaps = re.compile(
             r".(?P<ctname>ASTER_[0-9\.]+_(?P<name>\S+)). +"
-            r"time elapsed: +(?P<time>[0-9]+:[0-9]+:[0-9]+)")
+            r"time elapsed: +(?P<time>[0-9]+:[0-9]+:[0-9]+)"
+        )
         timedict = {}
         for mat in re_elaps.finditer(log):
-            hours, mins, secs = mat.group("time").split(':')
+            hours, mins, secs = mat.group("time").split(":")
             secs = int(hours) * 3600 + int(mins) * 60 + int(secs)
             timedict[mat.group("name")] = secs
 
@@ -107,8 +110,8 @@ class XUnitReport:
                 content = ""
             time = float(mat.group("time").replace(",", "."))
             self.junit_test.append(
-                JUNIT.TestCase(ctname, content, state, jstate,
-                               time or timedict.get(testname, 0.)))
+                JUNIT.TestCase(ctname, content, state, jstate, time or timedict.get(testname, 0.0))
+            )
 
     def write_xml(self, filename):
         """Export the report in XML.
@@ -116,10 +119,14 @@ class XUnitReport:
         Arguments:
             filename (str): Output XML file (relative to the base directory).
         """
-        junit = JUNIT.JunitXml("code_aster " + CFG.get("version_tag", "?") +
-                               "-" + CFG.get("version_sha1", "?")[:12] +
-                               self.legend,
-                               self.junit_test)
+        junit = JUNIT.JunitXml(
+            "code_aster "
+            + CFG.get("version_tag", "?")
+            + "-"
+            + CFG.get("version_sha1", "?")[:12]
+            + self.legend,
+            self.junit_test,
+        )
         with open(osp.join(self.base, filename), "w") as fobj:
             dump = junit.dump()
             if isinstance(dump, bytes):
@@ -128,6 +135,7 @@ class XUnitReport:
 
 
 RE_STATE = re.compile("DIAGNOSTIC JOB : (.*)", re.M)
+
 
 def get_state(txt):
     """Extract the test state for a 'message' file content.
@@ -142,6 +150,7 @@ def get_state(txt):
     if not state:
         return "?"
     return state[-1]
+
 
 def get_err_msg(txt):
     """Extract the error message for a 'message' file content.
@@ -159,6 +168,7 @@ def get_err_msg(txt):
         errors.extend([msg[1] for msg in lmsg if not warn.search(msg[1])])
     return os.linesep.join(errors)
 
+
 def get_nook(txt):
     """Extract NOOK values from a 'message' file content.
 
@@ -171,6 +181,7 @@ def get_nook(txt):
     reg_resu = re.compile("^( *(?:REFERENCE|OK|NOOK) .*$)", re.M)
     lines = reg_resu.findall(txt)
     return os.linesep.join(lines)
+
 
 def _dbg():
     report = XUnitReport(".")

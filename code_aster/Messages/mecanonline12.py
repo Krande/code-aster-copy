@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,32 +22,18 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1  : _("""Lecture des paramètres et des données."""),
-
-    2  : _(""" Lecture des paramètres pour le comportement."""),
-
-    3  : _(""" Lecture des paramètres pour les entrées et les sorties."""),
-
-    4  : _(""" Lecture des paramètres pour le choix des comportements."""),
-
-    5  : _(""" Lecture des paramètres pour le choix des critères de convergence du comportement."""),
-
-    6  : _(""" Lecture des paramètres de l'algorithme de résolution non-linéaire."""),
-
-    7  : _(""" Lecture des paramètres de la recherche linéaire."""),
-
-    8  : _(""" Lecture des paramètres pour la gestion des critères de convergence."""),
-
-    9  : _(""" Lecture des paramètres pour le post-traitement."""),
-
-   10  : _(""" Lecture des paramètres pour la gestion du contact."""),
-
-   11  : _(""" Lecture des paramètres pour la gestion de l'énergie."""),
-
-   12  : _(""" Lecture des paramètres pour la gestion des critères de qualité."""),
-
-   13  : _(""" Lecture des paramètres pour la gestion des mesures et des statistiques."""),
-
-   14  : _(""" Lecture des paramètres pour la gestion de l'affichage."""),
+    1: _("""Lecture des paramètres et des données."""),
+    2: _(""" Lecture des paramètres pour le comportement."""),
+    3: _(""" Lecture des paramètres pour les entrées et les sorties."""),
+    4: _(""" Lecture des paramètres pour le choix des comportements."""),
+    5: _(""" Lecture des paramètres pour le choix des critères de convergence du comportement."""),
+    6: _(""" Lecture des paramètres de l'algorithme de résolution non-linéaire."""),
+    7: _(""" Lecture des paramètres de la recherche linéaire."""),
+    8: _(""" Lecture des paramètres pour la gestion des critères de convergence."""),
+    9: _(""" Lecture des paramètres pour le post-traitement."""),
+    10: _(""" Lecture des paramètres pour la gestion du contact."""),
+    11: _(""" Lecture des paramètres pour la gestion de l'énergie."""),
+    12: _(""" Lecture des paramètres pour la gestion des critères de qualité."""),
+    13: _(""" Lecture des paramètres pour la gestion des mesures et des statistiques."""),
+    14: _(""" Lecture des paramètres pour la gestion de l'affichage."""),
 }

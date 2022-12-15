@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,101 +25,80 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y','Z',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y", "Z"))
 
 
-EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y','Z','W',))
+EGGEOP_R = LocatedComponents(
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "Z", "W")
+)
 
 
-DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type='ELNO',
-    components=('PRES',))
+DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type="ELNO", components=("PRES",))
 
 
-MVECTTC  = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=DDL_ACOU)
+MVECTTC = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=DDL_ACOU)
 
-MMATTTC  = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=DDL_ACOU)
+MMATTTC = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=DDL_ACOU)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class ACOU_FACE3(Element):
     """Please document this element"""
+
     meshType = MT.TRIA3
-    elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.TR3, gauss=("RIGI=COT3", "FPG1=FPG1"), mater=("FPG1",)),)
     calculs = (
-
-        OP.AMOR_ACOU(te=182,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDC, LC.CIMPEDC),
-                     (SP.PMATERC, LC.CMATERC), ),
-            para_out=((SP.PMATTTC, MMATTTC), ),
+        OP.AMOR_ACOU(
+            te=182,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PIMPEDC, LC.CIMPEDC), (SP.PMATERC, LC.CMATERC)),
+            para_out=((SP.PMATTTC, MMATTTC),),
         ),
-
-        OP.CHAR_ACOU_VFAC_C(te=183,
-            para_in  = ((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITEFC, LC.EVITEFC), ),
-            para_out = ((SP.PVECTTC, MVECTTC), ),
+        OP.CHAR_ACOU_VFAC_C(
+            te=183,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), (SP.PVITEFC, LC.EVITEFC)),
+            para_out=((SP.PVECTTC, MVECTTC),),
         ),
-
-        OP.COOR_ELGA(te=488,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        OP.COOR_ELGA(
+            te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
-
-        OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-        ),
-
-        OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
-        ),
-
-
-        OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
-
+        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
     )
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class ACOU_FACE4(ACOU_FACE3):
     """Please document this element"""
+
     meshType = MT.QUAD4
-    elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.QU4, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class ACOU_FACE6(ACOU_FACE3):
     """Please document this element"""
+
     meshType = MT.TRIA6
-    elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG4','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.TR6, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class ACOU_FACE8(ACOU_FACE3):
     """Please document this element"""
+
     meshType = MT.QUAD8
-    elrefe =(
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.QU8, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class ACOU_FACE9(ACOU_FACE3):
     """Please document this element"""
+
     meshType = MT.QUAD9
-    elrefe =(
-            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','FPG1=FPG1',), mater=('FPG1',),),
-        )
+    elrefe = (ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1"), mater=("FPG1",)),)

@@ -39,54 +39,50 @@
 # R0 0.
 # ***return
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_INT','FACE_SUP',),),)
+MAIL = MODI_MAILLAGE(
+    reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("FACE_INT", "FACE_SUP"))
+)
 
 # PARTIES THERMIQUE ET METALLURGIQUE
 # TEMPERATURE DE 700 DEGRES PARTOUT DANS LE TUBE
 # ET CONSTANTE AU COURS DU TEMPS
 # A CETTE TEMPERATURE PAS DE TRANSFORMATION
 
-ZIRCALOY=DEFI_MATERIAU(THER=_F(RHO_CP = 2000000.0, LAMBDA = 9999.9),)
+ZIRCALOY = DEFI_MATERIAU(THER=_F(RHO_CP=2000000.0, LAMBDA=9999.9))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT = 'OUI',MATER = ZIRCALOY))
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ZIRCALOY))
 
-MOTH=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=_F(TOUT = 'OUI',
-                         MODELISATION = 'AXIS',
-                         PHENOMENE = 'THERMIQUE'))
+MOTH = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MODELISATION="AXIS", PHENOMENE="THERMIQUE"))
 
-TFONC=DEFI_FONCTION(NOM_PARA='INST',
-                    NOM_RESU='TEMP',
-                    VALE=( 0. ,    700.0,
-                           100.,   700.,),
-                    PROL_GAUCHE='CONSTANT',
-                    PROL_DROITE='CONSTANT',)
+TFONC = DEFI_FONCTION(
+    NOM_PARA="INST",
+    NOM_RESU="TEMP",
+    VALE=(0.0, 700.0, 100.0, 700.0),
+    PROL_GAUCHE="CONSTANT",
+    PROL_DROITE="CONSTANT",
+)
 
-TIMPO=CREA_CHAMP(OPERATION='AFFE',
-                 TYPE_CHAM='NOEU_TEMP_F',
-                 MAILLAGE=MAIL,
-                 AFFE=_F(TOUT = 'OUI',
-                         NOM_CMP = 'TEMP',
-                         VALE_F = TFONC))
+TIMPO = CREA_CHAMP(
+    OPERATION="AFFE",
+    TYPE_CHAM="NOEU_TEMP_F",
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=TFONC),
+)
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(
-                      _F(JUSQU_A=1.1,NOMBRE = 10),
-                      _F(JUSQU_A=100.,NOMBRE = 10),),)
+L_INST = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=1.1, NOMBRE=10), _F(JUSQU_A=100.0, NOMBRE=10))
+)
 
-TEMPE=CREA_RESU(OPERATION='AFFE',
-                TYPE_RESU='EVOL_THER',
-                NOM_CHAM='TEMP',
-                AFFE=_F(CHAM_GD = TIMPO,
-                        LIST_INST = L_INST))
+TEMPE = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=_F(CHAM_GD=TIMPO, LIST_INST=L_INST),
+)
 
 # PARTIE MECANIQUE
 # ON DEGENERE LA LOI POUR AVOIR UNE LOI DE VISCOSITE
@@ -94,221 +90,264 @@ TEMPE=CREA_RESU(OPERATION='AFFE',
 # CETTE LOI ANISOTROPE AVEC UNE SEULE PHASE ET UNE LOI DE NORTON
 # EST IDENTIQUE A UNE LOI CONTENUE DANS ZMAT
 
-ACIER=DEFI_MATERIAU(
-                    ELAS=_F(E = 80000.,
-                               NU = 0.35,
-                               ALPHA = 8.E-6,),
-                    META_LEMA_ANI=_F(
-                            #PARAMETRES MECANIQUES
-                            YoungModulus = 80000,
-                            PoissonRatio = 0.35,
-                            F1_A=2.39,    F2_A=0.22,     C_A=9.36,
-                            F1_M=0.0,    F2_M=0.77E-04,  C_M=0.99E-04,
-                            F1_N=4.39,    F2_N=2.96,     C_N=6.11,
-                            F1_Q=19922.8, F2_Q=21023.7,  C_Q=6219.,
-                            F_MRR_RR=0.4414,             C_MRR_RR=1.,
-                            F_MTT_TT=0.714,              C_MTT_TT=1.,
-                            F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
-                            F_MRT_RT=0.75,               C_MRT_RT=0.75,
-                            F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
-                            F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,
-                            #PARAMETRES THERMIQUES
-                            F_ALPHA = 8.E-6,
-                            C_ALPHA = 8.E-6,
-                            #PARAMETRES METALLURGIQUES
-                            TDEQ = 809.,   K = 1.135E-2,   NEQ = 2.187,
-                            T1C = 831. , T2C=0.,
-                            QSR_K = 14614.,AC = 1.58E-4,  M = 4.7,
-                            T1R=949.1, T2R=0.,AR = -5.725,  BR = 0.05
+ACIER = (
+    DEFI_MATERIAU(
+        ELAS=_F(E=80000.0, NU=0.35, ALPHA=8.0e-6),
+        META_LEMA_ANI=_F(
+            # PARAMETRES MECANIQUES
+            YoungModulus=80000,
+            PoissonRatio=0.35,
+            F1_A=2.39,
+            F2_A=0.22,
+            C_A=9.36,
+            F1_M=0.0,
+            F2_M=0.77e-04,
+            C_M=0.99e-04,
+            F1_N=4.39,
+            F2_N=2.96,
+            C_N=6.11,
+            F1_Q=19922.8,
+            F2_Q=21023.7,
+            C_Q=6219.0,
+            F_MRR_RR=0.4414,
+            C_MRR_RR=1.0,
+            F_MTT_TT=0.714,
+            C_MTT_TT=1.0,
+            F_MZZ_ZZ=1.0,
+            C_MZZ_ZZ=1.0,
+            F_MRT_RT=0.75,
+            C_MRT_RT=0.75,
+            F_MRZ_RZ=0.75,
+            C_MRZ_RZ=0.75,
+            F_MTZ_TZ=0.75,
+            C_MTZ_TZ=0.75,
+            # PARAMETRES THERMIQUES
+            F_ALPHA=8.0e-6,
+            C_ALPHA=8.0e-6,
+            # PARAMETRES METALLURGIQUES
+            TDEQ=809.0,
+            K=1.135e-2,
+            NEQ=2.187,
+            T1C=831.0,
+            T2C=0.0,
+            QSR_K=14614.0,
+            AC=1.58e-4,
+            M=4.7,
+            T1R=949.1,
+            T2R=0.0,
+            AR=-5.725,
+            BR=0.05,
+        ),
+    ),
+)
 
-                             ),),
+CM2 = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=ACIER),
+    AFFE_VARC=(_F(TOUT="OUI", EVOL=TEMPE, VALE_REF=700.0, NOM_VARC="TEMP", NOM_CHAM="TEMP"),),
+)
 
-CM2=AFFE_MATERIAU(MAILLAGE=MAIL,
-                  AFFE=_F( TOUT = 'OUI', MATER = ACIER ),
-                  AFFE_VARC=(_F(TOUT='OUI',
-                                EVOL=TEMPE,
-                                VALE_REF=700.,
-                                NOM_VARC='TEMP',
-                                NOM_CHAM='TEMP'),))
+MO = AFFE_MODELE(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="AXIS"))
 
-MO=AFFE_MODELE(MAILLAGE=MAIL,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE ='MECANIQUE',
-                       MODELISATION ='AXIS'))
-
-CH_L=AFFE_CHAR_MECA(MODELE=MO,
-                    FACE_IMPO=_F(GROUP_MA='FACE_INF',DNOR=0.,),
-                    LIAISON_UNIF=_F(GROUP_MA='FACE_SUP',DDL='DY',),)
+CH_L = AFFE_CHAR_MECA(
+    MODELE=MO,
+    FACE_IMPO=_F(GROUP_MA="FACE_INF", DNOR=0.0),
+    LIAISON_UNIF=_F(GROUP_MA="FACE_SUP", DDL="DY"),
+)
 
 # ON MET UNE PRESSION INTERNE ET L EFFET DE FOND
 RINT = 4.118
 REXT = 4.746
-COEF = ((RINT * RINT) / ((REXT * REXT) - (RINT * RINT)))
+COEF = (RINT * RINT) / ((REXT * REXT) - (RINT * RINT))
 
-CHPC=AFFE_CHAR_MECA(MODELE=MO,
-                    PRES_REP=(_F(GROUP_MA='FACE_INT',PRES=1.,),
-                              _F(GROUP_MA='FACE_SUP',PRES=-COEF,),),)
+CHPC = AFFE_CHAR_MECA(
+    MODELE=MO, PRES_REP=(_F(GROUP_MA="FACE_INT", PRES=1.0), _F(GROUP_MA="FACE_SUP", PRES=-COEF))
+)
 
-FMULT=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,
-                          1.1,7.5,
-                          100.0,9.5,),
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',)
+FMULT = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 0.0, 1.1, 7.5, 100.0, 9.5),
+    PROL_DROITE="CONSTANT",
+    PROL_GAUCHE="CONSTANT",
+)
 
-U=STAT_NON_LINE(MODELE=MO,
-                CHAM_MATER=CM2,
-                EXCIT=(_F(CHARGE=CHPC,FONC_MULT=FMULT,),
-                       _F(CHARGE=CH_L,),),
-                COMPORTEMENT=_F(RELATION = 'META_LEMA_ANI',
-                            RESI_INTE_RELA=1E-10,
+U = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM2,
+    EXCIT=(_F(CHARGE=CHPC, FONC_MULT=FMULT), _F(CHARGE=CH_L)),
+    COMPORTEMENT=_F(RELATION="META_LEMA_ANI", RESI_INTE_RELA=1e-10),
+    INCREMENT=_F(LIST_INST=L_INST),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-6, ITER_GLOB_MAXI=30),
+)
 
-                             ),
-               INCREMENT=_F(LIST_INST = L_INST),
-               NEWTON=_F(MATRICE = 'TANGENTE',
-                         REAC_ITER = 1),
-               CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                              ITER_GLOB_MAXI = 30))
-
-U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))
+U = CALC_CHAMP(
+    reuse=U, RESULTAT=U, CONTRAINTE=("SIGM_ELNO"), DEFORMATION=("EPSI_ELGA", "EPSI_ELNO")
+)
 
 
-U=CALC_CHAMP(reuse =U,
-          RESULTAT=U,
-          DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU')
+U = CALC_CHAMP(reuse=U, RESULTAT=U, DEFORMATION="EPSI_NOEU", CONTRAINTE="SIGM_NOEU")
 
 # NA (CE NOEUD SE SITUE A L INTERIEUR DU TUBE EN Y=0)
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES
 # COMPARAISON AVEC LA SOLUTION ZMAT
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   GROUP_NO='NA',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=-9.44206714438,
-                   VALE_REFE=-9.4420000000000002,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-3,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NA',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=60.226399445,
-                   VALE_REFE=60.225999999999999,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-3,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NA',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=26.7950693949,
-                   VALE_REFE=26.795000000000002,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-3,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NA',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=-0.00950030541249,
-                   VALE_REFE=-9.4959699999999994E-3,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NA',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPZZ',
-                   VALE_CALC=0.0135700307694,
-                   VALE_REFE=0.0135633,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NA',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPYY',
-                   VALE_CALC=-0.00377880260054,
-                   VALE_REFE=-3.7769000000000001E-3,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NA",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIXX",
+            VALE_CALC=-9.44206714438,
+            VALE_REFE=-9.4420000000000002,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NA",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIZZ",
+            VALE_CALC=60.226399445,
+            VALE_REFE=60.225999999999999,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NA",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIYY",
+            VALE_CALC=26.7950693949,
+            VALE_REFE=26.795000000000002,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NA",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPXX",
+            VALE_CALC=-0.00950030541249,
+            VALE_REFE=-9.4959699999999994e-3,
+            CRITERE="ABSOLU",
+            PRECISION=1.0000000000000001e-05,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NA",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPZZ",
+            VALE_CALC=0.0135700307694,
+            VALE_REFE=0.0135633,
+            CRITERE="ABSOLU",
+            PRECISION=1.0000000000000001e-05,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NA",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPYY",
+            VALE_CALC=-0.00377880260054,
+            VALE_REFE=-3.7769000000000001e-3,
+            CRITERE="ABSOLU",
+            PRECISION=1.0000000000000001e-05,
+        ),
+    )
+)
 
 # NB (CE NOEUD SE SITUE A L EXTERIEUR DU TUBE EN Y=0)
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES
 # COMPARAISON AVEC LA SOLUTION ZMAT
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=20,
-                   GROUP_NO='NB',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIXX',
-                   VALE_CALC=0.0328339412566,
-                   VALE_REFE=0.032821500000000003,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-3,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NB',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=64.1991130016,
-                   VALE_REFE=64.198999999999998,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-3,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NB',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=30.7710233561,
-                   VALE_REFE=30.771000000000001,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.E-3,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NB',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPXX',
-                   VALE_CALC=-0.00658911374403,
-                   VALE_REFE=-6.5860900000000002E-3,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NB',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPZZ',
-                   VALE_CALC=0.0107241774915,
-                   VALE_REFE=0.0107189,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,),
-                _F(NUME_ORDRE=20,
-                   GROUP_NO='NB',
-                   REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=U,
-                   NOM_CHAM='EPSI_NOEU',
-                   NOM_CMP='EPYY',
-                   VALE_CALC=-0.00377880260887,
-                   VALE_REFE=-3.7769000000000001E-3,
-                   CRITERE='ABSOLU',
-                   PRECISION=1.0000000000000001E-05,),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NB",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIXX",
+            VALE_CALC=0.0328339412566,
+            VALE_REFE=0.032821500000000003,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NB",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIZZ",
+            VALE_CALC=64.1991130016,
+            VALE_REFE=64.198999999999998,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NB",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="SIGM_NOEU",
+            NOM_CMP="SIYY",
+            VALE_CALC=30.7710233561,
+            VALE_REFE=30.771000000000001,
+            CRITERE="ABSOLU",
+            PRECISION=1.0e-3,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NB",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPXX",
+            VALE_CALC=-0.00658911374403,
+            VALE_REFE=-6.5860900000000002e-3,
+            CRITERE="ABSOLU",
+            PRECISION=1.0000000000000001e-05,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NB",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPZZ",
+            VALE_CALC=0.0107241774915,
+            VALE_REFE=0.0107189,
+            CRITERE="ABSOLU",
+            PRECISION=1.0000000000000001e-05,
+        ),
+        _F(
+            NUME_ORDRE=20,
+            GROUP_NO="NB",
+            REFERENCE="SOURCE_EXTERNE",
+            RESULTAT=U,
+            NOM_CHAM="EPSI_NOEU",
+            NOM_CMP="EPYY",
+            VALE_CALC=-0.00377880260887,
+            VALE_REFE=-3.7769000000000001e-3,
+            CRITERE="ABSOLU",
+            PRECISION=1.0000000000000001e-05,
+        ),
+    )
+)
 
 FIN()

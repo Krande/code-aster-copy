@@ -19,7 +19,7 @@
 
 # person_in_charge: david.haboussa at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 from math import *
 
@@ -27,12 +27,12 @@ from math import *
 ######### DEFINITION DES PARAMETRES MATERIAUX ###########
 #########################################################
 
-#temperature de travail en degres celsius
-Tdegc=600
+# temperature de travail en degres celsius
+Tdegc = 600
 
-#ATTENTION : f en h-1 et non en %/h
-feps=5.2e7
-Qeps=3e5
+# ATTENTION : f en h-1 et non en %/h
+feps = 5.2e7
+Qeps = 3e5
 aK = -3.3e-2
 bK = 38.5
 fA = 9e4
@@ -44,152 +44,123 @@ Q0 = -4.85e4
 ######### DEFINITION DU CHARGEMENT #####
 ########################################
 
-#niveau de contrainte nominal
+# niveau de contrainte nominal
 sigmap = 160
 
 
 #  temps final
-tref=4000
+tref = 4000
 
 #######################################################
 
-#quelques calculs intermediaires
-ep0val=feps*exp(-Qeps/(8.314*(Tdegc+273.)))
-Kcoef=aK*(Tdegc+273.)+bK
-A0 = fA*exp(-QA/(8.314*(Tdegc+273.)))
-sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)))
+# quelques calculs intermediaires
+ep0val = feps * exp(-Qeps / (8.314 * (Tdegc + 273.0)))
+Kcoef = aK * (Tdegc + 273.0) + bK
+A0 = fA * exp(-QA / (8.314 * (Tdegc + 273.0)))
+sig0val = f0 * exp(-Q0 / (8.314 * (Tdegc + 273.0)))
 
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=145000.0,
-                          NU=0.3,
-                                 ALPHA=1e-5,),
-                   HAYHURST=_F(EPS0=ep0val,
-                               K=Kcoef,
-                               H1=30000.0,
-                               H2=-280.,
-                               DELTA1=1.0,
-                               DELTA2=0.0,
-                               H1ST=0.33,
-                               H2ST=1.0,
-                               KC=0.0,
-                               BIGA = A0,
-                               SIG0 = sig0val,
-                               ALPHAD = 0.5,),)
+MAT = DEFI_MATERIAU(
+    ELAS=_F(E=145000.0, NU=0.3, ALPHA=1e-5),
+    HAYHURST=_F(
+        EPS0=ep0val,
+        K=Kcoef,
+        H1=30000.0,
+        H2=-280.0,
+        DELTA1=1.0,
+        DELTA2=0.0,
+        H1ST=0.33,
+        H2ST=1.0,
+        KC=0.0,
+        BIGA=A0,
+        SIG0=sig0val,
+        ALPHAD=0.5,
+    ),
+)
 
 
-char=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
-                         0.2,sigmap,
-                         100000000,sigmap,
-                         ),)
+char = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, 0.2, sigmap, 100000000, sigmap))
 
 
-lalist=DEFI_LIST_REEL(DEBUT=0,
-                      INTERVALLE=(_F(JUSQU_A=tref,
-                                     NOMBRE=500,),),)
+lalist = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=tref, NOMBRE=500),))
 
-listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
-                         ECHEC=_F(SUBD_NIVEAU=10,
-                                  SUBD_METHODE='MANUEL',
-                                  SUBD_PAS=10,
-                                  EVENEMENT='ERREUR',
-                                  SUBD_PAS_MINI=0.0,
-                                  ACTION='DECOUPE'),
-                                  )
+listtps = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=lalist),
+    ECHEC=_F(
+        SUBD_NIVEAU=10,
+        SUBD_METHODE="MANUEL",
+        SUBD_PAS=10,
+        EVENEMENT="ERREUR",
+        SUBD_PAS_MINI=0.0,
+        ACTION="DECOUPE",
+    ),
+)
 
-listarch=DEFI_LIST_REEL(DEBUT=0,
-                      INTERVALLE=(_F(JUSQU_A=tref,NOMBRE=100,),),)
+listarch = DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(_F(JUSQU_A=tref, NOMBRE=100),))
 
-soluce=SIMU_POINT_MAT(MATER=MAT,INFO=1,
-                     SIGM_IMPOSE=_F(SIYY=char),
-                     SUPPORT='ELEMENT',
-                     COMPORTEMENT=_F(RELATION='HAYHURST',
-                                  ALGO_INTE='NEWTON',
-                                  PARM_THETA=0.5,
-                                  DEFORMATION='GDEF_LOG',
-                                  ),
-                     INCREMENT=_F(LIST_INST=listtps,),
-                     NEWTON=_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),
-                     ARCHIVAGE=_F(LIST_INST=listarch),
-                     )
+soluce = SIMU_POINT_MAT(
+    MATER=MAT,
+    INFO=1,
+    SIGM_IMPOSE=_F(SIYY=char),
+    SUPPORT="ELEMENT",
+    COMPORTEMENT=_F(
+        RELATION="HAYHURST", ALGO_INTE="NEWTON", PARM_THETA=0.5, DEFORMATION="GDEF_LOG"
+    ),
+    INCREMENT=_F(LIST_INST=listtps),
+    NEWTON=_F(REAC_ITER=1, PREDICTION="EXTRAPOLE"),
+    ARCHIVAGE=_F(LIST_INST=listarch),
+)
 
-epsYY=RECU_FONCTION(TABLE=soluce,
-                   PARA_X='INST',
-                   PARA_Y='EPYY',
-                   INTERPOL='LIN')
+epsYY = RECU_FONCTION(TABLE=soluce, PARA_X="INST", PARA_Y="EPYY", INTERPOL="LIN")
 
-endo=RECU_FONCTION(TABLE=soluce,
-                   PARA_X='INST',
-                   PARA_Y='V11',
-                   INTERPOL='LIN')
+endo = RECU_FONCTION(TABLE=soluce, PARA_X="INST", PARA_Y="V11", INTERPOL="LIN")
 
 
-#fluage secondaire comparaison ssnv225a
-tsec=2000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02089497365045,
-                        VALE_PARA=2000,
-                        NOM_PARA='INST',
-                        FONCTION=epsYY,
-                        ),
-              )
+# fluage secondaire comparaison ssnv225a
+tsec = 2000
+TEST_FONCTION(
+    VALEUR=_F(VALE_CALC=0.02089497365045, VALE_PARA=2000, NOM_PARA="INST", FONCTION=epsYY)
+)
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489098398,
-                        VALE_PARA=2000,
-                        NOM_PARA='INST',
-                        FONCTION=endo,
-                        ),
-              )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489098398, VALE_PARA=2000, NOM_PARA="INST", FONCTION=endo))
 
 # fluage tertiaire
-tter=4000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05057479557016,
-                        VALE_PARA=4000,
-                        NOM_PARA='INST',
-                        FONCTION=epsYY,
-                        ),
-              )
+tter = 4000
+TEST_FONCTION(
+    VALEUR=_F(VALE_CALC=0.05057479557016, VALE_PARA=4000, NOM_PARA="INST", FONCTION=epsYY)
+)
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06792739444924,
-                        VALE_PARA=4000,
-                        NOM_PARA='INST',
-                        FONCTION=endo,
-                        ),
-              )
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06792739444924, VALE_PARA=4000, NOM_PARA="INST", FONCTION=endo))
 
 
-depsdt = CALC_FONCTION( DERIVE=_F( FONCTION= epsYY ),)
+depsdt = CALC_FONCTION(DERIVE=_F(FONCTION=epsYY))
 
 
-tvit = 1520.
+tvit = 1520.0
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=6.640907659508E-06,
-                        VALE_PARA=1520.0,
-                        NOM_PARA='INST',
-                        FONCTION=depsdt,
-                        ),
-              )
+TEST_FONCTION(
+    VALEUR=_F(VALE_CALC=6.640907659508e-06, VALE_PARA=1520.0, NOM_PARA="INST", FONCTION=depsdt)
+)
 
 IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONCTION=epsYY,
-                       COULEUR= 0,
-                       LEGENDE= 'EPYY',),),
-            UNITE=38,
-            TITRE='Espilon = f(INST)')
+    FORMAT="XMGRACE",
+    COURBE=(_F(FONCTION=epsYY, COULEUR=0, LEGENDE="EPYY"),),
+    UNITE=38,
+    TITRE="Espilon = f(INST)",
+)
 
 IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONCTION=endo,
-                        COULEUR= 0,
-                        LEGENDE= 'endo',),),
-            UNITE=39,
-            TITRE='endo = f(INST)')
+    FORMAT="XMGRACE",
+    COURBE=(_F(FONCTION=endo, COULEUR=0, LEGENDE="endo"),),
+    UNITE=39,
+    TITRE="endo = f(INST)",
+)
 
 IMPR_FONCTION(
-            FORMAT='XMGRACE',
-            COURBE=(_F(FONCTION=depsdt,
-                        COULEUR= 0,
-                        LEGENDE= 'depsdt',),),
-            UNITE=40,
-            TITRE='depsdt = f(INST)')
+    FORMAT="XMGRACE",
+    COURBE=(_F(FONCTION=depsdt, COULEUR=0, LEGENDE="depsdt"),),
+    UNITE=40,
+    TITRE="depsdt = f(INST)",
+)
 
 FIN()

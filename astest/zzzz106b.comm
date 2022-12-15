@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,131 +17,146 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#CAS_TEST__: ZZZZ106B
+# CAS_TEST__: ZZZZ106B
 #  MAILLAGE : PLAQUE CARREE MINCE (C'EST LE MAILLAGE DU SDLS100B)
 # DIMENSION 10*10 M -- BLOQUEE SUR UN COTE
 # MODELISATION D_PLAN : 25 NOEUDS -- 32 MAILLES TRIA3
-#=======================================================================
+# =======================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER", )
+MA = LIRE_MAILLAGE(FORMAT="ASTER")
 
 # -----> validation: 1) DEFI_GROUP/CREA_GROUP_MA/OPTION='APPUI' --------
 #
 # 1.1 CAS LINEAIRE
 #
-MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
-               CREA_GROUP_NO=
-                 _F( NOM='GXXXXXX_GPNO',
-                     NOEUD=('N10','N11','N25','N2','N3','N9','N1'),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_NO=_F(NOM="GXXXXXX_GPNO", NOEUD=("N10", "N11", "N25", "N2", "N3", "N9", "N1")),
+)
 
-MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
-               CREA_GROUP_MA=(
-                             _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
-                               GROUP_NO='GXXXXXX_GPNO',
-                               NOM='GXXXXXX_AU_MOINS'),
-                            _F(OPTION='APPUI',TYPE_APPUI='TOUT',
-                               GROUP_NO='GXXXXXX_GPNO',
-                               NOM='GXXXXXX_TOUS'),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(
+            OPTION="APPUI",
+            TYPE_APPUI="AU_MOINS_UN",
+            GROUP_NO="GXXXXXX_GPNO",
+            NOM="GXXXXXX_AU_MOINS",
+        ),
+        _F(OPTION="APPUI", TYPE_APPUI="TOUT", GROUP_NO="GXXXXXX_GPNO", NOM="GXXXXXX_TOUS"),
+    ),
+)
 #
 # 1.2 CAS QUADRATIQUE
 #
-MA2=CREA_MAILLAGE(MAILLAGE=MA,LINE_QUAD=_F(TOUT='OUI'),)
+MA2 = CREA_MAILLAGE(MAILLAGE=MA, LINE_QUAD=_F(TOUT="OUI"))
 
-MA2=DEFI_GROUP( reuse = MA2, MAILLAGE=MA2,
-               CREA_GROUP_NO=
-                 _F( NOM='GXXXXXX_GPNS',
-                     NOEUD=('N10','N11','N25','N2','N3','N9','N1',
-                            'NS44','NS45','NS46','NS32','NS47'),),)
+MA2 = DEFI_GROUP(
+    reuse=MA2,
+    MAILLAGE=MA2,
+    CREA_GROUP_NO=_F(
+        NOM="GXXXXXX_GPNS",
+        NOEUD=("N10", "N11", "N25", "N2", "N3", "N9", "N1", "NS44", "NS45", "NS46", "NS32", "NS47"),
+    ),
+)
 
-MA2=DEFI_GROUP( reuse = MA2, MAILLAGE=MA2,
-               CREA_GROUP_MA=(
-                            _F(OPTION='APPUI',TYPE_APPUI='TOUT',
-                               GROUP_NO='GXXXXXX_GPNS',
-                               NOM='GXXXXXX_TOUS2'),
-                            _F(OPTION='APPUI',TYPE_APPUI='SOMMET',
-                               GROUP_NO='GXXXXXX_GPNS',
-                               NOM='GXXXXXX_TOUS_SO2'),),)
+MA2 = DEFI_GROUP(
+    reuse=MA2,
+    MAILLAGE=MA2,
+    CREA_GROUP_MA=(
+        _F(OPTION="APPUI", TYPE_APPUI="TOUT", GROUP_NO="GXXXXXX_GPNS", NOM="GXXXXXX_TOUS2"),
+        _F(OPTION="APPUI", TYPE_APPUI="SOMMET", GROUP_NO="GXXXXXX_GPNS", NOM="GXXXXXX_TOUS_SO2"),
+    ),
+)
 
 #
 #  fin de la validation 1)
 #
 # ----->  validation : 2) DEFI_GROUP/CREA_GROUP_MA/TYPE_MAILLE  --------
 #
-MA=DEFI_GROUP( reuse = MA, MAILLAGE=MA,
-               CREA_GROUP_MA=(
-                             _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
-                               TYPE_MAILLE='TOUT',
-                               GROUP_NO='GXXXXXX_GPNO',
-                               NOM='GXXXXXX_G1D2D'),
-                            _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
-                               TYPE_MAILLE='1D',
-                               GROUP_NO='GXXXXXX_GPNO',
-                               NOM='GXXXXXX_G1D'),
-                            _F(OPTION='APPUI',TYPE_APPUI='AU_MOINS_UN',
-                               TYPE_MAILLE='2D',
-                               GROUP_NO='GXXXXXX_GPNO',
-                               NOM='GXXXXXX_G2D'),),)
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(
+            OPTION="APPUI",
+            TYPE_APPUI="AU_MOINS_UN",
+            TYPE_MAILLE="TOUT",
+            GROUP_NO="GXXXXXX_GPNO",
+            NOM="GXXXXXX_G1D2D",
+        ),
+        _F(
+            OPTION="APPUI",
+            TYPE_APPUI="AU_MOINS_UN",
+            TYPE_MAILLE="1D",
+            GROUP_NO="GXXXXXX_GPNO",
+            NOM="GXXXXXX_G1D",
+        ),
+        _F(
+            OPTION="APPUI",
+            TYPE_APPUI="AU_MOINS_UN",
+            TYPE_MAILLE="2D",
+            GROUP_NO="GXXXXXX_GPNO",
+            NOM="GXXXXXX_G2D",
+        ),
+    ),
+)
 
 
 DEFI_FICHIER(UNITE=38)
 
-IMPR_RESU(FORMAT="RESULTAT",UNITE=38,RESU=_F(MAILLAGE=MA),)
+IMPR_RESU(FORMAT="RESULTAT", UNITE=38, RESU=_F(MAILLAGE=MA))
 
-DEFI_FICHIER (ACTION='ASSOCIER',UNITE=38,ACCES='APPEND')
+DEFI_FICHIER(ACTION="ASSOCIER", UNITE=38, ACCES="APPEND")
 
-IMPR_RESU(FORMAT="RESULTAT",UNITE=38,RESU=_F(MAILLAGE=MA2),)
+IMPR_RESU(FORMAT="RESULTAT", UNITE=38, RESU=_F(MAILLAGE=MA2))
 
-DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=38)
 
-TEST_FICHIER(FICHIER="fort.38",
-             NB_VALE_I=755,
-             VALE_CALC_I=10779,
-             NB_VALE=213,
-             VALE_CALC=1.0600500000e+03,
-             VALE_CALC_K="a12acfb12f91cab65e65a7bd00281486",
-             EXPR_IGNORE=('ASTER'),
+TEST_FICHIER(
+    FICHIER="fort.38",
+    NB_VALE_I=755,
+    VALE_CALC_I=10779,
+    NB_VALE=213,
+    VALE_CALC=1.0600500000e03,
+    VALE_CALC_K="a12acfb12f91cab65e65a7bd00281486",
+    EXPR_IGNORE=("ASTER"),
 )
 
 # fin de la validation 2
 # ----------------------------------------------------------------------
 
-MA=DEFI_GROUP(     reuse=MA,        MAILLAGE=MA,CREA_GROUP_MA=(
-                        _F(  NOM = 'GXXXXXX_GM1',
-                                        OPTION = 'SPHERE',
-                                        NOEUD_CENTRE = 'N1',
-                                        RAYON = 2.),
-                        _F(   NOM = 'GXXXXXX_GM3',
-                                         OPTION = 'BANDE',
-                                         NOEUD_CENTRE = 'N1',
-                                         DIST = 2.,
-                                       VECT_NORMALE = (0.,1.,)),
-                        _F(   NOM = 'GXXXXXX_GM4',
-                                         OPTION = 'FACE_NORMALE',
-                                       VECT_NORMALE = (0.,-1.,))),CREA_GROUP_NO=(
-                        _F(  NOM = 'GXXXXXX_GN1',
-                                        OPTION = 'ENV_SPHERE',
-                                        NOEUD_CENTRE = 'N1',
-                                        RAYON = 2.5,
-                                        PRECISION = 0.1),
-                        _F(  NOM = 'GXXXXXX_GN3',
-                                        OPTION = 'PLAN',
-                                        NOEUD_CENTRE = 'N14',
-                                       VECT_NORMALE = (1.,0.,),
-                                        PRECISION = 0.1)),
-                         INFO=2
-                                      )
+MA = DEFI_GROUP(
+    reuse=MA,
+    MAILLAGE=MA,
+    CREA_GROUP_MA=(
+        _F(NOM="GXXXXXX_GM1", OPTION="SPHERE", NOEUD_CENTRE="N1", RAYON=2.0),
+        _F(NOM="GXXXXXX_GM3", OPTION="BANDE", NOEUD_CENTRE="N1", DIST=2.0, VECT_NORMALE=(0.0, 1.0)),
+        _F(NOM="GXXXXXX_GM4", OPTION="FACE_NORMALE", VECT_NORMALE=(0.0, -1.0)),
+    ),
+    CREA_GROUP_NO=(
+        _F(NOM="GXXXXXX_GN1", OPTION="ENV_SPHERE", NOEUD_CENTRE="N1", RAYON=2.5, PRECISION=0.1),
+        _F(
+            NOM="GXXXXXX_GN3",
+            OPTION="PLAN",
+            NOEUD_CENTRE="N14",
+            VECT_NORMALE=(1.0, 0.0),
+            PRECISION=0.1,
+        ),
+    ),
+    INFO=2,
+)
 
-MO=AFFE_MODELE(  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI',      PHENOMENE = 'MECANIQUE',
-                  MODELISATION = 'D_PLAN') )
+MO = AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
-MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3) )
+MAT = DEFI_MATERIAU(ELAS=_F(E=1.0, NU=0.3))
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MAT))
 
 # --------------------------------------------------------------------
 #
@@ -153,9 +168,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 #
 #    --- CL1 : LES NOEUDS SONT REPERES 'A LA MAIN'
 
-CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
-                          DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
-                         DX = 0., DY = 0.))
+CLDIRI1 = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO="GXXXXXX_COTE", DX=0.0, DY=0.0))
 
 #
 # ---- CHARGEMENT EN PRESSION SUR LES MAILLES AUXQUELLES
@@ -168,10 +181,10 @@ CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                SELON Y SUR LA LISTE DE MAILLES DEVANT ETRE
 #                       EGALE A GM1
 #
-CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_INTERNE=_F(
-                        GROUP_MA = ('TR6A','TR6B','TR7A','TR10B','TR11A','TR11B',),
-                        FY = 1.))
+CHMEC1 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    FORCE_INTERNE=_F(GROUP_MA=("TR6A", "TR6B", "TR7A", "TR10B", "TR11A", "TR11B"), FY=1.0),
+)
 
 #
 #    --------------------------------------------------
@@ -179,8 +192,7 @@ CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                A L'INTERSECTION DE LA PLAQUE ET DU CERCLE
 #    ---                DE CENTRE MILIEU DE LA PLAQUE ET DE RAYON 2.
 
-CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_INTERNE=_F( GROUP_MA = 'GXXXXXX_GM1',  FY = -1.) )
+CHMEC2 = AFFE_CHAR_MECA(MODELE=MO, FORCE_INTERNE=_F(GROUP_MA="GXXXXXX_GM1", FY=-1.0))
 
 #
 #    --------------------------------------------------
@@ -190,9 +202,9 @@ CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                CE CHARGEMENT SERA A COMBINER AVEC LE
 #    ---                CHARGEMENT 10
 
-CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = ('N14','N15','N16','N17','N18',),
-                                       FY = 1.) )
+CHMEC3 = AFFE_CHAR_MECA(
+    MODELE=MO, FORCE_NODALE=_F(GROUP_NO=("N14", "N15", "N16", "N17", "N18"), FY=1.0)
+)
 
 #
 #    --- CHARGEMENT 4 : LES MAILLES SONT REPEREES 'A LA MAIN'
@@ -201,82 +213,89 @@ CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
 # ---- A UNE BANDE PARALLELE A L'AXE X , DE LARGEUR 4., DONT
 # ---- LA LIGNE MOYENNE PASEE PAR LE CENTRE DE LA PLAQUE.
 #
-CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
-                          DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
-                         DX = 0., DY = 0.),
-                FORCE_INTERNE=_F( GROUP_MA = ('TR5A','TR5B','TR6A','TR6B','TR7A','TR7B',
-              'TR8A','TR8B','TR9A','TR9B','TR10A','TR10B','TR11A','TR11B','TR12A','TR12B',),
-               FY = 1.) )
+CHMEC4 = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=_F(GROUP_NO="GXXXXXX_COTE", DX=0.0, DY=0.0),
+    FORCE_INTERNE=_F(
+        GROUP_MA=(
+            "TR5A",
+            "TR5B",
+            "TR6A",
+            "TR6B",
+            "TR7A",
+            "TR7B",
+            "TR8A",
+            "TR8B",
+            "TR9A",
+            "TR9B",
+            "TR10A",
+            "TR10B",
+            "TR11A",
+            "TR11B",
+            "TR12A",
+            "TR12B",
+        ),
+        FY=1.0,
+    ),
+)
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 5 : LES MAILLES SONT DEFINIES COMME APPARTENANT
 #    ---                 A LA BANDE DECRITE AU-DESSUS
 #
-CHMEC5=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_INTERNE=_F( GROUP_MA = 'GXXXXXX_GM3',  FY = -1.))
+CHMEC5 = AFFE_CHAR_MECA(MODELE=MO, FORCE_INTERNE=_F(GROUP_MA="GXXXXXX_GM3", FY=-1.0))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 6 : ON IMPOSE UN PRESSION DE 1 SUR LES
 #    ---                 LES MAILLES SEG2 // A X
 #
-CHMEC6=AFFE_CHAR_MECA(  MODELE=MO,
-                         PRES_REP=_F( GROUP_MA = ('S1','S2','S3','S4',), PRES = 1.))
+CHMEC6 = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=_F(GROUP_MA=("S1", "S2", "S3", "S4"), PRES=1.0))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 7 : ON IMPOSE UN PRESSION DE -1 SUR
 #    ---                 LES MAILLES // A X
 #
-CHMEC7=AFFE_CHAR_MECA(  MODELE=MO,
-                         PRES_REP=_F( GROUP_MA = 'GXXXXXX_GM4', PRES = -1.))
+CHMEC7 = AFFE_CHAR_MECA(MODELE=MO, PRES_REP=_F(GROUP_MA="GXXXXXX_GM4", PRES=-1.0))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 8 : ON IMPOSE UNE FORCE NODALE EGALE A 1.
 #    ---                 SUR LES NOEUDS 3,5,7,9
 #
-CHMEC8=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = ('N3','N5','N7','N9',),
-                                       FY = 1.))
+CHMEC8 = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=_F(GROUP_NO=("N3", "N5", "N7", "N9"), FY=1.0))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 9 : ON IMPOSE UNE FORCE NODALE EGALE A -1.
 #    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GXXXXXX_GN1
 #
-CHMEC9=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN1',
-                                       FY = -1.))
+CHMEC9 = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=_F(GROUP_NO="GXXXXXX_GN1", FY=-1.0))
 
 #
 #    --------------------------------------------------
 #    --- CHARGEMENT 10 : ON IMPOSE UNE FORCE NODALE EGALE A  -1.
 #    ---                 SUR LES NOEUDS DU GROUP_NO GXXXXXX_GN3
 #
-CHMEC10=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( GROUP_NO = 'GXXXXXX_GN3',
-                                       FY = -1.))
+CHMEC10 = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=_F(GROUP_NO="GXXXXXX_GN3", FY=-1.0))
 
 #
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 #
 #    --- PREMIERE RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 1 ET 2
 #
 
-RESU1=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
-                               _F(  CHARGE = CLDIRI1),
-                               _F(  CHARGE = CHMEC1),
-                               _F(  CHARGE = CHMEC2))          )
+RESU1 = MECA_STATIQUE(
+    MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CLDIRI1), _F(CHARGE=CHMEC1), _F(CHARGE=CHMEC2))
+)
 
 #
 #    --- DEUXIEME RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 4 ET 5
 #
 
-RESU2=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
-                               _F(  CHARGE = CHMEC4),
-                               _F(  CHARGE = CHMEC5))          )
+RESU2 = MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CHMEC4), _F(CHARGE=CHMEC5)))
 
 #    --------------------------------------------------
 #
@@ -284,10 +303,9 @@ RESU2=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
 #                               AVEC LES CONDITIONS DIRICHLET CLDIRI1
 #
 
-RESU3=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
-                               _F(  CHARGE = CLDIRI1),
-                               _F(  CHARGE = CHMEC6),
-                               _F(  CHARGE = CHMEC7))          )
+RESU3 = MECA_STATIQUE(
+    MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CLDIRI1), _F(CHARGE=CHMEC6), _F(CHARGE=CHMEC7))
+)
 
 #    --------------------------------------------------
 #
@@ -295,10 +313,9 @@ RESU3=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
 #                               AVEC LES CONDITIONS DIRICHLET CLDIRI1
 #
 
-RESU4=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
-                               _F(  CHARGE = CLDIRI1),
-                               _F(  CHARGE = CHMEC8),
-                               _F(  CHARGE = CHMEC9))          )
+RESU4 = MECA_STATIQUE(
+    MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CLDIRI1), _F(CHARGE=CHMEC8), _F(CHARGE=CHMEC9))
+)
 
 #    --------------------------------------------------
 #
@@ -306,57 +323,63 @@ RESU4=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
 #                               AVEC LES CONDITIONS DIRICHLET CLDIRI1
 #
 
-RESU5=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
-                               _F(  CHARGE = CLDIRI1),
-                               _F(  CHARGE = CHMEC3),
-                               _F(  CHARGE = CHMEC10))          )
+RESU5 = MECA_STATIQUE(
+    MODELE=MO, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE=CLDIRI1), _F(CHARGE=CHMEC3), _F(CHARGE=CHMEC10))
+)
 
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 #
 #   ON TESTE LA NULLITE DES CHAMPS DE DEPLACEMENTS
 #
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N18',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=RESU2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N18',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=RESU3,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N18',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=RESU4,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N18',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
-                   ),
-                _F(NUME_ORDRE=1,
-                   RESULTAT=RESU5,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N18',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.0,
-                   CRITERE='ABSOLU',
-                   ),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N18",
+            NOM_CMP="DY",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N18",
+            NOM_CMP="DY",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU3,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N18",
+            NOM_CMP="DY",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU4,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N18",
+            NOM_CMP="DY",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+        ),
+        _F(
+            NUME_ORDRE=1,
+            RESULTAT=RESU5,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N18",
+            NOM_CMP="DY",
+            VALE_CALC=0.0,
+            CRITERE="ABSOLU",
+        ),
+    )
+)
 
 FIN()

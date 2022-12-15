@@ -20,50 +20,60 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
 Le maillage contient plusieurs ( %(i1)d ) zones non-connectées.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 La dimension du maillage n'est pas 3 : %(i1)d
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 La dimension de l'espace n'est pas 3 : %(i1)d
-"""),
-
-    4 : _("""
+"""
+    ),
+    4: _(
+        """
 Le groupe %(k1)s ne fait pas partie du maillage
-"""),
-
-    5 : _("""
+"""
+    ),
+    5: _(
+        """
 L'intersection des groupes n'est pas vide
-"""),
-
-    7 : _("""
+"""
+    ),
+    7: _(
+        """
 On ne peut pas créer le groupe '%(k1)s'.
 Le maillage n'est probablement pas inscrit dans un parallélépipède
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
 Le matériau '%(k1)s' est obligatoire pour '%(k2)s' ( '%(k3)s' )
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
 Le matériau '%(k1)s' ou '%(k2)s' est obligatoire pour '%(k3)s' ( '%(k4)s' )
-"""),
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
 Le paramètre '%(k1)s' est obligatoire pour le matériau '%(k2)s' ( '%(k3)s' )
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
 Le paramètre '%(k1)s' du matériau '%(k2)s' ( '%(k3)s' ) n'est pas CONSTANT ou FONCTION de '%(k4)s'
-"""),
-
-    12 : _("""
+"""
+    ),
+    12: _(
+        """
 Le paramètre '%(k1)s' n'est pas défini pour tous les matériaux
-"""),
-
+"""
+    ),
 }

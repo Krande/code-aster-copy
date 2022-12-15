@@ -36,22 +36,16 @@ test = code_aster.TestCase()
 Mail = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 Mail = MODI_MAILLAGE(
-    reuse=Mail,
-    MAILLAGE=Mail,
-    ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS",)),
+    reuse=Mail, MAILLAGE=Mail, ORIE_PEAU=_F(GROUP_MA_PEAU=("CONT_HAUT", "CONT_BAS"))
 )
 
 
-MODI = AFFE_MODELE(MAILLAGE=Mail,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),)
+MODI = AFFE_MODELE(MAILLAGE=Mail, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN"))
 
 # Slave side - CONT_BAS
 DEFICO_BAS = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -85,10 +79,17 @@ nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 2)
-test.assertSequenceEqual(nema, [[58, 59, 13, 1, 97], [59, 60, 14, 13, 97],
-                                [59, 60, 15, 14, 97], [60, 8, 15, 14, 97],
-                                [60, 8, 2, 15, 97],
-                                [11, 72]])
+test.assertSequenceEqual(
+    nema,
+    [
+        [58, 59, 13, 1, 97],
+        [59, 60, 14, 13, 97],
+        [59, 60, 15, 14, 97],
+        [60, 8, 15, 14, 97],
+        [60, 8, 2, 15, 97],
+        [11, 72],
+    ],
+)
 
 gap, i_gap = CD.geometricGap(pair)
 test.assertEqual(gap.size(), 5)
@@ -97,8 +98,7 @@ val = gap.getValues()
 test.assertTrue(numpy.isnan(val[1]))
 val[1] = None
 val[2] = None
-test.assertSequenceEqual(
-    val, [0.0, None, None, 31.093378263431475, 5.980746753595149])
+test.assertSequenceEqual(val, [0.0, None, None, 31.093378263431475, 5.980746753595149])
 test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0])
 
 
@@ -106,7 +106,6 @@ test.assertSequenceEqual(i_gap.getValues(), [1.0, 0.0, 0.0, 1.0, 1.0])
 DEFICO_HAUT = DEFI_CONT(
     MODELE=MODI,
     INFO=2,
-
     ZONE=(
         _F(
             APPARIEMENT="MORTAR",
@@ -115,7 +114,7 @@ DEFICO_HAUT = DEFI_CONT(
             ALGO_CONT="LAGRANGIEN",
             # VARIANTE="ROBUSTE",
             CONTACT_INIT="OUI",
-            COEF_MULT_APPA=100000.,
+            COEF_MULT_APPA=100000.0,
         ),
     ),
 )
@@ -140,9 +139,17 @@ nema = fed.getVirtualCellsDescriptor()
 grel = fed.getListOfGroupsOfElements()
 test.assertEqual(len(grel), 2)
 test.assertEqual(len(grel[0]), 2)
-test.assertSequenceEqual(nema, [[14, 13, 58, 59, 97], [14, 13, 11, 58, 97],
-                                [15, 14, 59, 60, 97], [15, 14, 60, 8, 97],
-                                [2, 15, 60, 8, 97], [1, 72]])
+test.assertSequenceEqual(
+    nema,
+    [
+        [14, 13, 58, 59, 97],
+        [14, 13, 11, 58, 97],
+        [15, 14, 59, 60, 97],
+        [15, 14, 60, 8, 97],
+        [2, 15, 60, 8, 97],
+        [1, 72],
+    ],
+)
 
 gap, i_gap = CD.geometricGap(pair)
 val = gap.getValues()
@@ -153,6 +160,6 @@ test.assertEqual(i_gap.size(), 5)
 
 test.assertSequenceEqual(i_gap.getValues(), [0.0, 1.0, 0.0, 1.0, 1.0])
 
-IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap,)))
+IMPR_RESU(FORMAT="MED", RESU=(_F(CHAM_GD=gap)))
 
 FIN()

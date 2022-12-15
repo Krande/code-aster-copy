@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,30 +23,32 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
+    1: _(
+        """
  Vous risquez d'écraser des données déjà stockées dans la structure de données résultat.
  Dernier instant stocké dans la structure de données résultat: %(r1)19.12e
  Premier instant du calcul: %(r2)19.12e
-"""),
-
-    4 : _("""
- Archivage de l'état initial"""),
-
-    5 : _("""
+"""
+    ),
+    4: _(
+        """
+ Archivage de l'état initial"""
+    ),
+    5: _(
+        """
   Archivage des champs
-"""),
-
-    6 : _("""    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d"""),
-
-    14 : _("""Il faut archiver au moins un champ."""),
-
-
-    97 : _("""
+"""
+    ),
+    6: _("""    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d"""),
+    14: _("""Il faut archiver au moins un champ."""),
+    97: _(
+        """
 Erreur lors de l'archivage. Il n'y a pas d'instant de calcul pour l'instant d'archivage %(r1)f.
-"""),
-
-    98 : _("""
+"""
+    ),
+    98: _(
+        """
 Erreur lors de l'archivage. Il y a plusieurs instants de calcul pour l'instant d'archivage %(r1)f.
-"""),
+"""
+    ),
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,26 +22,26 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'LEMAITRE_IRRA',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement de fluage et de grandissement sous irradiation pour les assemblages combustibles.
+    nom="LEMAITRE_IRRA",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement de fluage et de grandissement sous irradiation pour les assemblages combustibles.
    Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU.
    Le grandissement ne se faisant que selon une direction, il est nécessaire dans les cas 3D et 2D de donner la
    direction du grandissement par l'opérande ANGL_REP du mot clé MASSIF de l'opérateur AFFE_CARA_ELEM.
    Pour les poutres, le fluage et le grandissement n'ont lieu que dans le sens axial de la poutre :
    dans les autres directions, le comportement est élastique. Le schéma d'intégration est DEKKER ou semi-DEKKER,
-   mais on conseille d'utiliser une intégration semi-DEKKER c'est-à-dire PARM_THETA= 0.5,RESO_INTE=DEKKER."""              ,
-    num_lc         = 28,
-    nb_vari        = 3,
-    nom_vari       = ('EPSPEQ','IRVECU','EPSGRD',),
-    mc_mater       = ('LEMAITRE_IRRA',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('DEKKER',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   mais on conseille d'utiliser une intégration semi-DEKKER c'est-à-dire PARM_THETA= 0.5,RESO_INTE=DEKKER.""",
+    num_lc=28,
+    nb_vari=3,
+    nom_vari=("EPSPEQ", "IRVECU", "EPSGRD"),
+    mc_mater=("LEMAITRE_IRRA",),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("DEKKER",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

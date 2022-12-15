@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,17 +20,17 @@
 # person_in_charge: xavier.desroches at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
-comment="""  PNBSP_I :  NOMBRE DE COUCHES DANS LA COQUE  """)
+PNBSP_I = InputParameter(
+    phys=PHY.NBSP_I,
+    container="CARA!.CANBSP",
+    comment="""  PNBSP_I :  NOMBRE DE COUCHES DANS LA COQUE  """,
+)
 
 
 REPE_TENS = Option(
@@ -42,15 +42,8 @@ REPE_TENS = Option(
         SP.PDEGAIN,
         SP.PDENOIN,
         SP.PGEOMER,
-           PNBSP_I,
+        PNBSP_I,
     ),
-    para_out=(
-        SP.PCOGAOUT,
-        SP.PCONOOUT,
-        SP.PDEGAOUT,
-        SP.PDENOOUT,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.COQUE,'OUI'),(AT.BORD,'0'),)),
-    ),
+    para_out=(SP.PCOGAOUT, SP.PCONOOUT, SP.PDEGAOUT, SP.PDENOOUT),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.COQUE, "OUI"), (AT.BORD, "0"))),),
 )

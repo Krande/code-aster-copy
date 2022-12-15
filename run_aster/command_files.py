@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ from code_aster.Commands import *
 
 {starter}"""
 
+
 def add_import_commands(text):
     """Add import of code_aster commands if not present.
 
@@ -58,7 +59,7 @@ def add_import_commands(text):
         starter = r"\g<init>"
         text = re_init.sub(AUTO_IMPORT.format(starter=starter), text)
 
-    re_coding = re.compile(r'^#( *(?:|\-\*\- *|en)coding.*)' + '\n', re.M)
+    re_coding = re.compile(r"^#( *(?:|\-\*\- *|en)coding.*)" + "\n", re.M)
     if not re_coding.search(text):
         text = "# coding=utf-8\n" + text
 
@@ -75,8 +76,7 @@ def stop_at_end(text):
         str: Changed content.
     """
     refin = re.compile(r"^(?P<cmd>(FIN|code_aster\.close) *\()", re.M)
-    subst = \
-r"""
+    subst = r"""
 import code
 import readline
 import rlcompleter

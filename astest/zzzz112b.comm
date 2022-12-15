@@ -23,103 +23,89 @@
 #  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 # MAILLAGE PLEXUS
 
 
-MAILPLEX = LIRE_MAILLAGE(FORMAT='IDEAS',
-                         UNITE=18,
-                         )
+MAILPLEX = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=18)
 
 # MAILLAGE ASTER
 
-MAINI = LIRE_MAILLAGE(FORMAT='MED',
-                      )
+MAINI = LIRE_MAILLAGE(FORMAT="MED")
 
-MAINI=DEFI_GROUP( reuse=MAINI,   MAILLAGE=MAINI,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MAINI = DEFI_GROUP(reuse=MAINI, MAILLAGE=MAINI, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MAILAST=CREA_MAILLAGE(   MAILLAGE=MAINI,
-                      MODI_MAILLE=_F( OPTION = 'QUAD8_9',
-                                   TOUT = 'OUI')  )
+MAILAST = CREA_MAILLAGE(MAILLAGE=MAINI, MODI_MAILLE=_F(OPTION="QUAD8_9", TOUT="OUI"))
 
-MAILAST = DEFI_GROUP( reuse = MAILAST, MAILLAGE = MAILAST,
-                      CREA_GROUP_MA= (
-                                        _F( NOM = 'M1', MAILLE = 'M1'),
-                                     ),
-                      CREA_GROUP_NO= (
-                                        _F( NOM = 'N1', NOEUD = 'N1'),
-                                     ),
-         )
+MAILAST = DEFI_GROUP(
+    reuse=MAILAST,
+    MAILLAGE=MAILAST,
+    CREA_GROUP_MA=(_F(NOM="M1", MAILLE="M1"),),
+    CREA_GROUP_NO=(_F(NOM="N1", NOEUD="N1"),),
+)
 
-MODAST=AFFE_MODELE(   MAILLAGE=MAILAST,AFFE=(
-                        _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'COQUE_3D'),
-                        _F(  GROUP_MA = ('DA', 'BC',), PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'POU_D_E'))
-                      )
+MODAST = AFFE_MODELE(
+    MAILLAGE=MAILAST,
+    AFFE=(
+        _F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="COQUE_3D"),
+        _F(GROUP_MA=("DA", "BC"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),
+    ),
+)
 
-MATR=DEFI_MATERIAU(   ELAS=_F( E = 2.E11,  NU = 0.3,
-                               RHO = 1000.) )
+MATR = DEFI_MATERIAU(ELAS=_F(E=2.0e11, NU=0.3, RHO=1000.0))
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MAILAST,
-                           AFFE=_F( TOUT = 'OUI', MATER = MATR) )
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAILAST, AFFE=_F(TOUT="OUI", MATER=MATR))
 
-CAREL=AFFE_CARA_ELEM(   MODELE=MODAST,
-           COQUE=_F(
-       GROUP_MA = 'TOUT',
+CAREL = AFFE_CARA_ELEM(
+    MODELE=MODAST,
+    COQUE=_F(GROUP_MA="TOUT", EPAIS=0.01),
+    POUTRE=_F(GROUP_MA=("DA", "BC"), SECTION="CERCLE", CARA=("R", "EP"), VALE=(0.1, 0.01)),
+)
 
-                     EPAIS = 0.01),
-           POUTRE=_F(  GROUP_MA = ('DA', 'BC',), SECTION = 'CERCLE',
-                    CARA = (   'R',            'EP',      ),
-                    VALE = (  0.1,           0.01,      ))
-                       )
+PRESPLEX = LIRE_PLEXUS(
+    UNITE=18,
+    FORMAT="IDEAS",
+    MAIL_PLEXUS=MAILPLEX,
+    MAILLAGE=MAILAST,
+    MODELE=MODAST,
+    TOUT_ORDRE="OUI",
+    TITRE="PREMIER ESSAI LIRE_PLEXUS",
+)
 
-PRESPLEX=LIRE_PLEXUS(          UNITE=18,
-                                 FORMAT='IDEAS',
-                            MAIL_PLEXUS=MAILPLEX,
-                               MAILLAGE=MAILAST,
-                                 MODELE=MODAST,
-                             TOUT_ORDRE='OUI',
-                                  TITRE='PREMIER ESSAI LIRE_PLEXUS'
-                        )
+CHAR2 = AFFE_CHAR_MECA(
+    MODELE=MODAST,
+    DDL_IMPO=_F(GROUP_NO="D", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    LIAISON_ELEM=(
+        _F(
+            OPTION="COQ_POU",
+            CARA_ELEM=CAREL,
+            AXE_POUTRE=(1.0, 0.0, 0.0),
+            GROUP_MA_1="CERCLE2",
+            GROUP_NO_2="B",
+        ),
+        _F(
+            OPTION="COQ_POU",
+            CARA_ELEM=CAREL,
+            AXE_POUTRE=(1.0, 0.0, 0.0),
+            GROUP_MA_1="CERCLE1",
+            GROUP_NO_2="A",
+        ),
+    ),
+    EVOL_CHAR=PRESPLEX,
+)
 
-CHAR2=AFFE_CHAR_MECA(  MODELE=MODAST,
-                        DDL_IMPO=_F( GROUP_NO = 'D',
-                            DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),LIAISON_ELEM=(
-                         _F( OPTION = 'COQ_POU',
-                                       CARA_ELEM = CAREL,
-                                       AXE_POUTRE = (1., 0., 0.,),
-                                       GROUP_MA_1 = 'CERCLE2',
-                                       GROUP_NO_2 = 'B'),
-                         _F(  OPTION = 'COQ_POU',
-                                       CARA_ELEM = CAREL,
-                                       AXE_POUTRE = (1., 0., 0.,),
-                                       GROUP_MA_1 = 'CERCLE1',
-                                       GROUP_NO_2 = 'A')),
-                         EVOL_CHAR=PRESPLEX
-                      )
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-L_INST=DEFI_LIST_REEL(       DEBUT=0.,
-           INTERVALLE=_F( JUSQU_A = 1.,    NOMBRE = 1)  )
+RESU2 = MECA_STATIQUE(
+    MODELE=MODAST, CHAM_MATER=CHMAT, CARA_ELEM=CAREL, EXCIT=_F(CHARGE=CHAR2), LIST_INST=L_INST
+)
 
-RESU2=MECA_STATIQUE(        MODELE=MODAST,
-                            CHAM_MATER=CHMAT,
-                             CARA_ELEM=CAREL,
-                                 EXCIT=_F(  CHARGE = CHAR2),
-                             LIST_INST=L_INST
-                        )
+RESU2 = CALC_CHAMP(reuse=RESU2, RESULTAT=RESU2, LIST_INST=L_INST, CONTRAINTE=("SIGM_ELNO"))
 
-RESU2=CALC_CHAMP(reuse=RESU2,
-                 RESULTAT=RESU2,
-                 LIST_INST=L_INST,
-                 CONTRAINTE=('SIGM_ELNO'),)
-
-RESUPOS=POST_CHAMP(RESULTAT=RESU2,
-                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                 NUME_COUCHE=1,
-                                 NIVE_COUCHE='MOY',),)
+RESUPOS = POST_CHAMP(
+    RESULTAT=RESU2, EXTR_COQUE=_F(NOM_CHAM="SIGM_ELNO", NUME_COUCHE=1, NIVE_COUCHE="MOY")
+)
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
@@ -132,52 +118,55 @@ RESUPOS=POST_CHAMP(RESULTAT=RESU2,
 #   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
 #   DE SIGNE MAIS LE TE
 #
-TEST_RESU(RESU=(_F(INST=1.0,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESU2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N1',
-                   NOM_CMP='DY',
-                   VALE_CALC=-4.8220975295324E-11,
-                   VALE_REFE=-5.0000000000000002E-11,
-                   PRECISION=0.040000000000000001,),
-                _F(INST=1.0,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESUPOS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=98.587913226991,
-                   VALE_REFE=100.0,
-                   PRECISION=0.029999999999999999,
-                   GROUP_MA='M1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESU2,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N1",
+            NOM_CMP="DY",
+            VALE_CALC=-4.8220975295324e-11,
+            VALE_REFE=-5.0000000000000002e-11,
+            PRECISION=0.040000000000000001,
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESUPOS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="SIYY",
+            VALE_CALC=98.587913226991,
+            VALE_REFE=100.0,
+            PRECISION=0.029999999999999999,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 # -------------------------------------------------------------------
 
-RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CAREL,
-                                  EXCIT=_F(  CHARGE = CHAR2),
-                              INCREMENT=_F(  LIST_INST = L_INST),
-                              COMPORTEMENT=_F(  RELATION = 'ELAS',
-               )
-                       )
+RESU_NL = STAT_NON_LINE(
+    MODELE=MODAST,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CAREL,
+    EXCIT=_F(CHARGE=CHAR2),
+    INCREMENT=_F(LIST_INST=L_INST),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+)
 
-RESU_NL=CALC_CHAMP(reuse=RESU_NL,
-                   RESULTAT=RESU_NL,
-                   CONTRAINTE=('SIGM_ELNO'),
-                   VARI_INTERNE='VARI_ELNO',)
+RESU_NL = CALC_CHAMP(
+    reuse=RESU_NL, RESULTAT=RESU_NL, CONTRAINTE=("SIGM_ELNO"), VARI_INTERNE="VARI_ELNO"
+)
 
-RESNLPOS=POST_CHAMP(RESULTAT=RESU_NL,
-                    INST=1.,
-                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                  NUME_COUCHE=1,
-                                  NIVE_COUCHE='MOY',),)
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(RESULTAT=RESNLPOS,
-                  NOM_CHAM='SIGM_ELNO'))
+RESNLPOS = POST_CHAMP(
+    RESULTAT=RESU_NL,
+    INST=1.0,
+    EXTR_COQUE=_F(NOM_CHAM="SIGM_ELNO", NUME_COUCHE=1, NIVE_COUCHE="MOY"),
+)
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=RESNLPOS, NOM_CHAM="SIGM_ELNO"))
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
 # L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
@@ -191,27 +180,33 @@ IMPR_RESU(FORMAT='RESULTAT',
 #   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
 #   DE SIGNE MAIS LE TE
 #
-TEST_RESU(RESU=(_F(INST=1.0,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESU_NL,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N1',
-                   NOM_CMP='DY',
-                   VALE_CALC=-4.822090860757E-11,
-                   VALE_REFE=-5.0000000000000002E-11,
-                   PRECISION=0.040000000000000001,),
-                _F(INST=1.0,
-                   REFERENCE='AUTRE_ASTER',
-                   RESULTAT=RESNLPOS,
-                   NOM_CHAM='SIGM_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=98.587776221285,
-                   VALE_REFE=100.0,
-                   PRECISION=0.029999999999999999,
-                   GROUP_MA='M1',),
-                ),
-          )
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESU_NL,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N1",
+            NOM_CMP="DY",
+            VALE_CALC=-4.822090860757e-11,
+            VALE_REFE=-5.0000000000000002e-11,
+            PRECISION=0.040000000000000001,
+        ),
+        _F(
+            INST=1.0,
+            REFERENCE="AUTRE_ASTER",
+            RESULTAT=RESNLPOS,
+            NOM_CHAM="SIGM_ELNO",
+            GROUP_NO="N1",
+            NOM_CMP="SIYY",
+            VALE_CALC=98.587776221285,
+            VALE_REFE=100.0,
+            PRECISION=0.029999999999999999,
+            GROUP_MA="M1",
+        ),
+    )
+)
 
 FIN()
 #

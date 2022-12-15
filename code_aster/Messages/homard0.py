@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,32 +20,39 @@
 from ..Utilities import _
 
 cata_msg = {
-    1: _("""
+    1: _(
+        """
 Cette macro-commande est inconnue.
-"""),
-
-    2: _("""
+"""
+    ),
+    2: _(
+        """
 Erreur : %(k1)s
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 Impossible de tuer le fichier %(k1)s
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 Impossible de créer le répertoire de travail pour HOMARD : %(k1)s
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
 Impossible de détruire le fichier :%(k1)s
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 La vérification de l'interpénétration peut être très longue.
 Il ne faut l'utiliser que volontairement. Voir la documentation.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 Dès que le nombre de mailles est important, la vérification de l'interpénétration peut devenir très longue.
 En principe, on ne devrait l'utiliser que dans les cas suivants :
   . Informations sur un maillage avec MACR_INFO_MAIL
@@ -53,14 +60,16 @@ En principe, on ne devrait l'utiliser que dans les cas suivants :
 Conseil :
 Pour un usage courant de l'adaptation, il est recommandé de passer à NON toutes les
 options de contrôle ; autrement dit, laisser les options par défaut.
-"""),
-
-    8: _("""
+"""
+    ),
+    8: _(
+        """
 Impossible de trouver le répertoire de travail pour HOMARD : %(k1)s
 Certainement un oubli dans le lancement de la poursuite.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
 Vous demandez une adaptation du maillage %(k1)s vers %(k2)s
 Auparavant, vous aviez déjà fait une adaptation qui a produit le maillage %(k3)s
 Ce maillage %(k3)s est le résultat de %(i1)d adaptation(s) à partir du maillage initial %(k4)s
@@ -69,15 +78,17 @@ Les arguments que vous avez donnés à MACR_ADAP_MAIL ne permettront pas de teni
 de l'historique d'adaptation. Est-ce volontaire ?
 Pour poursuivre la séquence, il faudrait partir maintenant de %(k3)s.
 
-"""),
-
-    10: _("""
+"""
+    ),
+    10: _(
+        """
 Le fichier %(k1)s est inconnu.
-"""),
-
-    11: _("""
+"""
+    ),
+    11: _(
+        """
 Il s'agit de la première adaptation du maillage '%(k1)s' or le répertoire '%(k2)s'
 existe déjà. On le supprime.
-"""),
-
+"""
+    ),
 }

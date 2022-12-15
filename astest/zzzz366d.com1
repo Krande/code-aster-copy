@@ -18,21 +18,24 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: nicolas.sellenet at edf.fr
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 
-IMPR_JEVEUX (ENTITE='REPERTOIRE', CLASSE='G')
+IMPR_JEVEUX(ENTITE="REPERTOIRE", CLASSE="G")
 
-IMPR_CO (CONCEPT=(_F(NOM=MAIL),
-                  _F(NOM=MODL10),
-                  _F(NOM=CHAM10_1),
-                  _F(NOM=CHAM10_2),
-                  _F(NOM=CHAM10_3),
-                  _F(NOM=MAIL2),
-                  _F(NOM=MODL04),
-                  _F(NOM=CHAM04_1),
-                  _F(NOM=CHAM04_2),
-                  _F(NOM=CHAM04_3),  )
-        )
+IMPR_CO(
+    CONCEPT=(
+        _F(NOM=MAIL),
+        _F(NOM=MODL10),
+        _F(NOM=CHAM10_1),
+        _F(NOM=CHAM10_2),
+        _F(NOM=CHAM10_3),
+        _F(NOM=MAIL2),
+        _F(NOM=MODL04),
+        _F(NOM=CHAM04_1),
+        _F(NOM=CHAM04_2),
+        _F(NOM=CHAM04_3),
+    )
+)
 
 FIN()

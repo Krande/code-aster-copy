@@ -17,9 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 # NOMBRE DE NOEUDS                         981
 #
@@ -36,305 +36,265 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 #                               BAS                                 10
 #                               PAROI                               25
 
-MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HHMS',),)
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="D_PLAN_HHMS")
+)
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                 MAILLAGE=MAIL,
-                 ORIE_PEAU=_F(GROUP_MA_PEAU='TROU',),)
+MAIL = MODI_MAILLAGE(reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU="TROU"))
 
-viscoliq=DEFI_CONSTANTE(VALE=1.E-3,)
+viscoliq = DEFI_CONSTANTE(VALE=1.0e-3)
 
-ZERO=DEFI_CONSTANTE(VALE=0.,)
+ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-UN=DEFI_CONSTANTE(VALE=1.,)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
-KINT=DEFI_CONSTANTE(VALE=1.E-9,)
+KINT = DEFI_CONSTANTE(VALE=1.0e-9)
 
-KHENRY  = DEFI_CONSTANTE(VALE=1.E+14,)
+KHENRY = DEFI_CONSTANTE(VALE=1.0e14)
 
-BBG=0.412
-PRBG = 1.E7
-NBG  = 1./(1.-BBG)
-MBG  = 1.-1./NBG
-SRBG = 0.
-SMAX=0.999
+BBG = 0.412
+PRBG = 1.0e7
+NBG = 1.0 / (1.0 - BBG)
+MBG = 1.0 - 1.0 / NBG
+SRBG = 0.0
+SMAX = 0.999
 
-MAT=DEFI_MATERIAU(ELAS=_F(E    =515.E6,
-                          NU   =0.3,
-                          RHO  =2.67E3,
-                          ALPHA=0.,),
+MAT = DEFI_MATERIAU(
+    ELAS=_F(E=515.0e6, NU=0.3, RHO=2.67e3, ALPHA=0.0),
+    COMP_THM="LIQU_GAZ",
+    THM_INIT=_F(PRE1=0.0, PRE2=1.0, PORO=0.4, TEMP=293.0, PRES_VAPE=2300.0),
+    THM_DIFFU=_F(
+        R_GAZ=8.315,
+        RHO=1.0e3,
+        BIOT_COEF=1.0,
+        PESA_X=0.0,
+        PESA_Y=-9.81,
+        PESA_Z=0.0,
+        PERM_IN=KINT,
+        VG_N=NBG,
+        VG_PR=PRBG,
+        VG_SR=SRBG,
+        VG_SMAX=SMAX,
+        VG_SATUR=0.9999,
+    ),
+    THM_GAZ=_F(MASS_MOL=29.965e-3, VISC=viscoliq, D_VISC_TEMP=ZERO),
+    THM_LIQU=_F(RHO=1.0e3, UN_SUR_K=0.0, VISC=viscoliq, D_VISC_TEMP=ZERO),
+)
 
-                  COMP_THM='LIQU_GAZ',
+CHMATO = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MAT))
 
-                  THM_INIT=_F(PRE1=0.,
-                              PRE2=1.,
-                              PORO=.4,
-                              TEMP     =293.,
-                              PRES_VAPE=2300.,),
+CHAR0 = AFFE_CHAR_CINE(
+    MODELE=MODELE,
+    MECA_IMPO=(
+        _F(GROUP_MA="BAS", DY=0.0),
+        _F(GROUP_MA=("GAUCHE", "DROIT"), DX=0.0),
+        _F(GROUP_MA=("HAUT", "GAUCHE", "DROIT"), PRE2=0.0),
+    ),
+)
 
-                  THM_DIFFU=_F(R_GAZ    =8.315,
-                               RHO      =1.E3,
-                               BIOT_COEF=1.,
-                               PESA_X   =0.,
-                               PESA_Y   =-9.81,
-                               PESA_Z   =0.,
-                               PERM_IN  =KINT,
-                               VG_N      =NBG ,
-                               VG_PR     =PRBG,
-                               VG_SR     =SRBG,
-                               VG_SMAX   =SMAX,
-                               VG_SATUR  =0.9999,),
-
-                  THM_GAZ     = _F(MASS_MOL   =29.965E-3,
-                                   VISC       =viscoliq,
-                                   D_VISC_TEMP=ZERO,),
-
-                  THM_LIQU=_F(RHO       =1.E3,
-                              UN_SUR_K  =0.,
-                              VISC      =viscoliq,
-                              D_VISC_TEMP=ZERO,),)
-
-CHMATO=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=MAT,),)
-
-CHAR0=AFFE_CHAR_CINE(MODELE=MODELE,
-        MECA_IMPO=(_F(GROUP_MA='BAS', DY=0.,),
-                   _F(GROUP_MA=('GAUCHE','DROIT'), DX=0.,),
-                   _F(GROUP_MA=('HAUT','GAUCHE','DROIT'), PRE2=0.,),
-                  ),)
-
-CHAR2=AFFE_CHAR_CINE(MODELE=MODELE,
-        MECA_IMPO=_F(GROUP_MA='HAUT', PRE1=0.,),)
+CHAR2 = AFFE_CHAR_CINE(MODELE=MODELE, MECA_IMPO=_F(GROUP_MA="HAUT", PRE1=0.0))
 
 # =================================
 #
 #    Conditions de suintement
 #
 # =================================
-F_IMPO = DEFI_CONSTANTE(VALE= 0.)
-F_MULT = DEFI_CONSTANTE(VALE= -1.)
-F_ZERO = DEFI_CONSTANTE(VALE= 0.)
+F_IMPO = DEFI_CONSTANTE(VALE=0.0)
+F_MULT = DEFI_CONSTANTE(VALE=-1.0)
+F_ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-CHAR1 = DEFI_CONTACT(MODELE      = MODELE,
-                     FORMULATION = 'LIAISON_UNIL',
-                     ZONE        =
-                       _F(GROUP_MA  = 'TROU',
-                         ALGO_CONT = "PENALISATION",
-                         COEF_PENA = 1.,
-                         NOM_CMP    = 'PRE1',
-                         COEF_IMPO  = F_IMPO,
-                         COEF_MULT  = F_MULT,),)
+CHAR1 = DEFI_CONTACT(
+    MODELE=MODELE,
+    FORMULATION="LIAISON_UNIL",
+    ZONE=_F(
+        GROUP_MA="TROU",
+        ALGO_CONT="PENALISATION",
+        COEF_PENA=1.0,
+        NOM_CMP="PRE1",
+        COEF_IMPO=F_IMPO,
+        COEF_MULT=F_MULT,
+    ),
+)
 
-CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
-                      PESANTEUR=_F(GRAVITE=9.81,
-                                   DIRECTION=(0.,-1.,0.,),),)
+CHARG0 = AFFE_CHAR_MECA(MODELE=MODELE, PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0.0, -1.0, 0.0)))
 
 # Définition des Champs initiaux
 # --------------------------------------
-CHGEOMG = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
-                     OPERATION = 'EXTR',
-                     MAILLAGE  = MAIL,
-                     NOM_CHAM  = 'GEOMETRIE',)
+CHGEOMG = CREA_CHAMP(TYPE_CHAM="NOEU_GEOM_R", OPERATION="EXTR", MAILLAGE=MAIL, NOM_CHAM="GEOMETRIE")
 
-CHGEOMG0 = CREA_CHAMP(TYPE_CHAM = 'ELGA_GEOM_R',
-                      OPERATION = 'DISC',
-                      MODELE    = MODELE,
-                      CHAM_GD   = CHGEOMG,
-                      PROL_ZERO='OUI')
-y_surf =3.
+CHGEOMG0 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_GEOM_R", OPERATION="DISC", MODELE=MODELE, CHAM_GD=CHGEOMG, PROL_ZERO="OUI"
+)
+y_surf = 3.0
 
-GrMa= 'BLOC'
+GrMa = "BLOC"
 
-PRE10 = FORMULE(VALE = '9.81*1000.*(Y-y_surf)', NOM_PARA=('X','Y',),y_surf=y_surf)
+PRE10 = FORMULE(VALE="9.81*1000.*(Y-y_surf)", NOM_PARA=("X", "Y"), y_surf=y_surf)
 
-SIP0 = FORMULE(VALE = 'PRE10(X,Y)', NOM_PARA=('X','Y',),PRE10=PRE10)
+SIP0 = FORMULE(VALE="PRE10(X,Y)", NOM_PARA=("X", "Y"), PRE10=PRE10)
 
-SIYY0 = FORMULE(NOM_PARA =('X','Y',),
-                VALE    = '(2.67E3-1.E3)*(Y-y_surf)',y_surf=y_surf)
+SIYY0 = FORMULE(NOM_PARA=("X", "Y"), VALE="(2.67E3-1.E3)*(Y-y_surf)", y_surf=y_surf)
 
-SIGMA0a = CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_F',
-                    OPERATION = 'AFFE',
-                    MODELE    = MODELE,
-                    PROL_ZERO = 'OUI',
-                    AFFE      = _F(GROUP_MA=GrMa,
-                                    NOM_CMP=('X1','X2','X3',
-                                             'X4','X5','X6',),
-                                    VALE_F =(SIYY0,SIYY0,SIYY0,
-                                             SIP0,SIP0,SIP0,),),)
+SIGMA0a = CREA_CHAMP(
+    TYPE_CHAM="ELGA_NEUT_F",
+    OPERATION="AFFE",
+    MODELE=MODELE,
+    PROL_ZERO="OUI",
+    AFFE=_F(
+        GROUP_MA=GrMa,
+        NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+        VALE_F=(SIYY0, SIYY0, SIYY0, SIP0, SIP0, SIP0),
+    ),
+)
 
-DEPL0a = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_F',
-                  OPERATION = 'AFFE',
-                  MODELE         = MODELE,
-                  AFFE           =_F(GROUP_MA = GrMa,
-                                   NOM_CMP    = ('X1','X2','X3','X4',),
-                                   VALE_F     = (ZERO,ZERO,PRE10,UN,),),)
+DEPL0a = CREA_CHAMP(
+    TYPE_CHAM="NOEU_NEUT_F",
+    OPERATION="AFFE",
+    MODELE=MODELE,
+    AFFE=_F(GROUP_MA=GrMa, NOM_CMP=("X1", "X2", "X3", "X4"), VALE_F=(ZERO, ZERO, PRE10, UN)),
+)
 
-SIGMA0b = CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R',
-                    OPERATION = 'EVAL',
-                    CHAM_F    = SIGMA0a,
-                    CHAM_PARA = CHGEOMG0,)
+SIGMA0b = CREA_CHAMP(TYPE_CHAM="ELGA_NEUT_R", OPERATION="EVAL", CHAM_F=SIGMA0a, CHAM_PARA=CHGEOMG0)
 
-DEPL0b = CREA_CHAMP(TYPE_CHAM   = 'NOEU_NEUT_R',
-                    OPERATION = 'EVAL',
-                    CHAM_F      = DEPL0a,
-                    CHAM_PARA   = CHGEOMG,)
+DEPL0b = CREA_CHAMP(TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=DEPL0a, CHAM_PARA=CHGEOMG)
 
-SIGMA0c = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-              OPERATION = 'ASSE',
-              MODELE    =  MODELE,
-              PROL_ZERO = 'OUI',
-              ASSE      = _F(GROUP_MA     = GrMa,
-                              CHAM_GD     = SIGMA0b,
-                              NOM_CMP     = ('X1','X2','X3',
-                                            'X4','X5','X6',),
-                              NOM_CMP_RESU= ('SIXX','SIYY','SIZZ',
-                                            'SIPXX','SIPYY','SIPZZ',),),
-              INFO=1,)
+SIGMA0c = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R",
+    OPERATION="ASSE",
+    MODELE=MODELE,
+    PROL_ZERO="OUI",
+    ASSE=_F(
+        GROUP_MA=GrMa,
+        CHAM_GD=SIGMA0b,
+        NOM_CMP=("X1", "X2", "X3", "X4", "X5", "X6"),
+        NOM_CMP_RESU=("SIXX", "SIYY", "SIZZ", "SIPXX", "SIPYY", "SIPZZ"),
+    ),
+    INFO=1,
+)
 
-DEPL0c=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                  OPERATION='ASSE',
-                  MODELE   =MODELE,
-                  ASSE=_F(GROUP_MA=GrMa,
-                           CHAM_GD=DEPL0b,
-                           NOM_CMP=('X1','X2','X3','X4',),
-                           NOM_CMP_RESU=('DX','DY','PRE1','PRE2',),),
-                   INFO=1,)
+DEPL0c = CREA_CHAMP(
+    TYPE_CHAM="NOEU_DEPL_R",
+    OPERATION="ASSE",
+    MODELE=MODELE,
+    ASSE=_F(
+        GROUP_MA=GrMa,
+        CHAM_GD=DEPL0b,
+        NOM_CMP=("X1", "X2", "X3", "X4"),
+        NOM_CMP_RESU=("DX", "DY", "PRE1", "PRE2"),
+    ),
+    INFO=1,
+)
 nume1 = 5
 
-LI1=DEFI_LIST_REEL(DEBUT=-1.e4,
-                  INTERVALLE=_F(JUSQU_A=0., NOMBRE=nume1,),)
+LI1 = DEFI_LIST_REEL(DEBUT=-1.0e4, INTERVALLE=_F(JUSQU_A=0.0, NOMBRE=nume1))
 
-CINIT=STAT_NON_LINE(MODELE=MODELE,
-                     CHAM_MATER=CHMATO,
-                     SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA',),
+CINIT = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMATO,
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MDA"),
+    EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=CHAR2), _F(CHARGE=CHARG0)),
+    COMPORTEMENT=_F(
+        RELATION="KIT_HHM", RELATION_KIT=("ELAS", "LIQU_GAZ", "HYDR_VGM"), ITER_INTE_MAXI=5
+    ),
+    ETAT_INIT=_F(SIGM=SIGMA0c, DEPL=DEPL0c),
+    INCREMENT=_F(LIST_INST=LI1, NUME_INST_FIN=nume1),
+    ARCHIVAGE=_F(LIST_INST=LI1),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=5, ARRET="OUI"),
+    INFO=1,
+)
+tint = 0.02
+tfin = 0.2
+npas1 = 20
+npas2 = 10
+pas1 = tint / npas1
+pas2 = (tfin - tint) / npas2
 
-                     EXCIT=(_F(CHARGE=CHAR0,),
-                            _F(CHARGE=CHAR2,),
-                            _F(CHARGE=CHARG0,),),
+LI2 = DEFI_LIST_REEL(
+    DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=tint, NOMBRE=npas1), _F(JUSQU_A=tfin, NOMBRE=npas2))
+)
 
-       COMPORTEMENT=_F(RELATION='KIT_HHM',
-                       RELATION_KIT=('ELAS','LIQU_GAZ','HYDR_VGM',),
-                       ITER_INTE_MAXI=5,),
+DEFLIST = DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LI2),
+    ECHEC=_F(EVENEMENT="ERREUR", SUBD_METHODE="MANUEL", SUBD_PAS=4, SUBD_NIVEAU=2),
+)
+MESTAT = STAT_NON_LINE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMATO,
+    SOLVEUR=_F(METHODE="MULT_FRONT", RENUM="MDA"),
+    EXCIT=(_F(CHARGE=CHAR0), _F(CHARGE=CHARG0)),
+    ETAT_INIT=_F(EVOL_NOLI=CINIT, NUME_ORDRE=nume1),
+    CONTACT=CHAR1,
+    COMPORTEMENT=_F(
+        RELATION="KIT_HHM",
+        PARM_THETA=1.0,
+        RELATION_KIT=("ELAS", "LIQU_GAZ", "HYDR_VGM"),
+        ITER_INTE_MAXI=5,
+    ),
+    INCREMENT=_F(LIST_INST=DEFLIST, NUME_INST_INIT=0, INST_FIN=tfin),
+    ARCHIVAGE=_F(LIST_INST=LI2),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-8, ITER_GLOB_MAXI=10, ARRET="OUI"),
+    OBSERVATION=(_F(GROUP_NO=("NTROU", "NBASE", "NSUP"), NOM_CHAM="DEPL", NOM_CMP="PRE1"),),
+    INFO=1,
+)
 
-                     ETAT_INIT    = _F(SIGM = SIGMA0c,
-                                       DEPL = DEPL0c,),
+TAB_OBS = RECU_TABLE(CO=MESTAT, NOM_TABLE="OBSERVATION")
 
-                     INCREMENT=_F(LIST_INST    =LI1,
-                                  NUME_INST_FIN=nume1,),
+IMPR_TABLE(FORMAT="ASTER", TABLE=TAB_OBS, TITRE="Pression eau", UNITE=8)
 
-                     ARCHIVAGE=_F(LIST_INST =LI1,),
-
-                     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                    ITER_GLOB_MAXI=5,
-                                    ARRET='OUI',),
-                     INFO=1,)
-tint = .02
-tfin = .2
-npas1= 20
-npas2= 10
-pas1 = tint/npas1
-pas2 = (tfin-tint)/npas2
-
-LI2=DEFI_LIST_REEL(DEBUT=0.0,
-                  INTERVALLE=(_F(JUSQU_A=tint, NOMBRE=npas1,),
-                              _F(JUSQU_A=tfin, NOMBRE=npas2,),),)
-
-DEFLIST = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST    = LI2,),
-                         ECHEC     = _F(EVENEMENT    = 'ERREUR',
-                                        SUBD_METHODE = 'MANUEL',
-                                        SUBD_PAS     =  4,
-                                        SUBD_NIVEAU  =  2,),)
-MESTAT=STAT_NON_LINE(MODELE=MODELE,
-                     CHAM_MATER=CHMATO,
-                     SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA',),
-
-                     EXCIT=(_F(CHARGE=CHAR0,),
-                            _F(CHARGE=CHARG0,),),
-
-                     ETAT_INIT=_F(EVOL_NOLI=CINIT,
-                                  NUME_ORDRE=nume1,),
-
-                     CONTACT  =  CHAR1,
-
-       COMPORTEMENT=_F(RELATION='KIT_HHM',
-                       PARM_THETA=1.,
-                       RELATION_KIT=('ELAS','LIQU_GAZ','HYDR_VGM',),
-                       ITER_INTE_MAXI=5,),
-
-                     INCREMENT=_F(LIST_INST     =DEFLIST,
-                                  NUME_INST_INIT=0,
-                                  INST_FIN      =tfin,),
-
-                     ARCHIVAGE=_F(LIST_INST=LI2,),
-
-                     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
-
-                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                    ITER_GLOB_MAXI=10,
-                                    ARRET='OUI',),
-
-                     OBSERVATION=(_F(GROUP_NO=('NTROU','NBASE','NSUP',),
-                                     NOM_CHAM='DEPL',
-                                     NOM_CMP ='PRE1',),),
-                     INFO=1,)
-
-TAB_OBS = RECU_TABLE(CO=MESTAT, NOM_TABLE='OBSERVATION')
-
-IMPR_TABLE(FORMAT='ASTER',
-           TABLE =TAB_OBS,
-           TITRE ='Pression eau',
-           UNITE =8,)
-
-TEST_RESU(RESU=(_F(INST     =5.e-3,
-                   RESULTAT =MESTAT,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='NTROU',
-                   NOM_CMP  ='PRE1',
-                   VALE_CALC=-0.000162358283642,
-                   CRITERE  ='ABSOLU',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_REFE=0.,
-                   PRECISION=1e-3,),
-
-                _F(INST     =tfin,
-                   RESULTAT =MESTAT,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='NBASE',
-                   NOM_CMP  ='PRE1',
-                   VALE_CALC=-9.80865412149e+3,
-                   CRITERE  ='RELATIF',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_REFE=-9.81e+3,
-                   PRECISION=1e-3,),
-
-                _F(INST     =tfin,
-                   RESULTAT =MESTAT,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='NTROU',
-                   NOM_CMP  ='PRE1',
-                   VALE_CALC=4.9063456839e+3,
-                   CRITERE  ='RELATIF',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_REFE=0.5*9.81e+3,
-                   PRECISION=1e-3,),
-
-                _F(INST     =tfin,
-                   RESULTAT =MESTAT,
-                   NOM_CHAM ='DEPL',
-                   GROUP_NO ='NSUP',
-                   NOM_CMP  ='PRE1',
-                   VALE_CALC=1.96213454837e+4,
-                   CRITERE  ='RELATIF',
-                   REFERENCE='ANALYTIQUE',
-                   VALE_REFE=2.*9.81e+3,
-                   PRECISION=1e-3,),
-                ),)
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=5.0e-3,
+            RESULTAT=MESTAT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NTROU",
+            NOM_CMP="PRE1",
+            VALE_CALC=-0.000162358283642,
+            CRITERE="ABSOLU",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=0.0,
+            PRECISION=1e-3,
+        ),
+        _F(
+            INST=tfin,
+            RESULTAT=MESTAT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NBASE",
+            NOM_CMP="PRE1",
+            VALE_CALC=-9.80865412149e3,
+            CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=-9.81e3,
+            PRECISION=1e-3,
+        ),
+        _F(
+            INST=tfin,
+            RESULTAT=MESTAT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NTROU",
+            NOM_CMP="PRE1",
+            VALE_CALC=4.9063456839e3,
+            CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=0.5 * 9.81e3,
+            PRECISION=1e-3,
+        ),
+        _F(
+            INST=tfin,
+            RESULTAT=MESTAT,
+            NOM_CHAM="DEPL",
+            GROUP_NO="NSUP",
+            NOM_CMP="PRE1",
+            VALE_CALC=1.96213454837e4,
+            CRITERE="RELATIF",
+            REFERENCE="ANALYTIQUE",
+            VALE_REFE=2.0 * 9.81e3,
+            PRECISION=1e-3,
+        ),
+    )
+)
 """
 CALC_CHAMP(RESULTAT = MESTAT,
            reuse=MESTAT,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,44 +20,51 @@
 from ..Utilities import _
 
 cata_msg = {
-    1 : _("""
+    1: _(
+        """
 Format SALOME, l'argument 1 doit être le nom du fichier MED produit
 par le script SALOME. Les autres arguments ne sont pas utilisés.
-"""),
-
-    2 : _("""
+"""
+    ),
+    2: _(
+        """
 On ne sait pas traiter le format %(k1)s
-"""),
-
-    3 : _("""
+"""
+    ),
+    3: _(
+        """
 Code retour incorrect (MAXI %(i1)d) : %(i2)d
 
-"""),
-
-    6 : _("""
+"""
+    ),
+    6: _(
+        """
 Le fichier %(k1)s n'existe pas.
-"""),
-
-    8 : _("""
+"""
+    ),
+    8: _(
+        """
  Commande :
    %(k1)s
-"""),
-
-    9 : _("""
+"""
+    ),
+    9: _(
+        """
 ----- Sortie standard (stdout) ---------------------------------------------------
 %(k1)s
 ----- fin stdout -----------------------------------------------------------------
-"""),
-
-    10 : _("""
+"""
+    ),
+    10: _(
+        """
 ----- Sortie erreur standard (stderr) --------------------------------------------
 %(k1)s
 ----- fin stderr -----------------------------------------------------------------
-"""),
-
-    11 : _("""
+"""
+    ),
+    11: _(
+        """
  Code retour = %(i2)d      (maximum toléré : %(i1)d)
-"""),
-
-
+"""
+    ),
 }

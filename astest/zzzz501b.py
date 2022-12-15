@@ -26,12 +26,14 @@ import libaster
 code_aster.init("--test")
 test = code_aster.TestCase()
 
+
 def tco(obj):
     """Return TCO object name"""
     return "{0:19s}._TCO".format(obj.getName())
 
+
 # mesh
-mesh = LIRE_MAILLAGE(UNITE=20, FORMAT='MED')
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 tc0 = tco(mesh)
 test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
@@ -41,14 +43,11 @@ DETRUIRE(NOM=mesh)
 test.assertFalse(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
 # mesh < model
-mesh = LIRE_MAILLAGE(UNITE=20, FORMAT='MED')
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 tc0 = tco(mesh)
 test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
-model = AFFE_MODELE(MAILLAGE=(mesh, ),
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D'))
+model = AFFE_MODELE(MAILLAGE=(mesh,), AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 tc1 = tco(model)
 test.assertTrue(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 
@@ -64,26 +63,19 @@ test.assertFalse(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 test.assertFalse(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 
 # mesh < model, material < fieldmat
-mesh = LIRE_MAILLAGE(UNITE=20, FORMAT='MED')
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 tc0 = tco(mesh)
 test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
-model = AFFE_MODELE(MAILLAGE=(mesh, ),
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D'))
+model = AFFE_MODELE(MAILLAGE=(mesh,), AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 tc1 = tco(model)
 test.assertTrue(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 
-material = DEFI_MATERIAU(ELAS=_F(E=2000,
-                                 NU=0.3))
+material = DEFI_MATERIAU(ELAS=_F(E=2000, NU=0.3))
 tc2 = tco(material)
 test.assertTrue(libaster.debugJeveuxExists(tc2), msg="material / " + tc2)
 
-fieldmat = AFFE_MATERIAU(MAILLAGE=mesh,
-                         MODELE=model,
-                         AFFE=_F(TOUT='OUI',
-                                 MATER=material))
+fieldmat = AFFE_MATERIAU(MAILLAGE=mesh, MODELE=model, AFFE=_F(TOUT="OUI", MATER=material))
 tc3 = tco(fieldmat)
 test.assertTrue(libaster.debugJeveuxExists(tc3), msg="fieldmat / " + tc3)
 
@@ -112,13 +104,10 @@ test.assertFalse(libaster.debugJeveuxExists(tc2), msg="material / " + tc2)
 test.assertFalse(libaster.debugJeveuxExists(tc2), msg="fieldmat / " + tc3)
 
 # check for dependencies accessors
-mesh = LIRE_MAILLAGE(UNITE=20, FORMAT='MED')
-same = LIRE_MAILLAGE(UNITE=20, FORMAT='MED')
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
+same = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
-model = AFFE_MODELE(MAILLAGE=mesh,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D'))
+model = AFFE_MODELE(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 deps = model.getDependencies()
 test.assertFalse(mesh in deps)
 test.assertFalse(same in deps)
@@ -149,12 +138,8 @@ test.assertFalse(same in deps)
 test.assertEqual(len(deps), 0)
 
 # recreate material field to check dependencies after restarting
-material = DEFI_MATERIAU(ELAS=_F(E=2000,
-                                 NU=0.3))
-fieldmat = AFFE_MATERIAU(MAILLAGE=mesh,
-                         MODELE=model,
-                         AFFE=_F(TOUT='OUI',
-                                 MATER=material))
+material = DEFI_MATERIAU(ELAS=_F(E=2000, NU=0.3))
+fieldmat = AFFE_MATERIAU(MAILLAGE=mesh, MODELE=model, AFFE=_F(TOUT="OUI", MATER=material))
 deps = fieldmat.getDependencies()
 test.assertEqual(len(deps), 0)
 fieldmat.addDependency(model)

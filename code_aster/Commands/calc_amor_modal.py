@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,6 +25,7 @@ from ..Supervis import ExecuteCommand
 
 class ComputeModalDamping(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ListOfFloats`"""
+
     command_name = "CALC_AMOR_MODAL"
 
     def create_result(self, keywords):

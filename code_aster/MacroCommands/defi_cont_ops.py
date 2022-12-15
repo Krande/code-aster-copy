@@ -63,13 +63,12 @@ def defi_cont_ops(self, **keywords):
         "NITSCHE": ContactAlgo.Nitsche,
         "PENALISATION": ContactAlgo.Penalization,
     }
-    _type_cont = {
-        "UNILATERAL": ContactType.Unilateral,
-        "BILATERAL": ContactType.Bilateral,
+    _type_cont = {"UNILATERAL": ContactType.Unilateral, "BILATERAL": ContactType.Bilateral}
+    _vari_cont = {
+        "RAPIDE": ContactVariant.Rapide,
+        "ROBUSTE": ContactVariant.Robust,
+        "SYMETRIC": ContactVariant.Symetric,
     }
-    _vari_cont = {"RAPIDE": ContactVariant.Rapide,
-                  "ROBUSTE": ContactVariant.Robust,
-                  "SYMETRIC": ContactVariant.Symetric}
     _algo_frot = {
         "LAGRANGIEN": FrictionAlgo.Lagrangian,
         "NITSCHE": FrictionAlgo.Nitsche,

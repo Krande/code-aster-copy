@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ from .sd_util import *
 
 
 class sd_l_table(AsBase):
-#------------------------
+    # ------------------------
     nomj = SDNom(fin=19)
 
     # la SD l_table (liste de tables) est une SD destinée à stocker un ensemble de tables
@@ -44,13 +44,12 @@ class sd_l_table(AsBase):
         ltnt = self.LTNT.get()
         ltns = self.LTNS.get()
         nbtable = self.LTNT.lonuti
-        sdu_compare(self.LTNT, checker, nbtable, '>', 0, 'NBUTI(LTNT)>0')
-        sdu_compare(self.LTNS, checker, self.LTNS.lonuti,
-                    '==', nbtable, 'NBUTI(LTNS)==NBUTI(LTNT)')
+        sdu_compare(self.LTNT, checker, nbtable, ">", 0, "NBUTI(LTNT)>0")
+        sdu_compare(self.LTNS, checker, self.LTNS.lonuti, "==", nbtable, "NBUTI(LTNS)==NBUTI(LTNT)")
         for k in range(nbtable):
             petinom = ltnt[k].strip()
             nomtabl = ltns[k].strip()
-            sdu_compare(self.LTNT, checker, petinom, '!=', '', "LTNT[k]!=''")
-            sdu_compare(self.LTNS, checker, nomtabl, '!=', '', "LTNS[k]!=''")
+            sdu_compare(self.LTNT, checker, petinom, "!=", "", "LTNT[k]!=''")
+            sdu_compare(self.LTNS, checker, nomtabl, "!=", "", "LTNS[k]!=''")
             sd2 = sd_table(nomtabl)
             sd2.check(checker)

@@ -25,10 +25,12 @@ import json
 import os.path as osp
 import numpy as np
 
-try :
+try:
     import matplotlib
+
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
     HAS_MATPLOTLIB = True
 
 except ImportError:
@@ -37,169 +39,188 @@ except ImportError:
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),
-      IMPR_MACRO='NON')
+DEBUT(CODE=_F(NIV_PUB_WEB="INTRANET"), IMPR_MACRO="NON")
 
-testname = 'mac3c05a'
+testname = "mac3c05a"
 
-mac3c = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data', 'mac3c')
-with open(osp.join(mac3c, '%s.json'%testname)) as f:
+mac3c = osp.join(ExecutionParameter().get_option("rcdir"), "tests_data", "mac3c")
+with open(osp.join(mac3c, "%s.json" % testname)) as f:
     testconfig = json.load(f)
 
-conception = testconfig['conception']
-u20 = osp.join(mac3c, testconfig['unit20'])
-u32 = osp.join(mac3c, testconfig['unit32'])
-u33 = osp.join(mac3c, testconfig['unit33'])
-u38 = '%s.38'%testname
-u39 = osp.join(mac3c, testconfig['unit39'])
+conception = testconfig["conception"]
+u20 = osp.join(mac3c, testconfig["unit20"])
+u32 = osp.join(mac3c, testconfig["unit32"])
+u33 = osp.join(mac3c, testconfig["unit33"])
+u38 = "%s.38" % testname
+u39 = osp.join(mac3c, testconfig["unit39"])
 
-with open(osp.join(mac3c, 'mac3c00a.38')) as fin, open(u38, 'w') as fout:
-    fout.write(fin.read()%conception)
+with open(osp.join(mac3c, "mac3c00a.38")) as fin, open(u38, "w") as fout:
+    fout.write(fin.read() % conception)
 
 
-DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 20, FICHIER = u20)
-DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 32, FICHIER = u32)
-DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 33, FICHIER = u33)
-DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 38, FICHIER = u38)
-DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 39, FICHIER = u39)
+DEFI_FICHIER(ACTION="ASSOCIER", UNITE=20, FICHIER=u20)
+DEFI_FICHIER(ACTION="ASSOCIER", UNITE=32, FICHIER=u32)
+DEFI_FICHIER(ACTION="ASSOCIER", UNITE=33, FICHIER=u33)
+DEFI_FICHIER(ACTION="ASSOCIER", UNITE=38, FICHIER=u38)
+DEFI_FICHIER(ACTION="ASSOCIER", UNITE=39, FICHIER=u39)
 
-MA1 = LIRE_MAILLAGE(FORMAT='MED',
-                    UNITE=20)
+MA1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
 
-DATAMAC1 = LIRE_TABLE(UNITE      = 38,
-                      FORMAT     = 'LIBRE',
-                      SEPARATEUR = '\t')
+DATAMAC1 = LIRE_TABLE(UNITE=38, FORMAT="LIBRE", SEPARATEUR="\t")
 
 # "cuisson" d'un assemblage pendant un cycle
-CUIS = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
-                      TABLE_N     =  DATAMAC1,
-                      MAILLAGE_N  =  MA1,
-                      DEFORMATION = _F(UNITE_THYC   = 33,
-                                       NIVE_FLUENCE = 33.,
-                                       TYPE_MAINTIEN = 'FORCE',
-                                       FORCE_MAINTIEN = testconfig['compression'],
-                                       ARCHIMEDE      = 'NON'))
+CUIS = CALC_MAC3COEUR(
+    TYPE_COEUR="MONO",
+    TABLE_N=DATAMAC1,
+    MAILLAGE_N=MA1,
+    DEFORMATION=_F(
+        UNITE_THYC=33,
+        NIVE_FLUENCE=33.0,
+        TYPE_MAINTIEN="FORCE",
+        FORCE_MAINTIEN=testconfig["compression"],
+        ARCHIMEDE="NON",
+    ),
+)
 
 # essai de flexion apres cuisson d'un cycle
-INI_C = PERM_MAC3COEUR(TYPE_COEUR_N   = 'MONO',
-                       TYPE_COEUR_NP1   = 'MONO',
-                       RESU_N       = CUIS,
-                       TABLE_N      = DATAMAC1,
-                       TABLE_NP1    = DATAMAC1,
-                       MAILLAGE_NP1 = MA1)
+INI_C = PERM_MAC3COEUR(
+    TYPE_COEUR_N="MONO",
+    TYPE_COEUR_NP1="MONO",
+    RESU_N=CUIS,
+    TABLE_N=DATAMAC1,
+    TABLE_NP1=DATAMAC1,
+    MAILLAGE_NP1=MA1,
+)
 
-FLEX = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
-                      TABLE_N     =  DATAMAC1,
-                      DEFORMATION = _F(UNITE_THYC   = 32,
-                                       NIVE_FLUENCE = 0.,
-                                       RESU_INIT    = INI_C,
-                                       TYPE_MAINTIEN = 'FORCE',
-                                       FORCE_MAINTIEN = testconfig['compression'],
-                                       ARCHIMEDE      = 'NON'))
+FLEX = CALC_MAC3COEUR(
+    TYPE_COEUR="MONO",
+    TABLE_N=DATAMAC1,
+    DEFORMATION=_F(
+        UNITE_THYC=32,
+        NIVE_FLUENCE=0.0,
+        RESU_INIT=INI_C,
+        TYPE_MAINTIEN="FORCE",
+        FORCE_MAINTIEN=testconfig["compression"],
+        ARCHIMEDE="NON",
+    ),
+)
 
-FLEX=CALC_CHAMP(reuse =FLEX,
-                RESULTAT=FLEX,
-                PRECISION=1e-08,
-                FORCE=('FORC_NODA'))
+FLEX = CALC_CHAMP(reuse=FLEX, RESULTAT=FLEX, PRECISION=1e-08, FORCE=("FORC_NODA"))
 
-#essai de flexion d'un assemblage 2e cycle
-DATAMAC2 = LIRE_TABLE(UNITE      = 39,
-                      FORMAT     = 'LIBRE',
-                      SEPARATEUR = '\t')
+# essai de flexion d'un assemblage 2e cycle
+DATAMAC2 = LIRE_TABLE(UNITE=39, FORMAT="LIBRE", SEPARATEUR="\t")
 
-FLEX2 = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
-                       TABLE_N     =  DATAMAC2,
-                       MAILLAGE_N  =  MA1,
-                       FLUENCE_CYCLE = 33.,
-                       DEFORMATION = _F(UNITE_THYC   = 32,
-                                        NIVE_FLUENCE = 0.,
-                                        TYPE_MAINTIEN = 'FORCE',
-                                        FORCE_MAINTIEN = testconfig['compression'],
-                                        ARCHIMEDE      = 'NON'))
+FLEX2 = CALC_MAC3COEUR(
+    TYPE_COEUR="MONO",
+    TABLE_N=DATAMAC2,
+    MAILLAGE_N=MA1,
+    FLUENCE_CYCLE=33.0,
+    DEFORMATION=_F(
+        UNITE_THYC=32,
+        NIVE_FLUENCE=0.0,
+        TYPE_MAINTIEN="FORCE",
+        FORCE_MAINTIEN=testconfig["compression"],
+        ARCHIMEDE="NON",
+    ),
+)
 
-FLEX2=CALC_CHAMP(reuse =FLEX2,
-                 RESULTAT=FLEX2,
-                 PRECISION=1e-08,
-                 FORCE=('FORC_NODA'))
+FLEX2 = CALC_CHAMP(reuse=FLEX2, RESULTAT=FLEX2, PRECISION=1e-08, FORCE=("FORC_NODA"))
 
-POST1 = POST_RELEVE_T(ACTION = _F(OPERATION = 'EXTRACTION',
-                                  INTITULE = 'DY',
-                                  RESULTAT  = FLEX,
-                                  PRECISION=1e-08,
-                                  NOM_CHAM  = 'DEPL',
-                                  GROUP_NO = 'P_A_A_6',
-                                  NOM_CMP = 'DY'))
+POST1 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="DY",
+        RESULTAT=FLEX,
+        PRECISION=1e-08,
+        NOM_CHAM="DEPL",
+        GROUP_NO="P_A_A_6",
+        NOM_CMP="DY",
+    )
+)
 
-POST12 = POST_RELEVE_T(ACTION = _F(OPERATION = 'EXTRACTION',
-                                   INTITULE = 'DY',
-                                   RESULTAT  = FLEX2,
-                                   PRECISION=1e-08,
-                                   NOM_CHAM  = 'DEPL',
-                                   GROUP_NO = 'P_A_A_6',
-                                   NOM_CMP = 'DY'))
+POST12 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="DY",
+        RESULTAT=FLEX2,
+        PRECISION=1e-08,
+        NOM_CHAM="DEPL",
+        GROUP_NO="P_A_A_6",
+        NOM_CMP="DY",
+    )
+)
 
 
-DEPLF = RECU_FONCTION(TABLE=POST1,
-                      PARA_X='INST',
-                      PARA_Y='DY')
+DEPLF = RECU_FONCTION(TABLE=POST1, PARA_X="INST", PARA_Y="DY")
 
-DEPLF2 = RECU_FONCTION(TABLE=POST12,
-                       PARA_X='INST',
-                       PARA_Y='DY')
+DEPLF2 = RECU_FONCTION(TABLE=POST12, PARA_X="INST", PARA_Y="DY")
 
-POST2 = POST_RELEVE_T(ACTION = _F(OPERATION = 'EXTRACTION',
-                                  INTITULE = 'FORCES',
-                                  RESULTAT = FLEX,
-                                  PRECISION=1e-08,
-                                  NOM_CHAM = 'FORC_NODA',
-                                  GROUP_NO = ('GRIL_6'),
-                                  RESULTANTE = ('DX','DY','DZ'),
-                                  REPERE = 'GLOBAL'))
+POST2 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="FORCES",
+        RESULTAT=FLEX,
+        PRECISION=1e-08,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO=("GRIL_6"),
+        RESULTANTE=("DX", "DY", "DZ"),
+        REPERE="GLOBAL",
+    )
+)
 
-POST22 = POST_RELEVE_T(ACTION = _F(OPERATION = 'EXTRACTION',
-                                   INTITULE = 'FORCES',
-                                   RESULTAT = FLEX2,
-                                   PRECISION=1e-08,
-                                   NOM_CHAM = 'FORC_NODA',
-                                   GROUP_NO = ('GRIL_6'),
-                                   RESULTANTE = ('DX','DY','DZ'),
-                                   REPERE = 'GLOBAL'))
+POST22 = POST_RELEVE_T(
+    ACTION=_F(
+        OPERATION="EXTRACTION",
+        INTITULE="FORCES",
+        RESULTAT=FLEX2,
+        PRECISION=1e-08,
+        NOM_CHAM="FORC_NODA",
+        GROUP_NO=("GRIL_6"),
+        RESULTANTE=("DX", "DY", "DZ"),
+        REPERE="GLOBAL",
+    )
+)
 
-FORCF = RECU_FONCTION(TABLE=POST2,
-                      PARA_X='INST',
-                      PARA_Y='DY')
+FORCF = RECU_FONCTION(TABLE=POST2, PARA_X="INST", PARA_Y="DY")
 
-FORCF2 = RECU_FONCTION(TABLE=POST22,
-                       PARA_X='INST',
-                       PARA_Y='DY')
+FORCF2 = RECU_FONCTION(TABLE=POST22, PARA_X="INST", PARA_Y="DY")
 
 if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
 
-    fig, ax = plt.subplots(1, 1, figsize=(8,6))
+    fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 
-    ax.set_title('Comparaison flexion 2nd cycle %s'%conception)
-    ax.set_xlabel('DY(mm)')
-    ax.set_xlim(0., 80.)
-    ax.set_ylabel('Effort (N)')
-    ax.set_ylim(0., 1200.)
+    ax.set_title("Comparaison flexion 2nd cycle %s" % conception)
+    ax.set_xlabel("DY(mm)")
+    ax.set_xlim(0.0, 80.0)
+    ax.set_ylabel("Effort (N)")
+    ax.set_ylim(0.0, 1200.0)
 
-    ax.plot([i*1000 for i in DEPLF.Valeurs()[1]], FORCF.Valeurs()[1], color='crimson', label='Calcul cuisson plus flexion')
-    ax.plot([i*1000 for i in DEPLF2.Valeurs()[1]], FORCF2.Valeurs()[1], color='darkblue', label='Calcul flexion avec irradiation initiale')
+    ax.plot(
+        [i * 1000 for i in DEPLF.Valeurs()[1]],
+        FORCF.Valeurs()[1],
+        color="crimson",
+        label="Calcul cuisson plus flexion",
+    )
+    ax.plot(
+        [i * 1000 for i in DEPLF2.Valeurs()[1]],
+        FORCF2.Valeurs()[1],
+        color="darkblue",
+        label="Calcul flexion avec irradiation initiale",
+    )
 
     ax.grid()
     ax.legend(loc=2)
 
     # Modifier '' pour sauvegarder l'image sur un emplacement du disque
-    savedir = '' or os.getcwd()
-    plt.savefig(osp.join(savedir, '%s_cuisson_flexion.png'%testname))
+    savedir = "" or os.getcwd()
+    plt.savefig(osp.join(savedir, "%s_cuisson_flexion.png" % testname))
 
-DEFI_FICHIER(ACTION='LIBERER', UNITE=20)
-DEFI_FICHIER(ACTION='LIBERER', UNITE=32)
-DEFI_FICHIER(ACTION='LIBERER', UNITE=33)
-DEFI_FICHIER(ACTION='LIBERER', UNITE=38)
-DEFI_FICHIER(ACTION='LIBERER', UNITE=39)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=20)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=32)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=33)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=38)
+DEFI_FICHIER(ACTION="LIBERER", UNITE=39)
 
-INCLUDE(ALARME='NON',
-        DONNEE=osp.join(mac3c, testconfig['tests']))
+INCLUDE(ALARME="NON", DONNEE=osp.join(mac3c, testconfig["tests"]))
 
 FIN()

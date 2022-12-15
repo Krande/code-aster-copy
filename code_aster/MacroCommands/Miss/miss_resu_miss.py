@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,13 +53,12 @@ class MissCsolReader(object):
             self._read_all()
             self.fobj.close()
         except (ValueError, IOError, AssertionError) as err:
-            UTMESS('F', 'MISS0_7', vali=self.ln, valk=str(err))
+            UTMESS("F", "MISS0_7", vali=self.ln, valk=str(err))
         return self.listfreq, self.values
 
     def _read_all(self):
         """Read the file line per line."""
-        re_lab = re.compile('POINT *([0-9]+) *CHAMP NO *([0-9]+) *'
-                            'DDL NO *([0-9]+)')
+        re_lab = re.compile("POINT *([0-9]+) *CHAMP NO *([0-9]+) *" "DDL NO *([0-9]+)")
         nbf = self.freq_nb
         for ich in range(3):
             for iddl in range(3):
@@ -72,10 +71,13 @@ class MissCsolReader(object):
                     self.ln += 2
                     self.fobj.readline()
                     mat = re_lab.search(self.fobj.readline())
-                    assert mat is not None, 'unexpected line'
+                    assert mat is not None, "unexpected line"
                     nums = list(map(int, mat.groups()))
-                    assert nums == [ipc + 1, ich + 1, iddl + 1], \
-                        '(%d, %d, %d) expected' % (ipc + 1, ich + 1, iddl + 1)
+                    assert nums == [ipc + 1, ich + 1, iddl + 1], "(%d, %d, %d) expected" % (
+                        ipc + 1,
+                        ich + 1,
+                        iddl + 1,
+                    )
                     val = []
                     self.ln += lire_nb_valeurs(self.fobj, 4 * nbf, val, double)
                     array = NP.array(val).reshape((nbf, 4))
@@ -101,10 +103,11 @@ class ResultatPC:
 class TestMissCsolReader(unittest.TestCase):
 
     """test the reader of csol files"""
-    fcsol = 'ZZZZ108B.01.csol.a'
+
+    fcsol = "ZZZZ108B.01.csol.a"
 
     # unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
-                     #"requires %s" % faster)
+    # "requires %s" % faster)
     def test01_ext(self):
         """test creation of the .ext file"""
         if not osp.isfile(self.fcsol):
@@ -112,13 +115,14 @@ class TestMissCsolReader(unittest.TestCase):
         reader = MissCsolReader(3, 201)
         lfreq, values = reader.read(self.fcsol)
         self.tab = tab = Table()
-        tab['FREQ'] = lfreq
+        tab["FREQ"] = lfreq
         for ipc, respc in enumerate(values):
-            for iddl, comp in enumerate(('X', 'Y', 'Z')):
-                lab = 'PC_{}_{}_REEL'.format(ipc + 1, comp)
+            for iddl, comp in enumerate(("X", "Y", "Z")):
+                lab = "PC_{}_{}_REEL".format(ipc + 1, comp)
                 tab[lab] = respc.comp[iddl][0]
-                lab = 'PC_{}_{}_IMAG'.format(ipc + 1, comp)
+                lab = "PC_{}_{}_IMAG".format(ipc + 1, comp)
                 tab[lab] = respc.comp[iddl][1]
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

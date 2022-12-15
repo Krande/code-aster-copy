@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,124 +25,106 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.mesh_types as MT
 from cataelem.Options.options import OP
 
-#----------------
+# ----------------
 # Modes locaux :
-#----------------
+# ----------------
 
 
-CCOEFHF  = LocatedComponents(phys=PHY.COEH_F, type='ELEM',
-    components=('H',))
+CCOEFHF = LocatedComponents(phys=PHY.COEH_F, type="ELEM", components=("H",))
 
 
-CCOEFHR  = LocatedComponents(phys=PHY.COEH_R, type='ELEM',
-    components=('H',))
+CCOEFHR = LocatedComponents(phys=PHY.COEH_R, type="ELEM", components=("H",))
 
 
-CFLUXNF  = LocatedComponents(phys=PHY.FLUN_F, type='ELEM',
-    components=('FLUN',))
+CFLUXNF = LocatedComponents(phys=PHY.FLUN_F, type="ELEM", components=("FLUN",))
 
 
-CFLUXNR  = LocatedComponents(phys=PHY.FLUN_R, type='ELEM',
-    components=('FLUN',))
+CFLUXNR = LocatedComponents(phys=PHY.FLUN_R, type="ELEM", components=("FLUN",))
 
 
-NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-    components=('X','Y',))
+NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type="ELNO", components=("X", "Y"))
 
 
-EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-    components=('X','Y','W',))
+EGGEOP_R = LocatedComponents(
+    phys=PHY.GEOM_R, type="ELGA", location="RIGI", components=("X", "Y", "W")
+)
 
 
-CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-    components=('INST','DELTAT','THETA',))
+CTEMPSR = LocatedComponents(phys=PHY.INST_R, type="ELEM", components=("INST", "DELTAT", "THETA"))
 
 
-CT_EXTF  = LocatedComponents(phys=PHY.TEMP_F, type='ELEM',
-    components=('TEMP',))
+CT_EXTF = LocatedComponents(phys=PHY.TEMP_F, type="ELEM", components=("TEMP",))
 
 
-DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO',
-    components=('TEMP',))
+DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 
-MVECTTR  = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
+MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
-MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
+MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class THFOSE2(Element):
     """Please document this element"""
+
     meshType = MT.SEG2
-    elrefe =(
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
-        )
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4",)),)
     calculs = (
-
-        OP.CHAR_THER_FLUN_F(te=272,
-            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((SP.PVECTTR, MVECTTR), ),
+        OP.CHAR_THER_FLUN_F(
+            te=272,
+            para_in=((SP.PFLUXNF, CFLUXNF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
-        OP.CHAR_THER_FLUN_R(te=271,
-            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER),
-                     ),
-            para_out=((SP.PVECTTR, MVECTTR), ),
+        OP.CHAR_THER_FLUN_R(
+            te=271,
+            para_in=((SP.PFLUXNR, CFLUXNR), (SP.PGEOMER, NGEOMER)),
+            para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
-        OP.CHAR_THER_TEXT_F(te=270,
-            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-                     (SP.PT_EXTF, CT_EXTF), ),
-            para_out=((SP.PVECTTR, MVECTTR), ),
+        OP.CHAR_THER_TEXT_F(
+            te=270,
+            para_in=(
+                (SP.PCOEFHF, CCOEFHF),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+                (SP.PT_EXTF, CT_EXTF),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
-        OP.CHAR_THER_TEXT_R(te=269,
-            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPER, DDL_THER), (SP.PTEMPSR, CTEMPSR),
-                     (SP.PT_EXTR, LC.ET_EXTR), ),
-            para_out=((SP.PVECTTR, MVECTTR), ),
+        OP.CHAR_THER_TEXT_R(
+            te=269,
+            para_in=(
+                (SP.PCOEFHR, CCOEFHR),
+                (SP.PGEOMER, NGEOMER),
+                (SP.PTEMPER, DDL_THER),
+                (SP.PTEMPSR, CTEMPSR),
+                (SP.PT_EXTR, LC.ET_EXTR),
+            ),
+            para_out=((SP.PVECTTR, MVECTTR),),
         ),
-
-        OP.COOR_ELGA(te=478,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
+        OP.COOR_ELGA(
+            te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
-
-        OP.RIGI_THER_COEH_F(te=268,
-            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR), ),
+        OP.RIGI_THER_COEH_F(
+            te=268,
+            para_in=((SP.PCOEFHF, CCOEFHF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((OP.RIGI_THER_COEH_F.PMATTTR, MMATTTR),),
         ),
-
-        OP.RIGI_THER_COEH_R(te=267,
-            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER),
-                     (SP.PTEMPSR, CTEMPSR), ),
-            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR), ),
+        OP.RIGI_THER_COEH_R(
+            te=267,
+            para_in=((SP.PCOEFHR, CCOEFHR), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((OP.RIGI_THER_COEH_R.PMATTTR, MMATTTR),),
         ),
-
-        OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R), ),
-        ),
-
-        OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D), ),
-        ),
-
-
-        OP.TOU_INI_ELNO(te=99,
-            para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
-        ),
-
+        OP.TOU_INI_ELGA(te=99, para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGGEOP_R),)),
+        OP.TOU_INI_ELEM(te=99, para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM2D),)),
+        OP.TOU_INI_ELNO(te=99, para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER),)),
     )
 
 
-#------------------------------------------------------------
+# ------------------------------------------------------------
 class THFOSE3(THFOSE2):
     """Please document this element"""
+
     meshType = MT.SEG3
-    elrefe =(
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-        )
+    elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4",)),)

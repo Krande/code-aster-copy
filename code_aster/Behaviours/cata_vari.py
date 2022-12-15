@@ -25,12 +25,6 @@ from ..Utilities import _
 Un comportement ne doit/peut pas utiliser une variable internes dont le
 nom ne serait pas déclaré ici."""
 
-     
-    
-    
-    
-    
-
 
 DICT_NOM_VARI = {
     "AAAR": _("FLUA_ENDO_PORO avancement AAR"),
@@ -79,9 +73,9 @@ DICT_NOM_VARI = {
     "BIOG": _("FLUA_ENDO_PORO coeff de Biot effectif pour les RGI"),
     "BIOW": _("FLUA_ENDO_PORO coeff de Biot effectif pour la capillarite"),
     "BR_AVCHI": _("BETON_RAG : Avancement chimique"),
-    "BR_DVRAG1":_("BETON_RAG : Endommagement dû à la RAG, composante 1"),
-    "BR_DVRAG2":_("BETON_RAG : Endommagement dû à la RAG, composante 1"),
-    "BR_DVRAG3":_("BETON_RAG : Endommagement dû à la RAG, composante 1"),
+    "BR_DVRAG1": _("BETON_RAG : Endommagement dû à la RAG, composante 1"),
+    "BR_DVRAG2": _("BETON_RAG : Endommagement dû à la RAG, composante 1"),
+    "BR_DVRAG3": _("BETON_RAG : Endommagement dû à la RAG, composante 1"),
     "BR_EFU11": _("BETON_RAG : déformation déviatorique de fluage, composante 1"),
     "BR_EFU12": _("BETON_RAG : déformation déviatorique de fluage, composante 4"),
     "BR_EFU13": _("BETON_RAG : déformation déviatorique de fluage, composante 5"),
@@ -113,35 +107,63 @@ DICT_NOM_VARI = {
     "BR_SUT23": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 6"),
     "BR_SUT33": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 3"),
     "COHESION": _("cohésion"),
-    "COMMAX": _("Déformation à l’axe neutre maximale en compression (maximum sur les directions et instants"),
+    "COMMAX": _(
+        "Déformation à l’axe neutre maximale en compression (maximum sur les directions et instants"
+    ),
     "COMPT": _("itération de Newton courante,"),
     "COMR": _("itération de Newton de rupture,"),
     "CRITEPS": _("Critère en déformation, utilisé en Génie Civil"),
-    "CRITHILL": _("Critère de Hill : pour Hujeux : densité normalisée pour le travail du second ordre"),
+    "CRITHILL": _(
+        "Critère de Hill : pour Hujeux : densité normalisée pour le travail du second ordre"
+    ),
     "CRITRUPT": _("Critère de rupture pour CRIT_RUPT"),
     "CRITSIG": _("Critère en contrainte, utilisé en Génie Civil"),
     "CSHR": _("FLUA_ENDO_PORO perte de viscosité par séchage (coeff de consolidation par séchage)"),
-    "DABSCPZ"   : _("Fondations discret : Somme des incréments du déplacement plastique selon z, critère de Capacité Portante"),
-    "DABSSLX"   : _("Fondations discret : Somme des incréments du déplacement plastique selon x, critère de Glissement (SLiding)"),
-    "DABSSLY"   : _("Fondations discret : Somme des incréments du déplacement plastique selon y, critère de Glissement (SLiding)"),
-    "DACPRX"    : _("Fondations discret : Rotation selon X plastique, critère de Capacité Portante"),
-    "DACPRY"    : _("Fondations discret : Rotation selon Y plastique, critère de Capacité Portante"),
-    "DACPX"     : _("Fondations discret : Translation selon X plastique, critère de Capacité Portante"),
-    "DACPY"     : _("Fondations discret : Translation selon Y plastique, critère de Capacité Portante"),
-    "DACPZ"     : _("Fondations discret : Translation selon Z plastique, critère de Capacité Portante"),
-    "DAQCPRX"   : _("Fondations discret : Ecrouissage cinématique en rotation selon X, critère de Capacité Portante"),
-    "DAQCPRY"   : _("Fondations discret : Ecrouissage cinématique en rotation selon Y, critère de Capacité Portante"),
-    "DAQCPX"    : _("Fondations discret : Ecrouissage cinématique en translation selon X, critère de Capacité Portante"),
-    "DAQCPY"    : _("Fondations discret : Ecrouissage cinématique en translation selon Y, critère de Capacité Portante"),
-    "DAQSLX"    : _("Fondations discret : Ecrouissage cinématique en translation selon X, critère de Glissement (SLiding)"),
-    "DAQSLY"    : _("Fondations discret : Ecrouissage cinématique en translation selon Y, critère de Glissement (SLiding)"),
-    "DARCP"     : _("Fondations discret : Ecrouissage isotrope, critère de Capacoté Portante"),
-    "DASLRX"    : _("Fondations discret : Rotation selon X plastique, critère de Glissement (SLiding)"),
-    "DASLRY"    : _("Fondations discret : Rotation selon Y plastique, critère de Glissement (SLiding)"),
-    "DASLX"     : _("Fondations discret : Translation selon X plastique, critère de Glissement (SLiding)"),
-    "DASLY"     : _("Fondations discret : Translation selon Y plastique, critère de Glissement (SLiding)"),
-    "DASLZ"     : _("Fondations discret : Translation selon Z plastique, critère de Glissement (SLiding)"),
-    "DAUTRE"    : _("Fondations discret : Paramètre autre (au besoin)"),
+    "DABSCPZ": _(
+        "Fondations discret : Somme des incréments du déplacement plastique selon z, critère de Capacité Portante"
+    ),
+    "DABSSLX": _(
+        "Fondations discret : Somme des incréments du déplacement plastique selon x, critère de Glissement (SLiding)"
+    ),
+    "DABSSLY": _(
+        "Fondations discret : Somme des incréments du déplacement plastique selon y, critère de Glissement (SLiding)"
+    ),
+    "DACPRX": _("Fondations discret : Rotation selon X plastique, critère de Capacité Portante"),
+    "DACPRY": _("Fondations discret : Rotation selon Y plastique, critère de Capacité Portante"),
+    "DACPX": _("Fondations discret : Translation selon X plastique, critère de Capacité Portante"),
+    "DACPY": _("Fondations discret : Translation selon Y plastique, critère de Capacité Portante"),
+    "DACPZ": _("Fondations discret : Translation selon Z plastique, critère de Capacité Portante"),
+    "DAQCPRX": _(
+        "Fondations discret : Ecrouissage cinématique en rotation selon X, critère de Capacité Portante"
+    ),
+    "DAQCPRY": _(
+        "Fondations discret : Ecrouissage cinématique en rotation selon Y, critère de Capacité Portante"
+    ),
+    "DAQCPX": _(
+        "Fondations discret : Ecrouissage cinématique en translation selon X, critère de Capacité Portante"
+    ),
+    "DAQCPY": _(
+        "Fondations discret : Ecrouissage cinématique en translation selon Y, critère de Capacité Portante"
+    ),
+    "DAQSLX": _(
+        "Fondations discret : Ecrouissage cinématique en translation selon X, critère de Glissement (SLiding)"
+    ),
+    "DAQSLY": _(
+        "Fondations discret : Ecrouissage cinématique en translation selon Y, critère de Glissement (SLiding)"
+    ),
+    "DARCP": _("Fondations discret : Ecrouissage isotrope, critère de Capacoté Portante"),
+    "DASLRX": _("Fondations discret : Rotation selon X plastique, critère de Glissement (SLiding)"),
+    "DASLRY": _("Fondations discret : Rotation selon Y plastique, critère de Glissement (SLiding)"),
+    "DASLX": _(
+        "Fondations discret : Translation selon X plastique, critère de Glissement (SLiding)"
+    ),
+    "DASLY": _(
+        "Fondations discret : Translation selon Y plastique, critère de Glissement (SLiding)"
+    ),
+    "DASLZ": _(
+        "Fondations discret : Translation selon Z plastique, critère de Glissement (SLiding)"
+    ),
+    "DAUTRE": _("Fondations discret : Paramètre autre (au besoin)"),
     "DB1": _("c_plan ou 1d algo Deborst, variable interne 1"),
     "DB2": _("c_plan ou 1d algo Deborst, variable interne 2"),
     "DB3": _("c_plan ou 1d algo Deborst, variable interne 3"),
@@ -152,15 +174,21 @@ DICT_NOM_VARI = {
     "DCG3": _("FLUA_ENDO_PORO endommagements principaux de compression difffus RGI"),
     "DC": _("FLUA_ENDO_PORO endommagement de compression"),
     "DDISSM": _("Vitesse de dissipation mécanique"),
-    "DEPLPX":   _("DIS_ECRO_TRAC : Déplacement anélastique différentiel, suivant x local."),
-    "DEPLPY":   _("DIS_ECRO_TRAC : Déplacement anélastique différentiel, suivant y local."),
-    "DEPLPZ":   _("DIS_ECRO_TRAC : Déplacement anélastique différentiel, suivant z local."),
-    "DEPLX":    _("DIS_ECRO_TRAC : Déplacement différentiel, suivant x local."),
-    "DEPLY":    _("DIS_ECRO_TRAC : Déplacement différentiel, suivant y local."),
-    "DEPLZ":    _("DIS_ECRO_TRAC : Déplacement différentiel, suivant z local."),
-    "DEPPLAS1": _("JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 1"),
-    "DEPPLAS2": _("JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 2"),
-    "DEPPLAS3": _("JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 2"),
+    "DEPLPX": _("DIS_ECRO_TRAC : Déplacement anélastique différentiel, suivant x local."),
+    "DEPLPY": _("DIS_ECRO_TRAC : Déplacement anélastique différentiel, suivant y local."),
+    "DEPLPZ": _("DIS_ECRO_TRAC : Déplacement anélastique différentiel, suivant z local."),
+    "DEPLX": _("DIS_ECRO_TRAC : Déplacement différentiel, suivant x local."),
+    "DEPLY": _("DIS_ECRO_TRAC : Déplacement différentiel, suivant y local."),
+    "DEPLZ": _("DIS_ECRO_TRAC : Déplacement différentiel, suivant z local."),
+    "DEPPLAS1": _(
+        "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 1"
+    ),
+    "DEPPLAS2": _(
+        "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 2"
+    ),
+    "DEPPLAS3": _(
+        "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de départ, composante 2"
+    ),
     "DEPSPEQ": _("incrément de déformation plastique équivalente"),
     "DEPS-TH": _("PINTO-MENEGOTTO V5"),
     "DETOPTG": _("Hujeux : déterminant de la matrice tangente"),
@@ -188,7 +216,9 @@ DICT_NOM_VARI = {
     "DISSGLIS": _("dissipation de glissement"),
     "DISSIP": _("dissipation plastique"),
     "DISSTHER": _("dissipation Thermodynamique"),
-    "DISSTOTA": _("JONC_ENDO_PLAS : dissipation liée à l'endommagement et à l'écrouissage cinématique, variable interne 6"),
+    "DISSTOTA": _(
+        "JONC_ENDO_PLAS : dissipation liée à l'endommagement et à l'écrouissage cinématique, variable interne 6"
+    ),
     "DISTSDEV": _("CJS distance normalisée au seuil déviatoire"),
     "DISTSISO": _("CJS distance normalisée au seuil isotrope"),
     "DOMAINE": _("domaine de comportement de la roche"),
@@ -202,7 +232,7 @@ DICT_NOM_VARI = {
     "DSW4": _("FLUA_ENDO_PORO Cumul des surpessions capillaires en dessiccation sous charge"),
     "DSW5": _("FLUA_ENDO_PORO Cumul des surpessions capillaires en dessiccation sous charge"),
     "DSW6": _("FLUA_ENDO_PORO Cumul des surpessions capillaires en dessiccation sous charge"),
-    "DT0" : _("RGI_BETON Endommagement de traction global"),
+    "DT0": _("RGI_BETON Endommagement de traction global"),
     "DTG0": _("RGI_BETON Endommagement max de traction de RGI"),
     "DTG1": _("FLUA_ENDO_PORO endommagements principaux de traction diffus RGI"),
     "DTG2": _("FLUA_ENDO_PORO endommagements principaux de traction diffus RGI"),
@@ -214,8 +244,12 @@ DICT_NOM_VARI = {
     "DTPP": _("FLUA_ENDO_PORO endommagement de traction diffus pre pic"),
     "DUY": _("valeur maximale de la différence déplacement local-déplacement limite"),
     "EBLOC": _("énergie bloquée"),
-    "ECRISOM1": _("JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement en mode 1"),
-    "ECRISOM2": _("JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement en mode 2"),
+    "ECRISOM1": _(
+        "JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement en mode 1"
+    ),
+    "ECRISOM2": _(
+        "JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement en mode 2"
+    ),
     "ECROCINE": _("JOINT_BA : valeur de l'écrouissage cinématique par frottement des fissures"),
     "ECROISOT": _("Variable d'écrouissage isotrope"),
     "EDISSCUM": _("énergie dissipée cumulée à chaque pas pour CRIT_RUPT"),
@@ -329,9 +363,9 @@ DICT_NOM_VARI = {
     "EPSRN-1": _("déformation du cycle précédent  Pinto-Menegotto"),
     "EPSRN": _("déformation du cycle actuel, Pinto-Menegotto"),
     "EPSVEQ": _("déformation visqueuse équivalente cumulée"),
-    "EPSVOLME" : _("déformations volumiques élastiques mécaniques"),
-    "EPSVOLTH" : _("déformations volumiques élastiques thermiques"),
-    "EPSVOLVP" : _("déformations volumiques viscoplastiques"),
+    "EPSVOLME": _("déformations volumiques élastiques mécaniques"),
+    "EPSVOLTH": _("déformations volumiques élastiques thermiques"),
+    "EPSVOLVP": _("déformations volumiques viscoplastiques"),
     "EPT1": _("FLUA_ENDO_PORO deformation plastique de traction "),
     "EPT2": _("FLUA_ENDO_PORO deformation plastique de traction "),
     "EPT3": _("FLUA_ENDO_PORO deformation plastique de traction "),
@@ -368,20 +402,30 @@ DICT_NOM_VARI = {
     "FH_Z": _("flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 3"),
     "FLEMAX": _("Déformation maximale absolue au cours de temps en flexion"),
     "FORCE": _("Force"),
-    "FORCEX":   _("DIS_ECRO_TRAC : Force suivant x local."),
-    "FORCEY":   _("DIS_ECRO_TRAC : Force suivant y local."),
-    "FORCEZ":   _("DIS_ECRO_TRAC : Force suivant z local."),
-    "FORCXX":   _("DIS_ECRO_TRAC : Force écrouissage cinématique suivant x local."),
-    "FORCXY":   _("DIS_ECRO_TRAC : Force écrouissage cinématique suivant y local."),
-    "FORCXZ":   _("DIS_ECRO_TRAC : Force écrouissage cinématique suivant z local."),
-    "GAMMAECR": _("le paramètre d'écrouissage correspondant à la déformation irréversible majeure."),
+    "FORCEX": _("DIS_ECRO_TRAC : Force suivant x local."),
+    "FORCEY": _("DIS_ECRO_TRAC : Force suivant y local."),
+    "FORCEZ": _("DIS_ECRO_TRAC : Force suivant z local."),
+    "FORCXX": _("DIS_ECRO_TRAC : Force écrouissage cinématique suivant x local."),
+    "FORCXY": _("DIS_ECRO_TRAC : Force écrouissage cinématique suivant y local."),
+    "FORCXZ": _("DIS_ECRO_TRAC : Force écrouissage cinématique suivant z local."),
+    "GAMMAECR": _(
+        "le paramètre d'écrouissage correspondant à la déformation irréversible majeure."
+    ),
     "GAMMAP": _("déformation déviatorique plastique"),
     "GAMMAVP": _("déformation déviatorique viscoplastique"),
     "GLIS": _("JOINT_BA : déformation de glissement cumulée par frottement des fissures"),
-    "GLISXINF": _("DHRC : déformation de glissement le long des aciers orientés selon X dans la partie inférieure de la plaque"),
-    "GLISXSUP": _("DHRC : déformation de glissement le long des aciers orientés selon X dans la partie supérieure de la plaque"),
-    "GLISYINF": _("DHRC : déformation de glissement le long des aciers orientés selon Y dans la partie inférieure de la plaque"),
-    "GLISYSUP": _("DHRC : déformation de glissement le long des aciers orientés selon Y dans la partie supérieure de la plaque"),
+    "GLISXINF": _(
+        "DHRC : déformation de glissement le long des aciers orientés selon X dans la partie inférieure de la plaque"
+    ),
+    "GLISXSUP": _(
+        "DHRC : déformation de glissement le long des aciers orientés selon X dans la partie supérieure de la plaque"
+    ),
+    "GLISYINF": _(
+        "DHRC : déformation de glissement le long des aciers orientés selon Y dans la partie inférieure de la plaque"
+    ),
+    "GLISYSUP": _(
+        "DHRC : déformation de glissement le long des aciers orientés selon Y dans la partie supérieure de la plaque"
+    ),
     "GONF": _("gonflement"),
     "GR1": _("elas_poutre_GR v1"),
     "GR2": _("elas_poutre_GR v2"),
@@ -391,32 +435,76 @@ DICT_NOM_VARI = {
     "GRADP_Z": _("gradient de pression dans le repère global ( xxx_JOINT_HYME)  Composante 3"),
     "H1": _("Hayhurst : variable d'écrouissage H1"),
     "H2": _("Hayhurst : variable d'écrouissage H2"),
-    "HIS10": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 2"),
-    "HIS11": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 3"),
-    "HIS12": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 4"),
-    "HIS13": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 1"),
-    "HIS14": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 2"),
-    "HIS15": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 3"),
-    "HIS16": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 4"),
-    "HIS17": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 1"),
-    "HIS18": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 2"),
-    "HIS19": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 3"),
-    "HIS20": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 4"),
+    "HIS10": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 2"
+    ),
+    "HIS11": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 3"
+    ),
+    "HIS12": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 4"
+    ),
+    "HIS13": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 1"
+    ),
+    "HIS14": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 2"
+    ),
+    "HIS15": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 3"
+    ),
+    "HIS16": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 2, composante 4"
+    ),
+    "HIS17": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 1"
+    ),
+    "HIS18": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 2"
+    ),
+    "HIS19": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 3"
+    ),
+    "HIS20": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 3, composante 4"
+    ),
     "HIS21": _("Hujeux : variable mémoratrice discontinue du mécanisme de consolidation"),
-    "HIS22": _("Hujeux : variable mémoratrice discontinue de normale à la surface de charge du mécanisme de consolidation"),
+    "HIS22": _(
+        "Hujeux : variable mémoratrice discontinue de normale à la surface de charge du mécanisme de consolidation"
+    ),
     "HIS34": _("Hujeux : Indicateur d'état des mécanismes actifs après convergence"),
-    "HIS9": _("Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 1"),
+    "HIS9": _(
+        "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan 1, composante 1"
+    ),
     "HYDF": _("FLUA_ENDO_PORO hydratation fin de pas"),
-    "INDETAC1": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 1"),
-    "INDETAC2": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 2"),
-    "INDETAC3": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 3"),
-    "INDETAC4": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 4"),
-    "INDETAM1": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 1"),
-    "INDETAM2": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 2"),
-    "INDETAM3": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 3"),
-    "INDETAM4": _("Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 4"),
+    "INDETAC1": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 1"
+    ),
+    "INDETAC2": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 2"
+    ),
+    "INDETAC3": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 3"
+    ),
+    "INDETAC4": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, composante 4"
+    ),
+    "INDETAM1": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 1"
+    ),
+    "INDETAM2": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 2"
+    ),
+    "INDETAM3": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 3"
+    ),
+    "INDETAM4": _(
+        "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou de passage au cyclique, composante 4"
+    ),
     "INDICDIL": _("indicateur de contractance ou de dilatance"),
-    "INDIC": _("LETK : indicateur de la position de l'etat de contrainte par rapport aux seuils viscoplastiques"),
+    "INDIC": _(
+        "LETK : indicateur de la position de l'etat de contrainte par rapport aux seuils viscoplastiques"
+    ),
     "INDICYCL": _(" Pinto-Menegotto, indicateur d'activation du comportement cyclique"),
     "INDIDISS": _("Indicateur de dissipation =0 si régime linéaire, =1 si régime dissipatif."),
     "INDIEND1": _("indicateur d'endommagement pour la flexion positive"),
@@ -427,12 +515,18 @@ DICT_NOM_VARI = {
     "INDIFLAM": _("indicateur de flambement"),
     "INDIHYDR": _("indicateur d'irréversibilité hydrique"),
     "INDIOUV": _("JOINT_MECA_FROT : indicateur d'ouverture complète =0 fermé, =1 ouvert"),
-    "INDIPLAC": _("indicateur de plasticité en compression  (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"),
+    "INDIPLAC": _(
+        "indicateur de plasticité en compression  (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"
+    ),
     "INDIPLAS": _("indicateur de plasticité (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"),
-    "INDIPLAT": _("indicateur de plasticité en traction  (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"),
+    "INDIPLAT": _(
+        "indicateur de plasticité en traction  (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"
+    ),
     "INDIVIDE": _("indice des vides"),
     "INDIVISC": _("indicateur de viscoplasticité"),
-    "INISEUIL": _("JONC_ENDO_PLAS : variable d'initialisation des seuils d'endommagement, activée a t=0, variable interne 9"),
+    "INISEUIL": _(
+        "JONC_ENDO_PLAS : variable d'initialisation des seuils d'endommagement, activée a t=0, variable interne 9"
+    ),
     "IRRA": _("irradiation"),
     "IRVECU": _("mémorisation de l'historique d'irradiation (fluence),"),
     "ISPH": _("BETON_UMLV : v21"),
@@ -445,17 +539,19 @@ DICT_NOM_VARI = {
     "KSIYY": _("tenseur de rappel pour l'effet de mémoire, composante YY"),
     "KSIYZ": _("tenseur de rappel pour l'effet de mémoire, composante YZ"),
     "KSIZZ": _("tenseur de rappel pour l'effet de mémoire, composante ZZ"),
-    "LAMBDA": _("JOINT_MECA_FROT : paramètre croissant indiquant le déplacement tangentiel plastique cumulé (sans orientation)."),
+    "LAMBDA": _(
+        "JOINT_MECA_FROT : paramètre croissant indiquant le déplacement tangentiel plastique cumulé (sans orientation)."
+    ),
     "MARTENSITE": _("phase métallurgique acier variable (martensite)"),
     "MEMOECRO": _("CIN2_MEMO : variable relative à la mémoire d'écrouissage q"),
-    "MIXITE_S":_("Taux de mixité calculé à partir des sauts de déplacements"),
-    "MIXITE_G":_("Taux de mixité calculé à partir des taux de restitution d'énergie"),
+    "MIXITE_S": _("Taux de mixité calculé à partir des sauts de déplacements"),
+    "MIXITE_G": _("Taux de mixité calculé à partir des taux de restitution d'énergie"),
     "NBITER": _("nombre d'itérations internes"),
     "NBSSPAS": _("nombre de redécoupages locaux du pas de temps"),
     "PCENDOT": _("pourcentage d'endommagement tangentiel"),
     "PCENERDI": _("pourcentage d'endommagement normal (dans la zone adoucissante)"),
     "PCR": _("pression critique"),
-    "PCUM" :    _("DIS_ECRO_TRAC : Déplacement anélastique cumulé"),
+    "PCUM": _("DIS_ECRO_TRAC : Déplacement anélastique cumulé"),
     "PDISSCUM": _("puissance dissipée cumulée à chaque pas pour CRIT_RUPT"),
     "PDISS": _("puissance dissipée pour CRIT_RUPT"),
     "PERLITE": _("phase métallurgique acier variable (perlite)"),
@@ -475,21 +571,33 @@ DICT_NOM_VARI = {
     "PRGI": _("FLUA_ENDO_PORO pression de RGI"),
     "PSHR": _("FLUA_ENDO_PORO pression capillaire de l eau"),
     "PVP": _("Pression de vapeur"),
-    "RAIDEUR":  _("DIS_ZENER : Raideur du discret"),
-    "RAIDEX":   _("DIS_ECRO_TRAC : Raideur tangente du discret suivant x local"),
-    "RAIDEY":   _("DIS_ECRO_TRAC : Raideur tangente du discret suivant y local"),
-    "RAIDEZ":   _("DIS_ECRO_TRAC : Raideur tangente du discret suivant z local"),
+    "RAIDEUR": _("DIS_ZENER : Raideur du discret"),
+    "RAIDEX": _("DIS_ECRO_TRAC : Raideur tangente du discret suivant x local"),
+    "RAIDEY": _("DIS_ECRO_TRAC : Raideur tangente du discret suivant y local"),
+    "RAIDEZ": _("DIS_ECRO_TRAC : Raideur tangente du discret suivant z local"),
     "RESIDU": _("valeur du test local d'arrêt des itérations internes"),
     "RHOLIQ": _("Masse volumique du liquide"),
-    "RHXZ": _("Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 2"),
-    "RHYZ": _("Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 1"),
-    "ROTAMOIN": _("JONC_ENDO_PLAS : variable intermédiaire en rotation en flexion négative theta_-, variable interne 4"),
-    "ROTAPLAS": _("JONC_ENDO_PLAS : rotation plastique theta_p autour de l'axe z local, variable interne 2"),
-    "ROTAPLUS": _("JONC_ENDO_PLAS : variable intermédiaire en rotation en flexion positive theta_+, variable interne 3"),
-    "ROTATOTA": _("JONC_ENDO_PLAS : rotation différentielle thetaN2 - thetaN1 autour de l'axe z local, variable interne 1"),
+    "RHXZ": _(
+        "Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 2"
+    ),
+    "RHYZ": _(
+        "Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant le décharge du mécanisme déviatoire du plan 1"
+    ),
+    "ROTAMOIN": _(
+        "JONC_ENDO_PLAS : variable intermédiaire en rotation en flexion négative theta_-, variable interne 4"
+    ),
+    "ROTAPLAS": _(
+        "JONC_ENDO_PLAS : rotation plastique theta_p autour de l'axe z local, variable interne 2"
+    ),
+    "ROTAPLUS": _(
+        "JONC_ENDO_PLAS : variable intermédiaire en rotation en flexion positive theta_+, variable interne 3"
+    ),
+    "ROTATOTA": _(
+        "JONC_ENDO_PLAS : rotation différentielle thetaN2 - thetaN1 autour de l'axe z local, variable interne 1"
+    ),
     "RSIGMA": _("Facteur de triaxialité des contraintes, modèle Mazars"),
     "SATLIQ": _("Saturation"),
-    "SAUT_MAX":_("saut equivalent total max atteint"),
+    "SAUT_MAX": _("saut equivalent total max atteint"),
     "SAUT_N": _("saut normal"),
     "SAUT_T1": _("saut tangentiel 1"),
     "SAUT_T2": _("saut tangentiel 2"),
@@ -498,7 +606,9 @@ DICT_NOM_VARI = {
     "SAUTRUPT": _("seuil de propagation de la fissure (rupture)"),
     "SAUTTANG": _("saut equivalent tangentiel"),
     "SDEVCRIT": _("CJS rapport entre le seuil déviatoire et le seuil déviatorique critique"),
-    "SDEVEPSP": _("CJS signe du produit contracté de la contrainte déviatorique par la déformation plastique déviatorique"),
+    "SDEVEPSP": _(
+        "CJS signe du produit contracté de la contrainte déviatorique par la déformation plastique déviatorique"
+    ),
     "SEUILDEP": _("CZM  seuil correspondant au plus grand saut de déplacement (en norme)"),
     "SEUILHYD": _("seuil hydrique"),
     "SEUILISO": _("seuil isotrope"),
@@ -551,12 +661,24 @@ DICT_NOM_VARI = {
     "TEMP": _("température"),
     "TEPG": _("FLUA_ENDO_PORO variation de volume par fissuration rgi"),
     "TEPS": _("FLUA_ENDO_PORO variation de volume meca total"),
-    "THXY1": _("Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 3, composante 1"),
-    "THXY2": _("Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 3, composante 2"),
-    "THXZ1": _("Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 2, composante 1"),
-    "THXZ2": _("Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 2, composante 2"),
-    "THYZ1": _("Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 1, composante 1"),
-    "THYZ2": _("Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 1, composante 2"),
+    "THXY1": _(
+        "Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 3, composante 1"
+    ),
+    "THXY2": _(
+        "Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 3, composante 2"
+    ),
+    "THXZ1": _(
+        "Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 2, composante 1"
+    ),
+    "THXZ2": _(
+        "Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 2, composante 2"
+    ),
+    "THYZ1": _(
+        "Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 1, composante 1"
+    ),
+    "THYZ2": _(
+        "Hujeux : normale entrante à la surface de charge du mécanisme père du mécanisme déviatoire du plan 1, composante 2"
+    ),
     "TRAMAX": _("Déformation maximale absolue au cours de temps en membrane"),
     "TXX": _("GDEF_LOG  contrainte T, composante XX"),
     "TXY": _("GDEF_LOG  contrainte T, composante XY"),
@@ -668,7 +790,9 @@ DICT_NOM_VARI = {
     "WSHR": _("FLUA_ENDO_PORO volume d eau capillaire (necessaire sous iteration fluage3d)"),
     "X1": _("coordonnée X de la pointe de fissure après rupture par propagation,"),
     "X2": _("coordonnée X de la pointe de fissure 2 lors de l'amorçage,"),
-    "XCIN_MZZ": _("JONC_ENDO_PLAS : moment de rappel associé à l'écrouissage cinématique, variable interne 5"),
+    "XCIN_MZZ": _(
+        "JONC_ENDO_PLAS : moment de rappel associé à l'écrouissage cinématique, variable interne 5"
+    ),
     "XCINXX": _("tenseur cinématique, composante XX"),
     "XCINXY": _("tenseur cinématique, composante XY"),
     "XCINXZ": _("tenseur cinématique, composante XZ"),
@@ -678,12 +802,24 @@ DICT_NOM_VARI = {
     "XFLEX1": _("GLRC_DAMAGE : tenseur d'écrouissage cinématique en flexion composante 1"),
     "XFLEX2": _("GLRC_DAMAGE : tenseur d'écrouissage cinématique en flexion composante 2"),
     "XFLEX3": _("GLRC_DAMAGE : tenseur d'écrouissage cinématique en flexion composante 3"),
-    "XHXY1": _("Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 3, composante 1"),
-    "XHXY2": _("Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 3, composante 2"),
-    "XHXZ1": _("Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 2, composante1"),
-    "XHXZ2": _("Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 2, composante2"),
-    "XHYZ1": _("Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 1, composante 1"),
-    "XHYZ2": _("Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 1, composante 2"),
+    "XHXY1": _(
+        "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 3, composante 1"
+    ),
+    "XHXY2": _(
+        "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 3, composante 2"
+    ),
+    "XHXZ1": _(
+        "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 2, composante1"
+    ),
+    "XHXZ2": _(
+        "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 2, composante2"
+    ),
+    "XHYZ1": _(
+        "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 1, composante 1"
+    ),
+    "XHYZ2": _(
+        "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme déviatoire du plan 1, composante 2"
+    ),
     "XIP": _("variable d'écrouissage élastoplastique"),
     "XIVP": _("variable d'écrouissage viscoplastique"),
     "XMEMB1": _("GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 1"),

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -18,11 +18,11 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
+#include "aster.h"
+
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "aster.h"
 
 /*
  * This module defines a wrapper to call GNU libc backtrace functions.
@@ -30,8 +30,7 @@
 #define LEVEL 25
 
 /* Obtain a backtrace and print it to stdout. */
-void DEF0(PRINT_TRACE,print_trace)
-{
+void DEF0( PRINT_TRACE, print_trace ) {
 #ifdef ASTER_HAVE_BACKTRACE
 
     void *array[LEVEL];
@@ -39,15 +38,15 @@ void DEF0(PRINT_TRACE,print_trace)
     char **strings;
     size_t i;
 
-    size = backtrace(array, LEVEL);
-    strings = backtrace_symbols(array, size);
+    size = backtrace( array, LEVEL );
+    strings = backtrace_symbols( array, size );
 
-    fprintf(stderr, "Traceback returned by GNU libc (last %zd stack frames):\n", size);
+    fprintf( stderr, "Traceback returned by GNU libc (last %zd stack frames):\n", size );
 
-    for (i = 0; i < size; i++)
-        fprintf(stderr, "%s\n", strings[i]);
+    for ( i = 0; i < size; i++ )
+        fprintf( stderr, "%s\n", strings[i] );
 
-    free(strings);
+    free( strings );
 
 #endif
 }

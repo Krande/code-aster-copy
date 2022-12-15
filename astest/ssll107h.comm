@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,17 @@
 #
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-nom='SECT1'
+nom = "SECT1"
 
-TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',FORMAT='MED',
-     # UNIQUEMENT POUR NE PAS AVOIR DE MATRICE SINGULIERE:
-                               GROUP_NO='N1',NOM=nom )
+TCARS = MACR_CARA_POUTRE(
+    GROUP_MA_BORD="LPOU",
+    FORMAT="MED",
+    # UNIQUEMENT POUR NE PAS AVOIR DE MATRICE SINGULIERE:
+    GROUP_NO="N1",
+    NOM=nom,
+)
 
 
 IMPR_TABLE(TABLE=TCARS, UNITE=6, INFO=2)
@@ -35,96 +39,96 @@ IMPR_TABLE(TABLE=TCARS, UNITE=6, INFO=2)
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
 #
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=29.500000000,
-           VALE_REFE=29.5,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='A',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=5.0000000000000001e-3,
+    VALE_CALC=29.500000000,
+    VALE_REFE=29.5,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="A",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(PRECISION=2.E-3,
-           VALE_CALC=6.860169492,
-           VALE_REFE=6.8612000000000002,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='CDG_Y',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=2.0e-3,
+    VALE_CALC=6.860169492,
+    VALE_REFE=6.8612000000000002,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="CDG_Y",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(VALE_REFE=10.0,
-           VALE_CALC=10.0,
-           PRECISION=1.E-3,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='CDG_Z',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    VALE_REFE=10.0,
+    VALE_CALC=10.0,
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="CDG_Z",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(PRECISION=4.0000000000000001E-3,
-           VALE_CALC=2.449398298,
-           VALE_REFE=2.4582999999999999,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='JX',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=4.0000000000000001e-3,
+    VALE_CALC=2.449398298,
+    VALE_REFE=2.4582999999999999,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="JX",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(PRECISION=0.059999999999999998,
-           VALE_CALC=4.486205846,
-           VALE_REFE=4.2530000000000001,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='AY',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=0.059999999999999998,
+    VALE_CALC=4.486205846,
+    VALE_REFE=4.2530000000000001,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="AY",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(PRECISION=0.19,
-           VALE_CALC=1.916878253,
-           VALE_REFE=1.6180000000000001,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='AZ',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=0.19,
+    VALE_CALC=1.916878253,
+    VALE_REFE=1.6180000000000001,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="AZ",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE=0.0,
-           VALE_CALC=0.0,
-           PRECISION=1.E-3,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='EY',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE=0.0,
+    VALE_CALC=0.0,
+    PRECISION=1.0e-3,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="EY",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=-15.077436213,
-           VALE_REFE=-15.0908,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='EZ',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=0.02,
+    VALE_CALC=-15.077436213,
+    VALE_REFE=-15.0908,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="EZ",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-TEST_TABLE(PRECISION=3.0000000000000001E-3,
-           VALE_CALC= 8.71192435E+04,
-           VALE_REFE=8.6899E4,
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='JG',
-           TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K=nom,),
-           )
+TEST_TABLE(
+    PRECISION=3.0000000000000001e-3,
+    VALE_CALC=8.71192435e04,
+    VALE_REFE=8.6899e4,
+    REFERENCE="ANALYTIQUE",
+    NOM_PARA="JG",
+    TABLE=TCARS,
+    FILTRE=_F(NOM_PARA="LIEU", VALE_K=nom),
+)
 
-FIN( )
+FIN()
 #

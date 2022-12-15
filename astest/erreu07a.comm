@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,82 +22,99 @@
 # IL Y A 2 MESSAGES DIFFERENTS SELON QEU L'ON UTILISE :
 #   * ETAT_INIT / EVOL_NOLI + INST
 #   * ETAT_INIT / DEPL + SIGM + VARI
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 from code_aster import AsterError
 from code_aster.Commands import *
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ),DEBUG=_F(SDVERI='OUI'),
-      ERREUR=_F(ERREUR_F='EXCEPTION',),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), ERREUR=_F(ERREUR_F="EXCEPTION"))
 
 import re
-fmt_raison='-'*80+"""
+
+fmt_raison = (
+    "-" * 80
+    + """
 
    Exception interceptee
    Raison : %s
 
-"""+'-'*80+'\n'
+"""
+    + "-" * 80
+    + "\n"
+)
 
-MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
-DEFI_GROUP(reuse =MAIL, MAILLAGE=MAIL,
-              CREA_GROUP_MA=(
-                    _F(NOM='GXXXXXX_GM2', UNION=('M2',)),
-                    _F(NOM='GXXXXXX_GM89', UNION=('M8','M9',)),
-                    _F(NOM='GXXXXXX_GMS2',  DIFFE=('GXXXXXX_CARRE','GXXXXXX_GM2',)),
-                    _F(NOM='GXXXXXX_GMS89', DIFFE=('GXXXXXX_CARRE','GXXXXXX_GM89',)),
-             ))
+MAIL = LIRE_MAILLAGE(FORMAT="ASTER")
+DEFI_GROUP(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    CREA_GROUP_MA=(
+        _F(NOM="GXXXXXX_GM2", UNION=("M2",)),
+        _F(NOM="GXXXXXX_GM89", UNION=("M8", "M9")),
+        _F(NOM="GXXXXXX_GMS2", DIFFE=("GXXXXXX_CARRE", "GXXXXXX_GM2")),
+        _F(NOM="GXXXXXX_GMS89", DIFFE=("GXXXXXX_CARRE", "GXXXXXX_GM89")),
+    ),
+)
 
-SIGMF=DEFI_FONCTION( NOM_PARA='EPSI', VALE=(0.1,   200.,
-                                            1.0,   500. ))
-MATER=DEFI_MATERIAU(
-          ELAS=     _F(E= 2000., NU = 0.3),
-          PRAGER=   _F(C= 0.1),
-          TRACTION= _F(SIGM= SIGMF),
-          ECRO_LINE=_F(D_SIGM_EPSI=100., SY=100.,),
-          )
-CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL, AFFE=_F( TOUT = 'OUI',MATER = MATER))
+SIGMF = DEFI_FONCTION(NOM_PARA="EPSI", VALE=(0.1, 200.0, 1.0, 500.0))
+MATER = DEFI_MATERIAU(
+    ELAS=_F(E=2000.0, NU=0.3),
+    PRAGER=_F(C=0.1),
+    TRACTION=_F(SIGM=SIGMF),
+    ECRO_LINE=_F(D_SIGM_EPSI=100.0, SY=100.0),
+)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATER))
 
-L_INST=DEFI_LIST_REEL( DEBUT=0.,INTERVALLE= _F( JUSQU_A = 100.,   NOMBRE = 5))
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=100.0, NOMBRE=5))
 
 
 # 1. CALCUL SUR LE MODELE MOMEC1 (TOUTES LES MAILLES SAUF M8 ET M9) :
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-MOMEC1=AFFE_MODELE(  MAILLAGE=MAIL,
-          AFFE=_F( GROUP_MA = 'GXXXXXX_GMS89',
-                   MODELISATION = 'D_PLAN',     PHENOMENE = 'MECANIQUE'))
-
-
-CHMEC1=AFFE_CHAR_MECA( MODELE=MOMEC1,DDL_IMPO=(
-           _F( GROUP_MA = 'GXXXXXX_BORD1',  DX = 0.,  DY=0. ),
-           _F( GROUP_MA = 'GXXXXXX_BORD2',  DX = 0.3, DY=0.6 )),)
+MOMEC1 = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA="GXXXXXX_GMS89", MODELISATION="D_PLAN", PHENOMENE="MECANIQUE")
+)
 
 
-U1=STAT_NON_LINE(MODELE=MOMEC1,  CHAM_MATER=CHMAT,
-                 EXCIT=_F( CHARGE = CHMEC1),
-                 COMPORTEMENT=(
-                       _F( RELATION = 'VMIS_CINE_LINE', GROUP_MA=('M1','M2','M3')),
-                       _F( RELATION = 'VMIS_ISOT_TRAC', GROUP_MA=('M4','M5')),
-                       _F( RELATION = 'VMIS_ISOT_LINE', GROUP_MA=('M6')),
-                       _F( RELATION = 'ELAS',           GROUP_MA=('M7')),
-                       ),
-                 INCREMENT=_F( LIST_INST = L_INST),
-                 CONVERGENCE=_F( ITER_GLOB_MAXI=50),
-                 NEWTON=_F(REAC_ITER=2,),
-                 )
+CHMEC1 = AFFE_CHAR_MECA(
+    MODELE=MOMEC1,
+    DDL_IMPO=(
+        _F(GROUP_MA="GXXXXXX_BORD1", DX=0.0, DY=0.0),
+        _F(GROUP_MA="GXXXXXX_BORD2", DX=0.3, DY=0.6),
+    ),
+)
+
+
+U1 = STAT_NON_LINE(
+    MODELE=MOMEC1,
+    CHAM_MATER=CHMAT,
+    EXCIT=_F(CHARGE=CHMEC1),
+    COMPORTEMENT=(
+        _F(RELATION="VMIS_CINE_LINE", GROUP_MA=("M1", "M2", "M3")),
+        _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA=("M4", "M5")),
+        _F(RELATION="VMIS_ISOT_LINE", GROUP_MA=("M6")),
+        _F(RELATION="ELAS", GROUP_MA=("M7")),
+    ),
+    INCREMENT=_F(LIST_INST=L_INST),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+    NEWTON=_F(REAC_ITER=2),
+)
 
 
 # 2. CALCUL SUR LE MODELE MOMEC2 (TOUTES LES MAILLES SAUF M2) :
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-MOMEC2=AFFE_MODELE(  MAILLAGE=MAIL,
-          AFFE=_F( GROUP_MA = 'GXXXXXX_GMS2',
-                   MODELISATION = 'D_PLAN',     PHENOMENE = 'MECANIQUE'))
+MOMEC2 = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(GROUP_MA="GXXXXXX_GMS2", MODELISATION="D_PLAN", PHENOMENE="MECANIQUE")
+)
 
 
-CHMEC2=AFFE_CHAR_MECA( MODELE=MOMEC2,DDL_IMPO=(
-           _F( GROUP_MA = 'GXXXXXX_BORD1',  DX = 0.,  DY=0. ),
-           _F( GROUP_MA = 'GXXXXXX_BORD2',  DX = 0.3, DY=0.6 )),)
+CHMEC2 = AFFE_CHAR_MECA(
+    MODELE=MOMEC2,
+    DDL_IMPO=(
+        _F(GROUP_MA="GXXXXXX_BORD1", DX=0.0, DY=0.0),
+        _F(GROUP_MA="GXXXXXX_BORD2", DX=0.3, DY=0.6),
+    ),
+)
 
 #  CHANGEMENTS DE COMPORTEMENT:
 #       M1 :   'VMIS_CINE_LINE'   ->   'VMIS_ISOT_TRAC'
@@ -111,84 +128,94 @@ CHMEC2=AFFE_CHAR_MECA( MODELE=MOMEC2,DDL_IMPO=(
 #       M9 :   'RIEN'             ->   'VMIS_ISOT_LINE'
 
 # 2.1 ETAT_INIT / EVOL_NOLI + INST :
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 is_ok = 0
-try :
-   U2_1=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
-                 ETAT_INIT=_F( EVOL_NOLI = U1, INST=60.),
-                 EXCIT=_F( CHARGE = CHMEC2),
-                 COMPORTEMENT=(
-                       _F( RELATION = 'VMIS_CINE_LINE', GROUP_MA=('M3','M7','M8','M9')),
-                       _F( RELATION = 'VMIS_ISOT_TRAC', GROUP_MA=('M1','M6')),
-                       _F( RELATION = 'VMIS_ISOT_LINE', GROUP_MA=('M4')),
-                       _F( RELATION = 'ELAS',           GROUP_MA=('M5')),
-                       ),
-                 INCREMENT=_F( LIST_INST = L_INST,INST_INIT=60. ),
-                 CONVERGENCE=_F( ITER_GLOB_MAXI=50),
-                 NEWTON=_F(REAC_ITER=2,),
-               )
+try:
+    U2_1 = STAT_NON_LINE(
+        MODELE=MOMEC2,
+        CHAM_MATER=CHMAT,
+        ETAT_INIT=_F(EVOL_NOLI=U1, INST=60.0),
+        EXCIT=_F(CHARGE=CHMEC2),
+        COMPORTEMENT=(
+            _F(RELATION="VMIS_CINE_LINE", GROUP_MA=("M3", "M7", "M8", "M9")),
+            _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA=("M1", "M6")),
+            _F(RELATION="VMIS_ISOT_LINE", GROUP_MA=("M4")),
+            _F(RELATION="ELAS", GROUP_MA=("M5")),
+        ),
+        INCREMENT=_F(LIST_INST=L_INST, INST_INIT=60.0),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+        NEWTON=_F(REAC_ITER=2),
+    )
 except AsterError as err:
-   print(fmt_raison % str(err))
-   # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE5_2" :
-      is_ok = 1
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MECANONLINE5_2":
+        is_ok = 1
 
 # TEST_RESU
-TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
-                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  ',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
-DETRUIRE(NOM=(TAB1),)
+DETRUIRE(NOM=(TAB1))
 
 # 2.2 ETAT_INIT / EVOL_NOLI + DEPL, SIGM, VARI :
-#--------------------------------------------------------------------
+# --------------------------------------------------------------------
 
-D1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='DEPL',      INST=60.)
-S1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=60.)
-V1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R', OPERATION='EXTR', RESULTAT=U1, NOM_CHAM='VARI_ELGA', INST=60.)
+D1 = CREA_CHAMP(TYPE_CHAM="NOEU_DEPL_R", OPERATION="EXTR", RESULTAT=U1, NOM_CHAM="DEPL", INST=60.0)
+S1 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_SIEF_R", OPERATION="EXTR", RESULTAT=U1, NOM_CHAM="SIEF_ELGA", INST=60.0
+)
+V1 = CREA_CHAMP(
+    TYPE_CHAM="ELGA_VARI_R", OPERATION="EXTR", RESULTAT=U1, NOM_CHAM="VARI_ELGA", INST=60.0
+)
 
 is_ok = 0
-try :
-   U2_2=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
-                 ETAT_INIT=_F( DEPL=D1, SIGM=S1, VARI=V1),
-                 EXCIT=_F( CHARGE = CHMEC2),
-                 COMPORTEMENT=(
-                       _F( RELATION = 'VMIS_CINE_LINE', GROUP_MA=('M3','M7','M8','M9')),
-                       _F( RELATION = 'VMIS_ISOT_TRAC', GROUP_MA=('M1','M6')),
-                       _F( RELATION = 'VMIS_ISOT_LINE', GROUP_MA=('M4')),
-                       _F( RELATION = 'ELAS',           GROUP_MA=('M5')),
-                       ),
-                 INCREMENT=_F( LIST_INST = L_INST,INST_INIT=60. ),
-                 CONVERGENCE=_F( ITER_GLOB_MAXI=50),
-                 NEWTON=_F(REAC_ITER=2,),
-               )
+try:
+    U2_2 = STAT_NON_LINE(
+        MODELE=MOMEC2,
+        CHAM_MATER=CHMAT,
+        ETAT_INIT=_F(DEPL=D1, SIGM=S1, VARI=V1),
+        EXCIT=_F(CHARGE=CHMEC2),
+        COMPORTEMENT=(
+            _F(RELATION="VMIS_CINE_LINE", GROUP_MA=("M3", "M7", "M8", "M9")),
+            _F(RELATION="VMIS_ISOT_TRAC", GROUP_MA=("M1", "M6")),
+            _F(RELATION="VMIS_ISOT_LINE", GROUP_MA=("M4")),
+            _F(RELATION="ELAS", GROUP_MA=("M5")),
+        ),
+        INCREMENT=_F(LIST_INST=L_INST, INST_INIT=60.0),
+        CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+        NEWTON=_F(REAC_ITER=2),
+    )
 except AsterError as err:
-   print(fmt_raison % str(err))
-   # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "MECANONLINE5_2":
-      is_ok = 1
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MECANONLINE5_2":
+        is_ok = 1
 
 # TEST_RESU
-TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
-                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TAB1 = CREA_TABLE(
+    LISTE=(_F(PARA="TEST", TYPE_K="K8", LISTE_K="VALEUR  "), _F(PARA="BOOLEEN", LISTE_I=is_ok))
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  ',),
-           )
+TEST_TABLE(
+    REFERENCE="ANALYTIQUE",
+    VALE_CALC_I=1,
+    VALE_REFE_I=1,
+    NOM_PARA="BOOLEEN",
+    TABLE=TAB1,
+    FILTRE=_F(NOM_PARA="TEST", VALE_K="VALEUR  "),
+)
 
-DETRUIRE(NOM=(TAB1),)
+DETRUIRE(NOM=(TAB1))
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ from .sd_modele import sd_modele
 
 
 class sd_proj_mesu(AsBase):
-#-------------------------------------
+    # -------------------------------------
     nomj = SDNom(fin=18)
     PJMNO = AsVI()
     PJMRG = AsVK8()
@@ -35,14 +35,14 @@ class sd_proj_mesu(AsBase):
 
     # si MACR_ELEM_STAT :
     PJMIG = Facultatif(AsVR())
-    PJMMM = Facultatif(AsObject(genr='V', type=Parmi('C', 'R')))
+    PJMMM = Facultatif(AsObject(genr="V", type=Parmi("C", "R")))
 
     def exists(self):
-    #  retourne .true. si la SD semble exister
+        #  retourne .true. si la SD semble exister
         return self.PJMNO.exists
 
     def check_1(self, checker):
-    #------------------------------------
+        # ------------------------------------
         if not self.exists():
             return
 
@@ -58,8 +58,8 @@ class sd_proj_mesu(AsBase):
         pjmrf = self.PJMRF.get_stripped()
         sd2 = sd_modele(pjmrf[0])
         sd2.check(checker)
-        assert pjmrf[1] != '', pjmrf
-        assert pjmrf[2] != '', pjmrf
+        assert pjmrf[1] != "", pjmrf
+        assert pjmrf[2] != "", pjmrf
 
         # quel cas de figure : PROJ_MESU_MODAL ou MACR_ELEM_STAT ?
         lproj = self.PJMOR.exists
@@ -69,8 +69,8 @@ class sd_proj_mesu(AsBase):
             nbcapt = nbutil
             assert self.PJMOR.lonmax >= 3 * nbcapt
             assert not self.PJMIG.exists
-            assert pjmrf[3] == '', pjmrf
-            assert pjmrf[4] == '', pjmrf
+            assert pjmrf[3] == "", pjmrf
+            assert pjmrf[4] == "", pjmrf
 
         # si MACR_ELEM_STAT :
         else:
@@ -81,6 +81,6 @@ class sd_proj_mesu(AsBase):
             nbmoid = n1 / nbddle
             assert n1 == nbddle * nbmoid, (nbmodi, nbddle, n1)
 
-            assert pjmrf[3] != '', pjmrf
+            assert pjmrf[3] != "", pjmrf
             sd2 = sd_proj_mesu(pjmrf[4])
             sd2.check(checker)

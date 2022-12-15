@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,461 +17,447 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#CAS TEST DE METHODES DE COMPTAGE POSTDAM
+# CAS TEST DE METHODES DE COMPTAGE POSTDAM
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
-                           VALE=(  0.,           0.,
-                                   1.,         500.,
-                                   2.,         200.,
-                                   3.,         400.,
-                                   4.,         300.,
-                                   5.,         500.,
-                                   6.,        -300.,
-                                   7.,         200.,
-                                   8.,        -500.,  )  )
+TAUN1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        0.0,
+        0.0,
+        1.0,
+        500.0,
+        2.0,
+        200.0,
+        3.0,
+        400.0,
+        4.0,
+        300.0,
+        5.0,
+        500.0,
+        6.0,
+        -300.0,
+        7.0,
+        200.0,
+        8.0,
+        -500.0,
+    ),
+)
 
-TAUN2=DEFI_FONCTION(  NOM_PARA='INST',
-                           VALE=(  0.,           0.,
-                                   1.,         250.,
-                                   2.,         100.,
-                                   3.,         200.,
-                                   4.,         150.,
-                                   5.,         250.,
-                                   6.,        -150.,
-                                   7.,         100.,
-                                   8.,        -250.,  )  )
-
-#
-#-----------------------------------------------------------------------
-
-TAB_1=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
-                         HISTOIRE=_F(  SIGM = TAUN1),
-                         COMPTAGE='RAINFLOW',
-                             INFO=2                 )
-
-TEST_TABLE(
-           VALE_REFE=400.0,
-           VALE_CALC=400.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=300.0,
-           VALE_CALC=300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           NOM_PARA='VALE_MAX',
-           REFERENCE='SOURCE_EXTERNE',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=-300.0,
-           VALE_CALC=-300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=-500.0,
-           VALE_CALC=-500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_1,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+TAUN2 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(
+        0.0,
+        0.0,
+        1.0,
+        250.0,
+        2.0,
+        100.0,
+        3.0,
+        200.0,
+        4.0,
+        150.0,
+        5.0,
+        250.0,
+        6.0,
+        -150.0,
+        7.0,
+        100.0,
+        8.0,
+        -250.0,
+    ),
+)
 
 #
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-TAB_2=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
-                         HISTOIRE=_F(  SIGM = TAUN1),
-                         COMPTAGE='RCCM',
-                             INFO=2                 )
+TAB_1 = POST_FATIGUE(CHARGEMENT="UNIAXIAL", HISTOIRE=_F(SIGM=TAUN1), COMPTAGE="RAINFLOW", INFO=2)
 
 TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
+    VALE_REFE=400.0,
+    VALE_CALC=400.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
 
 TEST_TABLE(
-           VALE_REFE=-500.0,
-           VALE_CALC=-500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
+    VALE_REFE=300.0,
+    VALE_CALC=300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
 
 TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
 
 TEST_TABLE(
-           VALE_REFE=-300.0,
-           VALE_CALC=-300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
 
 TEST_TABLE(
-           VALE_REFE=400.0,
-           VALE_CALC=400.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE=0.0,
-           VALE_CALC=0.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    NOM_PARA="VALE_MAX",
+    REFERENCE="SOURCE_EXTERNE",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
 
 TEST_TABLE(
-           VALE_REFE=300.0,
-           VALE_CALC=300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+    VALE_REFE=-300.0,
+    VALE_CALC=-300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
 
 TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
 
 TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=5,),
-           )
-
-TEST_TABLE(
-           VALE_REFE=88.8889,
-           VALE_CALC=88.8889,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_2,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=5,),
-           )
+    VALE_REFE=-500.0,
+    VALE_CALC=-500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_1,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
 
 #
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-TAB_3=POST_FATIGUE(     CHARGEMENT='UNIAXIAL',
-                          HISTOIRE=_F(  SIGM = TAUN2),
-                         COEF_MULT=_F(  KT = 2.),
-                          COMPTAGE='RAINFLOW',
-                              INFO=2                 )
+TAB_2 = POST_FATIGUE(CHARGEMENT="UNIAXIAL", HISTOIRE=_F(SIGM=TAUN1), COMPTAGE="RCCM", INFO=2)
 
 TEST_TABLE(
-           VALE_REFE=400.0,
-           VALE_CALC=400.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
 
 TEST_TABLE(
-           VALE_REFE=300.0,
-           VALE_CALC=300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
+    VALE_REFE=-500.0,
+    VALE_CALC=-500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
 
 TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
 
 TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
+    VALE_REFE=-300.0,
+    VALE_CALC=-300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
 
 TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
+    VALE_REFE=400.0,
+    VALE_CALC=400.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
 
 TEST_TABLE(
-           VALE_REFE=-300.0,
-           VALE_CALC=-300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
+    CRITERE="ABSOLU",
+    VALE_REFE=0.0,
+    VALE_CALC=0.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
 
 TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+    VALE_REFE=300.0,
+    VALE_CALC=300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
 
 TEST_TABLE(
-           VALE_REFE=-500.0,
-           VALE_CALC=-500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_3,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
+
+TEST_TABLE(
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=5),
+)
+
+TEST_TABLE(
+    VALE_REFE=88.8889,
+    VALE_CALC=88.8889,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_2,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=5),
+)
 
 #
-#-----------------------------------------------------------------------
+# -----------------------------------------------------------------------
 
-TAB_4=POST_FATIGUE(     CHARGEMENT='UNIAXIAL',
-                          HISTOIRE=_F(  SIGM = TAUN2),
-                         COEF_MULT=_F(  KT = 2.),
-                          COMPTAGE='RCCM',
-                              INFO=2                 )
-
-TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
+TAB_3 = POST_FATIGUE(
+    CHARGEMENT="UNIAXIAL",
+    HISTOIRE=_F(SIGM=TAUN2),
+    COEF_MULT=_F(KT=2.0),
+    COMPTAGE="RAINFLOW",
+    INFO=2,
+)
 
 TEST_TABLE(
-           VALE_REFE=-500.0,
-           VALE_CALC=-500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=1,),
-           )
+    VALE_REFE=400.0,
+    VALE_CALC=400.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
 
 TEST_TABLE(
-           VALE_REFE=500.0,
-           VALE_CALC=500.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
+    VALE_REFE=300.0,
+    VALE_CALC=300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
 
 TEST_TABLE(
-           VALE_REFE=-300.0,
-           VALE_CALC=-300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=2,),
-           )
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
 
 TEST_TABLE(
-           VALE_REFE=400.0,
-           VALE_CALC=400.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_REFE=0.0,
-           VALE_CALC=0.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=3,),
-           )
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
 
 TEST_TABLE(
-           VALE_REFE=300.0,
-           VALE_CALC=300.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
 
 TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=4,),
-           )
+    VALE_REFE=-300.0,
+    VALE_CALC=-300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
 
 TEST_TABLE(
-           VALE_REFE=200.0,
-           VALE_CALC=200.0,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MAX',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=5,),
-           )
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
 
 TEST_TABLE(
-           VALE_REFE=88.8889,
-           VALE_CALC=88.8889,
-           PRECISION=1.E-05,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='VALE_MIN',
-           TABLE=TAB_4,
-           FILTRE=_F(NOM_PARA='CYCLE',
-                     VALE_I=5,),
-           )
+    VALE_REFE=-500.0,
+    VALE_CALC=-500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_3,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
 
-FIN( )
+#
+# -----------------------------------------------------------------------
+
+TAB_4 = POST_FATIGUE(
+    CHARGEMENT="UNIAXIAL", HISTOIRE=_F(SIGM=TAUN2), COEF_MULT=_F(KT=2.0), COMPTAGE="RCCM", INFO=2
+)
+
+TEST_TABLE(
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
+
+TEST_TABLE(
+    VALE_REFE=-500.0,
+    VALE_CALC=-500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=1),
+)
+
+TEST_TABLE(
+    VALE_REFE=500.0,
+    VALE_CALC=500.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
+
+TEST_TABLE(
+    VALE_REFE=-300.0,
+    VALE_CALC=-300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=2),
+)
+
+TEST_TABLE(
+    VALE_REFE=400.0,
+    VALE_CALC=400.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
+
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_REFE=0.0,
+    VALE_CALC=0.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=3),
+)
+
+TEST_TABLE(
+    VALE_REFE=300.0,
+    VALE_CALC=300.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
+
+TEST_TABLE(
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=4),
+)
+
+TEST_TABLE(
+    VALE_REFE=200.0,
+    VALE_CALC=200.0,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MAX",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=5),
+)
+
+TEST_TABLE(
+    VALE_REFE=88.8889,
+    VALE_CALC=88.8889,
+    PRECISION=1.0e-05,
+    REFERENCE="SOURCE_EXTERNE",
+    NOM_PARA="VALE_MIN",
+    TABLE=TAB_4,
+    FILTRE=_F(NOM_PARA="CYCLE", VALE_I=5),
+)
+
+FIN()
 #

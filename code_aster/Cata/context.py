@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,5 +27,4 @@ This module defines objects that should be available in Commands (and Commons)
 catalogs and in the user command file.
 """
 
-from math import (acos, asin, atan, atan2, cos, cosh, exp, log, log10, pi, sin,
-                  sinh, sqrt, tan, tanh)
+from math import acos, asin, atan, atan2, cos, cosh, exp, log, log10, pi, sin, sinh, sqrt, tan, tanh

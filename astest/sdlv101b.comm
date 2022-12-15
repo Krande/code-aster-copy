@@ -18,139 +18,125 @@
 # --------------------------------------------------------------------
 
 import code_aster
-from code_aster.Applications.dynamic_substructuring import SubStructure, Structure, Interface, \
-     macPlot
+from code_aster.Applications.dynamic_substructuring import (
+    SubStructure,
+    Structure,
+    Interface,
+    macPlot,
+)
 from code_aster.Utilities import shared_tmpdir
 import numpy as np
 import os.path as osp
 
 test = code_aster.TestCase()
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-#------------------------------------------------------#
-#--                                                  --#
-#-- DEFINITION D'UN PREMIER CALCUL SUR MODELE REDUIT --#
-#--     ET ASSSEMBLAGE DU MODELE EF DE REFERENCE     --#
-#--                                                  --#
-#------------------------------------------------------#
+# ------------------------------------------------------#
+# --                                                  --#
+# -- DEFINITION D'UN PREMIER CALCUL SUR MODELE REDUIT --#
+# --     ET ASSSEMBLAGE DU MODELE EF DE REFERENCE     --#
+# --                                                  --#
+# ------------------------------------------------------#
 
 # -- MAILLAGES DES DEUX PARTIES CARREES
-MAILLA1 = LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
-MAILLA1 = DEFI_GROUP(reuse=MAILLA1, MAILLAGE=MAILLA1,
-                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
+MAILLA1 = LIRE_MAILLAGE(FORMAT="MED", UNITE=20)
+MAILLA1 = DEFI_GROUP(reuse=MAILLA1, MAILLAGE=MAILLA1, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 
-MAILLA2 = LIRE_MAILLAGE(FORMAT='MED', UNITE=21)
-MAILLA2 = DEFI_GROUP(reuse=MAILLA2, MAILLAGE=MAILLA2,
-                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
+MAILLA2 = LIRE_MAILLAGE(FORMAT="MED", UNITE=21)
+MAILLA2 = DEFI_GROUP(reuse=MAILLA2, MAILLAGE=MAILLA2, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 
 
 # -- CONSTRUCTION DES MODELES
-MODELE1 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre1', 'Encast',),
-                               MODELISATION='3D',
-                               PHENOMENE='MECANIQUE'),
-                            ),
-                      MAILLAGE=MAILLA1)
+MODELE1 = AFFE_MODELE(
+    AFFE=(_F(GROUP_MA=("Cylindre1", "Encast"), MODELISATION="3D", PHENOMENE="MECANIQUE"),),
+    MAILLAGE=MAILLA1,
+)
 
 
-MODELE2 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre2',),
-                               MODELISATION='3D',
-                               PHENOMENE='MECANIQUE'),
-                            ),
-                      MAILLAGE=MAILLA2)
+MODELE2 = AFFE_MODELE(
+    AFFE=(_F(GROUP_MA=("Cylindre2",), MODELISATION="3D", PHENOMENE="MECANIQUE"),), MAILLAGE=MAILLA2
+)
 
 # -- DEFINITION DU MATERIAU
-scaling=1.E10
-INOX = DEFI_MATERIAU(ELAS=_F(E=190.E9/scaling,
-                             NU=0.3,
-                             RHO=7800.0/scaling))
+scaling = 1.0e10
+INOX = DEFI_MATERIAU(ELAS=_F(E=190.0e9 / scaling, NU=0.3, RHO=7800.0 / scaling))
 
 
 # -- AFFECTATION DES MATERIAUX
-CHAMAT1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Cylindre1', ),
-                                 MATER=INOX),
-                              ),
-                        MODELE=MODELE1)
+CHAMAT1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("Cylindre1",), MATER=INOX),), MODELE=MODELE1)
 
-CHAMAT2 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Cylindre2', ),
-                                 MATER=INOX),
-                              ),
-                        MODELE=MODELE2)
+CHAMAT2 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("Cylindre2",), MATER=INOX),), MODELE=MODELE2)
 
 
 # -- DEFINITION DES CONDITIONS AUX LIMITES
 CHARGE_1 = AFFE_CHAR_MECA(
-    DDL_IMPO=(_F(GROUP_MA=('Encast'),
-                 DX=0.0,
-                 DY=0.0,
-                 DZ=0.0,),
-              _F(GROUP_MA=('Interface'),
-                 DX=0.0,
-                 DY=0.0,
-                 DZ=0.0,),
-              ),
-    MODELE=MODELE1)
+    DDL_IMPO=(
+        _F(GROUP_MA=("Encast"), DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_MA=("Interface"), DX=0.0, DY=0.0, DZ=0.0),
+    ),
+    MODELE=MODELE1,
+)
 
 
-CHARGE_2 = AFFE_CHAR_MECA(DDL_IMPO=(_F(GROUP_MA=('Interface'),
-                                       DX=0.0,
-                                       DY=0.0,
-                                       DZ=0.0,),
-                                    ),
-                          MODELE=MODELE2)
+CHARGE_2 = AFFE_CHAR_MECA(
+    DDL_IMPO=(_F(GROUP_MA=("Interface"), DX=0.0, DY=0.0, DZ=0.0),), MODELE=MODELE2
+)
 
 
 # -- ASSEMBLAGE DES MATRICES
-ASSEMBLAGE(MODELE=MODELE1,
-           NUME_DDL=CO("NUME1"),
-           CHARGE=CHARGE_1,
-           CHAM_MATER=CHAMAT1,
-           MATR_ASSE=(_F(MATRICE=CO("RAID1"),  OPTION='RIGI_MECA'),
-                      _F(MATRICE=CO("MASS1"),  OPTION='MASS_MECA'))
-           )
+ASSEMBLAGE(
+    MODELE=MODELE1,
+    NUME_DDL=CO("NUME1"),
+    CHARGE=CHARGE_1,
+    CHAM_MATER=CHAMAT1,
+    MATR_ASSE=(
+        _F(MATRICE=CO("RAID1"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS1"), OPTION="MASS_MECA"),
+    ),
+)
 
-ASSEMBLAGE(MODELE=MODELE2,
-           NUME_DDL=CO("NUME2"),
-           CHARGE=CHARGE_2,
-           CHAM_MATER=CHAMAT2,
-           MATR_ASSE=(_F(MATRICE=CO("RAID2"),  OPTION='RIGI_MECA'),
-                      _F(MATRICE=CO("MASS2"),  OPTION='MASS_MECA'))
-           )
+ASSEMBLAGE(
+    MODELE=MODELE2,
+    NUME_DDL=CO("NUME2"),
+    CHARGE=CHARGE_2,
+    CHAM_MATER=CHAMAT2,
+    MATR_ASSE=(
+        _F(MATRICE=CO("RAID2"), OPTION="RIGI_MECA"),
+        _F(MATRICE=CO("MASS2"), OPTION="MASS_MECA"),
+    ),
+)
 
 # -- CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE
 nModes1 = 25
 MODES_1 = CALC_MODES(
-    OPTION='CENTRE',
-    CALC_FREQ=_F(NMAX_FREQ=nModes1,
-                 FREQ=3.,
-                 ),
+    OPTION="CENTRE",
+    CALC_FREQ=_F(NMAX_FREQ=nModes1, FREQ=3.0),
     MATR_RIGI=RAID1,
     MATR_MASS=MASS1,
-    TYPE_RESU='DYNAMIQUE',
-    SOLVEUR=_F(METHODE='MUMPS',
-               NPREC=11,),
-    VERI_MODE=_F(STOP_ERREUR='NON',),)
+    TYPE_RESU="DYNAMIQUE",
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+)
 
 
-with shared_tmpdir('foo') as tmpdir:
-    MODES_1.printMedFile(osp.join(tmpdir, 'modes1.resu.med'))
+with shared_tmpdir("foo") as tmpdir:
+    MODES_1.printMedFile(osp.join(tmpdir, "modes1.resu.med"))
 
 nModes2 = 25
 MODES_2 = CALC_MODES(
-    OPTION='CENTRE',
-    CALC_FREQ=_F(NMAX_FREQ=nModes2,
-                 FREQ=3.,
-                 ),
+    OPTION="CENTRE",
+    CALC_FREQ=_F(NMAX_FREQ=nModes2, FREQ=3.0),
     MATR_RIGI=RAID2,
     MATR_MASS=MASS2,
-    TYPE_RESU='DYNAMIQUE',
-    SOLVEUR=_F(METHODE='MUMPS',
-               NPREC=11,),
-    VERI_MODE=_F(STOP_ERREUR='NON',),)
+    TYPE_RESU="DYNAMIQUE",
+    SOLVEUR=_F(METHODE="MUMPS", NPREC=11),
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+)
 
-with shared_tmpdir('foo') as tmpdir:
-    MODES_2.printMedFile(osp.join(tmpdir, 'modes2.resu.med'))
+with shared_tmpdir("foo") as tmpdir:
+    MODES_2.printMedFile(osp.join(tmpdir, "modes2.resu.med"))
 
 # --  DEFINITION DES INTERFACES
 
@@ -159,33 +145,39 @@ with shared_tmpdir('foo') as tmpdir:
 subS1 = SubStructure(RAID1, MASS1, MODES_1)
 subS2 = SubStructure(RAID2, MASS2, MODES_2)
 
-interface = Interface(subS1, subS2, 'Interface')
-interface.computeInterfaceDofs('Structure')
+interface = Interface(subS1, subS2, "Interface")
+interface.computeInterfaceDofs("Structure")
 
 ResuS_Tuyau1 = subS1.computeInterfaceModes()
 ResuS_Tuyau2 = subS2.computeInterfaceModes()
 
-with shared_tmpdir('foo') as tmpdir:
-    ResuS_Tuyau1.printMedFile(osp.join(tmpdir, 'interface1.resu.med'))
-    ResuS_Tuyau2.printMedFile(osp.join(tmpdir, 'interface2.resu.med'))
+with shared_tmpdir("foo") as tmpdir:
+    ResuS_Tuyau1.printMedFile(osp.join(tmpdir, "interface1.resu.med"))
+    ResuS_Tuyau2.printMedFile(osp.join(tmpdir, "interface2.resu.med"))
 
 
 myStructure = Structure([subS1, subS2], [interface])
 
 omega, resuSub = myStructure.computeGlobalModes(nmodes=6)
 
-with shared_tmpdir('foo') as tmpdir:
-    for isub,resu in enumerate(resuSub) :
-        resu.printMedFile(osp.join(tmpdir, 'resu%d.resu.med'%isub))
+with shared_tmpdir("foo") as tmpdir:
+    for isub, resu in enumerate(resuSub):
+        resu.printMedFile(osp.join(tmpdir, "resu%d.resu.med" % isub))
 
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref = [ 25.12740005+0.j,  25.12740048+0.j, 148.76610952+0.j, 148.7665605 +0.j,
- 179.8428347 +0.j, 310.35187247+0.j]
+ref = [
+    25.12740005 + 0.0j,
+    25.12740048 + 0.0j,
+    148.76610952 + 0.0j,
+    148.7665605 + 0.0j,
+    179.8428347 + 0.0j,
+    310.35187247 + 0.0j,
+]
 
 for idx, val in enumerate(omega):
-    test.assertAlmostEqual(val, ref[idx], delta=1.e-1)
+    test.assertAlmostEqual(val, ref[idx], delta=1.0e-1)
 
 
 # =======================================
@@ -193,46 +185,38 @@ for idx, val in enumerate(omega):
 # =======================================
 
 
-MAILLAG = LIRE_MAILLAGE(FORMAT='MED',
-                        UNITE=22)
+MAILLAG = LIRE_MAILLAGE(FORMAT="MED", UNITE=22)
 
-MODELEG = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre', 'Encast',),
-                               MODELISATION='3D',
-                               PHENOMENE='MECANIQUE'),
-                            ),
-                      MAILLAGE=MAILLAG)
+MODELEG = AFFE_MODELE(
+    AFFE=(_F(GROUP_MA=("Cylindre", "Encast"), MODELISATION="3D", PHENOMENE="MECANIQUE"),),
+    MAILLAGE=MAILLAG,
+)
 
 
-CHAMATG = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Cylindre', ),
-                                 MATER=INOX),
-                              ),
-                        MODELE=MODELEG)
+CHAMATG = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=("Cylindre",), MATER=INOX),), MODELE=MODELEG)
 
-CL = AFFE_CHAR_MECA(FACE_IMPO=(_F(DX=0.0,
-                                  DY=0.0,
-                                  DZ=0.0,
-                                  GROUP_MA=('Encast')),
-                               ),
-                    MODELE=MODELEG)
+CL = AFFE_CHAR_MECA(FACE_IMPO=(_F(DX=0.0, DY=0.0, DZ=0.0, GROUP_MA=("Encast")),), MODELE=MODELEG)
 
-ASSEMBLAGE(CHAM_MATER=CHAMATG,
-           CHARGE=CL,
-           MATR_ASSE=(_F(MATRICE=CO('MASS_G'),
-                         OPTION='MASS_MECA'),
-                      _F(MATRICE=CO('RAID_G'),
-                         MODE_FOURIER=0,
-                         OPTION='RIGI_MECA')),
-           MODELE=MODELEG,
-           NUME_DDL=CO('NDDL'))
+ASSEMBLAGE(
+    CHAM_MATER=CHAMATG,
+    CHARGE=CL,
+    MATR_ASSE=(
+        _F(MATRICE=CO("MASS_G"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("RAID_G"), MODE_FOURIER=0, OPTION="RIGI_MECA"),
+    ),
+    MODELE=MODELEG,
+    NUME_DDL=CO("NDDL"),
+)
 
 nModesG = 6
-MODES_G = CALC_MODES(CALC_FREQ=_F(FREQ=3.0,
-                                  NMAX_FREQ=nModesG,),
-                     MATR_MASS=MASS_G,
-                     MATR_RIGI=RAID_G,
-                     OPTION='CENTRE',
-                     TYPE_RESU='DYNAMIQUE',
-                     VERI_MODE=_F(STOP_ERREUR='NON',))
+MODES_G = CALC_MODES(
+    CALC_FREQ=_F(FREQ=3.0, NMAX_FREQ=nModesG),
+    MATR_MASS=MASS_G,
+    MATR_RIGI=RAID_G,
+    OPTION="CENTRE",
+    TYPE_RESU="DYNAMIQUE",
+    VERI_MODE=_F(STOP_ERREUR="NON"),
+)
 
 
 # =======================================
@@ -240,71 +224,118 @@ MODES_G = CALC_MODES(CALC_FREQ=_F(FREQ=3.0,
 # =======================================
 
 # Project Global result on substructure 1
-Proj_Gto1 = PROJ_CHAMP(MODELE_1=MODELEG,
-                    MODELE_2=MODELE1,
-                    RESULTAT=MODES_G,
-                    NOM_CHAM='DEPL',
-                    TOUT_ORDRE='OUI',
-                    PROJECTION='OUI',
-                    DISTANCE_MAX=0.1,
-                    NUME_DDL=NUME1,
-                    VIS_A_VIS=(
-                        _F(GROUP_MA_1='Cylindre', GROUP_MA_2='Cylindre1',),
-                    ),
-                    )
+Proj_Gto1 = PROJ_CHAMP(
+    MODELE_1=MODELEG,
+    MODELE_2=MODELE1,
+    RESULTAT=MODES_G,
+    NOM_CHAM="DEPL",
+    TOUT_ORDRE="OUI",
+    PROJECTION="OUI",
+    DISTANCE_MAX=0.1,
+    NUME_DDL=NUME1,
+    VIS_A_VIS=(_F(GROUP_MA_1="Cylindre", GROUP_MA_2="Cylindre1"),),
+)
 
 # Project Global result on substructure 2
-Proj_Gto2 = PROJ_CHAMP(MODELE_1=MODELEG,
-                    MODELE_2=MODELE2,
-                    RESULTAT=MODES_G,
-                    NOM_CHAM='DEPL',
-                    TOUT_ORDRE='OUI',
-                    PROJECTION='OUI',
-                    DISTANCE_MAX=0.1,
-                    NUME_DDL=NUME2,
-                    VIS_A_VIS=(_F(GROUP_MA_1='Cylindre', GROUP_MA_2='Cylindre2',),
-                               )
-                    )
+Proj_Gto2 = PROJ_CHAMP(
+    MODELE_1=MODELEG,
+    MODELE_2=MODELE2,
+    RESULTAT=MODES_G,
+    NOM_CHAM="DEPL",
+    TOUT_ORDRE="OUI",
+    PROJECTION="OUI",
+    DISTANCE_MAX=0.1,
+    NUME_DDL=NUME2,
+    VIS_A_VIS=(_F(GROUP_MA_1="Cylindre", GROUP_MA_2="Cylindre2"),),
+)
 
 # ------------------------------------------------------------------------------
 
-mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
-        name2="Approche Globale", normalize=False, dof=['DX', 'DY', 'DZ', ])
+mac = macPlot(
+    resuSub,
+    [Proj_Gto1, Proj_Gto2],
+    [MASS1, MASS2],
+    name1="Approche Sous-structuree",
+    name2="Approche Globale",
+    normalize=False,
+    dof=["DX", "DY", "DZ"],
+)
 print(mac)
 
 mac_ref = np.array(
-[[7.09643318e-01, 2.94831811e-01, 3.35960254e-05, 5.42903358e-05,
-  1.85017882e-23, 1.46302864e-11],
- [2.94846967e-01, 7.09658508e-01, 5.42880769e-05, 3.35966051e-05,
-  9.20976185e-24, 2.81724000e-11],
- [2.70776379e-08, 5.31743939e-10, 5.45272987e-02, 9.66151875e-01,
-  2.89999160e-25, 1.70634088e-09],
- [5.31845223e-10, 2.70767000e-08, 9.66145941e-01, 5.45276300e-02,
-  3.07899080e-27, 4.55685138e-08],
- [5.65272975e-23, 6.60958964e-22, 3.71706902e-19, 1.03013236e-21,
-  1.00816581e+00, 1.07682789e-24],
- [6.87687281e-18, 2.51694278e-15, 2.56194581e-09, 4.54607270e-12,
-  2.13831721e-29, 1.00317007e+00],]
+    [
+        [
+            7.09643318e-01,
+            2.94831811e-01,
+            3.35960254e-05,
+            5.42903358e-05,
+            1.85017882e-23,
+            1.46302864e-11,
+        ],
+        [
+            2.94846967e-01,
+            7.09658508e-01,
+            5.42880769e-05,
+            3.35966051e-05,
+            9.20976185e-24,
+            2.81724000e-11,
+        ],
+        [
+            2.70776379e-08,
+            5.31743939e-10,
+            5.45272987e-02,
+            9.66151875e-01,
+            2.89999160e-25,
+            1.70634088e-09,
+        ],
+        [
+            5.31845223e-10,
+            2.70767000e-08,
+            9.66145941e-01,
+            5.45276300e-02,
+            3.07899080e-27,
+            4.55685138e-08,
+        ],
+        [
+            5.65272975e-23,
+            6.60958964e-22,
+            3.71706902e-19,
+            1.03013236e-21,
+            1.00816581e00,
+            1.07682789e-24,
+        ],
+        [
+            6.87687281e-18,
+            2.51694278e-15,
+            2.56194581e-09,
+            4.54607270e-12,
+            2.13831721e-29,
+            1.00317007e00,
+        ],
+    ]
 )
 
 for (idx, jdx), val in np.ndenumerate(mac):
     # we do not check these modes because they are double and we cannot know which one arrives first
-    if idx not in (0,1,2,3):
-        test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-2)
+    if idx not in (0, 1, 2, 3):
+        test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.0e-2)
 
 # ------------------------------------------------------------------------------
 
-mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
-      list1=range(4,6), list2=range(4,6))
+mac = macPlot(
+    resuSub,
+    [Proj_Gto1, Proj_Gto2],
+    [MASS1, MASS2],
+    name1="Approche Sous-structuree",
+    list1=range(4, 6),
+    list2=range(4, 6),
+)
 print(mac)
 
-mac_ref = np.array(
-[[1.00000000e+00, 2.44101476e-27],
- [2.70159860e-18, 1.00000000e+00]]
- )
+mac_ref = np.array([[1.00000000e00, 2.44101476e-27], [2.70159860e-18, 1.00000000e00]])
 
 for (idx, jdx), val in np.ndenumerate(mac):
-    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-6)
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.0e-6)
 
 
 FIN()

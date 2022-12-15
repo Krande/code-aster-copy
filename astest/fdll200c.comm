@@ -17,118 +17,86 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 #
 #
 
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA = LIRE_MAILLAGE(FORMAT="MED")
 
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_MA=_F(NOM='TOUT',
-                               TOUT='OUI',),)
+MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_MA=_F(NOM="TOUT", TOUT="OUI"))
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_FLUI_STRU',),)
+MO = AFFE_MODELE(
+    MAILLAGE=MA, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_FLUI_STRU")
+)
 #
 # PROPRIETES MECANIQUES
 #
 #
 
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=1.E10,
-                            NU=0.30,
-                            RHO=1.E4,),
-                    FLUIDE=_F(RHO=1000.0,
-                              CELE_R=1000.0,),)
+MATER = DEFI_MATERIAU(ELAS=_F(E=1.0e10, NU=0.30, RHO=1.0e4), FLUIDE=_F(RHO=1000.0, CELE_R=1000.0))
 
-CARATU=AFFE_CARA_ELEM(MODELE=MO,
-                      POUTRE=_F(GROUP_MA='TOUT',
-                                SECTION='CERCLE',
-                                VARI_SECT = 'HOMOTHETIQUE',
-                                CARA=('R_DEBUT','R_FIN','EP_DEBUT','EP_FIN',),
-                                VALE=(0.100,0.11,0.011,0.01,),),)
+CARATU = AFFE_CARA_ELEM(
+    MODELE=MO,
+    POUTRE=_F(
+        GROUP_MA="TOUT",
+        SECTION="CERCLE",
+        VARI_SECT="HOMOTHETIQUE",
+        CARA=("R_DEBUT", "R_FIN", "EP_DEBUT", "EP_FIN"),
+        VALE=(0.100, 0.11, 0.011, 0.01),
+    ),
+)
 
 
-CHM=AFFE_MATERIAU(MAILLAGE=MA,
-                  AFFE=_F(TOUT='OUI',
-                          MATER=MATER,),)
+CHM = AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT="OUI", MATER=MATER))
 #
 # CONDITIONS AUX LIMITES
 #
 #
 
 
-SURFLIBR=AFFE_CHAR_MECA(MODELE=MO,
-                        DDL_IMPO=_F(GROUP_NO='NO1',
-                                    PRES=0.0,
-                                    PHI=0.0,),)
+SURFLIBR = AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO="NO1", PRES=0.0, PHI=0.0))
 
-TUYAU=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(GROUP_NO='IMPDDL',
-                                  DY=0.0,
-                                  DZ=0.0,
-                                  DRX=0.0,
-                                  DRY=0.0,
-                                  DRZ=0.0,),
-                               _F(GROUP_NO='NO1',
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=0.0,
-                                  DRX=0.0,
-                                  DRY=0.0,
-                                  DRZ=0.0,),),)
+TUYAU = AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(GROUP_NO="IMPDDL", DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+        _F(GROUP_NO="NO1", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),
+    ),
+)
 #
 # MATRICES ELEMENTAIRES
 #
 #
 
 
-MK=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                  MODELE=MO,
-                  CHAM_MATER=CHM,
-                  CARA_ELEM=CARATU,
-                  CHARGE=(SURFLIBR,TUYAU,),)
+MK = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", MODELE=MO, CHAM_MATER=CHM, CARA_ELEM=CARATU, CHARGE=(SURFLIBR, TUYAU)
+)
 
-MM=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                  MODELE=MO,
-                  CHAM_MATER=CHM,
-                  CARA_ELEM=CARATU,
-                  CHARGE=(SURFLIBR,TUYAU,),)
+MM = CALC_MATR_ELEM(
+    OPTION="MASS_MECA", MODELE=MO, CHAM_MATER=CHM, CARA_ELEM=CARATU, CHARGE=(SURFLIBR, TUYAU)
+)
 
-NDDL=NUME_DDL(MATR_RIGI=MK,)
+NDDL = NUME_DDL(MATR_RIGI=MK)
 #
 # ASSEMBLAGE
 #
 #
 
 
-MATK=ASSE_MATRICE(MATR_ELEM=MK,
-                  NUME_DDL=NDDL,)
+MATK = ASSE_MATRICE(MATR_ELEM=MK, NUME_DDL=NDDL)
 
-MATM=ASSE_MATRICE(MATR_ELEM=MM,
-                  NUME_DDL=NDDL,)
+MATM = ASSE_MATRICE(MATR_ELEM=MM, NUME_DDL=NDDL)
 #
 # CALCUL DES MODES
 #
 
 
-MODES=CALC_MODES(MATR_RIGI=MATK,
-                 OPTION='BANDE',
-                 CALC_FREQ=_F(FREQ=(10.0,300.0,),
-                              ),
-                 MATR_MASS=MATM,
-                 )
+MODES = CALC_MODES(MATR_RIGI=MATK, OPTION="BANDE", CALC_FREQ=_F(FREQ=(10.0, 300.0)), MATR_MASS=MATM)
 
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  PARA='FREQ',
-                  RESULTAT=MODES,
-                  VALE_CALC=141.290782294 ,
-                  ),
-          )
+TEST_RESU(RESU=_F(NUME_ORDRE=1, PARA="FREQ", RESULTAT=MODES, VALE_CALC=141.290782294))
 
-FIN( )
+FIN()

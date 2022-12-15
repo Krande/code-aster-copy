@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,15 +83,9 @@ class Timer:
         """
         self.stop_all()
         separator = "-" * 80
-        lines = [
-            self.header.format("", "cpu", "system", "cpu+sys", "elapsed"),
-            separator,
-        ]
+        lines = [self.header.format("", "cpu", "system", "cpu+sys", "elapsed"), separator]
         lines.extend(
-            [
-                self.fmt.format(title=title, measure=i)
-                for title, i in self._measures.items()
-            ]
+            [self.fmt.format(title=title, measure=i) for title, i in self._measures.items()]
         )
         lines.insert(-1, separator)
         lines.append(separator)

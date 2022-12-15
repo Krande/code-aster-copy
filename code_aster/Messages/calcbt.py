@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,38 +22,44 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    3: _("""
+    3: _(
+        """
 CALC_BT : Le paramètre RESI_RELA_TOPO doit impérativement être inférieur au paramètre RESI_RELA_SECTION.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 CALC_BT : Le paramètre RESI_RELA_TOPO n'est pas utilisé avec l'option SECTION.
-"""),
-
-    5: _("""
+"""
+    ),
+    5: _(
+        """
  CALC_BT : Un des contours (extérieur ou intérieurs) fournis en entrée n'est pas fermé.
-"""),
-
-    6: _("""
+"""
+    ),
+    6: _(
+        """
 CALC_BT : La structure treillis n'as pas pu être générée. Une réduction dans la valeur CRIT_ELIM est conseillée.
-"""),
-
-    7: _("""
+"""
+    ),
+    7: _(
+        """
 CALC_BT : La méthode d'optimisation n'a pas convergé. Pensez à augmenter NMAX_ITER.
-"""),
-
-    8: _("""
+"""
+    ),
+    8: _(
+        """
 CALC_BT : Le paramètre CRIT_ELIM n'est pas utilisé avec l'option SECTION.
-"""),
-
-    9: _("""
+"""
+    ),
+    9: _(
+        """
 CALC_BT : Seules les modélisations D_PLAN et C_PLAN sont acceptées.
-"""),
-
-   10: _("""
+"""
+    ),
+    10: _(
+        """
 CALC_BT : La structure treillis n'a pas pu être générée. Une augmentation dans la valeur LONGUEUR_MAX est conseillée.
-"""),
-
-
+"""
+    ),
 }

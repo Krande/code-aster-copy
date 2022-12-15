@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,9 @@
 import libaster
 from ..logger import logger
 
-try :
+try:
     import medcoupling as mc
+
     HAS_MEDCOUPLING = True
 
 except ImportError:
@@ -46,12 +47,12 @@ def convertMesh2MedCoupling(asmesh):
     cells, groups_c, groups_n = libaster.getMedCouplingConversionData(asmesh)
 
     mcmesh = mc.MEDFileUMesh()
-    coords = mc.DataArrayDouble(asmesh.getCoordinates().getValues(),
-                                asmesh.getNumberOfNodes(),
-                                3)[:, :asmesh.getDimension()]
+    coords = mc.DataArrayDouble(asmesh.getCoordinates().getValues(), asmesh.getNumberOfNodes(), 3)[
+        :, : asmesh.getDimension()
+    ]
 
     maxdim = max(cells.keys())
-    levels = {i : i-maxdim for i in range(maxdim,-1,-1)}
+    levels = {i: i - maxdim for i in range(maxdim, -1, -1)}
 
     # Creation du maillage par niveau, depart par le plus haut (0)
     for dim in sorted(cells.keys())[::-1]:
@@ -60,15 +61,14 @@ def convertMesh2MedCoupling(asmesh):
         mesh_at_current_level.setCoords(coords)
 
         conn, connI = cells[dim]
-        mesh_at_current_level.setConnectivity(mc.DataArrayInt(conn),
-                                              mc.DataArrayInt(connI))
+        mesh_at_current_level.setConnectivity(mc.DataArrayInt(conn), mc.DataArrayInt(connI))
 
         o2n = mesh_at_current_level.sortCellsInMEDFileFrmt()
         mesh_at_current_level.checkConsistencyLight()
         mcmesh.setMeshAtLevel(levels[dim], mesh_at_current_level)
 
         # Groupes de mailles
-        try :
+        try:
             groups_c_at_level = []
             for group_name, group_cells in groups_c[dim].items():
                 group_medcoupling = mc.DataArrayInt(group_cells)

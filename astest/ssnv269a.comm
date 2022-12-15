@@ -17,321 +17,276 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
- 
 
 #  VALIDATION DES ACIERS REPARTIES
 
 # -----------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
-
- 
-
-M=LIRE_MAILLAGE(FORMAT='MED',
-                INFO=2,);
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 
 
+M = LIRE_MAILLAGE(FORMAT="MED", INFO=2)
 
 
-
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(
-                                  _F(JUSQU_A=4.0,
-                                     PAS=0.05,),
+L_INS1 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=4.0, PAS=0.05),))
 
 
-),);
+mod = AFFE_MODELE(MAILLAGE=M, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="3D"))
 
- 
+HYDR1 = DEFI_CONSTANTE(VALE=1.0)
+PORO = DEFI_CONSTANTE(VALE=0.134)
+CNAD = DEFI_CONSTANTE(VALE=0.0)
+ROA1 = DEFI_CONSTANTE(VALE=0.01)
+VR11 = DEFI_CONSTANTE(VALE=1.0)
+VR12 = DEFI_CONSTANTE(VALE=0.0)
+VR13 = DEFI_CONSTANTE(VALE=0.0)
 
-mod=AFFE_MODELE(MAILLAGE=M,
-                AFFE=_F(TOUT='OUI',
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),);
-
-HYDR1=DEFI_CONSTANTE(VALE = 1.,)
-PORO=DEFI_CONSTANTE(VALE = 0.134,)
-CNAD=DEFI_CONSTANTE(VALE = 0.,)
-ROA1=DEFI_CONSTANTE(VALE = 0.01,)
-VR11=DEFI_CONSTANTE(VALE = 1.0,) 
-VR12=DEFI_CONSTANTE(VALE = 0.0,)
-VR13=DEFI_CONSTANTE(VALE = 0.0,)
-
-mat1=DEFI_MATERIAU(ELAS=_F(    
-                               E=40000,
-                               NU=0.2,
-                               RHO=0.002500,
-                               ALPHA=1e-5,),
-
-                   RGI_BETON_BA=_F( 
-                                 DIM3            =  0.1,
-                                 YOUM            = 37000.0,
-                                 NUM             = 0.2,
-# HYDRATATION
-                                 HYDR            = HYDR1,
-                                 HYDS            = 0.,
-
-# RETRAIT / VOLUME D'EAU
-
-                                 PORO            =  PORO,
-                                 BSHR            =  0.5,
-                                 MSHR            =  0.000,
-                                 MVGN            =  0.,
-                                 SFLD            =  14,
-
-# MECANIQUE
-
-                                 RT              =  3.7,
-                                 EPT             =  1e-4,
-                                 RC              =  35.,
-                                 EPC             =  1.e-3,
-                                 DELT            =  1.,
-                                 BETA            =  0.15,
-                                 REF             =  4.,
-                                 EKDC            =  1.0e-3,
-                                 GFT             =  100e-6,
-                                 GFR             =  100e-6,
-
-# ENDOMMAGEMENT THERMIQUE
-
-                                 DT80            =  0.0,
-                                 TSTH            =  45.,
-
-# FLUAGE
-
-                                 TREF            =  20.,
-                                 TAUK            =  10000.,
-                                 YKSY            =  2.17,
-                                 TAUM            =  8000.,
-                                 EKFL            =  0.9e-4,
-                                 XFLU            =  2,
-                                 NRJM            =  25000.,
-                                 DFMX            =  0.,
-
-# RGI
-
-                                 VVRG            = 0.00,
-                                 KGEL            = 7000.,
-                                 KRGI            =  1.0,
-                                 HRGI            =  0.03,
-                                 HPEV            =  1.0,
-                                 EKRG            =  0.3e-2,
-
-# RAG
-
-                                 VRAG            =  0.0,
-                                 TAUG            =  3500.,
-                                 SRSG            =  0.5,
-                                 NRJG            =  40000,
-                                 TRAG            =  20.,
-                                 ALAT            =  0.,
-                                 
-                                 CNAD            =  CNAD,
-#Armature
-                                 NREN            = 1.,
-
-                                 ROA1            = ROA1,  
-                                 DEQ1            = 0.003,  
-                                 E1            = 200000, 
-                                 SY1            = 400,  
-                                 TYR1            = 6.0,   
-                                 VR11            = VR11,   
-                                 VR12            = VR12,   
-                                 VR13            = VR13,   
-                                 TAUM1            = 100000,   
-                                 TAUK1            = 100000,   
-                                 D_SIGM_EPSI1     = 1000.,
-),);  
+mat1 = DEFI_MATERIAU(
+    ELAS=_F(E=40000, NU=0.2, RHO=0.002500, ALPHA=1e-5),
+    RGI_BETON_BA=_F(
+        DIM3=0.1,
+        YOUM=37000.0,
+        NUM=0.2,
+        # HYDRATATION
+        HYDR=HYDR1,
+        HYDS=0.0,
+        # RETRAIT / VOLUME D'EAU
+        PORO=PORO,
+        BSHR=0.5,
+        MSHR=0.000,
+        MVGN=0.0,
+        SFLD=14,
+        # MECANIQUE
+        RT=3.7,
+        EPT=1e-4,
+        RC=35.0,
+        EPC=1.0e-3,
+        DELT=1.0,
+        BETA=0.15,
+        REF=4.0,
+        EKDC=1.0e-3,
+        GFT=100e-6,
+        GFR=100e-6,
+        # ENDOMMAGEMENT THERMIQUE
+        DT80=0.0,
+        TSTH=45.0,
+        # FLUAGE
+        TREF=20.0,
+        TAUK=10000.0,
+        YKSY=2.17,
+        TAUM=8000.0,
+        EKFL=0.9e-4,
+        XFLU=2,
+        NRJM=25000.0,
+        DFMX=0.0,
+        # RGI
+        VVRG=0.00,
+        KGEL=7000.0,
+        KRGI=1.0,
+        HRGI=0.03,
+        HPEV=1.0,
+        EKRG=0.3e-2,
+        # RAG
+        VRAG=0.0,
+        TAUG=3500.0,
+        SRSG=0.5,
+        NRJG=40000,
+        TRAG=20.0,
+        ALAT=0.0,
+        CNAD=CNAD,
+        # Armature
+        NREN=1.0,
+        ROA1=ROA1,
+        DEQ1=0.003,
+        E1=200000,
+        SY1=400,
+        TYR1=6.0,
+        VR11=VR11,
+        VR12=VR12,
+        VR13=VR13,
+        TAUM1=100000,
+        TAUK1=100000,
+        D_SIGM_EPSI1=1000.0,
+    ),
+)
 
 
-TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=20,),);
+TEMPI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_R",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20),
+)
 
-TEMP=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_THER',
-               NOM_CHAM='TEMP',
-               AFFE=(_F(CHAM_GD=TEMPI,
-                        INST=7.0,),),);
+TEMP = CREA_RESU(
+    OPERATION="AFFE", TYPE_RESU="EVOL_THER", NOM_CHAM="TEMP", AFFE=(_F(CHAM_GD=TEMPI, INST=7.0),)
+)
 
-Csymz=AFFE_CHAR_MECA(MODELE=mod,
-                     DDL_IMPO=(_F(DZ=0.0,
-                                    GROUP_MA=('SYMZBE',),),),)
+Csymz = AFFE_CHAR_MECA(MODELE=mod, DDL_IMPO=(_F(DZ=0.0, GROUP_MA=("SYMZBE",)),))
 
-Csymy=AFFE_CHAR_MECA(MODELE=mod,
-                     DDL_IMPO=(_F(DY=0.0,
-                                    GROUP_MA=('SYMYBE',),),),)
+Csymy = AFFE_CHAR_MECA(MODELE=mod, DDL_IMPO=(_F(DY=0.0, GROUP_MA=("SYMYBE",)),))
 
-Csymx=AFFE_CHAR_MECA(MODELE=mod,
-                     DDL_IMPO=(_F(DX=0.0,
-                                    GROUP_MA=('SYMXBE',),),),)
+Csymx = AFFE_CHAR_MECA(MODELE=mod, DDL_IMPO=(_F(DX=0.0, GROUP_MA=("SYMXBE",)),))
 
 
-fhyd1 = DEFI_FONCTION(
-                   NOM_PARA='INST',
-                   VALE=(0.0, 0.134, 10.0, 0.134 ))
+fhyd1 = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.134, 10.0, 0.134))
 
 
+SECHI = CREA_CHAMP(
+    TYPE_CHAM="NOEU_TEMP_F",
+    OPERATION="AFFE",
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE_F=fhyd1),
+)
+
+SECH = CREA_RESU(
+    OPERATION="AFFE",
+    TYPE_RESU="EVOL_THER",
+    NOM_CHAM="TEMP",
+    AFFE=(_F(CHAM_GD=SECHI, LIST_INST=L_INS1),),
+)
 
 
-SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
-                 OPERATION='AFFE',
-                 MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE_F=fhyd1,),);
-
-SECH=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_THER',
-               NOM_CHAM='TEMP',
-               AFFE=(_F(CHAM_GD=SECHI,
-                        LIST_INST=L_INS1,),),);
-
-
-fieldmat=AFFE_MATERIAU(MAILLAGE=M,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=mat1,),
-                       AFFE_VARC=(_F(TOUT='OUI',
-                                     NOM_VARC='TEMP',
-                                     EVOL=TEMP,
-                                     NOM_CHAM='TEMP',
-                                     PROL_DROITE='CONSTANT',
-                                     PROL_GAUCHE='CONSTANT',
-                                     VALE_REF=20.0,),
-                                 _F(TOUT= 'OUI',
-                                    NOM_VARC='SECH',
-                                    EVOL=SECH,
-                                    NOM_CHAM='TEMP',
-                                    PROL_DROITE='LINEAIRE',
-                                    PROL_GAUCHE='CONSTANT',
-                                    VALE_REF=0.,)                                      
-                                     ,),);
-
- 
+fieldmat = AFFE_MATERIAU(
+    MAILLAGE=M,
+    AFFE=_F(TOUT="OUI", MATER=mat1),
+    AFFE_VARC=(
+        _F(
+            TOUT="OUI",
+            NOM_VARC="TEMP",
+            EVOL=TEMP,
+            NOM_CHAM="TEMP",
+            PROL_DROITE="CONSTANT",
+            PROL_GAUCHE="CONSTANT",
+            VALE_REF=20.0,
+        ),
+        _F(
+            TOUT="OUI",
+            NOM_VARC="SECH",
+            EVOL=SECH,
+            NOM_CHAM="TEMP",
+            PROL_DROITE="LINEAIRE",
+            PROL_GAUCHE="CONSTANT",
+            VALE_REF=0.0,
+        ),
+    ),
+)
 
 
-DEPL1=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=( 0.0,0.0,
-                           1.0,3e-5,
-                           2.0,0,
-                           3.0,-3e-4,
-                           4.0,0.),
-                    PROL_DROITE='EXCLU',
-                    PROL_GAUCHE='EXCLU',);
+DEPL1 = DEFI_FONCTION(
+    NOM_PARA="INST",
+    VALE=(0.0, 0.0, 1.0, 3e-5, 2.0, 0, 3.0, -3e-4, 4.0, 0.0),
+    PROL_DROITE="EXCLU",
+    PROL_GAUCHE="EXCLU",
+)
 
-CHAR1=AFFE_CHAR_MECA_F(MODELE=mod,
-                       DDL_IMPO=_F(GROUP_MA='SLOADXBE',
-                                   DX=DEPL1,),);
+CHAR1 = AFFE_CHAR_MECA_F(MODELE=mod, DDL_IMPO=_F(GROUP_MA="SLOADXBE", DX=DEPL1))
 
-RCinx11=AFFE_CHAR_MECA(MODELE=mod,
-                    LIAISON_DDL=_F(NOEUD=('N7','N6',),
-                                   DDL = ('DZ','DZ',),
-                                   COEF_MULT =(1., -1),
-                                   COEF_IMPO = 0, ),)
-                                   
-RCinx32=AFFE_CHAR_MECA(MODELE=mod,
-                    LIAISON_DDL=_F(NOEUD=('N7','N3',),
-                                   DDL = ('DY','DY',),
-                                   COEF_MULT =(1., -1),
-                                   COEF_IMPO = 0, ),)                                      
-                                   
+RCinx11 = AFFE_CHAR_MECA(
+    MODELE=mod,
+    LIAISON_DDL=_F(NOEUD=("N7", "N6"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, -1), COEF_IMPO=0),
+)
 
-Rciny11=AFFE_CHAR_MECA(MODELE=mod,
-                    LIAISON_DDL=_F(NOEUD=('N7','N8',),
-                                   DDL = ('DZ','DZ',),
-                                   COEF_MULT =(1., -1),
-                                   COEF_IMPO = 0, ),)
-
-Rciny12=AFFE_CHAR_MECA(MODELE=mod,
-                    LIAISON_DDL=_F(NOEUD=('N7','N8',),
-                                   DDL = ('DY','DY',),
-                                   COEF_MULT =(1., -1),
-                                   COEF_IMPO = 0, ),)    
-                                   
-Rciny22=AFFE_CHAR_MECA(MODELE=mod,
-                      LIAISON_DDL=_F(NOEUD=('N7','N4',),
-                                   DDL = ('DY','DY',),
-                                   COEF_MULT =(1., -1),
-                                   COEF_IMPO = 0, ),)
-                                                                                          
-Rcinz21=AFFE_CHAR_MECA(MODELE=mod,
-                      LIAISON_DDL=_F(NOEUD=('N7','N5',),
-                                   DDL = ('DZ','DZ',),
-                                   COEF_MULT =(1., -1),
-                                   COEF_IMPO = 0, ),)                                   
-                                   
-     
-
-RES1=STAT_NON_LINE(CHAM_MATER=fieldmat,
-                   MODELE=mod,
-                   CONVERGENCE=_F(ITER_GLOB_MAXI = 150,
-                                  RESI_GLOB_RELA=1e-6,
-                                  ARRET='OUI',),
-                   COMPORTEMENT=_F(TOUT='OUI',
-                                   RELATION='RGI_BETON_BA',),
-                   INCREMENT=_F(LIST_INST=L_INS1,),
-                  NEWTON=_F(PREDICTION='ELASTIQUE',
-                             MATRICE='ELASTIQUE',),
-                   INFO=1,          
-                   EXCIT=(_F(CHARGE=CHAR1),
-                          _F(CHARGE=Csymy),
-                          _F(CHARGE=Csymz),
-                          _F(CHARGE=Csymx,),
-                          _F(CHARGE=RCinx11,),                                                     
-                          _F(CHARGE=RCinx32,),
-                          _F(CHARGE=Rciny11,),                                                    
-                          _F(CHARGE=Rciny12,),
-                          _F(CHARGE=Rciny22,),                                                                     
-                          _F(CHARGE=Rcinz21,),),);
-                          
-
-RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,
-                CONTRAINTE=('SIGM_ELNO'),
-                DEFORMATION=('EPSI_ELNO'))
+RCinx32 = AFFE_CHAR_MECA(
+    MODELE=mod,
+    LIAISON_DDL=_F(NOEUD=("N7", "N3"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1), COEF_IMPO=0),
+)
 
 
-TEST_RESU(RESU=(_F(INST=1.0,
-                   MAILLE='M12',
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   POINT=7,
-                   RESULTAT=RES1,
-                   VALE_ABS='NON',
-                   VALE_CALC=1.57197399759),
-                _F(INST=2.0,
-                   MAILLE='M12',
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   POINT=7,
-                   RESULTAT=RES1,
-                   VALE_ABS='NON',
-                   VALE_CALC=-1.98932721551),
-                _F(INST=3.0,
-                   MAILLE='M12',
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   POINT=7,
-                   RESULTAT=RES1,
-                   VALE_ABS='NON',
-                   VALE_CALC=-26.1568827725),
-                _F(INST=4.0,
-                   MAILLE='M12',
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   POINT=7,
-                   RESULTAT=RES1,
-                   VALE_ABS='NON',
-                   VALE_CALC=2.01385279783)))
+Rciny11 = AFFE_CHAR_MECA(
+    MODELE=mod,
+    LIAISON_DDL=_F(NOEUD=("N7", "N8"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, -1), COEF_IMPO=0),
+)
+
+Rciny12 = AFFE_CHAR_MECA(
+    MODELE=mod,
+    LIAISON_DDL=_F(NOEUD=("N7", "N8"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1), COEF_IMPO=0),
+)
+
+Rciny22 = AFFE_CHAR_MECA(
+    MODELE=mod,
+    LIAISON_DDL=_F(NOEUD=("N7", "N4"), DDL=("DY", "DY"), COEF_MULT=(1.0, -1), COEF_IMPO=0),
+)
+
+Rcinz21 = AFFE_CHAR_MECA(
+    MODELE=mod,
+    LIAISON_DDL=_F(NOEUD=("N7", "N5"), DDL=("DZ", "DZ"), COEF_MULT=(1.0, -1), COEF_IMPO=0),
+)
 
 
+RES1 = STAT_NON_LINE(
+    CHAM_MATER=fieldmat,
+    MODELE=mod,
+    CONVERGENCE=_F(ITER_GLOB_MAXI=150, RESI_GLOB_RELA=1e-6, ARRET="OUI"),
+    COMPORTEMENT=_F(TOUT="OUI", RELATION="RGI_BETON_BA"),
+    INCREMENT=_F(LIST_INST=L_INS1),
+    NEWTON=_F(PREDICTION="ELASTIQUE", MATRICE="ELASTIQUE"),
+    INFO=1,
+    EXCIT=(
+        _F(CHARGE=CHAR1),
+        _F(CHARGE=Csymy),
+        _F(CHARGE=Csymz),
+        _F(CHARGE=Csymx),
+        _F(CHARGE=RCinx11),
+        _F(CHARGE=RCinx32),
+        _F(CHARGE=Rciny11),
+        _F(CHARGE=Rciny12),
+        _F(CHARGE=Rciny22),
+        _F(CHARGE=Rcinz21),
+    ),
+)
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(RESULTAT=RES1,),);
+
+RES1 = CALC_CHAMP(reuse=RES1, RESULTAT=RES1, CONTRAINTE=("SIGM_ELNO"), DEFORMATION=("EPSI_ELNO"))
 
 
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=1.0,
+            MAILLE="M12",
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            POINT=7,
+            RESULTAT=RES1,
+            VALE_ABS="NON",
+            VALE_CALC=1.57197399759,
+        ),
+        _F(
+            INST=2.0,
+            MAILLE="M12",
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            POINT=7,
+            RESULTAT=RES1,
+            VALE_ABS="NON",
+            VALE_CALC=-1.98932721551,
+        ),
+        _F(
+            INST=3.0,
+            MAILLE="M12",
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            POINT=7,
+            RESULTAT=RES1,
+            VALE_ABS="NON",
+            VALE_CALC=-26.1568827725,
+        ),
+        _F(
+            INST=4.0,
+            MAILLE="M12",
+            NOM_CHAM="SIEF_ELGA",
+            NOM_CMP="SIXX",
+            POINT=7,
+            RESULTAT=RES1,
+            VALE_ABS="NON",
+            VALE_CALC=2.01385279783,
+        ),
+    )
+)
 
-FIN();
+
+IMPR_RESU(FORMAT="MED", UNITE=80, RESU=_F(RESULTAT=RES1))
+
+
+FIN()

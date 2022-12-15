@@ -42,7 +42,7 @@ def create_mesh(nb_node_dir, meshfile):
     ls = []
     for i in range(mesh.getNumberOfCells()):
         grp = DataArrayInt([i])
-        grp.setName("GrpWithLongName_%d" % (i+1))
+        grp.setName("GrpWithLongName_%d" % (i + 1))
         ls.append(grp)
 
     mm = MEDFileUMesh()
@@ -92,9 +92,11 @@ with shared_tmpdir("mesh001k_") as tmpdir:
     test.assertEqual(mesh_std.getNumberOfNodes(), mesh_relu.getNumberOfNodes())
     test.assertEqual(mesh_std.getNumberOfCells(), mesh_relu.getNumberOfCells())
     test.assertSequenceEqual(
-        sorted(mesh_std.getGroupsOfNodes()), sorted(mesh_relu.getGroupsOfNodes()))
+        sorted(mesh_std.getGroupsOfNodes()), sorted(mesh_relu.getGroupsOfNodes())
+    )
     test.assertSequenceEqual(
-        sorted(mesh_std.getGroupsOfCells()), sorted(mesh_relu.getGroupsOfCells()))
+        sorted(mesh_std.getGroupsOfCells()), sorted(mesh_relu.getGroupsOfCells())
+    )
 
 test.printSummary()
 

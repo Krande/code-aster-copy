@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI', )
+POURSUITE(CODE="OUI")
 
 import numpy as np
 
@@ -25,7 +25,7 @@ import numpy as np
 matr_dense = stiff.EXTR_MATR()
 
 # extract as sparse matrix by keeping almost null values
-data, row, col, dim = stiff.EXTR_MATR(sparse='True', epsilon=0.)
+data, row, col, dim = stiff.EXTR_MATR(sparse="True", epsilon=0.0)
 
 matr_sparse = np.zeros((dim, dim))
 for i, j, value in zip(row, col, data):
@@ -34,26 +34,15 @@ for i, j, value in zip(row, col, data):
 # check equality
 equal = np.allclose(matr_dense, matr_sparse)
 
-tab1 = CREA_TABLE(LISTE=(_F(PARA='EQUAL',
-                            LISTE_I=int(equal)),
-                         _F(PARA='TERMS',
-                            LISTE_I=len(data))))
+tab1 = CREA_TABLE(LISTE=(_F(PARA="EQUAL", LISTE_I=int(equal)), _F(PARA="TERMS", LISTE_I=len(data))))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-            VALE_CALC_I=1,
-            VALE_REFE_I=1,
-            NOM_PARA='EQUAL',
-            TABLE=tab1,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="EQUAL", TABLE=tab1)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-            VALE_CALC_I=196,
-            VALE_REFE_I=196,
-            NOM_PARA='TERMS',
-            TABLE=tab1,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=196, VALE_REFE_I=196, NOM_PARA="TERMS", TABLE=tab1)
 
 # extract as sparse matrix
-epsilon = 1.e-10
-data, row, col, dim = stiff.EXTR_MATR(sparse='True', epsilon=epsilon)
+epsilon = 1.0e-10
+data, row, col, dim = stiff.EXTR_MATR(sparse="True", epsilon=epsilon)
 
 matr_sparse = np.zeros((dim, dim))
 for i, j, value in zip(row, col, data):
@@ -62,22 +51,13 @@ for i, j, value in zip(row, col, data):
 # check equality
 diff = abs(matr_dense - matr_sparse).max()
 
-tab2 = CREA_TABLE(LISTE=(_F(PARA='EQUAL',
-                            LISTE_I=int(diff < epsilon)),
-                         _F(PARA='TERMS',
-                            LISTE_I=len(data))))
+tab2 = CREA_TABLE(
+    LISTE=(_F(PARA="EQUAL", LISTE_I=int(diff < epsilon)), _F(PARA="TERMS", LISTE_I=len(data)))
+)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-            VALE_CALC_I=1,
-            VALE_REFE_I=1,
-            NOM_PARA='EQUAL',
-            TABLE=tab2,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="EQUAL", TABLE=tab2)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-            VALE_CALC_I=186,
-            VALE_REFE_I=186,
-            NOM_PARA='TERMS',
-            TABLE=tab2,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=186, VALE_REFE_I=186, NOM_PARA="TERMS", TABLE=tab2)
 
 # np.savez("/tmp/res.npz", md=matr_dense, data=data, row=row, col=col)
 

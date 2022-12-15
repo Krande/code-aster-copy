@@ -17,69 +17,68 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
 #
 #  Frequence du premier mode valeur par rapport à CALC_MODES
 #
-TAB_SPEC=RECU_TABLE(CO=EVOLMV,
-                    NOM_TABLE='ANALYSE_MODALE',)
+TAB_SPEC = RECU_TABLE(CO=EVOLMV, NOM_TABLE="ANALYSE_MODALE")
 
 TEST_TABLE(
-           REFERENCE='AUTRE_ASTER',
-           NOM_PARA='FREQ',
-           TABLE=TAB_SPEC,
-           CRITERE=('RELATIF',),
-           VALE_CALC=3.0433073738279885,
-           VALE_REFE=3.0433073738279885,
-           FILTRE=(
-                   _F(CRIT_COMP='EQ',
-                      NOM_PARA='TYPE_MODE',
-                      VALE_K='DEPL_VIBR',),
-                   _F(CRIT_COMP='EQ',
-                      NOM_PARA='NUME_MODE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',PRECISION=1.E-6,
-                      VALE=-5.0,),
-                   ),
-           )
+    REFERENCE="AUTRE_ASTER",
+    NOM_PARA="FREQ",
+    TABLE=TAB_SPEC,
+    CRITERE=("RELATIF",),
+    VALE_CALC=3.0433073738279885,
+    VALE_REFE=3.0433073738279885,
+    FILTRE=(
+        _F(CRIT_COMP="EQ", NOM_PARA="TYPE_MODE", VALE_K="DEPL_VIBR"),
+        _F(CRIT_COMP="EQ", NOM_PARA="NUME_MODE", VALE_I=1),
+        _F(NOM_PARA="INST", PRECISION=1.0e-6, VALE=-5.0),
+    ),
+)
 
 # Test des déplacements
-TEST_RESU(RESU=(_F(INST=0.0,
-                   RESULTAT=EVOL,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N739',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.005129395833726875,
-                   CRITERE=('RELATIF', 'RELATIF'),
-                   ),
-                _F(INST=0.0,
-                   RESULTAT=EVOL,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N731',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.00513552992572644,
-                   CRITERE=('RELATIF', 'RELATIF'),
-                   ),
-                _F(INST=tfin,
-                   RESULTAT=RESUGLO1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N739',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-0.006216267643761434,
-                   CRITERE=('RELATIF', 'RELATIF'),
-                   ),
-                _F(INST=tfin,
-                   RESULTAT=RESUGLO1,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='N1',
-                   NOM_CMP='DX',
-                   VALE_CALC=-0.004957789605078844,
-                   CRITERE=('RELATIF', 'RELATIF'),
-                   ),
-                ),
-          )
-
+TEST_RESU(
+    RESU=(
+        _F(
+            INST=0.0,
+            RESULTAT=EVOL,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N739",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.005129395833726875,
+            CRITERE=("RELATIF", "RELATIF"),
+        ),
+        _F(
+            INST=0.0,
+            RESULTAT=EVOL,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N731",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.00513552992572644,
+            CRITERE=("RELATIF", "RELATIF"),
+        ),
+        _F(
+            INST=tfin,
+            RESULTAT=RESUGLO1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N739",
+            NOM_CMP="DZ",
+            VALE_CALC=-0.006216267643761434,
+            CRITERE=("RELATIF", "RELATIF"),
+        ),
+        _F(
+            INST=tfin,
+            RESULTAT=RESUGLO1,
+            NOM_CHAM="DEPL",
+            GROUP_NO="N1",
+            NOM_CMP="DX",
+            VALE_CALC=-0.004957789605078844,
+            CRITERE=("RELATIF", "RELATIF"),
+        ),
+    )
+)
 
 
 FIN()

@@ -28,106 +28,108 @@ code_aster.init("--test")
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("zzzz504f/%d.med"%rank, True)
+pMesh2.readMedFile("zzzz504f/%d.med" % rank, True)
 
-model = AFFE_MODELE(MAILLAGE = pMesh2,
-                    AFFE = _F(MODELISATION = "D_PLAN",
-                              PHENOMENE = "MECANIQUE",
-                              TOUT = "OUI",),)
+model = AFFE_MODELE(
+    MAILLAGE=pMesh2, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")
+)
 
-char_cin = AFFE_CHAR_CINE(MODELE=model,
-                          MECA_IMPO=(_F(GROUP_NO="N2",
-                                        DX=0.,DY=0.,DZ=0.,),
-                                     _F(GROUP_NO="N4",
-                                        DX=0.,DY=0.,DZ=0.,),),)
+char_cin = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(
+        _F(GROUP_NO="N2", DX=0.0, DY=0.0, DZ=0.0),
+        _F(GROUP_NO="N4", DX=0.0, DY=0.0, DZ=0.0),
+    ),
+)
 
-char_meca = AFFE_CHAR_MECA(MODELE=model,
-                           LIAISON_RBE3=_F(GROUP_NO_MAIT="N5",
-                                           GROUP_NO_ESCL=("N1", "N2", "N3", "N4"),
-                                           COEF_ESCL=1,
-                                           DDL_MAIT="DX",
-                                           DDL_ESCL='DX-DY-DZ'),
-                           DDL_IMPO=_F(GROUP_NO="N5",DX=0.5)
-                           )
-char_meca.debugPrint(10+rank)
+char_meca = AFFE_CHAR_MECA(
+    MODELE=model,
+    LIAISON_RBE3=_F(
+        GROUP_NO_MAIT="N5",
+        GROUP_NO_ESCL=("N1", "N2", "N3", "N4"),
+        COEF_ESCL=1,
+        DDL_MAIT="DX",
+        DDL_ESCL="DX-DY-DZ",
+    ),
+    DDL_IMPO=_F(GROUP_NO="N5", DX=0.5),
+)
+char_meca.debugPrint(10 + rank)
 
-MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                               NU=0.3,),)
+MATER1 = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
 
-AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2,
-                       AFFE=_F(TOUT='OUI',
-                               MATER=MATER1,),)
+AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2, AFFE=_F(TOUT="OUI", MATER=MATER1))
 
-resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
-                     MODELE=model,
-                     EXCIT=(_F(CHARGE=char_cin,),
-                            _F(CHARGE=char_meca,),),
-                     SOLVEUR=_F(METHODE='PETSC',
-                                PRE_COND='SANS',
-                                RESI_RELA=1.E-10,),)
-resu.debugPrint(10+rank)
+resu = MECA_STATIQUE(
+    CHAM_MATER=AFFMAT,
+    MODELE=model,
+    EXCIT=(_F(CHARGE=char_cin), _F(CHARGE=char_meca)),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="SANS", RESI_RELA=1.0e-10),
+)
+resu.debugPrint(10 + rank)
 
-resu.printMedFile("test"+str(rank)+".med")
-#from shutil import copyfile
-#copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
+resu.printMedFile("test" + str(rank) + ".med")
+# from shutil import copyfile
+# copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
-sfon.debugPrint(10+rank)
+sfon.debugPrint(10 + rank)
 sfon.build()
 
 # DX displacement on nodes "N1" and "N3", comparison with sequential results
 TEST_RESU(
-                RESU=(_F(
-                    GROUP_NO=('N1', ),
-                    NOM_CHAM='DEPL',
-                    NOM_CMP='DX',
-                    NUME_ORDRE=1,
-                    RESULTAT=resu,
-                    VALE_CALC=0.979591885789513,
-                ),
-            _F(
-                    GROUP_NO=('N3', ),
-                    NOM_CHAM='DEPL',
-                    NOM_CMP='DX',
-                    NUME_ORDRE=1,
-                    RESULTAT=resu,
-                    VALE_CALC=1.020408114214617,
-                ),
-            ),)
+    RESU=(
+        _F(
+            GROUP_NO=("N1",),
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            NUME_ORDRE=1,
+            RESULTAT=resu,
+            VALE_CALC=0.979591885789513,
+        ),
+        _F(
+            GROUP_NO=("N3",),
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            NUME_ORDRE=1,
+            RESULTAT=resu,
+            VALE_CALC=1.020408114214617,
+        ),
+    )
+)
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,0.0,1.0,1.0,),)
+RAMPE = DEFI_FONCTION(NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0))
 
 
-LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 1.0,),)
+LINSTC = DEFI_LIST_REEL(VALE=(0.0, 0.5, 1.0))
 
-snl = STAT_NON_LINE(CHAM_MATER=AFFMAT,
-                     MODELE=model,
-                     EXCIT=(_F(CHARGE=char_cin,FONC_MULT=RAMPE),
-                            _F(CHARGE=char_meca,FONC_MULT=RAMPE),),
-                    INCREMENT=_F(LIST_INST=LINSTC,),
-                     SOLVEUR=_F(METHODE='PETSC',
-                                PRE_COND='SANS',
-                                RESI_RELA=1.E-10,),)
+snl = STAT_NON_LINE(
+    CHAM_MATER=AFFMAT,
+    MODELE=model,
+    EXCIT=(_F(CHARGE=char_cin, FONC_MULT=RAMPE), _F(CHARGE=char_meca, FONC_MULT=RAMPE)),
+    INCREMENT=_F(LIST_INST=LINSTC),
+    SOLVEUR=_F(METHODE="PETSC", PRE_COND="SANS", RESI_RELA=1.0e-10),
+)
 
 TEST_RESU(
-                RESU=(_F(
-                    GROUP_NO=('N1', ),
-                    NOM_CHAM='DEPL',
-                    NOM_CMP='DX',
-                    INST=1.0,
-                    RESULTAT=snl,
-                    VALE_CALC=0.979591885789513,
-                ),
-            _F(
-                    GROUP_NO=('N3', ),
-                    NOM_CHAM='DEPL',
-                    NOM_CMP='DX',
-                    INST=1.0,
-                    RESULTAT=snl,
-                    VALE_CALC=1.020408114214617,
-                ),
-            ),)
+    RESU=(
+        _F(
+            GROUP_NO=("N1",),
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            INST=1.0,
+            RESULTAT=snl,
+            VALE_CALC=0.979591885789513,
+        ),
+        _F(
+            GROUP_NO=("N3",),
+            NOM_CHAM="DEPL",
+            NOM_CMP="DX",
+            INST=1.0,
+            RESULTAT=snl,
+            VALE_CALC=1.020408114214617,
+        ),
+    )
+)
 
 FIN()

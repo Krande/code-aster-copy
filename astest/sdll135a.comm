@@ -19,45 +19,36 @@
 
 # MODELISATION POU_D_E
 
-DEBUT(CODE=_F(
-NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-           MAILLAGE=MAIL,
-           ABSC_CURV=_F(
-                TOUT='OUI',
-                # GROUP_MA ='PART1',
-                GROUP_NO_ORIG=('A',),),
-                )
+MAIL = MODI_MAILLAGE(
+    reuse=MAIL,
+    MAILLAGE=MAIL,
+    ABSC_CURV=_F(
+        TOUT="OUI",
+        # GROUP_MA ='PART1',
+        GROUP_NO_ORIG=("A",),
+    ),
+)
 
-CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
-                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAIL , )
+CHABSC = CREA_CHAMP(OPERATION="EXTR", TYPE_CHAM="CART_ABSC_R", NOM_CHAM="ABSC_CURV", MAILLAGE=MAIL)
 
-TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
-            TOUT='OUI',
-            TOUT_CMP='OUI',),)
+TAB_ABSC = CREA_TABLE(RESU=_F(CHAM_GD=CHABSC, TOUT="OUI", TOUT_CMP="OUI"))
 
-MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='POU_D_E',),)
+MODELE = AFFE_MODELE(
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E")
+)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=200000E6,
-                            NU=0.29,
-                            RHO=7830.0,),)
+ACIER = DEFI_MATERIAU(ELAS=_F(E=200000e6, NU=0.29, RHO=7830.0))
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=ACIER))
 
-CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
-                     POUTRE=_F(GROUP_MA='TOUT',
-                               SECTION='CERCLE',
-                               CARA=('R','EP',),
-                               VALE=(0.16,0.01,),),)
+CARAC = AFFE_CARA_ELEM(
+    MODELE=MODELE, POUTRE=_F(GROUP_MA="TOUT", SECTION="CERCLE", CARA=("R", "EP"), VALE=(0.16, 0.01))
+)
 
 
 # DEFINITION DES LISTES D INSTANTS
@@ -66,639 +57,692 @@ CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
 # LA PREMIERE CORRESPOND A L ONDRE DE TRACTION-COMPRESSION
 
 
-LISTE=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=2.E-4,
-                                   PAS=1e-07,),)
+LISTE = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=2.0e-4, PAS=1e-07))
 
 # LA SECONDE CORRESPOND A L ONDRE DE TORSION
 
-LISTE2=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=3.2E-4,
-                                    PAS=1e-07,),)
+LISTE2 = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=3.2e-4, PAS=1e-07))
 
 # ENCASTREMENT SUR UNE EXTREMITE
 
-CL=AFFE_CHAR_MECA(MODELE=MODELE,
-                  DDL_IMPO=_F(GROUP_NO='A',
-                              DX=0.0,
-                              DY=0.0,
-                              DZ=0.0,
-                              DRX=0.0,
-                              DRY=0.0,
-                              DRZ=0.0,),)
+CL = AFFE_CHAR_MECA(
+    MODELE=MODELE, DDL_IMPO=_F(GROUP_NO="A", DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0)
+)
 
 # CHARGEMENT SOUS LA FORME D UNE FORCE ( OU D UN MOMENT ) DE TYPE HEAVYSIDE
 
-CHARFX=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(GROUP_NO='B',
-                                      FX=1.0,),)
+CHARFX = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="B", FX=1.0))
 
-CHARMX=AFFE_CHAR_MECA(MODELE=MODELE,
-                      FORCE_NODALE=_F(GROUP_NO='B',
-                                      MX=1.0,),)
+CHARMX = AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO="B", MX=1.0))
 
-ASSEMBLAGE(MODELE=MODELE,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARAC,
-                CHARGE=CL,
-                NUME_DDL=CO('NUMEDDL'),
-                MATR_ASSE=(_F(MATRICE=CO('MASSE'),
-                              OPTION='MASS_MECA',),
-                           _F(MATRICE=CO('RIGID'),
-                              OPTION='RIGI_MECA',),),)
+ASSEMBLAGE(
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAC,
+    CHARGE=CL,
+    NUME_DDL=CO("NUMEDDL"),
+    MATR_ASSE=(
+        _F(MATRICE=CO("MASSE"), OPTION="MASS_MECA"),
+        _F(MATRICE=CO("RIGID"), OPTION="RIGI_MECA"),
+    ),
+)
 
 # LISTE DISCRETISE TRES FINEMENT POUR RESPECTER
 # LE RAPPORT TAILLE DE MAILLE VITESSE DE L ONDE DE COMPRESSION
 
-SOLVEURL='MULT_FRONT'
-DYNATRAF=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
-                        MODELE=MODELE,
-                        CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARAC,
-                        MATR_MASS=MASSE,
-                        MATR_RIGI=RIGID,
-                        SOLVEUR=_F(METHODE=SOLVEURL),
-                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                        EXCIT=(_F(CHARGE=CHARFX,),
-                               _F(CHARGE=CL,),),
-                        INCREMENT=_F(LIST_INST=LISTE,),
-                        ARCHIVAGE=_F(PAS_ARCH=100,),)
+SOLVEURL = "MULT_FRONT"
+DYNATRAF = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="PHYS",
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAC,
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGID,
+    SOLVEUR=_F(METHODE=SOLVEURL),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+    EXCIT=(_F(CHARGE=CHARFX), _F(CHARGE=CL)),
+    INCREMENT=_F(LIST_INST=LISTE),
+    ARCHIVAGE=_F(PAS_ARCH=100),
+)
 
-DYNATRAF=CALC_CHAMP(reuse=DYNATRAF,RESULTAT=DYNATRAF,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO'))
+DYNATRAF = CALC_CHAMP(reuse=DYNATRAF, RESULTAT=DYNATRAF, CONTRAINTE=("SIEF_ELGA", "SIEF_ELNO"))
 
 
-DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
-                    RESULTAT=DYNATRAF,
-                    FORCE='REAC_NODA',
-                    MODELE=MODELE,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARAC,
-                    EXCIT=(_F(CHARGE=CHARFX,),
-                           _F(CHARGE=CL,),),)
+DYNATRAF = CALC_CHAMP(
+    reuse=DYNATRAF,
+    RESULTAT=DYNATRAF,
+    FORCE="REAC_NODA",
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAC,
+    EXCIT=(_F(CHARGE=CHARFX), _F(CHARGE=CL)),
+)
 
 # TEST DU CHAMP DE DEPLACEMENT SUR LE NOEUD EXTREMITE
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC= 2.59345308E-10,
-                  VALE_REFE=2.5947322792500001E-10,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        VALE_CALC=2.59345308e-10,
+        VALE_REFE=2.5947322792500001e-10,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=15,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC= 3.89078070E-10,
-                  VALE_REFE=3.8920984188699999E-10,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=15,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        VALE_CALC=3.89078070e-10,
+        VALE_REFE=3.8920984188699999e-10,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC= 5.18818706E-10,
-                  VALE_REFE=5.18946455848E-10,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=20,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DX",
+        VALE_CALC=5.18818706e-10,
+        VALE_REFE=5.18946455848e-10,
+    )
+)
 
 # TEST SUR LES REACTIONS NODALES
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DX',
-                  VALE_CALC=-8.45037407E-192,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DX",
+        VALE_CALC=-8.45037407e-192,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DX',
-                  VALE_CALC= 7.45277104E-13,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DX",
+        VALE_CALC=7.45277104e-13,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=15,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DX',
-                  VALE_CALC= 1.18304926E-49,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=15,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DX",
+        VALE_CALC=1.18304926e-49,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DX',
-                  VALE_CALC=-1.976284880,
-                  VALE_REFE=-1.9999981906199999,
-                  PRECISION=0.050000000000000003,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=20,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DX",
+        VALE_CALC=-1.976284880,
+        VALE_REFE=-1.9999981906199999,
+        PRECISION=0.050000000000000003,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAF,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DX',
-                  VALE_CALC=-3.21440791E-13,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=20,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAF,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DX",
+        VALE_CALC=-3.21440791e-13,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
 # RECHERCHE DES MODES PROPRES DE TRACTIONS/COMPRESSIONS
 # ON SAUTE SCIEMMENT QUELQUES MODES (D'OU STURM='NON')
-MODE_DX=CALC_MODES(MATR_RIGI=RIGID,VERI_MODE=_F(STURM='NON'),
-                   OPTION='PROCHE', SOLVEUR=_F(METHODE='MULT_FRONT',NPREC=9),
-                   CALC_FREQ=_F(FREQ=(1263.497,3790.49,6317.484,8844.4477,11371.473,),
-                                ),
-                   MATR_MASS=MASSE,
-                   )
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DX,
-                  VALE_CALC= 1.26349687E+03,
-                  VALE_REFE=1263.4970000000001,
-                  CRITERE='RELATIF',),
-          )
+MODE_DX = CALC_MODES(
+    MATR_RIGI=RIGID,
+    VERI_MODE=_F(STURM="NON"),
+    OPTION="PROCHE",
+    SOLVEUR=_F(METHODE="MULT_FRONT", NPREC=9),
+    CALC_FREQ=_F(FREQ=(1263.497, 3790.49, 6317.484, 8844.4477, 11371.473)),
+    MATR_MASS=MASSE,
+)
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DX,
+        VALE_CALC=1.26349687e03,
+        VALE_REFE=1263.4970000000001,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DX,
-                  VALE_CALC= 3.79049373E+03,
-                  VALE_REFE=3790.4899999999998,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DX,
+        VALE_CALC=3.79049373e03,
+        VALE_REFE=3790.4899999999998,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DX,
-                  VALE_CALC= 6.31749993E+03,
-                  VALE_REFE=6317.4840000000004,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DX,
+        VALE_CALC=6.31749993e03,
+        VALE_REFE=6317.4840000000004,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DX,
-                  VALE_CALC= 8.84452173E+03,
-                  VALE_REFE=8844.4477000000006,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DX,
+        VALE_CALC=8.84452173e03,
+        VALE_REFE=8844.4477000000006,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DX,
-                  VALE_CALC= 1.13715653E+04,
-                  VALE_REFE=1.1371473E4,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DX,
+        VALE_CALC=1.13715653e04,
+        VALE_REFE=1.1371473e4,
+        CRITERE="RELATIF",
+    )
+)
 
 # RECHERCHE DES MODES PROPRES DE FLEXION
 # ON SAUTE SCIEMMENT QUELQUES MODES (D'OU STURM='NON')
-MODE_FZ=CALC_MODES(MATR_RIGI=RIGID,VERI_MODE=_F(STURM='NON'),
-                   OPTION='PROCHE', SOLVEUR=_F(METHODE='MULT_FRONT'),
-                   CALC_FREQ=_F(FREQ=(310.133,1943.568,5442.048,10664.242,17628.755,),
-                                ),
-                   MATR_MASS=MASSE,
-                   )
+MODE_FZ = CALC_MODES(
+    MATR_RIGI=RIGID,
+    VERI_MODE=_F(STURM="NON"),
+    OPTION="PROCHE",
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CALC_FREQ=_F(FREQ=(310.133, 1943.568, 5442.048, 10664.242, 17628.755)),
+    MATR_MASS=MASSE,
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_FZ,
-                  VALE_CALC=310.139411573,
-                  VALE_REFE=310.13299999999998,
-                  TOLE_MACHINE=5.E-5,           # ajustement pour clap0f0q
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_FZ,
+        VALE_CALC=310.139411573,
+        VALE_REFE=310.13299999999998,
+        TOLE_MACHINE=5.0e-5,  # ajustement pour clap0f0q
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_FZ,
-                  VALE_CALC= 1.94356657E+03,
-                  VALE_REFE=1943.568,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_FZ,
+        VALE_CALC=1.94356657e03,
+        VALE_REFE=1943.568,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_FZ,
-                  VALE_CALC= 5.44204698E+03,
-                  VALE_REFE=5442.0479999999998,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_FZ,
+        VALE_CALC=5.44204698e03,
+        VALE_REFE=5442.0479999999998,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_FZ,
-                  VALE_CALC= 1.06642420E+04,
-                  VALE_REFE=1.0664242E4,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_FZ,
+        VALE_CALC=1.06642420e04,
+        VALE_REFE=1.0664242e4,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_FZ,
-                  VALE_CALC= 1.76287557E+04,
-                  VALE_REFE=1.7628755000000001E4,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_FZ,
+        VALE_CALC=1.76287557e04,
+        VALE_REFE=1.7628755000000001e4,
+        CRITERE="RELATIF",
+    )
+)
 
 # RECHERCHE DES MODES PROPRES DE TORSION
 # ON SAUTE SCIEMMENT QUELQUES MODES (D'OU STURM='NON')
-MODE_DRX=CALC_MODES(MATR_RIGI=RIGID,VERI_MODE=_F(STURM='NON'),
-                    OPTION='PROCHE', SOLVEUR=_F(METHODE='MULT_FRONT'),
-                    CALC_FREQ=_F(FREQ=(786.619,2359.856,3933.094,5506.33,),
-                                 ),
-                    MATR_MASS=MASSE,
-                    )
+MODE_DRX = CALC_MODES(
+    MATR_RIGI=RIGID,
+    VERI_MODE=_F(STURM="NON"),
+    OPTION="PROCHE",
+    SOLVEUR=_F(METHODE="MULT_FRONT"),
+    CALC_FREQ=_F(FREQ=(786.619, 2359.856, 3933.094, 5506.33)),
+    MATR_MASS=MASSE,
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DRX,
-                  VALE_CALC=786.618791723,
-                  VALE_REFE=786.61900000000003,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=1,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DRX,
+        VALE_CALC=786.618791723,
+        VALE_REFE=786.61900000000003,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=2,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DRX,
-                  VALE_CALC= 2.35985832E+03,
-                  VALE_REFE=2359.8560000000002,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=2,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DRX,
+        VALE_CALC=2.35985832e03,
+        VALE_REFE=2359.8560000000002,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=3,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DRX,
-                  VALE_CALC= 3.93310366E+03,
-                  VALE_REFE=3933.0940000000001,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=3,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DRX,
+        VALE_CALC=3.93310366e03,
+        VALE_REFE=3933.0940000000001,
+        CRITERE="RELATIF",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=4,
-                  PARA='FREQ',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MODE_DRX,
-                  VALE_CALC= 5.50635871E+03,
-                  VALE_REFE=5506.3299999999999,
-                  CRITERE='RELATIF',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=4,
+        PARA="FREQ",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=MODE_DRX,
+        VALE_CALC=5.50635871e03,
+        VALE_REFE=5506.3299999999999,
+        CRITERE="RELATIF",
+    )
+)
 
 # CHARGEMENT DE TYPE TORSION : LA LISTE D INSTANT EST DIFFERENTE CAR
 # LA VITESSE DE L ONDE DE TORSION EST INFERIEURE A CELLE DE TRACTION
 # D OU UN TEMPS SUPERIEUR POUR ATTEINDRE LE BOUT DE LA POUTRE
 
-DYNATRAM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
-                        MODELE=MODELE,
-                        CHAM_MATER=CHMAT,
-                        CARA_ELEM=CARAC,
-                        MATR_MASS=MASSE,
-                        MATR_RIGI=RIGID,
-                        SOLVEUR=_F(METHODE=SOLVEURL),
-                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                        EXCIT=(_F(CHARGE=CHARMX,),
-                               _F(CHARGE=CL,),),
-                        INCREMENT=_F(LIST_INST=LISTE2,),
-                        ARCHIVAGE=_F(PAS_ARCH=100,),)
+DYNATRAM = DYNA_VIBRA(
+    TYPE_CALCUL="TRAN",
+    BASE_CALCUL="PHYS",
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAC,
+    MATR_MASS=MASSE,
+    MATR_RIGI=RIGID,
+    SOLVEUR=_F(METHODE=SOLVEURL),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK"),
+    EXCIT=(_F(CHARGE=CHARMX), _F(CHARGE=CL)),
+    INCREMENT=_F(LIST_INST=LISTE2),
+    ARCHIVAGE=_F(PAS_ARCH=100),
+)
 
-DYNATRAM=CALC_CHAMP(reuse=DYNATRAM,RESULTAT=DYNATRAM,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO'))
+DYNATRAM = CALC_CHAMP(
+    reuse=DYNATRAM, RESULTAT=DYNATRAM, CONTRAINTE=("SIEF_ELGA", "SIEF_ELNO", "EFGE_ELNO")
+)
 
 
-DYNATRAM=CALC_CHAMP(reuse =DYNATRAM,
-                    RESULTAT=DYNATRAM,
-                    FORCE='REAC_NODA',
-                    MODELE=MODELE,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CARAC,
-                    EXCIT=(_F(CHARGE=CHARMX,),
-                           _F(CHARGE=CL,),),)
+DYNATRAM = CALC_CHAMP(
+    reuse=DYNATRAM,
+    RESULTAT=DYNATRAM,
+    FORCE="REAC_NODA",
+    MODELE=MODELE,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARAC,
+    EXCIT=(_F(CHARGE=CHARMX), _F(CHARGE=CL)),
+)
 
 # TEST SUR LES DEPLACEMENTS
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DRX',
-                  VALE_CALC= 8.65597957E-09,
-                  VALE_REFE=8.6647758246099995E-09,
-                  PRECISION=1.5E-3,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=5,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DRX",
+        VALE_CALC=8.65597957e-09,
+        VALE_REFE=8.6647758246099995e-09,
+        PRECISION=1.5e-3,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DRX',
-                  VALE_CALC= 1.73211547E-08,
-                  VALE_REFE=1.7329591652600001E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DRX",
+        VALE_CALC=1.73211547e-08,
+        VALE_REFE=1.7329591652600001e-08,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DRX',
-                  VALE_CALC= 3.46507014E-08,
-                  VALE_REFE=3.4659103307500001E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=20,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="DEPL",
+        NOM_CMP="DRX",
+        VALE_CALC=3.46507014e-08,
+        VALE_REFE=3.4659103307500001e-08,
+    )
+)
 
 # TEST SUR LES REACTIONS NODALES
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
-                  VALE_CALC=-2.93279703E-242,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DRX",
+        VALE_CALC=-2.93279703e-242,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=10,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
-                  VALE_CALC= 3.72242168E-13,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=10,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DRX",
+        VALE_CALC=3.72242168e-13,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=15,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
-                  VALE_CALC=2.36489832E-133,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=15,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DRX",
+        VALE_CALC=2.36489832e-133,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=20,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
-                  VALE_CALC=-6.10030583E-52,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=20,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DRX",
+        VALE_CALC=-6.10030583e-52,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+        PRECISION=1.0e-08,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=32,
-                  GROUP_NO='A',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
-                  VALE_CALC=-1.903014564,
-                  VALE_REFE=-2.0000000142399998,
-                  PRECISION=0.050000000000000003,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=32,
+        GROUP_NO="A",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DRX",
+        VALE_CALC=-1.903014564,
+        VALE_REFE=-2.0000000142399998,
+        PRECISION=0.050000000000000003,
+    )
+)
 
-TEST_RESU(RESU=_F(NUME_ORDRE=32,
-                  GROUP_NO='B',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=DYNATRAM,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DRX',
-                  VALE_CALC= 4.56954787E-12,
-                  VALE_REFE=0.0,
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,),
-          )
+TEST_RESU(
+    RESU=_F(
+        NUME_ORDRE=32,
+        GROUP_NO="B",
+        REFERENCE="ANALYTIQUE",
+        RESULTAT=DYNATRAM,
+        NOM_CHAM="REAC_NODA",
+        NOM_CMP="DRX",
+        VALE_CALC=4.56954787e-12,
+        VALE_REFE=0.0,
+        CRITERE="ABSOLU",
+        PRECISION=1.0e-08,
+    )
+)
 
 # Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT
 
-TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
-                    OPTION = 'MOMENT_EQUIVALENT',
-                    ZONE_ANALYSE=_F(TOUT='OUI', ),
-                    RESU_MECA=_F(RESULTAT=DYNATRAM,
-                                 NOM_CHAM='EFGE_ELNO',
-                                 TOUT_ORDRE='OUI',
-                                 )
-                    )
+TAB_MEQ = POST_RCCM(
+    TYPE_RESU_MECA="B3600",
+    OPTION="MOMENT_EQUIVALENT",
+    ZONE_ANALYSE=_F(TOUT="OUI"),
+    RESU_MECA=_F(RESULTAT=DYNATRAM, NOM_CHAM="EFGE_ELNO", TOUT_ORDRE="OUI"),
+)
 
 # IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
 
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMO = CREA_TABLE(RESU=_F(RESULTAT=DYNATRAM,
-                           NOM_CMP=('MT', 'MFY', 'MFZ'),
-                           NOM_CHAM='EFGE_ELNO',
-                           TOUT='OUI',
-                           TOUT_ORDRE='OUI'))
+TABMO = CREA_TABLE(
+    RESU=_F(
+        RESULTAT=DYNATRAM,
+        NOM_CMP=("MT", "MFY", "MFZ"),
+        NOM_CHAM="EFGE_ELNO",
+        TOUT="OUI",
+        TOUT_ORDRE="OUI",
+    )
+)
 
-TABM937N939 = CALC_TABLE(TABLE=TABMO,
-                     ACTION=(_F(OPERATION='FILTRE',
-                                NOM_PARA='MAILLE',
-                                VALE_K ='M937'),
-                             _F(OPERATION='FILTRE',
-                                NOM_PARA='NOEUD',
-                                VALE_K ='N939'),
-                            )
-                    )
+TABM937N939 = CALC_TABLE(
+    TABLE=TABMO,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="MAILLE", VALE_K="M937"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", VALE_K="N939"),
+    ),
+)
 # IMPR_TABLE(UNITE=6, TABLE=TABM937N939)
 
 
-MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFZ)',
-                 NOM_PARA=('MT', 'MFY', 'MFZ'),)
+MOMEQ_FO = FORMULE(VALE="sqrt(MT*MT+MFY*MFY+MFZ*MFZ)", NOM_PARA=("MT", "MFY", "MFZ"))
 
-TABM937N939 = CALC_TABLE(TABLE=TABM937N939,reuse=TABM937N939,
-                     ACTION=(_F(OPERATION='OPER',
-                                FORMULE=MOMEQ_FO,
-                                NOM_PARA='MEQ',
-                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            )
-                    )
+TABM937N939 = CALC_TABLE(
+    TABLE=TABM937N939,
+    reuse=TABM937N939,
+    ACTION=(
+        _F(OPERATION="OPER", FORMULE=MOMEQ_FO, NOM_PARA="MEQ", NOM_COLONNE=("MT", "MFY", "MFZ")),
+    ),
+)
 
-TABM937N939MAX = CALC_TABLE(TABLE=TABM937N939,
-                     ACTION=(_F(OPERATION='CALCUL',
-                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
-                                TYPE_CALCUL = 'MAXI_ABS'),
-                            )
-                    )
+TABM937N939MAX = CALC_TABLE(
+    TABLE=TABM937N939,
+    ACTION=(_F(OPERATION="CALCUL", NOM_PARA=("MT", "MFY", "MFZ", "MEQ"), TYPE_CALCUL="MAXI_ABS"),),
+)
 
 # MFY et MFZ sont nulles sur toutes les mailles
-TEST_TABLE(  TABLE=TABM937N939MAX,
-             NOM_PARA='MT',
-             VALE_CALC=1.005623252173637,
-             )
+TEST_TABLE(TABLE=TABM937N939MAX, NOM_PARA="MT", VALE_CALC=1.005623252173637)
 
-TEST_TABLE(  TABLE=TAB_MEQ,
-             NOM_PARA='MT',
-             FILTRE=(_F(NOM_PARA='MAILLE',
-                       VALE_K='M937',
-                       ),
-                     _F(NOM_PARA='NOEUD',
-                       VALE_K='N939',
-                       ),
-                    ),
-             REFERENCE='AUTRE_ASTER',
-             VALE_REFE=1.005623252173637,
-             VALE_CALC=1.005623252173637,
-             )
+TEST_TABLE(
+    TABLE=TAB_MEQ,
+    NOM_PARA="MT",
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M937"), _F(NOM_PARA="NOEUD", VALE_K="N939")),
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=1.005623252173637,
+    VALE_CALC=1.005623252173637,
+)
 
-TEST_TABLE(  TABLE=TABM937N939MAX,
-             NOM_PARA='MEQ',
-             VALE_CALC=1.005623252173637,
-             )
+TEST_TABLE(TABLE=TABM937N939MAX, NOM_PARA="MEQ", VALE_CALC=1.005623252173637)
 
-TEST_TABLE(  TABLE=TAB_MEQ,
-             NOM_PARA='MEQ',
-             FILTRE=(_F(NOM_PARA='MAILLE',
-                       VALE_K='M937',
-                       ),
-                     _F(NOM_PARA='NOEUD',
-                       VALE_K='N939',
-                       ),
-                    ),
-             REFERENCE='AUTRE_ASTER',
-             VALE_REFE=1.005623252173637,
-             VALE_CALC=1.005623252173637,
-             )
+TEST_TABLE(
+    TABLE=TAB_MEQ,
+    NOM_PARA="MEQ",
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M937"), _F(NOM_PARA="NOEUD", VALE_K="N939")),
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=1.005623252173637,
+    VALE_CALC=1.005623252173637,
+)
 
 # N939 est le deuxième noeud de la maille M937
-TEST_TABLE(  TABLE=TAB_ABSC,
-             NOM_PARA='ABSC2',
-             FILTRE=(_F(NOM_PARA='MAILLE',
-                       VALE_K='M937',
-                       ),
-                    ),
-             VALE_CALC=0.937000000000001,
-             )
+TEST_TABLE(
+    TABLE=TAB_ABSC,
+    NOM_PARA="ABSC2",
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M937"),),
+    VALE_CALC=0.937000000000001,
+)
 
-TEST_TABLE(  TABLE=TAB_MEQ,
-             NOM_PARA='ABSC_CURV',
-             FILTRE=(_F(NOM_PARA='MAILLE',
-                       VALE_K='M937',
-                       ),
-                     _F(NOM_PARA='NOEUD',
-                       VALE_K='N939',
-                       ),
-                    ),
-             REFERENCE='AUTRE_ASTER',
-             VALE_REFE=0.937000000000001,
-             VALE_CALC=0.937000000000001,
-             )
+TEST_TABLE(
+    TABLE=TAB_MEQ,
+    NOM_PARA="ABSC_CURV",
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M937"), _F(NOM_PARA="NOEUD", VALE_K="N939")),
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=0.937000000000001,
+    VALE_CALC=0.937000000000001,
+)
 
 # Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / CHAM_GD
 
-CHMOM = CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                     NOM_CHAM='EFGE_ELNO', RESULTAT=DYNATRAM,
-                     NUME_ORDRE=30,
-                               )
+CHMOM = CREA_CHAMP(
+    OPERATION="EXTR",
+    TYPE_CHAM="ELNO_SIEF_R",
+    NOM_CHAM="EFGE_ELNO",
+    RESULTAT=DYNATRAM,
+    NUME_ORDRE=30,
+)
 
 
-TAB_MEQ2 = POST_RCCM(TYPE_RESU_MECA='B3600',
-                    OPTION = 'MOMENT_EQUIVALENT',
-                    ZONE_ANALYSE=_F(TOUT='OUI', ),
-                    RESU_MECA=_F(CHAM_GD=CHMOM,
-                                 )
-                    )
+TAB_MEQ2 = POST_RCCM(
+    TYPE_RESU_MECA="B3600",
+    OPTION="MOMENT_EQUIVALENT",
+    ZONE_ANALYSE=_F(TOUT="OUI"),
+    RESU_MECA=_F(CHAM_GD=CHMOM),
+)
 
 # -- on construit les résultats de référence pour un couple maille/noeud
-TABMOCH = CREA_TABLE(RESU=_F(CHAM_GD=CHMOM,
-                           NOM_CMP=('MT', 'MFY', 'MFZ'),
-                           TOUT='OUI', ))
+TABMOCH = CREA_TABLE(RESU=_F(CHAM_GD=CHMOM, NOM_CMP=("MT", "MFY", "MFZ"), TOUT="OUI"))
 
-TABM937N939CH = CALC_TABLE(TABLE=TABMOCH,
-                     ACTION=(_F(OPERATION='FILTRE',
-                                NOM_PARA='MAILLE',
-                                VALE_K ='M937'),
-                             _F(OPERATION='FILTRE',
-                                NOM_PARA='NOEUD',
-                                VALE_K ='N939'),
-                            )
-                    )
+TABM937N939CH = CALC_TABLE(
+    TABLE=TABMOCH,
+    ACTION=(
+        _F(OPERATION="FILTRE", NOM_PARA="MAILLE", VALE_K="M937"),
+        _F(OPERATION="FILTRE", NOM_PARA="NOEUD", VALE_K="N939"),
+    ),
+)
 
-TABM937N939CH = CALC_TABLE(TABLE=TABM937N939CH,reuse=TABM937N939CH,
-                     ACTION=(_F(OPERATION='OPER',
-                                FORMULE=MOMEQ_FO,
-                                NOM_PARA='MEQ',
-                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
-                            )
-                    )
+TABM937N939CH = CALC_TABLE(
+    TABLE=TABM937N939CH,
+    reuse=TABM937N939CH,
+    ACTION=(
+        _F(OPERATION="OPER", FORMULE=MOMEQ_FO, NOM_PARA="MEQ", NOM_COLONNE=("MT", "MFY", "MFZ")),
+    ),
+)
 
 # MFY et MFZ sont nulles sur toutes les mailles
-TEST_TABLE(  TABLE=TABM937N939CH,
-             NOM_PARA='MT',
-             VALE_CALC=0.9998954707298446,
-             )
+TEST_TABLE(TABLE=TABM937N939CH, NOM_PARA="MT", VALE_CALC=0.9998954707298446)
 
-TEST_TABLE(  TABLE=TAB_MEQ2,
-             NOM_PARA='MT',
-             FILTRE=(_F(NOM_PARA='MAILLE',
-                       VALE_K='M937',
-                       ),
-                     _F(NOM_PARA='NOEUD',
-                       VALE_K='N939',
-                       ),
-                    ),
-             REFERENCE='AUTRE_ASTER',
-             VALE_REFE=0.9998954707298446,
-             VALE_CALC=0.9998954707298446,
-             )
+TEST_TABLE(
+    TABLE=TAB_MEQ2,
+    NOM_PARA="MT",
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M937"), _F(NOM_PARA="NOEUD", VALE_K="N939")),
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=0.9998954707298446,
+    VALE_CALC=0.9998954707298446,
+)
 
-TEST_TABLE(  TABLE=TABM937N939CH,
-             NOM_PARA='MEQ',
-             VALE_CALC=0.9998954707298446,
-             )
+TEST_TABLE(TABLE=TABM937N939CH, NOM_PARA="MEQ", VALE_CALC=0.9998954707298446)
 
-TEST_TABLE(  TABLE=TAB_MEQ2,
-             NOM_PARA='MEQ',
-             FILTRE=(_F(NOM_PARA='MAILLE',
-                       VALE_K='M937',
-                       ),
-                     _F(NOM_PARA='NOEUD',
-                       VALE_K='N939',
-                       ),
-                    ),
-             REFERENCE='AUTRE_ASTER',
-             VALE_REFE=0.9998954707298446,
-             VALE_CALC=0.9998954707298446,
-             )
+TEST_TABLE(
+    TABLE=TAB_MEQ2,
+    NOM_PARA="MEQ",
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M937"), _F(NOM_PARA="NOEUD", VALE_K="N939")),
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=0.9998954707298446,
+    VALE_CALC=0.9998954707298446,
+)
 
 FIN()

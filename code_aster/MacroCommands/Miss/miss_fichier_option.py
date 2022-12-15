@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,35 +27,34 @@ import os
 import aster
 from .miss_utils import dict_format
 
-sfmt = dict_format['sR']
+sfmt = dict_format["sR"]
 
 
 def fichier_option(param):
     """Produit le contenu du fichier OPTMIS à partir des paramètres du calcul."""
     content = []
     # fréquences
-    if param['LIST_FREQ']:
-        nb = len(param['LIST_FREQ'])
+    if param["LIST_FREQ"]:
+        nb = len(param["LIST_FREQ"])
         content.append("LFREQ %d" % nb)
         fmt = (sfmt * nb).strip()
-        content.append(fmt % tuple(param['LIST_FREQ']))
+        content.append(fmt % tuple(param["LIST_FREQ"]))
     else:
         fmt = "FREQ" + 3 * sfmt
-        content.append(fmt %
-                       (param['FREQ_MIN'], param['FREQ_MAX'], param['FREQ_PAS']))
+        content.append(fmt % (param["FREQ_MIN"], param["FREQ_MAX"], param["FREQ_PAS"]))
     # Z0
-    content.append(("Z0" + sfmt) % param['Z0'])
+    content.append(("Z0" + sfmt) % param["Z0"])
     # SURF / ISSF
-    if param['SURF'] == "OUI":
+    if param["SURF"] == "OUI":
         content.append("SURF")
-    if param['ISSF'] == "OUI":
+    if param["ISSF"] == "OUI":
         content.append("ISSF")
     # type binaire/ascii
-    if param['TYPE'] == "BINAIRE":
+    if param["TYPE"] == "BINAIRE":
         content.append("BINA")
     # RFIC
-    if param['RFIC'] != 0.:
-        content.append(("RFIC" + sfmt) % param['RFIC'])
+    if param["RFIC"] != 0.0:
+        content.append(("RFIC" + sfmt) % param["RFIC"])
     # terminer le fichier par un retour chariot
     content.append("")
     return os.linesep.join(content)

@@ -5,7 +5,7 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist ci verification sequential
 
-F comm rtool01e.comm D 1
+F comm rtool01c.comm D 1
 F comm rtool01e.com1 D 1
 F comm rtool01e.com2 D 1
 F mmed rtool01e.mmed D 20

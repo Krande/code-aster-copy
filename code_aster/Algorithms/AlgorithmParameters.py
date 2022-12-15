@@ -189,214 +189,232 @@ class Data(object):
             Vmis_John_Cook,
             Umat,
             Mfront
-    """.replace(",", "").split()
+    """.replace(
+        ",", ""
+    ).split()
 
     allConstitutiveLawNames = [
-                                        "ELAS",
-                                        "ELAS_VMIS_LINE",
-                                        "ELAS_VMIS_TRAC",
-                                        "ELAS_VMIS_PUIS",
-                                        "ELAS_HYPER",
-                                        "ELAS_POUTRE_GR",
-                                        "CABLE",
-                                        "ARME",
-                                        "ASSE_CORN",
-                                        "BARCELONE",
-                                        "BETON_BURGER_FP",
-                                        "BETON_DOUBLE_DP",
-                                        "BETON_RAG",
-                                        "BETON_REGLE_PR",
-                                        "BETON_UMLV_FP",
-                                        "CABLE_GAINE_FROT",
-                                        "CAM_CLAY",
-                                        "CJS",
-                                        "CORR_ACIER",
-                                        "CZM_EXP",
-                                        "CZM_EXP_REG",
-                                        "CZM_EXP_MIX",
-                                        "CZM_FAT_MIX",
-                                        "CZM_LIN_REG",
-                                        "CZM_OUV_MIX",
-                                        "CZM_TAC_MIX",
-                                        "CZM_LAB_MIX",
-                                        "CZM_TRA_MIX",
-                                        "CZM_TURON",
-                                        "DIS_BILI_ELAS",
-                                        "DIS_CHOC",
-                                        "DIS_ECRO_CINE",
-                                        "DIS_GOUJ2E_ELAS",
-                                        "DIS_GOUJ2E_PLAS",
-                                        "DIS_GRICRA",
-                                        "DIS_VISC",
-                                        "DRUCK_PRAGER",
-                                        "DRUCK_PRAG_N_A",
-                                        "ELAS_GONF",
-                                        "ENDO_PORO_BETON",
-                                        "ENDO_CARRE",
-                                        "ENDO_FISS_EXP",
-                                        "ENDO_FRAGILE",
-                                        "ENDO_HETEROGENE",
-                                        "ENDO_ISOT_BETON",
-                                        "ENDO_ORTH_BETON",
-                                        "ENDO_SCALAIRE",
-                                        "FLUA_PORO_BETON",
-                                        "GLRC_DAMAGE",
-                                        "GLRC_DM",
-                                        "DHRC",
-                                        "GRANGER_FP",
-                                        "GRANGER_FP_INDT",
-                                        "GRANGER_FP_V",
-                                        "GRAN_IRRA_LOG",
-                                        "GRILLE_CINE_LINE",
-                                        "GRILLE_ISOT_LINE",
-                                        "GRILLE_PINTO_MEN",
-                                        "HAYHURST",
-                                        "HOEK_BROWN",
-                                        "HOEK_BROWN_EFF",
-                                        "HOEK_BROWN_TOT",
-                                        "HUJEUX",
-                                        "IRRAD3M",
-                                        "JOINT_BA",
-                                        "JOINT_BANDIS",
-                                        "JOINT_MECA_RUPT",
-                                        "JOINT_MECA_FROT",
-                                        "KIT_CG",
-                                        "KIT_DDI",
-                                        "KIT_HH",
-                                        "KIT_H",
-                                        "KIT_HHM",
-                                        "KIT_HM",
-                                        "KIT_THH",
-                                        "KIT_THHM",
-                                        "KIT_THM",
-                                        "KIT_THV",
-                                        "LAIGLE",
-                                        "LEMAITRE",
-                                        "LEMAITRE_IRRA",
-                                        "LEMA_SEUIL",
-                                        "LETK",
-                                        "MAZARS",
-                                        "MAZARS_GC",
-                                        "META_LEMA_ANI",
-                                        "META_P_CL",
-                                        "META_P_CL_PT",
-                                        "META_P_CL_PT_RE",
-                                        "META_P_CL_RE",
-                                        "META_P_IL",
-                                        "META_P_IL_PT",
-                                        "META_P_IL_PT_RE",
-                                        "META_P_IL_RE",
-                                        "META_P_INL",
-                                        "META_P_INL_PT",
-                                        "META_P_INL_PT_RE",
-                                        "META_P_INL_RE",
-                                        "META_V_CL",
-                                        "META_V_CL_PT",
-                                        "META_V_CL_PT_RE",
-                                        "META_V_CL_RE",
-                                        "META_V_IL",
-                                        "META_V_IL_PT",
-                                        "META_V_IL_PT_RE",
-                                        "META_V_IL_RE",
-                                        "META_V_INL",
-                                        "META_V_INL_PT",
-                                        "META_V_INL_PT_RE",
-                                        "META_V_INL_RE",
-                                        "MOHR_COULOMB",
-                                        "MONOCRISTAL",
-                                        "MULTIFIBRE",
-                                        "NORTON",
-                                        "NORTON_HOFF",
-                                        "PINTO_MENEGOTTO",
-                                        "POLYCRISTAL",
-                                        "RGI_BETON",
-                                        "ROUSSELIER",
-                                        "ROUSS_PR",
-                                        "ROUSS_VISC",
-                                        "RUPT_FRAG",
-                                        "SANS",
-                                        "VENDOCHAB",
-                                        "VISC_ENDO_LEMA",
-                                        "VISCOCHAB",
-                                        "VISC_CIN1_CHAB",
-                                        "VISC_CIN2_CHAB",
-                                        "VISC_CIN2_MEMO",
-                                        "VISC_CIN2_NRAD",
-                                        "VISC_MEMO_NRAD",
-                                        "VISC_DRUC_PRAG",
-                                        "VISC_IRRA_LOG",
-                                        "VISC_ISOT_LINE",
-                                        "VISC_ISOT_TRAC",
-                                        "VISC_TAHERI",
-                                        "VISC_MAXWELL",
-                                        "VISC_MAXWELL_MT",
-                                        "VMIS_ASYM_LINE",
-                                        "VMIS_CIN1_CHAB",
-                                        "VMIS_CIN2_CHAB",
-                                        "VMIS_CINE_GC",
-                                        "VMIS_CIN2_MEMO",
-                                        "VMIS_CIN2_NRAD",
-                                        "VMIS_MEMO_NRAD",
-                                        "VMIS_CINE_LINE",
-                                        "VMIS_ECMI_LINE",
-                                        "VMIS_ECMI_TRAC",
-                                        "VMIS_ISOT_LINE",
-                                        "VMIS_ISOT_PUIS",
-                                        "VMIS_ISOT_TRAC",
-                                        "VMIS_JOHN_COOK",
-                                        "UMAT",
-                                        "MFRONT",
+        "ELAS",
+        "ELAS_VMIS_LINE",
+        "ELAS_VMIS_TRAC",
+        "ELAS_VMIS_PUIS",
+        "ELAS_HYPER",
+        "ELAS_POUTRE_GR",
+        "CABLE",
+        "ARME",
+        "ASSE_CORN",
+        "BARCELONE",
+        "BETON_BURGER_FP",
+        "BETON_DOUBLE_DP",
+        "BETON_RAG",
+        "BETON_REGLE_PR",
+        "BETON_UMLV_FP",
+        "CABLE_GAINE_FROT",
+        "CAM_CLAY",
+        "CJS",
+        "CORR_ACIER",
+        "CZM_EXP",
+        "CZM_EXP_REG",
+        "CZM_EXP_MIX",
+        "CZM_FAT_MIX",
+        "CZM_LIN_REG",
+        "CZM_OUV_MIX",
+        "CZM_TAC_MIX",
+        "CZM_LAB_MIX",
+        "CZM_TRA_MIX",
+        "CZM_TURON",
+        "DIS_BILI_ELAS",
+        "DIS_CHOC",
+        "DIS_ECRO_CINE",
+        "DIS_GOUJ2E_ELAS",
+        "DIS_GOUJ2E_PLAS",
+        "DIS_GRICRA",
+        "DIS_VISC",
+        "DRUCK_PRAGER",
+        "DRUCK_PRAG_N_A",
+        "ELAS_GONF",
+        "ENDO_PORO_BETON",
+        "ENDO_CARRE",
+        "ENDO_FISS_EXP",
+        "ENDO_FRAGILE",
+        "ENDO_HETEROGENE",
+        "ENDO_ISOT_BETON",
+        "ENDO_ORTH_BETON",
+        "ENDO_SCALAIRE",
+        "FLUA_PORO_BETON",
+        "GLRC_DAMAGE",
+        "GLRC_DM",
+        "DHRC",
+        "GRANGER_FP",
+        "GRANGER_FP_INDT",
+        "GRANGER_FP_V",
+        "GRAN_IRRA_LOG",
+        "GRILLE_CINE_LINE",
+        "GRILLE_ISOT_LINE",
+        "GRILLE_PINTO_MEN",
+        "HAYHURST",
+        "HOEK_BROWN",
+        "HOEK_BROWN_EFF",
+        "HOEK_BROWN_TOT",
+        "HUJEUX",
+        "IRRAD3M",
+        "JOINT_BA",
+        "JOINT_BANDIS",
+        "JOINT_MECA_RUPT",
+        "JOINT_MECA_FROT",
+        "KIT_CG",
+        "KIT_DDI",
+        "KIT_HH",
+        "KIT_H",
+        "KIT_HHM",
+        "KIT_HM",
+        "KIT_THH",
+        "KIT_THHM",
+        "KIT_THM",
+        "KIT_THV",
+        "LAIGLE",
+        "LEMAITRE",
+        "LEMAITRE_IRRA",
+        "LEMA_SEUIL",
+        "LETK",
+        "MAZARS",
+        "MAZARS_GC",
+        "META_LEMA_ANI",
+        "META_P_CL",
+        "META_P_CL_PT",
+        "META_P_CL_PT_RE",
+        "META_P_CL_RE",
+        "META_P_IL",
+        "META_P_IL_PT",
+        "META_P_IL_PT_RE",
+        "META_P_IL_RE",
+        "META_P_INL",
+        "META_P_INL_PT",
+        "META_P_INL_PT_RE",
+        "META_P_INL_RE",
+        "META_V_CL",
+        "META_V_CL_PT",
+        "META_V_CL_PT_RE",
+        "META_V_CL_RE",
+        "META_V_IL",
+        "META_V_IL_PT",
+        "META_V_IL_PT_RE",
+        "META_V_IL_RE",
+        "META_V_INL",
+        "META_V_INL_PT",
+        "META_V_INL_PT_RE",
+        "META_V_INL_RE",
+        "MOHR_COULOMB",
+        "MONOCRISTAL",
+        "MULTIFIBRE",
+        "NORTON",
+        "NORTON_HOFF",
+        "PINTO_MENEGOTTO",
+        "POLYCRISTAL",
+        "RGI_BETON",
+        "ROUSSELIER",
+        "ROUSS_PR",
+        "ROUSS_VISC",
+        "RUPT_FRAG",
+        "SANS",
+        "VENDOCHAB",
+        "VISC_ENDO_LEMA",
+        "VISCOCHAB",
+        "VISC_CIN1_CHAB",
+        "VISC_CIN2_CHAB",
+        "VISC_CIN2_MEMO",
+        "VISC_CIN2_NRAD",
+        "VISC_MEMO_NRAD",
+        "VISC_DRUC_PRAG",
+        "VISC_IRRA_LOG",
+        "VISC_ISOT_LINE",
+        "VISC_ISOT_TRAC",
+        "VISC_TAHERI",
+        "VISC_MAXWELL",
+        "VISC_MAXWELL_MT",
+        "VMIS_ASYM_LINE",
+        "VMIS_CIN1_CHAB",
+        "VMIS_CIN2_CHAB",
+        "VMIS_CINE_GC",
+        "VMIS_CIN2_MEMO",
+        "VMIS_CIN2_NRAD",
+        "VMIS_MEMO_NRAD",
+        "VMIS_CINE_LINE",
+        "VMIS_ECMI_LINE",
+        "VMIS_ECMI_TRAC",
+        "VMIS_ISOT_LINE",
+        "VMIS_ISOT_PUIS",
+        "VMIS_ISOT_TRAC",
+        "VMIS_JOHN_COOK",
+        "UMAT",
+        "MFRONT",
     ]
     size = len(allConstitutiveLaw)
-    assert size == len(allConstitutiveLawNames), (
-        "Sizes differ: {0} vs {1}".format(size,
-                                          len(allConstitutiveLawNames)))
+    assert size == len(allConstitutiveLawNames), "Sizes differ: {0} vs {1}".format(
+        size, len(allConstitutiveLawNames)
+    )
 
     # StrainType
     allStrainEnum = """SmallStrain, PetitReac, LargeStrainAndRotation,
-        SimoMiehe, GdefLog""".replace(",", "").split()
-    allStrainNames = "PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_LOG"
+        SimoMiehe, GdefLog""".replace(
+        ",", ""
+    ).split()
+    allStrainNames = "PETIT", "PETIT_REAC", "GROT_GDEP", "SIMO_MIEHE", "GDEF_LOG"
     size = len(allStrainEnum)
-    assert size == len(allStrainNames), (
-        "Sizes differ: {0} vs {1}".format(size, len(allStrainNames)))
+    assert size == len(allStrainNames), "Sizes differ: {0} vs {1}".format(size, len(allStrainNames))
 
     # TangentMatrixType
-    allTangentMatrix = ["PerturbationMatrix", "VerificationMatrix",
-                        "TangentSecantMatrix"]
-    allTangentMatrixNames = "PERTURBATION","VERIFICATION","TANGENTE_SECANTE"
+    allTangentMatrix = ["PerturbationMatrix", "VerificationMatrix", "TangentSecantMatrix"]
+    allTangentMatrixNames = "PERTURBATION", "VERIFICATION", "TANGENTE_SECANTE"
     size = len(allTangentMatrix)
-    assert size == len(allTangentMatrixNames), (
-        "Sizes differ: {0} vs {1}".format(size, len(allTangentMatrixNames)))
+    assert size == len(allTangentMatrixNames), "Sizes differ: {0} vs {1}".format(
+        size, len(allTangentMatrixNames)
+    )
 
     # IntegrationAlgorithm
     allIntegrationAlgo = """AnalyticalAlgo, SecantAlgo, DekkerAlgo,
         Newton1DAlgo, BrentAlgo, NewtonAlgo, NewtonReliAlgo,
         NewtonLossAlgo, RungeKuttaAlgo, ParticularAlgo,
-        NoAlgo""".replace(",", "").split()
-    allIntegrationAlgoNames = ["ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D",
-        "BRENT", "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
-        "SPECIFIQUE", "SANS_OBJET"]
+        NoAlgo""".replace(
+        ",", ""
+    ).split()
+    allIntegrationAlgoNames = [
+        "ANALYTIQUE",
+        "SECANTE",
+        "DEKKER",
+        "NEWTON_1D",
+        "BRENT",
+        "NEWTON",
+        "NEWTON_RELI",
+        "NEWTON_PERT",
+        "RUNGE_KUTTA",
+        "SPECIFIQUE",
+        "SANS_OBJET",
+    ]
     size = len(allIntegrationAlgo)
-    assert size == len(allIntegrationAlgoNames), (
-        "Sizes differ: {0} vs {1}".format(size, len(allIntegrationAlgoNames)))
+    assert size == len(allIntegrationAlgoNames), "Sizes differ: {0} vs {1}".format(
+        size, len(allIntegrationAlgoNames)
+    )
 
 
 ConstitutiveLaw = namedtuple("ConstitutiveLaw", Data.allConstitutiveLaw)._make(
-    list(range(len(Data.allConstitutiveLaw))))
+    list(range(len(Data.allConstitutiveLaw)))
+)
 ConstitutiveLawNames = dict(list(zip(ConstitutiveLaw, Data.allConstitutiveLawNames)))
 
 StrainType = namedtuple("StrainType", Data.allStrainEnum)._make(
-    list(range(len(Data.allStrainEnum))))
+    list(range(len(Data.allStrainEnum)))
+)
 StrainTypeNames = dict(list(zip(StrainType, Data.allStrainNames)))
 
 TangentMatrixType = namedtuple("TangentMatrixType", Data.allTangentMatrix)._make(
-    list(range(len(Data.allTangentMatrix))))
+    list(range(len(Data.allTangentMatrix)))
+)
 TangentMatrixTypeNames = dict(list(zip(TangentMatrixType, Data.allTangentMatrixNames)))
 
-IntegrationAlgorithm = namedtuple("IntegrationAlgorithm",
-                                  Data.allIntegrationAlgo)._make(
-                           list(range(len(Data.allIntegrationAlgo))))
-IntegrationAlgorithmNames = dict(list(zip(IntegrationAlgorithm,
-                                     Data.allIntegrationAlgoNames)))
+IntegrationAlgorithm = namedtuple("IntegrationAlgorithm", Data.allIntegrationAlgo)._make(
+    list(range(len(Data.allIntegrationAlgo)))
+)
+IntegrationAlgorithmNames = dict(list(zip(IntegrationAlgorithm, Data.allIntegrationAlgoNames)))
 
 del Data

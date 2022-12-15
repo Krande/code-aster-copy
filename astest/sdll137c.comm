@@ -17,248 +17,196 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-       DEBUG=_F(SDVERI='OUI'),
-         )
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 
-#**********************************
+# **********************************
 # CREATION DU MODELE EXPERIMENTAL
-#**********************************
+# **********************************
 
 
-MAILEXP = LIRE_MAILLAGE(FORMAT='IDEAS',
-                        UNITE=21,
-                        )
+MAILEXP = LIRE_MAILLAGE(FORMAT="IDEAS", UNITE=21)
 
-MODLEXP=AFFE_MODELE(MAILLAGE=MAILEXP,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='DIS_TR',),)
-
-CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
-   DISCRET=(
-      _F(GROUP_MA='POUTRE', REPERE='GLOBAL', CARA='K_TR_D_L',
-         VALE=(1.e+12,1.e+12,1.e+12,1.e+12,1.e+12,1.e+12,), ),
-      _F(GROUP_MA='POUTRE', REPERE='GLOBAL', CARA='M_TR_D_L',
-         VALE=(0.0, 0.0, 0.0, 0.0,), ),
-   ),
+MODLEXP = AFFE_MODELE(
+    MAILLAGE=MAILEXP, AFFE=_F(TOUT="OUI", PHENOMENE="MECANIQUE", MODELISATION="DIS_TR")
 )
 
-KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                     MODELE=MODLEXP,
-                     CARA_ELEM=CHCAREXP,
-                     )
+CHCAREXP = AFFE_CARA_ELEM(
+    MODELE=MODLEXP,
+    DISCRET=(
+        _F(
+            GROUP_MA="POUTRE",
+            REPERE="GLOBAL",
+            CARA="K_TR_D_L",
+            VALE=(1.0e12, 1.0e12, 1.0e12, 1.0e12, 1.0e12, 1.0e12),
+        ),
+        _F(GROUP_MA="POUTRE", REPERE="GLOBAL", CARA="M_TR_D_L", VALE=(0.0, 0.0, 0.0, 0.0)),
+    ),
+)
 
-MELEXP=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                      MODELE=MODLEXP,
-                      CARA_ELEM=CHCAREXP,
-                      )
+KELEXP = CALC_MATR_ELEM(OPTION="RIGI_MECA", MODELE=MODLEXP, CARA_ELEM=CHCAREXP)
 
-NUMEXP=NUME_DDL( MATR_RIGI=KELEXP,)
+MELEXP = CALC_MATR_ELEM(OPTION="MASS_MECA", MODELE=MODLEXP, CARA_ELEM=CHCAREXP)
 
-KASSEXP=ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP,)
+NUMEXP = NUME_DDL(MATR_RIGI=KELEXP)
 
-MASSEXP=ASSE_MATRICE(MATR_ELEM=MELEXP,
-                  NUME_DDL=NUMEXP,)
+KASSEXP = ASSE_MATRICE(MATR_ELEM=KELEXP, NUME_DDL=NUMEXP)
+
+MASSEXP = ASSE_MATRICE(MATR_ELEM=MELEXP, NUME_DDL=NUMEXP)
 
 # LECTURE DES MODES IDENTIFIES
-MODMESU=LIRE_RESU(TYPE_RESU='MODE_MECA',
-                 FORMAT='IDEAS',
-                 MODELE=MODLEXP,
-                 UNITE=21,
-                 NOM_CHAM='DEPL',
-                 MATR_RIGI =KASSEXP,
-                 MATR_MASS =MASSEXP,
-                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
-                                 NUME_DATASET=55,
-                                 RECORD_6=(1,2,3,8,2,6,),
-                                 POSI_ORDRE=(7,4,),
-                                 POSI_NUME_MODE=(7,4),
-                                 POSI_FREQ=(8,1,),
-                                 POSI_MASS_GENE=(8,2),
-                                 POSI_AMOR_GENE=(8,3),
-                                 NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
-                 TOUT_ORDRE='OUI',)
+MODMESU = LIRE_RESU(
+    TYPE_RESU="MODE_MECA",
+    FORMAT="IDEAS",
+    MODELE=MODLEXP,
+    UNITE=21,
+    NOM_CHAM="DEPL",
+    MATR_RIGI=KASSEXP,
+    MATR_MASS=MASSEXP,
+    FORMAT_IDEAS=_F(
+        NOM_CHAM="DEPL",
+        NUME_DATASET=55,
+        RECORD_6=(1, 2, 3, 8, 2, 6),
+        POSI_ORDRE=(7, 4),
+        POSI_NUME_MODE=(7, 4),
+        POSI_FREQ=(8, 1),
+        POSI_MASS_GENE=(8, 2),
+        POSI_AMOR_GENE=(8, 3),
+        NOM_CMP=("DX", "DY", "DZ", "DRX", "DRY", "DRZ"),
+    ),
+    TOUT_ORDRE="OUI",
+)
 
 # TRI EVENTUEL
 
 
-_nume_mode=(1,2,3,4,5)
+_nume_mode = (1, 2, 3, 4, 5)
 
 
-MODEIDE=EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU,
-                                  NUME_MODE=_nume_mode,
-                                  ),)
+MODEIDE = EXTR_MODE(FILTRE_MODE=_F(MODE=MODMESU, NUME_MODE=_nume_mode))
 
-#********************************
+# ********************************
 # CREATION MODELE SUPPORT
-#********************************
+# ********************************
 
-MAILSUP = LIRE_MAILLAGE(FORMAT='ASTER',
-                        UNITE=20,)
+MAILSUP = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
-MODLSUP=AFFE_MODELE(MAILLAGE=MAILSUP,
-                    AFFE=(_F(GROUP_MA=('POUTRE','VISUAL',),
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='POU_D_E',),),)
+MODLSUP = AFFE_MODELE(
+    MAILLAGE=MAILSUP,
+    AFFE=(_F(GROUP_MA=("POUTRE", "VISUAL"), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),),
+)
 
-MATSUP=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
-                             NU=0.3,
-                             AMOR_ALPHA=1.E-4,AMOR_BETA=1.,
-                             RHO=7800.,),)
+MATSUP = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, AMOR_ALPHA=1.0e-4, AMOR_BETA=1.0, RHO=7800.0))
 
-CHMATSUP=AFFE_MATERIAU(MAILLAGE=MAILSUP,
-                       MODELE=MODLSUP,
-                       AFFE=(_F(GROUP_MA='POUTRE',
-                                MATER=MATSUP,),),)
+CHMATSUP = AFFE_MATERIAU(
+    MAILLAGE=MAILSUP, MODELE=MODLSUP, AFFE=(_F(GROUP_MA="POUTRE", MATER=MATSUP),)
+)
 
-CHCARSUP=AFFE_CARA_ELEM(MODELE=MODLSUP,
-                        POUTRE=(_F(GROUP_MA='POUTRE',
-                                   SECTION='RECTANGLE',
-                                   CARA=('HY','HZ',),
-                                   VALE=(9.E-3,38.E-3,),),),
-                        ORIENTATION=(_F(GROUP_MA='POUTRE',
-                                        CARA='VECT_Y',
-                                        VALE=(0.,0.,1.),),),
-                       )
+CHCARSUP = AFFE_CARA_ELEM(
+    MODELE=MODLSUP,
+    POUTRE=(_F(GROUP_MA="POUTRE", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(9.0e-3, 38.0e-3)),),
+    ORIENTATION=(_F(GROUP_MA="POUTRE", CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),),
+)
 
-CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
-                      DDL_IMPO=( _F(GROUP_NO=('FIXE',),
-                                   DX=0.0,
-                                   DY=0.0,
-                                   DZ=0.0,
-                                   DRX=0.0,
-                                   DRY=0.0,
-                                   DRZ=0.0,),
-                               ),)
+CONDLSUP = AFFE_CHAR_MECA(
+    MODELE=MODLSUP,
+    DDL_IMPO=(_F(GROUP_NO=("FIXE",), DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0),),
+)
 
 
-KELSUP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                        MODELE=MODLSUP,
-                        CHAM_MATER=CHMATSUP,
-                        CARA_ELEM=CHCARSUP,
-                        CHARGE=CONDLSUP,)
+KELSUP = CALC_MATR_ELEM(
+    OPTION="RIGI_MECA", MODELE=MODLSUP, CHAM_MATER=CHMATSUP, CARA_ELEM=CHCARSUP, CHARGE=CONDLSUP
+)
 
-MELSUP=CALC_MATR_ELEM(OPTION='MASS_MECA',
-                        MODELE=MODLSUP,
-                        CHAM_MATER=CHMATSUP,
-                        CARA_ELEM=CHCARSUP,
-                        CHARGE=CONDLSUP,)
+MELSUP = CALC_MATR_ELEM(
+    OPTION="MASS_MECA", MODELE=MODLSUP, CHAM_MATER=CHMATSUP, CARA_ELEM=CHCARSUP, CHARGE=CONDLSUP
+)
 
-AELSUP=CALC_MATR_ELEM(OPTION='AMOR_MECA',
-                        MODELE=MODLSUP,
-                        RIGI_MECA=KELSUP,MASS_MECA=MELSUP,
-                        CHAM_MATER=CHMATSUP,
-                        CARA_ELEM=CHCARSUP,
-                        CHARGE=CONDLSUP,)
+AELSUP = CALC_MATR_ELEM(
+    OPTION="AMOR_MECA",
+    MODELE=MODLSUP,
+    RIGI_MECA=KELSUP,
+    MASS_MECA=MELSUP,
+    CHAM_MATER=CHMATSUP,
+    CARA_ELEM=CHCARSUP,
+    CHARGE=CONDLSUP,
+)
 
-NUMSUP=NUME_DDL(MATR_RIGI=KELSUP,)
+NUMSUP = NUME_DDL(MATR_RIGI=KELSUP)
 
-KASSUP=ASSE_MATRICE(MATR_ELEM=KELSUP,
-                      NUME_DDL=NUMSUP,)
+KASSUP = ASSE_MATRICE(MATR_ELEM=KELSUP, NUME_DDL=NUMSUP)
 
-MASSUP=ASSE_MATRICE(MATR_ELEM=MELSUP,
-                      NUME_DDL=NUMSUP,)
+MASSUP = ASSE_MATRICE(MATR_ELEM=MELSUP, NUME_DDL=NUMSUP)
 
-AASSUP=ASSE_MATRICE(MATR_ELEM=AELSUP,
-                      NUME_DDL=NUMSUP,)
+AASSUP = ASSE_MATRICE(MATR_ELEM=AELSUP, NUME_DDL=NUMSUP)
 
-MODESUP=CALC_MODES(MATR_RIGI=KASSUP,
-                   VERI_MODE=_F(STOP_ERREUR='OUI',
-                                SEUIL=1.E-05,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=20,
-                                SEUIL_FREQ=1.E-4,
-                                ),
-                   MATR_AMOR=AASSUP,
-                   MATR_MASS=MASSUP,
-                   SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
-                                    ),
-                   )
+MODESUP = CALC_MODES(
+    MATR_RIGI=KASSUP,
+    VERI_MODE=_F(STOP_ERREUR="OUI", SEUIL=1.0e-05),
+    OPTION="PLUS_PETITE",
+    CALC_FREQ=_F(NMAX_FREQ=20, SEUIL_FREQ=1.0e-4),
+    MATR_AMOR=AASSUP,
+    MATR_MASS=MASSUP,
+    SOLVEUR_MODAL=_F(METHODE="TRI_DIAG"),
+)
 
 
-
-#**********************************
+# **********************************
 # CREATION DU MODELE MODIFICATION
-#**********************************
+# **********************************
 
 
 # Maillage modification
-MAILX = LIRE_MAILLAGE(FORMAT='ASTER',
-                      UNITE=24,)
+MAILX = LIRE_MAILLAGE(FORMAT="ASTER", UNITE=24)
 
 
-MODLX=AFFE_MODELE(
-          MAILLAGE=MAILX,
-          AFFE=(_F(GROUP_MA=('POUTRE',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='POU_D_E',),),
-              )
+MODLX = AFFE_MODELE(
+    MAILLAGE=MAILX, AFFE=(_F(GROUP_MA=("POUTRE",), PHENOMENE="MECANIQUE", MODELISATION="POU_D_E"),)
+)
 
-CHCARX=AFFE_CARA_ELEM(MODELE=MODLX,
-                        POUTRE=(_F(GROUP_MA='POUTRE',
-                                   SECTION='RECTANGLE',
-                                   CARA=('HY','HZ',),
-                                   VALE=(9.E-3,38.E-3,),),),
-                        ORIENTATION=(_F(GROUP_MA='POUTRE',
-                                        CARA='VECT_Y',
-                                        VALE=(0.,0.,1.),),),
-                     )
+CHCARX = AFFE_CARA_ELEM(
+    MODELE=MODLX,
+    POUTRE=(_F(GROUP_MA="POUTRE", SECTION="RECTANGLE", CARA=("HY", "HZ"), VALE=(9.0e-3, 38.0e-3)),),
+    ORIENTATION=(_F(GROUP_MA="POUTRE", CARA="VECT_Y", VALE=(0.0, 0.0, 1.0)),),
+)
 
-MATERX=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
-                             NU=0.3,
-                             AMOR_ALPHA=1.E-4,AMOR_BETA=1.,
-                             RHO=7800.,),)
+MATERX = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, AMOR_ALPHA=1.0e-4, AMOR_BETA=1.0, RHO=7800.0))
 
-CHMATX=AFFE_MATERIAU(  MAILLAGE=MAILX,
-                         MODELE=MODLX,
-                         AFFE=(_F(GROUP_MA=('POUTRE',),
-                                  MATER=MATERX,),),)
+CHMATX = AFFE_MATERIAU(MAILLAGE=MAILX, MODELE=MODLX, AFFE=(_F(GROUP_MA=("POUTRE",), MATER=MATERX),))
 
-CONDLX=AFFE_CHAR_MECA(MODELE=MODLX,
-                      DDL_IMPO=( _F(GROUP_NO=('EXTERNE',),
-                                   DX=0.0,
-                                   DRX=0.0,
-                                ),
-                          ),)
+CONDLX = AFFE_CHAR_MECA(MODELE=MODLX, DDL_IMPO=(_F(GROUP_NO=("EXTERNE",), DX=0.0, DRX=0.0),))
 
-KELX=CALC_MATR_ELEM(MODELE=MODLX,OPTION='RIGI_MECA',
-                     CARA_ELEM=CHCARX,CHAM_MATER=CHMATX,
-                     CHARGE=CONDLX,
-                     )
+KELX = CALC_MATR_ELEM(
+    MODELE=MODLX, OPTION="RIGI_MECA", CARA_ELEM=CHCARX, CHAM_MATER=CHMATX, CHARGE=CONDLX
+)
 
-MELX=CALC_MATR_ELEM(MODELE=MODLX,OPTION='MASS_MECA',
-                     CARA_ELEM=CHCARX,CHAM_MATER=CHMATX,
-                     CHARGE=CONDLX,
-                    )
+MELX = CALC_MATR_ELEM(
+    MODELE=MODLX, OPTION="MASS_MECA", CARA_ELEM=CHCARX, CHAM_MATER=CHMATX, CHARGE=CONDLX
+)
 
-AELX=CALC_MATR_ELEM(MODELE=MODLX,
-                      OPTION='AMOR_MECA',
-                      RIGI_MECA=KELX,
-                      MASS_MECA=MELX,
-                      CARA_ELEM=CHCARX,
-                      CHAM_MATER=CHMATX,
-                      CHARGE=CONDLX,)
+AELX = CALC_MATR_ELEM(
+    MODELE=MODLX,
+    OPTION="AMOR_MECA",
+    RIGI_MECA=KELX,
+    MASS_MECA=MELX,
+    CARA_ELEM=CHCARX,
+    CHAM_MATER=CHMATX,
+    CHARGE=CONDLX,
+)
 
-NUMX=NUME_DDL(MATR_RIGI=KELX,)
+NUMX = NUME_DDL(MATR_RIGI=KELX)
 
-KASX=ASSE_MATRICE(MATR_ELEM=KELX,NUME_DDL=NUMX)
+KASX = ASSE_MATRICE(MATR_ELEM=KELX, NUME_DDL=NUMX)
 
-MASX=ASSE_MATRICE(MATR_ELEM=MELX,NUME_DDL=NUMX)
+MASX = ASSE_MATRICE(MATR_ELEM=MELX, NUME_DDL=NUMX)
 
-AASX=ASSE_MATRICE(MATR_ELEM=AELX,NUME_DDL=NUMX)
+AASX = ASSE_MATRICE(MATR_ELEM=AELX, NUME_DDL=NUMX)
 
 
 # CALC_ESSAI/MODIF_STRUCT not supported anymore!
 # nothing to be tested
-tab = CREA_TABLE(LISTE=_F(PARA='PASS', LISTE_I=1))
+tab = CREA_TABLE(LISTE=_F(PARA="PASS", LISTE_I=1))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='PASS',
-           TABLE=tab,)
+TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="PASS", TABLE=tab)
 
 FIN()

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -33,25 +33,25 @@ extern "C" {
  */
 
 /*! Register the ExecutionParameter object as a global variable */
-extern void register_sh_params(PyObject *);
+extern void register_sh_params( PyObject * );
 
 /*! Register the MessageLog object as a global variable */
-extern void register_sh_msglog(PyObject *);
+extern void register_sh_msglog( PyObject * );
 
 /*! Register the current 'etape' object as a global variable */
-extern void register_sh_etape(PyObject *);
+extern void register_sh_etape( PyObject * );
 
 /*! Register the status of jeveux */
-extern void register_sh_jeveux_status(int);
+extern void register_sh_jeveux_status( int );
 
 /*! Return the global ExecutionParameter object */
-extern PyObject * get_sh_params();
+extern PyObject *get_sh_params();
 
 /*! Return the global MessageLog object */
-extern PyObject * get_sh_msglog();
+extern PyObject *get_sh_msglog();
 
 /*! Return the current 'etape' object */
-extern PyObject * get_sh_etape();
+extern PyObject *get_sh_etape();
 
 /*! Return the status of jeveux */
 extern int get_sh_jeveux_status();
@@ -60,10 +60,10 @@ extern int get_sh_jeveux_status();
 extern void init_etape_stack();
 
 /*! Append the given 'etape' object on stack */
-extern PyObject * append_etape(PyObject *);
+extern PyObject *append_etape( PyObject * );
 
 /*! Remove and return the last 'etape' object on stack */
-extern PyObject * pop_etape();
+extern PyObject *pop_etape();
 
 #ifdef __cplusplus
 }

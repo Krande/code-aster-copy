@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,106 +20,91 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+PLSN = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 
-PLSN     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
+PLST = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 
-PLST     = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
+PPINTER = InputParameter(phys=PHY.N816_R, comment=""" XFEM """)
 
 
-PPINTER  = InputParameter(phys=PHY.N816_R,
-comment=""" XFEM """)
+PAINTER = InputParameter(phys=PHY.N1360R, comment=""" XFEM """)
 
 
-PAINTER  = InputParameter(phys=PHY.N1360R,
-comment=""" XFEM """)
+PCFACE = InputParameter(phys=PHY.N720_I, comment=""" XFEM """)
 
 
-PCFACE   = InputParameter(phys=PHY.N720_I,
-comment=""" XFEM """)
+PLONGCO = InputParameter(
+    phys=PHY.N120_I, comment=""" XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """
+)
 
 
-PLONGCO  = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
+PBASECO = InputParameter(phys=PHY.N2448R, comment=""" XFEM """)
 
 
-PBASECO  = InputParameter(phys=PHY.N2448R,
-comment=""" XFEM """)
+PSEUIL = InputParameter(phys=PHY.NEUT_R, comment=""" XFEM """)
 
 
-PSEUIL   = InputParameter(phys=PHY.NEUT_R,
-comment=""" XFEM """)
+PSTANO = InputParameter(phys=PHY.N120_I, comment=""" XFEM """)
 
 
-PSTANO   = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM """)
+PHEA_NO = InputParameter(phys=PHY.N120_I, comment=""" XFEM """)
 
 
-PHEA_NO  = InputParameter(phys=PHY.N120_I,
-comment=""" XFEM """)
+PCOHESO = OutputParameter(phys=PHY.NEUT_R, type="ELNO")
 
 
-PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment=""" UTILE POUR HM-XFEM """)
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment=""" UTILE POUR HM-XFEM """)
+PFISNO = InputParameter(
+    phys=PHY.NEUT_I, comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """
+)
 
 
-PFISNO   = InputParameter(phys=PHY.NEUT_I,
-comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
-
-
-PHEA_FA  = InputParameter(phys=PHY.N240_I,
-comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """)
+PHEA_FA = InputParameter(
+    phys=PHY.N240_I,
+    comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """,
+)
 
 
 RIGI_CONT_M = Option(
     para_in=(
-           PAINTER,
-           PBASECO,
-           PCFACE,
+        PAINTER,
+        PBASECO,
+        PCFACE,
         SP.PCOHES,
         SP.PDEPL_M,
         SP.PDEPL_P,
         SP.PDONCO,
         SP.PGEOMER,
-           PHEA_NO,
+        PHEA_NO,
         SP.PINDCOI,
-           PLONGCO,
-           PLSN,
-           PLST,
+        PLONGCO,
+        PLSN,
+        PLST,
         SP.PMATERC,
-           PPINTER,
-           PSEUIL,
-           PSTANO,
+        PPINTER,
+        PSEUIL,
+        PSTANO,
         SP.PINSTMR,
         SP.PINSTPR,
-           PCOMPOR,
+        PCOMPOR,
         SP.PCARCRI,
         SP.PFISCO,
-           PFISNO,
+        PFISNO,
         SP.PHEAVNO,
-           PHEA_FA,
+        PHEA_FA,
     ),
-    para_out=(
-           PCOHESO,
-        SP.PMATUNS,
-        SP.PMATUUR,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.CONTACT,'OUI'),)),
-    ),
+    para_out=(PCOHESO, SP.PMATUNS, SP.PMATUUR),
+    condition=(CondCalcul("+", ((AT.CONTACT, "OUI"),)),),
     comment=""" RIGI_CONT_M: CALCUL DE LA MATRICE
            MORTAR DE CONTACT AVEC XFEM """,
 )

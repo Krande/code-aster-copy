@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,25 +20,23 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1: _("""
+    1: _(
+        """
 Liste des comportements métallurgiques.
-"""),
-
+"""
+    ),
     4: _("""Affecté sur %(i1)d éléments"""),
-
     5: _("""  Type de phases                       : %(k1)s"""),
-
     6: _("""  Modèle métallurgique                 : %(k1)s"""),
-
     9: _("""  Nombre total de variables internes   : %(i1)d"""),
-
-    73 : _("""
+    73: _(
+        """
 Le paramètre matériau taille limite D10 n'est pas défini.
-"""),
-
-    96 : _("""
+"""
+    ),
+    96: _(
+        """
 Échec de l'algorithme de Newton lors du calcul des phases pour le zirconium.
-"""),
-
+"""
+    ),
 }

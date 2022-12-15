@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,24 +22,24 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'GRAN_IRRA_LOG',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement de fluage et de grandissement sous irradiation pour les assemblages combustibles,
+    nom="GRAN_IRRA_LOG",
+    lc_type=("MECANIQUE",),
+    doc="""Relation de comportement de fluage et de grandissement sous irradiation pour les assemblages combustibles,
    similaire à la loi VISC_IRRA_LOG pour la déformation viscoplastique, et intégrant en plus une déformation de grandissement
    sous irradiation (cf. [R5.03.09]). Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU.
    Le grandissement ne se faisant que selon une direction, il est nécessaire dans les cas 3D et 2D de donner la direction du grandissement
-   par l'opérande ANGL_REP du mot clé MASSIF de l'opérateur AFFE_CARA_ELEM"""              ,
-    num_lc         = 28,
-    nb_vari        = 3,
-    nom_vari       = ('EPSPEQ','IRVECU','EPSGRD',),
-    mc_mater       = ('GRAN_IRRA_LOG',),
-    modelisation   = ('3D','AXIS','D_PLAN','1D',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+   par l'opérande ANGL_REP du mot clé MASSIF de l'opérateur AFFE_CARA_ELEM""",
+    num_lc=28,
+    nb_vari=3,
+    nom_vari=("EPSPEQ", "IRVECU", "EPSGRD"),
+    mc_mater=("GRAN_IRRA_LOG",),
+    modelisation=("3D", "AXIS", "D_PLAN", "1D"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("ANALYTIQUE",),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

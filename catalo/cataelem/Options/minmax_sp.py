@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -32,15 +31,11 @@ import cataelem.Commons.attributes as AT
 
 
 MINMAX_SP = Option(
-    para_in=(
-    ),
-    para_out=(
-        SP.PGAMIMA,
-        SP.PNOMIMA,
-    ),
+    para_in=(),
+    para_out=(SP.PGAMIMA, SP.PNOMIMA),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TYPMOD2,'PMF'),)),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.COQUE, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.TUYAU, "OUI"))),
+        CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"), (AT.TYPMOD2, "PMF"))),
     ),
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,26 +23,19 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment="""  Informations for non-linear comportment """)
+PCOMPOR = InputParameter(phys=PHY.COMPOR, comment="""  Informations for non-linear comportment """)
 
-PCHHOGT  = OutputParameter(phys=PHY.N1920R, type='ELEM',
-comment=""" HHO - matrice du gradient local""")
+PCHHOGT = OutputParameter(
+    phys=PHY.N1920R, type="ELEM", comment=""" HHO - matrice du gradient local"""
+)
 
-PCHHOST  = OutputParameter(phys=PHY.N2448R, type='ELEM',
-comment=""" HHO - matrice la stabilisation locale""")
+PCHHOST = OutputParameter(
+    phys=PHY.N2448R, type="ELEM", comment=""" HHO - matrice la stabilisation locale"""
+)
 
 
 HHO_PRECALC_MECA = Option(
-    para_in=(
-        SP.PGEOMER,
-        PCOMPOR,
-    ),
-    para_out=(
-        PCHHOGT,
-        PCHHOST,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-    ),
+    para_in=(SP.PGEOMER, PCOMPOR),
+    para_out=(PCHHOGT, PCHHOST),
+    condition=(CondCalcul("+", ((AT.PHENO, "ME"), (AT.BORD, "0"))),),
 )

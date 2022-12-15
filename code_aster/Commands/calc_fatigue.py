@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -25,8 +25,9 @@ from ..Supervis import ExecuteCommand
 
 class CalcFatigue(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.FieldOnNodesReal`
-                        or   class:`~code_aster.Objects.FieldOnCellsReal`.
+    or   class:`~code_aster.Objects.FieldOnCellsReal`.
     """
+
     command_name = "CALC_FATIGUE"
 
     def create_result(self, keywords):
@@ -36,9 +37,10 @@ class CalcFatigue(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
 
-        if keywords['TYPE_CALCUL'] == "FATIGUE_MULTI" and keywords['OPTION'] == "DOMA_NOEUD":
+        if keywords["TYPE_CALCUL"] == "FATIGUE_MULTI" and keywords["OPTION"] == "DOMA_NOEUD":
             self._result = FieldOnNodesReal()
         else:
             self._result = FieldOnCellsReal()
+
 
 CALC_FATIGUE = CalcFatigue.run

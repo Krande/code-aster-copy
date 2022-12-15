@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,18 @@ from .sd_nume_ddl_gd import sd_nume_ddl_gd
 from .sd_nume_ddl_gene import sd_nume_ddl_gene
 from .sd_solveur import sd_solveur
 
-#---------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 # classe "chapeau" à sd_nume_ddl_gene et sd_nume_ddl_gd ne servant que pour "check"
-#-------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 class sd_nume_ddl(AsBase):
-#--------------------------------------------
+    # --------------------------------------------
     nomj = SDNom(fin=14)
 
     # pour orienter vers sd_nume_ddl_gene ou sd_nume_ddl_gd :
     def check_nume_ddl_i_GENE(self, checker):
-        gene = aster.jeveux_exists(self.nomj()[:14] + '.NUME.ORIG')
+        gene = aster.jeveux_exists(self.nomj()[:14] + ".NUME.ORIG")
         if gene:
             sd2 = sd_nume_ddl_gene(self.nomj)
         else:

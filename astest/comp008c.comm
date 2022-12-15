@@ -19,83 +19,75 @@
 
 # person_in_charge: david.haboussa at edf.fr
 # CAS-TEST DE REFERENCE :
-#=====================================================================
+# =====================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IMPR_MACRO='NON',DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IMPR_MACRO="NON", DEBUG=_F(SDVERI="NON"))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 
-#=====================================================================
+# =====================================================================
 #               INITIALISATIONS
-#=====================================================================
+# =====================================================================
 #
-TREF = 0.
-T0   = TREF
-Tmax = 500.
+TREF = 0.0
+T0 = TREF
+Tmax = 500.0
 
 ZERO = DEFI_CONSTANTE(VALE=0.0)
 
-UN   = DEFI_CONSTANTE(VALE=1.0)
+UN = DEFI_CONSTANTE(VALE=1.0)
 
-tfin = 1.
+tfin = 1.0
 
 NCAL = 10
 
-compor='VMIS_ISOT_LINE'
+compor = "VMIS_ISOT_LINE"
 
 # Nombre de variable interne
 NB_VARI = 2
 
-#=====================================================================
+# =====================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE
-#=====================================================================
-YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 200000.,
-                                         Tmax, 100000.,
-                                           ),)
-ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 1.E-5,
-                                        Tmax, 2.E-5,
-                                           ),)
+# =====================================================================
+YOUN = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 200000.0, Tmax, 100000.0))
+ALPH = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 1.0e-5, Tmax, 2.0e-5))
 
-SIGY=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 100.,
-                                         Tmax, 50.,
-                                           ),)
+SIGY = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 100.0, Tmax, 50.0))
 
-DSDE=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 10000.,
-                                         Tmax, 5000.,
-                                           ),)
+DSDE = DEFI_FONCTION(NOM_PARA="TEMP", VALE=(T0, 10000.0, Tmax, 5000.0))
 
 
-MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
-                               NU=ZERO,
-                               TEMP_DEF_ALPHA=TREF,
-                               ALPHA=ALPH,),
-                     ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE,
-                                              SY=SIGY,),
-                  )
+MATERI = DEFI_MATERIAU(
+    ELAS_FO=_F(E=YOUN, NU=ZERO, TEMP_DEF_ALPHA=TREF, ALPHA=ALPH),
+    ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE, SY=SIGY),
+)
 
-LMAT2  = [None]*(NCAL)
-time=0.
+LMAT2 = [None] * (NCAL)
+time = 0.0
 for i in range(NCAL):
     timem = time
-    time = timem + tfin/NCAL
-    Ti = T0 + time/tfin * (Tmax - T0)
-    Tm = T0 + timem/tfin * (Tmax - T0)
-    LMAT2[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
-                                        NU=0.,
-                                        ALPHA=0.,),
-                           ECRO_LINE=_F(D_SIGM_EPSI=DSDE(Ti),
-                                                 SY=SIGY(Ti),),
-                                )
+    time = timem + tfin / NCAL
+    Ti = T0 + time / tfin * (Tmax - T0)
+    Tm = T0 + timem / tfin * (Tmax - T0)
+    LMAT2[i] = DEFI_MATERIAU(
+        ELAS=_F(E=YOUN(Ti), NU=0.0, ALPHA=0.0), ECRO_LINE=_F(D_SIGM_EPSI=DSDE(Ti), SY=SIGY(Ti))
+    )
 
 
 ############################################################################
 # MACRO pour test thermoplastique
 
-tabresu=TEST_COMPOR(
-              MATER=MATERI,COMPORTEMENT=_F(RELATION=compor),
-              LIST_MATER=LMAT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=T0,TEMP_FIN=Tmax,
-              NEWTON=_F(REAC_ITER=1),
-              NB_VARI=NB_VARI,  VARI_TEST=('V1','V2'),
-              )
+tabresu = TEST_COMPOR(
+    MATER=MATERI,
+    COMPORTEMENT=_F(RELATION=compor),
+    LIST_MATER=LMAT2,
+    ALPHA=ALPH,
+    YOUNG=YOUN,
+    TEMP_INIT=T0,
+    TEMP_FIN=Tmax,
+    NEWTON=_F(REAC_ITER=1),
+    NB_VARI=NB_VARI,
+    VARI_TEST=("V1", "V2"),
+)
 
 FIN()

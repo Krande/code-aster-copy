@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,21 +21,29 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'VISC_CIN1_CHAB',
-    lc_type        = ('MECANIQUE',),
-    doc            =   """Loi élasto-visco-plastique de Chaboche à 1 variable cinématique"""              ,
-    num_lc         = 4,
-    nb_vari        = 8,
-    nom_vari       = ('EPSPEQ','INDIPLAS','ALPHAXX','ALPHAYY','ALPHAZZ',
-        'ALPHAXY','ALPHAXZ','ALPHAYZ',),
-    mc_mater       = ('ELAS','CIN1_CHAB','LEMAITRE',),
-    modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
-    algo_inte      = ('SECANTE','BRENT',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = None,
-    syme_matr_tang = ('Yes',),
-    exte_vari      = None,
-    deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
+    nom="VISC_CIN1_CHAB",
+    lc_type=("MECANIQUE",),
+    doc="""Loi élasto-visco-plastique de Chaboche à 1 variable cinématique""",
+    num_lc=4,
+    nb_vari=8,
+    nom_vari=(
+        "EPSPEQ",
+        "INDIPLAS",
+        "ALPHAXX",
+        "ALPHAYY",
+        "ALPHAZZ",
+        "ALPHAXY",
+        "ALPHAXZ",
+        "ALPHAYZ",
+    ),
+    mc_mater=("ELAS", "CIN1_CHAB", "LEMAITRE"),
+    modelisation=("3D", "AXIS", "D_PLAN"),
+    deformation=("PETIT", "PETIT_REAC", "GROT_GDEP"),
+    algo_inte=("SECANTE", "BRENT"),
+    type_matr_tang=("PERTURBATION", "VERIFICATION"),
+    proprietes=None,
+    syme_matr_tang=("Yes",),
+    exte_vari=None,
+    deform_ldc=("OLD",),
+    regu_visc=("No",),
 )

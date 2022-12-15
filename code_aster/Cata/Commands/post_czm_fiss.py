@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,30 +35,28 @@ from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
 
-def post_czm_fiss_prod(self,OPTION,**args):
-  if args.get('__all__'):
-      return (table_sdaster, carte_sdaster)
-  if OPTION == 'LONGUEUR'    : return table_sdaster
-  if OPTION == 'TRIAXIALITE' : return carte_sdaster
-  raise AsException("type de concept resultat non prevu")
+def post_czm_fiss_prod(self, OPTION, **args):
+    if args.get("__all__"):
+        return (table_sdaster, carte_sdaster)
+    if OPTION == "LONGUEUR":
+        return table_sdaster
+    if OPTION == "TRIAXIALITE":
+        return carte_sdaster
+    raise AsException("type de concept resultat non prevu")
 
-POST_CZM_FISS=MACRO(
 
-  nom="POST_CZM_FISS",
-  op=OPS('code_aster.MacroCommands.post_czm_fiss_ops.post_czm_fiss_ops'),
-  sd_prod=post_czm_fiss_prod,
-  reentrant='n',
-  fr=tr("Post-Traiement scpécifiques aux modèles CZM"),
-
-  OPTION = SIMP(statut='o',typ='TXM',max=1,into=("LONGUEUR","TRIAXIALITE"),),
-
-  RESULTAT = SIMP(statut='o',typ=evol_noli,max=1,),
-
-  b_longueur =BLOC(
-    condition  = """equal_to("OPTION", 'LONGUEUR') """,
-    GROUP_MA   = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-    POINT_ORIG = SIMP(statut='o',typ='R',min=2,max=2),
-    VECT_TANG  = SIMP(statut='o',typ='R',min=2,max=2),
-                  ),
-
-                    )
+POST_CZM_FISS = MACRO(
+    nom="POST_CZM_FISS",
+    op=OPS("code_aster.MacroCommands.post_czm_fiss_ops.post_czm_fiss_ops"),
+    sd_prod=post_czm_fiss_prod,
+    reentrant="n",
+    fr=tr("Post-Traiement scpécifiques aux modèles CZM"),
+    OPTION=SIMP(statut="o", typ="TXM", max=1, into=("LONGUEUR", "TRIAXIALITE")),
+    RESULTAT=SIMP(statut="o", typ=evol_noli, max=1),
+    b_longueur=BLOC(
+        condition="""equal_to("OPTION", 'LONGUEUR') """,
+        GROUP_MA=SIMP(statut="o", typ=grma, validators=NoRepeat(), max="**"),
+        POINT_ORIG=SIMP(statut="o", typ="R", min=2, max=2),
+        VECT_TANG=SIMP(statut="o", typ="R", min=2, max=2),
+    ),
+)

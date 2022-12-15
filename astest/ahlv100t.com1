@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,65 +17,48 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-POURSUITE(CODE='OUI')
+POURSUITE(CODE="OUI")
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=81,
-          RESU=_F(RESULTAT=MODES, NUME_ORDRE=2),
-          INFO=2)
+IMPR_RESU(FORMAT="MED", UNITE=81, RESU=_F(RESULTAT=MODES, NUME_ORDRE=2), INFO=2)
 #    ==> NOM MED DU CHAMP : MODES___DEPL
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=82,
-          RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='DEPL',
-                  NOM_CHAM_MED='cham'),
-          INFO=2)
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=82,
+    RESU=_F(RESULTAT=MODES, NUME_ORDRE=2, NOM_CHAM="DEPL", NOM_CHAM_MED="cham"),
+    INFO=2,
+)
 #    ==> NOM MED DU CHAMP : cham
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=83,
-          RESU=_F(
-              RESULTAT=MODES,
-              NUME_ORDRE=2,
-              NOM_RESU_MED='resu',
-          ),
-          INFO=2)
+IMPR_RESU(
+    FORMAT="MED", UNITE=83, RESU=_F(RESULTAT=MODES, NUME_ORDRE=2, NOM_RESU_MED="resu"), INFO=2
+)
 #    ==> NOM MED DU CHAMP : resu____DEPL
 
 IMPR_RESU(
-    FORMAT='MED',
+    FORMAT="MED",
     UNITE=84,
-    RESU=_F(RESULTAT=MODES, NUME_ORDRE=2, NOM_CHAM='DEPL',
-            NOM_RESU_MED='resu'),  # not used if NOM_CHAM exists
-    INFO=2)
+    RESU=_F(
+        RESULTAT=MODES, NUME_ORDRE=2, NOM_CHAM="DEPL", NOM_RESU_MED="resu"
+    ),  # not used if NOM_CHAM exists
+    INFO=2,
+)
 #    ==> NOM MED DU CHAMP : MODES___DEPL
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=85,
-          RESU=_F(CHAM_GD=VECRES, PARTIE='MODULE'),
-          INFO=2)
+IMPR_RESU(FORMAT="MED", UNITE=85, RESU=_F(CHAM_GD=VECRES, PARTIE="MODULE"), INFO=2)
 #    ==> NOM MED DU CHAMP : VECRES
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=86,
-          RESU=_F(
-              CHAM_GD=VECRES,
-              PARTIE='MODULE',
-              NOM_CHAM_MED='cham',
-          ),
-          INFO=2)
+IMPR_RESU(
+    FORMAT="MED", UNITE=86, RESU=_F(CHAM_GD=VECRES, PARTIE="MODULE", NOM_CHAM_MED="cham"), INFO=2
+)
 #    ==> NOM MED DU CHAMP : cham
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=87,
-          RESU=_F(
-              CHAM_GD=VECRES,
-              PARTIE='MODULE',
-              NOM_RESU_MED='resu', # not used without RESULTAT
-          ),
-          INFO=2)
+IMPR_RESU(
+    FORMAT="MED",
+    UNITE=87,
+    RESU=_F(CHAM_GD=VECRES, PARTIE="MODULE", NOM_RESU_MED="resu"),  # not used without RESULTAT
+    INFO=2,
+)
 #    ==> NOM MED DU CHAMP : VECRES
 
 FIN()

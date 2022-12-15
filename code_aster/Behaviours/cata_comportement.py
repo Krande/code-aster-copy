@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,6 +84,7 @@ class CataComportementError(Exception):
     def __str__(self):
         return convert(self.msg)
 
+
 # utilitaires
 
 
@@ -141,10 +142,21 @@ class Base(object):
 
     """Classe de base : partie commune loi de comportement/kit."""
 
-    __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
-                      'nom_vari', 'proprietes', 'algo_inte',
-                      'type_matr_tang', 'syme_matr_tang', 'exte_vari', 'lc_type', 'deform_ldc',
-                      'regu_visc')
+    __properties__ = (
+        "deformation",
+        "mc_mater",
+        "modelisation",
+        "nb_vari",
+        "nom_vari",
+        "proprietes",
+        "algo_inte",
+        "type_matr_tang",
+        "syme_matr_tang",
+        "exte_vari",
+        "lc_type",
+        "deform_ldc",
+        "regu_visc",
+    )
 
     def copy(self):
         """Copie d'un objet LoiComportement"""
@@ -152,33 +164,34 @@ class Base(object):
 
     def gen_property(prop, typ, comment):
         """Génère la propriété 'prop' avec ses fonctions get, set, del"""
+
         def getfunc(comport):
-            return getattr(comport, '_' + prop)
+            return getattr(comport, "_" + prop)
 
         def setfunc(comport, value):
             check_type(typ, value)
-            setattr(comport, '_' + prop, force_to_tuple(value))
+            setattr(comport, "_" + prop, force_to_tuple(value))
 
         def delfunc(comport):
-            setattr(comport, '_' + prop, None)
+            setattr(comport, "_" + prop, None)
 
         return property(getfunc, setfunc, delfunc, comment)
+
     gen_property = staticmethod(gen_property)
 
     def gen_getfunc(oper, prop):
         """Génère la fonction get de la propriété 'prop'.
         'oper' est une fonction qui prend N valeurs de 'prop' et en retourne une"""
+
         def func(kit):
             return oper([getattr(comport, prop) for comport in kit.list_comport])
+
         return func
+
     gen_getfunc = staticmethod(gen_getfunc)
 
     def dict_info(self):
-        dico = {
-            'nom': self.nom,
-            'num_lc': self.num_lc,
-            'doc': self.doc,
-        }
+        dico = {"nom": self.nom, "num_lc": self.num_lc, "doc": self.doc}
         for attr in self.__properties__:
             dico[attr] = getattr(self, attr)
         return dico
@@ -228,15 +241,16 @@ class LoiComportement(Base):
     mc_mater : besoin de regles ENSEMBLE, AU_MOINS_UN, UN_PARMI
     modelisation, deformation, algo_inte, type_matr_tang : listes des
     valeurs acceptees"""
-    _ldctype = 'std'
 
-    def __init__(self, nom, num_lc, doc='', **kwargs):
+    _ldctype = "std"
+
+    def __init__(self, nom, num_lc, doc="", **kwargs):
         """Initialisations"""
         self.nom = nom
         self.num_lc = num_lc
         self.doc = doc
         for prop in self.__properties__:
-            setattr(self, '_' + prop, None)
+            setattr(self, "_" + prop, None)
         # propriétés fournies
         for prop in [k for k in list(kwargs.keys()) if k in self.__properties__]:
             setattr(self, prop, kwargs.get(prop))
@@ -252,8 +266,7 @@ class LoiComportement(Base):
     def del_nb_vari(self):
         self._nb_vari = None
 
-    nb_vari = property(get_nb_vari, set_nb_vari,
-                       del_nb_vari, "Nombre de variables internes")
+    nb_vari = property(get_nb_vari, set_nb_vari, del_nb_vari, "Nombre de variables internes")
 
     def get_nom_vari(self):
         return self._nom_vari
@@ -266,47 +279,45 @@ class LoiComportement(Base):
     def del_nom_vari(self):
         self._nom_vari = None
 
-    nom_vari = property(get_nom_vari, set_nom_vari,
-                        del_nom_vari, "Noms des variables internes")
+    nom_vari = property(get_nom_vari, set_nom_vari, del_nom_vari, "Noms des variables internes")
 
-# définition des propriétés simples (juste vérification de type à
-# l'affectation)
-    mc_mater = Base.gen_property(
-        'mc_mater',       (str, str), "Mots-clés matériaux")
-    modelisation = Base.gen_property(
-        'modelisation',   (str, str), "Modélisations")
-    deformation = Base.gen_property(
-        'deformation',    (str, str), "Types de déformation")
-    algo_inte = Base.gen_property(
-        'algo_inte',      (str, str), "Schéma d'intégration")
-    type_matr_tang = Base.gen_property(
-        'type_matr_tang', (str, str), "Type de matrice tangente")
-    proprietes = Base.gen_property(
-        'proprietes',     (str, str), "Propriétés")
-    syme_matr_tang  = Base.gen_property(
-        'syme_matr_tang', (str, str), "Symétrie")
-    lc_type = Base.gen_property(
-        'lc_type', (str, str), "Type de la loi de comportement")
-    deform_ldc = Base.gen_property(
-        'deform_ldc', (str, str), "Déformations en entrée de la loi")
-    regu_visc = Base.gen_property(
-        'regu_visc', (str, str), "Régularisation visqueuse")
+    # définition des propriétés simples (juste vérification de type à
+    # l'affectation)
+    mc_mater = Base.gen_property("mc_mater", (str, str), "Mots-clés matériaux")
+    modelisation = Base.gen_property("modelisation", (str, str), "Modélisations")
+    deformation = Base.gen_property("deformation", (str, str), "Types de déformation")
+    algo_inte = Base.gen_property("algo_inte", (str, str), "Schéma d'intégration")
+    type_matr_tang = Base.gen_property("type_matr_tang", (str, str), "Type de matrice tangente")
+    proprietes = Base.gen_property("proprietes", (str, str), "Propriétés")
+    syme_matr_tang = Base.gen_property("syme_matr_tang", (str, str), "Symétrie")
+    lc_type = Base.gen_property("lc_type", (str, str), "Type de la loi de comportement")
+    deform_ldc = Base.gen_property("deform_ldc", (str, str), "Déformations en entrée de la loi")
+    regu_visc = Base.gen_property("regu_visc", (str, str), "Régularisation visqueuse")
 
     def check_vari(self):
         """Vérifie la cohérence de la définition des variables internes"""
-        if self._nb_vari is not None and self._nom_vari is not None \
-           and self._nb_vari != len(self._nom_vari):
+        if (
+            self._nb_vari is not None
+            and self._nom_vari is not None
+            and self._nb_vari != len(self._nom_vari)
+        ):
             print(self)
-            msg = ufmt("Nombre de variables internes = %d, "
-                       "incohérent avec la liste des variables internes %s",
-                       self._nb_vari, self._nom_vari)
+            msg = ufmt(
+                "Nombre de variables internes = %d, "
+                "incohérent avec la liste des variables internes %s",
+                self._nb_vari,
+                self._nom_vari,
+            )
             raise CataComportementError(msg)
         if self._nom_vari:
             err = set(self._nom_vari).difference(list(DICT_NOM_VARI.keys()))
             if len(err) > 0:
-                strerr = ', '.join(err)
-                msg = ufmt("Comportement '%s', nom de variables internes non "
-                           "autorisés : %s", self.nom, strerr)
+                strerr = ", ".join(err)
+                msg = ufmt(
+                    "Comportement '%s', nom de variables internes non " "autorisés : %s",
+                    self.nom,
+                    strerr,
+                )
                 raise CataComportementError(msg)
 
 
@@ -317,22 +328,19 @@ class LoiComportementMFront(LoiComportement):
     symbol_mfront : nom de la fonction dans la bibliothèque MFront
     modelisation, deformation, algo_inte : listes des valeurs acceptees
     """
-    _ldctype = 'mfront'
-    __properties__ = tuple(list(LoiComportement.__properties__) +
-                           ['symbol_mfront'])
 
-    def __init__(self, nom, symbol_mfront, doc='', **kwargs):
+    _ldctype = "mfront"
+    __properties__ = tuple(list(LoiComportement.__properties__) + ["symbol_mfront"])
+
+    def __init__(self, nom, symbol_mfront, doc="", **kwargs):
         """Initialisations"""
         # fixes les valeurs sans objet pour MFront (elles ne peuvent donc
         # pas être fournies dans kwargs)
         super(LoiComportementMFront, self).__init__(
-            nom,
-            symbol_mfront=symbol_mfront,
-            doc=doc,
-            **kwargs)
+            nom, symbol_mfront=symbol_mfront, doc=doc, **kwargs
+        )
 
-    symbol_mfront = Base.gen_property(
-        'symbol_mfront', (str, str), "Fonction MFront")
+    symbol_mfront = Base.gen_property("symbol_mfront", (str, str), "Fonction MFront")
 
     def long_repr(self):
         template = """Loi de comportement : %(nom)s
@@ -351,44 +359,48 @@ class KIT(Base):
 
     """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
     liste de comportements"""
-    _ldctype = 'kit'
+
+    _ldctype = "kit"
 
     def __init__(self, nom, *list_comport):
         """Initialisations"""
         if not type(nom) in (str, str):
-            raise CataComportementError(
-                "'KIT' : argument 1 (nom) de type invalide")
+            raise CataComportementError("'KIT' : argument 1 (nom) de type invalide")
         self.nom = nom
         self.list_comport = [comport.copy() for comport in list_comport]
         self.list_nom = [comport.nom for comport in self.list_comport]
-        txt = ['Assemblage composé de %s' % ', '.join(self.list_nom)]
+        txt = ["Assemblage composé de %s" % ", ".join(self.list_nom)]
         for comport in self.list_comport:
             if comport.doc:
-                txt.append('%s : %s' % (comport.nom, comport.doc))
+                txt.append("%s : %s" % (comport.nom, comport.doc))
         self.doc = os.linesep.join(txt)
 
     # definition des propriétés (seulement la méthode get)
-    num_lc = property(Base.gen_getfunc(sum,        'num_lc'))
-    nb_vari = property(Base.gen_getfunc(sum,          'nb_vari'))
-    nom_vari = property(Base.gen_getfunc(union,        'nom_vari'))
-    mc_mater = property(Base.gen_getfunc(union,        'mc_mater'))
-    modelisation = property(Base.gen_getfunc(intersection, 'modelisation'))
-    deformation = property(Base.gen_getfunc(intersection, 'deformation'))
-    algo_inte = property(Base.gen_getfunc(intersection, 'algo_inte'))
-    type_matr_tang = property(Base.gen_getfunc(intersection, 'type_matr_tang'))
-    proprietes = property(Base.gen_getfunc(intersection, 'proprietes'))
-    syme_matr_tang = property(Base.gen_getfunc(intersection, 'syme_matr_tang'))
-    symbol_mfront = property(Base.gen_getfunc(first,        'symbol_mfront'))
-    exte_vari = property(Base.gen_getfunc(intersection, 'exte_vari'))
-    deform_ldc = property(Base.gen_getfunc(first, 'deform_ldc')) #On a mis "first" comme sélection de la propriété pour un kit, mais en vrai, on ne peut pas travailler en kit avec des ldc qui n'ont pas la même valeur de "deform_ldc" ?
-    regu_visc = property(Base.gen_getfunc(intersection, 'regu_visc'))
+    num_lc = property(Base.gen_getfunc(sum, "num_lc"))
+    nb_vari = property(Base.gen_getfunc(sum, "nb_vari"))
+    nom_vari = property(Base.gen_getfunc(union, "nom_vari"))
+    mc_mater = property(Base.gen_getfunc(union, "mc_mater"))
+    modelisation = property(Base.gen_getfunc(intersection, "modelisation"))
+    deformation = property(Base.gen_getfunc(intersection, "deformation"))
+    algo_inte = property(Base.gen_getfunc(intersection, "algo_inte"))
+    type_matr_tang = property(Base.gen_getfunc(intersection, "type_matr_tang"))
+    proprietes = property(Base.gen_getfunc(intersection, "proprietes"))
+    syme_matr_tang = property(Base.gen_getfunc(intersection, "syme_matr_tang"))
+    symbol_mfront = property(Base.gen_getfunc(first, "symbol_mfront"))
+    exte_vari = property(Base.gen_getfunc(intersection, "exte_vari"))
+    deform_ldc = property(
+        Base.gen_getfunc(first, "deform_ldc")
+    )  # On a mis "first" comme sélection de la propriété pour un kit, mais en vrai, on ne peut pas travailler en kit avec des ldc qui n'ont pas la même valeur de "deform_ldc" ?
+    regu_visc = property(Base.gen_getfunc(intersection, "regu_visc"))
+
     @property
     def ldctype(self):
         """Return the class type"""
         typs = [i.ldctype for i in self.list_comport]
-        if 'mfront' in typs:
-            return 'mfront'
+        if "mfront" in typs:
+            return "mfront"
         return self._ldctype
+
 
 class CataLoiComportement(metaclass=Singleton):
 
@@ -401,7 +413,7 @@ class CataLoiComportement(metaclass=Singleton):
         self._dico = {}
         # pour nommer les comportements
         self._name_num = 0
-        self._name_template = 'COMP!%011d'     # 16 caractères
+        self._name_template = "COMP!%011d"  # 16 caractères
         self.debug = False
 
     def _name(self):
@@ -428,7 +440,7 @@ class CataLoiComportement(metaclass=Singleton):
         ==> catalc.discard(COMPOR)"""
         if not names:
             names = list(self._dico.keys())
-        names = [i for i in names if i.startswith('COMP!')]
+        names = [i for i in names if i.startswith("COMP!")]
         i = 0
         for loi in names:
             if self._dico.get(loi):
@@ -441,8 +453,7 @@ class CataLoiComportement(metaclass=Singleton):
         """Retourne l'objet LoiComportement dont le nom est 'loi'"""
         comport = self._dico.get(loi.strip())
         if comport is None:
-            raise CataComportementError(
-                ufmt("Comportement inexistant : %s", loi))
+            raise CataComportementError(ufmt("Comportement inexistant : %s", loi))
         return comport
 
     def create(self, *list_kit):
@@ -452,7 +463,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCCREE(NBKIT, LKIT, COMPOR)
         ==> comport = catalc.create(*list_kit)"""
         if self.debug:
-            print('catalc.create - args =', list_kit)
+            print("catalc.create - args =", list_kit)
         nom = self._name()
         list_comport = [self.get(kit) for kit in list_kit]
         comport = KIT(nom, *list_comport)
@@ -465,9 +476,9 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCINFO(COMPOR, NUMLC, NBVARI, NBVARI_EXTE)
         ==> num_lc, nb_vari, nb_vari_exte = catalc.get_info(COMPOR)"""
         if self.debug:
-            print('catalc.get_info - args =', loi)
+            print("catalc.get_info - args =", loi)
         comport = self.get(loi)
-        if (comport.exte_vari is None):
+        if comport.exte_vari is None:
             nb = 0
         else:
             nb = len(comport.exte_vari)
@@ -479,7 +490,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCVARI(COMPOR, NBVARI, LVARI)
         ==> nom_vari = catalc.get_vari(COMPOR)"""
         if self.debug:
-            print('catalc.get_vari - args =', loi)
+            print("catalc.get_vari - args =", loi)
         comport = self.get(loi)
         return comport.nom_vari
 
@@ -489,16 +500,16 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCEXTEVARI(COMPOR, NBVARI, LVARI)
         ==> exte_vari = catalc.get_variexte(COMPOR)"""
         if self.debug:
-            print('catalc.get_variexte - args =', loi)
+            print("catalc.get_variexte - args =", loi)
         comport = self.get(loi)
         return comport.exte_vari
 
     def query(self, loi, attr, valeur):
         """Est-ce que VALEUR est une valeur autorisée de PROPRIETE ?
-           CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
-           ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)"""
+        CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
+        ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)"""
         if self.debug:
-            print('catalc.query - args =', loi, ':', attr, ':', valeur.strip(), ':')
+            print("catalc.query - args =", loi, ":", attr, ":", valeur.strip(), ":")
         attr = attr.lower()
         comport = self.get(loi)
         if not attr in comport.getPropertiesNames():
@@ -512,7 +523,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCALGO(COMPOR, ALGO)
         ==> algo_inte = catalc.get_algo(COMPOR)"""
         if self.debug:
-            print('catalc.get_algo - args =', loi)
+            print("catalc.get_algo - args =", loi)
         comport = self.get(loi)
         return comport.algo_inte
 
@@ -522,7 +533,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCTYPE(COMPOR, TYPE)
         ==> ldctype = catalc.get_type(COMPOR)"""
         if self.debug:
-            print('catalc.get_type - args =', loi)
+            print("catalc.get_type - args =", loi)
         comport = self.get(loi)
         return comport.ldctype
 
@@ -532,7 +543,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCSYMB(COMPOR, NAME)
         ==> name = catalc.get_symbol(COMPOR)"""
         if self.debug:
-            print('catalc.get_symbol - args =', loi)
+            print("catalc.get_symbol - args =", loi)
         comport = self.get(loi)
         return comport.symbol_mfront
 
@@ -542,7 +553,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCSYMM(COMPOR, SYMMETRY)
         ==> syme_matr_tang = catalc.get_symmetry(COMPOR)"""
         if self.debug:
-            print('catalc.get_symmetry - args =', loi)
+            print("catalc.get_symmetry - args =", loi)
         comport = self.get(loi)
         return comport.syme_matr_tang
 
@@ -552,7 +563,7 @@ class CataLoiComportement(metaclass=Singleton):
         CALL LCDEFORMLDC(COMPOR, DEFORM_LDC)
         ==> deform_ldc = catalc.get_deformldc(COMPOR)"""
         if self.debug:
-            print('catalc.get_deformldc - args =', loi)
+            print("catalc.get_deformldc - args =", loi)
         comport = self.get(loi)
         return comport.deform_ldc
 
@@ -563,99 +574,124 @@ class CataLoiComportement(metaclass=Singleton):
          ==> regu_visc = catalc.get_reguvisc(COMPOR)"""
 
         if self.debug:
-            print('catalc.get_reguvisc - args =', loi)
+            print("catalc.get_reguvisc - args =", loi)
         comport = self.get(loi)
         return comport.regu_visc
 
     def get_kit(self, *list_kit):
-#        """Identifie les LdC pour le kit THM """
+        #        """Identifie les LdC pour le kit THM """
         if self.debug:
-            print('catalc.get_kit - args =', list_kit)
+            print("catalc.get_kit - args =", list_kit)
 
-        rela_meca = 'VIDE'
-        rela_hydr = 'VIDE'
-        rela_thmc = 'VIDE'
-        rela_ther = 'VIDE'
-        type_kit  = list_kit[0]
+        rela_meca = "VIDE"
+        rela_hydr = "VIDE"
+        rela_thmc = "VIDE"
+        rela_ther = "VIDE"
+        type_kit = list_kit[0]
 
-# ----- Get components of KIT: meca, ther, hydr and thmc
+        # ----- Get components of KIT: meca, ther, hydr and thmc
         for rela in list_kit:
             comport = self.get(rela)
-            if ('MECANIQUE' in comport.lc_type or 'MECANIQUE_THM' in comport.lc_type):
-                if (rela_meca != 'VIDE'):
-                    UTMESS('F','THM1_38')
+            if "MECANIQUE" in comport.lc_type or "MECANIQUE_THM" in comport.lc_type:
+                if rela_meca != "VIDE":
+                    UTMESS("F", "THM1_38")
                 rela_meca = comport.nom
-            if ('HYDRAULIQUE' in comport.lc_type):
-                if (rela_hydr != 'VIDE'):
-                    UTMESS('F','THM1_37')
+            if "HYDRAULIQUE" in comport.lc_type:
+                if rela_hydr != "VIDE":
+                    UTMESS("F", "THM1_37")
                 rela_hydr = comport.nom
-            if ('COUPLAGE_THM' in comport.lc_type):
-                if (rela_thmc != 'VIDE'):
-                    UTMESS('F','THM1_36')
+            if "COUPLAGE_THM" in comport.lc_type:
+                if rela_thmc != "VIDE":
+                    UTMESS("F", "THM1_36")
                 rela_thmc = comport.nom
-            if ('THERMIQUE' in comport.lc_type):
+            if "THERMIQUE" in comport.lc_type:
                 rela_ther = comport.nom
 
-# ----- Check: hydr and thmc are required
-        if (rela_thmc == 'VIDE'):
-            UTMESS('F', 'THM1_39', valk=type_kit)
-        if (rela_hydr == 'VIDE'):
-            UTMESS('F', 'THM1_40', valk=type_kit)
+        # ----- Check: hydr and thmc are required
+        if rela_thmc == "VIDE":
+            UTMESS("F", "THM1_39", valk=type_kit)
+        if rela_hydr == "VIDE":
+            UTMESS("F", "THM1_40", valk=type_kit)
 
-# ----- Check: detect requirement for kit
-        l_h   = (type_kit == 'KIT_H' or type_kit == 'KIT_HM' or type_kit == 'KIT_THM')
-        l_hh  = (type_kit == 'KIT_HH' or type_kit == 'KIT_HHM' or type_kit == 'KIT_THHM' or type_kit == 'KIT_THH')
-        l_hh2 = (type_kit == 'KIT_HH2' or type_kit == 'KIT_HH2M' or type_kit == 'KIT_THH2M' or type_kit == 'KIT_THH2')
-        l_hv  = (type_kit == 'KIT_THV')
-        l_t   = (type_kit == 'KIT_THH' or type_kit == 'KIT_THHM' or type_kit == 'KIT_THM' or type_kit == 'KIT_THV' or type_kit == 'KIT_THH2' or type_kit == 'KIT_THH2M')
-        l_m   = (type_kit == 'KIT_HHM' or type_kit == 'KIT_HM' or type_kit == 'KIT_THHM' or type_kit == 'KIT_THM' or type_kit == 'KIT_HH2M' or type_kit == 'KIT_THH2M')
+        # ----- Check: detect requirement for kit
+        l_h = type_kit == "KIT_H" or type_kit == "KIT_HM" or type_kit == "KIT_THM"
+        l_hh = (
+            type_kit == "KIT_HH"
+            or type_kit == "KIT_HHM"
+            or type_kit == "KIT_THHM"
+            or type_kit == "KIT_THH"
+        )
+        l_hh2 = (
+            type_kit == "KIT_HH2"
+            or type_kit == "KIT_HH2M"
+            or type_kit == "KIT_THH2M"
+            or type_kit == "KIT_THH2"
+        )
+        l_hv = type_kit == "KIT_THV"
+        l_t = (
+            type_kit == "KIT_THH"
+            or type_kit == "KIT_THHM"
+            or type_kit == "KIT_THM"
+            or type_kit == "KIT_THV"
+            or type_kit == "KIT_THH2"
+            or type_kit == "KIT_THH2M"
+        )
+        l_m = (
+            type_kit == "KIT_HHM"
+            or type_kit == "KIT_HM"
+            or type_kit == "KIT_THHM"
+            or type_kit == "KIT_THM"
+            or type_kit == "KIT_HH2M"
+            or type_kit == "KIT_THH2M"
+        )
 
-# ----- Check: coupling law
-        if (l_h):
+        # ----- Check: coupling law
+        if l_h:
             comport = self.get(rela_thmc)
-            if (rela_thmc != 'LIQU_SATU' and rela_thmc != 'GAZ' and rela_thmc != 'LIQU_GAZ_ATM'):
-                UTMESS('F', 'THM1_42', valk=(rela_thmc,type_kit))
+            if rela_thmc != "LIQU_SATU" and rela_thmc != "GAZ" and rela_thmc != "LIQU_GAZ_ATM":
+                UTMESS("F", "THM1_42", valk=(rela_thmc, type_kit))
 
-        if (l_hh):
+        if l_hh:
             comport = self.get(rela_thmc)
-            if (rela_thmc != 'LIQU_GAZ' and rela_thmc != 'LIQU_VAPE_GAZ'):
-                UTMESS('F', 'THM1_42', valk=(rela_thmc,type_kit))
+            if rela_thmc != "LIQU_GAZ" and rela_thmc != "LIQU_VAPE_GAZ":
+                UTMESS("F", "THM1_42", valk=(rela_thmc, type_kit))
 
-        if (l_hh2):
+        if l_hh2:
             comport = self.get(rela_thmc)
-            if (rela_thmc != 'LIQU_AD_GAZ_VAPE' and rela_thmc != 'LIQU_AD_GAZ'):
-                UTMESS('F', 'THM1_42', valk=(rela_thmc,type_kit))
+            if rela_thmc != "LIQU_AD_GAZ_VAPE" and rela_thmc != "LIQU_AD_GAZ":
+                UTMESS("F", "THM1_42", valk=(rela_thmc, type_kit))
 
-        if (l_hv):
+        if l_hv:
             comport = self.get(rela_thmc)
-            if (rela_thmc != 'LIQU_VAPE'):
-                UTMESS('F', 'THM1_42', valk=(rela_thmc,type_kit))
+            if rela_thmc != "LIQU_VAPE":
+                UTMESS("F", "THM1_42", valk=(rela_thmc, type_kit))
 
-# ----- Check: thermic law
-        if (l_t):
-            if (rela_ther == 'VIDE'):
-                rela_ther = 'THER'
+        # ----- Check: thermic law
+        if l_t:
+            if rela_ther == "VIDE":
+                rela_ther = "THER"
 
-# ----- Check: mechanical law
-        if (l_m):
-            if (rela_hydr == 'HYDR_ENDO'):
-                if (rela_meca != 'MAZARS' and rela_meca != 'ENDO_ISOT_BETON'):
-                    UTMESS('F', 'THM1_43', valk=(rela_hydr,rela_meca))
-            if (rela_meca == 'BARCELONE'):
-                if (rela_thmc != 'LIQU_GAZ'):
-                    UTMESS('F', 'THM1_44', valk=(rela_meca,type_kit))
+        # ----- Check: mechanical law
+        if l_m:
+            if rela_hydr == "HYDR_ENDO":
+                if rela_meca != "MAZARS" and rela_meca != "ENDO_ISOT_BETON":
+                    UTMESS("F", "THM1_43", valk=(rela_hydr, rela_meca))
+            if rela_meca == "BARCELONE":
+                if rela_thmc != "LIQU_GAZ":
+                    UTMESS("F", "THM1_44", valk=(rela_meca, type_kit))
 
-# ----- Return
+        # ----- Return
         return rela_meca, rela_hydr, rela_thmc, rela_ther
 
     def __repr__(self):
         """Représentation du catalogue"""
-        sep = '-' * 90
+        sep = "-" * 90
         txt = [sep]
         for k in list(self._dico.keys()):
             txt.append(repr(self.get(k)))
             txt.append(sep)
         return os.linesep.join(txt)
+
 
 # instance unique du catalogue
 catalc = CataLoiComportement()

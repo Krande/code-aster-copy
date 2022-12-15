@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -26,6 +26,7 @@ from ..Supervis import ExecuteCommand
 class TherNonLineMo(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalResult` by assigning
     finite elements on a :class:`~code_aster.Objects.ThermalResult`."""
+
     command_name = "THER_NON_LINE_MO"
 
     def create_result(self, keywords):
@@ -42,7 +43,7 @@ class TherNonLineMo(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if("reuse" in keywords):
+        if "reuse" in keywords:
             self._result.build()
         else:
             self._result.setModel(keywords["MODELE"])

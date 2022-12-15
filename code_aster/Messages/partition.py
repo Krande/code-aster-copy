@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,27 +20,26 @@
 from ..Utilities import _
 
 cata_msg = {
-
-
-
-
-    2: _("""
+    2: _(
+        """
 Le modèle ne contient aucun élément fini. On ne peut pas le partitionner.
 
 Conseil : il faut utiliser DISTRIBUTION / METHODE='CENTRALISE'
-"""),
-
-    3: _("""
+"""
+    ),
+    3: _(
+        """
 Le modèle contient des noeuds (AFFE_MODELE/AFFE/GROUP_NO). On ne peut pas le partitionner.
 
 Conseil : il faut créer des mailles POI1 avec l'opérateur CREA_MAILLAGE/CREA_POI1
           puis refaire un MODELE avec AFFE_MODELE/AFFE/GROUP_MA uniquement.
-"""),
-
-    4: _("""
+"""
+    ),
+    4: _(
+        """
 Le modèle contient des mailles qui n'ont aucun lien entre eux.
 
 Conseil :  il faut utiliser DISTRIBUTION / METHODE='CENTRALISE'.
-"""),
-
+"""
+    ),
 }

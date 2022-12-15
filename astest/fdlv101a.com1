@@ -21,30 +21,30 @@
 import code_aster
 from code_aster.Commands import *
 
-POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),)
+POURSUITE(CODE="OUI", DEBUG=_F(SDVERI="OUI"))
 
 
 test = code_aster.TestCase()
 
-test.assertEqual( NUSTR.getComponents(), ['DX', 'DY', 'LAGR'] )
+test.assertEqual(NUSTR.getComponents(), ["DX", "DY", "LAGR"])
 for row in NUSTR.getRowsAssociatedToLagrangeMultipliers():
-   test.assertEqual( NUSTR.getComponentAssociatedToRow(row), 'LAGR:DY' )
-   test.assertFalse( NUSTR.isRowAssociatedToPhysical(row) )
+    test.assertEqual(NUSTR.getComponentAssociatedToRow(row), "LAGR:DY")
+    test.assertFalse(NUSTR.isRowAssociatedToPhysical(row))
 for row in NUSTR.getRowsAssociatedToPhysicalDofs():
-   test.assertTrue( NUSTR.getComponentAssociatedToRow(row) in ['DX','DY'])
-   test.assertTrue( NUSTR.isRowAssociatedToPhysical(row) )
-test.assertEqual( NUSTR.getNodeAssociatedToRow(0), 0 )
-test.assertEqual( NUSTR.getRowAssociatedToNodeComponent(0,'DX'), 1)
-test.assertEqual( len(NUSTR.getRowsAssociatedToLagrangeMultipliers()), 512)
-test.assertEqual( len(NUSTR.getRowsAssociatedToPhysicalDofs()), 514)
-test.assertTrue( NUSTR.useLagrangeMultipliers() )
-test.assertFalse( NUSTR.useSingleLagrangeMultipliers() )
-test.assertEqual( NUSTR.getPhysicalQuantity(), 'DEPL_R')
+    test.assertTrue(NUSTR.getComponentAssociatedToRow(row) in ["DX", "DY"])
+    test.assertTrue(NUSTR.isRowAssociatedToPhysical(row))
+test.assertEqual(NUSTR.getNodeAssociatedToRow(0), 0)
+test.assertEqual(NUSTR.getRowAssociatedToNodeComponent(0, "DX"), 1)
+test.assertEqual(len(NUSTR.getRowsAssociatedToLagrangeMultipliers()), 512)
+test.assertEqual(len(NUSTR.getRowsAssociatedToPhysicalDofs()), 514)
+test.assertTrue(NUSTR.useLagrangeMultipliers())
+test.assertFalse(NUSTR.useSingleLagrangeMultipliers())
+test.assertEqual(NUSTR.getPhysicalQuantity(), "DEPL_R")
 
-test.assertRaises( RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(-1)) )
-test.assertRaises( RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(999999)) )
-test.assertRaises( RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(0,'XXXXX') ))
-test.assertRaises( RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(999999,'DX') ))
+test.assertRaises(RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(-1)))
+test.assertRaises(RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(999999)))
+test.assertRaises(RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(0, "XXXXX")))
+test.assertRaises(RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(999999, "DX")))
 
 test.printSummary()
 
