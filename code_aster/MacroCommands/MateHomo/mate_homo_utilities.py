@@ -32,10 +32,10 @@ def create_empty_dictpara(ls_para):
     return tabpara
 
 
-def parse_mater_groups(ls_affe, varc_name, ls_group_tout):
+def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     """
     Cette fonction sert à :
-    * Rajoutér une couche de vérification sur les propriétés des matériaux affectées.
+    * Rajouter une couche de vérification sur les propriétés des matériaux affectées.
     * Rédéfinir ces memes matériaux pour ne conserver que E NU LAMBDA afin de replacer
       les calculs stationnaires par des évolutions. Ceci pour avoir équivalence des résultats.
     * Transformer les affectations TOUT=OUI en affectations sur GROUP_MA=BODY
@@ -44,7 +44,7 @@ def parse_mater_groups(ls_affe, varc_name, ls_group_tout):
     mat1, mat2, mat3 = "ELAS", "THER", "THER_NL"
     mandatory_elas, optional_elas = ["E", "NU"], ["RHO", "ALPHA"]
     mandatory_ther, optional_ther = ["LAMBDA"], ["RHO_CP"]
-    missing_in_at_least_one = []
+    need_ther = type_homo in ("MASSIF",)
 
     affe_mod_mate = []
     affe_mod_calc = []
@@ -68,31 +68,40 @@ def parse_mater_groups(ls_affe, varc_name, ls_group_tout):
         if mat1 not in matNames:
             UTMESS("F", "HOMO1_8", valk=(mat1, mater.getName(), mater.userName))
 
-        if mat2 not in matNames and mat3 not in matNames:
-            UTMESS("F", "HOMO1_9", valk=(mat2, mat3, mater.getName(), mater.userName))
+        if need_ther:
+            if mat2 not in matNames and mat3 not in matNames:
+                UTMESS("F", "HOMO1_9", valk=(mat2, mat3, mater.getName(), mater.userName))
+
+        keyelas = " ".join([m for m in matNames if m in (mat1,)])
+        keyther = " ".join([m for m in matNames if m in (mat2, mat3)])
 
         f_para = {}
         f_para_temp = {}
 
-        for p in (*mandatory_elas, *optional_elas):
-            func = mater.getFunction("ELAS", p)
-            if func:
-                if p in missing_in_at_least_one:
-                    UTMESS("F", "HOMO1_12", valk=p)
-                f_para[p] = func
-            else:
+        parse_list = {
+            keyelas: mandatory_elas + optional_elas,
+            keyther: mandatory_ther + optional_ther,
+        }
+
+        check_list = mandatory_elas if not need_ther else mandatory_elas + mandatory_ther
+
+        for key, lspara in parse_list.items():
+            missing_in_at_least_one = []
+            for p in lspara:
+                func = mater.getFunction(key, p)
+                if func:
+                    if p in missing_in_at_least_one:
+                        UTMESS("F", "HOMO1_12", valk=p)
+                    f_para[p] = func
+                else:
+                    try:
+                        v = mater.getValueReal(keyelas, p)
+                        UTMESS("F", "HOMO1_13", valk=p)
+                    except RuntimeError:
+                        pass
                 missing_in_at_least_one.append(p)
 
-        for p in (*mandatory_ther, *optional_ther):
-            func = mater.getFunction("THER", p) or mater.getFunction("THER_NL", p)
-            if func:
-                if p in missing_in_at_least_one:
-                    UTMESS("F", "HOMO1_12", valk=p)
-                f_para[p] = func
-            else:
-                missing_in_at_least_one.append(p)
-
-        for p in (*mandatory_elas, *mandatory_ther):
+        for p in check_list:
             if not p in f_para:
                 UTMESS("F", "HOMO1_10", valk=(p, mater.getName(), mater.userName))
 
@@ -118,7 +127,7 @@ def parse_mater_groups(ls_affe, varc_name, ls_group_tout):
             "TEMP_DEF_ALPHA": 20.0,
         }
 
-        ther_fo_kw = {"LAMBDA": f_para_temp["LAMBDA"], "RHO_CP": f_zero}
+        ther_fo_kw = {"LAMBDA": f_para_temp.get("LAMBDA", f_zero), "RHO_CP": f_zero}
 
         new_item_calc["MATER"] = DEFI_MATERIAU(ELAS_FO=_F(**elas_fo_kw), THER_FO=_F(**ther_fo_kw))
 
@@ -162,9 +171,11 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
     return ls_alpha_calc
 
 
-def setup_calcul(mesh, ls_group_tout, ls_affe, varc_name, varc_values):
+def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values):
 
-    ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(ls_affe, varc_name, ls_group_tout)
+    ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(
+        type_homo, ls_affe, varc_name, ls_group_tout
+    )
 
     ls_alpha_calc = prepare_alpha_loads(ls_affe_mod_mate, varc_values)
 

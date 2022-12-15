@@ -76,4 +76,9 @@ Le paramètre '%(k1)s' du matériau '%(k2)s' ( '%(k3)s' ) n'est pas CONSTANT ou 
 Le paramètre '%(k1)s' n'est pas défini pour tous les matériaux
 """
     ),
+    13: _(
+        """
+Le paramètre '%(k1)s' n'est pas une fonction.
+"""
+    ),
 }

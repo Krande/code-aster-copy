@@ -52,7 +52,7 @@ def mate_homo_ops(self, **kwargs):
     mesh, group_tout, volume_ver, dirthick = prepare_mesh_syme(meshin, affe_groups, affe_all)
 
     DEPLMATE, MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc = setup_calcul(
-        mesh, (group_tout,), ls_affe, varc_name, varc_values
+        type_homo, mesh, (group_tout,), ls_affe, varc_name, varc_values
     )
 
     if type_homo in ("MASSIF",):
