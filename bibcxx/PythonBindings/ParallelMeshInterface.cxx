@@ -38,7 +38,7 @@ void exportParallelMeshToPython( py::module_ &mod ) {
 Return the list of the existing (local or global) groups of cells.
 
 Arguments:
-    local=false (bool): search in local or global groups
+    local (bool): search in local or global groups
 
 Returns:
     list[str]: List of (local or global) groups names (stripped).
@@ -49,7 +49,7 @@ The global group exists in the mesh
 
 Arguments:
     group_name (str): Name of the global group.
-    local=false (bool): search in local or global groups
+    local (bool): search in local or global groups
 
 Returns:
     bool: *True* if exists, *False* otherwise.
@@ -77,7 +77,7 @@ Returns:
 Return the list of the existing (local or global) groups of nodes.
 
 Arguments:
-    local=false (bool): search in local or global groups
+    local (bool): search in local or global groups
 
 Returns:
     list[str]: List of (local or global) groups names (stripped).
@@ -88,7 +88,7 @@ The (local or global) group exists in the mesh
 
 Arguments:
     group_name (str): Name of the (local or global) group.
-    local=false (bool): search local or global groups
+    local (bool): search local or global groups
 
 Returns:
     bool: *True* if exists, *False* otherwise.
@@ -172,18 +172,6 @@ This function has to be used by developper only and not user
 Returns:
     bool: *True* if succeeds, *False* otherwise.
         )" )
-        .def( "_readPartitionedMedFile", &ParallelMesh::readPartitionedMedFile, R"(
-Read a partitioned MED file (alaready partitioned by the MEDPartitioner)
-
-This function has to be used by developper only and not user
-
-Arguments:
-    filename (str): Path to the file to be read.
-
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-        )",
-              py::arg( "filename" ) )
         .def( "_getNodesFromCells",
               py::overload_cast< const std::string, const bool, const ASTERINTEGER >(
                   &ParallelMesh::getNodesFromCells, py::const_ ),
@@ -215,6 +203,20 @@ Returns global to local numbering mapping for nodes
 
 Returns:
     dict[int]: global to local numbering mapping.
+    )" )
+        .def( "_create_joints", &ParallelMesh::create_joints, R"(
+Create the joints between domains (*for internal use*).
+
+Arguments:
+    domains (list[int]): Names of the remote domains.
+    globalNumbering (list[int]): Global number of each node.
+    nodesOwner (list[int]): Owner of each node.
+    joints (list[list[int]]): Definition of *E*mission and *R*eception joints.
+        )",
+              py::arg( "domains" ), py::arg( "globalNumbering" ), py::arg( "nodesOwner" ),
+              py::arg( "joints" ) )
+        .def( "_endDefinition", &ParallelMesh::endDefinition, R"(
+Terminate the mesh creation (*for internal use*).
         )" );
 };
 

@@ -18,7 +18,7 @@
 
 subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !
-use sort_module
+    use sort_module
 !
     implicit none
 !
@@ -35,7 +35,7 @@ use sort_module
 !
     character(len=*), intent(in) :: object
     character(len=*), intent(in) :: type
-    integer, intent(inout) :: nb_comm
+    integer, intent(out) :: nb_comm
     character(len=*), intent(in) :: comm, tag
 !
 !---------------------------------------------------------------------------------------------------
@@ -56,18 +56,18 @@ use sort_module
     nb_comm = 0
 !
 ! --- Result depends on type
-    if(type == 'MAILLAGE_P') then
+    if (type == 'MAILLAGE_P') then
         k24 = object//'.DOMJOINTS'
-    elseif(type == "NUME_DDL") then
+    elseif (type == "NUME_DDL") then
         k24 = object//'.NUME.DOMJ'
-    elseif(type == "LIGREL") then
+    elseif (type == "LIGREL") then
         k24 = object//'.DOMJ'
     else
         ASSERT(ASTER_FALSE)
     end if
 !
     call jeexin(k24, iret)
-    if( iret > 0 ) then
+    if (iret > 0) then
         call jelira(k24, 'LONUTI', nb_comm, k8bid)
         call jeveuo(k24, 'L', vi=v_domdis)
     end if

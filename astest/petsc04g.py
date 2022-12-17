@@ -31,7 +31,7 @@ parallel = True
 if parallel:
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
     MAIL = code_aster.ParallelMesh()
-    MAIL.readMedFile("petsc04g/%d.med" % rank, True)
+    MAIL.readMedFile("petsc04g/%d.med" % rank, partitioned=True)
 else:
     MAIL = code_aster.Mesh()
     MAIL.readMedFile("petsc04a.mmed")

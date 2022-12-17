@@ -26,7 +26,7 @@ test = code_aster.TestCase()
 rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
 MA = code_aster.ParallelMesh()
-MA.readMedFile("zzzz504y/%d.med" % rank, True)
+MA.readMedFile("zzzz504y/%d.med" % rank, partitioned=True)
 # MA=LIRE_MAILLAGE()
 
 MOD = AFFE_MODELE(

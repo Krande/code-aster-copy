@@ -62,12 +62,12 @@ ms.writeMesh(meshFolder)
 
 # 1) File by File after partioning (need a preliminary partioning )
 pMesh1 = code_aster.ParallelMesh()
-pMesh1.readMedFile(ms.writedFilename(), True)
+pMesh1.readMedFile(ms.writedFilename(), partitioned=True)
 pMesh1.checkConsistency("ssnv187a.mmed")
 
 # 2) From a folder (need a preliminary partioning )
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile(meshFolder + "/ssnv187a_new_%d.med" % rank, True)
+pMesh2.readMedFile(meshFolder + "/ssnv187a_new_%d.med" % rank, partitioned=True)
 pMesh2.checkConsistency("ssnv187a.mmed")
 
 # 3) Directely from a file (without preliminary partioning )

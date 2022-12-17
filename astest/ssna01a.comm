@@ -295,7 +295,7 @@ TEST_TABLE(
     TABLE=TB,
     FILTRE=(
         _F(NOM_PARA="INST", VALE=60.0),
-        _F(NOM_PARA="MAILLE", VALE_K="M1"),
+        _F(NOM_PARA="MAILLE", VALE_K="M99"),
         _F(NOM_PARA="POINT", VALE_I=1),
     ),
 )

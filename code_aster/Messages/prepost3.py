@@ -42,7 +42,7 @@ cata_msg = {
     ),
     10: _(
         """
- soit le fichier n'existe pas, soit c'est une mauvaise version de HDF (utilise par MED).
+ Soit le fichier n'existe pas, soit c'est une mauvaise version de HDF (utilisé par MED).
 """
     ),
     31: _(

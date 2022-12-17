@@ -135,135 +135,56 @@ MLTHX = MODI_MODELE_XFEM(MODELE_IN=MLTHS, FISSURE=(FISSLI, INTELI))
 
 # ###################################################
 # Impression du contenu des modeles xfem obtenus :
-# ###################################################
-
-DEFI_FICHIER(UNITE=31, FICHIER="./fort.31")
-DEFI_FICHIER(UNITE=32, FICHIER="./fort.32")
-DEFI_FICHIER(UNITE=33, FICHIER="./fort.33")
-
-IMPR_CO(UNITE=31, CONCEPT=_F(NOM=MLMEX), NIVEAU=-1, PERMUTATION="NON")
-IMPR_CO(UNITE=32, CONCEPT=_F(NOM=MLMEXC), NIVEAU=-1, PERMUTATION="NON")
-IMPR_CO(UNITE=33, CONCEPT=_F(NOM=MLTHX), NIVEAU=-1, PERMUTATION="NON")
-
-DEFI_FICHIER(ACTION="LIBERER", UNITE=31)
-DEFI_FICHIER(ACTION="LIBERER", UNITE=32)
-DEFI_FICHIER(ACTION="LIBERER", UNITE=33)
-
-# ###################################################
+# -> meca, avec mot-cle FISSURE     : MODMEX1
+# -> meca, avec mot-cle MODELE_THER : MODMEX2
+# -> ther, avec mot-cle FISSURE     : MODTHX1
+#
 # "Post-traitements" des fichiers obtenus avec IMPR_CO
-# ###################################################
 
-File31 = open("./fort.31", "r")
-File32 = open("./fort.32", "r")
-File33 = open("./fort.33", "r")
+# On veut comparer que les objets issus de MODI_MODELE_XFEM sont semblables.
+# On filtre les lignes fournies par UTIMSD contenant des valeurs (.VALE/.CELV).
+# On compare la somme de contrôle (SOMMI ou SOMMR).
 
-LinesFile31 = File31.readlines()
-LinesFile32 = File32.readlines()
-LinesFile33 = File33.readlines()
+import code_aster
 
-File31.close()
-File32.close()
-File33.close()
 
-ListLMEX = []  # 31 <-> MLMEX
-ListLMEXC = []  # 32 <-> MLMEXC
-ListLTHX = []  # 33 <-> MLTHX
+def getVALE(model, filter, debug=False):
+    """Extract relevant lines from UTIMSD about values."""
+    from code_aster.Helpers import LogicalUnitFile
 
-# 31 <-> ListLMEX  / MLMEX
-nommo = "00000015"
-nommo += (8 - len(nommo)) * " "
-for line in LinesFile31:
-    if ("TOPOFAC" in line) and (".CELV" in line) or ("TOPOSE" in line) and (".CELV" in line):
-        lsplit = line.split("|")
-        assert nommo in lsplit[1]
-        # on remplace le nom du modele par 8 " "
-        lsplit[1] = lsplit[1].replace(nommo, " " * 8)
-        ListLMEX.append(lsplit)
+    tmpfile = LogicalUnitFile.new_free()
+    IMPR_CO(CONCEPT=_F(NOM=model), NIVEAU=-1, UNITE=tmpfile.unit, PERMUTATION="NON")
 
-# 32 <-> ListLMEXC / MLMEXC
-nommo = "00000016"
-nommo += (8 - len(nommo)) * " "
-for line in LinesFile32:
-    if ("TOPOFAC" in line) and (".CELV" in line) or ("TOPOSE" in line) and (".CELV" in line):
-        lsplit = line.split("|")
-        assert nommo in lsplit[1]
-        # on remplace le nom du modele par 8 " "
-        lsplit[1] = lsplit[1].replace(nommo, " " * 8)
-        ListLMEXC.append(lsplit)
+    with open(tmpfile.filename, "r") as fsd:
+        lines = fsd.readlines()
+        vale = []
+        for line in lines:
+            line = line.replace(model.getName(), "obj_name")
+            spl = line.split("|")
+            if len(spl) < 2:
+                continue
+            if filter(spl[1]):
+                vale.append(spl[1] + " | " + spl[-1])
+    if debug:
+        print(">>>", model.userName, "<<<")
+        print("".join(vale))
+    return vale
 
-# 33 <-> ListLTHX  / MLTHX
-nommo = "00000017"
-nommo += (8 - len(nommo)) * " "
-for line in LinesFile33:
-    if ("TOPOFAC" in line) and (".CELV" in line) or ("TOPOSE" in line) and (".CELV" in line):
-        lsplit = line.split("|")
-        assert nommo in lsplit[1]
-        # on remplace le nom du modele par 8 " "
-        lsplit[1] = lsplit[1].replace(nommo, " " * 8)
-        ListLTHX.append(lsplit)
 
-## pour debug
-# assert len(ListLMEX ) == len(ListLMEXC)
-# for i in range(len(ListLMEX )):
-# print ListLMEX[i] == ListLMEXC[i]
-# print ListLMEX[i]
-# print ListLMEXC[i]
-# print "&&"
-# assert len(ListLMEX ) == len(ListLTHX)
-# for i in range(len(ListLMEX )):
-# print ListLMEX[i] == ListLTHX[i]
-# print ListLMEX[i]
-# print ListLTHX[i]
-# print "&&"
+func_test = lambda txt: "TOPO" in txt and ".CELV" in txt
 
-# ###################################################
-# Tests une fois les infos extraites de ces fichiers
-# ###################################################
+valMEX = getVALE(MLMEX, func_test, debug=True)
+valMEXC = getVALE(MLMEXC, func_test, debug=True)
+valTHX = getVALE(MLTHX, func_test, debug=True)
 
-# -------
-# nobj_ok == 1 si il y a le meme nombre de cham_elem out
-# de TOPOSE et TOPOFA d'un modele a l'autre
-# nobj_ok == 0 sinon
-# -------
+test = code_aster.TestCase()
 
-# TABTAIL1 -> entre MLMEX et MLMEXC
-nobj_ok = 0
-if (len(ListLMEX) > 0) and (len(ListLMEX) == len(ListLMEXC)):
-    nobj_ok = 1
-TABTAIL1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
+test.assertEqual(len(valMEX), len(valMEXC), msg="size of valMEX/valMEXC")
+test.assertEqual(len(valMEX), len(valTHX), msg="size of valMEX/valTHX")
 
-# TABTAIL2 -> entre MLMEX et MLTHX
-nobj_ok = 0
-if (len(ListLMEX) > 0) and (len(ListLMEX) == len(ListLTHX)):
-    nobj_ok = 1
-TABTAIL2 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
+test.assertSequenceEqual(valMEX, valMEXC, msg="valMEX vs valMEXC")
+test.assertSequenceEqual(valMEX, valTHX, msg="valMEX vs valTHX")
 
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TABTAIL1)
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TABTAIL2)
-
-## -------
-## vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
-## ou .VALE des cham_elem issus de TOPOSE et TOPOFA et contenus
-## dans les deux modeles sont identiques (au nom du modele pres)
-## vale_ok == 0 sinon
-## -------
-
-# TARESUM1 -> entre MLMEX et MLMEXC
-vale_ok = 0
-if (ListLMEX != []) and (ListLMEX == ListLMEXC):
-    vale_ok = 1
-TARESUM1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
-
-# TARESUM2 -> entre MLMEX et MLTHX
-vale_ok = 0
-if (ListLMEX != []) and (ListLMEX == ListLTHX):
-    vale_ok = 1
-TARESUM2 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TARESUM1)
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TARESUM2)
 
 # ###################################################
 # ###################################################
@@ -326,130 +247,17 @@ MQHMX = MODI_MODELE_XFEM(MODELE_IN=MQHMS, FISSURE=INTEQU)
 # MQHMX : Modele Quadratique Hydro-Mecanique Xfem avec contact
 MQHMXC = MODI_MODELE_XFEM(MODELE_IN=MQHMS, FISSURE=INTEQU, CONTACT="STANDARD")
 
-# ###################################################
-# Impression du contenu des modeles xfem obtenus :
-# ###################################################
 
-DEFI_FICHIER(UNITE=31, FICHIER="./fort.31")
-DEFI_FICHIER(UNITE=32, FICHIER="./fort.32")
-DEFI_FICHIER(UNITE=33, FICHIER="./fort.33")
+valQMEX = getVALE(MQMEX, func_test, debug=True)
+valQHMX = getVALE(MQHMX, func_test, debug=True)
+valQHMXC = getVALE(MQHMXC, func_test, debug=True)
 
-IMPR_CO(UNITE=31, CONCEPT=_F(NOM=MQMEX), NIVEAU=-1, PERMUTATION="NON")
-IMPR_CO(UNITE=32, CONCEPT=_F(NOM=MQHMX), NIVEAU=-1, PERMUTATION="NON")
-IMPR_CO(UNITE=33, CONCEPT=_F(NOM=MQHMXC), NIVEAU=-1, PERMUTATION="NON")
+test.assertEqual(len(valQMEX), len(valQHMX), msg="size of valQMEX/valQHMX")
+test.assertEqual(len(valQMEX), len(valQHMXC), msg="size of valQMEX/valTHX")
 
-DEFI_FICHIER(ACTION="LIBERER", UNITE=31)
-DEFI_FICHIER(ACTION="LIBERER", UNITE=32)
-DEFI_FICHIER(ACTION="LIBERER", UNITE=33)
+test.assertSequenceEqual(valQMEX, valQHMX, msg="valQMEX vs valQHMX")
+test.assertSequenceEqual(valQMEX, valQHMXC, msg="valQMEX vs valTHX")
 
-# ###################################################
-# "Post-traitements" des fichiers obtenus avec IMPR_CO
-# ###################################################
-
-File31 = open("./fort.31", "r")
-File32 = open("./fort.32", "r")
-File33 = open("./fort.33", "r")
-
-LinesFile31 = File31.readlines()
-LinesFile32 = File32.readlines()
-LinesFile33 = File33.readlines()
-
-File31.close()
-File32.close()
-File33.close()
-
-ListQMEX = []  # 31 <-> MQMEX
-ListQHMX = []  # 32 <-> MQHMX
-ListQHMXC = []  # 33 <-> MQHMXC
-
-# 31 <-> ListQMEX / MQMEX
-nommo = "00000020"
-nommo += (8 - len(nommo)) * " "
-for line in LinesFile31:
-    if ("TOPOFAC" in line) and (".CELV" in line) or ("TOPOSE" in line) and (".CELV" in line):
-        lsplit = line.split("|")
-        assert nommo in lsplit[1]
-        # on remplace le nom du modele par 8 " "
-        lsplit[1] = lsplit[1].replace(nommo, " " * 8)
-        ListQMEX.append(lsplit)
-
-# 32 <-> ListQHMX / MQHMX
-nommo = "00000021"
-nommo += (8 - len(nommo)) * " "
-for line in LinesFile32:
-    if ("TOPOFAC" in line) and (".CELV" in line) or ("TOPOSE" in line) and (".CELV" in line):
-        lsplit = line.split("|")
-        assert nommo in lsplit[1]
-        # on remplace le nom du modele par 8 " "
-        lsplit[1] = lsplit[1].replace(nommo, " " * 8)
-        ListQHMX.append(lsplit)
-
-# 33 <-> ListQHMXC / MQHMXC
-nommo = "00000022"
-nommo += (8 - len(nommo)) * " "
-for line in LinesFile33:
-    if ("TOPOFAC" in line) and (".CELV" in line) or ("TOPOSE" in line) and (".CELV" in line):
-        lsplit = line.split("|")
-        assert nommo in lsplit[1]
-        # on remplace le nom du modele par 8 " "
-        lsplit[1] = lsplit[1].replace(nommo, " " * 8)
-        ListQHMXC.append(lsplit)
-
-## pour debug
-# assert len(ListQMEX) == len(ListQHMX)
-# for i in range(len(ListQMEX)):
-# print ListQMEX[i] == ListQHMX[i]
-# print ListQMEX[i]
-# print ListQHMX[i]
-# print "&&"
-
-# ###################################################
-# Tests une fois les infos extraites de ces fichiers
-# ###################################################
-
-# -------
-# nobj_ok == 1 si il y a le meme nombre de cham_elem out
-# de TOPOSE et TOPOFA d'un modele a l'autre
-# nobj_ok == 0 sinon
-# -------
-
-# TABTAIL3 -> entre MQMEX et MQHMX
-nobj_ok = 0
-if (len(ListQMEX) > 0) and (len(ListQMEX) == len(ListQHMX)):
-    nobj_ok = 1
-TABTAIL3 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TABTAIL3)
-
-## -------
-## vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
-## ou .VALE des cham_elem issus de TOPOSE et TOPOFA et contenus
-## dans les deux modeles sont identiques (au nom du modele pres)
-## vale_ok == 0 sinon
-## -------
-
-# TARESUM3 -> entre MQMEX et MQHMX
-vale_ok = 0
-if (ListQMEX != []) and (ListQMEX == ListQHMX):
-    vale_ok = 1
-TARESUM3 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TARESUM3)
-
-# TABTAIL4 -> entre MQMEX et MQHMXC
-nobj_ok = 0
-if (len(ListQMEX) > 0) and (len(ListQMEX) == len(ListQHMXC)):
-    nobj_ok = 1
-TABTAIL4 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TABTAIL4)
-
-# TARESUM5 -> entre MQMEX et MQHMXC
-vale_ok = 0
-if (ListQMEX != []) and (ListQMEX == ListQHMXC):
-    vale_ok = 1
-TARESUM4 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TARESUM4)
+test.printSummary()
 
 FIN()

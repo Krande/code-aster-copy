@@ -54,10 +54,7 @@ CARA = AFFE_CARA_ELEM(
 )
 
 RHOI = DEFI_FONCTION(
-    NOM_PARA="ABSC",
-    MAILLAGE=TUBE,
-    VALE_Y=(7.385800e02, 7.311600e02),
-    NOEUD_PARA=("N_01_001", "N_06_007"),
+    NOM_PARA="ABSC", MAILLAGE=TUBE, VALE_Y=(7.385800e02, 7.311600e02), NOEUD_PARA=("N1", "N61")
 )
 
 RHOE = DEFI_FONCTION(
@@ -74,17 +71,7 @@ RHOE = DEFI_FONCTION(
         8.626000e01,
         8.882000e01,
     ),
-    NOEUD_PARA=(
-        "N_01_001",
-        "N_02_013",
-        "N_02_014",
-        "N_05_002",
-        "N_05_003",
-        "N_05_009",
-        "N_05_014",
-        "N_05_017",
-        "N_06_007",
-    ),
+    NOEUD_PARA=("N1", "N19", "N20", "N37", "N38", "N44", "N49", "N52", "N61"),
 )
 
 PROFVIT1 = DEFI_FONCTION(
@@ -108,21 +95,21 @@ PROFVIT1 = DEFI_FONCTION(
         0.000000e00,
     ),
     NOEUD_PARA=(
-        "N_01_001",
-        "N_01_006",
-        "N_02_001",
-        "N_02_006",
-        "N_02_007",
-        "N_02_008",
-        "N_02_009",
-        "N_02_016",
-        "N_04_001",
-        "N_04_004",
-        "N_05_005",
-        "N_05_012",
-        "N_05_015",
-        "N_06_001",
-        "N_06_007",
+        "N1",
+        "N6",
+        "N7",
+        "N12",
+        "N13",
+        "N14",
+        "N15",
+        "N22",
+        "N31",
+        "N34",
+        "N40",
+        "N47",
+        "N50",
+        "N55",
+        "N61",
     ),
 )
 
@@ -598,7 +585,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="N_04_001")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
 )
 
 TEST_TABLE(
@@ -606,7 +593,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="N_04_001")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
 )
 
 TEST_TABLE(
@@ -614,10 +601,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(
-        _F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"),
-        _F(NOM_PARA="NOEUD", VALE_K="N_04_001"),
-    ),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
 )
 
 TEST_TABLE(
@@ -625,7 +609,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="N_04_001")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_Y"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
 )
 
 TEST_TABLE(
@@ -633,7 +617,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="N_04_001")),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_RADIAL"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
 )
 
 TEST_TABLE(
@@ -641,10 +625,7 @@ TEST_TABLE(
     TOLE_MACHINE=5.0e-3,  ## tole machine pour clap0f0q (cf.issue24595)
     NOM_PARA="RMS",
     TABLE=TABLE,
-    FILTRE=(
-        _F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"),
-        _F(NOM_PARA="NOEUD", VALE_K="N_04_001"),
-    ),
+    FILTRE=(_F(NOM_PARA="CALCUL", VALE_K="DEPL_ANGULAIRE"), _F(NOM_PARA="NOEUD", VALE_K="N31")),
 )
 #
 #

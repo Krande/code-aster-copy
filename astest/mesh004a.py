@@ -35,12 +35,12 @@ print("Nb procs", MPI.ASTER_COMM_WORLD.Get_size())
 print("Rank", MPI.ASTER_COMM_WORLD.Get_rank())
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("mesh004a/%d.med" % rank, True)
+pMesh2.readMedFile("mesh004a/%d.med" % rank, partitioned=True)
 pMesh2 = DEFI_GROUP(reuse=pMesh2, MAILLAGE=pMesh2, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 del pMesh2
 
 pMesh = code_aster.ParallelMesh()
-pMesh.readMedFile("mesh004a/%d.med" % rank, True)
+pMesh.readMedFile("mesh004a/%d.med" % rank, partitioned=True)
 pMesh.debugPrint(rank + 30)
 
 model = code_aster.Model(pMesh)

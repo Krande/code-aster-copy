@@ -69,7 +69,7 @@ with shared_tmpdir("mesh001c_") as tmpdir:
     pmesh.printMedFile(osp.join(tmpdir, "mesh001c.med"), local=False)
 
 pmesh2 = code_aster.ParallelMesh()
-pmesh2.readMedFile("mesh_%d.med" % rank, True)
+pmesh2.readMedFile("mesh_%d.med" % rank, partitioned=True)
 with shared_tmpdir("mesh001c_") as tmpdir:
     pmesh2.printMedFile(osp.join(tmpdir, "mesh001c.med"), local=False)
 

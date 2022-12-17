@@ -47,7 +47,7 @@ R_ELA_DEV = 0.025
 R_ELA_ISO = 0.01
 # on desactive le mecanisme isotrope
 
-list_no_later_dro = ["N46", "N47", "N48", "N49", "N50", "N51", "N52", "N53", "N54", "N55", "N187"]
+list_no_later_dro = ["N46", "N47", "N48", "N49", "N50", "N51", "N52", "N53", "N54", "N55", "N137"]
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), IGNORE_ALARM=("CALCULEL4_9",), DEBUG=_F(SDVERI="OUI"))
 

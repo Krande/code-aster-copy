@@ -45,7 +45,7 @@ from argparse import SUPPRESS, Action, ArgumentParser
 import libaster
 from run_aster.export import Export
 
-from .as_timer import ASTER_TIMER
+from .as_timer import Timer
 from .base_utils import Singleton, no_new_attributes
 from .compatibility import deprecate
 from .logger import DEBUG, INFO, logger
@@ -250,7 +250,7 @@ class ExecutionParameter(metaclass=Singleton):
         """Attribute that holds the timer object.
 
         Returns:
-            ASTER_TIMER: Timer object.
+            Timer: Timer object.
         """
         return self._timer
 
@@ -477,7 +477,7 @@ class ExecutionParameter(metaclass=Singleton):
         for opt, value in list(vars(args).items()):
             self.set_option(opt, value)
 
-        self._timer = ASTER_TIMER(format="aster", limit=self._args["max_print"])
+        self._timer = Timer(format="aster", limit=self._args["max_print"])
 
         # store Export object
         # TODO may be passed directly as argument

@@ -38,7 +38,10 @@ RESU = [None] * nbcalc
 MATERI = DEFI_MATERIAU(THER=_F(LAMBDA=0.75, RHO_CP=2.0))
 #
 MD1 = LIRE_MAILLAGE(FORMAT="MED")
-M[0] = CREA_MAILLAGE(MAILLAGE=MD1, LINE_QUAD=_F(TOUT="OUI"))
+
+MD1 = DEFI_GROUP(MAILLAGE=MD1, CREA_GROUP_MA=_F(NOM="TETRA_V", MAILLE="M49"))
+
+M[0] = CREA_MAILLAGE(MAILLAGE=MD1, LINE_QUAD=_F(TOUT="OUI"), INFO=2)
 
 # -------------------------------------------------------------------------------
 #                     BOUCLE CALCUL INDICATEUR/REMAILLAGE
@@ -119,7 +122,7 @@ TEST_RESU(
         NOM_CMP="ERTREL",
         VALE_CALC=3.1952033225416e-05,
         CRITERE="RELATIF",
-        MAILLE="MA1",
+        GROUP_MA="TETRA_V",
     )
 )
 
@@ -132,7 +135,7 @@ TEST_RESU(
         NOM_CMP="ERTREL",
         VALE_CALC=3.1952033225416e-05,
         CRITERE="RELATIF",
-        MAILLE="MA1",
+        GROUP_MA="TETRA_V",
     )
 )
 
@@ -152,7 +155,7 @@ TEST_RESU(
         NOM_CMP="ERTREL",
         VALE_CALC=2.9540823691112e-05,
         CRITERE="RELATIF",
-        MAILLE="M97",
+        GROUP_MA="TETRA_V",
     )
 )
 

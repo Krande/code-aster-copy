@@ -20,12 +20,14 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 """
-   Definition of ASTER_TIMER class.
+Definition of the Timer object.
 """
 
 import os
 import time
+from contextlib import contextmanager
 
+from .compatibility import deprecated
 from .i18n import translate as _
 
 
@@ -43,8 +45,7 @@ def _conv_hms(t):
     return h, m, s
 
 
-class ASTER_TIMER:
-
+class Timer:
     """This class provides methods to easily measure time spent during
     different steps.
     Methods :
@@ -73,7 +74,7 @@ class ASTER_TIMER:
     MaxNumTimer = 9999999
     MaxSize = 500
 
-    def __init__(self, add_total=True, format="as_run", maxlabel=None, limit=None):
+    def __init__(self, add_total=True, format="as_run", maxlabel=None, limit=None, title=None):
         """Constructor"""
         # ----- initialisation
         self.timers = {}
@@ -117,6 +118,8 @@ class ASTER_TIMER:
                 "cpu+sys": "USER+SYS",
                 "elapsed": "ELAPSED",
             }
+        if title:
+            self.TotalKey = title
 
         self.total_key = id(self)
         if self.add_total:
@@ -263,14 +266,22 @@ class ASTER_TIMER:
         out.append("")
         return os.linesep.join(out)
 
+    @contextmanager
+    def __call__(self, timer, mode="CONT", num=None, hide=None, name=None):
+        """Context manager used to measure the time spent in a block."""
+        self.Start(timer, mode, num, hide, name)
+        yield
+        self.Stop(timer, hide)
+
 
 if __name__ == "__main__":
-    chrono = ASTER_TIMER(format="aster")
-    chrono.Start("Compilation")
-    chrono.Start("CALC_FONCTION")
-    chrono.Start(23, name="CALC_FONCTION")
-    time.sleep(0.4)
-    chrono.Stop("Compilation")
-    chrono.Stop(23)
-    chrono.Start("Child")
+    chrono = Timer(format="aster")
+    with chrono.measure("Global"):
+        chrono.Start("Compilation")
+        chrono.Start("CALC_FONCTION")
+        chrono.Start(23, name="CALC_FONCTION")
+        time.sleep(0.4)
+        chrono.Stop("Compilation")
+        chrono.Stop(23)
+        chrono.Start("Child")
     print(chrono)

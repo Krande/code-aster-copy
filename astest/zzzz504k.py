@@ -29,7 +29,7 @@ code_aster.init("--test")
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("zzzz504k/%d.med" % rank, True)
+pMesh2.readMedFile("zzzz504k/%d.med" % rank, partitioned=True)
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh2,

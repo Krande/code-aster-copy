@@ -1,6 +1,7 @@
 # code_aster source files
 
 [![Documentation Status](https://readthedocs.org/projects/codeaster/badge/?version=latest)](https://codeaster.readthedocs.io/en/latest/?badge=latest)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 > Home page: <https://www.code-aster.org/>
 >

@@ -19,7 +19,7 @@
 
 import medcoupling as mc
 
-from libaster import Mesh
+from ...Objects import Mesh
 from ...Messages import ASSERT, UTMESS
 
 
@@ -193,6 +193,7 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
     newmesh.setGroupsAtLevel(1, node_groups)
 
-    mesh = Mesh.createFromMedCouplingMesh(newmesh)
+    mesh = Mesh()
+    mesh.buildFromMedCouplingMesh(newmesh)
 
     return mesh, group_tout, volume_ver, dirthick

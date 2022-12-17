@@ -48,7 +48,7 @@ The group exists in the mesh
 
 Arguments:
     group_name (str): Name of the group.
-    local=false (bool): not used (for compatibilty with ParallelMesh)
+    local (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
     bool: *True* if exists, *False* otherwise.
@@ -76,7 +76,7 @@ Returns:
 Return the list of the existing groups of nodes.
 
 Arguments:
-    local=false (bool): not used (for compatibilty with ParallelMesh)
+    local (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[str]: List of groups names (stripped).
@@ -87,7 +87,7 @@ The group exists in the mesh
 
 Arguments:
     group_name (str): Name of the group.
-    local=false (bool): not used (for compatibilty with ParallelMesh)
+    local (bool): not used (for compatibilty with ParallelMesh)
 
 Returns:
     bool: *True* if exists, *False* otherwise.
@@ -143,16 +143,6 @@ Returns:
               py::arg( "filename" ) )
         .def( "readGmshFile", &Mesh::readGmshFile, R"(
 Read a mesh file from GMSH format.
-
-Arguments:
-    filename (str): Path to the file to be read.
-
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-        )",
-              py::arg( "filename" ) )
-        .def( "readMedFile", &Mesh::readMedFile, R"(
-Read a mesh file from MED format.
 
 Arguments:
     filename (str): Path to the file to be read.

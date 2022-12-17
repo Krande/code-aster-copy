@@ -32,7 +32,7 @@ if typma == 1:
 MAILLAG2 = DEFI_GROUP(
     reuse=MAILLAG2,
     MAILLAGE=MAILLAG2,
-    CREA_GROUP_NO=(_F(NOM="N131", NOEUD="N131"), _F(NOM="N1364", NOEUD="N1364")),
+    CREA_GROUP_NO=(_F(NOM="N131", NOEUD="N130"), _F(NOM="N1364", NOEUD="N1312")),
 )
 
 if typma == 2:
@@ -161,7 +161,7 @@ vale = [
     [0.0, 0.0, -9.4470170833590e05, -2.0680206864516e05, 0.0],
 ]
 if typma == 1:
-    noeud = ["N65", "N412", "N710", "N1008", "N1306"]
+    noeud = ["N65", "N385", "N675", "N965", "N1255"]
 
 if typma == 2:
     noeud = ["NS412", "NS469", "NS530", "NS591", "NS652"]

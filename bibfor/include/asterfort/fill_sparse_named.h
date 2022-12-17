@@ -19,8 +19,7 @@
 !
 !
 interface
-    subroutine infoma(nomu, niv_)
-        character(len=8) :: nomu
-        integer, optional :: niv_
-    end subroutine infoma
+    subroutine fill_sparse_named(coll, names, sizes, strings)
+        character(len=*), intent(in) :: coll, names, sizes, strings
+    end subroutine fill_sparse_named
 end interface

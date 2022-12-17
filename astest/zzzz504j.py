@@ -31,7 +31,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("mesh004a/%d.med" % rank, True)
+pMesh2.readMedFile("mesh004a/%d.med" % rank, partitioned=True)
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 

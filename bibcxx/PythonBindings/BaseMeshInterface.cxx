@@ -135,5 +135,58 @@ Arguments:
 Returns:
     Bool: True if of
             )",
-              py::arg( "fileName" ), py::arg( "local" ) = true );
+              py::arg( "fileName" ), py::arg( "local" ) = true )
+
+        /* Mesh builder functions */
+        .def( "_initDefinition", &BaseMesh::initDefinition, R"(
+Initialize the mesh creation (*for internal use only*).
+
+Arguments:
+    dimension (int): Dimension of the mesh.
+    coordinates (list[float]): Nodes coordinates (size: 3 x number of nodes).
+    connectivity (list[list[int]]): Connectivity of each cells (size: number of cells).
+    types (list[int]): Types of each cells (size: number of cells).
+    nbGrpCells (int): Number of groups of cells to be defined.
+    nbGrpNodes (int): Number of groups of nodes to be defined.
+        )",
+              py::arg( "dimension" ), py::arg( "coordinates" ), py::arg( "connectivity" ),
+              py::arg( "types" ), py::arg( "nbGrpCells" ), py::arg( "nbGrpNodes" ) )
+
+        .def( "_endDefinition", &BaseMesh::endDefinition, R"(
+Terminate the mesh creation (*for internal use only*).
+        )" )
+
+        .def( "_addGroupsOfNodes", &BaseMesh::addGroupsOfNodes, R"(
+Add groups of nodes (*for internal use only*).
+
+Arguments:
+    names (str): Groups names.
+    groupsOfNodes (list[list[int]]): List of nodes indexes for each group.
+        )",
+              py::arg( "names" ), py::arg( "groupsOfNodes" ) )
+
+        .def( "_addGroupsOfCells", &BaseMesh::addGroupsOfCells, R"(
+Add groups of cells (*for internal use only*).
+
+Arguments:
+    name (str): Groups names.
+    groupsOfCells (list[list[int]]): List of cells indexes for each group.
+        )",
+              py::arg( "names" ), py::arg( "groupsOfCells" ) )
+
+        .def( "show", &BaseMesh::show, R"(
+Show mesh informations.
+
+Arguments:
+    verbosity (int): Verbosity level (default: 1)
+        )",
+              py::arg( "verbosity" ) = 1 )
+
+        .def( "check", &BaseMesh::check, R"(
+Check some properties of the mesh.
+
+Arguments:
+    tolerance (float): Tolerance used to detect flat cells.
+        )",
+              py::arg( "tolerance" ) );
 };

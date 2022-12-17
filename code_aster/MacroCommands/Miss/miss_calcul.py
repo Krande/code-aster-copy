@@ -38,15 +38,14 @@ import socket
 import traceback
 from math import cos, pi, sin
 
-import numpy as NP
-
 import aster
+import numpy as NP
 
 from ...Cata.Syntax import _F
 from ...Commands import IMPR_MACR_ELEM, MACR_ELEM_DYNA
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Messages import UTMESS
-from ...Utilities import ASTER_TIMER, ExecutionParameter
+from ...Utilities import ExecutionParameter, Timer
 from ...Utilities.misc import _print, _printDBG, decode_str, encode_str, send_file, set_debug
 from ...Utilities.mpi_utils import MPI
 from ...Utilities.System import ExecCommand
@@ -90,7 +89,7 @@ class CalculMiss(object):
         if self.verbose:
             _print("Paramètres du calcul", self.param)
         if self.debug:
-            self.timer = ASTER_TIMER()
+            self.timer = Timer()
             set_debug(True)
 
     def run(self):

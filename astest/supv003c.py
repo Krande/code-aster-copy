@@ -30,12 +30,10 @@ try:
 except AsterError as exc:
     assert False, "no exception should be thrown."
 
-print("Checking translation of AsterErrorCpp as AsterError(Py) " "and catched as AsterError...")
+print("Checking translation of AsterErrorCpp as AsterError(Py) and catched as AsterError...")
 try:
     raiseAsterError("SUPERVIS_2")
-    assert False, (
-        "This line should not be reached as an exception should " "have been thrown by now."
-    )
+    assert False, "This line should not be reached as an exception should have been thrown by now."
 except AsterError as exc:
     test.assertEqual(exc.id_message, "SUPERVIS_2")
 
@@ -43,12 +41,10 @@ with test.assertRaisesRegex(AsterError, "commandes DEBUT et POURSUITE"):
     raiseAsterError("SUPERVIS_2")
 
 
-print("Checking translation of AsterErrorCpp as AsterError(Py) " "and catched as Exception...")
+print("Checking translation of AsterErrorCpp as AsterError(Py) and catched as Exception...")
 try:
     raiseAsterError("SUPERVIS_2")
-    assert False, (
-        "This line should not be reached as an exception should " "have been thrown by now."
-    )
+    assert False, "This line should not be reached as an exception should have been thrown by now."
 except Exception as exc:
     test.assertEqual(exc.id_message, "SUPERVIS_2")
 
@@ -56,23 +52,18 @@ with test.assertRaisesRegex(Exception, "commandes DEBUT et POURSUITE"):
     raiseAsterError("SUPERVIS_2")
 
 
-print("Checking AsterErrorCpp thrown from C++ methods " "and catched as AsterError...")
+print("Checking AsterErrorCpp thrown from C++ methods and catched as AsterError...")
 mesh = code_aster.Mesh()
 try:
-    mesh.readMedFile("xxxx.mmed")
+    mesh.readAsterFile("fort.18")
 except AsterError as exc:
-    test.assertEqual(exc.id_message, "PREPOST3_10")
+    test.assertEqual(exc.id_message, "MODELISA_1")
 
-with test.assertRaisesRegex(AsterError, "mauvaise version de HDF"):
-    mesh = code_aster.Mesh()
-    mesh.readMedFile("xxxx.mmed")
-
-
-print("Checking AsterErrorCpp thrown from Fortran operator " "and catched as AsterError...")
+print("Checking AsterErrorCpp thrown from Fortran operator and catched as AsterError...")
 try:
-    LIRE_MAILLAGE(UNITE=55)
+    LIRE_MAILLAGE(UNITE=55, FORMAT="ASTER")
 except AsterError as exc:
-    test.assertEqual(exc.id_message, "PREPOST3_10")
+    test.assertEqual(exc.id_message, "MODELISA4_93")
 
 
 test.printSummary()

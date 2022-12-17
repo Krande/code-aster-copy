@@ -122,9 +122,9 @@ MAIL = DEFI_GROUP(
     reuse=MAIL,
     MAILLAGE=MAIL,
     CREA_GROUP_MA=(
-        _F(NOM="M20", MAILLE="M20"),
-        _F(NOM="SM1", MAILLE="SM1"),
-        _F(NOM="M19", MAILLE="M19"),
+        _F(NOM="M20", MAILLE="M23"),
+        _F(NOM="SM1", MAILLE="SM4"),
+        _F(NOM="M19", MAILLE="M22"),
     ),
     CREA_GROUP_NO=(_F(NOM="N1", NOEUD="N1"),),
 )

@@ -91,7 +91,7 @@ for i in range(2):
     TEST_TABLE(
         TABLE=GLOC1[i],
         NOM_PARA="G",
-        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N403"),
+        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N373"),
         VALE_CALC=11.670526365696219,
         VALE_REFE=1.158648e01,
         PRECISION=0.04,
@@ -101,7 +101,7 @@ for i in range(2):
     TEST_TABLE(
         TABLE=GLOC1[i],
         NOM_PARA="G",
-        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2862"),
+        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N2670"),
         VALE_CALC=11.659585537818089,
         VALE_REFE=1.158648e01,
         PRECISION=0.01,
@@ -111,7 +111,7 @@ for i in range(2):
     TEST_TABLE(
         TABLE=GLOC1[i],
         NOM_PARA="G",
-        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N375"),
+        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N345"),
         VALE_CALC=11.651202347308148,
         VALE_REFE=1.158648e01,
         PRECISION=0.035,
@@ -121,7 +121,7 @@ for i in range(2):
     TEST_TABLE(
         TABLE=GLOC1[i],
         NOM_PARA="G",
-        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N292"),
+        FILTRE=_F(NOM_PARA="NOEUD", VALE_K="N277"),
         VALE_CALC=11.668932871514919,
         VALE_REFE=1.158648e01,
         PRECISION=0.04,
@@ -148,7 +148,4 @@ for i in range(2):
         REFERENCE="ANALYTIQUE",
     )
 
-
 FIN()
-#
-#

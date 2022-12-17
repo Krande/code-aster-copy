@@ -27,7 +27,7 @@ No external import of other :py:mod:`code_aster` packages.
 
 from collections import defaultdict
 
-from .as_timer import ASTER_TIMER
+from .as_timer import Timer
 from .base_utils import (
     ReadOnlyDict,
     Singleton,

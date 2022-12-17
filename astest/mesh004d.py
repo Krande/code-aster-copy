@@ -31,7 +31,7 @@ test = code_aster.TestCase()
 rank = code_aster.MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh = code_aster.ParallelMesh()
-pMesh.readMedFile("mesh004b/%d.med" % rank, True)
+pMesh.readMedFile("mesh004b/%d.med" % rank, partitioned=True)
 # MAIL.debugPrint()
 
 MATER = DEFI_MATERIAU(THER=_F(LAMBDA=6.0e9, RHO_CP=1.0))

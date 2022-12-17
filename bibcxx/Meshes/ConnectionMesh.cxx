@@ -527,7 +527,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     }
     connectivitiesGathered.clear();
 
-    /* Add group of nodes */
+    /* Add group of cells */
     if ( groupsOfCellsToFind.size() > 0 ) {
         _groupsOfCells->allocateSparseNamed( groupsOfCellsToFind.size() );
 

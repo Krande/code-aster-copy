@@ -118,7 +118,7 @@ TEST_RESU(
             NOM_CMP="DEPV",
             VALE_CALC=9.9999999999999995e-07,
             CRITERE="ABSOLU",
-            MAILLE="MRM1",
+            MAILLE="MRM41",
         ),
     )
 )

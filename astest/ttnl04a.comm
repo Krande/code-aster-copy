@@ -21,69 +21,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
-MAIL = DEFI_GROUP(
-    reuse=MAIL,
-    MAILLAGE=MAIL,
-    CREA_GROUP_NO=(
-        _F(GROUP_MA="LTH1"),
-        _F(GROUP_MA="LTH2"),
-        _F(GROUP_MA="LTH3"),
-        _F(GROUP_MA="LRAY"),
-        # ON CREE LES GROUPES DE NOEUDS POUR LE REAJUSTAGE DE LA
-        # 2EME COUCHE ADBSSO2 ET POUR LE CALCUL DES FLUX LFLX.
-        _F(
-            NOM="ADBSSO2",
-            NOEUD=(
-                "N179",
-                "N194",
-                "N195",
-                "N214",
-                "N217",
-                "N220",
-                "N239",
-                "N242",
-                "N261",
-                "N264",
-                "N281",
-                "N284",
-                "N287",
-                "N297",
-                "N300",
-                "N303",
-                "N310",
-                "N313",
-                "N319",
-                "N322",
-                "N326",
-                "N329",
-                "N316",
-                "N315",
-                "N299",
-                "N282",
-                "N283",
-                "N262",
-                "N263",
-                "N240",
-                "N241",
-                "N215",
-                "N216",
-                "N192",
-                "N193",
-                "N178",
-            ),
-        ),
-    ),
-    CREA_GROUP_MA=(
-        _F(
-            NOM="LRAY_Q",
-            MAILLE=("M695", "M696", "M697", "M698", "M699", "M700", "M701", "M702", "M703"),
-        ),
-        _F(NOM="LRAY_F", MAILLE=("M704", "M705", "M706", "M707", "M708", "M709", "M710")),
-        _F(NOM="LRAY_Q2", MAILLE=("M695", "M696", "M697", "M698", "M699", "M700", "M701", "M702")),
-        _F(NOM="LRAY_F2", MAILLE=("M704", "M705", "M706", "M707", "M708", "M709", "M710", "M703")),
-    ),
-)
-
 BEINOX = DEFI_FONCTION(
     NOM_PARA="TEMP",
     VALE=(0.00e0, 0.000, 7.00e2, 2.979, 1.37e3, 6.232, 1.40e3, 8.184, 1.45e3, 8.444),
@@ -524,4 +461,3 @@ TEST_RESU(
 )
 
 FIN()
-#

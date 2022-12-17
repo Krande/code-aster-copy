@@ -30,7 +30,7 @@ nProc = MPI.ASTER_COMM_WORLD.Get_size()
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("mesh004c/%d.med" % rank, True)
+pMesh2.readMedFile("mesh004c/%d.med" % rank, partitioned=True)
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh2,

@@ -48,8 +48,17 @@ void DEFSSPPP( ADDGRPNO, addgrpno, const char *, STRING_SIZE, const char *, STRI
 #define CALLO_CARGEO( a ) CALLO( CARGEO, cargeo, a )
 void DEFS( CARGEO, cargeo, const char *, STRING_SIZE );
 
+#define CALLO_INFOMA( a, b ) CALLOP( INFOMA, infoma, a, b )
+void DEFSP( INFOMA, infoma, const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_CHCKMA( a, b ) CALLOP( CHCKMA, chckma, a, b )
+void DEFSP( CHCKMA, chckma, const char *, STRING_SIZE, ASTERDOUBLE * );
+
 #define CALLO_LRMJOI_WRAP( a, b ) CALLOO( LRMJOI_WRAP, lrmjoi_wrap, a, b )
 void DEFSS( LRMJOI_WRAP, lrmjoi_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_LRM_CLEAN_JOINT( a, b ) CALLOP( LRM_CLEAN_JOINT, lrm_clean_joint, a, b )
+void DEFSP( LRM_CLEAN_JOINT, lrm_clean_joint, const char *, STRING_SIZE, ASTERINTEGER * );
 
 #define CALL_MDNOMA( a, b, c, d ) CALLSPSP( MDNOMA, mdnoma, a, b, c, d )
 extern void DEFSPSP( MDNOMA, mdnoma, char *, STRING_SIZE, ASTERINTEGER *, char *, STRING_SIZE,
@@ -69,6 +78,11 @@ extern void DEFSS( GET_MED_TYPES, get_med_types, const char *, STRING_SIZE, cons
     CALLOO( GET_MED_CONNECTIVITY, get_med_connectivity, a, b )
 extern void DEFSS( GET_MED_CONNECTIVITY, get_med_connectivity, const char *, STRING_SIZE,
                    const char *, STRING_SIZE );
+
+#define CALLO_FILL_SPARSE_NAMED( a, b, c, d )                                                      \
+    CALLOOOO( FILL_SPARSE_NAMED, fill_sparse_named, a, b, c, d )
+extern void DEFSSSS( FILL_SPARSE_NAMED, fill_sparse_named, const char *, STRING_SIZE, const char *,
+                     STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALL_CNCINV( a, b, c, d, e ) CALLSPPSS( CNCINV, cncinv, a, b, c, d, e )
 #define CALLO_CNCINV( a, b, c, d, e ) CALLOPPOO( CNCINV, cncinv, a, b, c, d, e )

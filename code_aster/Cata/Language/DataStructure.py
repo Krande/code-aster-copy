@@ -134,12 +134,12 @@ class PythonVariable(UserDict, DataStructure):
 
     def __lt__(self, other):
         """Comparison will be relevant when it will become a Variable"""
-        warnings.warn("Comparing 'PythonVariable' may return unexpected " "results", RuntimeWarning)
+        warnings.warn("Comparing 'PythonVariable' may return unexpected results", RuntimeWarning)
         return True
 
     def __gt__(self, other):
         """Comparison will be relevant when it will become a Variable"""
-        warnings.warn("Comparing 'PythonVariable' may return unexpected " "results", RuntimeWarning)
+        warnings.warn("Comparing 'PythonVariable' may return unexpected results", RuntimeWarning)
         return True
 
     def __repr__(self):

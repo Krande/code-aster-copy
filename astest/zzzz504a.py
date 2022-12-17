@@ -38,7 +38,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 if parallel:
     rank = MPI.ASTER_COMM_WORLD.Get_rank()
     pMesh2 = code_aster.ParallelMesh()
-    pMesh2.readMedFile(f"mesh004c/{rank}.med", True)
+    pMesh2.readMedFile(f"mesh004c/{rank}.med", partitioned=True)
     # os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
     # os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_par.txt " >> ~/.petscrc')
     # os.system('echo "-ksp_view_solution ascii:/tmp/sol_par.txt  " >> ~/.petscrc')

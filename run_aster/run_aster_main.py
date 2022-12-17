@@ -39,7 +39,7 @@ or:
 
     mpiexec -n 4 bin/run_aster path/to/file.export
 
-Using the first syntax, ``bin/run_aster`` re-runs with ``mpiexec`` itself using
+Using the first syntax, ``bin/run_aster`` re-runs itself with ``mpiexec`` using
 the second syntax (``mpiexec`` syntax is provided by the configuration, see
 :py:mod:`~run_aster.config`).
 
@@ -364,7 +364,7 @@ def main(argv=None):
             run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
             expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
             statfile = osp.join(expdir, "__status__")
-            basn = osp.basename(osp.splitext(export.filename)[0])
+            basn = osp.basename(osp.splitext(args.file)[0])
             expected = export.get("expected_diag", [])
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, basn + "." + str(exp_i.get("step")))

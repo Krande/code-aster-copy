@@ -19,11 +19,15 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
+import os
+import os.path as osp
+
 from ..Helpers import FileAccess, LogicalUnitFile
-from ..Objects import Mesh, ParallelMesh
-from ..Utilities import haveMPI
-from ..Supervis import ExecuteCommand
 from ..Messages import UTMESS
+from ..Objects import Mesh, ParallelMesh
+from ..Supervis import ExecuteCommand
+from ..Utilities import haveMPI
+
 from .pre_gibi import PRE_GIBI
 from .pre_gmsh import PRE_GMSH
 from .pre_ideas import PRE_IDEAS
@@ -81,20 +85,31 @@ class MeshReader(ExecuteCommand):
             coul = keywords.pop("CREA_GROUP_COUL", "NON")
             PRE_IDEAS(UNITE_IDEAS=unit, UNITE_MAILLAGE=unit_op, CREA_GROUP_COUL=coul)
 
-        if self._result.isParallel():
-            filename = LogicalUnitFile.filename_from_unit(unit)
-            self._result.readMedFile(filename, partitioned=False, verbose=keywords["INFO_MED"] - 1)
-        else:
-            if keywords["FORMAT"] == "MED" and keywords["PARTITIONNEUR"] == "PTSCOTCH":
-                assert not haveMPI()
-                UTMESS("A", "MED_18")
-
+        assert keywords["FORMAT"] in ("ASTER", "MED")
+        if keywords["FORMAT"] == "ASTER":
             if fmt in need_conversion:
                 tmpfile.release()
-
             keywords["UNITE"] = unit_op
-
             super().exec_(keywords)
+            return
+
+        meshname = keywords.get("NOM_MED")
+        verbose = keywords["INFO"]
+        if keywords.get("INFO_MED", 0):
+            # cheat code for debugging and detailed time informations
+            verbose |= 4
+        if self._result.isParallel():
+            filename = LogicalUnitFile.filename_from_unit(unit)
+            self._result.readMedFile(filename, meshname, partitioned=False, verbose=verbose)
+        else:
+            if keywords["PARTITIONNEUR"] == "PTSCOTCH":
+                assert not haveMPI()
+                UTMESS("A", "MED_18")
+            filename = LogicalUnitFile.filename_from_unit(unit)
+            self._result.readMedFile(filename, meshname, verbose=verbose)
+
+        if keywords["VERI_MAIL"]["VERIF"] == "OUI":
+            self._result.check(keywords["VERI_MAIL"]["APLAT"])
 
     def post_exec(self, keywords):
         """Execute the command.

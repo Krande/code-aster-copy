@@ -28,7 +28,6 @@ import aster
 from ..Commands import CREA_MAILLAGE
 from ..Objects import Mesh, PythonBool
 from ..Objects.Serialization import InternalStateBuilder
-from ..Supervis import CO
 from ..Utilities import injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
@@ -57,7 +56,6 @@ class ExtendedMesh:
     buildDisk = classmethod(mesh_builder.buildDisk)
     buildCube = classmethod(mesh_builder.buildCube)
     buildCylinder = classmethod(mesh_builder.buildCylinder)
-    createFromMedCouplingMesh = classmethod(mesh_builder.createFromMedCouplingMesh)
 
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
@@ -81,6 +79,29 @@ class ExtendedMesh:
             dim = max([dimama[ma - 1] for ma in dic_gpma[grp]])
             ngpma.append((grp.strip(), len(dic_gpma[grp]), dim))
         return ngpma
+
+    def buildFromMedCouplingMesh(self, mcmesh, verbose=0):
+        """Build mesh from medcoupling mesh.
+
+        Arguments:
+            mcmesh (*medcoupling.MEDFileUMesh*): The MEDCoupling mesh.
+            verbose (int) : 0 - warnings
+                            1 - informations about main steps
+                            2 - informations about all steps
+        """
+        mesh_builder.buildFromMedCouplingMesh(self, mcmesh, verbose)
+
+    def readMedFile(self, filename, meshname=None, verbose=1):
+        """Read a MED file containing a mesh.
+
+        Arguments:
+            filename (string): name of the MED file
+            meshname (str): Name of the mesh to be read from file.
+            verbose (int) : 0 - warnings
+                            1 - informations about main steps
+                            2 - informations about all steps
+        """
+        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.

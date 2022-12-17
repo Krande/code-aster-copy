@@ -39,7 +39,7 @@ test = code_aster.TestCase()
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 POUTRE0 = code_aster.ParallelMesh()
-POUTRE0.readMedFile(osp.join(root, f"zzzz504v/{rank}.med"), True)
+POUTRE0.readMedFile(osp.join(root, f"zzzz504v/{rank}.med"), partitioned=True)
 
 DEFI_GROUP(reuse=POUTRE0, MAILLAGE=POUTRE0, CREA_GROUP_NO=_F(TOUT_GROUP_MA="OUI"))
 

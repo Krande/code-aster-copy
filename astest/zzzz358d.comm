@@ -98,148 +98,51 @@ MODMEX2 = MODI_MODELE_XFEM(MODELE_IN=MODMES, MODELE_THER=MODTHX1)
 # -> meca, avec mot-cle FISSURE     : MODMEX1
 # -> meca, avec mot-cle MODELE_THER : MODMEX2
 # -> ther, avec mot-cle FISSURE     : MODTHX1
-# ###################################################
-
-DEFI_FICHIER(UNITE=31, FICHIER="./fort.31")
-DEFI_FICHIER(UNITE=32, FICHIER="./fort.32")
-DEFI_FICHIER(UNITE=41, FICHIER="./fort.41")
-
-IMPR_CO(CONCEPT=_F(NOM=MODMEX1), NIVEAU=-1, UNITE=31, PERMUTATION="NON")
-IMPR_CO(CONCEPT=_F(NOM=MODMEX2), NIVEAU=-1, UNITE=32, PERMUTATION="NON")
-IMPR_CO(CONCEPT=_F(NOM=MODTHX1), NIVEAU=-1, UNITE=41, PERMUTATION="NON")
-
-DEFI_FICHIER(ACTION="LIBERER", UNITE=31)
-DEFI_FICHIER(ACTION="LIBERER", UNITE=32)
-DEFI_FICHIER(ACTION="LIBERER", UNITE=41)
-
-# ###################################################
+#
 # "Post-traitements" des fichiers obtenus avec IMPR_CO
-# ###################################################
 
-File31 = open("./fort.31", "r")
-File32 = open("./fort.32", "r")
-File41 = open("./fort.41", "r")
+# On veut comparer que les objets issus de MODI_MODELE_XFEM sont semblables.
+# On filtre les lignes fournies par UTIMSD contenant des valeurs (.VALE/.CELV).
+# On compare la somme de contrôle (SOMMI ou SOMMR).
 
-LinesFile31 = File31.readlines()
-LinesFile32 = File32.readlines()
-LinesFile41 = File41.readlines()
+import code_aster
 
-LinesFile31 = [line.replace("00000008", "0000008 ") for line in LinesFile31]
-LinesFile32 = [line.replace("0000000a", "000000a ") for line in LinesFile32]
-LinesFile41 = [line.replace("00000009", "0000009 ") for line in LinesFile41]
 
-LinesFile31 = [line.split() for line in LinesFile31]
-LinesFile32 = [line.split() for line in LinesFile32]
-LinesFile41 = [line.split() for line in LinesFile41]
-n31 = len(LinesFile31)
-n32 = len(LinesFile32)
-n41 = len(LinesFile41)
+def getVALE(model, debug=False):
+    """Extract relevant lines from UTIMSD about values."""
+    from code_aster.Helpers import LogicalUnitFile
 
-File31.close()
-File32.close()
-File41.close()
+    tmpfile = LogicalUnitFile.new_free()
+    IMPR_CO(CONCEPT=_F(NOM=model), NIVEAU=-1, UNITE=tmpfile.unit, PERMUTATION="NON")
 
-ListM1 = []
-ListM2 = []
-ListT1 = []
+    with open(tmpfile.filename, "r") as fsd:
+        lines = fsd.readlines()
+        vale = []
+        for line in lines:
+            line = line.replace(model.getName(), "obj_name")
+            spl = line.split("|")
+            if len(spl) < 2:
+                continue
+            if ".VALE" in spl[1] or ".CELV" in spl[1]:
+                vale.append(spl[1] + " | " + spl[-1])
+    if debug:
+        print(">>>", model.getName(), "<<<")
+        print("".join(vale))
+    return vale
 
-for il in range(n31):
-    lF31 = LinesFile31[il]
-    if "&&UTIMSD" in lF31:
-        ind = lF31.index("0000008")
-        lF31[ind] = ""
-        for char in lF31:
-            if (".CELV" in char) or (".VALE" in char):
-                ListM1.append(lF31)
-                break
-for il in range(n32):
-    lF32 = LinesFile32[il]
-    if "&&UTIMSD" in lF32:
-        ind = lF32.index("000000a")
-        lF32[ind] = ""
-        for char in lF32:
-            if (".CELV" in char) or (".VALE" in char):
-                ListM2.append(lF32)
-                break
-for il in range(n41):
-    lF41 = LinesFile41[il]
-    if "&&UTIMSD" in lF41:
-        ind = lF41.index("0000009")
-        lF41[ind] = ""
-        for char in lF41:
-            if (".CELV" in char) or (".VALE" in char):
-                ListT1.append(lF41)
-                break
 
-# assert len(ListM2) == len(ListM1)
-# for i in range(len(ListM2)):
-# print ListM2[i] == ListM1[i]
-# print ListM2[i]
-# print ListM1[i]
-# print "&&"
+valMEX1 = getVALE(MODMEX1, debug=False)
+valMEX2 = getVALE(MODMEX2, debug=False)
+valTHX1 = getVALE(MODTHX1, debug=False)
 
-# assert len(ListM2) == len(ListT1)
-# for i in range(len(ListM2)):
-# print ListM2[i] == ListT1[i]
-# print ListM2[i]
-# print ListT1[i]
-# print "&&"
+test = code_aster.TestCase()
 
-# ###################################################
-# Tests une fois les infos extraites de ces fichiers
-# ###################################################
+test.assertEqual(len(valMEX1), len(valMEX2), msg="size of valMEX1/valMEX2")
+test.assertEqual(len(valMEX1), len(valTHX1), msg="size of valMEX1/valTHX1")
 
-# -------
-# on retranche 1 au nombre d'objets trouves dans MODMEX2
-# car en presence du mot cle MODELE_THER, l'operateur
-# MODI_MODELE_XFEM ajoute dans la sd modele_xfem l'objet
-# facultatif MODELE_THER
-# -------
-n32 -= 1
+test.assertSequenceEqual(valMEX1, valMEX2, msg="valMEX1 vs valMEX2")
+test.assertSequenceEqual(valMEX1, valTHX1, msg="valMEX1 vs valTHX1")
 
-# -------
-# nobj_ok == 1 si il y a le meme nombre de lignes dans les 2
-# fichiers, c.a.d le meme nombre d'objets dans les deux modeles
-# nobj_ok == 0 sinon
-# -------
-
-# -> entre MODMEX2 et MODMEX1
-nobj_ok = 0
-if (n32 == n31) and (n32 > 0):
-    nobj_ok = 1
-TOBJM2M1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
-
-# -> entre MODMEX2 et MODTHX1
-nobj_ok = 0
-if (n32 == n41) and (n32 > 0):
-    nobj_ok = 1
-TOBJM2T1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[nobj_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TOBJM2M1)
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TOBJM2T1)
-
-# -------
-# vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
-# ou .VALE contenus dans les deux modeles sont identiques
-# (au nom du modele pres)
-# vale_ok == 0 sinon
-# -------
-
-# -> entre MODMEX2 et MODMEX1
-vale_ok = 0
-if (ListM2 == ListM1) and (ListM2 != []):
-    vale_ok = 1
-TVALM2M1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
-
-# -> entre MODMEX2 et MODTHX1
-vale_ok = 0
-if (ListM2 == ListT1) and (ListM2 != []):
-    vale_ok = 1
-TVALM2T1 = CREA_TABLE(TITRE="", LISTE=_F(LISTE_I=[vale_ok], PARA="BOOLEEN"))
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TVALM2M1)
-
-TEST_TABLE(REFERENCE="ANALYTIQUE", VALE_CALC_I=1, VALE_REFE_I=1, NOM_PARA="BOOLEEN", TABLE=TVALM2T1)
+test.printSummary()
 
 FIN()

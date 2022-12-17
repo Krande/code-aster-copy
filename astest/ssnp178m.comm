@@ -40,7 +40,7 @@ unite = DEFI_FICHIER(
 IMPR_RESU(FORMAT="MED", UNITE=unite, RESU=_F(MAILLAGE=mesh0))
 DEFI_FICHIER(UNITE=unite, ACTION="LIBERER")
 mesh = code_aster.ParallelMesh()
-mesh.readMedFile("./REPE_OUT/mesh_%d.med" % rank, True)
+mesh.readMedFile("./REPE_OUT/mesh_%d.med" % rank, partitioned=True)
 
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh, ORIE_PEAU=_F(GROUP_MA_PEAU=("Encast", "load")))

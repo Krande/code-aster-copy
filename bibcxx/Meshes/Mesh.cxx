@@ -31,17 +31,17 @@
 #include "Utilities/Tools.h"
 
 bool Mesh::readAsterFile( const std::string &fileName ) {
-    readMeshFile( fileName, "ASTER" );
+    readMeshFile( fileName, "ASTER", 0 );
     return true;
 }
 
 bool Mesh::readGibiFile( const std::string &fileName ) {
-    readMeshFile( fileName, "GIBI" );
+    readMeshFile( fileName, "GIBI", 0 );
     return true;
 }
 
 bool Mesh::readGmshFile( const std::string &fileName ) {
-    readMeshFile( fileName, "GMSH" );
+    readMeshFile( fileName, "GMSH", 0 );
     return true;
 }
 

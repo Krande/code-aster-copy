@@ -49,7 +49,7 @@ with shared_tmpdir("mesh002v_") as tmpdir:
     ms.addPO1(verbose=True)
 
     pMesh2 = code_aster.ParallelMesh()
-    pMesh2.readMedFile(os.path.join(tmpdir, f"sdlx400b_new_{rank}.med"), True)
+    pMesh2.readMedFile(os.path.join(tmpdir, f"sdlx400b_new_{rank}.med"), partitioned=True)
 
 
 # STD Mesh for comparaison

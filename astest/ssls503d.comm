@@ -36,10 +36,10 @@ MA = DEFI_GROUP(
     reuse=MA,
     MAILLAGE=MA,
     CREA_GROUP_MA=(
-        _F(NOM="MA1", MAILLE="MA1"),
-        _F(NOM="MA6", MAILLE="MA6"),
-        _F(NOM="MA31", MAILLE="MA31"),
-        _F(NOM="MA36", MAILLE="MA36"),
+        _F(NOM="MA1", MAILLE="M1"),
+        _F(NOM="MA6", MAILLE="M6"),
+        _F(NOM="MA31", MAILLE="M31"),
+        _F(NOM="MA36", MAILLE="M36"),
     ),
 )
 

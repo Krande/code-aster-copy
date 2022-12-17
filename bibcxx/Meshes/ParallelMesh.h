@@ -46,6 +46,7 @@ class ParallelMesh : public BaseMesh {
     typedef SetOfString::iterator SetOfStringIter;
     typedef SetOfString::const_iterator SetOfStringCIter;
 
+  protected:
     /** @brief All groups of nodes (parallel mesh) */
     NamesMapChar24 _globalGroupOfNodes;
     /** @brief Set of all groups of nodes (parallel mesh) */
@@ -195,12 +196,6 @@ class ParallelMesh : public BaseMesh {
     virtual bool isParallel() const { return true; };
 
     /**
-     * @brief Read a MED ParallelMesh file (already partitioned mesh)
-     * @return retourne true si tout est ok
-     */
-    bool readPartitionedMedFile( const std::string &fileName );
-
-    /**
      * @brief Get the local number of a node from its local number
      * @return Return the local number if the node if present on the subdomain ;
      * otherwise raise an exception
@@ -212,6 +207,12 @@ class ParallelMesh : public BaseMesh {
     bool updateGlobalGroupOfCells( void );
 
     bool build();
+
+    /* Mesh builder functions */
+    void create_joints( const VectorLong &domains, const VectorLong &globalNumbering,
+                        const VectorLong &nodesOwner, const VectorOfVectorsLong &joints );
+
+    void endDefinition();
 };
 
 /**

@@ -175,7 +175,7 @@ RESU2 = DYNA_NON_LINE(
             NOM_CHAM="SIEF_ELGA",
             NOM_CMP=("SIXX",),
             LIST_INST=LARCH,
-            MAILLE=("M3", "M4"),
+            MAILLE=("M23", "M24"),
             EVAL_CHAM="VALE",
             EVAL_ELGA="MIN",
         ),
@@ -183,7 +183,7 @@ RESU2 = DYNA_NON_LINE(
     CONVERGENCE=_F(ITER_GLOB_MAXI=0),
 )
 
-IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=RESU2, NOM_CHAM="SIEF_ELGA", MAILLE=("M3", "M4")))
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=RESU2, NOM_CHAM="SIEF_ELGA", MAILLE=("M23", "M24")))
 
 TAB = RECU_TABLE(CO=RESU2, NOM_TABLE="OBSERVATION")
 IMPR_TABLE(TABLE=TAB)
@@ -192,7 +192,7 @@ TEST_TABLE(
     VALE_CALC=1.553291910e06,
     NOM_PARA="VALE",
     TABLE=TAB,
-    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M4"), _F(NOM_PARA="INST", VALE=1.20000e-03)),
+    FILTRE=(_F(NOM_PARA="MAILLE", VALE_K="M24"), _F(NOM_PARA="INST", VALE=1.20000e-03)),
 )
 
 
@@ -295,7 +295,7 @@ TEST_RESU(
             VALE_CALC=3.42675931e-05,
             VALE_REFE=3.3367562177729472e-05,
             PRECISION=0.05,
-            MAILLE="M1",
+            MAILLE="M21",
         ),
         _F(
             INST=1.2e-3,
@@ -307,7 +307,7 @@ TEST_RESU(
             VALE_CALC=1.50366198e05,
             VALE_REFE=1.4641686283587693e5,
             PRECISION=0.05,
-            MAILLE="M1",
+            MAILLE="M21",
         ),
         _F(
             INST=1.2e-3,
@@ -319,7 +319,7 @@ TEST_RESU(
             VALE_CALC=2.576343849,
             VALE_REFE=2.4427868872721055,
             PRECISION=0.1,
-            MAILLE="M1",
+            MAILLE="M21",
         ),
         _F(
             INST=1.2e-3,
@@ -331,7 +331,7 @@ TEST_RESU(
             VALE_CALC=2.576343849,
             VALE_REFE=2.4427868872721055,
             PRECISION=0.1,
-            MAILLE="M1",
+            MAILLE="M21",
         ),
         _F(
             INST=1.2e-3,
@@ -343,7 +343,7 @@ TEST_RESU(
             VALE_CALC=2.576343852,
             VALE_REFE=2.4427868872721055,
             PRECISION=0.1,
-            MAILLE="M1",
+            MAILLE="M21",
         ),
         _F(
             INST=1.2e-3,
@@ -356,7 +356,7 @@ TEST_RESU(
             VALE_REFE=0.0,
             CRITERE="ABSOLU",
             PRECISION=1.0e-13,
-            MAILLE="M1",
+            MAILLE="M21",
         ),
     )
 )

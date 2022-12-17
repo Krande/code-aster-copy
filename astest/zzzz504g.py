@@ -28,7 +28,7 @@ code_aster.init("--test")
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile("zzzz504c/%d.med" % rank, True)
+pMesh2.readMedFile("zzzz504c/%d.med" % rank, partitioned=True)
 
 model = AFFE_MODELE(
     MAILLAGE=pMesh2, AFFE=_F(MODELISATION="D_PLAN", PHENOMENE="MECANIQUE", TOUT="OUI")

@@ -48,8 +48,8 @@ DEFI_GROUP(
     reuse=MAIL,
     MAILLAGE=MAIL,
     CREA_GROUP_MA=(
-        _F(NOM="GM2", MAILLE=("M2",)),
-        _F(NOM="GM89", MAILLE=("M8", "M9")),
+        _F(NOM="GM2", MAILLE=("M14",)),
+        _F(NOM="GM89", MAILLE=("M20", "M21")),
         _F(NOM="GMS2", DIFFE=("CARRE", "GM2")),
         _F(NOM="GMS89", DIFFE=("CARRE", "GM89")),
     ),
@@ -172,9 +172,9 @@ U2_2 = STAT_NON_LINE(
 # ------------------------------
 TEST_RESU(
     OBJET=(
-        _F(VALE_CALC=4.1698896080000001, NOM="00000008.001.000005.VALE"),
-        _F(VALE_CALC=8.9899605359999999, NOM="0000000b.001.000002.VALE"),
-        _F(VALE_CALC=8.9899605359999999, NOM="0000000f.001.000002.VALE"),
+        _F(VALE_CALC=4.1698896080000001, NOM=U1.getName() + ".001.000005.VALE"),
+        _F(VALE_CALC=8.9899605359999999, NOM=U2_1.getName() + ".001.000002.VALE"),
+        _F(VALE_CALC=8.9899605359999999, NOM=U2_2.getName() + ".001.000002.VALE"),
     )
 )
 
@@ -204,11 +204,11 @@ DEFI_FICHIER(ACTION="LIBERER", UNITE=50)
 
 TEST_FICHIER(
     FICHIER="./REPE_OUT/zzzz258a.pos",
-    NB_VALE_I=199,
-    VALE_CALC_I=885874,
-    NB_VALE=33,
-    VALE_CALC=31.03,
-    VALE_CALC_K="7cf4febebf25e1e397db2ea29e30e226",
+    NB_VALE_I=197,
+    VALE_CALC_I=2039,
+    NB_VALE=32,
+    VALE_CALC=16.0,
+    VALE_CALC_K="a87f41c8ae18a24c97b9f21d5c0f692e",
 )
 
 # 3.2 : Pour valider l'orientation du pourtour, on utilise MACR_LIGN_COUP :

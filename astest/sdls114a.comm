@@ -215,7 +215,7 @@ TEST_TABLE(
     NOM_PARA="VALE_R",
     FILTRE=(
         _F(NOM_PARA="NOM_CHAM", VALE_K="FORC_NODA"),
-        _F(NOM_PARA="NOEUD", VALE_K="NO2797"),
+        _F(NOM_PARA="NOEUD", VALE_K="N2797"),
         _F(NOM_PARA="NOM_CMP", VALE_K="DX"),
     ),
 )
@@ -226,7 +226,7 @@ TEST_TABLE(
     NOM_PARA="VALE_R",
     FILTRE=(
         _F(NOM_PARA="NOM_CHAM", VALE_K="FORC_NODA"),
-        _F(NOM_PARA="NOEUD", VALE_K="NO2798"),
+        _F(NOM_PARA="NOEUD", VALE_K="N2798"),
         _F(NOM_PARA="NOM_CMP", VALE_K="DY"),
     ),
 )

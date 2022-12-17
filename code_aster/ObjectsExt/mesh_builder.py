@@ -31,25 +31,40 @@ The functions are exposed as class-method in the :py:class:`Mesh` class.
 """
 
 
-from ..Commands import MACR_ADAP_MAIL, CREA_MAILLAGE
-from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
-from ..Objects import Mesh
-from ..Supervis import CO
 import tempfile
-from math import sqrt, cos, sin, pi
+from math import cos, pi, sin, sqrt
+
+from ..Commands import CREA_MAILLAGE, MACR_ADAP_MAIL
+from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
+from ..Supervis import CO
+from .medctoaster import MEDCouplingMeshHelper
 
 
-def createFromMedCouplingMesh(cls, mcmesh):
-    """Build mesh from medcoupling mesh
+def buildFromMedCouplingMesh(mesh, mcmesh, verbose=0):
+    """Build mesh from medcoupling mesh.
+
     Arguments:
-       mcmesh [MEDFileUMesh] : the medcoupling mesh
+        mesh (Mesh|ParallelMesh): The Mesh object to be filled.
+        mcmesh (*medcoupling.MEDFileUMesh*): The MEDCoupling mesh.
+        verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
     """
+    mreader = MEDCouplingMeshHelper()
+    mreader.setMedCouplingMesh(mcmesh)
+    mreader.buildMesh(mesh, verbose)
 
-    mesh = cls()
-    with tempfile.NamedTemporaryFile(mode="w+") as f:
-        mcmesh.write(f.name, 2)
-        mesh.readMedFile(f.name)
-    return mesh
+
+def buildFromMedFile(mesh, filename, meshname=None, verbose=0):
+    """Build mesh from a MED file.
+
+    Arguments:
+        mesh (Mesh|ParallelMesh): The Mesh object to be filled.
+        filename (str): Path of the MED file.
+        meshname (str): Name of the mesh to be read from file.
+        verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
+    """
+    mreader = MEDCouplingMeshHelper()
+    mreader.readMedFile(filename, meshname)
+    mreader.buildMesh(mesh, verbose)
 
 
 def buildSquare(cls, lx=1, ly=1, refine=0, info=1):
@@ -113,7 +128,7 @@ def buildDisk(cls, radius=1, refine=0, info=1):
 
     # Definition of the boundary mesh
     nSeg2 = 400
-    sNodes = u"TITRE\nBORD\nFINSF\nCOOR_3D\n"
+    sNodes = "TITRE\nBORD\nFINSF\nCOOR_3D\n"
     sNodes += "".join(
         [
             "N{} {} {} 0\n".format(
@@ -129,11 +144,11 @@ def buildDisk(cls, radius=1, refine=0, info=1):
     sNodes += "".join(["M{} \n".format(i) for i in range(nSeg2 + 1)])
     sNodes += "\nFINSF\nFIN\n"
 
-    border = Mesh()
-    with tempfile.NamedTemporaryFile(mode="w+") as f:
-        f.file.write(sNodes)
-        f.file.seek(0)
-        border.readAsterFile(f.name)
+    border = cls()
+    with tempfile.NamedTemporaryFile(mode="w+") as fobj:
+        fobj.file.write(sNodes)
+        fobj.file.seek(0)
+        border.readAsterFile(fobj.name)
 
     # Mesh refinement
     newMesh = mesh

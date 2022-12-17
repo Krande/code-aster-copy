@@ -73,7 +73,7 @@ import re
 import sys
 import tempfile
 from glob import glob
-from subprocess import PIPE, run
+from subprocess import run
 
 from .config import CFG
 from .ctest2junit import XUnitReport

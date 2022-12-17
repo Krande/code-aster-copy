@@ -87,6 +87,8 @@ class MeshCoordinatesField : public DataField {
 
     bool exists() const { return _valuesList->exists(); };
 
+    void assign( const std::string &meshName, const JeveuxVectorReal &values );
+
     /**
      * @brief Shorthand + operator assignement
      * @return Updated field

@@ -44,18 +44,6 @@ void ParallelMesh::_buildGlobal2LocalMap() {
     }
 };
 
-bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
-    const bool ret = BaseMesh::readMedFile( fileName );
-
-    CALLO_LRMJOI_WRAP( getName(), fileName );
-
-    AS_ASSERT( updateGlobalGroupOfNodes() );
-    AS_ASSERT( updateGlobalGroupOfCells() );
-    AS_ASSERT( build() );
-
-    return ret;
-};
-
 bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
 
     _groupsOfNodes->build();
@@ -372,31 +360,7 @@ VectorLong ParallelMesh::getOuterCells() const {
 }
 
 bool ParallelMesh::build() {
-
-    const auto size = _listOfOppositeDomain->size();
-    if ( _joints.empty() && size > 0 ) {
-        CALL_JEMARQ();
-        _listOfOppositeDomain->updateValuePointer();
-
-        const std::string cadre( "G" );
-        const std::string error( "F" );
-
-        for ( ASTERINTEGER i = 0; i < size; i++ ) {
-            auto domdis = ( *_listOfOppositeDomain )[i];
-            std::string chdomdis( 4, ' ' );
-
-            CALLO_CODLET_WRAP( &domdis, cadre, chdomdis, error );
-            JeveuxVectorLong jointE( getName() + ".E" + chdomdis );
-            JeveuxVectorLong jointR( getName() + ".R" + chdomdis );
-
-            _joints[domdis] = std::make_pair( jointE, jointR );
-        }
-
-        CALL_JEDEMA();
-    }
-
     _buildGlobal2LocalMap();
-
     return BaseMesh::build();
 }
 
@@ -413,6 +377,49 @@ const ASTERINTEGER ParallelMesh::globalToLocalNodeId( const ASTERINTEGER glob ) 
                                  " not found on rank " + std::to_string( rank ) );
         return -1;
     }
+}
+
+void ParallelMesh::create_joints( const VectorLong &domains, const VectorLong &globalNumbering,
+                                  const VectorLong &nodesOwner,
+                                  const VectorOfVectorsLong &joints ) {
+    AS_ASSERT( joints.size() == 2 * domains.size() )
+
+    ( *_listOfOppositeDomain ) = domains;
+    ( *_globalNumbering ) = globalNumbering;
+    ( *_outerNodes ) = nodesOwner;
+    int i = 0;
+    for ( auto dom : domains ) {
+        std::ostringstream oss;
+        oss << std::hex << dom;
+
+        JeveuxVectorLong jointE( getName() + ".E." + oss.str() );
+        ( *jointE ) = joints[2 * i];
+
+        JeveuxVectorLong jointR( getName() + ".R." + oss.str() );
+        ( *jointR ) = joints[2 * i + 1];
+
+        _joints[dom] = std::make_pair( jointE, jointR );
+        ++i;
+    }
+
+    CALLO_LRM_CLEAN_JOINT( getName(), _outerNodes->getDataPtr() );
+
+    auto nbCells = getNumberOfCells();
+    _outerCells->allocate( nbCells, LONG_MAX );
+    const auto &connecExp = getConnectivityExplorer();
+    for ( int i = 0; i < nbCells; ++i ) {
+        const auto cell = connecExp[i];
+        for ( auto &node : cell ) {
+            ( *_outerCells )[i] = std::min( ( *_outerCells )[i], ( *_outerNodes )[node - 1] );
+        }
+    }
+}
+
+void ParallelMesh::endDefinition() {
+    BaseMesh::endDefinition();
+    AS_ASSERT( build() );
+    AS_ASSERT( updateGlobalGroupOfNodes() );
+    AS_ASSERT( updateGlobalGroupOfCells() );
 }
 
 #endif /* ASTER_HAVE_MPI */

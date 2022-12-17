@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine infoma(nomu)
+subroutine infoma(nomu, niv_)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -30,6 +30,7 @@ subroutine infoma(nomu)
 #include "asterfort/jexnum.h"
 !
     character(len=8) :: nomu
+    integer, optional :: niv_
 !
 !     IMPRESSION DES INFOS (1 OU 2)
 !
@@ -42,7 +43,7 @@ subroutine infoma(nomu)
     integer :: niv, ifm, nn, nbno, j, idec, iad1, nbcoor, nbma
     integer :: nbltit, iad, i, nbnoeu, nbmail, nbgrno, nbgrma
     integer :: nbmmai, n1, nbmmax, ityp
-    parameter (nbmmax=100)
+    parameter(nbmmax=100)
     integer :: dimmai(nbmmax), iret
     character(len=8) :: mclmai(nbmmax)
     integer, pointer :: typmail(:) => null()
@@ -72,28 +73,38 @@ subroutine infoma(nomu)
 !
 !
 !
-    call infniv(ifm, niv)
+    if (present(niv_)) then
+        ifm = 6
+        niv = niv_
+    else
+        call infniv(ifm, niv)
+    end if
 !
     call jeexin(grpmav, iret)
     if (iret .gt. 0) then
         call jelira(grpmav, 'NMAXOC', nbgrma)
     else
-        nbgrma=0
-    endif
+        nbgrma = 0
+    end if
     call jeexin(grpnov, iret)
     if (iret .gt. 0) then
         call jelira(grpnov, 'NMAXOC', nbgrno)
     else
-        nbgrno=0
-    endif
+        nbgrno = 0
+    end if
 !
 !
-    call jelira(titre, 'LONMAX', nbltit)
+    call jeexin(titre, iret)
+    if (iret .gt. 0) then
+        call jelira(titre, 'LONMAX', nbltit)
+    else
+        nbltit = 0
+    end if
     call jelira(nomnoe, 'NOMMAX', nbnoeu)
     call jelira(nommai, 'NOMMAX', nbmail)
     call jeveuo(nomu//'.DIME', 'L', vi=dime)
     call jeveuo(nomu//'.TYPMAIL', 'L', vi=typmail)
-    nbcoor=dime(6)
+    nbcoor = dime(6)
 !
 !
     call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbmmai)
@@ -102,9 +113,9 @@ subroutine infoma(nomu)
         call jenuno(jexnum('&CATA.TM.NOMTM', i), mclmai(i))
     end do
     do i = 1, nbmail
-        ityp=typmail(i)
-        ASSERT((ityp.gt.0).and.(ityp.lt.100))
-        dimmai(ityp)=dimmai(ityp)+1
+        ityp = typmail(i)
+        ASSERT((ityp .gt. 0) .and. (ityp .lt. 100))
+        dimmai(ityp) = dimmai(ityp)+1
     end do
 !
 !
@@ -113,71 +124,82 @@ subroutine infoma(nomu)
 ! -     ECRITURE DE L EN TETE
 ! ----------------------------------
     if (niv .ge. 1) then
-        write (ifm,802) nomu,niv
-        call jeveuo(titre, 'L', iad)
-        do i = 1, nbltit
-            write (ifm,801) zk80(iad+i-1)
-        end do
-        write (ifm,804) comnoe,nbnoeu
-        write (ifm,804) commai,nbmail
+        write (ifm, 802) nomu, niv
+        if (nbltit .gt. 0) then
+            call jeveuo(titre, 'L', iad)
+            do i = 1, nbltit
+                write (ifm, 801) zk80(iad+i-1)
+            end do
+        end if
+        write (ifm, 804) comnoe, nbnoeu
+        write (ifm, 804) commai, nbmail
         do i = 1, nbmmai
-            if (dimmai(i) .ne. 0) write (ifm,806) mclmai(i),dimmai(i)
+            if (dimmai(i) .ne. 0) write (ifm, 806) mclmai(i), dimmai(i)
         end do
 !
+        if (niv .lt. 2) then
+            if (nbgrno .ne. 0) then
+                write (ifm, 804) comgrn, nbgrno
+            end if
+            !
+            if (nbgrma .ne. 0) then
+                write (ifm, 804) comgrm, nbgrma
+            end if
+        end if
+    end if
+!
+!
+    if (niv .ge. 2) then
+!
         if (nbgrno .ne. 0) then
-            write (ifm,804) comgrn,nbgrno
+            write (ifm, 804) comgrn, nbgrno
             do i = 1, nbgrno
                 call jeexin(jexnum(grpnov, i), iret)
                 if (iret .eq. 0) goto 60
                 call jenuno(jexnum(grpnov, i), nom)
                 call jelira(jexnum(grpnov, i), 'LONUTI', n1)
-                write (ifm,808) nom,n1
- 60             continue
+                write (ifm, 808) nom, n1
+60              continue
             end do
-        endif
+        end if
 !
         if (nbgrma .ne. 0) then
-            write (ifm,804) comgrm,nbgrma
+            write (ifm, 804) comgrm, nbgrma
             do i = 1, nbgrma
                 call jeexin(jexnum(grpmav, i), iret)
                 if (iret .eq. 0) goto 70
                 call jenuno(jexnum(grpmav, i), nom)
                 call jelira(jexnum(grpmav, i), 'LONUTI', n1)
-                write (ifm,808) nom,n1
- 70             continue
+                write (ifm, 808) nom, n1
+70              continue
             end do
-        endif
-    endif
-!
-!
-!
-    if (niv .ge. 2) then
-!
-        write (ifm,803) lisnoe
+        end if
+
+        write (ifm, 803) lisnoe
         call jeveuo(cooval, 'L', iad)
         do i = 1, nbnoeu
             call jenuno(jexnum(nomnoe, i), nom)
-            idec = iad + (i-1)*3
-            write (ifm,701) i,nom, (zr(idec+j-1),j=1,nbcoor)
+            idec = iad+(i-1)*3
+            write (ifm, 701) i, nom, (zr(idec+j-1), j=1, nbcoor)
         end do
 !
-        write (ifm,803) lismai
+        write (ifm, 803) lismai
         do i = 1, nbmail
             call jenuno(jexnum(nommai, i), nom)
             call jeveuo(jexnum(conxv, i), 'L', iad1)
             call jelira(jexnum(conxv, i), 'LONMAX', nbno)
-            ityp=typmail(i)
+            ityp = typmail(i)
             call jenuno(jexnum('&CATA.TM.NOMTM', ityp), type)
             if (nbno .le. 5) then
-                write (ifm,702) i,nom,type, (zi(iad1+j-1),j=1,nbno)
+                write (ifm, 702) i, nom, type, (zi(iad1+j-1), j=1, nbno)
             else
-                write (ifm,702) i,nom,type, (zi(iad1+j-1),j=1,5)
-                write (ifm,703) (zi(iad1+j-1),j=6,nbno)
-            endif
+                write (ifm, 702) i, nom, type, (zi(iad1+j-1), j=1, 5)
+                write (ifm, 703) (zi(iad1+j-1), j=6, nbno)
+            end if
         end do
 !
         if (nbgrno .ne. 0) then
-            write (ifm,803) lisgrn
+            write (ifm, 803) lisgrn
             do i = 1, nbgrno
                 call jeexin(jexnum(grpnov, i), iret)
                 if (iret .eq. 0) goto 100
@@ -186,17 +208,17 @@ subroutine infoma(nomu)
                 call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
                 nn = nbno
                 if (nn .le. 5) then
-                    write (ifm,704) i,nom,nbno, (zi(iad+j-1),j=1,nn)
+                    write (ifm, 704) i, nom, nbno, (zi(iad+j-1), j=1, nn)
                 else
-                    write (ifm,704) i,nom,nbno, (zi(iad+j-1),j=1,5)
-                    write (ifm,703) (zi(iad+j-1),j=6,nn)
-                endif
+                    write (ifm, 704) i, nom, nbno, (zi(iad+j-1), j=1, 5)
+                    write (ifm, 703) (zi(iad+j-1), j=6, nn)
+                end if
 100             continue
             end do
-        endif
+        end if
 !
         if (nbgrma .ne. 0) then
-            write (ifm,803) lisgrm
+            write (ifm, 803) lisgrm
             do i = 1, nbgrma
                 call jeexin(jexnum(grpmav, i), iret)
                 if (iret .eq. 0) goto 110
@@ -205,31 +227,31 @@ subroutine infoma(nomu)
                 call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
                 nn = nbma
                 if (nbma .le. 5) then
-                    write (ifm,704) i,nom,nbma, (zi(iad+j-1),j=1,nn)
+                    write (ifm, 704) i, nom, nbma, (zi(iad+j-1), j=1, nn)
                 else
-                    write (ifm,704) i,nom,nbma, (zi(iad+j-1),j=1,5)
-                    write (ifm,703) (zi(iad+j-1),j=6,nn)
-                endif
+                    write (ifm, 704) i, nom, nbma, (zi(iad+j-1), j=1, 5)
+                    write (ifm, 703) (zi(iad+j-1), j=6, nn)
+                end if
 110             continue
             end do
-        endif
-    endif
-    write (ifm,809)
+        end if
+    end if
+    write (ifm, 809)
 !
     call jedema()
 !
 !
-    701 format (2x,i8,2x,a24,10x,3 (d14.5,2x))
-    702 format (2x,i8,2x,a24,2x,a8,5 (2x,i8))
-    703 format (100 (30x,5 (2x,i8),/))
-    704 format (2x,i8,2x,a24,2x,i8,5 (2x,i8))
-    801 format (a80)
-    802 format (/,'------------ MAILLAGE ',a8,&
-     &       ' - IMPRESSIONS NIVEAU ',i2,' ------------',/)
-    803 format (/,15x,'------  ',a32,'  ------',/)
-    804 format (/,a32,i12)
-    806 format (30x,a8,5x,i12)
-    808 format (30x,a24,2x,i12)
-    809 format (/,80('-'),/)
+701 format(2x, i8, 2x, a24, 10x, 3(d14.5, 2x))
+702 format(2x, i8, 2x, a24, 2x, a8, 5(2x, i8))
+703 format(100(30x, 5(2x, i8),/))
+704 format(2x, i8, 2x, a24, 2x, i8, 5(2x, i8))
+801 format(a80)
+802 format(/, '------------ MAILLAGE ', a8,&
+     &       ' - IMPRESSIONS NIVEAU ', i2, ' ------------',/)
+803 format(/, 15x, '------  ', a32, '  ------',/)
+804 format(/, a32, i12)
+806 format(30x, a8, 5x, i12)
+808 format(30x, a24, 2x, i12)
+809 format(/, 80('-'),/)
 !
 end subroutine

@@ -22,20 +22,16 @@
 :py:class:`ParallelMesh` --- Assignment of parallel mesh
 ************************************************************************
 """
+
 import os.path as osp
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
-from ..Objects import ConnectionMesh, Mesh, ParallelMesh, ResultNaming, PythonBool
+from ..Objects import ConnectionMesh, Mesh, ParallelMesh, PythonBool, ResultNaming
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, ExecutionParameter, Options, injector, logger, shared_tmpdir
-
-try:
-    from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
-
-    HAS_MEDCOUPLING = True
-except ImportError:
-    HAS_MEDCOUPLING = False
+from ..Utilities import MPI, ExecutionParameter, Options, injector, shared_tmpdir
+from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
+from . import mesh_builder
 
 
 class ParallelMeshStateBuilder(InternalStateBuilder):
@@ -66,33 +62,23 @@ class ExtendedParallelMesh:
             UTMESS("I", "SUPERVIS_1")
             ExecutionParameter().enable(Options.HPCMode)
 
-    def readMedFile(self, filename, partitioned=False, verbose=0):
-        """Read a MED file containing a mesh and eventually partition it
+    def readMedFile(self, filename, meshname=None, partitioned=False, verbose=0):
+        """Read a MED file containing a mesh and eventually partition it.
 
         Arguments:
-            filename (string): name of the MED file
-            partitioned (bool) : False if the mesh is not yet partitioned and have to
-                be partitioned before reading
-            verbose (int) : 0 - warnings
-                            1 - informations about main steps
-                            2 - informations about all steps
-
-        Returns:
-            bool: True if reading and partionning is ok
+            filename (str): Name of the MED file.
+            meshname (str): Name of the mesh to be read from file.
+            partitioned (bool): False if the mesh is not yet partitioned and have to
+                be partitioned before reading.
+            verbose (int): Verbosity between 0 (a few details) to 2 (more verbosy).
         """
-        if not HAS_MEDCOUPLING:
-            logger.info("The MEDCoupling module is required")
-            return
+        if not partitioned:
+            splitted = MEDPartitioner(filename)
+            splitted.partitionMesh(verbose & 3)
+            splitted.writeMesh()
+            filename = splitted.writedFilename()
 
-        if partitioned:
-            filename_partitioned = filename
-        else:
-            ms = MEDPartitioner(filename)
-            ms.partitionMesh(verbose)
-            ms.writeMesh()
-            filename_partitioned = ms.writedFilename()
-
-        return self._readPartitionedMedFile(filename_partitioned)
+        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,
@@ -125,17 +111,37 @@ class ExtendedParallelMesh:
             # tests
             group_no_std = mesh.getGroupsOfNodes(local=False)
             group_no_gl = self.getGroupsOfNodes(local=False)
-            test = sorted(group_no_std) == sorted(group_no_gl)
+            test1 = sorted(group_no_std) == sorted(group_no_gl)
+            test = test and test1
+            if not test1:
+                print(
+                    f"FAILED {filename} Groups of nodes differ:",
+                    sorted(group_no_std),
+                    sorted(group_no_gl),
+                )
 
             group_ma_std = mesh.getGroupsOfCells(local=False)
             group_ma_gl = self.getGroupsOfCells(local=False)
-            test = test and sorted(group_ma_std) == sorted(group_ma_gl)
+            test1 = sorted(group_ma_std) == sorted(group_ma_gl)
+            test = test and test1
+            if not test1:
+                print(
+                    f"FAILED {filename} Groups of cells differ:",
+                    sorted(group_ma_std),
+                    sorted(group_ma_gl),
+                )
 
             nb_nodes_std = mesh.getNumberOfNodes()
-            test = test and nb_nodes_std == nb_nodes_gl
+            test1 = nb_nodes_std == nb_nodes_gl
+            test = test and test1
+            if not test1:
+                print(f"FAILED {filename} Number of nodes differs:", nb_nodes_std, nb_nodes_gl)
 
             nb_cells_std = mesh.getNumberOfCells()
-            test = test and nb_cells_std == nb_cells_gl
+            test1 = nb_cells_std == nb_cells_gl
+            test = test and test1
+            if not test1:
+                print(f"FAILED {filename} Number of cells differs:", nb_cells_std, nb_cells_gl)
 
         return MPI.ASTER_COMM_WORLD.bcast(test, root=0)
 

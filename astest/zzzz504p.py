@@ -28,7 +28,7 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 if parallel:
     MAIL = code_aster.ParallelMesh()
-    MAIL.readMedFile("zzzz504p/%d.med" % rank, True)
+    MAIL.readMedFile("zzzz504p/%d.med" % rank, partitioned=True)
 
 model = AFFE_MODELE(
     MAILLAGE=MAIL,

@@ -74,14 +74,18 @@ subroutine lrm_clean_joint(mesh, v_noex)
     integer, pointer :: v_name_join_r_old(:) => null()
     integer, pointer :: v_name_join_r_new(:) => null()
 !
-    call jemarq()
-!
     call asmpi_comm('GET', mpicou)
     call asmpi_info(rank=mrank, size=msize)
+    if (msize .le. 1) then
+!       TODO: rename ".E." to ".E"...
+        goto 999
+    end if
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('lrm_clean_joint', rang, nbproc)
+!
+    call jemarq()
 !
 ! --- Create COMM_GRAPH
     comm_name = '&&LRMCLEAN.COMM'
@@ -115,12 +119,12 @@ subroutine lrm_clean_joint(mesh, v_noex)
         nb_corr = 0
         do ino = 1, nb_node_e
             numno = v_name_join_e_old(deca)
-            if(v_noex(numno) .ne. rang) then
+            if (v_noex(numno) .ne. rang) then
                 v_nojoe(ino) = -1
             else
-                nb_corr = nb_corr + 1
+                nb_corr = nb_corr+1
             end if
-            deca = deca +2
+            deca = deca+2
         end do
         ASSERT(nb_corr > 0)
 !
@@ -131,10 +135,10 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
         deca = 0
         do ino = 1, nb_node_e
-            if(v_nojoe(ino) == 0) then
+            if (v_nojoe(ino) == 0) then
                 v_name_join_e_new(deca+1) = v_name_join_e_old((ino-1)*2+1)
                 v_name_join_e_new(deca+2) = v_name_join_e_old((ino-1)*2+2)
-                deca = deca + 2
+                deca = deca+2
             end if
         end do
         ASSERT(deca == 2*nb_corr)
@@ -152,8 +156,8 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
         nb_corr = 0
         do ino = 1, nb_node_r
-            if(v_nojor(ino) == 0) then
-                nb_corr = nb_corr + 1
+            if (v_nojor(ino) == 0) then
+                nb_corr = nb_corr+1
             end if
         end do
         ASSERT(nb_corr > 0)
@@ -164,12 +168,12 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
         deca = 0
         do ino = 1, nb_node_r
-            if(v_nojor(ino) == 0) then
+            if (v_nojor(ino) == 0) then
                 v_name_join_r_new(deca+1) = v_name_join_r_old((ino-1)*2+1)
                 v_name_join_r_new(deca+2) = v_name_join_r_old((ino-1)*2+2)
                 ASSERT(v_noex(v_name_join_r_new(deca+1)) == -1)
                 v_noex(v_name_join_r_new(deca+1)) = domdis
-                deca = deca + 2
+                deca = deca+2
             end if
         end do
         ASSERT(deca == 2*nb_corr)
@@ -186,5 +190,6 @@ subroutine lrm_clean_joint(mesh, v_noex)
     call jedetr(tag_name)
 !
     call jedema()
-!
+999 continue
+
 end subroutine

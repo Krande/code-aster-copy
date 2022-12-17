@@ -21,8 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "Meshes/BaseMesh.h"
 
 #include "aster_fort_mesh.h"
@@ -108,13 +106,15 @@ ASTERINTEGER BaseMesh::getDimension() const {
     return dimGeom;
 }
 
-bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &format ) {
+bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &format,
+                             const int verbosity ) {
     FileType type = Ascii;
     if ( format == "MED" )
         type = Binary;
     LogicalUnitFile file1( fileName, type, Old );
 
     SyntaxMapContainer syntax;
+    syntax.container["INFO"] = ASTERINTEGER( verbosity + 1 );
 
     if ( format == "GIBI" || format == "GMSH" ) {
         // Fichier temporaire
@@ -157,10 +157,6 @@ bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &for
     }
 
     return build();
-}
-
-bool BaseMesh::readMedFile( const std::string &fileName ) {
-    return readMeshFile( fileName, "MED" );
 }
 
 const JeveuxCollectionLong BaseMesh::getMedConnectivity() const {
@@ -255,4 +251,92 @@ bool BaseMesh::build() {
     _patch->build();
     _connectivity->build();
     return update_tables();
+}
+
+void BaseMesh::initDefinition( const int &dim, const VectorReal &coord,
+                               const VectorOfVectorsLong &connectivity, const VectorLong &types,
+                               const int &nbGrpCells, const int &nbGrpNodes ) {
+    int nbNodes = coord.size() / 3;
+    int nbCells = types.size();
+
+    AS_ASSERT( !_dimensionInformations->exists() );
+    _dimensionInformations->allocate( 6 );
+    ( *_dimensionInformations )[0] = nbNodes;
+    ( *_dimensionInformations )[2] = nbCells;
+    ( *_dimensionInformations )[5] = (ASTERINTEGER)dim;
+
+    AS_ASSERT( !_cellsType->exists() );
+    ( *_cellsType ) = types;
+
+    AS_ASSERT( !_connectivity->exists() );
+    _connectivity->allocateContiguousNumbered( connectivity );
+
+    const JeveuxVectorReal values( coord );
+    _coordinates->assign( this->getName(), values );
+
+    add_automatic_names( _nameOfNodes, nbNodes, "N" );
+    add_automatic_names( _nameOfCells, nbCells, "M" );
+
+    // created to the max capacity, groups may be added by several calls to addGroupsOfxxx
+    if ( nbGrpCells > 0 ) {
+        _groupsOfCells->allocateSparseNamed( nbGrpCells );
+    }
+    if ( nbGrpNodes > 0 ) {
+        _groupsOfNodes->allocateSparseNamed( nbGrpNodes );
+    }
+}
+
+void BaseMesh::show( const int verbosity ) const {
+    ASTERINTEGER level( verbosity );
+    CALLO_INFOMA( getName(), &level );
+}
+
+void BaseMesh::addGroupsOfNodes( const VectorString &names,
+                                 const VectorOfVectorsLong &groupsOfNodes ) {
+    int nbGroups = names.size();
+    AS_ASSERT( nbGroups == groupsOfNodes.size() );
+    AS_ASSERT( _groupsOfNodes->exists() );
+    AS_ASSERT( _groupsOfNodes->capacity() >= _groupsOfNodes->size() + nbGroups );
+
+    for ( auto i = 0; i < nbGroups; ++i ) {
+        _groupsOfNodes->push_back( names[i], groupsOfNodes[i] );
+    }
+}
+
+void BaseMesh::addGroupsOfCells( const VectorString &names,
+                                 const VectorOfVectorsLong &groupsOfCells ) {
+    int nbGroups = names.size();
+    AS_ASSERT( nbGroups == groupsOfCells.size() );
+    AS_ASSERT( _groupsOfCells->exists() );
+    AS_ASSERT( _groupsOfCells->capacity() >= _groupsOfCells->size() + nbGroups );
+
+    for ( auto i = 0; i < nbGroups; ++i ) {
+        _groupsOfCells->push_back( names[i], groupsOfCells[i] );
+    }
+}
+
+void BaseMesh::endDefinition() {
+    CALLO_CARGEO( getName() );
+    AS_ASSERT( build() );
+}
+void BaseMesh::check( const ASTERDOUBLE tolerance ) {
+    ASTERDOUBLE value = tolerance;
+    CALLO_CHCKMA( getName(), &value );
+}
+
+void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix ) {
+    map->allocate( size );
+    if ( size > 10000000 ) {
+        for ( auto i = 0; i < size; ++i ) {
+            std::ostringstream oss;
+            oss << std::hex << i + 1;
+            std::string name( prefix + oss.str() );
+            std::transform( name.begin(), name.end(), name.begin(), ::toupper );
+            map->add( i + 1, name );
+        }
+    } else {
+        for ( auto i = 0; i < size; ++i ) {
+            map->add( i + 1, prefix + std::to_string( i + 1 ) );
+        }
+    }
 }

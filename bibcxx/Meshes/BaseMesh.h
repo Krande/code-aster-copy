@@ -1,5 +1,4 @@
-#ifndef BASEMESH_H_
-#define BASEMESH_H_
+#pragma once
 
 /**
  * @file BaseMesh.h
@@ -38,11 +37,17 @@ class ConstantFieldOnCells;
 typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
 typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
 
+using VectorOfVectorsLong = std::vector< VectorLong >;
+
 /**
  * @class BaseMesh
  * @brief This object is the base class for all meshes variants
  */
 class BaseMesh : public DataStructure, public ListOfTables {
+  private:
+    static unsigned long int _cell_idx;
+    static unsigned long int _node_idx;
+
   public:
     typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxCollectionLong &,
                           const JeveuxVectorLong & >
@@ -108,7 +113,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Read a Mesh file
      * @return return true if it succeeds, false otherwise
      */
-    bool readMeshFile( const std::string &fileName, const std::string &format );
+    bool readMeshFile( const std::string &fileName, const std::string &format,
+                       const int verbosity );
 
   public:
     /**
@@ -342,12 +348,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
     };
 
     /**
-     * @brief Read a MED Mesh file
-     * @return retourne true si tout est ok
-     */
-    virtual bool readMedFile( const std::string &fileName );
-
-    /**
      * @brief Impression du maillage au format MED
      * @param fileName Nom du fichier MED à imprimer
      * @return true
@@ -368,6 +368,21 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return true if success
      */
     bool build();
+
+    /* Mesh builder functions */
+    void initDefinition( const int &dim, const VectorReal &coord,
+                         const VectorOfVectorsLong &connectivity, const VectorLong &types,
+                         const int &nbGrpCells, const int &nbGrpNodes );
+
+    void addGroupsOfNodes( const VectorString &names, const VectorOfVectorsLong &groupsOfNodes );
+
+    void addGroupsOfCells( const VectorString &names, const VectorOfVectorsLong &groupsOfCells );
+
+    void endDefinition();
+
+    void show( const int verbosity = 1 ) const;
+
+    void check( const ASTERDOUBLE tolerance );
 };
 
 /**
@@ -376,4 +391,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
  */
 typedef std::shared_ptr< BaseMesh > BaseMeshPtr;
 
-#endif /* BASEMESH_H_ */
+/**
+ * @brief Helper function to automatically name nodes and cells
+ */
+void add_automatic_names( NamesMapChar8 &map, int size, std::string prefix );

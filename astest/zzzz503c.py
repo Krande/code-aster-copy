@@ -30,7 +30,7 @@ test = code_aster.TestCase()
 
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 pMesh = code_aster.ParallelMesh()
-pMesh.readMedFile("mesh004a/%d.med" % rank, True)
+pMesh.readMedFile("mesh004a/%d.med" % rank, partitioned=True)
 DEFI_GROUP(
     reuse=pMesh,
     MAILLAGE=pMesh,

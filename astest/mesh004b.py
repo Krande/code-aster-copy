@@ -32,7 +32,7 @@ test = code_aster.TestCase()
 rank = MPI.ASTER_COMM_WORLD.Get_rank()
 
 pMesh = code_aster.ParallelMesh()
-pMesh.readMedFile("mesh004b/%d.med" % rank, True)
+pMesh.readMedFile("mesh004b/%d.med" % rank, partitioned=True)
 
 MATER = DEFI_MATERIAU(ELAS=_F(E=10000.0, NU=0.0, RHO=1.0))
 

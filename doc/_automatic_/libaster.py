@@ -450,6 +450,13 @@ class BaseMesh(DataStructure):
             bool: true if building is ok
         """
     
+    def check(self, tolerance):
+        """Check some properties of the mesh.
+        
+        Arguments:
+            tolerance (float): Tolerance used to detect flat cells.
+        """
+    
     def getCellName(self, index):
         """Return the name of the given cell
         
@@ -547,6 +554,13 @@ class BaseMesh(DataStructure):
             Bool: True if of
         """
     
+    def show(self, verbosity= 1):
+        """Show mesh informations.
+        
+        Arguments:
+            verbosity (int): Verbosity level (default: 1)
+        """
+    
     def update(self):
         """Update the internal state of the datastructure.
         
@@ -597,7 +611,7 @@ class Mesh(BaseMesh):
         """Return the list of the existing groups of nodes.
         
         Arguments:
-            local=false (bool): not used (for compatibilty with ParallelMesh)
+            local (bool): not used (for compatibilty with ParallelMesh)
         
         Returns:
             list[str]: List of groups names (stripped).
@@ -615,7 +629,7 @@ class Mesh(BaseMesh):
         
         Arguments:
             group_name (str): Name of the group.
-            local=false (bool): not used (for compatibilty with ParallelMesh)
+            local (bool): not used (for compatibilty with ParallelMesh)
         
         Returns:
             bool: *True* if exists, *False* otherwise.
@@ -626,7 +640,7 @@ class Mesh(BaseMesh):
         
         Arguments:
             group_name (str): Name of the group.
-            local=false (bool): not used (for compatibilty with ParallelMesh)
+            local (bool): not used (for compatibilty with ParallelMesh)
         
         Returns:
             bool: *True* if exists, *False* otherwise.
@@ -661,16 +675,6 @@ class Mesh(BaseMesh):
     
     def readGmshFile(self, filename):
         """Read a mesh file from GMSH format.
-        
-        Arguments:
-            filename (str): Path to the file to be read.
-        
-        Returns:
-            bool: *True* if succeeds, *False* otherwise.
-        """
-    
-    def readMedFile(self, filename):
-        """Read a mesh file from MED format.
         
         Arguments:
             filename (str): Path to the file to be read.
@@ -11141,7 +11145,7 @@ class ParallelMesh(BaseMesh):
         """Return the list of the existing (local or global) groups of cells.
         
         Arguments:
-            local=false (bool): search in local or global groups
+            local (bool): search in local or global groups
         
         Returns:
             list[str]: List of (local or global) groups names (stripped).
@@ -11151,7 +11155,7 @@ class ParallelMesh(BaseMesh):
         """Return the list of the existing (local or global) groups of nodes.
         
         Arguments:
-            local=false (bool): search in local or global groups
+            local (bool): search in local or global groups
         
         Returns:
             list[str]: List of (local or global) groups names (stripped).
@@ -11204,7 +11208,7 @@ class ParallelMesh(BaseMesh):
         
         Arguments:
             group_name (str): Name of the global group.
-            local=false (bool): search in local or global groups
+            local (bool): search in local or global groups
         
         Returns:
             bool: *True* if exists, *False* otherwise.
@@ -11215,7 +11219,7 @@ class ParallelMesh(BaseMesh):
         
         Arguments:
             group_name (str): Name of the (local or global) group.
-            local=false (bool): search local or global groups
+            local (bool): search local or global groups
         
         Returns:
             bool: *True* if exists, *False* otherwise.

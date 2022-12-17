@@ -33,7 +33,7 @@ nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 # Read the quadratic mesh - 2 cases : 1 or several procs
 if nbproc > 1:
     MQ = code_aster.ParallelMesh()
-    MQ.readMedFile("zzzz178b/{}.med".format(rank), True)
+    MQ.readMedFile("zzzz178b/{}.med".format(rank), partitioned=True)
 else:
     MQ = code_aster.Mesh()
     MQ.readMedFile("zzzz178b.mmed")

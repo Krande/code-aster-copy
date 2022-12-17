@@ -28,7 +28,7 @@ if typma == 1:
 MAILLAG2 = DEFI_GROUP(
     reuse=MAILLAG2,
     MAILLAGE=MAILLAG2,
-    CREA_GROUP_NO=(_F(NOM="N390", NOEUD="N390"), _F(NOM="N70", NOEUD="N70")),
+    CREA_GROUP_NO=(_F(NOM="N390", NOEUD="N365"), _F(NOM="N70", NOEUD="N69")),
 )
 
 if typma == 2:
