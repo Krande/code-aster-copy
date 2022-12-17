@@ -68,7 +68,6 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
     character(len=8) :: kacmum
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
-    character(len=24) :: kvers
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -222,21 +221,17 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         enddo
 
 !
-        kvers = ASTER_MUMPS_VERSION
-!       Ce genre de test devrait être fait au moment du configure !
-!
 ! ---     OPTIONS AVANCEES (ACCELERATIONS)
 ! ------     TEST DE COMPATIBILITE ACCELERATION/VERSIONS
-
+#ifndef ASTER_MUMPS_REDUCMPI
         if (redmpi>1) then
 ! version non compatible avec option REDUCTION_MPI
-          if (kvers(1:15).ne.'5.4.1consortium') then
-             call utmess('A', 'FACTOR_49')
-             redmpi=-9999
-          endif
+            call utmess('A', 'FACTOR_49')
+            redmpi=-9999
         endif
+#endif
 
-        if (kvers(6:15).eq.'consortium') then
+#ifdef ASTER_MUMPS_CONSORTIUM
             select case(kacmum)
             case('FR','FR+','FR++','LR','LR+','LR++')
                 !ok
@@ -245,7 +240,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             case default
                 ASSERT(.false.)
             end select
-        else
+#else
             select case(kacmum)
             case('FR','LR')
                 !ok
@@ -260,7 +255,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
             case default
                 ASSERT(.false.)
             end select
-        endif
+#endif
 
 ! ------     API MUMPS ACCELERATION
 

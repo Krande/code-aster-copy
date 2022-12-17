@@ -64,7 +64,8 @@ static MPI_Errhandler errhdlr;
  *      aster_mpi_xxx : C functions and global variable
  *      asmpi_xxx : Fortran functions
  *
- * @todo this text should comment the module file, not the first next subroutine.
+ * @todo this text should comment the module file, not the first next
+ * subroutine.
  */
 /*
  *   PUBLIC FUNCTIONS
@@ -204,7 +205,7 @@ aster_comm_t *aster_split_comm( aster_comm_t *parent, int color, int key, char *
 }
 
 void aster_free_comm( aster_comm_t *node ) {
-    /*! delete this node */
+/*! delete this node */
 #ifdef ASTER_HAVE_MPI
     aster_comm_t *parent;
     int i = 0;
@@ -232,7 +233,8 @@ void aster_free_comm( aster_comm_t *node ) {
 }
 
 /*
- * Wrapper around MPI_Barrier (because the communicator is optional in asmpi_barrier)
+ * Wrapper around MPI_Barrier (because the communicator is optional in
+ * asmpi_barrier)
  * Do not check returncode because all errors raise
  */
 void DEFP( ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm ) {
@@ -247,7 +249,7 @@ void DEFP( ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm ) {
 }
 
 int aster_set_mpi_barrier( aster_comm_t *node ) {
-    /*! Set a MPI barrier */
+/*! Set a MPI barrier */
 #ifdef ASTER_HAVE_MPI
     ASTERINTEGER iret, n0 = 0, n1 = 1, ibid = 0;
     ASTERDOUBLE rbid = 0.;
@@ -272,7 +274,7 @@ int aster_set_mpi_barrier( aster_comm_t *node ) {
 /* Tools allowing collective communications between processes */
 int aster_mpi_bcast( void *buffer, int count, MPI_Datatype datatype, int root,
                      aster_comm_t *node ) {
-    /*! Broadcasts a message from one process to all other processes */
+/*! Broadcasts a message from one process to all other processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI( "MPI_Bcast: send %d values from proc #%d ...\n", count, root );
     double start = MPI_Wtime();
@@ -285,7 +287,7 @@ int aster_mpi_bcast( void *buffer, int count, MPI_Datatype datatype, int root,
 
 int aster_mpi_allreduce( void *sendbuf, void *recvbuf, int count, MPI_Datatype sendtype, MPI_Op op,
                          aster_comm_t *node ) {
-    /*! Reduces a message and distributes the result to all other processes */
+/*! Reduces a message and distributes the result to all other processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI( "MPI_Allreduce: send %d values to all %s...\n", count, " " );
     double start = MPI_Wtime();
@@ -298,7 +300,7 @@ int aster_mpi_allreduce( void *sendbuf, void *recvbuf, int count, MPI_Datatype s
 
 int aster_mpi_gather( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf, int recvcnt,
                       MPI_Datatype recvtype, int root, aster_comm_t *node ) {
-    /*! Gathers together values from a group of processes */
+/*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI( "MPI_Gather: %d gathered values by proc #%d ...\n", sendcnt, root );
     double start = MPI_Wtime();
@@ -313,7 +315,7 @@ int aster_mpi_gather( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *r
 int aster_mpi_gatherv( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf,
                        int *recvcnt, int *displ, MPI_Datatype recvtype, int root,
                        aster_comm_t *node ) {
-    /*! Gathers into specified locations from all processes in a group */
+/*! Gathers into specified locations from all processes in a group */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI( "MPI_Gatherv: %d gathered values by proc #%d ...\n", sendcnt, root );
     double start = MPI_Wtime();
@@ -327,7 +329,7 @@ int aster_mpi_gatherv( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *
 
 int aster_mpi_allgather( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf,
                          int recvcnt, MPI_Datatype recvtype, aster_comm_t *node ) {
-    /*! Gathers together values from a group of processes */
+/*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI( "MPI_AllGather: %d gathered values by all %s...\n", sendcnt, " " );
     double start = MPI_Wtime();
@@ -341,7 +343,7 @@ int aster_mpi_allgather( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void
 
 int aster_mpi_allgatherv( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf,
                           int *recvcnt, int *displs, MPI_Datatype recvtype, aster_comm_t *node ) {
-    /*! Gathers together values from a group of processes */
+/*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI( "MPI_AllGatherv: %d gathered values by all %s...\n", sendcnt, " " );
     double start = MPI_Wtime();
@@ -435,7 +437,8 @@ void DEFPPPSP( ASMPI_SPLIT_COMM, asmpi_split_comm, _IN MPI_Fint *parent, _IN MPI
 
 void DEFPPP( ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MPI_Fint *size ) {
     /*! Wrapper around aster_get_mpi_info
-     * Called by the fortran subroutine asmpi_info where all arguments are optional.
+     * Called by the fortran subroutine asmpi_info where all arguments are
+     * optional.
      */
     MPI_Comm mpicom;
     aster_comm_t *node;

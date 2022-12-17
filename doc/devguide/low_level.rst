@@ -82,6 +82,8 @@ Datatypes and adjustements to prerequisites datatypes:
 - ``ASTER_MED_VERSION_MINOR``
 - ``ASTER_MULT_FRONT_BLOCK_SIZE``
 - ``ASTER_MUMPS_VERSION``
+- ``ASTER_MUMPS_CONSORTIUM``
+- ``ASTER_MUMPS_REDUCMPI``
 - ``ASTER_PETSC_64BIT_INDICES``: Enabled if PETSc uses integer8 for *PetscInt*.
 - ``ASTER_PETSC_HAVE_HYPRE``
 - ``ASTER_PETSC_HAVE_ML``

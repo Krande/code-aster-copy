@@ -17,8 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import re
 from functools import partial
-from waflib import Configure, Utils, Errors
+
+from waflib import Configure, Errors, Utils
 
 
 def options(self):
@@ -76,7 +78,7 @@ def check_mumps(self):
     if opts.enable_mumps == False:
         raise Errors.ConfigurationError("MUMPS disabled")
     self.check_mumps_headers()
-    self.check_mumps_version()
+    self.check_mumps_version(("5.5", "5.4"))
     self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = "dmumps zmumps smumps cmumps mumps_common pord"
@@ -132,7 +134,7 @@ def check_mumps_headers(self):
 
 
 @Configure.conf
-def check_mumps_version(self):
+def check_mumps_version(self, expected_versions):
     fragment = r"""
 #include <stdio.h>
 #include "smumps_c.h"
@@ -148,9 +150,13 @@ int main(void){
             fragment=fragment, use="MUMPS", mandatory=True, execute=True, define_ret=True
         )
         self.env["MUMPS_VERSION"] = ret
-        vers = ret.replace("consortium", "")
-        if vers not in ("5.4.1", "5.4.0"):
-            raise Errors.ConfigurationError("expected versions: {0}".format("5.4.1(consortium)"))
+        vers = re.sub("(consortium|c| ) *$", "", ret)
+        if vers[:3] not in expected_versions:
+            raise Errors.ConfigurationError("expected versions: {0}".format(expected_versions))
+
+        self.define("ASTER_MUMPS_REDUCMPI", 1)
+        if re.search("(consortium|c) *$", ret):
+            self.define("ASTER_MUMPS_CONSORTIUM", 1)
     except:
         if vers:
             vers = " (%s)" % self.env["MUMPS_VERSION"]
