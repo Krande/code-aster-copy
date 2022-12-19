@@ -1,0 +1,378 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# ssnp156a contact + frottement (à activer)
+
+import code_aster
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+
+MESH=LIRE_MAILLAGE(FORMAT='MED',)
+
+MESH=MODI_MAILLAGE(reuse =MESH,
+                   MAILLAGE=MESH,
+                   ORIE_PEAU=(_F(GROUP_MA_PEAU='Master',),
+                                 _F(GROUP_MA_PEAU='Slave',),),)
+
+MAT_pi=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                             NU=0.3,),)
+
+MAT_sh=DEFI_MATERIAU(ELAS=_F(E=70000.0,
+                             NU=0.3,),)
+
+FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                         1.0,1.0,
+                         ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),)
+
+LINST=DEFI_LIST_INST(METHODE='MANUEL',
+                     DEFI_LIST=_F(LIST_INST=L_INST,),
+                     ECHEC=_F(SUBD_PAS=4,
+                              SUBD_NIVEAU=3,),)
+
+MO=AFFE_MODELE(MAILLAGE=MESH,
+               AFFE=_F(GROUP_MA=('Sheet','Pin',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN',),)
+
+MA=AFFE_MATERIAU(MAILLAGE=MESH,
+                 AFFE=(_F(GROUP_MA='Sheet',
+                          MATER=MAT_sh,),
+                       _F(GROUP_MA='Pin',
+                          MATER=MAT_pi,),),)
+
+CL=AFFE_CHAR_CINE(MODELE=MO,
+                  MECA_IMPO=(_F(GROUP_MA='Encast',
+                                DX=0.0,
+                                DY=0.0,),
+                             _F(GROUP_MA='Axe',
+                                DY=0.0,),),)
+
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  FORCE_NODALE=_F(GROUP_NO='F',
+                                  FX=10000.0,),)
+"""
+CON=DEFI_CONTACT(MODELE=MO,
+                FORMULATION    = 'CONTINUE',
+                #FROTTEMENT     = 'COULOMB',
+                    ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
+                    #ALGO_RESO_FROT = 'NEWTON',
+                ZONE=_F(GROUP_MA_MAIT='Master',
+                        GROUP_MA_ESCL='Slave',
+                        CONTACT_INIT='INTERPENETRE',
+                        #COULOMB=0.1,
+                        #SANS_GROUP_NO_FR=('Pi','Pf',),
+                        ),)
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=CH,
+                             FONC_MULT=FONC,),),
+                   CONTACT=CON,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=LINST,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                  ),
+                   SOLVEUR=_F(),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),)
+
+"""
+CON=DEFI_CONT(MODELE=MO,
+                ZONE=_F(GROUP_MA_MAIT='Master',
+                        GROUP_MA_ESCL='Slave',
+                        CONTACT_INIT='INTERPENETRE',
+                        ),)
+
+RESU=MECA_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=CH,
+                             FONC_MULT=FONC,),),
+                   #CONTACT=CON,
+                    CONTACT=_F(DEFINITION=CON,
+                                ALGO_RESO_GEOM="NEWTON"),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=LINST,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                  ),
+                   SOLVEUR=_F(),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),)
+
+# test avec defi_contact sans frottement
+
+MESH=DEFI_GROUP(reuse =MESH,
+                MAILLAGE=MESH,
+                CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                  NOM='Cont_M',
+                                  GROUP_MA='Master',
+                                  GROUP_NO_ORIG='Si',),
+                               _F(OPTION='NOEUD_ORDO',
+                                  NOM='Cont_S',
+                                  GROUP_MA='Slave',
+                                  GROUP_NO_ORIG='Pi',),),)
+
+RELE_M=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                INTITULE='DeplX_M',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_M',
+                                NOM_CMP='DX',),
+                             _F(OPERATION='EXTRACTION',
+                                INTITULE='DeplY_M',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_M',
+                                NOM_CMP='DY',),),)
+
+#print(RELE_M.EXTR_TABLE())
+
+RELE_S=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
+                                INTITULE='DeplX_S',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_S',
+                                NOM_CMP='DX',),
+                             _F(OPERATION='EXTRACTION',
+                                INTITULE='DeplY_S',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                INST=1.0,
+                                GROUP_NO='Cont_S',
+                                NOM_CMP='DY',),),)
+
+# print(RELE_S.EXTR_TABLE())
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=7.40573E-1,
+    VALE_CALC=7.54844E-1,
+    NOM_PARA="DX",
+    TABLE=RELE_M,
+    TYPE_TEST = "MAX",
+    PRECISION = 0.02,
+)
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=9.18286E-2,
+    VALE_CALC=0.092782519649,  # 9.27840E-2,
+    NOM_PARA="DY",
+    TABLE=RELE_M,
+    TYPE_TEST = "MAX",
+    PRECISION = 0.02,
+)
+
+TEST_TABLE(
+    REFERENCE="AUTRE_ASTER",
+    VALE_REFE=7.62576E-1,
+    VALE_CALC=7.79275E-1,
+    NOM_PARA="DX",
+    TABLE=RELE_S,
+    TYPE_TEST = "MAX",
+    PRECISION = 0.03,
+)
+
+
+"""
+# defi_contact 
+#TABLE_SDASTER                                                                   
+INTITULE         NOEUD    RESU     NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       DX           DY          
+DeplX_M          N17      0000000c DEPL                        1  1.00000E+00  0.00000E+00  1.50000E+02  0.00000E+00  0.00000E+00  1.13721E-01 -           
+DeplX_M          N623     0000000c DEPL                        1  1.00000E+00  3.92598E+00  1.50154E+02  3.92295E+00  0.00000E+00  1.14528E-01 -           
+DeplX_M          N624     0000000c DEPL                        1  1.00000E+00  7.85196E+00  1.50616E+02  7.82172E+00  0.00000E+00  1.16944E-01 -           
+DeplX_M          N625     0000000c DEPL                        1  1.00000E+00  1.17779E+01  1.51382E+02  1.16723E+01  0.00000E+00  1.20961E-01 -           
+DeplX_M          N626     0000000c DEPL                        1  1.00000E+00  1.57039E+01  1.52447E+02  1.54508E+01  0.00000E+00  1.26557E-01 -           
+DeplX_M          N627     0000000c DEPL                        1  1.00000E+00  1.96299E+01  1.53806E+02  1.91342E+01  0.00000E+00  1.33703E-01 -           
+DeplX_M          N628     0000000c DEPL                        1  1.00000E+00  2.35559E+01  1.55450E+02  2.26995E+01  0.00000E+00  1.42356E-01 -           
+DeplX_M          N629     0000000c DEPL                        1  1.00000E+00  2.74819E+01  1.57368E+02  2.61249E+01  0.00000E+00  1.52460E-01 -           
+DeplX_M          N630     0000000c DEPL                        1  1.00000E+00  3.14079E+01  1.59549E+02  2.93893E+01  0.00000E+00  1.63943E-01 -           
+DeplX_M          N631     0000000c DEPL                        1  1.00000E+00  3.53338E+01  1.61980E+02  3.24724E+01  0.00000E+00  1.76705E-01 -           
+DeplX_M          N15      0000000c DEPL                        1  1.00000E+00  3.92598E+01  1.64645E+02  3.53553E+01  0.00000E+00  1.90535E-01 -           
+DeplX_M          N152     0000000c DEPL                        1  1.00000E+00  4.31858E+01  1.67528E+02  3.80203E+01  0.00000E+00  2.04990E-01 -           
+DeplX_M          N153     0000000c DEPL                        1  1.00000E+00  4.71118E+01  1.70611E+02  4.04508E+01  0.00000E+00  2.21111E-01 -           
+DeplX_M          N154     0000000c DEPL                        1  1.00000E+00  5.10378E+01  1.73875E+02  4.26320E+01  0.00000E+00  2.38671E-01 -           
+DeplX_M          N597     0000000c DEPL                        1  1.00000E+00  5.49637E+01  1.77300E+02  4.45503E+01  0.00000E+00  2.57587E-01 -           
+DeplX_M          N598     0000000c DEPL                        1  1.00000E+00  5.88897E+01  1.80866E+02  4.61940E+01  0.00000E+00  2.77807E-01 -           
+DeplX_M          N599     0000000c DEPL                        1  1.00000E+00  6.28157E+01  1.84549E+02  4.75528E+01  0.00000E+00  2.99278E-01 -           
+DeplX_M          N600     0000000c DEPL                        1  1.00000E+00  6.67417E+01  1.88328E+02  4.86185E+01  0.00000E+00  3.21942E-01 -           
+DeplX_M          N601     0000000c DEPL                        1  1.00000E+00  7.06677E+01  1.92178E+02  4.93844E+01  0.00000E+00  3.45706E-01 -           
+DeplX_M          N602     0000000c DEPL                        1  1.00000E+00  7.45936E+01  1.96077E+02  4.98459E+01  0.00000E+00  3.70370E-01 -           
+DeplX_M          N603     0000000c DEPL                        1  1.00000E+00  7.85196E+01  2.00000E+02  5.00000E+01  0.00000E+00  3.95496E-01 -           
+DeplX_M          N604     0000000c DEPL                        1  1.00000E+00  8.24456E+01  2.03923E+02  4.98459E+01  0.00000E+00  4.21417E-01 -           
+DeplX_M          N606     0000000c DEPL                        1  1.00000E+00  8.63716E+01  2.07822E+02  4.93844E+01  0.00000E+00  4.47716E-01 -           
+DeplX_M          N607     0000000c DEPL                        1  1.00000E+00  9.02976E+01  2.11672E+02  4.86185E+01  0.00000E+00  4.74003E-01 -           
+DeplX_M          N608     0000000c DEPL                        1  1.00000E+00  9.42236E+01  2.15451E+02  4.75528E+01  0.00000E+00  5.00055E-01 -           
+DeplX_M          N609     0000000c DEPL                        1  1.00000E+00  9.81495E+01  2.19134E+02  4.61940E+01  0.00000E+00  5.25640E-01 -           
+DeplX_M          N610     0000000c DEPL                        1  1.00000E+00  1.02076E+02  2.22700E+02  4.45503E+01  0.00000E+00  5.50537E-01 -           
+DeplX_M          N611     0000000c DEPL                        1  1.00000E+00  1.06002E+02  2.26125E+02  4.26320E+01  0.00000E+00  5.74538E-01 -           
+DeplX_M          N612     0000000c DEPL                        1  1.00000E+00  1.09927E+02  2.29389E+02  4.04508E+01  0.00000E+00  5.97457E-01 -           
+DeplX_M          N613     0000000c DEPL                        1  1.00000E+00  1.13853E+02  2.32472E+02  3.80203E+01  0.00000E+00  6.19133E-01 -           
+DeplX_M          N12      0000000c DEPL                        1  1.00000E+00  1.17779E+02  2.35355E+02  3.53553E+01  0.00000E+00  6.39436E-01 -           
+DeplX_M          N135     0000000c DEPL                        1  1.00000E+00  1.21705E+02  2.38020E+02  3.24724E+01  0.00000E+00  6.58144E-01 -           
+DeplX_M          N136     0000000c DEPL                        1  1.00000E+00  1.25631E+02  2.40451E+02  2.93893E+01  0.00000E+00  6.75165E-01 -           
+DeplX_M          N137     0000000c DEPL                        1  1.00000E+00  1.29557E+02  2.42632E+02  2.61249E+01  0.00000E+00  6.90406E-01 -           
+DeplX_M          N138     0000000c DEPL                        1  1.00000E+00  1.33483E+02  2.44550E+02  2.26995E+01  0.00000E+00  7.03768E-01 -           
+DeplX_M          N143     0000000c DEPL                        1  1.00000E+00  1.37409E+02  2.46194E+02  1.91342E+01  0.00000E+00  7.15163E-01 -           
+DeplX_M          N144     0000000c DEPL                        1  1.00000E+00  1.41335E+02  2.47553E+02  1.54508E+01  0.00000E+00  7.24515E-01 -           
+DeplX_M          N145     0000000c DEPL                        1  1.00000E+00  1.45261E+02  2.48618E+02  1.16723E+01  0.00000E+00  7.31764E-01 -           
+DeplX_M          N146     0000000c DEPL                        1  1.00000E+00  1.49187E+02  2.49384E+02  7.82172E+00  0.00000E+00  7.36867E-01 -           
+DeplX_M          N151     0000000c DEPL                        1  1.00000E+00  1.53113E+02  2.49846E+02  3.92295E+00  0.00000E+00  7.39800E-01 -           
+DeplX_M          N9       0000000c DEPL                        1  1.00000E+00  1.57039E+02  2.50000E+02 -4.91097E-16  0.00000E+00  7.40573E-01 -           
+DeplY_M          N17      0000000c DEPL                        1  1.00000E+00  0.00000E+00  1.50000E+02  0.00000E+00  0.00000E+00 -             0.00000E+00
+DeplY_M          N623     0000000c DEPL                        1  1.00000E+00  3.92598E+00  1.50154E+02  3.92295E+00  0.00000E+00 -            -5.00592E-03
+DeplY_M          N624     0000000c DEPL                        1  1.00000E+00  7.85196E+00  1.50616E+02  7.82172E+00  0.00000E+00 -            -9.95634E-03
+DeplY_M          N625     0000000c DEPL                        1  1.00000E+00  1.17779E+01  1.51382E+02  1.16723E+01  0.00000E+00 -            -1.47978E-02
+DeplY_M          N626     0000000c DEPL                        1  1.00000E+00  1.57039E+01  1.52447E+02  1.54508E+01  0.00000E+00 -            -1.94798E-02
+DeplY_M          N627     0000000c DEPL                        1  1.00000E+00  1.96299E+01  1.53806E+02  1.91342E+01  0.00000E+00 -            -2.39542E-02
+DeplY_M          N628     0000000c DEPL                        1  1.00000E+00  2.35559E+01  1.55450E+02  2.26995E+01  0.00000E+00 -            -2.81743E-02
+DeplY_M          N629     0000000c DEPL                        1  1.00000E+00  2.74819E+01  1.57368E+02  2.61249E+01  0.00000E+00 -            -3.20927E-02
+DeplY_M          N630     0000000c DEPL                        1  1.00000E+00  3.14079E+01  1.59549E+02  2.93893E+01  0.00000E+00 -            -3.56579E-02
+DeplY_M          N631     0000000c DEPL                        1  1.00000E+00  3.53338E+01  1.61980E+02  3.24724E+01  0.00000E+00 -            -3.87938E-02
+DeplY_M          N15      0000000c DEPL                        1  1.00000E+00  3.92598E+01  1.64645E+02  3.53553E+01  0.00000E+00 -            -4.12803E-02
+DeplY_M          N152     0000000c DEPL                        1  1.00000E+00  4.31858E+01  1.67528E+02  3.80203E+01  0.00000E+00 -            -4.36355E-02
+DeplY_M          N153     0000000c DEPL                        1  1.00000E+00  4.71118E+01  1.70611E+02  4.04508E+01  0.00000E+00 -            -4.54362E-02
+DeplY_M          N154     0000000c DEPL                        1  1.00000E+00  5.10378E+01  1.73875E+02  4.26320E+01  0.00000E+00 -            -4.63350E-02
+DeplY_M          N597     0000000c DEPL                        1  1.00000E+00  5.49637E+01  1.77300E+02  4.45503E+01  0.00000E+00 -            -4.60642E-02
+DeplY_M          N598     0000000c DEPL                        1  1.00000E+00  5.88897E+01  1.80866E+02  4.61940E+01  0.00000E+00 -            -4.43551E-02
+DeplY_M          N599     0000000c DEPL                        1  1.00000E+00  6.28157E+01  1.84549E+02  4.75528E+01  0.00000E+00 -            -4.09098E-02
+DeplY_M          N600     0000000c DEPL                        1  1.00000E+00  6.67417E+01  1.88328E+02  4.86185E+01  0.00000E+00 -            -3.53729E-02
+DeplY_M          N601     0000000c DEPL                        1  1.00000E+00  7.06677E+01  1.92178E+02  4.93844E+01  0.00000E+00 -            -2.72557E-02
+DeplY_M          N602     0000000c DEPL                        1  1.00000E+00  7.45936E+01  1.96077E+02  4.98459E+01  0.00000E+00 -            -1.57468E-02
+DeplY_M          N603     0000000c DEPL                        1  1.00000E+00  7.85196E+01  2.00000E+02  5.00000E+01  0.00000E+00 -             2.06874E-03
+DeplY_M          N604     0000000c DEPL                        1  1.00000E+00  8.24456E+01  2.03923E+02  4.98459E+01  0.00000E+00 -             2.25130E-02
+DeplY_M          N606     0000000c DEPL                        1  1.00000E+00  8.63716E+01  2.07822E+02  4.93844E+01  0.00000E+00 -             4.03399E-02
+DeplY_M          N607     0000000c DEPL                        1  1.00000E+00  9.02976E+01  2.11672E+02  4.86185E+01  0.00000E+00 -             5.53696E-02
+DeplY_M          N608     0000000c DEPL                        1  1.00000E+00  9.42236E+01  2.15451E+02  4.75528E+01  0.00000E+00 -             6.76809E-02
+DeplY_M          N609     0000000c DEPL                        1  1.00000E+00  9.81495E+01  2.19134E+02  4.61940E+01  0.00000E+00 -             7.73517E-02
+DeplY_M          N610     0000000c DEPL                        1  1.00000E+00  1.02076E+02  2.22700E+02  4.45503E+01  0.00000E+00 -             8.44825E-02
+DeplY_M          N611     0000000c DEPL                        1  1.00000E+00  1.06002E+02  2.26125E+02  4.26320E+01  0.00000E+00 -             8.91881E-02
+DeplY_M          N612     0000000c DEPL                        1  1.00000E+00  1.09927E+02  2.29389E+02  4.04508E+01  0.00000E+00 -             9.15931E-02
+DeplY_M          N613     0000000c DEPL                        1  1.00000E+00  1.13853E+02  2.32472E+02  3.80203E+01  0.00000E+00 -             9.18286E-02
+DeplY_M          N12      0000000c DEPL                        1  1.00000E+00  1.17779E+02  2.35355E+02  3.53553E+01  0.00000E+00 -             9.00369E-02
+DeplY_M          N135     0000000c DEPL                        1  1.00000E+00  1.21705E+02  2.38020E+02  3.24724E+01  0.00000E+00 -             8.64353E-02
+DeplY_M          N136     0000000c DEPL                        1  1.00000E+00  1.25631E+02  2.40451E+02  2.93893E+01  0.00000E+00 -             8.11090E-02
+DeplY_M          N137     0000000c DEPL                        1  1.00000E+00  1.29557E+02  2.42632E+02  2.61249E+01  0.00000E+00 -             7.42385E-02
+DeplY_M          N138     0000000c DEPL                        1  1.00000E+00  1.33483E+02  2.44550E+02  2.26995E+01  0.00000E+00 -             6.60050E-02
+DeplY_M          N143     0000000c DEPL                        1  1.00000E+00  1.37409E+02  2.46194E+02  1.91342E+01  0.00000E+00 -             5.66023E-02
+DeplY_M          N144     0000000c DEPL                        1  1.00000E+00  1.41335E+02  2.47553E+02  1.54508E+01  0.00000E+00 -             4.62379E-02
+DeplY_M          N145     0000000c DEPL                        1  1.00000E+00  1.45261E+02  2.48618E+02  1.16723E+01  0.00000E+00 -             3.51349E-02
+DeplY_M          N146     0000000c DEPL                        1  1.00000E+00  1.49187E+02  2.49384E+02  7.82172E+00  0.00000E+00 -             2.35370E-02
+DeplY_M          N151     0000000c DEPL                        1  1.00000E+00  1.53113E+02  2.49846E+02  3.92295E+00  0.00000E+00 -             1.17169E-02
+DeplY_M          N9       0000000c DEPL                        1  1.00000E+00  1.57039E+02  2.50000E+02 -4.91097E-16  0.00000E+00 -             0.00000E+00
+
+
+#TABLE_SDASTER                                                                   
+INTITULE         NOEUD    RESU     NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       DX           DY          
+DeplX_S          N8       0000000c DEPL                        1  1.00000E+00  0.00000E+00  1.50000E+02  0.00000E+00  0.00000E+00  7.62576E-01 -           
+DeplX_S          N200     0000000c DEPL                        1  1.00000E+00  3.92598E+00  1.50154E+02  3.92295E+00  0.00000E+00  7.62412E-01 -           
+DeplX_S          N201     0000000c DEPL                        1  1.00000E+00  7.85196E+00  1.50616E+02  7.82172E+00  0.00000E+00  7.61928E-01 -           
+DeplX_S          N202     0000000c DEPL                        1  1.00000E+00  1.17779E+01  1.51382E+02  1.16723E+01  0.00000E+00  7.61136E-01 -           
+DeplX_S          N203     0000000c DEPL                        1  1.00000E+00  1.57039E+01  1.52447E+02  1.54508E+01  0.00000E+00  7.60061E-01 -           
+DeplX_S          N204     0000000c DEPL                        1  1.00000E+00  1.96299E+01  1.53806E+02  1.91342E+01  0.00000E+00  7.58735E-01 -           
+DeplX_S          N205     0000000c DEPL                        1  1.00000E+00  2.35559E+01  1.55450E+02  2.26995E+01  0.00000E+00  7.57197E-01 -           
+DeplX_S          N206     0000000c DEPL                        1  1.00000E+00  2.74819E+01  1.57368E+02  2.61249E+01  0.00000E+00  7.55493E-01 -           
+DeplX_S          N207     0000000c DEPL                        1  1.00000E+00  3.14079E+01  1.59549E+02  2.93893E+01  0.00000E+00  7.53675E-01 -           
+DeplX_S          N208     0000000c DEPL                        1  1.00000E+00  3.53338E+01  1.61980E+02  3.24724E+01  0.00000E+00  7.51797E-01 -           
+DeplX_S          N7       0000000c DEPL                        1  1.00000E+00  3.92598E+01  1.64645E+02  3.53553E+01  0.00000E+00  7.49915E-01 -           
+DeplX_S          N181     0000000c DEPL                        1  1.00000E+00  4.31858E+01  1.67528E+02  3.80203E+01  0.00000E+00  7.48089E-01 -           
+DeplX_S          N182     0000000c DEPL                        1  1.00000E+00  4.71118E+01  1.70611E+02  4.04508E+01  0.00000E+00  7.46373E-01 -           
+DeplX_S          N183     0000000c DEPL                        1  1.00000E+00  5.10378E+01  1.73875E+02  4.26320E+01  0.00000E+00  7.44813E-01 -           
+DeplX_S          N184     0000000c DEPL                        1  1.00000E+00  5.49637E+01  1.77300E+02  4.45503E+01  0.00000E+00  7.43452E-01 -           
+DeplX_S          N185     0000000c DEPL                        1  1.00000E+00  5.88897E+01  1.80866E+02  4.61940E+01  0.00000E+00  7.42321E-01 -           
+DeplX_S          N186     0000000c DEPL                        1  1.00000E+00  6.28157E+01  1.84549E+02  4.75528E+01  0.00000E+00  7.41441E-01 -           
+DeplX_S          N187     0000000c DEPL                        1  1.00000E+00  6.67417E+01  1.88328E+02  4.86185E+01  0.00000E+00  7.40815E-01 -           
+DeplX_S          N188     0000000c DEPL                        1  1.00000E+00  7.06677E+01  1.92178E+02  4.93844E+01  0.00000E+00  7.40426E-01 -           
+DeplX_S          N189     0000000c DEPL                        1  1.00000E+00  7.45936E+01  1.96077E+02  4.98459E+01  0.00000E+00  7.40159E-01 -           
+DeplX_S          N190     0000000c DEPL                        1  1.00000E+00  7.85196E+01  2.00000E+02  5.00000E+01  0.00000E+00  7.39623E-01 -           
+DeplX_S          N191     0000000c DEPL                        1  1.00000E+00  8.24456E+01  2.03923E+02  4.98459E+01  0.00000E+00  7.38321E-01 -           
+DeplX_S          N192     0000000c DEPL                        1  1.00000E+00  8.63716E+01  2.07822E+02  4.93844E+01  0.00000E+00  7.36528E-01 -           
+DeplX_S          N193     0000000c DEPL                        1  1.00000E+00  9.02976E+01  2.11672E+02  4.86185E+01  0.00000E+00  7.34625E-01 -           
+DeplX_S          N194     0000000c DEPL                        1  1.00000E+00  9.42236E+01  2.15451E+02  4.75528E+01  0.00000E+00  7.32858E-01 -           
+DeplX_S          N195     0000000c DEPL                        1  1.00000E+00  9.81495E+01  2.19134E+02  4.61940E+01  0.00000E+00  7.31381E-01 -           
+DeplX_S          N196     0000000c DEPL                        1  1.00000E+00  1.02076E+02  2.22700E+02  4.45503E+01  0.00000E+00  7.30291E-01 -           
+DeplX_S          N197     0000000c DEPL                        1  1.00000E+00  1.06002E+02  2.26125E+02  4.26320E+01  0.00000E+00  7.29638E-01 -           
+DeplX_S          N198     0000000c DEPL                        1  1.00000E+00  1.09927E+02  2.29389E+02  4.04508E+01  0.00000E+00  7.29432E-01 -           
+DeplX_S          N199     0000000c DEPL                        1  1.00000E+00  1.13853E+02  2.32472E+02  3.80203E+01  0.00000E+00  7.29652E-01 -           
+DeplX_S          N4       0000000c DEPL                        1  1.00000E+00  1.17779E+02  2.35355E+02  3.53553E+01  0.00000E+00  7.30266E-01 -           
+DeplX_S          N43      0000000c DEPL                        1  1.00000E+00  1.21705E+02  2.38020E+02  3.24724E+01  0.00000E+00  7.31201E-01 -           
+DeplX_S          N44      0000000c DEPL                        1  1.00000E+00  1.25631E+02  2.40451E+02  2.93893E+01  0.00000E+00  7.32348E-01 -           
+DeplX_S          N45      0000000c DEPL                        1  1.00000E+00  1.29557E+02  2.42632E+02  2.61249E+01  0.00000E+00  7.33637E-01 -           
+DeplX_S          N46      0000000c DEPL                        1  1.00000E+00  1.33483E+02  2.44550E+02  2.26995E+01  0.00000E+00  7.34989E-01 -           
+DeplX_S          N47      0000000c DEPL                        1  1.00000E+00  1.37409E+02  2.46194E+02  1.91342E+01  0.00000E+00  7.36328E-01 -           
+DeplX_S          N48      0000000c DEPL                        1  1.00000E+00  1.41335E+02  2.47553E+02  1.54508E+01  0.00000E+00  7.37584E-01 -           
+DeplX_S          N49      0000000c DEPL                        1  1.00000E+00  1.45261E+02  2.48618E+02  1.16723E+01  0.00000E+00  7.38693E-01 -           
+DeplX_S          N50      0000000c DEPL                        1  1.00000E+00  1.49187E+02  2.49384E+02  7.82172E+00  0.00000E+00  7.39599E-01 -           
+DeplX_S          N51      0000000c DEPL                        1  1.00000E+00  1.53113E+02  2.49846E+02  3.92295E+00  0.00000E+00  7.40246E-01 -           
+DeplX_S          N1       0000000c DEPL                        1  1.00000E+00  1.57039E+02  2.50000E+02 -4.91097E-16  0.00000E+00  7.40573E-01 -           
+DeplY_S          N8       0000000c DEPL                        1  1.00000E+00  0.00000E+00  1.50000E+02  0.00000E+00  0.00000E+00 -             0.00000E+00
+DeplY_S          N200     0000000c DEPL                        1  1.00000E+00  3.92598E+00  1.50154E+02  3.92295E+00  0.00000E+00 -            -1.58812E-03
+DeplY_S          N201     0000000c DEPL                        1  1.00000E+00  7.85196E+00  1.50616E+02  7.82172E+00  0.00000E+00 -            -3.12605E-03
+DeplY_S          N202     0000000c DEPL                        1  1.00000E+00  1.17779E+01  1.51382E+02  1.16723E+01  0.00000E+00 -            -4.56537E-03
+DeplY_S          N203     0000000c DEPL                        1  1.00000E+00  1.57039E+01  1.52447E+02  1.54508E+01  0.00000E+00 -            -5.86125E-03
+DeplY_S          N204     0000000c DEPL                        1  1.00000E+00  1.96299E+01  1.53806E+02  1.91342E+01  0.00000E+00 -            -6.97411E-03
+DeplY_S          N205     0000000c DEPL                        1  1.00000E+00  2.35559E+01  1.55450E+02  2.26995E+01  0.00000E+00 -            -7.87125E-03
+DeplY_S          N206     0000000c DEPL                        1  1.00000E+00  2.74819E+01  1.57368E+02  2.61249E+01  0.00000E+00 -            -8.52839E-03
+DeplY_S          N207     0000000c DEPL                        1  1.00000E+00  3.14079E+01  1.59549E+02  2.93893E+01  0.00000E+00 -            -8.93102E-03
+DeplY_S          N208     0000000c DEPL                        1  1.00000E+00  3.53338E+01  1.61980E+02  3.24724E+01  0.00000E+00 -            -9.07545E-03
+DeplY_S          N7       0000000c DEPL                        1  1.00000E+00  3.92598E+01  1.64645E+02  3.53553E+01  0.00000E+00 -            -8.96875E-03
+DeplY_S          N181     0000000c DEPL                        1  1.00000E+00  4.31858E+01  1.67528E+02  3.80203E+01  0.00000E+00 -            -8.63171E-03
+DeplY_S          N182     0000000c DEPL                        1  1.00000E+00  4.71118E+01  1.70611E+02  4.04508E+01  0.00000E+00 -            -8.10561E-03
+DeplY_S          N183     0000000c DEPL                        1  1.00000E+00  5.10378E+01  1.73875E+02  4.26320E+01  0.00000E+00 -            -7.44194E-03
+DeplY_S          N184     0000000c DEPL                        1  1.00000E+00  5.49637E+01  1.77300E+02  4.45503E+01  0.00000E+00 -            -6.70963E-03
+DeplY_S          N185     0000000c DEPL                        1  1.00000E+00  5.88897E+01  1.80866E+02  4.61940E+01  0.00000E+00 -            -5.99684E-03
+DeplY_S          N186     0000000c DEPL                        1  1.00000E+00  6.28157E+01  1.84549E+02  4.75528E+01  0.00000E+00 -            -5.41658E-03
+DeplY_S          N187     0000000c DEPL                        1  1.00000E+00  6.67417E+01  1.88328E+02  4.86185E+01  0.00000E+00 -            -5.11653E-03
+DeplY_S          N188     0000000c DEPL                        1  1.00000E+00  7.06677E+01  1.92178E+02  4.93844E+01  0.00000E+00 -            -5.32275E-03
+DeplY_S          N189     0000000c DEPL                        1  1.00000E+00  7.45936E+01  1.96077E+02  4.98459E+01  0.00000E+00 -            -6.35201E-03
+DeplY_S          N190     0000000c DEPL                        1  1.00000E+00  7.85196E+01  2.00000E+02  5.00000E+01  0.00000E+00 -            -9.58170E-03
+DeplY_S          N191     0000000c DEPL                        1  1.00000E+00  8.24456E+01  2.03923E+02  4.98459E+01  0.00000E+00 -            -1.33045E-02
+DeplY_S          N192     0000000c DEPL                        1  1.00000E+00  8.63716E+01  2.07822E+02  4.93844E+01  0.00000E+00 -            -1.55993E-02
+DeplY_S          N193     0000000c DEPL                        1  1.00000E+00  9.02976E+01  2.11672E+02  4.86185E+01  0.00000E+00 -            -1.67868E-02
+DeplY_S          N194     0000000c DEPL                        1  1.00000E+00  9.42236E+01  2.15451E+02  4.75528E+01  0.00000E+00 -            -1.70055E-02
+DeplY_S          N195     0000000c DEPL                        1  1.00000E+00  9.81495E+01  2.19134E+02  4.61940E+01  0.00000E+00 -            -1.64297E-02
+DeplY_S          N196     0000000c DEPL                        1  1.00000E+00  1.02076E+02  2.22700E+02  4.45503E+01  0.00000E+00 -            -1.52389E-02
+DeplY_S          N197     0000000c DEPL                        1  1.00000E+00  1.06002E+02  2.26125E+02  4.26320E+01  0.00000E+00 -            -1.36106E-02
+DeplY_S          N198     0000000c DEPL                        1  1.00000E+00  1.09927E+02  2.29389E+02  4.04508E+01  0.00000E+00 -            -1.17112E-02
+DeplY_S          N199     0000000c DEPL                        1  1.00000E+00  1.13853E+02  2.32472E+02  3.80203E+01  0.00000E+00 -            -9.68832E-03
+DeplY_S          N4       0000000c DEPL                        1  1.00000E+00  1.17779E+02  2.35355E+02  3.53553E+01  0.00000E+00 -            -7.65889E-03
+DeplY_S          N43      0000000c DEPL                        1  1.00000E+00  1.21705E+02  2.38020E+02  3.24724E+01  0.00000E+00 -            -5.75156E-03
+DeplY_S          N44      0000000c DEPL                        1  1.00000E+00  1.25631E+02  2.40451E+02  2.93893E+01  0.00000E+00 -            -4.05649E-03
+DeplY_S          N45      0000000c DEPL                        1  1.00000E+00  1.29557E+02  2.42632E+02  2.61249E+01  0.00000E+00 -            -2.60671E-03
+DeplY_S          N46      0000000c DEPL                        1  1.00000E+00  1.33483E+02  2.44550E+02  2.26995E+01  0.00000E+00 -            -1.43010E-03
+DeplY_S          N47      0000000c DEPL                        1  1.00000E+00  1.37409E+02  2.46194E+02  1.91342E+01  0.00000E+00 -            -5.36937E-04
+DeplY_S          N48      0000000c DEPL                        1  1.00000E+00  1.41335E+02  2.47553E+02  1.54508E+01  0.00000E+00 -             7.73145E-05
+DeplY_S          N49      0000000c DEPL                        1  1.00000E+00  1.45261E+02  2.48618E+02  1.16723E+01  0.00000E+00 -             4.27838E-04
+DeplY_S          N50      0000000c DEPL                        1  1.00000E+00  1.49187E+02  2.49384E+02  7.82172E+00  0.00000E+00 -             5.34232E-04
+DeplY_S          N51      0000000c DEPL                        1  1.00000E+00  1.53113E+02  2.49846E+02  3.92295E+00  0.00000E+00 -             4.02416E-04
+DeplY_S          N1       0000000c DEPL                        1  1.00000E+00  1.57039E+02  2.50000E+02 -4.91097E-16  0.00000E+00 -             0.00000E+00
+
+"""
+
+FIN()

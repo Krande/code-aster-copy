@@ -58,12 +58,11 @@ DEFICO_BAS = DEFI_CONT(
 pair = ContactPairing(DEFICO_BAS)
 pair.compute()
 
-
 test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [(18, 3), (18, 4), (19, 4), (19, 5)])
 ref = [
     [
+        0.5999999999999999,
         -0.7333333333333334,
-        0.6,
         0.0,
         0.0,
         0.0,
@@ -80,8 +79,8 @@ ref = [
         0.0,
     ],
     [
+        -0.7333333333333334,
         -1.0,
-        -0.7333333333333334,
         0.0,
         0.0,
         0.0,
@@ -98,8 +97,8 @@ ref = [
         0.0,
     ],
     [
-        -0.06666666666666686,
         1.0,
+        -0.06666666666666687,
         0.0,
         0.0,
         0.0,
@@ -116,8 +115,8 @@ ref = [
         0.0,
     ],
     [
+        -0.06666666666666687,
         -1.0,
-        -0.06666666666666686,
         0.0,
         0.0,
         0.0,
@@ -136,6 +135,7 @@ ref = [
 ]
 
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
+print(pair.getSlaveIntersectionPoints(0))
 test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
 
 
@@ -170,8 +170,8 @@ pair.compute()
 test.assertSequenceEqual(pair.getListOfPairsOfZone(0), [(18, 3), (18, 4), (19, 4), (19, 5)])
 ref = [
     [
+        0.5999999999999999,
         -0.7333333333333334,
-        0.6000000000000001,
         0.0,
         0.0,
         0.0,
@@ -188,8 +188,8 @@ ref = [
         0.0,
     ],
     [
+        -0.7333333333333334,
         -1.0,
-        -0.7333333333333334,
         0.0,
         0.0,
         0.0,
@@ -206,8 +206,8 @@ ref = [
         0.0,
     ],
     [
-        -0.06666666666666686,
         1.0,
+        -0.06666666666666687,
         0.0,
         0.0,
         0.0,
@@ -224,8 +224,8 @@ ref = [
         0.0,
     ],
     [
+        -0.06666666666666687,
         -1.0,
-        -0.06666666666666686,
         0.0,
         0.0,
         0.0,
@@ -242,8 +242,10 @@ ref = [
         0.0,
     ],
 ]
+
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)), 4)
 test.assertEqual(len(pair.getSlaveIntersectionPoints(0)[0]), 16)
+print(pair.getSlaveIntersectionPoints(0))
 test.assertSequenceEqual(pair.getSlaveIntersectionPoints(0), ref)
 
 FIN()
