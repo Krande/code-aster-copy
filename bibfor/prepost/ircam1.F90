@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
                   instan, numord, adsd, adsv, adsl,&
-                  adsk, partie, ncmpve, ntlcmp, ntncmp,&
-                  ntucmp, ntproa, nbimpr, caimpi, caimpk,&
-                  typech, nomamd, nomtyp, modnum, nuanom,&
-                  lfichUniq, nosdfu, codret)
+                  adsk, partie, indcmp, ncmpve, ntlcmp,&
+                  ntncmp, ntucmp, ntproa, nbimpr, caimpi,&
+                  caimpk, typech, nomamd, nomtyp, modnum,&
+                  nuanom, lfichUniq, nosdfu, codret)
 !
     use as_med_module, only: as_med_open
     implicit none
@@ -55,7 +55,7 @@ integer :: typent, tygeom
 integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
 character(len=8) :: typech
 character(len=8) :: nomtyp(*)
-character(len=24) :: ntlcmp, ntncmp, ntucmp, ntproa
+character(len=24) :: ntlcmp, ntncmp, ntucmp, ntproa, indcmp
 character(len=*) :: nofimd, partie
 character(len=*) :: nomamd
 character(len=*) :: caimpk(3, nbimpr)
@@ -295,10 +295,11 @@ integer :: codret
                     iaux = ncmpve*nbsp*nbpg*nvalec
                     call wkvect(ntvale, 'V V R', iaux, advale)
 !
-                    call ircmva(zi(adnucm), ncmpve, ncmprf, nvalec, nbpg,&
-                                nbsp, adsv, adsd, adsl, adsk,&
-                                partie, tymast, modnum, nuanom, typech,&
-                                zr(advale), zi( adproa), ideb, ifin, codre2)
+                    call ircmva(zi(adnucm), indcmp, ncmpve, ncmprf, nvalec,&
+                                nbpg, nbsp, adsv, adsd, adsl,&
+                                adsk, partie, tymast, modnum, nuanom,&
+                                typech, zr(advale), zi( adproa), ideb, ifin,&
+                                codre2)
                     if (codre2 .ne. 0) retsav = 100
 !
                 endif

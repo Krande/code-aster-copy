@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 interface
     subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
                       instan, numord, adsd, adsv, adsl,&
-                      adsk, partie, ncmpve, ntlcmp, ntncmp,&
-                      ntucmp, ntproa, nbimpr, caimpi, caimpk,&
-                      typech, nomamd, nomtyp, modnum, nuanom,&
-                      lfichUniq, nosdfu, codret)
+                      adsk, partie, indcmp, ncmpve, ntlcmp,&
+                      ntncmp, ntucmp, ntproa, nbimpr, caimpi,&
+                      caimpk, typech, nomamd, nomtyp, modnum,&
+                      nuanom, lfichUniq, nosdfu, codret)
         integer :: nbimpr
         character(len=*) :: nofimd
         character(len=64) :: nochmd
@@ -42,6 +42,7 @@ interface
         character(len=24) :: ntncmp
         character(len=24) :: ntucmp
         character(len=24) :: ntproa
+        character(len=24) :: indcmp
         integer :: caimpi(10, nbimpr)
         character(len=*) :: caimpk(3, nbimpr)
         character(len=8) :: typech

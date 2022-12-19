@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
-                  nbsp, adsv, adsd, adsl, adsk,&
-                  cplxFormatZ, tymast, modnum, nuanom, fieldSupport,&
-                  val, profas, ideb, ifin, codret)
+subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec,&
+                  nbpg, nbsp, adsv, adsd, adsl,&
+                  adsk, cplxFormatZ, tymast, modnum, nuanom,&
+                  fieldSupport, val, profas, ideb, ifin,&
+                  codret)
 implicit none
 !
 #include "asterf_types.h"
@@ -30,6 +31,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jeveuo.h"
 !
 integer :: ncmpve, ncmprf, nvalec, nbpg, nbsp
 integer :: numcmp(ncmprf)
@@ -41,6 +43,7 @@ integer :: ideb, ifin
 real(kind=8) :: val(ncmpve, nbsp, nbpg, nvalec)
 character(len=8), intent(in) :: fieldSupport
 character(len=*), intent(in) :: cplxFormatZ
+character(len=24), intent(in) :: indcmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,7 +84,7 @@ character(len=*), intent(in) :: cplxFormatZ
     integer :: iaux, jaux, kaux, fieldScalar
     integer :: adsvxx, adslxx
     integer :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
-    integer :: ifm, niv
+    integer :: ifm, niv, jindcm, poscmp
     aster_logical :: logaux, lprolz
     real(kind=8) :: end, start
 !
@@ -93,6 +96,7 @@ character(len=*), intent(in) :: cplxFormatZ
     cplxFormat = cplxFormatZ
 !
     call dismoi('TYPE_SCA', gd, 'GRANDEUR', repk=typcha)
+    call jeveuo(indcmp, 'L', jindcm)
 !
     if (typcha .eq. 'R') then
         fieldScalar = 1
@@ -153,6 +157,8 @@ character(len=*), intent(in) :: cplxFormatZ
 !
     if (tymast .eq. 0) then
         do nrcmp = 1 , ncmpve
+            poscmp = zi(jindcm+nrcmp-1)
+            if( poscmp.eq.0 ) cycle
             adsvxx = adsv-1+numcmp(nrcmp)-ncmprf
             adslxx = adsl-1+numcmp(nrcmp)-ncmprf
             jaux = 0
@@ -162,20 +168,20 @@ character(len=*), intent(in) :: cplxFormatZ
                 kaux = ino*ncmprf
                 if (zl(adslxx+kaux)) then
                     if (fieldScalar .eq. 1) then
-                        val(nrcmp,1,1,jaux) = zr(adsvxx+kaux)
+                        val(poscmp,1,1,jaux) = zr(adsvxx+kaux)
                     else if (fieldScalar .eq. 2) then
-                        val(nrcmp,1,1,jaux) = dble(zc(adsvxx+kaux))
+                        val(poscmp,1,1,jaux) = dble(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 3) then
-                        val(nrcmp,1,1,jaux) = dimag(zc(adsvxx+kaux))
+                        val(poscmp,1,1,jaux) = dimag(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 4) then
-                        val(nrcmp,1,1,jaux) = abs(zc(adsvxx+kaux))
+                        val(poscmp,1,1,jaux) = abs(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 5) then
-                        val(nrcmp,1,1,jaux) = atan2(dble(zc(adsvxx+kaux)),dimag(zc(adsvxx+kaux)))*&
+                        val(poscmp,1,1,jaux) = atan2(dble(zc(adsvxx+kaux)),dimag(zc(adsvxx+kaux)))*&
                                               180.d0/r8pi()
                     endif
                 else
                     lprolz=.true.
-                    val(nrcmp,1,1,jaux) = 0.d0
+                    val(poscmp,1,1,jaux) = 0.d0
                 endif
             end do
         end do
@@ -222,6 +228,8 @@ character(len=*), intent(in) :: cplxFormatZ
 !            SERAIT AUTANT DE FOIS QUE DE MAILLES, DONC COUTEUX
 !
         do nrcmp = 1 , ncmpve
+            poscmp = zi(jindcm+nrcmp-1)
+            if( poscmp.eq.0 ) cycle
             nrcmpr = numcmp(nrcmp)
             jaux = 0
             if (logaux) then
@@ -233,15 +241,15 @@ character(len=*), intent(in) :: cplxFormatZ
                         call cesexi('C', adsd, adsl, ima, nrpg, nrsp, nrcmpr, kaux)
                         if ((kaux.gt.0)) then
                             if (fieldScalar .eq. 1) then
-                                val(nrcmp,nrsp,nuanom(tymast,nrpg),jaux)= zr(adsv-1+kaux)
+                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= zr(adsv-1+kaux)
                             else if (fieldScalar .eq. 2) then
-                                val(nrcmp,nrsp,nuanom(tymast,nrpg),jaux)= dble(zc(adsv-1+kaux))
+                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= dble(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 3) then
-                                val(nrcmp,nrsp,nuanom(tymast,nrpg),jaux)= dimag(zc(adsv-1+kaux))
+                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= dimag(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 4) then
-                                val(nrcmp,nrsp,nuanom(tymast,nrpg),jaux)= abs(zc(adsv-1+kaux))
+                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= abs(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 5) then
-                                val(nrcmp,nrsp,nuanom(tymast,nrpg),jaux)= atan2(&
+                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= atan2(&
                                     dble(zc(adsv-1+kaux)),dimag(zc(adsv-1+kaux)))*180.d0/r8pi()
                             endif
                         endif
@@ -256,15 +264,15 @@ character(len=*), intent(in) :: cplxFormatZ
                             call cesexi('C', adsd, adsl, ima, nrpg, nrsp, nrcmpr, kaux)
                             if ((kaux.gt.0)) then
                                 if (fieldScalar .eq. 1) then
-                                    val(nrcmp,nrsp,nrpg,jaux)=zr(adsv-1+kaux)
+                                    val(poscmp,nrsp,nrpg,jaux)=zr(adsv-1+kaux)
                                 else if (fieldScalar .eq. 2) then
-                                    val(nrcmp,nrsp,nrpg,jaux)=dble(zc(adsv-1+kaux))
+                                    val(poscmp,nrsp,nrpg,jaux)=dble(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 3) then
-                                    val(nrcmp,nrsp,nrpg,jaux)=dimag(zc(adsv-1+kaux))
+                                    val(poscmp,nrsp,nrpg,jaux)=dimag(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 4) then
-                                    val(nrcmp,nrsp,nrpg,jaux)=abs(zc(adsv-1+kaux))
+                                    val(poscmp,nrsp,nrpg,jaux)=abs(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 5) then
-                                    val(nrcmp,nrsp,nrpg,jaux)=atan2(&
+                                    val(poscmp,nrsp,nrpg,jaux)=atan2(&
                                         dble(zc(adsv-1+kaux)),dimag(zc(adsv-1+kaux)))*180.d0/r8pi()
                                 endif
                             endif

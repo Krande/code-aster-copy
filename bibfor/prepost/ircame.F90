@@ -30,8 +30,11 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircam1.h"
 #include "asterfort/ircmpr.h"
@@ -40,13 +43,18 @@ implicit none
 #include "asterfort/irmail.h"
 #include "asterfort/irmpga.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/jecreo.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/lrmtyp.h"
 #include "asterfort/mdexch.h"
 #include "asterfort/mdexma.h"
@@ -54,6 +62,10 @@ implicit none
 #include "asterfort/ulisog.h"
 #include "asterfort/utlicm.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_allgatherv_char16.h"
 !
 character(len=8) :: typech, modele, sdcarm, carael
 character(len=19) :: chanom
@@ -107,22 +119,29 @@ integer :: codret
     character(len=8)   :: saux08, nomaas, nomtyp(MT_NTYMAX), nom_sd_fu
     character(len=16)  :: formar
     character(len=24)  :: ntlcmp, ntncmp, ntucmp, ntproa, nmcmfi, ncaimi, ncaimk
+    character(len=24)  :: indcmp
+    character(len=32)  :: nomgd
     character(len=64)  :: nomamd
     character(len=200) :: nofimd
     character(len=255) :: kfic
     med_idt :: ifimed
-    integer :: nbtyp, ifm, nivinf, lnomam
+    integer :: nbtyp, ifm, nivinf, lnomam, jindir
     integer :: ncmpve, nvalec, nbprof, nbvato, ncmprf
     integer :: nbimpr, jnocm1, jnocm2, nbcmp2, icmp1, icmp2
-    integer :: adcaii, adcaik
-    integer :: iaux, jaux, nrimpr
-    integer :: existc, nbcmfi, nbval
+    integer :: adcaii, adcaik, ncmpvl, jnocm3
+    integer :: iaux, jaux, nrimpr, jtest, nb_cmp_tot, jnocmp, numcmp, cmpt
+    integer :: existc, nbcmfi, nbval, nbcmpmax, vnbcmp(1), rang, nbproc, iproc
     aster_logical :: lgaux, existm
     integer :: iCmp
     character(len=8), pointer :: cmpUserName(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
     character(len=8), pointer :: v_ma(:) => null()
+    character(len=16), pointer :: v_nomcmp(:) => null()
+    character(len=16), pointer :: v_nomcm2(:) => null()
     real(kind=8) :: start_time, end_time
+    mpi_int :: mrank, mnbproc, world, one4, taille
+    mpi_int, pointer :: v_count(:) => null()
+    mpi_int, pointer :: v_displ(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -232,6 +251,90 @@ integer :: codret
         call utmess('A', 'MED_99', sk=nochmd)
         goto 999
     endif
+    indcmp = '&&IRCAME.CMPINDIR'
+    if( lfichUniq ) then
+        call jeveuo(ntncmp, 'L', jnocm1)
+        call jeveuo(ntucmp, 'L', jnocm2)
+        call jecreo('&&IRCAME.CMPLOC', 'V N K16')
+        call jeecra('&&IRCAME.CMPLOC', 'NOMMAX', ncmpve)
+        cmpt = 0
+        do icmp1 = 1, ncmpve
+            call jecroc(jexnom('&&IRCAME.CMPLOC', zk16(jnocm1+icmp1-1)))
+        enddo
+        one4 = to_mpi_int(1)
+        call dismoi('NOM_GD', chanom, 'CHAMP', repk = nomgd)
+        if( nomgd.eq.'VARI_R' ) then
+            vnbcmp(1) = ncmpve
+            call asmpi_comm_vect('MPI_MAX', 'I', 1, vi=vnbcmp)
+            nbcmpmax = vnbcmp(1)
+        else
+            call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi = nbcmpmax)
+        endif
+        call asmpi_comm('GET', world)
+        call asmpi_info(rank=mrank, size=mnbproc)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(mnbproc)
+        call wkvect('&&IRCAME.TEST', 'V V I', nbproc, jtest)
+        call wkvect('&&IRCAME.COUNT', 'V V S', nbproc, vi4=v_count)
+        call wkvect('&&IRCAME.DISPL', 'V V S', nbproc+1, vi4=v_displ)
+        call wkvect('&&IRCAME.NOMCMP2', 'V V K16', ncmpve, jnocmp)
+        call wkvect('&&IRCAME.NOMCMP3', 'V V K16', ncmpve, jnocm3)
+        call asmpi_allgather_i([ncmpve], one4, zi(jtest), one4, world)
+        nb_cmp_tot = 0
+        do iproc = 0, nbproc-1
+            nb_cmp_tot = nb_cmp_tot + zi(jtest+iproc)
+            v_count(iproc+1) = to_mpi_int(zi(jtest+iproc))
+            v_displ(iproc+2) = to_mpi_int(nb_cmp_tot)
+        enddo
+        do icmp1 = 1, ncmpve
+            zk16(jnocmp+icmp1-1) = zk16(jnocm1+icmp1-1)
+            zk16(jnocm3+icmp1-1) = zk16(jnocm2+icmp1-1)
+        enddo
+        call wkvect('&&IRCAME.NOMFAG', 'V V K16', nb_cmp_tot, vk16=v_nomcmp)
+        call wkvect('&&IRCAME.NOMFA2', 'V V K16', nb_cmp_tot, vk16=v_nomcm2)
+        call jedetr(ntncmp)
+        call wkvect(ntncmp, 'V V K16', nb_cmp_tot, jnocm1)
+        call jedetr(ntucmp)
+        call wkvect(ntucmp, 'V V K16', nb_cmp_tot, jnocm2)
+        call wkvect(indcmp, 'V V I', nb_cmp_tot, jindir)
+        taille = to_mpi_int(ncmpve)
+        call asmpi_allgatherv_char16(zk16(jnocmp), taille, v_nomcmp, v_count, v_displ, world)
+        call asmpi_allgatherv_char16(zk16(jnocm3), taille, v_nomcm2, v_count, v_displ, world)
+        call jecreo('&&IRCAME.PTRNOM', 'V N K16')
+        call jeecra('&&IRCAME.PTRNOM', 'NOMMAX', nb_cmp_tot)
+        cmpt = 0
+        do icmp1 = 1, nb_cmp_tot
+            call jenonu(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)), numcmp)
+            if( numcmp.eq.0 ) then
+                call jecroc(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)))
+                cmpt = cmpt + 1
+                zk16(jnocm1+cmpt-1) = v_nomcmp(icmp1)
+                zk16(jnocm2+cmpt-1) = v_nomcm2(icmp1)
+                call jenonu(jexnom('&&IRCAME.CMPLOC', v_nomcmp(icmp1)), numcmp)
+                if( numcmp.ne.0 ) then
+                    zi(jindir+icmp1-1) = cmpt
+                endif
+            endif
+        enddo
+        call jedetr('&&IRCAME.TEST')
+        call jedetr('&&IRCAME.COUNT')
+        call jedetr('&&IRCAME.DISPL')
+        call jedetr('&&IRCAME.NOMCMP2')
+        call jedetr('&&IRCAME.NOMCMP3')
+        call jedetr('&&IRCAME.NOMFAG')
+        call jedetr('&&IRCAME.NOMFA2')
+        call jedetr('&&IRCAME.PTRNOM')
+        call jedetr('&&IRCAME.CMPLOC')
+        ncmpvl = ncmpve
+        ncmpve = cmpt
+        ncmprf = cmpt
+    else
+        call wkvect(indcmp, 'V V I', ncmpve, jindir)
+        do icmp1 = 1, ncmpve
+            zi(jindir+icmp1-1) = icmp1
+        enddo
+        ncmpvl = ncmpve
+    endif
 !   ON REMPLACE LES NOMS DES COMPOSANTES
     if (etiqcp .ne. ' ') then
         call jeveuo(ntncmp, 'L', jnocm1)
@@ -255,7 +358,7 @@ integer :: codret
                 modnum, nuanom, numnoa)
 !   3.3. ==> DEFINITIONS DES IMPRESSIONS ET CREATION DES PROFILS EVENTUELS
     call ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
-                ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
+                ncmprf, ncmpvl, ntlcmp, nbvato, nbenec,&
                 lienec, adsd, adsl, nomaas, modele,&
                 typgeo, nomtyp, ntproa, chanom, sdcarm,&
                 field_type, nom_sd_fu)
@@ -318,10 +421,10 @@ integer :: codret
         if ( existc.le.2 ) then
             call ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
                         instan, numord, adsd, adsv, adsl,&
-                        adsk, partie, ncmpve, ntlcmp, ntncmp,&
-                        ntucmp, ntproa, nbimpr, zi(adcaii), zk80(adcaik),&
-                        typech, nomamd, nomtyp, modnum, numnoa,&
-                        lfichUniq, nom_sd_fu, codret)
+                        adsk, partie, indcmp, ncmpve, ntlcmp,&
+                        ntncmp, ntucmp, ntproa, nbimpr, zi(adcaii),&
+                        zk80(adcaik), typech, nomamd, nomtyp, modnum,&
+                        numnoa, lfichUniq, nom_sd_fu, codret)
         else
             call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
         endif
@@ -344,6 +447,7 @@ integer :: codret
     call jedetr('&&'//nompro//'.NOMCMP_FICHIER ')
     call jedetr('&&'//nompro//'.CARAC_NOMBRES__')
     call jedetr('&&'//nompro//'.CARAC_CHAINES__')
+    call jedetr(indcmp)
 !
     call jedema()
 !
