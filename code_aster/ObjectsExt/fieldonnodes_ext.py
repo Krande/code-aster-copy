@@ -39,7 +39,8 @@ from libaster import (
     DOFNumbering,
 )
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import injector
+from ..Utilities import injector, config
+from ..Utilities.mpi_utils import MPI
 
 
 class FieldOnNodesStateBuilder(InternalStateBuilder):
@@ -135,6 +136,45 @@ class ExtendedFieldOnNodesReal:
                     # there may be 2 Lagrange multipliers per constraint
                     indir.setdefault((node, dof), []).append(row)
         return indir
+
+    def toPetsc(self, dofNmbrng=None):
+        """Convert the field to a PETSc vector object.
+
+        Arguments:
+            dofNmbrng (ParallelDofNumbering) : the numbering of the DOFs - mandatory in the case of a
+                                               parallel vector, not used otherwise.
+
+        Returns:
+            PetscVec: PETSc vector.
+        """
+        mesh = self.getMesh()
+        if not config["ASTER_HAVE_PETSC"] or not config["ASTER_HAVE_PETSC4PY"]:
+            raise RuntimeError("petsc4py is needed and is not installed")
+        # import here and not at the beginning because it causes MPI_init (see issue32486)
+        from petsc4py.PETSc import Vec, InsertMode
+
+        if mesh.isParallel():
+            if not dofNmbrng:
+                raise RuntimeError("dofNumbering must be provided")
+            comm = MPI.COMM_WORLD
+            _vec = Vec().create(comm=comm)
+            _vec.setType("mpi")
+            val = self.getValues()
+            neql = len(val) - len(dofNmbrng.getGhostRows())
+            neqg = dofNmbrng.getNumberOfDofs(False)
+            _vec.setSizes((neql, neqg))
+            _vec.setValues(
+                dofNmbrng.getLocalToGlobalMapping(), self.getValues(), InsertMode.INSERT_VALUES
+            )
+        else:
+            _vec = Vec().create()
+            _vec.setType("mpi")
+            val = self.getValues()
+            neq = len(val)
+            _vec.setSizes(neq)
+            _vec.setValues(range(neq), self.getValues(), InsertMode.INSERT_VALUES)
+        _vec.assemble()
+        return _vec
 
     def setDirichletBC(self, **kwargs):
         """Set the values of the Dirichlet boundary conditions of the degrees

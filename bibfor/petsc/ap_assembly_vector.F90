@@ -169,7 +169,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 !
     call VecGetArray(assembly, xx, xidx, ierr)
     ASSERT(ierr.eq.0)
-    do iloc = 0, nloc-1
+    do iloc = 1, nloc
         if( pddl(iloc) .eq. rang ) then
             numglo = zi(jnulg-1+iloc)
             zr(jvale-1+iloc) = xx(xidx+numglo-low+1)

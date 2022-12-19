@@ -134,6 +134,64 @@ void exportFieldOnNodesToPython( py::module_ &mod ) {
                 vect (float): diagonal matrix stored as an array
             )",
               py::arg( "vect" ) )
+        .def( "applyLagrangeScaling", &FieldOnNodesReal::applyLagrangeScaling, R"(
+            Multiply in-place the Lagrange multipliers DOFs by the scaling value
+
+            Arguments:
+                scaling (float): scaling velue
+            )",
+              py::arg( "scaling" ) )
+#ifdef ASTER_HAVE_PETSC
+        .def( "fromPetsc", py::overload_cast< const DOFNumbering &, const Vec &, const ASTERDOUBLE & >( &FieldOnNodesReal::fromPetsc ), R"(
+            Import a PETSc vector into the field.
+
+            Arguments:
+                dofNmbrg (DOFNumbering): The numbering of the DOFs
+                vec (Vec): The PETSc vector
+                scaling (float) : The scaling of the Lagrange DOFs
+            )",
+              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) )
+        .def( "fromPetsc", py::overload_cast< const ParallelDOFNumbering &, const Vec &, const ASTERDOUBLE & >( &FieldOnNodesReal::fromPetsc ), R"(
+            Import a PETSc vector into the field.
+
+            Arguments:
+                dofNmbrg (DOFNumbering): The numbering of the DOFs
+                vec (Vec): The PETSc vector
+                scaling (float) : The scaling of the Lagrange DOFs
+            )",
+              py::arg( "dofNmbrg" ), py::arg( "vec" ), py::arg( "scaling" ) )
+        .def( "fromPetsc", py::overload_cast< const DOFNumbering &, const Vec & >( &FieldOnNodesReal::fromPetsc ), R"(
+            Import a PETSc vector into the field.
+
+            Arguments:
+                dofNmbrg (DOFNumbering): The numbering of the DOFs
+                vec (Vec): The PETSc vector
+            )",
+              py::arg( "dofNmbrg" ), py::arg( "vec" ) )
+        .def( "fromPetsc", py::overload_cast< const ParallelDOFNumbering &, const Vec & >( &FieldOnNodesReal::fromPetsc ), R"(
+            Import a PETSc vector into the field.
+
+            Arguments:
+                dofNmbrg (DOFNumbering): The numbering of the DOFs
+                vec (Vec): The PETSc vector
+            )",
+              py::arg( "dofNmbrg" ), py::arg( "vec" ) )
+        .def( "fromPetsc", py::overload_cast< const Vec &, const ASTERDOUBLE & >( &FieldOnNodesReal::fromPetsc ), R"(
+            Import a PETSc vector into the field.
+
+            Arguments:
+                vec (Vec): The PETSc vector
+                scaling (float) : The scaling of the Lagrange DOFs
+            )",
+              py::arg( "vec" ), py::arg( "scaling" ) )
+        .def( "fromPetsc", py::overload_cast< const Vec & >( &FieldOnNodesReal::fromPetsc ), R"(
+            Import a PETSc vector into the field.
+
+            Arguments:
+                vec (Vec): The PETSc vector
+            )",
+              py::arg( "vec" ) )
+#endif
         .def( "setValues", py::overload_cast< const ASTERDOUBLE & >( &FieldOnNodesReal::setValues ),
               R"(
             Set values of the field

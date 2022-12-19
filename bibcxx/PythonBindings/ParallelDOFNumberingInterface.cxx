@@ -199,6 +199,14 @@ Returns:
         )",
               py::arg( "loc" ) )
         // ---------------------------------------------------------------------
+        .def( "getLocalToGlobalMapping", &ParallelDOFNumbering::getLocalToGlobalMapping,
+              R"(
+Returns the mapping from the local to the global number of the DOFs.
+
+Returns:
+    int: global number of the DOF.
+        )")
+        // ---------------------------------------------------------------------
         .def( "globalToLocalRow", &ParallelDOFNumbering::globalToLocalRow,
               R"(
 Returns the local number of a global DOF.

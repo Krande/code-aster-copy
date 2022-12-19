@@ -69,10 +69,13 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
         .def( "getDescription", &FieldOnCellsReal::getDescription )
         .def( "build", &FieldOnCellsReal::build,
               py::arg( "feds" ) = std::vector< FiniteElementDescriptorPtr >() )
-        .def( "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsReal &v, ASTERINTEGER i,
-                                  float f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsReal &v, ASTERINTEGER i ) { return v[i]; } )
+        .def(
+            "__setitem__",
+            +[]( FieldOnCellsReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsReal &v ) { return v.size(); } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -214,10 +217,13 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 list[complex]: List of values.
             )" )
-        .def( "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsComplex &v, ASTERINTEGER i,
-                                  ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsComplex &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
+        .def(
+            "__setitem__", +[]( FieldOnCellsComplex &v, ASTERINTEGER i,
+                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsComplex &v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )
@@ -295,10 +301,13 @@ void exportFieldOnCellsToPython( py::module_ &mod ) {
             Returns:
                 list[int]: List of values.
             )" )
-        .def( "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
-        .def( "__setitem__", +[]( FieldOnCellsLong &v, ASTERINTEGER i,
-                                  ASTERINTEGER f ) { return v.operator[]( i ) = f; } )
-        .def( "__len__", +[]( const FieldOnCellsLong &v ) { return v.size(); } )
+        .def(
+            "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
+        .def(
+            "__setitem__", +[]( FieldOnCellsLong &v, ASTERINTEGER i,
+                                ASTERINTEGER f ) { return v.operator[]( i ) = f; } )
+        .def(
+            "__len__", +[]( const FieldOnCellsLong &v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )

@@ -2228,6 +2228,13 @@ class FieldOnNodesReal(DataField):
     def __sub__(self, arg0):
         pass
     
+    def applyLagrangeScaling(self, scaling):
+        """Multiply in-place the Lagrange multipliers DOFs by the scaling value
+        
+        Arguments:
+            scaling (float): scaling velue
+        """
+    
     def build(self):
         pass
     
@@ -2246,6 +2253,70 @@ class FieldOnNodesReal(DataField):
     
     def exportToSimpleFieldOnNodes(self):
         pass
+    
+    def fromPetsc(self, *args, **kwargs):
+        """Overloaded function.
+        
+        1. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.DOFNumbering, vec: vec, scaling: float) -> None
+        
+        
+                    Import a PETSc vector into the field.
+        
+                    Arguments:
+                        dofNmbrg (DOFNumbering): The numbering of the DOFs
+                        vec (Vec): The PETSc vector
+                        scaling (float) : The scaling of the Lagrange DOFs
+                    
+        
+        2. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: ParallelDOFNumbering, vec: vec, scaling: float) -> None
+        
+        
+                    Import a PETSc vector into the field.
+        
+                    Arguments:
+                        dofNmbrg (DOFNumbering): The numbering of the DOFs
+                        vec (Vec): The PETSc vector
+                        scaling (float) : The scaling of the Lagrange DOFs
+                    
+        
+        3. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: libaster.DOFNumbering, vec: vec) -> None
+        
+        
+                    Import a PETSc vector into the field.
+        
+                    Arguments:
+                        dofNmbrg (DOFNumbering): The numbering of the DOFs
+                        vec (Vec): The PETSc vector
+                    
+        
+        4. fromPetsc(self: libaster.FieldOnNodesReal, dofNmbrg: ParallelDOFNumbering, vec: vec) -> None
+        
+        
+                    Import a PETSc vector into the field.
+        
+                    Arguments:
+                        dofNmbrg (DOFNumbering): The numbering of the DOFs
+                        vec (Vec): The PETSc vector
+                    
+        
+        5. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec, scaling: float) -> None
+        
+        
+                    Import a PETSc vector into the field.
+        
+                    Arguments:
+                        vec (Vec): The PETSc vector
+                        scaling (float) : The scaling of the Lagrange DOFs
+                    
+        
+        6. fromPetsc(self: libaster.FieldOnNodesReal, vec: vec) -> None
+        
+        
+                    Import a PETSc vector into the field.
+        
+                    Arguments:
+                        vec (Vec): The PETSc vector
+        """
     
     def getComponents(self):
         """Get list of components
@@ -11236,6 +11307,13 @@ class ParallelDOFNumbering(BaseDOFNumbering):
         
         Returns:
             int: indexes of the ghost DOFs.
+        """
+    
+    def getLocalToGlobalMapping(self):
+        """Returns the mapping from the local to the global number of the DOFs.
+        
+        Returns:
+            int: global number of the DOF.
         """
     
     def getNodeAssociatedToRow(self, row, local= False):

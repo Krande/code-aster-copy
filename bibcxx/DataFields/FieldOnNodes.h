@@ -24,6 +24,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_fort_petsc.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 #include "astercxx.h"
@@ -36,11 +37,15 @@
 #include "Meshes/BaseMesh.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/FieldOnNodesDescription.h"
+#include "Numbering/ParallelDOFNumbering.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Blas.h"
+#ifdef ASTER_HAVE_PETSC
+#include <petscvec.h>
+#endif
 
 #include <typeinfo>
 
@@ -97,11 +102,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
     /**
      * @brief Return list of dof to use
-     * @param local True: Use all nodes / False: Use only owned nodes
+     * @param sameRank True: Use only owned nodes / False: Use all nodes
      * @param list_cmp empty: Use all cmp / keep only cmp given
      */
-    VectorLong _getDOFsToUse( const bool local, const VectorString &list_cmp ) const {
-        const bool all_nodes = local;
+    VectorLong _getDOFsToUse( const bool sameRank, const VectorString &list_cmp ) const {
+        const bool all_nodes = !sameRank;
         const auto rank = getMPIRank();
         if ( !_mesh )
             raiseAsterError( "Mesh is empty" );
@@ -589,6 +594,64 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
     /**
+     * @brief Import a PETSc vector into a ParallelFieldOnNodes
+     *
+     * @param dofNmbrg The numbering of the DOFs
+     * @param vec The PETSc vector
+     * @param scaling The scaling of the Lagrange DOFs
+     */
+#ifdef ASTER_HAVE_PETSC
+    void fromPetsc( const DOFNumbering &dofNmbrg, const Vec &vec, const ASTERDOUBLE &scaling ) {
+        if ( get_sh_jeveux_status() == 1 ) {
+            CALLO_VECT_ASSE_FROM_PETSC( getName(), dofNmbrg.getName(), &vec, &scaling );
+            _values->updateValuePointer();
+        }
+    };
+    void fromPetsc( const ParallelDOFNumbering &dofNmbrg, const Vec &vec,
+                    const ASTERDOUBLE &scaling ) {
+        if ( get_sh_jeveux_status() == 1 ) {
+            CALLO_VECT_ASSE_FROM_PETSC( getName(), dofNmbrg.getName(), &vec, &scaling );
+            _values->updateValuePointer();
+        }
+    };
+    void fromPetsc( const DOFNumbering &dofNmbrg, const Vec &vec ) {
+        if ( get_sh_jeveux_status() == 1 ) {
+            const auto dummy_scaling = 1.;
+            CALLO_VECT_ASSE_FROM_PETSC( getName(), dofNmbrg.getName(), &vec, &dummy_scaling );
+            _values->updateValuePointer();
+        }
+    };
+    void fromPetsc( const ParallelDOFNumbering &dofNmbrg, const Vec &vec ) {
+        if ( get_sh_jeveux_status() == 1 ) {
+            const auto dummy_scaling = 1.;
+            CALLO_VECT_ASSE_FROM_PETSC( getName(), dofNmbrg.getName(), &vec, &dummy_scaling );
+            _values->updateValuePointer();
+        }
+    };
+    void fromPetsc( const Vec &vec, const ASTERDOUBLE &scaling ) {
+        if ( get_sh_jeveux_status() == 1 ) {
+            if ( getMesh()->isParallel() ) {
+                raiseAsterError( "dofNumbering must be provided" );
+            }
+            const std::string dummy_nbg = " ";
+            CALLO_VECT_ASSE_FROM_PETSC( getName(), dummy_nbg, &vec, &scaling );
+            _values->updateValuePointer();
+        }
+    };
+    void fromPetsc( const Vec &vec ) {
+        if ( get_sh_jeveux_status() == 1 ) {
+            if ( getMesh()->isParallel() ) {
+                raiseAsterError( "dofNumbering must be provided" );
+            }
+            const auto dummy_scaling = 1.;
+            const std::string dummy_nbg = " ";
+            CALLO_VECT_ASSE_FROM_PETSC( getName(), dummy_nbg, &vec, &dummy_scaling );
+            _values->updateValuePointer();
+        }
+    };
+#endif
+
+    /**
      * @brief Set the Values object
      *
      * @param value Value to affect
@@ -604,6 +667,20 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         AS_ASSERT( values.size() == size() );
 
         *_values = values;
+    };
+
+    void applyLagrangeScaling( const ValueType scaling ) {
+        _values->updateValuePointer();
+
+        const auto descr = this->getNodesAndComponentsNumberFromDOF();
+
+        auto nbDofs = this->size();
+
+        for ( ASTERINTEGER dof = 0; dof < nbDofs; dof++ ) {
+            if ( descr[dof].second < 0 ) {
+                ( *this )[dof] = ( *this )[dof] * scaling;
+            }
+        }
     };
 
     void setValues( const std::map< std::string, ValueType > &values ) {
@@ -673,7 +750,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
         _values->updateValuePointer();
-        auto dofUsed = this->_getDOFsToUse( false, list_cmp );
+        auto dofUsed = this->_getDOFsToUse( true, list_cmp );
 
         if ( normType == "NORM_1" ) {
             for ( auto &dof : dofUsed ) {
@@ -719,7 +796,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( taille != tmp->size() )
             raiseAsterError( "Incompatible size" );
 
-        auto dofUsed = this->_getDOFsToUse( false, VectorString() );
+        auto dofUsed = this->_getDOFsToUse( true, VectorString() );
 
         ValueType ret;
         if constexpr ( std::is_same_v< ValueType, ASTERDOUBLE > ||

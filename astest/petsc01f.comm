@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import code_aster
+
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
 
 MA = LIRE_MAILLAGE(FORMAT="MED")
@@ -106,6 +108,26 @@ TEST_RESU(
     )
 )
 
+# Export / import to PETSc
+test = code_aster.TestCase()
+U = VECAS
+
+pU = U.toPetsc()
+V = U.duplicate()
+
+V.setValues(0.0)
+test.assertEqual(V.norm("NORM_2"), 0)
+
+V.fromPetsc(pU)
+test.assertEqual((U - V).norm("NORM_2"), 0)
+
+scaling = 1000.0
+V.fromPetsc(pU, scaling)
+for lag in NU.getRowsAssociatedToLagrangeMultipliers():
+    test.assertEqual((V[lag] - U[lag] * 1000.0), 0)
+
+U.applyLagrangeScaling(scaling)
+test.assertEqual((U - V).norm("NORM_2"), 0)
 
 # Validation de FACTORISER / PETSC / LDLT_INC  :
 # -----------------------------------------------
@@ -127,5 +149,7 @@ TEST_RESU(
         )
     )
 )
+
+test.printSummary()
 
 FIN()

@@ -29,6 +29,7 @@
 
 #ifdef ASTER_HAVE_PETSC
 #include "petscmat.h"
+#include "petscvec.h"
 #endif
 
 #ifdef __cplusplus
@@ -40,8 +41,14 @@ extern "C" {
 #define CALL_MATASS2PETSC( a, b, c ) CALLSPP( MATASS2PETSC, matass2petsc, a, b, c )
 void DEFSPP( MATASS2PETSC, matass2petsc, const char *, STRING_SIZE, Mat *, PetscErrorCode * );
 
-#define CALLO_AP_ON_OFF( a, b ) CALLOO( AP_ON_OFF, ap_on_off, a, b )
-void DEFSS( AP_ON_OFF, ap_on_off, const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_AP_ON_OFF( a, b ) CALLOO( AP_ON_OFF, ap_on_off, a , b)
+void DEFSS( AP_ON_OFF, ap_on_off, const char *, STRING_SIZE , const char *, STRING_SIZE );
+
+#define CALLO_VECT_ASSE_FROM_PETSC( a, b, c, d )                                                \
+    CALLOOPP( CALLO_VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, a, b, c, d )
+extern void DEFSSPP( VECT_ASSE_FROM_PETSC, vect_asse_from_petsc, const char *, STRING_SIZE,
+                      const char *, STRING_SIZE, const Vec *, const ASTERDOUBLE *);
+
 #endif
 
 #ifdef __cplusplus

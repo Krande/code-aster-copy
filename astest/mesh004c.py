@@ -103,6 +103,49 @@ cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
 v = petsc4py.PETSc.Viewer().createASCII("mesh004c_rank" + str(rank) + ".out", comm=S.getComm())
 S.view(v)
 
+# Use Dualized BC (with AFFE_CHAR_THER)
+charTher = AFFE_CHAR_THER(MODELE=MODT, TEMP_IMPO=_F(TEMP=0, GROUP_NO="EncastN"))
+vect_elem = CALC_VECT_ELEM(OPTION="CHAR_THER", CHARGE=CHT1)
+matr_elem = CALC_MATR_ELEM(OPTION="RIGI_THER", CHARGE=charTher, MODELE=MODT, CHAM_MATER=affectMat)
+
+numeDDL = code_aster.ParallelDOFNumbering()
+numeDDL.setElementaryMatrix(matr_elem)
+numeDDL.computeNumbering()
+test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
+
+matrAsse = code_aster.AssemblyMatrixTemperatureReal()
+matrAsse.addElementaryMatrix(matr_elem)
+matrAsse.setDOFNumbering(numeDDL)
+matrAsse.assemble()
+test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
+
+vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)
+
+matrAsse = FACTORISER(reuse=matrAsse, MATR_ASSE=matrAsse, METHODE="PETSC", PRE_COND="JACOBI")
+
+retour = RESOUDRE(MATR=matrAsse, CHAM_NO=vecass, ALGORITHME="GCR", RESI_RELA=1e-9)
+
+# Export / import to PETSc
+test = code_aster.TestCase()
+U = retour
+
+pU = U.toPetsc(numeDDL)
+V = U.duplicate()
+
+V.setValues(0.0)
+test.assertEqual(V.norm("NORM_2"), 0)
+
+V.fromPetsc(numeDDL, pU)
+test.assertEqual((U - V).norm("NORM_2"), 0)
+
+scaling = 1000.0
+V.fromPetsc(numeDDL, pU, scaling)
+for lag in numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True):
+    test.assertEqual((V[lag] - U[lag] * 1000.0), 0)
+
+U.applyLagrangeScaling(scaling)
+test.assertEqual((U - V).norm("NORM_2"), 0)
+
 test.printSummary()
 
 FIN()
