@@ -30,7 +30,6 @@ implicit none
 #include "asterfort/apcoor.h"
 #include "asterfort/apprin_n.h"
 #include "asterfort/aprtpm.h"
-#include "asterfort/apsave_pair_n.h"
 #include "asterfort/apsave_pair.h"
 #include "asterfort/aptype.h"
 #include "asterfort/as_allocate.h"
@@ -66,7 +65,8 @@ integer, intent(in) :: list_elem_mast(nb_elem_mast)
 integer, intent(in) :: list_elem_slav(nb_elem_slav)
 integer, intent(in) :: list_node_mast(nb_node_mast)
 integer, intent(out) :: nb_pair_zone
-character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone, list_ptitsl_zone
+character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone
+character(len=19), intent(in) :: list_ptitsl_zone
 character(len=24), intent(in) :: pair_method
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,9 +101,10 @@ character(len=8) :: elem_slav_type, elem_mast_type
 real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
 integer :: nb_pair, nb_poin_inte
 integer :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
-integer :: i_slav_neigh, nb_next_alloc
+integer :: i_slav_neigh
 real(kind=8) :: inte_weight
 real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
+real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
 character(len=8) :: elem_slav_name, elem_name
 integer :: nb_slav_start, nb_find_mast, nb_mast_start
 integer :: elem_start, elem_nume, jtab
@@ -123,11 +124,8 @@ real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
 integer, pointer :: v_mesh_typmail(:) => null()
 integer, pointer :: v_mesh_connex(:)  => null()
 integer, pointer :: v_connex_lcum(:)  => null()
-integer :: nb_pair_ztmp
-integer, pointer :: list_pair_ztmp(:) => null()
-integer, pointer :: li_nbptsl_ztmp(:) => null()
-real(kind=8), pointer :: li_ptintsl_ztmp(:) => null()
 real(kind=8), pointer :: li_pt_inte_sl(:) => null()
+real(kind=8), pointer :: li_pt_inte_ma(:) => null()
 integer, pointer :: list_pair(:) => null()
 integer, pointer :: li_nb_pt_inte_sl(:) => null()
 integer, pointer :: list_find_mast(:) => null()
@@ -147,7 +145,7 @@ integer, pointer :: elem_mast_start(:) => null()
     inte_neigh(1:4)                = 0
     list_slav_master(1:4)          = 0
     list_slav_weight(1:4)          = 0.d0
-    nb_pair_ztmp                   = 0
+    nb_pair                        = 0
 
     mast_indx_maxi = maxval(list_elem_mast)
     slav_indx_maxi = maxval(list_elem_slav)
@@ -168,9 +166,10 @@ integer, pointer :: elem_mast_start(:) => null()
 !
     AS_ALLOCATE(vi=elem_slav_flag, size= slav_indx_maxi+1-slav_indx_mini)
     AS_ALLOCATE(vi=mast_find_flag, size= mast_indx_maxi+1-mast_indx_mini)
-    AS_ALLOCATE(vr=li_pt_inte_sl, size= nb_elem_mast*SIZE_MAX_INTE_SL)
-    AS_ALLOCATE(vi=list_pair, size= nb_elem_mast)
-    AS_ALLOCATE(vi=li_nb_pt_inte_sl, size= nb_elem_mast)
+    AS_ALLOCATE(vr=li_pt_inte_sl, size= nb_elem_mast*nb_elem_slav*SIZE_MAX_INTE_SL)
+    AS_ALLOCATE(vr=li_pt_inte_ma, size= nb_elem_mast*nb_elem_slav*SIZE_MAX_INTE_SL)
+    AS_ALLOCATE(vi=list_pair, size= 2*nb_elem_slav*nb_elem_mast)
+    AS_ALLOCATE(vi=li_nb_pt_inte_sl, size= nb_elem_slav*nb_elem_mast)
     AS_ALLOCATE(vi=list_find_mast, size= nb_elem_mast)
     AS_ALLOCATE(vi=elem_slav_start, size=nb_elem_slav)
     AS_ALLOCATE(vi=elem_mast_start, size=nb_elem_slav)
@@ -287,10 +286,6 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! ----- Initialization list of contact pairs
 !
-            list_pair(:) = 0
-            li_pt_inte_sl(:) = 0.0
-            li_nb_pt_inte_sl(:) = 0
-            nb_pair = 0
             l_recup = ASTER_TRUE
 
 ! -----     Loop on master elements => Look for the master elements
@@ -337,7 +332,7 @@ integer, pointer :: elem_mast_start(:) => null()
                 call prjint_ray(pair_tole      , dist_ratio, elem_slav_dime,&
                                 elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                                 elem_slav_nbnode   , elem_slav_coor, elem_slav_code,&
-                                poin_inte_sl       , inte_weight, nb_poin_inte  ,&
+                                poin_inte_ma, poin_inte_sl, inte_weight, nb_poin_inte  ,&
                                 inte_neigh_ = inte_neigh, ierror_=iret)
 !
                 if (iret == 2) then
@@ -358,11 +353,17 @@ integer, pointer :: elem_mast_start(:) => null()
 !
                 if (inte_weight > pair_tole .and. iret ==0) then
                     nb_pair                        = nb_pair+1
-                    list_pair(nb_pair)             = elem_mast_nume
+                    ASSERT(nb_pair .le. nb_elem_slav*nb_elem_mast)
+                    list_pair(2*(nb_pair-1)+1)             = elem_slav_nume
+                    list_pair(2*(nb_pair-1)+2)             = elem_mast_nume
                     li_nb_pt_inte_sl(nb_pair)      = nb_poin_inte
                     ASSERT(nb_poin_inte.le.8)
                     li_pt_inte_sl((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
                                  (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_sl
+                    li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
+                                 (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_ma
+                    !print*,"LIPTMA_APLC", li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
+                     !            (nb_pair-1)*SIZE_MAX_INTE_SL+2)
                 end if
 
                 if(debug) then
@@ -431,18 +432,6 @@ integer, pointer :: elem_mast_start(:) => null()
 
             end do
 !
-! ----- Save pairing informations (contact pair)
-!
-            if (nb_pair .ne. 0) then
-                call apsave_pair_n(elem_slav_nume,&
-                                nb_pair     , list_pair     ,&
-                                li_nb_pt_inte_sl, li_pt_inte_sl,&
-                                nb_pair_ztmp, list_pair_ztmp,&
-                                li_nbptsl_ztmp, li_ptintsl_ztmp, &
-                                nb_elem_slav, nb_elem_mast,&
-                                nb_next_alloc)
-            end if
-!
 ! ----- Next elements
 !
             if (debug) then
@@ -474,24 +463,22 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 !----- save results
 !
-    nb_pair_zone = nb_pair_ztmp
+    nb_pair_zone = nb_pair
     if(nb_pair_zone > 0) then
         call wkvect(list_pair_zone, 'G V I', 2*nb_pair_zone, jtab)
-        zi(jtab-1+1:jtab-1+2*nb_pair_zone) = list_pair_ztmp(1:2*nb_pair_zone)
+        zi(jtab-1+1:jtab-1+2*nb_pair_zone) = list_pair(1:2*nb_pair_zone)
         call wkvect(list_nbptit_zone, 'G V I', nb_pair_zone, jtab)
-        zi(jtab-1+1:jtab-1+nb_pair_zone) = li_nbptsl_ztmp(1:nb_pair_zone)
+        zi(jtab-1+1:jtab-1+nb_pair_zone) = li_nb_pt_inte_sl(1:nb_pair_zone)
         call wkvect(list_ptitsl_zone, 'G V R', 16*nb_pair_zone, jtab)
-        zr(jtab-1+1:jtab-1+16*nb_pair_zone) = li_ptintsl_ztmp(1:16*nb_pair_zone)
+        zr(jtab-1+1:jtab-1+16*nb_pair_zone) = li_pt_inte_sl(1:16*nb_pair_zone)
     end if
 !
 !--- DEALLOCATE
 !
     AS_DEALLOCATE(vi=mast_find_flag)
     AS_DEALLOCATE(vi=elem_slav_flag)
-    AS_DEALLOCATE(vi=list_pair_ztmp)
-    AS_DEALLOCATE(vi=li_nbptsl_ztmp)
-    AS_DEALLOCATE(vr=li_ptintsl_ztmp)
     AS_DEALLOCATE(vr=li_pt_inte_sl)
+    AS_DEALLOCATE(vr=li_pt_inte_ma)
     AS_DEALLOCATE(vi=list_pair)
     AS_DEALLOCATE(vi=li_nb_pt_inte_sl)
     AS_DEALLOCATE(vi=list_find_mast)

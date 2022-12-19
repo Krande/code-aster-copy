@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ptinma(elem_nbnode, elem_dime , elem_code, elem_coor, pair_tole,&
-                      poin_coorx , poin_coory, test)
+                      poin_coorx , poin_coory, test, cor_inte_ori)
         integer, intent(in) :: elem_nbnode
         integer, intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
@@ -29,5 +29,6 @@ interface
         real(kind=8), intent(in) :: poin_coorx
         real(kind=8), intent(in) :: poin_coory
         integer, intent(out) :: test
+        real(kind=8),optional ,intent(out) :: cor_inte_ori(2)
     end subroutine ptinma
 end interface

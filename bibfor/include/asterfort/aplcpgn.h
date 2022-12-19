@@ -24,7 +24,7 @@ interface
     subroutine aplcpgn(mesh, newgeo, zone,  pair_method,  pair_tole, dist_ratio, &
                       nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, list_node_mast,&
                       nb_node_mast , nb_pair_zone, list_pair_zone, list_nbptit_zone,&
-                       list_ptitsl_zone)
+                      list_ptitsl_zone)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         character(len=19), intent(in) :: zone
@@ -36,7 +36,8 @@ interface
         integer, intent(in) :: list_elem_slav(nb_elem_slav)
         integer, intent(in) :: list_node_mast(nb_node_mast)
         integer, intent(out) :: nb_pair_zone
-        character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone, list_ptitsl_zone
+        character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone
+        character(len=19), intent(in) :: list_ptitsl_zone
         character(len=24), intent(in) :: pair_method
     end subroutine aplcpgn
 end interface

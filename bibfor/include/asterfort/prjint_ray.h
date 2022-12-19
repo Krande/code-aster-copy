@@ -20,7 +20,7 @@ interface
     subroutine prjint_ray(proj_tole, dist_ratio       , elem_dime     ,&
                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                      poin_inte       , inte_weight   , nb_poin_inte  ,&
+                      poin_inte_ma, poin_inte_es, inte_weight   , nb_poin_inte  ,&
                       inte_neigh_     , ierror_)
         real(kind=8), intent(in) :: proj_tole, dist_ratio
         integer, intent(in) :: elem_dime
@@ -30,7 +30,8 @@ interface
         real(kind=8), intent(in) :: elem_mast_coor(3,9)
         integer, intent(in) :: elem_mast_nbnode
         character(len=8), intent(in) :: elem_mast_code
-        real(kind=8), intent(out) :: poin_inte(elem_dime-1,8)
+        real(kind=8), intent(out) :: poin_inte_ma(elem_dime-1,8)
+        real(kind=8), intent(out) :: poin_inte_es(elem_dime-1,8)
         real(kind=8), intent(out) :: inte_weight
         integer, intent(out) :: nb_poin_inte
         integer, optional, intent(inout) :: inte_neigh_(4)

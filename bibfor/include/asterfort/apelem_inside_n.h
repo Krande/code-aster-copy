@@ -22,15 +22,18 @@
 !
 interface
     subroutine apelem_inside_n(pair_tole   , elem_dime, elem_code, &
-                             nb_poin_coor, poin_coor,&
-                             nb_poin_inte, poin_inte, inte_neigh)
+                               nb_poin_coor, poin_coor,&
+                               nb_poin_inte, poin_inte, inte_neigh,&
+                               poin_coor_ori, poin_inte_ori)
         real(kind=8), intent(in) :: pair_tole
         integer, intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
         integer, intent(in) :: nb_poin_coor
         real(kind=8), intent(in) :: poin_coor(elem_dime-1,4)
+        real(kind=8), intent(in) :: poin_coor_ori(elem_dime-1,4)
         integer, intent(inout) :: nb_poin_inte
         real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+        real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1,16)
         integer, intent(inout) :: inte_neigh(4)
     end subroutine apelem_inside_n
 end interface

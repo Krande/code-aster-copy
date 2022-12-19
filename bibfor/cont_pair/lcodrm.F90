@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte)
+subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte, poin_inte2)
 !
 implicit none
 !
@@ -29,6 +29,7 @@ implicit none
     real(kind=8), intent(in) :: pair_tole
     integer, intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1,nb_poin_inte)
+    real(kind=8),optional, intent(inout) :: poin_inte2(elem_dime-1,nb_poin_inte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,6 +47,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: poin_inte_sort(elem_dime-1,16)
+    real(kind=8) :: poin_inte_sort2(elem_dime-1,16)
     real(kind=8) :: angle(nb_poin_inte), bary(2)
     real(kind=8) :: v(2), norm
     integer :: i_poin_inte, angle_sorted(nb_poin_inte), list_poin_next(nb_poin_inte), nb_inte_new
@@ -93,19 +95,33 @@ implicit none
                 nb_inte_new = nb_inte_new+1
                 poin_inte_sort(1,nb_inte_new) = poin_inte(1,angle_sorted(i_poin_inte))
                 poin_inte_sort(2,nb_inte_new) = poin_inte(2,angle_sorted(i_poin_inte))
+                if (present(poin_inte2))then
+                    poin_inte_sort2(1,nb_inte_new) = poin_inte2(1,angle_sorted(i_poin_inte))
+                    poin_inte_sort2(2,nb_inte_new) = poin_inte2(2,angle_sorted(i_poin_inte))
+                endif
             endif
         end do
         nb_poin_inte = nb_inte_new
     elseif ((elem_dime-1) .eq. 1) then
         poin_inte_sort(1,1) = poin_inte(1,1)
         poin_inte_sort(1,2) = poin_inte(1,1)
+        if (present(poin_inte2))then
+            poin_inte_sort2(1,1) =  poin_inte2(1,1)
+            poin_inte_sort2(1,2) =  poin_inte2(1,1)
+        endif
         do i_poin_inte=2, nb_poin_inte
             if (poin_inte(1,i_poin_inte) .le. poin_inte_sort(1,1) .and. &
                 poin_inte(1,i_poin_inte) .ge. (-1.d0)) then
                 poin_inte_sort(1,1) =  poin_inte(1,i_poin_inte)
+                if (present(poin_inte2))then
+                    poin_inte_sort2(1,1) =  poin_inte2(1,i_poin_inte)
+                endif
             elseif (poin_inte(1,i_poin_inte) .ge. poin_inte_sort(1,2) .and.&
                     poin_inte(1,i_poin_inte) .le. (1.d0)) then
                 poin_inte_sort(1,2) =  poin_inte(1,i_poin_inte)
+                if (present(poin_inte2))then
+                     poin_inte_sort2(1,2) =  poin_inte2(1,i_poin_inte)
+                endif
             end if
         end do
         nb_poin_inte = 2
@@ -116,10 +132,19 @@ implicit none
 ! - Copy
 !
     poin_inte(:,:) = 0.d0
+    if (present(poin_inte2))then
+        poin_inte2(:,:) = 0.d0
+    endif
     do i_poin_inte = 1, nb_poin_inte
         poin_inte(1, i_poin_inte) = poin_inte_sort(1, i_poin_inte)
+        if (present(poin_inte2))then
+            poin_inte2(1, i_poin_inte) = poin_inte_sort2(1, i_poin_inte)
+        endif
         if(elem_dime == 3) then
             poin_inte(2, i_poin_inte) = poin_inte_sort(2, i_poin_inte)
+            if (present(poin_inte2))then
+                poin_inte2(2, i_poin_inte) = poin_inte_sort2(2, i_poin_inte)
+            endif
         end if
     end do
 !

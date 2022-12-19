@@ -17,19 +17,21 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine apinte_prsl_n(proj_tole       , elem_dime     , &
-                           elem_mast_nbnode, elem_mast_coor, &
-                           elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                           proj_coor       , iret)
+    subroutine apinte_chck2(proj_tole        , elem_dime     , &
+                            elem_sside_nbnode, elem_sside_coor, &
+                            elem_pside_nbnode, elem_pside_coor, elem_pside_code,&
+                            norm_pside       , norm_sside     ,&
+                            proj_coor        , l_inter)
         real(kind=8), intent(in) :: proj_tole
         integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_mast_nbnode
-        real(kind=8), intent(in) :: elem_mast_coor(3,9)
-        integer, intent(in) :: elem_slav_nbnode
-        real(kind=8), intent(in) :: elem_slav_coor(3,9)
-        character(len=8), intent(in) :: elem_slav_code
-        real(kind=8), intent(out) :: proj_coor(elem_dime-1,4)
-        integer, intent(out) :: iret
-    end subroutine apinte_prsl_n
-
+        integer, intent(in) :: elem_sside_nbnode
+        real(kind=8), intent(in) :: elem_sside_coor(3,9)
+        integer, intent(in) :: elem_pside_nbnode
+        real(kind=8), intent(in) :: elem_pside_coor(3,9)
+        character(len=8), intent(in) :: elem_pside_code
+        real(kind=8), intent(in) :: norm_pside(3)
+        real(kind=8), intent(in) :: norm_sside(3)
+        real(kind=8), intent(in) :: proj_coor(elem_dime-1,4)
+        aster_logical, intent(out) :: l_inter
+    end subroutine apinte_chck2
 end interface

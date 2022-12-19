@@ -100,7 +100,7 @@ integer, intent(in) ::  nb_node_mast
     integer :: jv_geom, i_zone
     integer :: i_elem_slav, i_elem_mast
     integer :: nb_poin_inte, nume_node_cl, nb_el_ma_ax
-    real(kind=8) :: poin_inte(32), inte_weight, center(3)
+    real(kind=8) :: poin_inte_es(32),poin_inte_ma(32), inte_weight, center(3)
     integer, pointer :: v_mesh_typmail(:) => null()
     integer, pointer :: v_mesh_connex(:) => null()
     integer, pointer :: v_connex_lcum(:) => null()
@@ -255,7 +255,7 @@ integer, intent(in) ::  nb_node_mast
                     call prjint_ray(pair_tole, dist_ratio     , elem_mast_dime,&
                                     elin_slav_nbnode, elem_slav_coor, elin_slav_code,&
                                     elin_mast_nbnode, elem_mast_coor, elin_mast_code,&
-                                    poin_inte     , inte_weight   , nb_poin_inte)
+                                    poin_inte_ma, poin_inte_es     , inte_weight   , nb_poin_inte)
 !
 ! ----------------- Set start elements
 !

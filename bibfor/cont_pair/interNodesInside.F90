@@ -17,9 +17,10 @@
 ! --------------------------------------------------------------------
 !
 subroutine interNodesInside(proj_tole       , elem_dime     , &
-                       elem_mast_code, elem_slave_code, &
-                       proj_coor       , nb_node_proj, &
-                       nb_poin_inte,  poin_inte, inte_neigh)
+                            elem_mast_code  , elem_slave_code, &
+                            proj_coor       , nb_node_proj, &
+                            nb_poin_inte    , poin_inte, inte_neigh,&
+                            poin_inte_ori, iret)
 !
 implicit none
 !
@@ -35,7 +36,9 @@ character(len=8), intent(in) :: elem_mast_code, elem_slave_code
 real(kind=8), intent(in) :: proj_coor(elem_dime-1,9)
 integer, intent(in) :: nb_node_proj
 integer, intent(out) :: inte_neigh(4), nb_poin_inte
-real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
+real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1,16)
+integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,9 +60,11 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
 !
     real(kind=8) :: min_sl, max_sl
     real(kind=8) :: elem_mast_line_coop(elem_dime-1,4)
+    real(kind=8) :: elem_slave_line_coop(elem_dime-1,4)
     integer :: elem_mast_line_nbnode, i_node, test, elem_slav_line_nbnode
     character(len=8) :: elem_mast_line_code, elem_slav_line_code
-    real(kind=8) :: xpt, ypt
+    real(kind=8) :: xpt, ypt, cor_inte_ori(2), t1
+
 !
 ! - Compute intersection in parametric master space
 !
@@ -69,12 +74,15 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
 !
     if(elem_dime == 2) then
         ASSERT(nb_node_proj == 2)
+        cor_inte_ori(1) = -1.0
+        cor_inte_ori(2) =  1.0
 ! - Add projection of slave nodes inside master cell (parametric space)
         do i_node = 1, nb_node_proj
             xpt = proj_coor(1, i_node)
             if(xpt > (-1.d0 - proj_tole) .and. xpt < (1.d0 + proj_tole)) then
                 nb_poin_inte = nb_poin_inte + 1
                 poin_inte(1, nb_poin_inte) = xpt
+                poin_inte_ori(1,nb_poin_inte) = cor_inte_ori(i_node)
                 inte_neigh(i_node) = 1
             endif
         end do
@@ -87,10 +95,22 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
         if( (min_sl-proj_tole) <= -1.d0 .and. -1.d0 <= (max_sl+proj_tole) ) then
             nb_poin_inte = nb_poin_inte + 1
             poin_inte(1, nb_poin_inte) = -1.d0
+            if (abs(-1.d0-proj_coor(1, 1)).lt. proj_tole)then
+                poin_inte_ori(1,nb_poin_inte) = cor_inte_ori(1)
+            else
+                t1=(-1.d0-proj_coor(1, 1))/(proj_coor(1, 2)-proj_coor(1, 1))
+                poin_inte_ori(1,nb_poin_inte) = 2*t1-1
+            endif
         end if
         if( (min_sl-proj_tole) <= 1.d0 .and. 1.d0 <= (max_sl+proj_tole) ) then
             nb_poin_inte = nb_poin_inte + 1
             poin_inte(1, nb_poin_inte) = 1.d0
+            if (abs(1.d0-proj_coor(1, 1)).lt. proj_tole)then
+                poin_inte_ori(1,nb_poin_inte) = cor_inte_ori(1)
+            else
+                t1=(1.d0-proj_coor(1, 1))/(proj_coor(1, 2)-proj_coor(1, 1))
+                poin_inte_ori(1,nb_poin_inte) = 2*t1-1
+            endif
         end if
 !
     elseif(elem_dime == 3) then
@@ -100,22 +120,16 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
         call apelem_getvertex_n(elem_dime, elem_mast_code,&
                                 elem_mast_line_coop, elem_mast_line_nbnode, &
                                 elem_mast_line_code)
+        call apelem_getvertex_n(elem_dime, elem_slave_code,&
+                                elem_slave_line_coop, elem_slav_line_nbnode, &
+                                elem_slav_line_code)
+
 !
 ! - Add projection of slave nodes inside master cell (parametric space)
 !
         call apelem_inside_n(proj_tole, elem_dime, elem_mast_line_code, &
                              nb_node_proj, proj_coor, nb_poin_inte, poin_inte,&
-                             inte_neigh)
-!
-        if(elem_slave_code(1:2) == "TR") then
-            elem_slav_line_code = "TR3"
-            elem_slav_line_nbnode = 3
-        elseif(elem_slave_code(1:2) == "QU") then
-            elem_slav_line_code = "QU4"
-            elem_slav_line_nbnode = 4
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+                             inte_neigh, elem_slave_line_coop, poin_inte_ori)
 !
 ! - Add master nodes if they are inside projected slave cell
 !
@@ -125,12 +139,16 @@ real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
             ypt = elem_mast_line_coop(2,i_node)
 ! ----- Test if master node is inside projected slave cell
             call ptinma(elem_slav_line_nbnode, elem_dime, elem_slav_line_code,&
-                        proj_coor, proj_tole, xpt, ypt, test)
+                        proj_coor, proj_tole, xpt, ypt, test, cor_inte_ori)
             if (test == 1) then
                 nb_poin_inte              = nb_poin_inte+1
+                !print*, 'nbptinte', nb_poin_inte
                 poin_inte(1:2,nb_poin_inte) = [xpt, ypt]
+                poin_inte_ori(1:2,nb_poin_inte)=[cor_inte_ori(1),cor_inte_ori(2)]
+               ! print*, "inte1_2_true", poin_inte(1:2,nb_poin_inte)
+               ! print*, "inte1_2", poin_inte_ori(1:2,nb_poin_inte)
             else if (test == -1) then
-                ASSERT(ASTER_FALSE)
+               iret = 1
             endif
         end do
     else

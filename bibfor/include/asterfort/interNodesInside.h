@@ -22,13 +22,16 @@ interface
     subroutine interNodesInside(proj_tole       , elem_dime     , &
                        elem_mast_code, elem_slave_code, &
                        proj_coor       , nb_node_proj, &
-                       nb_poin_inte,  poin_inte, inte_neigh)
+                       nb_poin_inte,  poin_inte, inte_neigh,&
+                       poin_inte_ori, iret)
         real(kind=8), intent(in) :: proj_tole
         integer, intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_mast_code, elem_slave_code
         real(kind=8), intent(in) :: proj_coor(elem_dime-1,9)
         integer, intent(in) :: nb_node_proj
         integer, intent(out) :: inte_neigh(4), nb_poin_inte
-        real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
+        real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+        real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1,16)
+        integer, intent(out) :: iret
     end subroutine interNodesInside
 end interface

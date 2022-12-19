@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine apelem_getvertex_n(elem_dime, elem_code,&
-                            para_coor, nb_vertex, para_code)
+                              para_coor, nb_vertex, para_code)
 !
 implicit none
 !

@@ -120,7 +120,7 @@ integer, intent(out) :: iret, nb_node_proj
                     proj_tole     , norm_slav            ,&
                     ksi1          , ksi2     ,&
                     tau1          , tau2            , iret          )
-        if(iret == 1) then
+        if(iret==1) then
 !
 ! ----- Try with linearization
             if (debug) then
@@ -130,9 +130,9 @@ integer, intent(out) :: iret, nb_node_proj
             call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, elem_dime,&
                         elem_mast_coor, nosl_coor       , 75       ,&
                         proj_tole     , norm_slav            ,&
-                        ksi1_line     , ksi2_line     ,&
+                        ksi1_line     , ksi2_line    ,&
                         tau1          , tau2            , iret          )
-            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, elem_dime,&
+            call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime,&
                         elem_mast_coor, nosl_coor       , 75       ,&
                         proj_tole     , norm_slav            ,&
                         ksi1          , ksi2     ,&
@@ -152,6 +152,7 @@ integer, intent(out) :: iret, nb_node_proj
         if (elem_dime .eq. 3) then
             proj_coor(2, i_node) = ksi2
         end if
+
 !
         if(debug) then
             print*, "ES REF: ", para_coor(1:2, i_node)

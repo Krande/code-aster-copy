@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine ptinma(elem_nbnode, elem_dime , elem_code, elem_coor, pair_tole,&
-                  poin_coorx , poin_coory, test)
+                  poin_coorx , poin_coory, test, cor_inte_ori)
 !
 implicit none
 !
 #include "asterfort/assert.h"
+
 !
     integer, intent(in) :: elem_nbnode
     integer, intent(in) :: elem_dime
@@ -31,6 +32,7 @@ implicit none
     real(kind=8), intent(in) :: poin_coorx
     real(kind=8), intent(in) :: poin_coory
     integer, intent(out) :: test
+    real(kind=8),intent(out),optional ::cor_inte_ori(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,6 +63,9 @@ implicit none
 !
     test = -1
     ASSERT(elem_code .eq. 'TR3' .or. elem_code .eq. 'SE2'.or. elem_code .eq. 'QU4')
+    if (present(cor_inte_ori)) then
+        cor_inte_ori = 0.d0
+    endif
     if (elem_dime .eq. 3) then
 !
 ! ----- Vectorial basis for element
@@ -92,6 +97,15 @@ implicit none
 !
         if (sqrt(v2(1)**2+v2(2)**2) .le. 0.d0+pair_tole) then
             test = 1
+            if (present(cor_inte_ori)) then
+                if (elem_code .eq. 'TR3') then
+                    cor_inte_ori(1) = 0.d0
+                    cor_inte_ori(2) = 0.d0
+                elseif(elem_code .eq. 'QU4')then
+                    cor_inte_ori(1) = -1.d0
+                    cor_inte_ori(2) = -1.d0
+                endif
+            endif
             goto 99
         end if
 !
@@ -103,6 +117,15 @@ implicit none
             v.ge.(0.d0-pair_tole) .and.&
             (u+v).le.(1.d0+pair_tole)) then
             test = 1
+            if (present(cor_inte_ori)) then
+                if (elem_code .eq. 'TR3') then
+                    cor_inte_ori(1) = 0.d0 + u
+                    cor_inte_ori(2) = 0.d0 + v
+                elseif(elem_code .eq. 'QU4') then
+                    cor_inte_ori(1) = -1.d0 +  u * 2 + v * 2
+                    cor_inte_ori(2) = -1.d0 +  v * 2
+                endif
+            endif
             goto 99
         else
             test = 0
@@ -141,8 +164,14 @@ implicit none
 !
             if (sqrt(v2(1)**2+v2(2)**2) .le. 0.d0+pair_tole) then
                 test = 1
+                if (present(cor_inte_ori)) then
+                    if(elem_code .eq. 'QU4') then
+                        cor_inte_ori(1) = -1.d0
+                        cor_inte_ori(2) = -1.d0
+                    endif
+                endif
                 goto 99
-            end if
+            endif
 !
 ! --------- Extension with pair_tole
 !
@@ -152,10 +181,15 @@ implicit none
                 v.ge.(0.d0-pair_tole) .and.&
                 (u+v).le.(1.d0+pair_tole)) then
                 test = 1
+                if (present(cor_inte_ori)) then
+                    if(elem_code .eq. 'QU4') then
+                        cor_inte_ori(1) = -1.d0 +  u * 2
+                        cor_inte_ori(2) = -1.d0 +  v * 2 + u *2
+                    endif
+                endif
                 goto 99
             else
                 test = 0
-
             endif
         endif
     elseif (elem_dime .eq. 2) then
@@ -164,6 +198,10 @@ implicit none
         if (poin_coorx .ge. (xpmin-pair_tole) .and.&
             poin_coorx .le. (xpmax+pair_tole)) then
             test=1
+            if (present(cor_inte_ori)) then
+                cor_inte_ori(1)=2.0*((poin_coorx-elem_coor(1,1))/(elem_coor(1,2)-elem_coor(1,1)))&
+                                 -1.d0
+            endif
         else
             test=0
         endif
@@ -171,4 +209,5 @@ implicit none
         ASSERT(.false.)
     end if
 99  continue
+
 end subroutine

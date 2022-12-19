@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 subroutine projMaAndCheck(proj_tole, dist_ratio       , elem_dime     , &
-                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                       proj_coor       , nb_node_proj, iret)
+                          elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
+                          elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
+                          proj_coor       , nb_node_proj, iret)
 !
 use contact_module
 !
@@ -27,7 +27,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/apinte_chck.h"
+#include "asterfort/apinte_chck2.h"
 #include "asterfort/apinte_norm.h"
 #include "asterfort/apinte_prma_n.h"
 #include "asterc/r8prem.h"
@@ -66,6 +66,7 @@ integer, intent(out) :: iret, nb_node_proj
 !
     real(kind=8) :: mast_norm(3), slav_norm(3), ps
     real(kind=8) :: bar_ma(3), bar_sl(3), hf_ma, hf_sl
+    aster_logical :: l_inter
 !
     iret = 0
     proj_coor = 0.d0
@@ -103,9 +104,22 @@ integer, intent(out) :: iret, nb_node_proj
 ! - Project slave nodes in master cell parametric space using raytracing
 !
     call apinte_prma_n(proj_tole       , elem_dime     , &
-                     elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                     elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                     proj_coor       , nb_node_proj  , iret)
+                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
+                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
+                       proj_coor       , nb_node_proj  , iret)
+!
+! - Check if intersection is void or not
+!
+    call apinte_chck2(proj_tole       , elem_dime     , &
+                      nb_node_proj    , elem_slav_coor, &
+                      elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
+                      mast_norm       , slav_norm,&
+                      proj_coor       , l_inter)
+    if (.not. l_inter) then
+        print*,'problemo'
+        iret = 1
+        goto 99
+    endif
 !
 99 continue
 !
