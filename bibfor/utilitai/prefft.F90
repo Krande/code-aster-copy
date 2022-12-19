@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine prefft(resin, method, symetr, nsens, grand,&
-                  vectot, nbva, kmpi, ier)
+                  vectot, nbva, kmpi, ier, npuis)
     implicit none
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
@@ -43,7 +43,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-    integer :: npara, nsens
+    integer :: npara, nsens, npuis
     character(len=4) :: grand
     character(len=16) :: symetr, method, kmpi
     character(len=19) :: resin, vectot
@@ -264,7 +264,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         nbpts1 = nbpts
         nbpts2 = 2*nbpts
     else
-        nbpts = 2**n
+        nbpts = 2**(n+npuis)
         nbpts1 = nbva
         nbpts2 = nbpts
     endif

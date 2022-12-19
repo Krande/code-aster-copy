@@ -26,6 +26,7 @@ subroutine op0181()
 #include "asterfort/gettco.h"
 #include "asterfort/ecresu.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
@@ -34,7 +35,7 @@ subroutine op0181()
 #include "asterfort/prefft.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer :: nbva, nval, nsens, ngrand, i, ier, ngran0
+    integer :: nbva, nval, nsens, ngrand, i, ier, ngran0, npuis
     character(len=4) :: grand(3), grand0(3), cham
     character(len=16) :: type, cmd, symetr, method, kmpi
     character(len=19) :: resin, resou, vectot, k19bid
@@ -58,6 +59,8 @@ subroutine op0181()
     call getvtx(' ', 'SYMETRIE', scal=symetr, nbret=nval)
 !        --- ACCELERATION MPI (EFFECTIVE QUE SI MPI_NBCPU>1)
     call getvtx(' ', 'ACCELERATION_MPI', scal=kmpi, nbret=nval)
+!        --- PROLONGEMENT A LA PUISSANCE DE 2 N + N_PUIS
+    call getvis(' ', 'N_PUIS', iocc=1, scal=npuis, nbret=nval)
 !
 !     --- EVALUATION DU SENS DE LA FFT
     call gettco(resin, typres)
@@ -120,7 +123,7 @@ subroutine op0181()
     do i = 1, ngrand
 !        --- CALCUL DES FFT DES CHAMPS
         call prefft(resin, method, symetr, nsens, grand(i),&
-                    vectot, nbva, kmpi, ier)
+                    vectot, nbva, kmpi, ier, npuis)
 !
 !     --- ECRITURE DES RESULTATS
 !

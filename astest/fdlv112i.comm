@@ -17,165 +17,195 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
 
-mail0 = LIRE_MAILLAGE(FORMAT="ASTER")
+mail0 = LIRE_MAILLAGE(FORMAT="ASTER", )
 
-mail1 = CREA_MAILLAGE(
-    MAILLAGE=mail0, CREA_MAILLE=_F(NOM="REFLEX", GROUP_MA="IFLUSOL", PREF_MAILLE="N")
-)
+mail1 = CREA_MAILLAGE(MAILLAGE=mail0,
+                   CREA_MAILLE=_F(NOM='REFLEX',GROUP_MA='IFLUSOL',
+                                  PREF_MAILLE='N'),
+                   )
 
-mail = CREA_MAILLAGE(MAILLAGE=mail1, CREA_POI1=(_F(NOM_GROUP_MA="PC", GROUP_NO="NO6288"),))
+mail = CREA_MAILLAGE(MAILLAGE=mail1,
+          CREA_POI1 = (
+                _F(NOM_GROUP_MA='PC',GROUP_NO='NO6288',),
+                       ),
+                     )
 
-mail = DEFI_GROUP(
-    reuse=mail, MAILLAGE=mail, CREA_GROUP_NO=_F(GROUP_MA=("STRVOU", "VOLSOL", "TH_SOL"))
-)
+mail = DEFI_GROUP(reuse =mail, MAILLAGE=mail,
+                CREA_GROUP_NO=_F(GROUP_MA=('STRVOU','VOLSOL','TH_SOL',),),
+                )
 
-mail = DEFI_GROUP(
-    reuse=mail, MAILLAGE=mail, CREA_GROUP_NO=_F(INTERSEC=("STRVOU", "VOLSOL"), NOM="INTESOL")
-)
+mail = DEFI_GROUP(reuse =mail, MAILLAGE=mail,
+                CREA_GROUP_NO=_F(INTERSEC=('STRVOU','VOLSOL',),NOM='INTESOL'),
+                )
 
-mail = MODI_MAILLAGE(
-    reuse=mail, MAILLAGE=mail, ORIE_PEAU=_F(GROUP_MA_INTERNE="VOLSOL", GROUP_MA_PEAU="TH_SOL")
-)
+mail = MODI_MAILLAGE(reuse =mail, MAILLAGE=mail,
+             ORIE_PEAU=_F(GROUP_MA_INTERNE='VOLSOL',GROUP_MA_PEAU='TH_SOL'),
+                )
 
 #
-eau = DEFI_MATERIAU(FLUIDE=_F(RHO=1000.0, CELE_R=1500.0))
+eau   = DEFI_MATERIAU (FLUIDE=_F(RHO=1000.,  CELE_R=1500.))
 #
 
-YOUNG = 3.6e10
-YOUNG_F = DEFI_FONCTION(
-    NOM_PARA="NEUT1",
-    VALE=(-1.0e-9, -1.0e-9, 1.0e10, 1.0e10),
-    PROL_DROITE="LINEAIRE",
-    PROL_GAUCHE="LINEAIRE",
-)
+YOUNG =3.6E+10
+YOUNG_F = DEFI_FONCTION(NOM_PARA='NEUT1',
+                        VALE =(-1.e-9,-1.e-9,1.e+10,1.e+10),
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',)
 
-RHO = DEFI_CONSTANTE(VALE=2400.0)
+RHO = DEFI_CONSTANTE(VALE=2400.)
 NU = DEFI_CONSTANTE(VALE=0.20)
-# beton = DEFI_MATERIAU( ELAS=_F( E= YOUNG, RHO= RHO , NU= NU,
+#beton = DEFI_MATERIAU( ELAS=_F( E= YOUNG, RHO= RHO , NU= NU,
 #                               )
 #                      )
-beton = DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG_F, NU=NU, RHO=RHO))
+beton  = DEFI_MATERIAU(ELAS_FO= _F(E=YOUNG_F, NU=NU, RHO=RHO),)
 #
 # Pour la roche, on va utiliser les frontieres absorbantes avec raideur
 # LONG_CARA sert a definir la raideur equivalente et represente
 # une longueur caracteristique du domaine borne par les frontieres absorbantes
 #
-roche = DEFI_MATERIAU(
-    ELAS=_F(
-        E=3.0e11,
-        RHO=2000.0,
-        NU=0.16,
-        # AMOR_ALPHA=0.0005, AMOR_BETA=0.6,
-        AMOR_HYST=0.04,
-        LONG_CARA=340.0,
-    )
-)
+roche = DEFI_MATERIAU( ELAS=_F( E= 3.0E+11, RHO= 2000., NU= 0.16,
+                               #AMOR_ALPHA=0.0005, AMOR_BETA=0.6,
+                               AMOR_HYST=0.04,
+                               LONG_CARA=340.,
+                               ),
+                      )
 #
-ensemble = AFFE_MODELE(
-    MAILLAGE=mail,
-    AFFE=(
-        _F(GROUP_MA="FLUIDE", PHENOMENE="MECANIQUE", MODELISATION="3D_FLUIDE"),
-        _F(GROUP_MA="IFLUSTR", PHENOMENE="MECANIQUE", MODELISATION="FLUI_STRU"),
-        _F(GROUP_MA="IFLUSOL", PHENOMENE="MECANIQUE", MODELISATION="FLUI_STRU"),
-        _F(GROUP_MA="IFLUSOLF", PHENOMENE="MECANIQUE", MODELISATION="3D_FLUI_ABSO"),
-        _F(GROUP_MA="STRVOU", PHENOMENE="MECANIQUE", MODELISATION="3D"),
-        _F(GROUP_MA="VOLSOL", PHENOMENE="MECANIQUE", MODELISATION="3D"),
-        _F(GROUP_MA="TH_SOL", PHENOMENE="MECANIQUE", MODELISATION="3D_ABSO"),
-    ),
-)
+ensemble  = AFFE_MODELE (MAILLAGE= mail,
+                          AFFE=(
+                                 _F(GROUP_MA    = 'FLUIDE',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_FLUIDE'),
+                                 _F(GROUP_MA    = 'IFLUSTR',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='FLUI_STRU'),
+                                 _F(GROUP_MA    = 'IFLUSOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='FLUI_STRU'),
+                                 _F(GROUP_MA    = 'IFLUSOLF',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_FLUI_ABSO'),
+                                  _F(GROUP_MA    = 'STRVOU',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D'),
+                                  _F(GROUP_MA    = 'VOLSOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D'),
+                                  _F(GROUP_MA    = 'TH_SOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_ABSO'),
+                                ),
+                           )
 
-FYOUNG = FORMULE(VALE="YOUNG + 0.*X + 0.*Y", NOM_PARA=("X", "Y"), YOUNG=YOUNG)
+FYOUNG    = FORMULE(VALE='YOUNG + 0.*X + 0.*Y',
+                   NOM_PARA=('X','Y',),
+                   YOUNG=YOUNG,
+                    )
 
-CHGEOMG = CREA_CHAMP(TYPE_CHAM="NOEU_GEOM_R", OPERATION="EXTR", MAILLAGE=mail, NOM_CHAM="GEOMETRIE")
+CHGEOMG = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
+                     OPERATION = 'EXTR',
+                     MAILLAGE  = mail,
+                     NOM_CHAM  = 'GEOMETRIE',)
 
-CHbeton_ = CREA_CHAMP(
-    TYPE_CHAM="NOEU_NEUT_F",
-    OPERATION="AFFE",
-    MODELE=ensemble,
-    AFFE=_F(GROUP_MA="STRVOU", NOM_CMP="X1", VALE_F=FYOUNG),
-)
+CHbeton_ = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_F',
+                    OPERATION = 'AFFE',
+                    MODELE    = ensemble,
+                    AFFE      = _F(GROUP_MA = 'STRVOU',
+                                   NOM_CMP  = 'X1',
+                                   VALE_F   = FYOUNG,),)
 
-CHbeton = CREA_CHAMP(TYPE_CHAM="NOEU_NEUT_R", OPERATION="EVAL", CHAM_F=CHbeton_, CHAM_PARA=CHGEOMG)
+CHbeton  = CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R',
+                   OPERATION = 'EVAL',
+                   CHAM_F    = CHbeton_,
+                   CHAM_PARA = CHGEOMG,)
 
 #
-champmat = AFFE_MATERIAU(
-    MAILLAGE=mail,
-    AFFE=(
-        _F(GROUP_MA=("FLUIDE", "IFLUSTR"), MATER=eau),
-        _F(GROUP_MA="IFLUSOL", MATER=eau),
-        _F(GROUP_MA=("REFLEX", "IFLUSOLF"), MATER=eau),
-        _F(GROUP_MA="STRVOU", MATER=beton),
-        _F(GROUP_MA=("VOLSOL", "TH_SOL"), MATER=roche),
-    ),
-    AFFE_VARC=(_F(NOM_VARC="NEUT1", CHAM_GD=CHbeton, GROUP_MA="STRVOU"),),
-)
+champmat = AFFE_MATERIAU    (MAILLAGE= mail,
+                    AFFE =(
+                           _F(GROUP_MA= ('FLUIDE', 'IFLUSTR',
+                                        ),
+                               MATER   = eau ),
+                           _F(GROUP_MA    = 'IFLUSOL',
+                              MATER   = eau ),
+                           _F(GROUP_MA    = ('REFLEX','IFLUSOLF'),
+                              MATER   = eau ),
+                           _F(GROUP_MA= 'STRVOU',
+                               MATER   = beton ),
+                           _F(GROUP_MA= ('VOLSOL', 'TH_SOL'),
+                               MATER   = roche ),
+                           ),
+                     AFFE_VARC=(_F(NOM_VARC='NEUT1',
+                                    CHAM_GD =CHbeton,
+                                    GROUP_MA='STRVOU',),
+                               ),
+                            )
 
-cond_lib = AFFE_CHAR_MECA(MODELE=ensemble, DDL_IMPO=_F(GROUP_NO="SLIBRE_N", PRES=0.0, PHI=0.0))
+cond_lib = AFFE_CHAR_MECA( MODELE= ensemble,
+           DDL_IMPO=_F(GROUP_NO='SLIBRE_N',  PRES=0., PHI=0.)
+                            )
 
-impemeca = AFFE_CHAR_MECA(MODELE=ensemble, IMPE_FACE=(_F(GROUP_MA="IFLUSOLF", IMPE=1.5e6),))
+impemeca = AFFE_CHAR_MECA (MODELE    = ensemble,
+               IMPE_FACE =(_F(GROUP_MA= 'IFLUSOLF', IMPE= 1.5E+6),
+                           ))
 
 
 # Calcul des matrices et vecteurs elementaires=
-# ----------------------------------------------
-rigi_ele = CALC_MATR_ELEM(
-    MODELE=ensemble, OPTION="RIGI_MECA", CHAM_MATER=champmat, CHARGE=(cond_lib)
-)
+#----------------------------------------------
+rigi_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'RIGI_MECA',
+                               CHAM_MATER= champmat,
+                               CHARGE= (cond_lib)    )
 
-righ_ele = CALC_MATR_ELEM(
-    MODELE=ensemble,
-    OPTION="RIGI_MECA_HYST",
-    RIGI_MECA=rigi_ele,
-    CHAM_MATER=champmat,
-    CHARGE=(cond_lib),
-)
+righ_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'RIGI_MECA_HYST',
+                               RIGI_MECA = rigi_ele,
+                               CHAM_MATER= champmat,
+                               CHARGE= (cond_lib)    )
 
 
-mass_ele = CALC_MATR_ELEM(
-    MODELE=ensemble, OPTION="MASS_MECA", CHAM_MATER=champmat, CHARGE=(cond_lib)
-)
+mass_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'MASS_MECA',
+                               CHAM_MATER= champmat,
+                               CHARGE= (cond_lib)    )
 
-amor_ele = CALC_MATR_ELEM(
-    MODELE=ensemble,
-    OPTION="AMOR_MECA",
-    CHAM_MATER=champmat,
-    RIGI_MECA=rigi_ele,
-    MASS_MECA=mass_ele,
-    CHARGE=(cond_lib),
-)
+amor_ele = CALC_MATR_ELEM( MODELE = ensemble, OPTION= 'AMOR_MECA',
+                               CHAM_MATER= champmat,
+                               RIGI_MECA = rigi_ele,
+                               MASS_MECA = mass_ele,
+                               CHARGE= (cond_lib)    )
 
 #
 # Calcul de l'impedance associee au domaine fluide
 #
-impe_ele = CALC_MATR_ELEM(
-    MODELE=ensemble, OPTION="IMPE_MECA", CHAM_MATER=champmat, CHARGE=(impemeca)
-)
+impe_ele = CALC_MATR_ELEM( MODELE = ensemble, OPTION= 'IMPE_MECA',
+                               CHAM_MATER= champmat,
+                               CHARGE= (impemeca)    )
 
-VECT_ELE = CALC_VECT_ELEM(OPTION="CHAR_MECA", CHAM_MATER=champmat, CHARGE=cond_lib)
+VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
+                             CHAM_MATER=champmat,
+                             CHARGE=cond_lib,
+                           )
 
-nume_ddl = NUME_DDL(MATR_RIGI=rigi_ele)
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, )
 
 # Assemblage des matrices et vecteurs=
-# -------------------------------------
+#-------------------------------------
 #
-rigidite = ASSE_MATRICE(MATR_ELEM=rigi_ele, NUME_DDL=nume_ddl)
-rigihyst = ASSE_MATRICE(MATR_ELEM=righ_ele, NUME_DDL=nume_ddl)
-masse = ASSE_MATRICE(MATR_ELEM=mass_ele, NUME_DDL=nume_ddl)
-amort = ASSE_MATRICE(MATR_ELEM=amor_ele, NUME_DDL=nume_ddl)
-imped = ASSE_MATRICE(MATR_ELEM=impe_ele, NUME_DDL=nume_ddl)
+rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl )
+rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl )
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl )
+amort    = ASSE_MATRICE( MATR_ELEM= amor_ele , NUME_DDL= nume_ddl )
+imped    = ASSE_MATRICE( MATR_ELEM= impe_ele , NUME_DDL= nume_ddl )
 
-VECAS = ASSE_VECTEUR(VECT_ELEM=VECT_ELE, NUME_DDL=nume_ddl)
+VECAS=ASSE_VECTEUR( VECT_ELEM=VECT_ELE, NUME_DDL=nume_ddl )
 
 #
-fo1 = DEFI_FONCTION(NOM_PARA="FREQ", VALE=(0.0, 1.0, 100.0, 1.0))
+fo1 = DEFI_FONCTION ( NOM_PARA= 'FREQ',
+         VALE= ( 0., 1., 100., 1. ) )
 
 from fdlv112d import F_ACC_X
-
 acc_x = F_ACC_X()
 
 
-# Parametres
+#Parametres
 # Solution de reference :
 # TFIN = 20.48
 # dt = 0.005
@@ -186,11 +216,18 @@ TFIN = 0.32
 
 # Profondeur du domaine de sol :
 prof = -170.0038
-df = 1.0 / TFIN
-fmax = int(1 / (2.0 * dt)) - df
-NF = int(TFIN / dt) + 1
+df = 1./TFIN
+fmax = int(1/(2.*dt)) - df
+NF = int(TFIN/dt)+1
 
-linst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=TFIN - dt, PAS=dt),))
+linst= DEFI_LIST_REEL ( DEBUT = 0.,
+                          INTERVALLE = (
+                                      _F(
+                                         JUSQU_A = TFIN-dt,
+                                         PAS=dt,
+                                         ),
+                                       ),
+                      )
 
 
 #
@@ -198,39 +235,36 @@ linst = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=(_F(JUSQU_A=TFIN - dt, PAS=dt),))
 # Car on a un facteur 2 entre le signal total champ libre et l'onde incidente en profondeur
 # Ici le sol a de l'amortissement, ce qui attenue l'onde
 #
-accex0 = CALC_FONCTION(COMB=_F(FONCTION=acc_x, COEF=0.52), LIST_PARA=linst)
+accex0= CALC_FONCTION( COMB=_F( FONCTION = acc_x, COEF = 0.52),
+                      LIST_PARA=linst)
 
-accex = CALC_FONCTION(CORR_ACCE=_F(FONCTION=accex0, METHODE="FILTRAGE"))
+accex= CALC_FONCTION( CORR_ACCE=_F( FONCTION = accex0, METHODE='FILTRAGE'),)
 
 
 #
 # accxc sert juste de reference, pas pour le calcul
 #
-accxc = CALC_FONCTION(COMB=_F(FONCTION=acc_x, COEF=1.0), LIST_PARA=linst)
+accxc= CALC_FONCTION( COMB=_F( FONCTION = acc_x, COEF = 1.0),
+                      LIST_PARA=linst)
 
-vitex = CALC_FONCTION(INTEGRE=_F(FONCTION=accex))
+vitex=CALC_FONCTION(INTEGRE=_F(FONCTION=accex,))
 
-deplx0 = CALC_FONCTION(INTEGRE=_F(FONCTION=vitex))
+deplx0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitex,))
 
 
 #
 # Correction de la derive d'integration
 #
-deplxF = FORMULE(
-    VALE="deplx0(INST)-(INST*deplx0(TFIN-dt)/(TFIN-dt))",
-    deplx0=deplx0,
-    TFIN=TFIN,
-    dt=dt,
-    NOM_PARA="INST",
-)
+deplxF = FORMULE(VALE='deplx0(INST)-(INST*deplx0(TFIN-dt)/(TFIN-dt))',
+                 deplx0=deplx0,
+                 TFIN=TFIN,
+                 dt=dt,
+                 NOM_PARA='INST',)
 
-deplx = CALC_FONC_INTERP(
-    FONCTION=deplxF,
-    NOM_PARA="INST",
-    PROL_DROITE="CONSTANT",
-    PROL_GAUCHE="CONSTANT",
-    LIST_PARA=linst,
-)
+deplx=CALC_FONC_INTERP(FONCTION=deplxF, NOM_PARA = 'INST',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=linst)
 
 
 # On donne en exemple en plus les cas ondes P et SH
@@ -242,17 +276,13 @@ deplx = CALC_FONC_INTERP(
 #                 DEPL_IMPO=deplx,
 #                 FONC_SIGNAL = vitex, GROUP_MA='TH_SOL')
 #                      )
-ONDEV = AFFE_CHAR_MECA_F(
-    MODELE=ensemble,
-    ONDE_PLANE=_F(
-        DIRECTION=(0.0, 0.0, 1.0),
-        TYPE_ONDE="SV",
-        DIST=prof,
-        DEPL_IMPO=deplx,
-        FONC_SIGNAL=vitex,
-        GROUP_MA="TH_SOL",
-    ),
-)
+ONDEV=AFFE_CHAR_MECA_F(  MODELE=ensemble,
+                ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,),
+                TYPE_ONDE = 'SV',
+                DIST=prof,
+                DEPL_IMPO=deplx,
+                FONC_SIGNAL = vitex, GROUP_MA='TH_SOL')
+                     )
 # ONDEH=AFFE_CHAR_MECA_F(  MODELE=ensemble,
 #                 ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,),
 #                 TYPE_ONDE = 'SH',
@@ -262,200 +292,193 @@ ONDEV = AFFE_CHAR_MECA_F(
 #                      )
 
 
-for k in range(1, NF):
 
-    #
-    # VECT_EL1 et VECT_EL3 correspondent aux ondes P et SH
-    #
-    #  VECT_EL1=CALC_VECT_ELEM(INST=(k-1)*dt, OPTION='CHAR_MECA', CHAM_MATER=champmat, CHARGE=ONDEP)
-    #  VECA1=ASSE_VECTEUR(VECT_ELEM=VECT_EL1, NUME_DDL=nume_ddl)
-    VECT_EL2 = CALC_VECT_ELEM(
-        INST=(k - 1) * dt, OPTION="CHAR_MECA", CHAM_MATER=champmat, CHARGE=ONDEV
-    )
-    VECA2 = ASSE_VECTEUR(VECT_ELEM=VECT_EL2, NUME_DDL=nume_ddl)
-    #  VECT_EL3=CALC_VECT_ELEM(INST=(k-1)*dt, OPTION='CHAR_MECA', CHAM_MATER=champmat, CHARGE=ONDEH)
-    #  VECA3=ASSE_VECTEUR(VECT_ELEM=VECT_EL3, NUME_DDL=nume_ddl)
-    VECAT = CREA_CHAMP(
-        TYPE_CHAM="NOEU_DEPL_R",
-        OPERATION="ASSE",
-        NUME_DDL=nume_ddl,
-        MODELE=ensemble,
-        ASSE=(
-            #                         _F(TOUT='OUI',
-            #                            CHAM_GD=VECA1,
-            #                            CUMUL='OUI',
-            #                            COEF_R=1.0,
-            #                            ),
-            _F(TOUT="OUI", CHAM_GD=VECA2, CUMUL="OUI", COEF_R=1.0),
-            #                         _F(TOUT='OUI',
-            #                            CHAM_GD=VECA3,
-            #                            CUMUL='OUI',
-            #                            COEF_R=1.0,
-            #                            ),
+for k in range(1,NF):
+
+#
+# VECT_EL1 et VECT_EL3 correspondent aux ondes P et SH
+#
+#  VECT_EL1=CALC_VECT_ELEM(INST=(k-1)*dt, OPTION='CHAR_MECA', CHAM_MATER=champmat, CHARGE=ONDEP)
+#  VECA1=ASSE_VECTEUR(VECT_ELEM=VECT_EL1, NUME_DDL=nume_ddl)
+  VECT_EL2=CALC_VECT_ELEM(INST=(k-1)*dt, OPTION='CHAR_MECA', CHAM_MATER=champmat, CHARGE=ONDEV)
+  VECA2=ASSE_VECTEUR(VECT_ELEM=VECT_EL2, NUME_DDL=nume_ddl)
+#  VECT_EL3=CALC_VECT_ELEM(INST=(k-1)*dt, OPTION='CHAR_MECA', CHAM_MATER=champmat, CHARGE=ONDEH)
+#  VECA3=ASSE_VECTEUR(VECT_ELEM=VECT_EL3, NUME_DDL=nume_ddl)
+  VECAT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='ASSE',
+                  NUME_DDL= nume_ddl,
+                  MODELE=ensemble,
+                  ASSE=(
+#                         _F(TOUT='OUI',
+#                            CHAM_GD=VECA1,
+#                            CUMUL='OUI',
+#                            COEF_R=1.0,
+#                            ),
+                        _F(TOUT='OUI',
+                           CHAM_GD=VECA2,
+                           CUMUL='OUI',
+                           COEF_R=1.0,
+                           ),
+#                         _F(TOUT='OUI',
+#                            CHAM_GD=VECA3,
+#                            CUMUL='OUI',
+#                            COEF_R=1.0,
+#                            ),
         ),
-    )
-    if k == 1:
-        CHA_ON = CREA_RESU(
-            OPERATION="AFFE",
-            TYPE_RESU="DYNA_TRANS",
-            MATR_RIGI=rigidite,
-            MATR_MASS=masse,
-            NOM_CHAM="DEPL",
-            AFFE=(_F(CHAM_GD=VECAT, INST=0.0),),
-        )
-    else:
-        CHA_ON = CREA_RESU(
-            reuse=CHA_ON,
-            RESULTAT=CHA_ON,
-            OPERATION="AFFE",
-            TYPE_RESU="DYNA_TRANS",
-            MATR_RIGI=rigidite,
-            MATR_MASS=masse,
-            NOM_CHAM="DEPL",
-            AFFE=(_F(CHAM_GD=VECAT, INST=(k - 1) * dt),),
-        )
-    #  DETRUIRE(NOM=(VECT_EL1,VECA1))
-    DETRUIRE(NOM=(VECT_EL2, VECA2))
-    #  DETRUIRE(NOM=(VECT_EL3,VECA3))
-    DETRUIRE(NOM=(VECAT))
+      )
+  if k==1:
+    CHA_ON=CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='DYNA_TRANS',
+                  MATR_RIGI=rigidite,
+                  MATR_MASS=masse,
+                  NOM_CHAM='DEPL',
+                  AFFE=(_F(CHAM_GD=VECAT,INST=0.0,),),)
+  else:
+    CHA_ON=CREA_RESU(reuse=CHA_ON,
+                  RESULTAT=CHA_ON,
+                  OPERATION='AFFE',
+                  TYPE_RESU='DYNA_TRANS',
+                  MATR_RIGI=rigidite,
+                  MATR_MASS=masse,
+                  NOM_CHAM='DEPL',
+                  AFFE=(_F(CHAM_GD=VECAT,INST=(k-1)*dt,),),)
+#  DETRUIRE(NOM=(VECT_EL1,VECA1))
+  DETRUIRE(NOM=(VECT_EL2,VECA2))
+#  DETRUIRE(NOM=(VECT_EL3,VECA3))
+  DETRUIRE(NOM=(VECAT))
 
-CHAONF = REST_SPEC_TEMP(
-    RESULTAT=CHA_ON,
-    METHODE="PROL_ZERO",
-    SYMETRIE="NON",
-    NOM_CHAM="DEPL",
-    INFO=1,
-    ACCELERATION_MPI="OUI",
-)
+CHAONF = REST_SPEC_TEMP( RESULTAT = CHA_ON ,
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'DEPL' ,
+                          INFO=1,
+                          ACCELERATION_MPI='OUI',
+                          N_PUIS = 0,
+                          )
 
 
-lfreqc = DEFI_LIST_REEL(DEBUT=df, INTERVALLE=_F(JUSQU_A=fmax, PAS=df))
+lfreqc = DEFI_LIST_REEL ( DEBUT = df,
+                           INTERVALLE = _F( JUSQU_A = fmax,
+                                          PAS = df)
+                            )
 
 #
 # Calcul pour la premiere frequence qu'on va decaler a 0 :
 #
-dynah0 = DYNA_VIBRA(
-    TYPE_CALCUL="HARM",
-    BASE_CALCUL="PHYS",
-    MATR_MASS=masse,
-    MATR_RIGI=rigihyst,  # rigidite,
-    MATR_AMOR=amort,
-    MATR_IMPE_PHI=imped,
-    EXCIT=_F(VECT_ASSE=VECAS, COEF_MULT=1.0),
-    EXCIT_RESU=(_F(RESULTAT=CHAONF, COEF_MULT_C=-1.0 - 0.0j),),
-    FREQ=df,
-    TOUT_CHAM="OUI",
-)
+dynah0 = DYNA_VIBRA    ( TYPE_CALCUL='HARM', BASE_CALCUL='PHYS',
+                        MATR_MASS= masse,   MATR_RIGI= rigihyst, #rigidite,
+                        MATR_AMOR = amort,  MATR_IMPE_PHI = imped,
+                        EXCIT   = _F( VECT_ASSE = VECAS,
+                                      COEF_MULT = 1.
+                                       ),
+                        EXCIT_RESU=(
+                                 _F( RESULTAT = CHAONF,
+                                     COEF_MULT_C= -1.0 -0.0j,),
+                                 ),
+                        FREQ= df,
+                        TOUT_CHAM= 'OUI'
+                        )
 
-DEP0 = CREA_CHAMP(
-    TYPE_CHAM="NOEU_DEPL_C", OPERATION="EXTR", RESULTAT=dynah0, NOM_CHAM="DEPL", FREQ=df, INFO=1
-)
+DEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_C',
+                 OPERATION='EXTR',
+                 RESULTAT=dynah0,
+                 NOM_CHAM='DEPL',
+                 FREQ=df,
+                 INFO=1,)
 
-VIT0 = CREA_CHAMP(
-    TYPE_CHAM="NOEU_DEPL_C", OPERATION="EXTR", RESULTAT=dynah0, NOM_CHAM="VITE", FREQ=df, INFO=1
-)
+VIT0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_C',
+                 OPERATION='EXTR',
+                 RESULTAT=dynah0,
+                 NOM_CHAM='VITE',
+                 FREQ=df,
+                 INFO=1,)
 
-ACC0 = CREA_CHAMP(
-    TYPE_CHAM="NOEU_DEPL_C", OPERATION="EXTR", RESULTAT=dynah0, NOM_CHAM="ACCE", FREQ=df, INFO=1
-)
+ACC0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_C',
+                 OPERATION='EXTR',
+                 RESULTAT=dynah0,
+                 NOM_CHAM='ACCE',
+                 FREQ=df,
+                 INFO=1,)
 
-dynah = CREA_RESU(
-    OPERATION="AFFE",
-    TYPE_RESU="DYNA_HARMO",
-    MATR_RIGI=rigidite,
-    MATR_MASS=masse,
-    NOM_CHAM="DEPL",
-    AFFE=(_F(CHAM_GD=DEP0, FREQ=0.0),),
-)
+dynah=CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='DYNA_HARMO',
+                  MATR_RIGI=rigidite,
+                  MATR_MASS=masse,
+                  NOM_CHAM='DEPL',
+                  AFFE=(_F(CHAM_GD=DEP0,FREQ=0.0,),),)
 
-dynah = CREA_RESU(
-    reuse=dynah,
-    RESULTAT=dynah,
-    OPERATION="AFFE",
-    TYPE_RESU="DYNA_HARMO",
-    MATR_RIGI=rigidite,
-    MATR_MASS=masse,
-    NOM_CHAM="VITE",
-    AFFE=(_F(CHAM_GD=VIT0, FREQ=0.0),),
-)
+dynah=CREA_RESU(reuse=dynah,
+                  RESULTAT=dynah,
+                  OPERATION='AFFE',
+                  TYPE_RESU='DYNA_HARMO',
+                  MATR_RIGI=rigidite,
+                  MATR_MASS=masse,
+                  NOM_CHAM='VITE',
+                  AFFE=(_F(CHAM_GD=VIT0,FREQ=0.0,),),)
 
-dynah = CREA_RESU(
-    reuse=dynah,
-    RESULTAT=dynah,
-    OPERATION="AFFE",
-    TYPE_RESU="DYNA_HARMO",
-    MATR_RIGI=rigidite,
-    MATR_MASS=masse,
-    NOM_CHAM="ACCE",
-    AFFE=(_F(CHAM_GD=ACC0, FREQ=0.0),),
-)
+dynah=CREA_RESU(reuse=dynah,
+                  RESULTAT=dynah,
+                  OPERATION='AFFE',
+                  TYPE_RESU='DYNA_HARMO',
+                  MATR_RIGI=rigidite,
+                  MATR_MASS=masse,
+                  NOM_CHAM='ACCE',
+                  AFFE=(_F(CHAM_GD=ACC0,FREQ=0.0,),),)
 
 #
 # Calcul pour toute la suite des frequences :
 #
 
-dynah = DYNA_VIBRA(
-    reuse=dynah,
-    RESULTAT=dynah,
-    TYPE_CALCUL="HARM",
-    BASE_CALCUL="PHYS",
-    MATR_MASS=masse,
-    MATR_RIGI=rigihyst,  # rigidite,
-    MATR_AMOR=amort,
-    MATR_IMPE_PHI=imped,
-    EXCIT=_F(VECT_ASSE=VECAS, COEF_MULT=1.0),
-    EXCIT_RESU=(_F(RESULTAT=CHAONF, COEF_MULT_C=-1.0 - 0.0j),),
-    LIST_FREQ=lfreqc,
-    TOUT_CHAM="OUI",
-)
+dynah = DYNA_VIBRA    ( reuse=dynah, RESULTAT=dynah,
+                        TYPE_CALCUL='HARM', BASE_CALCUL='PHYS',
+                        MATR_MASS= masse,   MATR_RIGI= rigihyst, #rigidite,
+                        MATR_AMOR = amort,  MATR_IMPE_PHI = imped,
+                        EXCIT   = _F( VECT_ASSE = VECAS,
+                                      COEF_MULT = 1.
+                                       ),
+                        EXCIT_RESU=(
+                                 _F( RESULTAT = CHAONF,
+                                     COEF_MULT_C= -1.0 -0.0j,),
+                                 ),
+                        LIST_FREQ= lfreqc,
+                        TOUT_CHAM= 'OUI'
+                      )
 
-dyna = REST_SPEC_TEMP(
-    RESULTAT=dynah,
-    METHODE="PROL_ZERO",
-    SYMETRIE="NON",
-    TOUT_CHAM="OUI",
-    INFO=1,
-    ACCELERATION_MPI="OUI",
-)
+dyna = REST_SPEC_TEMP( RESULTAT = dynah ,
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          TOUT_CHAM = 'OUI',
+                          INFO=1,
+                          ACCELERATION_MPI='OUI',
+                          N_PUIS = 0,
+                          )
 # Point au sommet du barrage
 
-axch = RECU_FONCTION(
-    RESULTAT=dyna,
-    GROUP_NO="GNOH",
-    NOM_CHAM="ACCE",
-    INTERPOL="LIN",
-    PROL_DROITE="CONSTANT",
-    PROL_GAUCHE="CONSTANT",
-    LIST_INST=linst,
-    NOM_CMP="DX",
-)
+axch = RECU_FONCTION( RESULTAT= dyna, GROUP_NO='GNOH', NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=linst,
+                      NOM_CMP='DX')
+
 
 
 # Point au bas du barrage
 
-axcb = RECU_FONCTION(
-    RESULTAT=dyna,
-    GROUP_NO="GNOB",
-    NOM_CHAM="ACCE",
-    INTERPOL="LIN",
-    PROL_DROITE="CONSTANT",
-    PROL_GAUCHE="CONSTANT",
-    LIST_INST=linst,
-    NOM_CMP="DX",
-)
+axcb = RECU_FONCTION( RESULTAT= dyna, GROUP_NO='GNOB',
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=linst,
+                         NOM_CMP='DX')
 
 # Point au bord du barrage
 
-axcc = RECU_FONCTION(
-    RESULTAT=dyna,
-    GROUP_NO="GNOB",
-    NOM_CHAM="ACCE",
-    INTERPOL="LIN",
-    PROL_DROITE="CONSTANT",
-    PROL_GAUCHE="CONSTANT",
-    LIST_INST=linst,
-    NOM_CMP="DX",
-)
+axcc = RECU_FONCTION( RESULTAT= dyna, GROUP_NO='GNOB',
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=linst,
+                         NOM_CMP='DX')
 
 
 # IMPR_FONCTION(UNITE=32,
@@ -468,31 +491,43 @@ axcc = RECU_FONCTION(
 #       )
 
 
-freqspec = DEFI_LIST_REEL(
-    DEBUT=0.1,
-    INTERVALLE=(
-        _F(JUSQU_A=15.0, NOMBRE=149),
-        _F(JUSQU_A=35.0, NOMBRE=80),
-        _F(JUSQU_A=100.0, NOMBRE=65),
-    ),
-)
+freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
+                          INTERVALLE = (
+                                      _F(
+                                         JUSQU_A = 15.,
+                                         NOMBRE = 149,
+                                       ),
+                                      _F(
+                                         JUSQU_A = 35.,
+                                         NOMBRE = 80,
+                                       ),
+                                      _F(
+                                         JUSQU_A = 100.,
+                                         NOMBRE = 65,
+                                       ),
+                                        ),
+                           )
 
 
-sro_axh = CALC_FONCTION(
-    SPEC_OSCI=_F(FONCTION=axch, AMOR_REDUIT=0.05, NORME=1.0, LIST_FREQ=freqspec)
-)
+sro_axh=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=axch, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),)
 
-sro_axb = CALC_FONCTION(
-    SPEC_OSCI=_F(FONCTION=axcb, AMOR_REDUIT=0.05, NORME=1.0, LIST_FREQ=freqspec)
-)
+sro_axb=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=axcb, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),)
 
-sro_axc = CALC_FONCTION(
-    SPEC_OSCI=_F(FONCTION=axcc, AMOR_REDUIT=0.05, NORME=1.0, LIST_FREQ=freqspec)
-)
+sro_axc=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=axcc, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),)
 
-sro_axd = CALC_FONCTION(
-    SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05, NORME=1.0, LIST_FREQ=freqspec)
-)
+sro_axd=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),)
 
 
 # IMPR_FONCTION(UNITE=33,
@@ -526,26 +561,24 @@ refsro = 3.446278205765
 tolsro = 0.011
 
 
-TEST_FONCTION(
-    VALEUR=(
-        _F(
-            VALE_CALC=calt1,
-            VALE_REFE=reft1,
-            PRECISION=tolt1,
-            REFERENCE="AUTRE_ASTER",
-            VALE_PARA=inst1,
-            FONCTION=axch,
-        ),
-        _F(
-            VALE_CALC=calsro,
-            VALE_REFE=refsro,
-            PRECISION=tolsro,
-            REFERENCE="AUTRE_ASTER",
-            VALE_PARA=(10.7, 0.05),
-            NOM_PARA=("FREQ", "AMOR"),
-            FONCTION=sro_axh,
-        ),
-    )
-)
+TEST_FONCTION(VALEUR=(
+                       _F(VALE_CALC=calt1,
+                         VALE_REFE=reft1,
+                         PRECISION=tolt1,
+                         REFERENCE = 'AUTRE_ASTER',
+                         VALE_PARA=inst1,
+                         FONCTION=axch,
+                         ),
+                      _F(
+                         VALE_CALC=calsro,
+                         VALE_REFE=refsro,
+                         PRECISION=tolsro,
+                         REFERENCE = 'AUTRE_ASTER',
+                         VALE_PARA=(10.7, 0.05),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=sro_axh,
+                         ),
+                      ),
+              )
 
-FIN()
+FIN( )

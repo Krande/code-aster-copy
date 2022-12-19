@@ -1,0 +1,311 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Pour des raisons de performances, on force SDVERI='NON'.
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'))
+#
+import aster
+from sdls119a import accel
+#
+mail = LIRE_MAILLAGE(FORMAT="ASTER", VERI_MAIL = _F( VERIF = 'OUI' ) , )
+#
+mail = DEFI_GROUP( reuse = mail ,
+                   MAILLAGE = mail ,
+                   CREA_GROUP_NO = ( _F( GROUP_MA = 'DBAS' , ) ,
+                                     _F( GROUP_MA = 'RES0' , ) ,
+                                     _F( GROUP_MA = 'RESL' , ) ,
+                                     _F( GROUP_MA = 'RESS' , ) ,
+                                     _F( GROUP_MA = 'RESB' , ) , ) , )
+#
+mode = AFFE_MODELE( MAILLAGE = mail ,
+                    AFFE = (
+                             _F( GROUP_MA = ( 'RESS' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T') ,
+                             _F( GROUP_MA = ( 'RESL' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T') ,
+                            _F( GROUP_MA = ( 'RES0' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T') ,
+                             _F( GROUP_MA = ( 'DAL1' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DKT') ,
+                             _F( GROUP_MA = 'RESH' ,
+                                 PHENOMENE = 'MECANIQUE' ,
+                                 MODELISATION = 'DIS_T' , ) , ) , )
+#
+kressort = 1.E8
+kressorG = 1.E15
+#
+cara = AFFE_CARA_ELEM( MODELE = mode ,
+                       DISCRET = ( _F( GROUP_MA = 'RESH' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'K_T_D_L' ,
+                                          VALE = ( 1.0 , 0.0 ,0.0 , ) , ) ,
+                                    _F( GROUP_MA = 'RESH' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'A_T_D_L' ,
+                                          VALE = ( 0.0 , 0.0 ,0.0 , ) , ) ,
+                                    _F( GROUP_MA = 'RESH' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'M_T_L' ,
+                                          VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) , ) ,
+                                    _F( GROUP_MA = 'RESL' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'K_T_D_L' ,
+                                          VALE = ( kressorG , kressorG ,kressorG , ) , ) ,
+                                    _F( GROUP_MA = 'RESL' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'A_T_D_L' ,
+                                          VALE = ( 0. , 0. ,0. , ) , ) ,
+                                    _F( GROUP_MA = 'RESL' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'M_T_L' ,
+                                          VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) , ) ,
+                                      _F( GROUP_MA = 'RESS' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'K_T_D_L' ,
+                                          VALE = ( kressort , kressorG , kressorG ,) , ) ,
+                                    _F( GROUP_MA = 'RESS' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'M_T_L' ,
+                                          VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) , ) ,
+                                      _F( GROUP_MA = 'RES0' ,
+                                           REPERE = 'GLOBAL' ,
+                                           CARA = 'M_T_D_N' ,
+                                           VALE = 1.e-1 , ) ,
+                                     ),
+                       COQUE=        _F( GROUP_MA = 'DAL1' ,
+                                          A_CIS=0.833333333,
+                                          EPAIS=1.,),
+                                           )
+
+rhob = 2500.
+#
+mat1 = DEFI_MATERIAU( ELAS = _F( E   = 1.4E8 ,
+                                 NU  = 0.3  ,
+                                 RHO = rhob  ,
+                                 AMOR_ALPHA = 0.005 ,
+                                 AMOR_BETA = 0.1 , ) , )
+#
+matbid = DEFI_MATERIAU( ELAS = _F( E   = 1.E12 ,
+                                 NU  = 0.3  ,
+                                 RHO = rhob  , ) , )
+#
+matres = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = kressorG ,
+                                          DIST_1 = 1.e-6 ,
+                                          DIST_2 = 1.e-6,
+                                        ), )
+
+chmat = AFFE_MATERIAU( MAILLAGE = mail ,
+                    AFFE =( _F( GROUP_MA = 'DAL1' ,
+                                MATER = mat1 ),
+                            _F( GROUP_MA = 'RESL' ,
+                                MATER = matres ),
+                            _F( GROUP_MA = 'RESS' ,
+                                MATER = matbid ),
+                            _F( GROUP_MA = 'RESH' ,
+                                MATER = matbid ),
+                            _F( GROUP_MA = 'RES0' ,
+                                MATER = matbid ),
+                                 ) , )
+# contact
+depimp = AFFE_CHAR_MECA( MODELE = mode ,
+                         DDL_IMPO=( _F(  GROUP_NO =
+                                         ( 'R1' , 'R2' , ) ,
+                                         BLOCAGE = ('DEPLACEMENT', 'ROTATION') , ) ,
+                                    _F(  GROUP_NO = 'RESB' ,
+                                         DX = 0. , DY = 0. , DZ = 0.) ,
+                                    _F(  GROUP_NO = 'RES0' ,
+                                         DZ = 0. ) ,
+                                    _F(  GROUP_MA =
+                                          ( 'DAL1'  , ) ,
+                                          DZ = 0., DRY = 0. ,) ,
+                                          ) , )
+#
+ASSEMBLAGE( MODELE = mode ,
+                 CARA_ELEM = cara ,
+                 CHARGE = depimp ,
+                 CHAM_MATER = chmat ,
+                 NUME_DDL = CO("NUM") ,
+                 MATR_ASSE = ( _F(  MATRICE = CO("rigidite"),
+                                                OPTION = 'RIGI_MECA' , ) ,
+                                         _F(  MATRICE = CO("masse"),
+                                                OPTION = 'MASS_MECA' , ),
+                                         _F(  MATRICE = CO("amorto"),
+                                                OPTION = 'AMOR_MECA' , ) , ) ,
+                 )
+#
+#
+MODES=CALC_MODES(MATR_RIGI=rigidite,
+                 VERI_MODE=_F(STOP_ERREUR='OUI',
+                              STURM='OUI',
+                              ),
+                 CALC_FREQ=_F(NMAX_FREQ=20,
+                              ),
+                 MATR_MASS=masse,
+                 )
+
+#
+mono_x = CALC_CHAR_SEISME( MATR_MASS = masse ,
+                           DIRECTION=( 1. , 0. , 0. ,) ,
+                           MONO_APPUI = 'OUI' , )
+CHVA_x=AFFE_CHAR_MECA(MODELE=mode,VECT_ASSE=mono_x)
+#
+
+T_max = 20.47
+Delta_t = 0.01
+
+TEMPL2H=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=T_max,
+                                    PAS=Delta_t,),)
+
+accel2 = CALC_FONCTION(LIST_PARA=TEMPL2H,
+                       COMB = _F( FONCTION = accel , COEF = 1. ,) , )
+
+#
+
+pasf =1.0/(T_max+Delta_t)
+
+fmax = 25.0
+#fmax2 = fmax - 3.*pasf
+fmax2 = 10.
+
+listfreq = DEFI_LIST_REEL(DEBUT=0.0,
+                          INTERVALLE=_F(JUSQU_A=fmax, PAS=pasf),
+                          )
+
+listfreq2 = DEFI_LIST_REEL(DEBUT=0.0,
+                          INTERVALLE=_F(JUSQU_A=fmax2, PAS=pasf),
+                          )
+
+
+#FFUN=CALC_FONCTION( FFT=_F( FONCTION = FUN, METHODE='PROL_ZERO',) )
+FFACCE=CALC_FONCTION( FFT=_F( FONCTION = accel2, METHODE='PROL_ZERO',) )
+
+EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=mode,
+                   MATR_MASS=masse, MATR_RIGI=rigidite,
+                   MATR_AMOR=amorto,
+                   LIST_FREQ = listfreq,
+                   EXCIT=(
+                        _F( CHARGE=CHVA_x, FONC_MULT_C= FFACCE,),
+                         ),
+                  )
+
+EVOLT = REST_SPEC_TEMP( RESULTAT = EVOLH ,
+                      METHODE = 'PROL_ZERO' ,
+                      SYMETRIE = 'NON' ,
+                      TOUT_CHAM = 'OUI' ,
+                      N_PUIS = 0)
+
+accexP3a= RECU_FONCTION(RESULTAT=EVOLT, NOM_CHAM='ACCE', GROUP_NO='P3', NOM_CMP='DX') ;
+
+
+EVOLH2 = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=mode,
+                   MATR_MASS=masse, MATR_RIGI=rigidite,
+                   MATR_AMOR=amorto,
+                   LIST_FREQ = listfreq2,
+                   EXCIT=(
+                        _F( CHARGE=CHVA_x, FONC_MULT_C= FFACCE,),
+                         ),
+                  )
+
+EVOLT2 = REST_SPEC_TEMP( RESULTAT = EVOLH2 ,
+                      METHODE = 'PROL_ZERO' ,
+                      SYMETRIE = 'NON' ,
+                      TOUT_CHAM = 'OUI' ,
+                      N_PUIS = 2)
+
+Delta_t = 0.01
+T_max = 10.
+
+TEMPL2HB=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=T_max,
+                                    PAS=Delta_t,),)
+
+accel3 = CALC_FONCTION(LIST_PARA=TEMPL2HB,
+                       COMB = _F( FONCTION = accel , COEF = 1. ,) , )
+
+
+pasf2 =1.0/(T_max)
+
+fmax3 = int(50.0/pasf)*pasf
+
+listfreq3 = DEFI_LIST_REEL(DEBUT=0.0,
+                          INTERVALLE=_F(JUSQU_A=fmax3, PAS=pasf2),
+                          )
+
+FFACCE2=CALC_FONCTION( FFT=_F( FONCTION = accel3, METHODE='COMPLET',) )
+
+EVOLH3 = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=mode,
+                   MATR_MASS=masse, MATR_RIGI=rigidite,
+                   MATR_AMOR=amorto,
+                   LIST_FREQ = listfreq3,
+                   EXCIT=(
+                        _F( CHARGE=CHVA_x, FONC_MULT_C= FFACCE2,),
+                         ),
+                  )
+
+
+accexP3b= RECU_FONCTION(RESULTAT=EVOLH3, NOM_CHAM='ACCE', GROUP_NO='P3', NOM_CMP='DX') ;
+
+
+
+AcceT = CALC_FONCTION( FFT=_F( FONCTION = accexP3b, METHODE='COMPLET',SYME = 'NON') )
+
+TEST_RESU(RESU=(_F(GROUP_NO='P3',
+                   INST=2.32,
+                   RESULTAT=EVOLT,
+                   NOM_CHAM='ACCE',
+                   NOM_CMP='DX',
+                   VALE_CALC=4.589737448653397,),                   
+                _F(GROUP_NO='P3',
+                   INST=2.32,
+                   RESULTAT=EVOLT2,
+                   NOM_CHAM='ACCE',
+                   NOM_CMP='DX',
+                   VALE_REFE=4.589737448653397,
+                   VALE_CALC=4.589741606257647,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.e-6,),
+                ),
+          )
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=4.589737448653397,
+                         VALE_PARA=2.32,
+                         FONCTION =accexP3a,
+                         ),
+                      _F(VALE_REFE=4.589737448653397,
+                         VALE_CALC=4.643424178244,
+                         VALE_PARA=2.32,
+                         REFERENCE='AUTRE_ASTER',
+                         FONCTION =AcceT,
+                         PRECISION = 2.e-2,
+                         ),
+                      ),
+              )
+
+
+FIN()
