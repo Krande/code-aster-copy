@@ -1,0 +1,93 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Commands import *
+
+code_aster.init("--test")
+
+test = code_aster.TestCase()
+
+###################################################################################
+#
+#   Analytical solution
+#   u = (X, Y)
+#   eps = Id
+#   sig = (2*mu + d *lamda) * Id
+#   f = (0, 0)
+#
+#
+####################################################################################
+
+
+mesh0 = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
+
+# define material
+coeff = DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3))
+
+mater = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(TOUT="OUI", MATER=coeff))
+
+
+for form in ("LINEAIRE", "QUADRATIQUE"):
+
+    model = AFFE_MODELE(
+        MAILLAGE=mesh,
+        AFFE=_F(TOUT="OUI", MODELISATION="3D_HHO", FORMULATION=form, PHENOMENE="MECANIQUE"),
+    )
+
+    uX = FORMULE(VALE="X+1", NOM_PARA=("X", "Y", "Z"))
+    uY = FORMULE(VALE="Y+3", NOM_PARA=("X", "Y", "Z"))
+    uZ = FORMULE(VALE="Z-2", NOM_PARA=("X", "Y", "Z"))
+
+    bc = AFFE_CHAR_CINE_F(MODELE=model, MECA_IMPO=_F(GROUP_MA="FACES", DX=uX, DY=uY, DZ=uZ))
+
+    # define discrete object
+    phys_pb = code_aster.PhysicalProblem(model, mater)
+    phys_pb.addDirichletBC(bc)
+    phys_pb.computeDOFNumbering()
+
+    hho = code_aster.HHO(phys_pb)
+
+    # project function
+    u_hho = hho.projectOnHHOSpace([uX, uY, uZ])
+
+    # solve linear system
+    LREEL = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1, NOMBRE=1))
+
+    resu = STAT_NON_LINE(
+        MODELE=model,
+        CHAM_MATER=mater,
+        INCREMENT=_F(LIST_INST=LREEL),
+        EXCIT=(_F(CHARGE=bc),),
+        HHO=_F(OPTIMISATION="TEMPS"),
+    )
+
+    u_sol = resu.getField("DEPL", para="INST", value=1.0)
+
+    u_diff = u_hho - u_sol
+
+    test.assertAlmostEqual(u_diff.norm("NORM_2"), 0.0, delta=1e-8)
+
+# print("f=", f_hho.getValues())
+# print("u=", u_hho.getValues())
+# print("diif=", (u_hho - u_sol).getValues())
+
+FIN()

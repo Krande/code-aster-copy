@@ -42,7 +42,7 @@ private
 ! Module to compute L2 prjoection
 !
 ! --------------------------------------------------------------------------------------------------
-    public :: hhoL2ProjFaceScal, hhoL2ProjFaceVec, hhoL2ProjScal
+    public :: hhoL2ProjFaceScal, hhoL2ProjFaceVec, hhoL2ProjScal, hhoL2ProjVec
     public :: hhoL2ProjCellScal, hhoL2ProjCellVec, hhoL2ProjCellMat
 !    private  ::
 !
@@ -416,6 +416,102 @@ contains
                                 valpar, hhoCell%ndim, FuncValuesCellQP)
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                                  coeff_L2Proj(ind))
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoL2ProjVec(hhoCell, hhoData, func, time, coeff_L2Proj)
+!
+    implicit none
+!
+        type(HHO_Cell), intent(in)          :: hhoCell
+        type(HHO_Data), intent(in)          :: hhoData
+        character(len=8), intent(in)        :: func(*)
+        real(kind=8), intent(in)            :: time
+        real(kind=8), intent(out)           :: coeff_L2Proj(MSIZE_TDOFS_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the L2-prjoection of a vectorial given function on a local space (cell + face)
+!   In hhoCell      : the current HHO Cell
+!   In FuncValuesQP : Values of the function to project at the quadrature points
+!   Out coeff_L2Proj: coefficient after projection
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer, parameter :: maxpara = 4
+        real(kind=8) :: valpar(maxpara)
+        character(len=8) :: nompar(maxpara)
+        type(HHO_Face) :: hhoFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
+        integer :: cbs, fbs, total_dofs, iFace, ind, nbpara, idim
+        real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+        coeff_L2Proj = 0
+        FuncValuesCellQP = 0.d0
+!
+! --- Type of function dor a face
+!
+        if (hhoCell%ndim == 3) then
+            nbpara = 4
+            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(nbpara) = 'INST'
+            valpar(nbpara) = time
+        else if (hhoCell%ndim == 2) then
+            nbpara = 3
+            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(nbpara) = 'INST'
+            valpar(nbpara) = time
+            nompar(4) = 'XXXXXXXX'
+            valpar(4) = 0.d0
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+! --- Loop on faces
+!
+        ind = 1
+        do iFace = 1, hhoCell%nbfaces
+            hhoFace = hhoCell%faces(iFace)
+!
+! ----- get quadrature
+!
+            call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 1)
+!
+! -------------- Value of the function at the quadrature point
+!
+            do idim = 1, hhoCell%ndim
+                call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar,&
+                                valpar, hhoCell%ndim, FuncValuesFaceQP(idim,1:MAX_QP_FACE))
+            end do
+!
+! -------------- Compute L2 projection
+!
+            call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
+                                  coeff_L2Proj(ind))
+            ind = ind + fbs
+        end do
+!
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2 * hhoData%cell_degree() + 1)
+!
+! -------------- Value of the function at the quadrature point
+!
+        do idim = 1, hhoCell%ndim
+            call hhoFuncFScalEvalQp(hhoQuadCell, func(idim), nbpara, nompar,&
+                                valpar, hhoCell%ndim, FuncValuesCellQP(idim,1:MAX_QP_CELL))
+        end do
+!
+        call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
                                   coeff_L2Proj(ind))
 !
     end subroutine

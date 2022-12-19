@@ -448,7 +448,7 @@ implicit none
         endif
         call jeveuo(jvCellNume, 'L', vi = listCellNume)
         call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
-        call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNodeNume)
+        prefNodeNume = 1
         call cmhho(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
         goto 350
     endif

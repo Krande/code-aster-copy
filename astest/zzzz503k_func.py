@@ -172,10 +172,7 @@ class DamageSolver:
         matK = disc_comp.getLinearStiffnessMatrix(assembly=True)
 
         # compute M = (rho_cp * d_T, p_T) _T
-        matEM = disc_comp.getMassMatrix()
-        matM = code_aster.AssemblyMatrixTemperatureReal(phys_pb)
-        matM.addElementaryMatrix(matEM)
-        matM.assemble()
+        matM = disc_comp.getMassMatrix(assembly=True)
 
         diriBCs = disc_comp.getDirichletBC()
 

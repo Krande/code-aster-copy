@@ -53,7 +53,33 @@ void exportHHOToPython( py::module_ &mod ) {
         )",
               py::arg( "func" ), py::arg( "time" ) = 0.0 )
         .def( "projectOnHHOSpace",
+              py::overload_cast< const std::vector< GenericFunctionPtr >, ASTERDOUBLE >(
+                  &HHO::projectOnHHOSpace, py::const_ ),
+              R"(
+      Project real function to HHO-space
+
+      Arguments:
+            func (Function): real function to project
+            time (float): time value to evaluate function (default=0.0)
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "func" ), py::arg( "time" ) = 0.0 )
+        .def( "projectOnHHOSpace",
               py::overload_cast< const ASTERDOUBLE & >( &HHO::projectOnHHOSpace, py::const_ ),
+              R"(
+      Project real value to HHO-space
+
+      Arguments:
+            value (float): value to project
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "value" ) )
+        .def( "projectOnHHOSpace",
+              py::overload_cast< const VectorReal & >( &HHO::projectOnHHOSpace, py::const_ ),
               R"(
       Project real value to HHO-space
 
@@ -80,7 +106,35 @@ void exportHHOToPython( py::module_ &mod ) {
         )",
               py::arg( "func" ), py::arg( "time" ) = 0.0 )
         .def( "projectOnHHOCellSpace",
+              py::overload_cast< const std::vector< GenericFunctionPtr >, ASTERDOUBLE >(
+                  &HHO::projectOnHHOCellSpace, py::const_ ),
+              R"(
+      Project real function to HHO Cell-space
+      Cell space is the restriction of HHO-space to cells only
+
+      Arguments:
+            func (Function): real function to project
+            time (float): time value to evaluate function (default=0.0)
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "func" ), py::arg( "time" ) = 0.0 )
+        .def( "projectOnHHOCellSpace",
               py::overload_cast< const ASTERDOUBLE & >( &HHO::projectOnHHOCellSpace, py::const_ ),
+              R"(
+      Project real value to HHO Cell-space
+      Cell space is the restriction of HHO-space to cells only
+
+      Arguments:
+            value (float): value to project
+
+      Returns:
+            FieldOnNodesReal: HHO field
+        )",
+              py::arg( "value" ) )
+        .def( "projectOnHHOCellSpace",
+              py::overload_cast< const VectorReal & >( &HHO::projectOnHHOCellSpace, py::const_ ),
               R"(
       Project real value to HHO Cell-space
       Cell space is the restriction of HHO-space to cells only

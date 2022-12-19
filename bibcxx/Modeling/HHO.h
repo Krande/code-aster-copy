@@ -63,22 +63,27 @@ class HHO {
      * @brief Project real value on HHO space
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const ASTERDOUBLE &value ) const;
+    FieldOnNodesRealPtr projectOnHHOSpace( const VectorReal &values ) const;
 
     /**
      * @brief Project real on HHO Cell-space
      */
     FieldOnNodesRealPtr projectOnHHOCellSpace( const ASTERDOUBLE &value ) const;
+    FieldOnNodesRealPtr projectOnHHOCellSpace( const VectorReal &values ) const;
 
     /**
      * @brief Project function on HHO space
      */
     FieldOnNodesRealPtr projectOnHHOSpace( const GenericFunctionPtr fct,
                                            ASTERDOUBLE time = 0.0 ) const;
-
+    FieldOnNodesRealPtr projectOnHHOSpace( const std::vector< GenericFunctionPtr > fct,
+                                           ASTERDOUBLE time = 0.0 ) const;
     /**
      * @brief Project function on HHO Cell-space
      */
     FieldOnNodesRealPtr projectOnHHOCellSpace( const GenericFunctionPtr fct,
+                                               ASTERDOUBLE time = 0.0 ) const;
+    FieldOnNodesRealPtr projectOnHHOCellSpace( const std::vector< GenericFunctionPtr > fct,
                                                ASTERDOUBLE time = 0.0 ) const;
 };
 

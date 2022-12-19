@@ -296,6 +296,8 @@ DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[18]",))
 
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[3]",))
+
 HHOCINE = LocatedComponents(
     phys=PHY.DEPL_R, type="ELNO", components=("HHO_U[6]", "HHO_V[6]", "HHO_W[6]")
 )
@@ -401,6 +403,15 @@ class MECA3DH27_HHO222(Element):
                 (OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGTH),
                 (OP.HHO_PRECALC_MECA.PCHHOST, CHHOSTH),
             ),
+        ),
+        OP.HHO_PROJ_MECA(
+            te=473,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_PROJ_MECA.PFUNC_R, PFONCR),
+                (SP.PINSTPR, CTEMPSR),
+            ),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
         ),
         OP.HHO_DEPL_MECA(
             te=456,

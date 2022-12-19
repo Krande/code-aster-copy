@@ -190,11 +190,8 @@ CREA_MAILLAGE = OPER(
     MODI_HHO=FACT(
         statut="f",
         fr=tr("Création maillage pour HHO"),
-        regles=(UN_PARMI("TOUT", "GROUP_MA"),),
         TOUT=SIMP(statut="f", typ="TXM", into=("OUI",)),
-        GROUP_MA=SIMP(statut="f", typ=grma, validators=NoRepeat(), max="**"),
-        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NS"),
-        PREF_NUME=SIMP(statut="f", typ="I", defaut=1),
+        PREF_NOEUD=SIMP(statut="f", typ="TXM", defaut="NH"),
     ),
     COQUE_SOLIDE=FACT(
         statut="f",

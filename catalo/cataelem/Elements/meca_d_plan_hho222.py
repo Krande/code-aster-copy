@@ -239,6 +239,9 @@ DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY"
 
 PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[8]",))
 
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
+
+
 HHOCINE = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("HHO_U[3]", "HHO_V[3]"))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
@@ -329,6 +332,15 @@ class MECA_DPQ9_HHO222(Element):
                 (OP.HHO_PRECALC_MECA.PCHHOGT, CHHOGTQ),
                 (OP.HHO_PRECALC_MECA.PCHHOST, CHHOSTQ),
             ),
+        ),
+        OP.HHO_PROJ_MECA(
+            te=473,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_PROJ_MECA.PFUNC_R, PFONCR),
+                (SP.PINSTPR, CTEMPSR),
+            ),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
         ),
         OP.HHO_DEPL_MECA(
             te=456,

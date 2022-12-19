@@ -132,6 +132,7 @@ EERRENO = LocatedComponents(
     ),
 )
 
+PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[2]",))
 
 CFORCEF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"))
 
@@ -348,6 +349,15 @@ class MECA_DPQ9_HHO121(Element):
                 (OP.HHO_CINE_F_MECA.PFONC, PFONC),
             ),
             para_out=((OP.HHO_CINE_F_MECA.PCINE, HHOCINE),),
+        ),
+        OP.HHO_PROJ_MECA(
+            te=473,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (OP.HHO_PROJ_MECA.PFUNC_R, PFONCR),
+                (SP.PINSTPR, CTEMPSR),
+            ),
+            para_out=((OP.HHO_PROJ_MECA.PDEPL_R, DDL_MECA),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))

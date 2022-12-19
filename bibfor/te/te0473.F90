@@ -28,6 +28,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/writeVector.h"
+#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 !
@@ -44,24 +45,33 @@ implicit none
 !
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs, jvale
+    integer :: cbs, fbs, total_dofs, jvale, jfunc
     real(kind=8) :: time
     character(len=8) :: func
-    real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: coeff_L2Proj
+    real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
 !
 ! --- Get HHO informations
 !
     call hhoInfoInitCell(hhoCell, hhoData)
 !
-    call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-!
-    call jevech("PFUNC_R", "L", jvale)
-    func = zk8(jvale)
+    call jevech("PFUNC_R", "L", jfunc)
     call jevech("PINSTPR", "L", jvale)
     time = zr(jvale)
 !
-    call hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
+    if(option == "HHO_PROJ_THER") then
 !
-    call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
+        func = zk8(jfunc)
+        call hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
+!
+        call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
+    elseif(option == "HHO_PROJ_MECA") then
+        call hhoL2ProjVec(hhoCell, hhoData, zk8(jfunc), time, coeff_L2Proj)
+
+        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+        call writeVector("PDEPL_R", total_dofs, coeff_L2Proj)
+    else
+        ASSERT(ASTER_FALSE)
+    end if
 !
 end subroutine
