@@ -43,6 +43,8 @@ private
 #include "asterfort/subaco.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
+#include "asterfort/normev.h"
+#include "asterfort/mmmron.h"
 #include "blas/dgemv.h"
 #include "blas/dger.h"
 #include "contact_module.h"
@@ -74,8 +76,9 @@ contains
     implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        real(kind=8), intent(in) :: coor_qp_sl(2), proj_tole
-        real(kind=8), intent(out) :: coor_qp_ma(2), gap
+        real(kind=8), intent(in)  :: coor_qp_sl(2), proj_tole
+        real(kind=8), intent(out) :: coor_qp_ma(2)
+        real(kind=8), intent(out) :: gap
         real(kind=8), intent(out) :: tau_slav(3,2), tau_mast(3,2)
         real(kind=8), intent(out) :: norm_slav(3), norm_mast(3)
 !
@@ -85,17 +88,24 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, elem_mast_line_nbnode
+        integer :: iret, iret1, iret2, elem_mast_line_nbnode
         real(kind=8) :: coor_qp_sl_re(3), tau1_mast(3), tau2_mast(3), coor_qp_ma_re(3)
-        real(kind=8) :: ksi1_line, ksi2_line
+        real(kind=8) :: coor_qp_sl_re_aux(3)
+        real(kind=8) :: ksi_line(2)
         character(len=8) :: elem_mast_line_code
+        aster_logical :: debug
 !
-        coor_qp_ma = 0.d0
+
         norm_slav = 0.d0
+        iret= 0
+        iret1 = 0
+        iret2 =0
         norm_mast = 0.d0
         tau_slav = 0.d0
         tau_mast = 0.d0
         gap = 0.d0
+        ksi_line = 0.d0
+        debug = ASTER_FALSE
 !
 ! ------ Compute outward slave normal (pairing configuration)
 !
@@ -107,47 +117,66 @@ contains
         coor_qp_sl_re = 0.d0
         call reerel(geom%elem_slav_code, geom%nb_node_slav, 3, geom%coor_slav_pair, coor_qp_sl, &
                     coor_qp_sl_re)
-!
 ! ----- Projection of node on master cell (master parametric space)
+
+        if(geom%elem_mast_code(1:2) == "SE") then
+            elem_mast_line_code = "SE2"
+            elem_mast_line_nbnode = 2
+        elseif(geom%elem_mast_code(1:2) == "TR") then
+            elem_mast_line_code = "TR3"
+            elem_mast_line_nbnode = 3
+        elseif(geom%elem_mast_code(1:2) == "QU") then
+            elem_mast_line_code = "QU4"
+            elem_mast_line_nbnode = 4
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+
 !
-        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, geom%coor_mast_pair,&
-                    coor_qp_sl_re, 75, proj_tole, norm_slav, &
-                    coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, &
-                    iret)
+! ----- Projection on master element
+        call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
+                    geom%coor_mast_pair, coor_qp_sl_re, 100, proj_tole, norm_slav, &
+                    ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret)
+        if(iret==1) then
 !
-! ----- Initialize with linearized cell
-!
-        if(iret == 1) then
-            if(geom%elem_mast_code(1:2) == "SE") then
-                elem_mast_line_code = "SE2"
-                elem_mast_line_nbnode = 2
-            elseif(geom%elem_mast_code(1:2) == "TR") then
-                elem_mast_line_code = "TR3"
-                elem_mast_line_nbnode = 3
-            elseif(geom%elem_mast_code(1:2) == "QU") then
-                elem_mast_line_code = "QU4"
-                elem_mast_line_nbnode = 4
-            else
-                ASSERT(ASTER_FALSE)
-            end if
+! ----- Try with linearization
 
             call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, geom%elem_dime, &
                         geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
-                        ksi1_line, ksi2_line, tau1_mast, tau2_mast, iret)
-            ASSERT(iret==0)
-!
+                        ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
+
+            call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair,&
+                        ksi_line, coor_qp_sl_re_aux)
+
             call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
-                        geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
-                        coor_qp_ma(1), coor_qp_ma(2), tau1_mast, tau2_mast, iret, &
-                        ksi1_init=ksi1_line, ksi2_init= ksi2_line)
-            ASSERT(iret==0)
-!
+                        geom%coor_mast_pair, coor_qp_sl_re_aux, 75, proj_tole, norm_slav, &
+                        ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
         end if
+
+!
 !
 ! ----- Check that projected node is inside cell
 !
-        call projInsideCell(proj_tole, geom%elem_dime, geom%elem_mast_code, coor_qp_ma, iret)
-        ASSERT(iret==0)
+        call projInsideCell(1e-3, geom%elem_dime, geom%elem_mast_code, ksi_line, iret2)
+
+        coor_qp_ma(:)=ksi_line(:)
+
+        if ( (iret .eq. 0) .and. (iret1 .eq. 0) .and. (iret2.eq.0)) then
+            !print*, 'mast_coor_pair', geom%coor_mast_pair(1:2,1:3)
+            !print*, 'mast_coor_curr', geom%coor_mast_curr(1:2,1:3)
+            !print*, 'slav_coor_pair', geom%coor_slav_pair(1:2,1:3)
+            !print*, 'salv_coor_curr', geom%coor_slav_curr(1:2,1:3)
+            !print*, "normslav", norm_slav
+            !print*, "iret", iret
+            !print*, "iret1", iret1
+            !print*, "iret2", iret2
+        if (debug) then
+            !print*, "1", ksi_line(1)
+            !print*, "2", ksi_line(2)
+            !print*, "3", ksi_line(1)+coor_qp_ma(2)
+        endif
+        end if
 !
 ! ------ Compute outward master normal (pairing configuration)
 !
@@ -157,14 +186,16 @@ contains
 ! ------ Check
 !
         if(dot_product(norm_slav, norm_mast) > 0.1d0) then
-            print*, "Normals have the same direction: ", dot_product(norm_slav, norm_mast)
-            print*, "Slave normal: ", norm_slav
-            print*, "Master normal: ", norm_mast
-            print*, "Distance: ", norm2(barycenter(geom%nb_node_mast, geom%coor_mast_curr) - &
-                barycenter(geom%nb_node_slav, geom%coor_slav_curr))
-            print*, "Diameter slave / master: ", diameter(geom%nb_node_slav, geom%coor_slav_curr), &
-                diameter(geom%nb_node_mast, geom%coor_mast_curr)
-            ASSERT(ASTER_FALSE)
+            if (debug) then
+                print*, "Normals have the same direction: ", dot_product(norm_slav, norm_mast)
+                print*, "Slave normal: ", norm_slav
+                print*, "Master normal: ", norm_mast
+                print*, "Distance: ", norm2(barycenter(geom%nb_node_mast, geom%coor_mast_curr) - &
+                    barycenter(geom%nb_node_slav, geom%coor_slav_curr))
+                print*, "Diameter slave / master: ", diameter(geom%nb_node_slav,&
+                         geom%coor_slav_curr),diameter(geom%nb_node_mast, geom%coor_mast_curr)
+            endif
+
         end if
 !
 ! ----- Compute gap for raytracing gap = -(x^s - x^m).n^s (current configuration)
@@ -176,16 +207,15 @@ contains
         call reerel(geom%elem_mast_code, geom%nb_node_mast, 3, geom%coor_mast_curr, coor_qp_ma, &
                     coor_qp_ma_re)
         gap = gapEval(coor_qp_sl_re, coor_qp_ma_re, norm_slav)
-
-        ! print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
-        ! print*, "COOR_MA: ", geom%coor_mast_curr(1,1:2)
-        ! print*, "NORM_SL: ", norm_slav
-        ! print*, "NORM_MA: ", norm_mast
-        ! print*, "COOR_QP: ", coor_qp_sl
-        ! print*, "COOR_QP_RE: ", coor_qp_sl_re
-        ! print*, "COOR_PJ: ", coor_qp_ma
-        ! print*, "COOR_PJ_RE: ", coor_qp_ma_re
-        ! print*, "GAP: ", gap
+        !print*, "COOR_SL: ", geom%coor_slav_curr(1,1:2)
+        !print*, "COOR_MA: ", geom%coor_mast_curr(1,1:2)
+        !print*, "NORM_SL: ", norm_slav
+        !print*, "NORM_MA: ", norm_mast
+        !print*, "COOR_QP: ", coor_qp_sl
+        !print*, "COOR_QP_RE: ", coor_qp_sl_re
+        !print*, "COOR_PJ: ", coor_qp_ma
+        !print*, "COOR_PJ_RE: ", coor_qp_ma_re
+        !print*, "GAP: ", gap
 !
     end subroutine
 !
