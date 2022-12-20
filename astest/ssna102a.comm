@@ -33,7 +33,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM=("CO
 # --------------------------------------------------------------------
 
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
-
+MAIL = MODI_MAILLAGE(
+    reuse=MAIL, MAILLAGE=MAIL, ORIE_PEAU=_F(GROUP_MA_PEAU=("CEP2", "CEP3", "LCD4"))
+)
 #
 
 MAIL = DEFI_GROUP(
