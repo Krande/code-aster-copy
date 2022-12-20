@@ -815,133 +815,134 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                 GROUP_MA=grma_colon,),),
                          )
     else:
-      #maillage automatique uniquement en 2D
-      text = ('NCOU=' + str(NCOU))
-      aster.affiche('MESSAGE', text)
-      NCOUB=NCOU+1
-      larcol=1.0
-      resultfile = open("dse.mail", 'w')
-      resultfile.write( " TITRE \n")
-      resultfile.write( " %  GIBI FECIT \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " COOR_3D \n")
-      resultfile.write( " N1        0.0000000000000D+00  0.000000000000D+00  0.0000000000000D+00 \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " N"+str(k+1)+"        0.0000000000000D+00  "+str(-1*__TMAT['Y',k])+"   0.0000000000000D+00 \n")
-      resultfile.write( " N"+str(NCOUB+2)+"        "+str(larcol)+"000000000000D+00  0.0000000000000D+00  0.0000000000000D+00 \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " N"+str(NCOUB+2+k)+"        "+str(larcol)+"000000000000D+00  "+str(-1*__TMAT['Y',k])+" 0.0000000000000D+00 \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " QUAD4  \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( "  M"+str(k)+"       N"+str(k)+"       N"+str(k+1)+"       N"+str(NCOUB+2+k)+"      N"+str(NCOUB+1+k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " SEG2   \n")
-      resultfile.write( " M"+str(NCOUB+1)+"      N"+str(NCOUB+1)+"      N"+str(2*NCOUB+2)+"      \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      j = NCOUB+1
-      resultfile.write( " SEG2   \n")
-      for k in range(1,NCOUB+1):
-        j = j+1
-        resultfile.write( "  M"+str(j)+"       N"+str(k)+"       N"+str(k+1)+" \n")
-      for k in range(1,NCOUB+1):
-        j = j+1
-        resultfile.write( "  M"+str(j)+"       N"+str(NCOUB+1+k)+"      N"+str(NCOUB+2+k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      for k in range(1,NCOUB+2):
-        resultfile.write( " GROUP_NO \n")
-        resultfile.write( " P"+str(k-1)+"       N"+str(k)+"       \n")
-        resultfile.write( " FINSF \n")
-        resultfile.write( " % \n")
-      resultfile.write( " GROUP_MA \n")
-      resultfile.write( str(grma_colon)  + " \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " M"+str(k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " GROUP_MA \n")
-        resultfile.write( str(__TMAT['M',k])+"       \n")
-        resultfile.write( " M"+str(k)+"       \n")
-        resultfile.write( " FINSF \n")
-        resultfile.write( " % \n")
-      resultfile.write( " GROUP_MA \n")
-      resultfile.write( str(grma_subst)  + " \n")
-      resultfile.write( " M"+str(NCOUB+1)+"      \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " GROUP_MA \n")
-      resultfile.write( str(grma_late)  + " \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " M"+str(NCOUB+1+k)+" \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " M"+str(2*NCOUB+1+k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " GROUP_MA \n")
-      resultfile.write( str(grma_gauch)  + " \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " M"+str(NCOUB+1+k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " GROUP_MA \n")
-      resultfile.write( str(grma_droit)  + " \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " M"+str(2*NCOUB+1+k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      for k in range(1,NCOUB+1):
-        resultfile.write( " GROUP_MA \n")
-        resultfile.write( " G"+str(__TMAT['M',k])+"      \n")
-        resultfile.write( " M"+str(NCOUB+1+k)+"       \n")
-        resultfile.write( " FINSF \n")
-        resultfile.write( " % \n")
-        resultfile.write( " GROUP_MA \n")
-        resultfile.write( " D"+str(__TMAT['M',k])+"     \n")
-        resultfile.write( " M"+str(2*NCOUB+1+k)+"       \n")
-        resultfile.write( " FINSF \n")
-        resultfile.write( " % \n")
-        resultfile.write( " GROUP_MA \n")
-        resultfile.write( " L"+str(__TMAT['M',k])+"     \n")
-        resultfile.write( " M"+str(NCOUB+1+k)+"       \n")
-        resultfile.write( " M"+str(2*NCOUB+1+k)+"       \n")
-        resultfile.write( " FINSF \n")
-        resultfile.write( " % \n")
-      resultfile.write( " GROUP_NO \n")
-      resultfile.write( str(grma_gauch)  + " \n")
-      for k in range(1,NCOUB+2):
-        resultfile.write( " N"+str(k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " GROUP_NO \n")
-      resultfile.write( str(grma_droit)  + " \n")
-      for k in range(1,NCOUB+2):
-        resultfile.write( " N"+str(NCOUB+1+k)+" \n")
-      resultfile.write( " FINSF \n")
-      resultfile.write( " % \n")
-      resultfile.write( " FIN \n")
+      if dime=="2D":
+          #maillage automatique uniquement en 2D
+          text = ('NCOU=' + str(NCOU))
+          aster.affiche('MESSAGE', text)
+          NCOUB=NCOU+1
+          larcol=1.0
+          resultfile = open("dse.mail", 'w')
+          resultfile.write( " TITRE \n")
+          resultfile.write( " %  GIBI FECIT \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " COOR_3D \n")
+          resultfile.write( " N1        0.0000000000000D+00  0.000000000000D+00  0.0000000000000D+00 \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " N"+str(k+1)+"        0.0000000000000D+00  "+str(-1*__TMAT['Y',k])+"   0.0000000000000D+00 \n")
+          resultfile.write( " N"+str(NCOUB+2)+"        "+str(larcol)+"000000000000D+00  0.0000000000000D+00  0.0000000000000D+00 \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " N"+str(NCOUB+2+k)+"        "+str(larcol)+"000000000000D+00  "+str(-1*__TMAT['Y',k])+" 0.0000000000000D+00 \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " QUAD4  \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( "  M"+str(k)+"       N"+str(k)+"       N"+str(k+1)+"       N"+str(NCOUB+2+k)+"      N"+str(NCOUB+1+k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " SEG2   \n")
+          resultfile.write( " M"+str(NCOUB+1)+"      N"+str(NCOUB+1)+"      N"+str(2*NCOUB+2)+"      \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          j = NCOUB+1
+          resultfile.write( " SEG2   \n")
+          for k in range(1,NCOUB+1):
+            j = j+1
+            resultfile.write( "  M"+str(j)+"       N"+str(k)+"       N"+str(k+1)+" \n")
+          for k in range(1,NCOUB+1):
+            j = j+1
+            resultfile.write( "  M"+str(j)+"       N"+str(NCOUB+1+k)+"      N"+str(NCOUB+2+k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          for k in range(1,NCOUB+2):
+            resultfile.write( " GROUP_NO \n")
+            resultfile.write( " P"+str(k-1)+"       N"+str(k)+"       \n")
+            resultfile.write( " FINSF \n")
+            resultfile.write( " % \n")
+          resultfile.write( " GROUP_MA \n")
+          resultfile.write( str(grma_colon)  + " \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " M"+str(k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " GROUP_MA \n")
+            resultfile.write( str(__TMAT['M',k])+"       \n")
+            resultfile.write( " M"+str(k)+"       \n")
+            resultfile.write( " FINSF \n")
+            resultfile.write( " % \n")
+          resultfile.write( " GROUP_MA \n")
+          resultfile.write( str(grma_subst)  + " \n")
+          resultfile.write( " M"+str(NCOUB+1)+"      \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " GROUP_MA \n")
+          resultfile.write( str(grma_late)  + " \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " M"+str(NCOUB+1+k)+" \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " M"+str(2*NCOUB+1+k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " GROUP_MA \n")
+          resultfile.write( str(grma_gauch)  + " \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " M"+str(NCOUB+1+k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " GROUP_MA \n")
+          resultfile.write( str(grma_droit)  + " \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " M"+str(2*NCOUB+1+k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          for k in range(1,NCOUB+1):
+            resultfile.write( " GROUP_MA \n")
+            resultfile.write( " G"+str(__TMAT['M',k])+"      \n")
+            resultfile.write( " M"+str(NCOUB+1+k)+"       \n")
+            resultfile.write( " FINSF \n")
+            resultfile.write( " % \n")
+            resultfile.write( " GROUP_MA \n")
+            resultfile.write( " D"+str(__TMAT['M',k])+"     \n")
+            resultfile.write( " M"+str(2*NCOUB+1+k)+"       \n")
+            resultfile.write( " FINSF \n")
+            resultfile.write( " % \n")
+            resultfile.write( " GROUP_MA \n")
+            resultfile.write( " L"+str(__TMAT['M',k])+"     \n")
+            resultfile.write( " M"+str(NCOUB+1+k)+"       \n")
+            resultfile.write( " M"+str(2*NCOUB+1+k)+"       \n")
+            resultfile.write( " FINSF \n")
+            resultfile.write( " % \n")
+          resultfile.write( " GROUP_NO \n")
+          resultfile.write( str(grma_gauch)  + " \n")
+          for k in range(1,NCOUB+2):
+            resultfile.write( " N"+str(k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " GROUP_NO \n")
+          resultfile.write( str(grma_droit)  + " \n")
+          for k in range(1,NCOUB+2):
+            resultfile.write( " N"+str(NCOUB+1+k)+" \n")
+          resultfile.write( " FINSF \n")
+          resultfile.write( " % \n")
+          resultfile.write( " FIN \n")
 
-      resultfile.close()
+          resultfile.close()
 
-      __mail0 = Mesh()
-      __mail0.readAsterFile("dse.mail")
-      __mailla = CREA_MAILLAGE(MAILLAGE=__mail0,
-                             CREA_POI1=(
-                             _F(NOM_GROUP_MA='PCOL',
-                                GROUP_MA=grma_colon,),
-                             _F(NOM_GROUP_MA='PLATE',
-                                GROUP_MA=(grma_late,),),
-                             ),
-                              )
-      __mailla = DEFI_GROUP(reuse=__mailla,
-                          MAILLAGE=__mailla,
-                          CREA_GROUP_NO=_F(GROUP_MA=('PLATE',),),
-                           )
+          __mail0 = Mesh()
+          __mail0.readAsterFile("dse.mail")
+          __mailla = CREA_MAILLAGE(MAILLAGE=__mail0,
+                                 CREA_POI1=(
+                                 _F(NOM_GROUP_MA='PCOL',
+                                    GROUP_MA=grma_colon,),
+                                 _F(NOM_GROUP_MA='PLATE',
+                                    GROUP_MA=(grma_late,),),
+                                 ),
+                                  )
+          __mailla = DEFI_GROUP(reuse=__mailla,
+                              MAILLAGE=__mailla,
+                              CREA_GROUP_NO=_F(GROUP_MA=('PLATE',),),
+                               )
 
     # cas uniquement en 2D pour l'instant
     if ltranin == 'OUI' :

@@ -79,6 +79,12 @@ DEFI_SOL_EQUI = MACRO(
         GROUP_MA_DROITE=SIMP(statut="f", typ=grma),
         GROUP_MA_GAUCHE=SIMP(statut="f", typ=grma),
         GROUP_MA_LIGNE=SIMP(statut="f", typ=grma),
+        b_MAIL3D = BLOC( condition = """exists("FONC_SIGNAL_X")""",
+                  MAILLAGE      =SIMP(statut='o', typ=maillage_sdaster),
+              ),
+        b_MAIL2D = BLOC( condition = """not exists("FONC_SIGNAL_X")""",
+                  MAILLAGE      =SIMP(statut='f', typ=maillage_sdaster),
+              ),
         b_BYRNE=BLOC(
             condition="""not exists("GROUP_MA_LIGNE")""",
             CORRECTION=SIMP(
@@ -149,6 +155,12 @@ DEFI_SOL_EQUI = MACRO(
         GROUP_MA_DROITE=SIMP(statut="f", typ=grma),
         GROUP_MA_GAUCHE=SIMP(statut="f", typ=grma),
         GROUP_MA_LIGNE=SIMP(statut="f", typ=grma),
+        b_MAIL3D = BLOC( condition = """exists("FONC_SIGNAL_X")""",
+                  MAILLAGE      =SIMP(statut='o', typ=maillage_sdaster),
+              ),
+        b_MAIL2D = BLOC( condition = """not exists("FONC_SIGNAL_X")""",
+                  MAILLAGE      =SIMP(statut='f', typ=maillage_sdaster),
+              ),
         b_BYRNE=BLOC(
             condition="""not exists("GROUP_MA_LIGNE")""",
             CORRECTION=SIMP(
