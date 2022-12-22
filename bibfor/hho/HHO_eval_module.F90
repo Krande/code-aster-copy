@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -514,24 +514,16 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ino, idim, ipg
-        real(kind=8) :: val
+        integer :: npg, ino, idim
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
         ASSERT(npg <=  MAX_QP_CELL)
 !
 !
-        do ipg = 1, npg
-            do idim = 1, hhoCell%ndim
-                val = 0.d0
-                do ino = 1, nnoEF
-                    ASSERT(ASTER_FALSE)
-! il faut interpoler les résultats aux pg
-                    val = val + funcnoEF(ino) * funcnoEF(ino + idim)
-                end do
-                FuncValuesQP(idim, ipg) = val
-            end do
+        ino = (nnoEF - 1) * hhoCell%ndim
+        do idim = 1, hhoCell%ndim
+            FuncValuesQP(idim, 1:npg) = funcnoEF(ino + idim)
         end do
 !
         if(present(coeff_mult)) then

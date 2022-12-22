@@ -527,6 +527,9 @@ subroutine getPropertiesOfCell(cellTypeName, cellTopo_, cellOrder_)
     else if (cellTypeName .eq. 'TETRA10') then
         cellTopo  = 'VOLU'
         cellOrder = 2
+    else if (cellTypeName .eq. 'TETRA15') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
     else if (cellTypeName .eq. 'PENTA6') then
         cellTopo  = 'VOLU'
         cellOrder = 1

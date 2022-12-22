@@ -323,6 +323,16 @@ class MECA3DH27_HHO121(Element):
         ElrefeLoc(MT.QU9, gauss=("RIGI=FPG4",)),
     )
     calculs = (
+        OP.CHAR_MECA_FF3D3D(
+            te=476,
+            para_in=((SP.PFF3D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_FR3D3D(
+            te=476,
+            para_in=((SP.PFR3D3D, NFORCER), (SP.PGEOMER, NGEOMER)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.COOR_ELGA(
             te=488, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),

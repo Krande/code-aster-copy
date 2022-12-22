@@ -270,6 +270,16 @@ class MECA_DPQ9_HHO121(Element):
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",)),
     )
     calculs = (
+        OP.CHAR_MECA_FF2D2D(
+            te=476,
+            para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
+        OP.CHAR_MECA_FR2D2D(
+            te=476,
+            para_in=((SP.PFR2D2D, NFORCER), (SP.PGEOMER, NGEOMER)),
+            para_out=((SP.PVECTUR, MVECTUR),),
+        ),
         OP.COOR_ELGA(
             te=479, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),

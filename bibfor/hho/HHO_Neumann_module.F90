@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public :: hhoTherNeumForces, hhoMecaNeumForces
+    public :: hhoTherNeumForces, hhoMecaNeumForces, hhoMecaVoluForces
 !
 contains
 !
@@ -99,6 +99,36 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoMakeRhsFaceVec(hhoFace, hhoQuad, NeumValuesQP, hhoData%face_degree(), rhs_forces)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine hhoMecaVoluForces(hhoCell, hhoData, hhoQuad, voluValuesQP, rhs_forces)
+!
+    implicit none
+!
+        type(HHO_Cell), intent(in)          :: hhoCell
+        type(HHO_Data), intent(in)          :: hhoData
+        type(HHO_Quadrature), intent(in)    :: hhoQuad
+        real(kind=8), intent(in)            :: voluValuesQP(3,MAX_QP_CELL)
+        real(kind=8), intent(out)           :: rhs_forces(MSIZE_CELL_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Compute the neumann forces for a mecanical load (gn, vF)_F
+!   In hhoFace      : the current HHO Face
+!   In hhoData      : information on HHO methods
+!   In hhoQuad      : Quadrature for the face
+!   In NeumValuesQP : Values of the Neumann forces at the quadrature points
+!   Out rhs_forces  : surface forces (rhs member)
+!
+! --------------------------------------------------------------------------------------------------
+!
+        call hhoMakeRhsCellVec(hhoCell, hhoQuad, voluValuesQP, hhoData%cell_degree(), rhs_forces)
 !
     end subroutine
 !
