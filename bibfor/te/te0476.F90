@@ -18,15 +18,15 @@
 
 subroutine te0476(option, nomte)
 !
-use HHO_type
-use HHO_size_module
-use HHO_quadrature_module
-use HHO_Neumann_module
-use HHO_init_module, only : hhoInfoInitCell
-use HHO_eval_module
-use HHO_utils_module
+    use HHO_type
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_Neumann_module
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_eval_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,7 +37,7 @@ implicit none
 #include "asterfort/writeVector.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 !---------------------------------------------------------------------------------------------------
 !
@@ -61,17 +61,12 @@ character(len=16), intent(in) :: option, nomte
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuadCell
     real(kind=8) :: rhs_forces(MSIZE_CELL_VEC), rhs(MSIZE_TDOFS_VEC), VoluValQP(3, MAX_QP_CELL)
-    integer :: fbs, total_dofs, cbs, nbpara, idim, nnoEF
+    integer :: fbs, total_dofs, cbs, nbpara, idim
     integer :: j_time, j_forc
-!
-!
-! -- Get number of Gauss points
-!
-    call elrefe_info(fami='RIGI', nno=nnoEF)
 !
 ! -- Retrieve HHO informations
 !
-    call hhoInfoInitCell(hhoCell, hhoData, hhoQuad = hhoQuadCell)
+    call hhoInfoInitCell(hhoCell, hhoData, hhoQuad=hhoQuadCell)
 !
     ASSERT(hhoQuadCell%nbQuadPoints <= MAX_QP_CELL)
 !
@@ -89,12 +84,12 @@ character(len=16), intent(in) :: option, nomte
             ASSERT(option .eq. 'CHAR_MECA_FF3D3D')
             call jevech('PFF3D3D', 'L', j_forc)
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
         else if (hhocell%ndim == 2) then
             ASSERT(option .eq. 'CHAR_MECA_FF2D2D')
             call jevech('PFF2D2D', 'L', j_forc)
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -108,8 +103,8 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Evaluate the analytical function (FX,FY,FZ)
 !
         do idim = 1, hhocell%ndim
-            call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_forc - 1 + idim), nbpara, nompar, valpar, &
-                                 hhocell%ndim, VoluValQP(idim, 1:MAX_QP_CELL))
+            call hhoFuncFScalEvalQp(hhoQuadCell, zk8(j_forc-1+idim), nbpara, nompar, valpar, &
+                                    hhocell%ndim, VoluValQP(idim, 1:MAX_QP_CELL))
         end do
 !
     elseif (option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FR3D3D') then
@@ -128,7 +123,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! ---- Compute the load at the quadrature points
 !
-        call hhoFuncRVecEvalCellQp(hhoCell, hhoQuadCell, nnoEF, zr(j_forc), VoluValQP)
+        call hhoFuncRVecEvalCellQp(hhoCell, hhoQuadCell, zr(j_forc), VoluValQP)
 !
     else
 

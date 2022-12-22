@@ -19,16 +19,18 @@
 !
 module HHO_eval_module
 !
-use HHO_type
-use HHO_basis_module
-use HHO_quadrature_module
+    use HHO_type
+    use HHO_basis_module
+    use HHO_quadrature_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
+#include "asterfort/elrfvf.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
@@ -54,7 +56,7 @@ contains
 !
     function hhoEvalScalCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
@@ -92,7 +94,7 @@ contains
 !
     function hhoEvalScalFace(hhoFace, hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)                  :: hhoFace
         type(HHO_basis_face), intent(inout)         :: hhoBasisFace
@@ -130,7 +132,7 @@ contains
 !
     function hhoEvalVecCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
@@ -155,15 +157,15 @@ contains
         integer :: i, size_cmp, deca
 !
         eval = 0.d0
-        size_cmp = size_coeff / hhoCell%ndim
+        size_cmp = size_coeff/hhoCell%ndim
 !
 ! --- Evaluate basis function at pt
         call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
 !
         deca = 0
         do i = 1, hhoCell%ndim
-            eval(i) = ddot(size_cmp, coeff(deca+1: deca+size_cmp), 1, BSCEval, 1)
-            deca = deca + size_cmp
+            eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+            deca = deca+size_cmp
         end do
 !
     end function
@@ -174,7 +176,7 @@ contains
 !
     function hhoEvalVecFace(hhoFace, hhoBasisFace, order, pt, coeff, size_coeff) result(eval)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)                  :: hhoFace
         type(HHO_basis_face), intent(inout)         :: hhoBasisFace
@@ -199,15 +201,15 @@ contains
         integer :: i, size_cmp, deca
 !
         eval = 0.d0
-        size_cmp = size_coeff / (hhoFace%ndim + 1)
+        size_cmp = size_coeff/(hhoFace%ndim+1)
 !
 ! --- Evaluate basis function at pt
         call hhoBasisFace%BSEval(hhoFace, pt, 0, order, BSFEval)
 !
         deca = 0
-        do i = 1, (hhoFace%ndim + 1)
-            eval(i) = ddot(size_cmp, coeff(deca+1: deca+size_cmp), 1, BSFEval, 1)
-            deca = deca + size_cmp
+        do i = 1, (hhoFace%ndim+1)
+            eval(i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSFEval, 1)
+            deca = deca+size_cmp
         end do
 !
     end function
@@ -218,7 +220,7 @@ contains
 !
     function hhoEvalMatCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
@@ -226,7 +228,7 @@ contains
         real(kind=8), dimension(3), intent(in)      :: pt
         real(kind=8), dimension(:), intent(in)      :: coeff
         integer, intent(in)                         :: size_coeff
-        real(kind=8)                                :: eval(3,3)
+        real(kind=8)                                :: eval(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -243,7 +245,7 @@ contains
         integer :: i, j, size_cmp, deca
 !
         eval = 0.d0
-        size_cmp = size_coeff / (hhoCell%ndim * hhoCell%ndim)
+        size_cmp = size_coeff/(hhoCell%ndim*hhoCell%ndim)
 !
 ! --- Evaluate basis function at pt
         call hhoBasisCell%BSEval(hhoCell, pt, 0, order, BSCEval)
@@ -251,8 +253,8 @@ contains
         deca = 0
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
-                eval(i,j) = ddot(size_cmp, coeff(deca+1: deca+size_cmp), 1, BSCEval, 1)
-                deca = deca + size_cmp
+                eval(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+                deca = deca+size_cmp
             end do
         end do
 !
@@ -264,7 +266,7 @@ contains
 !
     function hhoEvalSymMatCell(hhoCell, hhoBasisCell, order, pt, coeff, size_coeff) result(eval)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)                  :: hhoCell
         type(HHO_basis_cell), intent(inout)         :: hhoBasisCell
@@ -287,13 +289,13 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
-        real(kind=8) :: mat(3,3)
+        real(kind=8) :: mat(3, 3)
         integer :: i, j, size_cmp, deca
 !
-        if(hhoCell%ndim == 2) then
-            size_cmp = size_coeff / 3
-        else if(hhoCell%ndim == 3) then
-            size_cmp = size_coeff / 6
+        if (hhoCell%ndim == 2) then
+            size_cmp = size_coeff/3
+        else if (hhoCell%ndim == 3) then
+            size_cmp = size_coeff/6
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -304,15 +306,15 @@ contains
         deca = 0
         mat = 0.d0
         do i = 1, hhoCell%ndim
-            mat(i,i) = ddot(size_cmp, coeff(deca+1: deca+size_cmp), 1, BSCEval, 1)
-            deca = deca + size_cmp
+            mat(i, i) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+            deca = deca+size_cmp
         end do
 !
         do i = 1, hhoCell%ndim
             do j = i+1, hhoCell%ndim
-                mat(i,j) = ddot(size_cmp, coeff(deca+1: deca+size_cmp), 1, BSCEval, 1)
-                mat(j,i) = mat(i,j)
-                deca = deca + size_cmp
+                mat(i, j) = ddot(size_cmp, coeff(deca+1:deca+size_cmp), 1, BSCEval, 1)
+                mat(j, i) = mat(i, j)
+                deca = deca+size_cmp
             end do
         end do
 !
@@ -320,14 +322,14 @@ contains
 !
         eval = 0.d0
 !
-        eval(1) = mat(1,1)
-        eval(2) = mat(2,2)
-        eval(3) = mat(3,3)
+        eval(1) = mat(1, 1)
+        eval(2) = mat(2, 2)
+        eval(3) = mat(3, 3)
 ! ---- We don't multiply extra-digonal terms by srqt(2) since we have already multiply
 ! ---- the basis function by srqt(2)
-        eval(4) = mat(1,2)
-        eval(5) = mat(1,3)
-        eval(6) = mat(2,3)
+        eval(4) = mat(1, 2)
+        eval(5) = mat(1, 3)
+        eval(6) = mat(2, 3)
 !
     end function
 !
@@ -338,7 +340,7 @@ contains
     subroutine hhoFuncFScalEvalQp(hhoQuad, nomfunc, nbpara, nompara, valpara, ndim, FuncValuesQp,&
                                     & coeff_mult)
 !
-    implicit none
+        implicit none
 
         type(HHO_Quadrature), intent(in)   :: hhoQuad
         character(len=8), intent(in)       :: nomfunc
@@ -371,12 +373,12 @@ contains
         npg = hhoQuad%nbQuadPoints
 ! ---- Value of the function at the quadrature point
 !
-        if(ndim == 0) then
+        if (ndim == 0) then
             do ipg = 1, npg
                 call fointe('FM', nomfunc, nbpara, nompara, valpara, FuncValuesQP(ipg), iret)
                 ASSERT(iret == 0)
             end do
-        elseif(ndim <= 3) then
+        elseif (ndim <= 3) then
             do ipg = 1, npg
                 valpara(1:ndim) = hhoQuad%points(1:ndim, ipg)
                 call fointe('FM', nomfunc, nbpara, nompara, valpara, FuncValuesQP(ipg), iret)
@@ -386,7 +388,7 @@ contains
             ASSERT(ASTER_FALSE)
         end if
 !
-        if(present(coeff_mult)) then
+        if (present(coeff_mult)) then
             call dscal(npg, coeff_mult, FuncValuesQP, 1)
         end if
 !
@@ -397,12 +399,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncRScalEvalQp(hhoQuad, nnoEF, funcnoEF, FuncValuesQp, coeff_mult)
+    subroutine hhoFuncRScalEvalQp(hhoFace, hhoQuad, funcnoEF, FuncValuesQp, coeff_mult)
 !
-    implicit none
+        implicit none
 !
+        type(HHO_Face), intent(in)         :: hhoFace
         type(HHO_Quadrature), intent(in)   :: hhoQuad
-        integer, intent(in)                :: nnoEF
         real(kind=8), intent(in)           :: funcnoEF(*)
         real(kind=8), intent(out)          :: FuncValuesQP(MAX_QP_FACE)
         real(kind=8), optional, intent(in) :: coeff_mult
@@ -412,25 +414,30 @@ contains
 !
 !   Evaluate a function (*_R) at the quadrature points (given at the nodes)
 !   In hhoQuad  : Quadrature
-!   In nnoEF    : number of nodes of the EF face (not the HHO face)
 !   In funcnoEF : values of the function at the nodes of the EF face
 !   Out FuncValues : values of the function at the quadrature points
 !   In coeff_mult  : multply all values by this coefficient (optional)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg
+        integer :: npg, ipg, ino
+        real(kind=8) :: ff(9)
+        character(len=8) :: typma
 !
+        call cellNameL2S(hhoFace%typema, typma)
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
-        ASSERT(npg <=  MAX_QP_FACE)
+        ASSERT(npg <= MAX_QP_FACE)
 !
-! ----- We assume that the function is constant on each face and the value is given by the middle
-!       node (which is shared by only 2 faces and is the last node in EF face)
+        do ipg = 1, npg
+            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            do ino = 1, hhoFace%nbnodes
+                FuncValuesQP(ipg) = FuncValuesQP(ipg)+ &
+                                    ff(ino)*funcnoEF(ino)
+            end do
+        end do
 !
-        FuncValuesQP(1:npg) = funcnoEF(nnoEF)
-!
-        if(present(coeff_mult)) then
+        if (present(coeff_mult)) then
             call dscal(npg, coeff_mult, FuncValuesQP, 1)
         end if
 !
@@ -440,15 +447,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncRVecEvalQp(hhoFace, hhoQuad, nnoEF, funcnoEF, FuncValuesQp, coeff_mult)
+    subroutine hhoFuncRVecEvalQp(hhoFace, hhoQuad, funcnoEF, FuncValuesQp, coeff_mult)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)         :: hhoFace
         type(HHO_Quadrature), intent(in)   :: hhoQuad
-        integer, intent(in)                :: nnoEF
         real(kind=8), intent(in)           :: funcnoEF(*)
-        real(kind=8), intent(out)          :: FuncValuesQP(3,MAX_QP_FACE)
+        real(kind=8), intent(out)          :: FuncValuesQP(3, MAX_QP_FACE)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -457,30 +463,34 @@ contains
 !   Evaluate a function (*_R) at the quadrature points (given at the nodes)
 !   In hhoFace  : Face HHO (!!! The EF face have to be plane)
 !   In hhoQuad  : Quadrature
-!   In nnoEF    : number of nodes of the EF face (not the HHO face)
 !   In funcnoEF : values of the function at the nodes of the EF face
 !   Out FuncValues : values of the function at the quadrature points
 !   In coeff_mult  : multply all values by this coefficient (optional)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ino, idim, celldim
+        integer :: npg, ino, idim, celldim, ipg
+        real(kind=8) :: ff(9)
+        character(len=8) :: typma
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
-        celldim = hhoFace%ndim + 1
-        ASSERT(npg <=  MAX_QP_FACE)
+        celldim = hhoFace%ndim+1
+        ASSERT(npg <= MAX_QP_FACE)
+        call cellNameL2S(hhoFace%typema, typma)
 !
-! ----- We assume that the function is constant on each face and the value is given by the middle
-!       node (which is shared by only 2 faces and is the last node in EF face)
-!
-        ino = (nnoEF - 1) * celldim
-        do idim = 1, celldim
-            FuncValuesQP(idim, 1:npg) = funcnoEF(ino + idim)
+        do ipg = 1, npg
+            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            do idim = 1, celldim
+                do ino = 1, hhoFace%nbnodes
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ &
+                                              ff(ino)*funcnoEF(celldim*(ino-1)+idim)
+                end do
+            end do
         end do
 !
-        if(present(coeff_mult)) then
-            call dscal(3 * npg, coeff_mult, FuncValuesQP, 1)
+        if (present(coeff_mult)) then
+            call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
         end if
 !
     end subroutine
@@ -490,15 +500,14 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoFuncRVecEvalCellQp(hhoCell, hhoQuad, nnoEF, funcnoEF, FuncValuesQp, coeff_mult)
+    subroutine hhoFuncRVecEvalCellQp(hhoCell, hhoQuad, funcnoEF, FuncValuesQp, coeff_mult)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)         :: hhoCell
         type(HHO_Quadrature), intent(in)   :: hhoQuad
-        integer, intent(in)                :: nnoEF
         real(kind=8), intent(in)           :: funcnoEF(*)
-        real(kind=8), intent(out)          :: FuncValuesQP(3,MAX_QP_CELL)
+        real(kind=8), intent(out)          :: FuncValuesQP(3, MAX_QP_CELL)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
 ! --------------------------------------------------------------------------------------------------
@@ -507,27 +516,33 @@ contains
 !   Evaluate a function (*_R) at the quadrature points (given at the nodes)
 !   In hhoCell  : Cell HHO
 !   In hhoQuad  : Quadrature
-!   In nnoEF    : number of nodes of the EF Cell (not the HHO Cell)
 !   In funcnoEF : values of the function at the nodes of the EF cell
 !   Out FuncValues : values of the function at the quadrature points
 !   In coeff_mult  : multply all values by this coefficient (optional)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ino, idim
+        integer :: npg, ino, idim, ipg
+        real(kind=8) :: ff(27)
+        character(len=8) :: typma
 !
         FuncValuesQP = 0.d0
         npg = hhoQuad%nbQuadPoints
-        ASSERT(npg <=  MAX_QP_CELL)
+        ASSERT(npg <= MAX_QP_CELL)
+        call cellNameL2S(hhoCell%typema, typma)
 !
-!
-        ino = (nnoEF - 1) * hhoCell%ndim
-        do idim = 1, hhoCell%ndim
-            FuncValuesQP(idim, 1:npg) = funcnoEF(ino + idim)
+        do ipg = 1, npg
+            call elrfvf(typma, hhoQuad%points(1:3, ipg), ff)
+            do idim = 1, hhoCell%ndim
+                do ino = 1, hhoCell%nbnodes
+                    FuncValuesQP(idim, ipg) = FuncValuesQP(idim, ipg)+ &
+                                              ff(ino)*funcnoEF(hhoCell%ndim*(ino-1)+idim)
+                end do
+            end do
         end do
 !
-        if(present(coeff_mult)) then
-            call dscal(3 * npg, coeff_mult, FuncValuesQP, 1)
+        if (present(coeff_mult)) then
+            call dscal(3*npg, coeff_mult, FuncValuesQP, 1)
         end if
 !
     end subroutine

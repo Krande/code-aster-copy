@@ -18,15 +18,15 @@
 
 subroutine te0459(option, nomte)
 !
-use HHO_type
-use HHO_size_module, only  : hhoMecaFaceDofs
-use HHO_quadrature_module
-use HHO_Neumann_module
-use HHO_init_module, only : hhoInfoInitFace
-use HHO_eval_module
-use HHO_utils_module
+    use HHO_type
+    use HHO_size_module, only: hhoMecaFaceDofs
+    use HHO_quadrature_module
+    use HHO_Neumann_module
+    use HHO_init_module, only: hhoInfoInitFace
+    use HHO_eval_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,7 +37,7 @@ implicit none
 #include "asterfort/writeVector.h"
 #include "blas/dcopy.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 !---------------------------------------------------------------------------------------------------
 !
@@ -65,21 +65,16 @@ character(len=16), intent(in) :: option, nomte
     type(HHO_Face) :: hhoFace
     type(HHO_Quadrature) :: hhoQuadFace
     real(kind=8) :: rhs_forces(MSIZE_FACE_VEC), NeumValuesQP(3, MAX_QP_FACE), PresQP(MAX_QP_FACE)
-    integer :: fbs, celldim, ipg, nbpara, idim, nnoEF
+    integer :: fbs, celldim, ipg, nbpara, idim
     integer :: j_time, j_pres, j_forc
-!
-!
-! -- Get number of Gauss points
-!
-    call elrefe_info(fami='RIGI', nno=nnoEF)
 !
 ! -- Retrieve HHO informations
 !
-    call hhoInfoInitFace(hhoFace, hhoData, hhoQuadFace = hhoQuadFace)
+    call hhoInfoInitFace(hhoFace, hhoData, hhoQuadFace=hhoQuadFace)
 !
     ASSERT(hhoQuadFace%nbQuadPoints <= MAX_QP_FACE)
 !
-    celldim = hhoFace%ndim + 1
+    celldim = hhoFace%ndim+1
     PresQP = 0.d0
     NeumValuesQP = 0.d0
     nompar(:) = 'XXXXXXXX'
@@ -92,12 +87,12 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Evaluate the function PRES
 !
         call jevech('PPRESSR', 'L', j_pres)
-        call hhoFuncRScalEvalQp(hhoQuadFace, nnoEF, zr(j_pres), PresQP)
+        call hhoFuncRScalEvalQp(hhoFace, hhoQuadFace, zr(j_pres), PresQP)
 !
 ! ---- Compute the load at the quadrature points T = -p*normal
 !
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            NeumValuesQP(1:3,ipg) = - PresQP(ipg) * hhoFace%normal(1:3)
+            NeumValuesQP(1:3, ipg) = -PresQP(ipg)*hhoFace%normal(1:3)
         end do
 !
     elseif (option .eq. 'CHAR_MECA_PRES_F') then
@@ -106,10 +101,10 @@ character(len=16), intent(in) :: option, nomte
 !
         if (celldim == 3) then
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
         else if (celldim == 2) then
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -128,7 +123,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! ---- Compute the load at the quadrature points T = -p*normal
         do ipg = 1, hhoQuadFace%nbQuadPoints
-            NeumValuesQP(1:3,ipg) = - PresQP(ipg) * hhoFace%normal(1:3)
+            NeumValuesQP(1:3, ipg) = -PresQP(ipg)*hhoFace%normal(1:3)
         end do
 !
     elseif (option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq. 'CHAR_MECA_FF1D2D') then
@@ -139,12 +134,12 @@ character(len=16), intent(in) :: option, nomte
             ASSERT(option .eq. 'CHAR_MECA_FF2D3D')
             call jevech('PFF2D3D', 'L', j_forc)
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
         else if (celldim == 2) then
             ASSERT(option .eq. 'CHAR_MECA_FF1D2D')
             call jevech('PFF1D2D', 'L', j_forc)
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -158,7 +153,7 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Evaluate the analytical function (FX,FY,FZ)
 !
         do idim = 1, celldim
-            call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_forc - 1 + idim), nbpara, nompar, valpar, &
+            call hhoFuncFScalEvalQp(hhoQuadFace, zk8(j_forc-1+idim), nbpara, nompar, valpar, &
                                 & celldim, NeumValuesQP(idim, 1:MAX_QP_FACE))
         end do
 !
@@ -178,7 +173,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! ---- Compute the load at the quadrature points
 !
-        call hhoFuncRVecEvalQp(hhoFace, hhoQuadFace, nnoEF, zr(j_forc), NeumValuesQP)
+        call hhoFuncRVecEvalQp(hhoFace, hhoQuadFace, zr(j_forc), NeumValuesQP)
 !
     else
 

@@ -19,12 +19,12 @@
 !
 module HHO_utils_module
 !
-use HHO_type
-use HHO_size_module
+    use HHO_type
+    use HHO_size_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/HHO_size_module.h"
@@ -46,7 +46,7 @@ private
     public :: hhoCopySymPartMat, hhoPrintMat, hhoNorm2Mat, hhoProdSmatVec
     public :: hhoPrintTensor4, hhoPrintTensor4Mangle, hhoRenumMecaVec, hhoRenumMecaMat
     public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv
-    public :: SigVec2Mat, hhoGetMatrElem
+    public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S
     public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
 !    private  ::
 !
@@ -58,7 +58,7 @@ contains
 !
     subroutine hhoGetTypeFromModel(model, hhoData, ndim)
 !
-    implicit none
+        implicit none
 !
         character(len=8), intent(in) :: model
         type(HHO_Data), intent(out)  :: hhoData
@@ -83,20 +83,20 @@ contains
         if (answer .eq. 'OUI') then
             call dismoi('EXI_HHO_QUAD', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
-                call hhoData%initialize(2,2,2,ASTER_FALSE,0.d0,ASTER_FALSE,ASTER_FALSE, &
+                call hhoData%initialize(2, 2, 2, ASTER_FALSE, 0.d0, ASTER_FALSE, ASTER_FALSE, &
                                         ASTER_FALSE)
             else
                 call dismoi('EXI_HHO_LINE', model, 'MODELE', repk=answer)
                 if (answer .eq. 'OUI') then
-                    call hhoData%initialize(1,2,1,ASTER_FALSE,0.d0,ASTER_FALSE,ASTER_FALSE,&
+                    call hhoData%initialize(1, 2, 1, ASTER_FALSE, 0.d0, ASTER_FALSE, ASTER_FALSE, &
                                             ASTER_FALSE)
                 else
                     ASSERT(ASTER_FALSE)
                 end if
-            endif
+            end if
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
         ndim = 0
         call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
@@ -110,10 +110,10 @@ contains
 !
     subroutine hhoCopySymPartMat(uplo, mat, size_mat)
 !
-    implicit none
+        implicit none
 !
         character(len=1), intent(in)                :: uplo
-        real(kind=8), dimension(:,:), intent(inout) :: mat
+        real(kind=8), dimension(:, :), intent(inout) :: mat
         integer, intent(in), optional               :: size_mat
 !
 ! --------------------------------------------------------------------------------------------------
@@ -130,18 +130,18 @@ contains
             nrows = size_mat
             ncols = size_mat
         else
-            nrows = size(mat,1)
-            ncols = size(mat,2)
+            nrows = size(mat, 1)
+            ncols = size(mat, 2)
         end if
 !
         ASSERT(nrows == ncols)
 !
-        if(uplo == 'L') then
-            do i = 1, ncols - 1
+        if (uplo == 'L') then
+            do i = 1, ncols-1
                 mat(i, i+1:ncols) = mat(i+1:ncols, i)
             end do
-        elseif(uplo == 'U') then
-            do i = 1, ncols - 1
+        elseif (uplo == 'U') then
+            do i = 1, ncols-1
                 mat(i+1:ncols, i) = mat(i, i+1:ncols)
             end do
         else
@@ -154,11 +154,48 @@ contains
 !
 !===================================================================================================
 !
+    subroutine CellNameL2S(long, short)
+!
+        implicit none
+!
+        character(len=8), intent(in)                :: long
+        character(len=8), intent(out)                :: short
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Copy the other part of a symetric matrix
+!   In uplo     : 'L' the lower part is given or 'U' for the upper part
+!   In size     : size of the matrix
+!   Inout mat   : matrix to copy
+! --------------------------------------------------------------------------------------------------
+!
+!
+        select case (long)
+        case ("HEXA8")
+            short = "HE8"
+        case ("TETRA4")
+            short = "TE4"
+        case ("QUAD4")
+            short = "QU4"
+        case ("TRIA3")
+            short = "TR3"
+        case ("SEG2")
+            short = "SE2"
+        case default
+            ASSERT(ASTER_FALSE)
+        end select
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine hhoPrintMat(mat)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(:,:), intent(in) :: mat
+        real(kind=8), dimension(:, :), intent(in) :: mat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -168,13 +205,13 @@ contains
 !
         integer :: ncols, nrows, i
 !
-        nrows = size(mat,1)
-        ncols = size(mat,2)
+        nrows = size(mat, 1)
+        ncols = size(mat, 2)
 !
 !
-        write(6,*) "matrix of", nrows, "rows x ", ncols, "cols"
+        write (6, *) "matrix of", nrows, "rows x ", ncols, "cols"
         do i = 1, nrows
-            write(6,'(50F13.6)') mat(i, 1:ncols)
+            write (6, '(50F13.6)') mat(i, 1:ncols)
         end do
 !
     end subroutine
@@ -185,9 +222,9 @@ contains
 !
     subroutine hhoPrintTensor4(tens)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,3,3,3), intent(in) :: tens
+        real(kind=8), dimension(3, 3, 3, 3), intent(in) :: tens
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -199,12 +236,12 @@ contains
         integer :: i, k
 !
 !
-        write(6,*) "tensor of 9 rows x 9 cols"
+        write (6, *) "tensor of 9 rows x 9 cols"
         do i = 1, 3
             do k = 1, 3
-                write(6,'(50F14.7)')    tens(i,1,k,1), tens(i,1,k,2), tens(i,1,k,3), &
-                                    &   tens(i,2,k,1), tens(i,2,k,2), tens(i,2,k,3), &
-                                    &   tens(i,3,k,1), tens(i,3,k,2), tens(i,3,k,3)
+                write (6, '(50F14.7)') tens(i, 1, k, 1), tens(i, 1, k, 2), tens(i, 1, k, 3), &
+                                    &   tens(i, 2, k, 1), tens(i, 2, k, 2), tens(i, 2, k, 3), &
+                                    &   tens(i, 3, k, 1), tens(i, 3, k, 2), tens(i, 3, k, 3)
             end do
         end do
 !
@@ -216,9 +253,9 @@ contains
 !
     subroutine hhoPrintTensor4Mangle(tens)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,3,3,3), intent(in) :: tens
+        real(kind=8), dimension(3, 3, 3, 3), intent(in) :: tens
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -227,7 +264,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 
 !
-        real(kind=8) :: tens6(6,6)
+        real(kind=8) :: tens6(6, 6)
 !
         tens6 = 0.d0
         call symt46(tens, tens6)
@@ -241,9 +278,9 @@ contains
 !
     function hhoNorm2Mat(mat) result(norm)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(:,:), intent(in)    :: mat
+        real(kind=8), dimension(:, :), intent(in)    :: mat
         real(kind=8)                                :: norm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -254,13 +291,13 @@ contains
 !
         integer :: nrows, ncols, irow, jcol
 !
-        nrows = size(mat,1)
-        ncols = size(mat,2)
+        nrows = size(mat, 1)
+        ncols = size(mat, 2)
 !
         norm = 0.d0
         do jcol = 1, ncols
             do irow = 1, nrows
-                norm =  norm + mat(irow, jcol)**2
+                norm = norm+mat(irow, jcol)**2
             end do
         end do
 !
@@ -274,7 +311,7 @@ contains
 !
     subroutine hhoProdSmatVec(SymMat, vect, ndim, resu)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), dimension(6), intent(in) :: SymMat
         real(kind=8), dimension(3), intent(in) :: vect
@@ -294,13 +331,13 @@ contains
 !
         resu = 0.d0
 !
-        if(ndim == 2) then
-            resu(1) = SymMat(1) * vect(1) + SymMat(4) / rac2 * vect(2)
-            resu(2) = SymMat(2) * vect(2) + SymMat(4) / rac2 * vect(1)
-        else if(ndim == 3) then
-            resu(1) = SymMat(1) * vect(1) + (SymMat(4) * vect(2) + SymMat(5) * vect(3) ) / rac2
-            resu(2) = SymMat(2) * vect(2) + (SymMat(4) * vect(1) + SymMat(6) * vect(3) ) / rac2
-            resu(3) = SymMat(3) * vect(3) + (SymMat(5) * vect(1) + SymMat(6) * vect(2) ) / rac2
+        if (ndim == 2) then
+            resu(1) = SymMat(1)*vect(1)+SymMat(4)/rac2*vect(2)
+            resu(2) = SymMat(2)*vect(2)+SymMat(4)/rac2*vect(1)
+        else if (ndim == 3) then
+            resu(1) = SymMat(1)*vect(1)+(SymMat(4)*vect(2)+SymMat(5)*vect(3))/rac2
+            resu(2) = SymMat(2)*vect(2)+(SymMat(4)*vect(1)+SymMat(6)*vect(3))/rac2
+            resu(3) = SymMat(3)*vect(3)+(SymMat(5)*vect(1)+SymMat(6)*vect(2))/rac2
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -313,11 +350,11 @@ contains
 !
     subroutine SigVec2Mat(ndim, sigvec, sigmat)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in)             :: ndim
         real(kind=8), intent(in)        :: sigvec(*)
-        real(kind=8), intent(out)       :: sigmat(3,3)
+        real(kind=8), intent(out)       :: sigmat(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -331,18 +368,18 @@ contains
 !
         sigmat = 0.d0
 !
-        sigmat(1,1) = sigvec(1)
-        sigmat(2,2) = sigvec(2)
-        sigmat(3,3) = sigvec(3)
+        sigmat(1, 1) = sigvec(1)
+        sigmat(2, 2) = sigvec(2)
+        sigmat(3, 3) = sigvec(3)
 !
-        sigmat(1,2) = sigvec(4)
-        sigmat(2,1) = sigmat(1,2)
+        sigmat(1, 2) = sigvec(4)
+        sigmat(2, 1) = sigmat(1, 2)
 !
-        if(ndim == 3) then
-            sigmat(1,3) = sigvec(5)
-            sigmat(3,1) = sigmat(1,3)
-            sigmat(2,3) = sigvec(6)
-            sigmat(3,2) = sigmat(2,3)
+        if (ndim == 3) then
+            sigmat(1, 3) = sigvec(5)
+            sigmat(3, 1) = sigmat(1, 3)
+            sigmat(2, 3) = sigvec(6)
+            sigmat(3, 2) = sigmat(2, 3)
         end if
 !
     end subroutine
@@ -353,7 +390,7 @@ contains
 !
     subroutine hhoGetMatrElem(matr_elem, resu_elem, isym)
 !
-    implicit none
+        implicit none
 !
         character(len=19), intent(in)  :: matr_elem
         character(len=19), intent(out) :: resu_elem
@@ -390,8 +427,8 @@ contains
                 end if
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
+            end if
+        end if
 !
     end subroutine
 !
@@ -402,12 +439,12 @@ contains
 !
     subroutine MatScal2Vec(hhoCell, hhoData, mat_scal, mat_vec)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: mat_scal(MSIZE_TDOFS_SCAL,MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out)   :: mat_vec(MSIZE_TDOFS_VEC,MSIZE_TDOFS_VEC)
+        real(kind=8), intent(in)    :: mat_scal(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out)   :: mat_vec(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -428,41 +465,41 @@ contains
 ! -- number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
-        cbs_comp = cbs / hhoCell%ndim
-        fbs_comp = fbs / hhoCell%ndim
+        cbs_comp = cbs/hhoCell%ndim
+        fbs_comp = fbs/hhoCell%ndim
 !
 ! -- copy the scalar matrix in the vectorial matrix
         mat_vec = 0.d0
 !
         do idim = 1, hhoCell%ndim
 ! --------- copy volumetric part
-            jbeginCell = (idim - 1) * cbs_comp + 1
-            jendCell = jbeginCell + cbs_comp - 1
+            jbeginCell = (idim-1)*cbs_comp+1
+            jendCell = jbeginCell+cbs_comp-1
 !
             mat_vec(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
 !
 ! --------- copy faces part
             do iFace = 1, hhoCell%nbfaces
-                ibeginFace = cbs + (iFace - 1) * fbs + (idim - 1) * fbs_comp + 1
-                iendFace = ibeginFace + fbs_comp - 1
-                ibeginVec = cbs_comp + (iFace - 1) * fbs_comp + 1
-                iendVec = ibeginVec + fbs_comp - 1
+                ibeginFace = cbs+(iFace-1)*fbs+(idim-1)*fbs_comp+1
+                iendFace = ibeginFace+fbs_comp-1
+                ibeginVec = cbs_comp+(iFace-1)*fbs_comp+1
+                iendVec = ibeginVec+fbs_comp-1
 
                 do jFace = 1, hhoCell%nbfaces
-                    jbeginFace = cbs + (jFace - 1) * fbs + (idim - 1) * fbs_comp + 1
-                    jendFace = jbeginFace + fbs_comp - 1
-                    jbeginVec = cbs_comp + (jFace - 1) * fbs_comp + 1
-                    jendVec = jbeginVec + fbs_comp - 1
+                    jbeginFace = cbs+(jFace-1)*fbs+(idim-1)*fbs_comp+1
+                    jendFace = jbeginFace+fbs_comp-1
+                    jbeginVec = cbs_comp+(jFace-1)*fbs_comp+1
+                    jendVec = jbeginVec+fbs_comp-1
 !
                     mat_vec(ibeginFace:iendFace, jbeginFace:jendFace) &
-                                = mat_scal(ibeginVec:iendVec, jbeginVec:jendVec)
+                        = mat_scal(ibeginVec:iendVec, jbeginVec:jendVec)
                 end do
 !
 ! --------- copy coupled part
                 mat_vec(jbeginCell:jendCell, ibeginFace:iendFace) &
-                                = mat_scal(1:cbs_comp, ibeginVec:iendVec)
+                    = mat_scal(1:cbs_comp, ibeginVec:iendVec)
                 mat_vec(ibeginFace:iendFace, jbeginCell:jendCell) &
-                                = mat_scal(ibeginVec:iendVec, 1:cbs_comp)
+                    = mat_scal(ibeginVec:iendVec, 1:cbs_comp)
             end do
         end do
 !
@@ -474,7 +511,7 @@ contains
 !
     subroutine hhoRenumMecaVec(hhoCell, hhoData, vec)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -498,7 +535,7 @@ contains
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
         call dcopy(total_dofs, vec, 1, vec_tmp, 1)
 ! --- v_F
@@ -514,7 +551,7 @@ contains
 !
     subroutine hhoRenumMecaVecInv(hhoCell, hhoData, vec)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -538,7 +575,7 @@ contains
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
         call dcopy(total_dofs, vec, 1, vec_tmp, 1)
 ! --- v_T
@@ -554,7 +591,7 @@ contains
 !
     subroutine hhoRenumTherVecInv(hhoCell, hhoData, vec)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -578,7 +615,7 @@ contains
 !
 ! ---- Number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
         call dcopy(total_dofs, vec, 1, vec_tmp, 1)
 ! --- v_T
@@ -594,7 +631,7 @@ contains
 !
     subroutine hhoRenumMecaMat(hhoCell, hhoData, mat)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -619,18 +656,18 @@ contains
 !
 ! ---- Number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
         mat_tmp(1:total_dofs, 1:total_dofs) = mat(1:total_dofs, 1:total_dofs)
 !
 ! ---- K_FF
-        mat(1:faces_dofs,1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
+        mat(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
 ! ---- K_FT
-        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs,1:cbs)
+        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
 ! ---- K_TF
-        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs,(cbs+1):total_dofs)
+        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
-        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs,1:cbs)
+        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
 !
     end subroutine
 !
@@ -640,7 +677,7 @@ contains
 !
     subroutine hhoRenumTherVec(hhoCell, hhoData, vec)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -664,7 +701,7 @@ contains
 !
 ! ---- Number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
         call dcopy(total_dofs, vec, 1, vec_tmp, 1)
 ! --- v_F
@@ -680,7 +717,7 @@ contains
 !
     subroutine hhoRenumTherMat(hhoCell, hhoData, mat)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -705,18 +742,18 @@ contains
 !
 ! ---- Number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
         mat_tmp(1:total_dofs, 1:total_dofs) = mat(1:total_dofs, 1:total_dofs)
 !
 ! ---- K_FF
-        mat(1:faces_dofs,1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
+        mat(1:faces_dofs, 1:faces_dofs) = mat_tmp((cbs+1):total_dofs, (cbs+1):total_dofs)
 ! ---- K_FT
-        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs,1:cbs)
+        mat(1:faces_dofs, (faces_dofs+1):total_dofs) = mat_tmp((cbs+1):total_dofs, 1:cbs)
 ! ---- K_TF
-        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs,(cbs+1):total_dofs)
+        mat((faces_dofs+1):total_dofs, 1:faces_dofs) = mat_tmp(1:cbs, (cbs+1):total_dofs)
 ! ---- K_TT
-        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs,1:cbs)
+        mat((faces_dofs+1):total_dofs, (faces_dofs+1):total_dofs) = mat_tmp(1:cbs, 1:cbs)
 !
     end subroutine
 !

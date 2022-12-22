@@ -18,16 +18,16 @@
 
 subroutine te0457(option, nomte)
 !
-use HHO_type
-use HHO_basis_module
-use HHO_size_module
-use HHO_quadrature_module
-use HHO_Neumann_module
-use HHO_init_module, only : hhoInfoInitFace
-use HHO_eval_module
-use HHO_utils_module
+    use HHO_type
+    use HHO_basis_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_Neumann_module
+    use HHO_init_module, only: hhoInfoInitFace
+    use HHO_eval_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -38,7 +38,7 @@ implicit none
 #include "blas/dcopy.h"
 #include "blas/dsyr.h"
 !
-character(len=16), intent(in) :: option, nomte
+    character(len=16), intent(in) :: option, nomte
 !
 !---------------------------------------------------------------------------------------------------
 !
@@ -65,13 +65,13 @@ character(len=16), intent(in) :: option, nomte
     real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
     real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: lhs
     real(kind=8) :: CoefHQP(MAX_QP_FACE), coeff, time
-    integer :: fbs, celldim, ipg, nbpara, nnoEF, npg
+    integer :: fbs, celldim, ipg, nbpara, npg
     integer :: j_time, j_coefh
 !
 !
 ! -- Get number of Gauss points
 !
-    call elrefe_info(fami='RIGI', nno=nnoEF, npg=npg)
+    call elrefe_info(fami='RIGI', npg=npg)
 !
 ! -- Retrieve HHO informations
 !
@@ -79,7 +79,7 @@ character(len=16), intent(in) :: option, nomte
 !
     ASSERT(hhoQuadFace%nbQuadPoints <= MAX_QP_FACE)
 !
-    celldim = hhoFace%ndim + 1
+    celldim = hhoFace%ndim+1
     CoefHQP = 0.d0
     nompar(:) = 'XXXXXXXX'
     valpar(:) = 0.d0
@@ -94,7 +94,7 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Get real value COEF_H
 !
         call jevech('PCOEFHR', 'L', j_coefh)
-        CoefHQP(1:hhoQuadFace%nbQuadPoints) =  zr(j_coefh)
+        CoefHQP(1:hhoQuadFace%nbQuadPoints) = zr(j_coefh)
 !
     elseif (option .eq. 'RIGI_THER_COEH_F') then
 !
@@ -102,10 +102,10 @@ character(len=16), intent(in) :: option, nomte
 !
         if (celldim == 3) then
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
         else if (celldim == 2) then
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -139,11 +139,11 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Loop on quadrature point
     do ipg = 1, hhoQuadFace%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
-        call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3,ipg), 0, &
+        call hhoBasisFace%BSEval(hhoFace, hhoQuadFace%points(1:3, ipg), 0, &
                                  hhoData%face_degree(), basisScalEval)
 ! --------  Eval massMat
-        coeff = CoefHQP(ipg) * hhoQuadFace%weights(ipg)
-        call dsyr('U', fbs, coeff , basisScalEval, 1, lhs, MSIZE_FACE_SCAL)
+        coeff = CoefHQP(ipg)*hhoQuadFace%weights(ipg)
+        call dsyr('U', fbs, coeff, basisScalEval, 1, lhs, MSIZE_FACE_SCAL)
     end do
 !
 ! ----- Copy the lower part
