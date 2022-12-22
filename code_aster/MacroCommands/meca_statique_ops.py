@@ -92,6 +92,11 @@ def _createTimeStepper(args):
             if inst_fin is not None:
                 timeValues = [time for time in timeValues if time <= (inst_fin + 1.0e-6)]
 
+            if "RESULTAT" in args:
+                nbIndex = args["RESULTAT"].getNumberOfIndexes()
+                inst_deb = args["RESULTAT"].getTimeValue(nbIndex)
+                timeValues = [time for time in timeValues if time >= (inst_deb + 1.0e-6)]
+
     return TimeStepper(timeValues)
 
 

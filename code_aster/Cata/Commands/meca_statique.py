@@ -21,10 +21,20 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+
+def compat_syntax(keywords):
+    """Update keywords for compatibility"""
+
+    # reuse
+    if "reuse" in keywords and "RESULTAT" not in keywords:
+        keywords["RESULTAT"] = keywords["reuse"]
+
+
 MECA_STATIQUE = MACRO(
     nom="MECA_STATIQUE",
     op=OPS("code_aster.MacroCommands.meca_statique_ops.meca_statique_ops"),
     sd_prod=evol_elas,
+    compat_syntax=compat_syntax,
     fr=tr("Résoudre un problème de mécanique statique linéaire"),
     reentrant="f:RESULTAT",
     regles=(EXCLUS("INST", "LIST_INST"), AU_MOINS_UN("CHAM_MATER", "CARA_ELEM")),

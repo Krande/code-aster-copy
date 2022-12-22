@@ -34,9 +34,9 @@ void exportResultToPython( py::module_ &mod ) {
 Allocate result
 
 Arguments:
-    nb_rank (int):  number of rank to allocate
+    nb_index (int):  number of index to allocate
         )",
-              py::arg( "nb_rank" ) )
+              py::arg( "nb_index" ) )
         .def( "exists", &Result::exists, R"(
 The result exists or nor
 
@@ -56,36 +56,36 @@ Arguments:
         )",
               py::arg( "index" ) )
         .def( "setTimeValue", &Result::setTimeValue, R"(
-Add time at the specified rank
+Add time at the specified index
 
 Arguments:
     time (float): time value to save
-    rank (int):  rank where to save time value
+    index (int):  index where to save time value
         )",
-              py::arg( "time" ), py::arg( "rank" ) )
+              py::arg( "time" ), py::arg( "index" ) )
         .def( "setParameterValue", &Result::setParameterValue, R"(
-Add theta at the specified rank
+Add theta at the specified index
 
 Arguments:
     name (float): parameter name to store
     value (float): parameter value to store
-    rank (int):  rank where to save time value
+    index (int):  index where to save time value
         )",
-              py::arg( "para_name" ), py::arg( "value" ), py::arg( "rank" ) )
+              py::arg( "para_name" ), py::arg( "value" ), py::arg( "index" ) )
         .def( "getTimeValue", &Result::getTimeValue, R"(
-Get time at the specified rank
+Get time at the specified index
 
 Arguments:
-    rank (int):  rank where to save time value
+    index (int):  index where to save time value
 
 Returns
     float: time value
         )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "addFieldOnNodesDescription", &Result::addFieldOnNodesDescription )
         .def( "setMaterialField",
               py::overload_cast< const MaterialFieldPtr & >( &Result::setMaterialField ), R"(
-Set material field on all ranks
+Set material field on all indexs
 
 Arguments:
     mater (MaterialField): material field to set.
@@ -95,23 +95,23 @@ Arguments:
               py::overload_cast< const MaterialFieldPtr &, ASTERINTEGER >(
                   &Result::setMaterialField ),
               R"(
-Set material field on the specified rank
+Set material field on the specified index
 
 Arguments:
     mater (MaterialField): material field to set.
-    rank (int): rank to set
+    index (int): index to set
         )",
-              py::arg( "mater" ), py::arg( "rank" ) )
+              py::arg( "mater" ), py::arg( "index" ) )
         .def( "setListOfLoads", &Result::setListOfLoads, R"(
-Set list of loads on the specified rank
+Set list of loads on the specified index
 
 Arguments:
     load (ListOfLoads): list of loads to set.
-    rank (int): rank to set
+    index (int): index to set
         )",
-              py::arg( "load" ), py::arg( "rank" ) )
+              py::arg( "load" ), py::arg( "index" ) )
         .def( "setModel", py::overload_cast< const ModelPtr & >( &Result::setModel ), R"(
-Set model on all ranks
+Set model on all indexs
 
 Arguments:
     model (Model): model to set.
@@ -119,18 +119,18 @@ Arguments:
               py::arg( "model" ) )
         .def( "setModel", py::overload_cast< const ModelPtr &, ASTERINTEGER >( &Result::setModel ),
               R"(
-Set model on the specified rank
+Set model on the specified index
 
 Arguments:
     model (Model): model to set
-    rank (int): rank to set
+    index (int): index to set
         )",
-              py::arg( "model" ), py::arg( "rank" ) )
+              py::arg( "model" ), py::arg( "index" ) )
         .def( "setElementaryCharacteristics",
               py::overload_cast< const ElementaryCharacteristicsPtr & >(
                   &Result::setElementaryCharacteristics ),
               R"(
-Set elementary characterictics on all ranks
+Set elementary characterictics on all indexs
 
 Arguments:
     cara_elem (ElementaryCharacteristics): elementary characterictics to set.
@@ -140,13 +140,13 @@ Arguments:
               py::overload_cast< const ElementaryCharacteristicsPtr &, ASTERINTEGER >(
                   &Result::setElementaryCharacteristics ),
               R"(
-Set elementary characterictics on the specified rank
+Set elementary characterictics on the specified index
 
 Arguments:
     cara_elem (ElementaryCharacteristics): elementary characterictics to set.
-    rank (int): rank to set
+    index (int): index to set
         )",
-              py::arg( "cara_elem" ), py::arg( "rank" ) )
+              py::arg( "cara_elem" ), py::arg( "index" ) )
         .def( "printListOfFields", &Result::printListOfFields, R"(
 Print the names of all fields (real, complex, ...) stored in the result.
         )" )
@@ -160,64 +160,64 @@ Returns:
             "getElementaryCharacteristics",
             py::overload_cast< ASTERINTEGER >( &Result::getElementaryCharacteristics, py::const_ ),
             R"(
-Get elementary characterictics at the specfied rank
+Get elementary characterictics at the specfied index
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     ElementaryCharacteristics: a pointer to elementary characterictics.
         )",
-            py::arg( "rank" ) )
+            py::arg( "index" ) )
         .def( "getElementaryCharacteristics",
               py::overload_cast<>( &Result::getElementaryCharacteristics, py::const_ ) )
         .def(
             "hasElementaryCharacteristics",
             py::overload_cast< ASTERINTEGER >( &Result::hasElementaryCharacteristics, py::const_ ),
             R"(
-Test if a elementary characterictics is used at the specfied rank
+Test if a elementary characterictics is used at the specfied index
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     bool: *True* if at least one elementary characterictics used else *False*.
         )",
-            py::arg( "rank" ) )
+            py::arg( "index" ) )
         .def( "hasElementaryCharacteristics",
               py::overload_cast<>( &Result::hasElementaryCharacteristics, py::const_ ) )
         .def( "hasListOfLoads",
               py::overload_cast< const ASTERINTEGER & >( &Result::hasListOfLoads, py::const_ ), R"(
-Test if a list of loads is used at the specfied rank
+Test if a list of loads is used at the specfied index
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     bool: *True* if at least one list of loads is used else *False*.
         )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "hasListOfLoads", py::overload_cast<>( &Result::hasListOfLoads, py::const_ ) )
         .def( "hasModel", &Result::hasModel, R"(
-Test if a model is used at the specfied rank
+Test if a model is used at the specfied index
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     bool: *True* if at a model used else *False*.
         )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "hasMaterialField", &Result::hasMaterialField, R"(
-Test if a material field is used at the specfied rank
+Test if a material field is used at the specfied index
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     bool: *True* if at a material field used else *False*.
         )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "getMaterialFields", &Result::getMaterialFields, R"(
 Return the list of all material fields used in the result
 
@@ -227,27 +227,27 @@ Returns:
         .def( "getMaterialField",
               py::overload_cast< ASTERINTEGER >( &Result::getMaterialField, py::const_ ),
               R"(
-Return the material field for the given rank.
+Return the material field for the given index.
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     MaterialField: Material field.
               )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "getMaterialField", py::overload_cast<>( &Result::getMaterialField, py::const_ ) )
         .def( "getListOfLoads", &Result::getListOfLoads, R"(
-Get list of loads on the specified rank
+Get list of loads on the specified index
 
 Arguments:
-    rank (int): rank to get
+    index (int): index to get
 
 Returns:
     ListOfLoads: a pointer to list of loads.
 
         )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "getMesh", &Result::getMesh, R"(
 Return a pointer to mesh
 
@@ -261,21 +261,21 @@ Returns:
     list[Model]: list of models.
         )" )
         .def( "getModel", py::overload_cast< ASTERINTEGER >( &Result::getModel, py::const_ ), R"(
-Return the model for the given rank.
+Return the model for the given index.
 
 Arguments:
-    rank (int): rank
+    index (int): index
 
 Returns:
     Model: Model object.
               )",
-              py::arg( "rank" ) )
+              py::arg( "index" ) )
         .def( "getModel", py::overload_cast<>( &Result::getModel, py::const_ ) )
         .def( "getNumberOfIndexes", &Result::getNumberOfIndexes, R"(
-Get the number of rank stored in the result
+Get the number of index stored in the result
 
 Returns:
-    int: number of rank stored.
+    int: number of index stored.
         )" )
         .def( "getAccessParameters", &Result::getAccessParameters, R"(
 Return the access parameters of the result as Python dict.
@@ -328,88 +328,88 @@ Returns:
     list(str): List of names of the contant fields on cells.
         )" )
         .def( "getIndexes", &Result::getIndexes, R"(
-Return the list of ranks used to store fields
+Return the list of indexs used to store fields
 
 Returns:
-    list[int]: List of ranks used to store fields.
+    list[int]: List of indexs used to store fields.
         )" )
         .def( "getFieldOnNodesReal", &Result::getFieldOnNodesReal, R"(
 Get a FieldOnNodesReal from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     FieldOnNodesReal: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "getFieldOnCellsReal", &Result::getFieldOnCellsReal, R"(
 Get a FieldOnCellsReal from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     FieldOnCellsReal: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "getFieldOnNodesComplex", &Result::getFieldOnNodesComplex, R"(
 Get a FieldOnNodesComplex from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     FieldOnNodesComplex: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "getFieldOnCellsComplex", &Result::getFieldOnCellsComplex, R"(
 Get a FieldOnCellsComplex from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     FieldOnCellsComplex: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "getFieldOnCellsLong", &Result::getFieldOnCellsLong, R"(
 Get a FieldOnCellsLong from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     FieldOnCellsLong: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16, R"(
 Get a ConstantFieldOnCellsChar16 from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'COMPORTEMENT', ...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     ConstantFieldOnCellsChar16: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "getConstantFieldOnCellsReal", &Result::getConstantFieldOnCellsReal, R"(
 Get a ConstantFieldOnCellsReal from result.
 
 Arguments:
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
 
 Returns:
     ConstantFieldOnCellsReal: field to get
         )",
-              py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "name" ), py::arg( "index" ) )
         .def( "printMedFile", &Result::printMedFile,
               R"(
 Print the result in a MED file.
@@ -468,9 +468,9 @@ Set a real FieldOnNodes to result.
 Arguments:
     field (FieldOnNodesReal): field to set
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-            py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+            py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def( "setField",
               py::overload_cast< const FieldOnNodesComplexPtr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
@@ -480,9 +480,9 @@ Set a complex FieldOnNodes to result.
 Arguments:
     field (FieldOnNodesComplex): field to set
     name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-              py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def(
             "setField",
             py::overload_cast< const FieldOnCellsRealPtr, const std::string &, const ASTERINTEGER >(
@@ -493,9 +493,9 @@ Set a real FieldOnCells to result
 Arguments:
     field (FieldOnCellsReal): field to set
     name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-            py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+            py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def( "setField",
               py::overload_cast< const FieldOnCellsComplexPtr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
@@ -505,9 +505,9 @@ Set a complex FieldOnCells to result
 Arguments:
     field (FieldOnCellsComplex): field to set
     name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-              py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def(
             "setField",
             py::overload_cast< const FieldOnCellsLongPtr, const std::string &, const ASTERINTEGER >(
@@ -518,9 +518,9 @@ Set a long FieldOnCells to result
 Arguments:
     field (FieldOnCellsLong): field to set
     name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-            py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+            py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def( "setField",
               py::overload_cast< const ConstantFieldOnCellsChar16Ptr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
@@ -530,9 +530,9 @@ Set a ConstantFieldOnCellsChar16 to result
 Arguments:
     field (ConstantFieldOnCellsChar16): field to set
     name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-              py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def( "setField",
               py::overload_cast< const ConstantFieldOnCellsRealPtr, const std::string &,
                                  const ASTERINTEGER >( &Result::setField ),
@@ -542,9 +542,9 @@ Set a ConstantFieldOnCellsReal to result
 Arguments:
     field (ConstantFieldOnCellsReal): field to set
     name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
-    rank (int): rank to set the field
+    index (int): index to set the field
         )",
-              py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) )
+              py::arg( "field" ), py::arg( "name" ), py::arg( "index" ) )
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 

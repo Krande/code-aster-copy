@@ -77,13 +77,13 @@ class Result : public DataStructure, public ListOfTables {
     typedef std::map< std::string, MapOfConstantFieldOnCellsChar16 > mapStrMoCFCK16;
 
     /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
-    typedef std::map< ASTERINTEGER, ElementaryCharacteristicsPtr > mapRankCaraElem;
+    typedef std::map< ASTERINTEGER, ElementaryCharacteristicsPtr > mapIndexCaraElem;
     /** @typedef std::map du rang et des pointers vers ListOfLoadsPtr */
-    typedef std::map< ASTERINTEGER, ListOfLoadsPtr > mapRankLoads;
+    typedef std::map< ASTERINTEGER, ListOfLoadsPtr > mapIndexLoads;
     /** @typedef std::map du rang et des pointers vers MaterialFieldPtr */
-    typedef std::map< ASTERINTEGER, MaterialFieldPtr > mapRankMaterial;
+    typedef std::map< ASTERINTEGER, MaterialFieldPtr > mapIndexMaterial;
     /** @typedef std::map du rang et des pointers vers ModelPtr */
-    typedef std::map< ASTERINTEGER, ModelPtr > mapRankModel;
+    typedef std::map< ASTERINTEGER, ModelPtr > mapIndexModel;
 
     /** @brief Pointeur de nom Jeveux '.DESC' */
     NamesMapChar16 _symbolicNamesOfFields;
@@ -118,13 +118,13 @@ class Result : public DataStructure, public ListOfTables {
     mapStrMoCFCK16 _dictOfMapOfConstantFieldOnCellsChar16;
 
     /** @brief List of ElementaryCharacteristicsPtr */
-    mapRankCaraElem _mapElemCara;
+    mapIndexCaraElem _mapElemCara;
     /** @brief List of ListOfLoadsPtr */
-    mapRankLoads _mapLoads;
+    mapIndexLoads _mapLoads;
     /** @brief List of MaterialFieldPtr */
-    mapRankMaterial _mapMaterial;
+    mapIndexMaterial _mapMaterial;
     /** @brief List of ModelPtr */
-    mapRankModel _mapModel;
+    mapIndexModel _mapModel;
 
     /** @brief Maillage sur lequel repose la resultat */
     BaseMeshPtr _mesh;
@@ -134,17 +134,19 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Get a name for field (wrap to rsexch.F90)
      * @param name Symbolic name of the field
-     * @param rank Rank
+     * @param index Index
      */
     std::pair< ASTERINTEGER, std::string > _getNewFieldName( const std::string &name,
-                                                             const ASTERINTEGER &rank ) const;
+                                                             const ASTERINTEGER &index ) const;
 
     template < typename T >
     void
-    _setFieldBase( const std::string &name, const ASTERINTEGER &rank, std::shared_ptr< T > field,
+    _setFieldBase( const std::string &name, const ASTERINTEGER &index, std::shared_ptr< T > field,
                    std::map< std::string, std::map< ASTERINTEGER, std::shared_ptr< T > > > &dict );
 
     void _checkMesh( const BaseMeshPtr mesh ) const;
+
+    ASTERINTEGER _getInternalIndex( const ASTERINTEGER &index ) const;
 
   public:
     /**
@@ -186,9 +188,9 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Add elementary characteristics to container
-     * @param rank
+     * @param index
      */
-    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &, ASTERINTEGER rank );
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &, ASTERINTEGER index );
 
     /**
      * @brief Add a existing FieldOnNodesDescription in _fieldBuidler
@@ -198,22 +200,22 @@ class Result : public DataStructure, public ListOfTables {
     };
 
     /**
-     * @brief Set list of loads at rank
-     * @param ListOfLoadsPtr, rank
+     * @brief Set list of loads at index
+     * @param ListOfLoadsPtr, index
      */
-    void setListOfLoads( const ListOfLoadsPtr &, ASTERINTEGER rank );
+    void setListOfLoads( const ListOfLoadsPtr &, ASTERINTEGER index );
 
     /**
      * @brief Add material definition
-     * @param rank
+     * @param index
      */
-    void setMaterialField( const MaterialFieldPtr &, ASTERINTEGER rank );
+    void setMaterialField( const MaterialFieldPtr &, ASTERINTEGER index );
 
     /**
      * @brief Add model
-     * @param rank
+     * @param index
      */
-    void setModel( const ModelPtr &, ASTERINTEGER rank );
+    void setModel( const ModelPtr &, ASTERINTEGER index );
 
     /**
      * @brief Set model
@@ -221,45 +223,45 @@ class Result : public DataStructure, public ListOfTables {
     void setMesh( const BaseMeshPtr &mesh );
 
     /**
-     * @brief Add time value for one rank
-     * @param rank
+     * @brief Add time value for one index
+     * @param index
      */
-    void setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
-        this->setParameterValue( "INST", value, rank );
+    void setTimeValue( ASTERDOUBLE value, ASTERINTEGER index ) {
+        this->setParameterValue( "INST", value, index );
     };
 
     /**
-     * @brief Add parameter value for one rank
+     * @brief Add parameter value for one index
      */
-    void setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER rank );
+    void setParameterValue( std::string name, ASTERDOUBLE value, ASTERINTEGER index );
 
-    ASTERDOUBLE getTimeValue( ASTERINTEGER rank );
+    ASTERDOUBLE getTimeValue( ASTERINTEGER index );
 
     /**
-     * @brief Append a elementary characteristics on all rank of Result
+     * @brief Append a elementary characteristics on all index of Result
      * @param ElementaryCharacteristicsPtr
      */
     void setElementaryCharacteristics( const ElementaryCharacteristicsPtr & );
 
     /**
-     * @brief Append a material on all rank of Result
+     * @brief Append a material on all index of Result
      * @param MaterialFieldPtr
      */
     void setMaterialField( const MaterialFieldPtr & );
 
     /**
-     * @brief Append a model on all rank of Result
+     * @brief Append a model on all index of Result
      * @param ModelPtr
      */
     void setModel( const ModelPtr & );
 
     /**
-     * @brief Get list of loads at rank
-     * @param rank
+     * @brief Get list of loads at index
+     * @param index
      */
-    ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) const;
+    ListOfLoadsPtr getListOfLoads( ASTERINTEGER index ) const;
 
-    bool hasListOfLoads( const ASTERINTEGER &rank ) const;
+    bool hasListOfLoads( const ASTERINTEGER &index ) const;
 
     bool hasListOfLoads() const;
 
@@ -275,15 +277,15 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Get elementary characteristics
-     * @param rank
+     * @param index
      */
-    ElementaryCharacteristicsPtr getElementaryCharacteristics( ASTERINTEGER rank ) const;
+    ElementaryCharacteristicsPtr getElementaryCharacteristics( ASTERINTEGER index ) const;
 
     /**
      * @brief Get elementary characteristics
-     * @param rank
+     * @param index
      */
-    bool hasElementaryCharacteristics( ASTERINTEGER rank ) const;
+    bool hasElementaryCharacteristics( ASTERINTEGER index ) const;
 
     bool hasElementaryCharacteristics() const;
 
@@ -299,15 +301,15 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Get material
-     * @param rank
+     * @param index
      */
-    bool hasMaterialField( const ASTERINTEGER &rank ) const;
+    bool hasMaterialField( const ASTERINTEGER &index ) const;
 
     /**
      * @brief Get material
-     * @param rank
+     * @param index
      */
-    MaterialFieldPtr getMaterialField( ASTERINTEGER rank ) const;
+    MaterialFieldPtr getMaterialField( ASTERINTEGER index ) const;
 
     /**
      * @brief Get mesh
@@ -322,7 +324,7 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief check for multiple models
      */
-    bool hasModel( const ASTERINTEGER &rank ) const;
+    bool hasModel( const ASTERINTEGER &index ) const;
 
     /**
      * @brief Get models
@@ -336,63 +338,63 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Get model
-     * @param rank
+     * @param index
      */
-    ModelPtr getModel( ASTERINTEGER rank ) const;
+    ModelPtr getModel( ASTERINTEGER index ) const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
-     * @param rank numéro d'ordre
+     * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
     FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name,
-                                             const ASTERINTEGER rank ) const;
+                                             const ASTERINTEGER index ) const;
 
     FieldOnCellsComplexPtr getFieldOnCellsComplex( const std::string name,
-                                                   const ASTERINTEGER rank ) const;
+                                                   const ASTERINTEGER index ) const;
 
     FieldOnCellsLongPtr getFieldOnCellsLong( const std::string name,
-                                             const ASTERINTEGER rank ) const;
+                                             const ASTERINTEGER index ) const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
-     * @param rank numéro d'ordre
+     * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
     ConstantFieldOnCellsChar16Ptr getConstantFieldOnCellsChar16( const std::string name,
-                                                                 const ASTERINTEGER rank ) const;
+                                                                 const ASTERINTEGER index ) const;
 
     ConstantFieldOnCellsRealPtr getConstantFieldOnCellsReal( const std::string name,
-                                                             const ASTERINTEGER rank ) const;
+                                                             const ASTERINTEGER index ) const;
 
     /**
      * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
-     * @param rank numéro d'ordre
+     * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
     void setField( const FieldOnCellsRealPtr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     void setField( const FieldOnCellsComplexPtr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     void setField( const FieldOnCellsLongPtr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     /**
      * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
-     * @param rank numéro d'ordre
+     * @param index numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
     void setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     void setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     /**
      * @brief Get dict of access variables and their values
@@ -429,26 +431,26 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
-     * @param rank numéro d'ordre
+     * @param index numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
     FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name,
-                                             const ASTERINTEGER rank ) const;
+                                             const ASTERINTEGER index ) const;
 
     FieldOnNodesComplexPtr getFieldOnNodesComplex( const std::string name,
-                                                   const ASTERINTEGER rank ) const;
+                                                   const ASTERINTEGER index ) const;
 
     /**
      * @brief Ajouter un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
-     * @param rank numéro d'ordre
+     * @param index numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
     void setField( const FieldOnNodesRealPtr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     void setField( const FieldOnNodesComplexPtr field, const std::string &name,
-                   const ASTERINTEGER rank );
+                   const ASTERINTEGER index );
 
     /**
      * @brief Impression de la sd au format MED
