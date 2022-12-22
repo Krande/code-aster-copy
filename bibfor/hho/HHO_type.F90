@@ -37,14 +37,11 @@ implicit none
         character(len=19)  :: fieldOUT_cell_GT = ''
 ! ----- Inconnues sur la cellule - Precalcul stabilisation (matrice)
         character(len=19)  :: fieldOUT_cell_ST = ''
-! ----- Inconnues sur les noeuds pour post-traitement
-        character(len=19)  :: fieldCurr_nodes = ''
 ! ----- Fields for Dirichlet loads
         aster_logical      :: l_cine_f = ASTER_FALSE
         character(len=19)  :: fieldCineFunc = ''
         character(len=19)  :: fieldCineVale = ''
         integer, pointer :: v_info_cine(:) => null()
-        integer :: nb_cmp_hho = 0
 !
     end type HHO_Field
 !

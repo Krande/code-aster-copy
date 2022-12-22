@@ -21,7 +21,7 @@ subroutine te0458(nomopt, nomte)
 use HHO_type
 use HHO_size_module, only : hhoMecaDofs
 use HHO_init_module, only : hhoInfoInitCell
-use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDiriDeca
+use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDiriOffset
 !
     implicit none
 !
@@ -29,6 +29,7 @@ use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDi
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+#include "asterfort/writeVector.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dcopy.h"
 !
@@ -43,9 +44,9 @@ use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDi
 
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8) :: rhs_cine(MSIZE_FDOFS_VEC)
-    integer :: j_func, j_vect, j_time, cbs, fbs, total_dofs, faces_dofs, nbnodes_deca, offset
-    character(len=8) :: nomfunct(3,MAX_FACE)
+    real(kind=8) :: rhs_cine(MSIZE_TDOFS_VEC)
+    integer :: j_func, j_time, cbs, fbs, total_dofs
+    character(len=8) :: nomfunct(3,MAX_FACE+1)
 !
     ASSERT(nomopt.eq.'HHO_CINE_F_MECA')
 !
@@ -67,12 +68,7 @@ use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDi
 !
 ! -- Save
 !
-    nbnodes_deca = hhoDiriDeca()
-    call jevech('PCINE', 'E', j_vect)
     call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-    faces_dofs = total_dofs - cbs
-! -- We use this offset because we can't use DDL_MECA for the moment
-    offset = (nbnodes_deca - 1) * fbs + 1
-    call dcopy(faces_dofs, rhs_cine, 1, zr(j_vect-1+offset), 1)
+    call writeVector('PCINE', total_dofs, rhs_cine)
 !
 end subroutine

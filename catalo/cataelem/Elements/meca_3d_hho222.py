@@ -294,13 +294,9 @@ CHHOSTT = LocatedComponents(phys=PHY.N2448R, type="ELEM", components=("X[1156]",
 
 DEPLHHO = LocatedComponents(phys=PHY.DEPL_R, type="ELNO", components=("DX", "DY", "DZ"))
 
-PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[18]",))
+PFONC = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[21]",))
 
 PFONCR = LocatedComponents(phys=PHY.NEUT_K8, type="ELEM", components=("Z[3]",))
-
-HHOCINE = LocatedComponents(
-    phys=PHY.DEPL_R, type="ELNO", components=("HHO_U[6]", "HHO_V[6]", "HHO_W[6]")
-)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -425,7 +421,7 @@ class MECA3DH27_HHO222(Element):
                 (SP.PINSTPR, CTEMPSR),
                 (OP.HHO_CINE_F_MECA.PFONC, PFONC),
             ),
-            para_out=((OP.HHO_CINE_F_MECA.PCINE, HHOCINE),),
+            para_out=((OP.HHO_CINE_F_MECA.PCINE, DDL_MECA),),
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))

@@ -25,7 +25,7 @@ use HHO_size_module
 use HHO_type
 use HHO_utils_module, only : hhoGetTypeFromModel
 use HHO_eval_module, only : hhoFuncFScalEvalQp
-use HHO_L2proj_module, only : hhoL2ProjFaceVec
+use HHO_L2proj_module, only : hhoL2ProjFaceVec, hhoL2ProjCellVec
 !
 implicit none
 !
@@ -42,6 +42,7 @@ private
 #include "asterfort/cesexi.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/codent.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -78,8 +79,8 @@ private
 ! --------------------------------------------------------------------------------------------------
 !
     public :: hhoDiriFuncPrepare, hhoDiriFuncCompute, hhoDiriFuncApply, hhoDiriMecaProjFunc
-    public :: hhoGetKinematicValues, hhoDiriReadNameFunc, hhoDiriDeca
-    private :: hhoDiriNum
+    public :: hhoGetKinematicValues, hhoDiriReadNameFunc, hhoDiriOffset
+    private :: hhoDiriNum, hhoDiriNodeType
 !
 contains
 !
@@ -152,8 +153,9 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nume_gd, ifm, niv, nb_cmp_hho, nb_cmp_hho_max, offset
-    integer :: i_cmp, ndim, elem_ndim, type_nume, i_func, nb_cine_func, nb_elem_mesh, nb_cmp_hho_dir
+    integer :: nume_gd, ifm, niv, nb_cmp_hho_max, offset
+    integer :: i_cmp, ndim, elem_ndim, type_nume, i_func, nb_cine_func, nb_elem_mesh
+    integer :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir
     character(len=8) :: name_gd, load_name, load_type, type_name, load_cine, mesh
     character(len=8), pointer :: v_field_valv(:) => null()
     character(len=8), pointer :: p_cata_nomcmp(:) => null()
@@ -169,7 +171,7 @@ contains
     character(len=24) :: lload_name, lload_info
     integer, pointer :: v_load_info(:) => null()
     character(len=24), pointer :: v_load_name(:) => null()
-    aster_logical :: l_cine, l_func
+    aster_logical :: l_cine, l_func, isCellNode
     type(HHO_Data) :: hhoData
     integer, pointer :: v_afci(:) => null()
     character(len=8), pointer :: v_afck(:) => null()
@@ -192,13 +194,12 @@ contains
 ! ----- Get type of HHO
 !
         call hhoGetTypeFromModel(model, hhoData, ndim)
-        nb_cmp_hho_dir = binomial(hhoData%face_degree()+ndim-1,hhoData%face_degree())
-        nb_cmp_hho = ndim * nb_cmp_hho_dir
-        hhoField%nb_cmp_hho = nb_cmp_hho
+        nb_cmp_hho_dir_c = binomial(hhoData%cell_degree()+ndim,hhoData%cell_degree())
+        nb_cmp_hho_dir_f = binomial(hhoData%face_degree()+ndim-1,hhoData%face_degree())
         if (ndim == 3) then
-            nb_cmp_hho_max = 6 * ndim
+            nb_cmp_hho_max = 7 * ndim
         elseif (ndim == 2) then
-            nb_cmp_hho_max = 4 * ndim
+            nb_cmp_hho_max = 5 * ndim
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -301,6 +302,7 @@ contains
                             endif
                         end do
                         ASSERT(node_nume_loc .gt. 0)
+!
                         hhoField%v_info_cine(3*(i_affe_cine-1)+1) = elem_nume
                         hhoField%v_info_cine(3*(i_affe_cine-1)+2) = node_nume_loc
                         hhoField%v_info_cine(3*(i_affe_cine-1)+3) = nume_cmp
@@ -326,10 +328,19 @@ contains
                                 node_nume_loc = hhoField%v_info_cine(3*(i_affe_cine-1)+2)
                                 nume_cmp      = hhoField%v_info_cine(3*(i_affe_cine-1)+3)
                                 call jenuno(jexnum('&CATA.TM.NOMTM', type_nume), type_name)
-                                offset = hhoDiriDeca(type_name)
+                                offset = hhoDiriOffset(type_name)
+                                isCellNode = hhoDiriNodeType(type_name, node_nume_loc)
+                                nb_cmp_hho_dir = nb_cmp_hho_dir_f
+                                if( isCellNode ) then
+                                    nb_cmp_hho_dir = nb_cmp_hho_dir_c
+                                end if
                                 dim_cmp = hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
                                 i_func = ndim * (node_nume_loc - offset) + dim_cmp
                                 v_field_valv(i_func) = v_afcv(i_affe_cine)
+                                if(.not.isCellNode) then
+                                    hhoField%v_info_cine(3*(i_affe_cine-1)+3) = &
+                                        ndim * nb_cmp_hho_dir_c + nume_cmp
+                                end if
                             endif
                         end do
                     end if
@@ -392,6 +403,7 @@ contains
 ! ----- Convert to CHAM_ELEM_S
 !
         call celces(celVale, 'V', cesVale)
+        !call imprsd("CHAMP_GD", cesVale, 6, "TEST")
 !
 ! ----- Access to CHAM_ELEM_S
 !
@@ -401,9 +413,11 @@ contains
 !
 ! ----- Get value
 !
-        call cesexi('S', jv_cesd, jv_cesl, elem_nume, node_nume_loc, 1, nume_cmp, iad)
+        call cesexi('C', jv_cesd, jv_cesl, elem_nume, node_nume_loc, 1, nume_cmp, iad)
         ASSERT(iad .gt. 0)
         res = zr(jv_cesv-1+iad)
+
+        call detrsd("CHAMP_GD", cesVale)
 !
     end subroutine
 !
@@ -883,7 +897,7 @@ contains
         nomFunc = '&&FOZERO'
 !
         ind = 1
-        do iFace = 1, hhoCell%nbfaces
+        do iFace = 1, hhoCell%nbfaces + 1
             do idim = 1, hhoCell%ndim
                 nomFunc(idim, iFace) = v_func(ind)
                 ind = ind + 1
@@ -904,7 +918,7 @@ contains
         type(HHO_Data), intent(in)   :: hhoData
         character(len=8), intent(in) :: nomFunc(3,6)
         real(kind=8), intent(in)     :: time
-        real(kind=8), intent(out)    :: rhs_cine(MSIZE_FDOFS_VEC)
+        real(kind=8), intent(out)    :: rhs_cine(MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - AFFE_CHAR_CINE_F
@@ -922,9 +936,9 @@ contains
         real(kind=8) :: valpar(maxpara)
         character(len=8) :: nompar(maxpara)
         type(HHO_Face) :: hhoFace
-        type(HHO_Quadrature) :: hhoQuadFace
+        type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
         integer :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
-        real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE)
+        real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -960,7 +974,7 @@ contains
 !
 ! ----- get quadrature
 !
-            call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 2)
+            call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 1)
 !
 ! --- Loop on directions
 !
@@ -982,6 +996,22 @@ contains
             ind = ind + fbs
         end do
 !
+! --- On cell
+!
+        call hhoQuadCell%GetQuadCell(hhoCell, 2 * hhoData%cell_degree() + 1)
+!
+! -------------- Value of the function at the quadrature point
+!
+        do idim = 1, hhoCell%ndim
+            if(nomFunc(idim, hhoCell%nbfaces+1) .ne. '&&FOZERO') then
+                call hhoFuncFScalEvalQp(hhoQuadCell, nomFunc(idim, hhoCell%nbfaces+1), nbpara, &
+                            nompar, valpar, hhoCell%ndim, FuncValuesCellQP(idim,1:MAX_QP_CELL))
+            end if
+        end do
+!
+        call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
+                            rhs_cine(ind))
+!
     end subroutine
 !
 !
@@ -989,7 +1019,7 @@ contains
 !
 !===================================================================================================
 !
-    integer function hhoDiriDeca(typema)
+    integer function hhoDiriOffset(typema)
 !
     implicit none
 !
@@ -1018,21 +1048,71 @@ contains
         endif
 !
         if(typma2 == 'H27' .or. typma2 == 'HEXA27') then
-            hhoDiriDeca = 21
+            hhoDiriOffset = 21
         elseif(typma2 == 'T15' .or. typma2 == 'TETRA15') then
-            hhoDiriDeca = 11
+            hhoDiriOffset = 11
         elseif(typma2 == 'P21' .or. typma2 == 'PENTA21') then
-            hhoDiriDeca = 16
+            hhoDiriOffset = 16
         elseif(typma2 == 'P19' .or. typma2 == 'PYRAM19') then
-            hhoDiriDeca = 15
-        elseif(typma2 == 'QU8' .or. typma2 == 'QUAD8') then
-            hhoDiriDeca = 5
+            hhoDiriOffset = 15
         elseif(typma2 == 'QU9' .or. typma2 == 'QUAD9') then
-            hhoDiriDeca = 5
-        elseif(typma2 == 'TR6' .or. typma2 == 'TRIA6') then
-            hhoDiriDeca = 4
+            hhoDiriOffset = 5
         elseif(typma2 == 'TR7' .or. typma2 == 'TRIA7') then
-            hhoDiriDeca = 4
+            hhoDiriOffset = 4
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end function
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    function hhoDiriNodeType(typema, i_node) result(isCellNode)
+!
+    implicit none
+!
+        character(len=8), intent(in), optional :: typema
+        integer, intent(in) :: i_node
+        aster_logical :: isCellNode
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO - AFFE_CHAR_CINE_F
+!
+!   The node is on cell or face ?
+!
+!   In (opt) typema : type of element
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret
+        character(len=8) :: typma2
+!
+! --------------------------------------------------------------------------------------------------
+!
+! ---  Get type of element
+!
+        if(present(typema)) then
+            typma2 = typema
+        else
+            call teattr('S', 'TYPMA', typma2, iret)
+            ASSERT(iret == 0)
+        endif
+!
+        isCellNode = ASTER_FALSE
+!
+        if(typma2 == 'H27' .or. typma2 == 'HEXA27') then
+            isCellNode = i_node == 27
+        elseif(typma2 == 'T15' .or. typma2 == 'TETRA15') then
+            isCellNode = i_node == 15
+        elseif(typma2 == 'P21' .or. typma2 == 'PENTA21') then
+            isCellNode = i_node == 21
+        elseif(typma2 == 'P19' .or. typma2 == 'PYRAM19') then
+            isCellNode = i_node == 19
+        elseif(typma2 == 'QU9' .or. typma2 == 'QUAD9') then
+            isCellNode = i_node == 9
+        elseif(typma2 == 'TR7' .or. typma2 == 'TRIA7') then
+            isCellNode = i_node == 7
         else
             ASSERT(ASTER_FALSE)
         end if
