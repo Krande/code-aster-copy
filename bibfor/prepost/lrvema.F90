@@ -210,15 +210,15 @@ character(len=64) :: nochmd
         if (nummed(i) .ne. 0) then
             if (zi(jnbtyp+i-1) .ne. zi(jnbty2+i-1) .and. lfirst) then
                 lfirst=.false.
-                call utmess('A+', 'MED_54')
+                call utmess('F+', 'MED_54')
                 if (zi(jnbtyp+i-1) .lt. zi(jnbty2+i-1)) then
                     vali(1)=zi(jnbtyp+i-1)
                     vali(2)=zi(jnbty2+i-1)
-                    call utmess('A', 'MED_59', sk=nomast(i), ni=2, vali=vali)
+                    call utmess('F', 'MED_59', sk=nomast(i), ni=2, vali=vali)
                 else
                     vali(1)=zi(jnbtyp+i-1)
                     vali(2)=zi(jnbty2+i-1)
-                    call utmess('A', 'MED_61', sk=nomast(i), ni=2, vali=vali)
+                    call utmess('F', 'MED_61', sk=nomast(i), ni=2, vali=vali)
                 endif
 !
             endif
