@@ -325,6 +325,17 @@ class MECA3DH27_HHO222(Element):
         ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9",)),
     )
     calculs = (
+        OP.AMOR_MECA(
+            te=121,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMASSEL, MMATUUR),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PRIGIEL, MMATUUR),
+                (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
         OP.CHAR_MECA_FF3D3D(
             te=476,
             para_in=((SP.PFF3D3D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),

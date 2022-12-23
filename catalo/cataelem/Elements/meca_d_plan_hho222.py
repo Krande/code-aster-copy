@@ -268,6 +268,17 @@ class MECA_DPQ9_HHO222(Element):
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG1",)),
     )
     calculs = (
+        OP.AMOR_MECA(
+            te=121,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMASSEL, MMATUUR),
+                (SP.PMATERC, LC.CMATERC),
+                (SP.PRIGIEL, MMATUUR),
+                (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
+        ),
         OP.CHAR_MECA_FF2D2D(
             te=476,
             para_in=((SP.PFF2D2D, CFORCEF), (SP.PGEOMER, NGEOMER), (SP.PTEMPSR, CTEMPSR)),

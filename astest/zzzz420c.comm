@@ -1,0 +1,237 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"))
+
+mesh0 = LIRE_MAILLAGE(FORMAT="MED")
+
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT="OUI"))
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(
+            GROUP_MA="SOLIDE",
+            MODELISATION="D_PLAN_HHO",
+            FORMULATION="QUADRATIQUE",
+            PHENOMENE="MECANIQUE",
+        ),
+    ),
+)
+
+COND_LIM = AFFE_CHAR_CINE(
+    MODELE=model,
+    MECA_IMPO=(
+        _F(GROUP_MA="LeftEdge", DX=0.0, DY=0.0),
+        _F(GROUP_MA="RightEdge", DX=1.0e-3, DY=0.0),
+    ),
+)
+
+# Material parameters
+betonStd = DEFI_MATERIAU(ELAS=_F(E=3.6e10, RHO=2400.0, NU=0.2))
+betonRayleigh = DEFI_MATERIAU(ELAS=_F(E=3.6e10, RHO=2400.0, NU=0.2, AMOR_ALPHA=0.1, AMOR_BETA=0.1))
+betonRayleighHalf = DEFI_MATERIAU(
+    ELAS=_F(E=3.6e10, RHO=2400.0, NU=0.2, AMOR_ALPHA=0.05, AMOR_BETA=0.05)
+)
+mateStd = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=(_F(GROUP_MA=("SOLIDE",), MATER=betonStd),))
+mateRayleigh = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=(_F(GROUP_MA=("SOLIDE",), MATER=betonRayleigh),))
+mateRayleighHalf = AFFE_MATERIAU(
+    MAILLAGE=mesh, AFFE=(_F(GROUP_MA=("SOLIDE",), MATER=betonRayleighHalf),)
+)
+
+# Time list
+timeEnd = 1.0
+nbStep = 10
+
+rampUnit = DEFI_FONCTION(NOM_PARA="INST", VALE=(0, 0, timeEnd, 1))
+listTimes = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=timeEnd, NOMBRE=nbStep))
+
+# Calcul avec Rayleigh dans le matériau
+DYNA1 = DYNA_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=mateRayleigh,
+    EXCIT=_F(CHARGE=COND_LIM, FONC_MULT=rampUnit),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4),
+    INCREMENT=_F(LIST_INST=listTimes),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+    HHO=_F(OPTIMISATION="TEMPS"),
+)
+
+dyna1_deplDX_NodeB = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA1,
+    GROUP_NO="NodeB",
+    NOM_CHAM="HHO_DEPL",
+    NOM_CMP="DX",
+)
+
+dyna1_deplDX_NodeC = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA1,
+    GROUP_NO="NodeC",
+    NOM_CHAM="HHO_DEPL",
+    NOM_CMP="DX",
+)
+
+"""
+dyna1_viteDX_NodeB = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA1,
+    GROUP_NO="NodeB",
+    NOM_CHAM="VITE",
+    NOM_CMP="DX",
+)
+
+dyna1_viteDX_NodeC = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA1,
+    GROUP_NO="NodeC",
+    NOM_CHAM="VITE",
+    NOM_CMP="DX",
+)
+"""
+# Compute Rayleigh Damping
+rigiElem = CALC_MATR_ELEM(MODELE=model, OPTION="RIGI_MECA", CHAM_MATER=mateRayleigh)
+massElem = CALC_MATR_ELEM(MODELE=model, OPTION="MASS_MECA", CHAM_MATER=mateRayleigh)
+dampElem = CALC_MATR_ELEM(
+    MODELE=model,
+    OPTION="AMOR_MECA",
+    RIGI_MECA=rigiElem,
+    MASS_MECA=massElem,
+    CHAM_MATER=mateRayleigh,
+)
+"""
+# Calcul avec Rayleigh donné par matrices d'amortissement pré-calculées
+DYNA2 = DYNA_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=mateStd,
+    MATR_ELEM_AMOR=dampElem,
+    EXCIT=_F(CHARGE=COND_LIM, FONC_MULT=rampUnit),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4),
+    INCREMENT=_F(LIST_INST=listTimes),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+)
+
+
+dyna2_deplDX_NodeB = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA2,
+    GROUP_NO="NodeB",
+    NOM_CHAM="DEPL",
+    NOM_CMP="DX",
+)
+
+dyna2_deplDX_NodeC = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA2,
+    GROUP_NO="NodeC",
+    NOM_CHAM="DEPL",
+    NOM_CMP="DX",
+)
+
+dyna2_viteDX_NodeB = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA2,
+    GROUP_NO="NodeB",
+    NOM_CHAM="VITE",
+    NOM_CMP="DX",
+)
+
+dyna2_viteDX_NodeC = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA2,
+    GROUP_NO="NodeC",
+    NOM_CHAM="VITE",
+    NOM_CMP="DX",
+)
+
+
+# Compute Rayleigh Damping
+rigiElemHalf = CALC_MATR_ELEM(MODELE=model, OPTION="RIGI_MECA", CHAM_MATER=mateRayleighHalf)
+massElemHalf = CALC_MATR_ELEM(MODELE=model, OPTION="MASS_MECA", CHAM_MATER=mateRayleighHalf)
+dampElemHalf = CALC_MATR_ELEM(
+    MODELE=model,
+    OPTION="AMOR_MECA",
+    RIGI_MECA=rigiElemHalf,
+    MASS_MECA=massElemHalf,
+    CHAM_MATER=mateRayleighHalf,
+)
+
+# Calcul avec Rayleigh donné par matrices d'amortissement pré-calculées + Rayleigh dans matériau
+DYNA3 = DYNA_NON_LINE(
+    MODELE=model,
+    CHAM_MATER=mateRayleighHalf,
+    MATR_ELEM_AMOR=dampElemHalf,
+    EXCIT=_F(CHARGE=COND_LIM, FONC_MULT=rampUnit),
+    COMPORTEMENT=_F(RELATION="ELAS", TOUT="OUI"),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-4),
+    INCREMENT=_F(LIST_INST=listTimes),
+    SCHEMA_TEMPS=_F(SCHEMA="NEWMARK", FORMULATION="DEPLACEMENT"),
+)
+
+
+dyna3_deplDX_NodeB = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA3,
+    GROUP_NO="NodeB",
+    NOM_CHAM="DEPL",
+    NOM_CMP="DX",
+)
+
+dyna3_deplDX_NodeC = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA3,
+    GROUP_NO="NodeC",
+    NOM_CHAM="DEPL",
+    NOM_CMP="DX",
+)
+
+dyna3_viteDX_NodeB = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA3,
+    GROUP_NO="NodeB",
+    NOM_CHAM="VITE",
+    NOM_CMP="DX",
+)
+
+dyna3_viteDX_NodeC = RECU_FONCTION(
+    LIST_INST=listTimes,
+    PRECISION=1.0e-4,
+    RESULTAT=DYNA3,
+    GROUP_NO="NodeC",
+    NOM_CHAM="VITE",
+    NOM_CMP="DX",
+)
+"""
+
+FIN()
