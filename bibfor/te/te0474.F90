@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,73 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+subroutine te0474(nomopt, nomte)
 !
-subroutine te0474(option, nomte)
+    use HHO_type
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_Meca_module
+    use HHO_init_module, only: hhoInfoInitCell
 !
-implicit none
+    implicit none
 !
-#include "asterfort/utmess.h"
+#include "asterf_types.h"
+#include "asterfort/HHO_size_module.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/writeMatrix.h"
+#include "jeveux.h"
 !
-character(len=16), intent(in) :: option, nomte
+! --------------------------------------------------------------------------------------------------
+!  HHO
+!  Mechanics - MASS_MECA
 !
-call utmess('F', 'FERMETUR_8')
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+! --------------------------------------------------------------------------------------------------
+    character(len=16) :: nomte, nomopt
+!
+! --- Local variables
+!
+    type(HHO_Data) :: hhoData
+    type(HHO_Cell) :: hhoCell
+    type(HHO_Quadrature) :: hhoQuadCellMass
+    integer :: cbs, fbs, total_dofs, npg
+    character(len=8), parameter :: fami = 'MASS'
+    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC) :: mass
+!
+! --- Get HHO informations
+!
+    call hhoInfoInitCell(hhoCell, hhoData)
+!
+! --- Get element parameters
+!
+    call elrefe_info(fami=fami, npg=npg)
+!
+! --- Number of dofs
+    call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+    ASSERT(cbs <= MSIZE_CELL_VEC)
+    ASSERT(fbs <= MSIZE_FACE_VEC)
+    ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
+!
+    if (nomopt /= "MASS_MECA") then
+        ASSERT(ASTER_FALSE)
+    end if
+!
+! --- Initialize quadrature for the rigidity
+!
+    call hhoQuadCellMass%initCell(hhoCell, npg)
+!
+! --- Compute local contribution
+!
+    call hhoLocalMassMeca(hhoCell, hhoData, hhoQuadCellMass, fami, mass)
+!
+! --- Save matrix
+!
+    call hhoRenumMecaMat(hhoCell, hhoData, mass)
+    call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, mass)
 !
 end subroutine

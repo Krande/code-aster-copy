@@ -18,15 +18,15 @@
 
 subroutine te0455(nomopt, nomte)
 !
-use Behaviour_module, only : behaviourOption
-use HHO_type
-use HHO_utils_module
-use HHO_size_module
-use HHO_quadrature_module
-use HHO_Meca_module
-use HHO_init_module, only : hhoInfoInitCell
+    use Behaviour_module, only: behaviourOption
+    use HHO_type
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_quadrature_module
+    use HHO_Meca_module
+    use HHO_init_module, only: hhoInfoInitCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
@@ -39,12 +39,10 @@ implicit none
 #include "asterfort/writeVector.h"
 #include "asterfort/writeMatrix.h"
 #include "jeveux.h"
-#include "blas/dscal.h"
-#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
-!  Mechanics - STAT_NON_LINE
+!  Mechanics - rigidity and residual
 !
 ! In  option           : name of option to compute
 ! In  nomte            : type of finite element
@@ -81,8 +79,8 @@ implicit none
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    if (nomopt /= "RIGI_MECA_TANG" .and.  &
-        nomopt /= "RIGI_MECA_ELAS" .and.  &
+    if (nomopt /= "RIGI_MECA_TANG" .and. &
+        nomopt /= "RIGI_MECA_ELAS" .and. &
         nomopt /= "RIGI_MECA" .and. &
         nomopt /= "FULL_MECA" .and. &
         nomopt /= "RAPH_MECA") then
@@ -96,26 +94,26 @@ implicit none
 ! --- Type of finite element
 !
     select case (hhoCell%ndim)
-        case(3)
-            typmod(1) = '3D'
-        case (2)
-            if (lteatt('AXIS','OUI')) then
-                ASSERT(ASTER_FALSE)
-                typmod(1) = 'AXIS'
-            else if (lteatt('C_PLAN','OUI')) then
-                ASSERT(ASTER_FALSE)
-                typmod(1) = 'C_PLAN'
-            else if (lteatt('D_PLAN','OUI')) then
-                typmod(1) = 'D_PLAN'
-            else
-                ASSERT(ASTER_FALSE)
-            endif
-        case default
+    case (3)
+        typmod(1) = '3D'
+    case (2)
+        if (lteatt('AXIS', 'OUI')) then
             ASSERT(ASTER_FALSE)
+            typmod(1) = 'AXIS'
+        else if (lteatt('C_PLAN', 'OUI')) then
+            ASSERT(ASTER_FALSE)
+            typmod(1) = 'C_PLAN'
+        else if (lteatt('D_PLAN', 'OUI')) then
+            typmod(1) = 'D_PLAN'
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+    case default
+        ASSERT(ASTER_FALSE)
     end select
     typmod(2) = 'HHO'
 !
-    if(nomopt .ne. "RIGI_MECA") then
+    if (nomopt .ne. "RIGI_MECA") then
 !
 ! --- Get input fields
 !
@@ -138,16 +136,16 @@ implicit none
         lVect = ASTER_FALSE
         codret = 0
         icompo = 1
-    endif
+    end if
 !
 ! --- Compute Operators
 !
-    if(hhoData%precompute()) then
+    if (hhoData%precompute()) then
         call jevech('PCHHOGT', 'L', jgrad)
         call jevech('PCHHOST', 'L', jstab)
 !
         call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
-                                    gradfull, stab)
+                                  gradfull, stab)
     else
         call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull, stab)
     end if
@@ -167,7 +165,7 @@ implicit none
 !
 ! --- Save rhs
 !
-    if(lVect) then
+    if (lVect) then
         call hhoRenumMecaVec(hhoCell, hhoData, rhs)
         call writeVector('PVECTUR', total_dofs, rhs)
     end if
@@ -175,15 +173,15 @@ implicit none
 ! --- Save of lhs
 !
     if (lMatr) then
-        if(nomopt .ne. "RIGI_MECA") then
+        if (nomopt .ne. "RIGI_MECA") then
             call jevech('PCARCRI', 'L', icarcr)
             call nmtstm(zr(icarcr), jmatt, matsym)
         else
             matsym = ASTER_TRUE
-        endif
+        end if
         call hhoRenumMecaMat(hhoCell, hhoData, lhs)
 !
-        if(matsym) then
+        if (matsym) then
             call writeMatrix('PMATUUR', total_dofs, total_dofs, ASTER_TRUE, lhs)
         else
             call writeMatrix('PMATUNS', total_dofs, total_dofs, ASTER_FALSE, lhs)

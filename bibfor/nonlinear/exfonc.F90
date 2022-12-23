@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna,&
+subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
                   mater, model)
 !
-use NonLin_Datastructure_type
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -37,13 +37,13 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
 !
-integer, intent(in) :: list_func_acti(*)
-character(len=19), intent(in) :: solver
-character(len=19), intent(in) :: sddyna
-type(NL_DS_Contact), intent(in) :: ds_contact
-character(len=24), intent(in) :: mater
-character(len=24), intent(in) :: model
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: solver
+    character(len=19), intent(in) :: sddyna
+    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=24), intent(in) :: mater
+    character(len=24), intent(in) :: model
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,110 +83,110 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! - Active functionnalites
 !
-    l_xfem           = isfonc(list_func_acti,'XFEM')
-    l_cont_cont     = isfonc(list_func_acti,'CONT_CONTINU')
-    l_cont_disc     = isfonc(list_func_acti,'CONT_DISCRET')
-    l_cont_xfem     = isfonc(list_func_acti,'CONT_XFEM')
-    l_cont          = isfonc(list_func_acti,'CONTACT')
-    l_cont_lac      = isfonc(list_func_acti,'CONT_LAC')
-    l_unil          = isfonc(list_func_acti,'LIAISON_UNILATER')
-    l_pilo          = isfonc(list_func_acti,'PILOTAGE')
-    l_line_search   = isfonc(list_func_acti,'RECH_LINE')
-    lmacr           = isfonc(list_func_acti,'MACR_ELEM_STAT')
-    l_vibr_mode     = isfonc(list_func_acti,'MODE_VIBR')
-    l_buckling      = isfonc(list_func_acti,'CRIT_STAB')
-    londe           = ndynlo(sddyna,'ONDE_PLANE')
-    l_dyna          = ndynlo(sddyna,'DYNAMIQUE')
-    limpl           = ndynlo(sddyna,'IMPLICITE')
-    lexpl           = isfonc(list_func_acti,'EXPLICITE')
-    l_grot_gdep     = isfonc(list_func_acti,'GD_ROTA')
-    lammo           = ndynlo(sddyna,'AMOR_MODAL')
-    limpex          = isfonc(list_func_acti,'IMPLEX')
-    l_newt_krylov   = isfonc(list_func_acti,'NEWTON_KRYLOV')
-    l_rom           = isfonc(list_func_acti,'ROM')
-    l_energy        = isfonc(list_func_acti,'ENERGIE')
-    lproj           = isfonc(list_func_acti,'PROJ_MODAL')
-    lmatdi          = isfonc(list_func_acti,'MATR_DISTRIBUEE')
-    leltc           = isfonc(list_func_acti,'ELT_CONTACT')
-    lResiCompRela   = isfonc(list_func_acti,'RESI_COMP')
-    lResiRefeRela   = isfonc(list_func_acti,'RESI_REFE')
-    lgcpc           = isfonc(list_func_acti,'GCPC')
-    lpetsc          = isfonc(list_func_acti,'PETSC')
-    lldsp           = isfonc(list_func_acti,'LDLT_SP')
-    l_mumps         = isfonc(list_func_acti,'MUMPS')
-    l_mult_front    = isfonc(list_func_acti,'MULT_FRONT')
-    l_diri_undead   = isfonc(list_func_acti,'DIRI_UNDEAD')
-    l_matr_distr    = isfonc(list_func_acti,'MATR_DISTRIBUEE')
-    l_hho           = isfonc(list_func_acti,'HHO')
-    l_undead        = isfonc(list_func_acti,'NEUM_UNDEAD') .or. isfonc(list_func_acti,'DIRI_UNDEAD')
-    l_state_init    = isfonc(list_func_acti,'ETAT_INIT')
-    l_reuse         = isfonc(list_func_acti,'REUSE')
+    l_xfem = isfonc(list_func_acti, 'XFEM')
+    l_cont_cont = isfonc(list_func_acti, 'CONT_CONTINU')
+    l_cont_disc = isfonc(list_func_acti, 'CONT_DISCRET')
+    l_cont_xfem = isfonc(list_func_acti, 'CONT_XFEM')
+    l_cont = isfonc(list_func_acti, 'CONTACT')
+    l_cont_lac = isfonc(list_func_acti, 'CONT_LAC')
+    l_unil = isfonc(list_func_acti, 'LIAISON_UNILATER')
+    l_pilo = isfonc(list_func_acti, 'PILOTAGE')
+    l_line_search = isfonc(list_func_acti, 'RECH_LINE')
+    lmacr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
+    l_vibr_mode = isfonc(list_func_acti, 'MODE_VIBR')
+    l_buckling = isfonc(list_func_acti, 'CRIT_STAB')
+    londe = ndynlo(sddyna, 'ONDE_PLANE')
+    l_dyna = ndynlo(sddyna, 'DYNAMIQUE')
+    limpl = ndynlo(sddyna, 'IMPLICITE')
+    lexpl = isfonc(list_func_acti, 'EXPLICITE')
+    l_grot_gdep = isfonc(list_func_acti, 'GD_ROTA')
+    lammo = ndynlo(sddyna, 'AMOR_MODAL')
+    limpex = isfonc(list_func_acti, 'IMPLEX')
+    l_newt_krylov = isfonc(list_func_acti, 'NEWTON_KRYLOV')
+    l_rom = isfonc(list_func_acti, 'ROM')
+    l_energy = isfonc(list_func_acti, 'ENERGIE')
+    lproj = isfonc(list_func_acti, 'PROJ_MODAL')
+    lmatdi = isfonc(list_func_acti, 'MATR_DISTRIBUEE')
+    leltc = isfonc(list_func_acti, 'ELT_CONTACT')
+    lResiCompRela = isfonc(list_func_acti, 'RESI_COMP')
+    lResiRefeRela = isfonc(list_func_acti, 'RESI_REFE')
+    lgcpc = isfonc(list_func_acti, 'GCPC')
+    lpetsc = isfonc(list_func_acti, 'PETSC')
+    lldsp = isfonc(list_func_acti, 'LDLT_SP')
+    l_mumps = isfonc(list_func_acti, 'MUMPS')
+    l_mult_front = isfonc(list_func_acti, 'MULT_FRONT')
+    l_diri_undead = isfonc(list_func_acti, 'DIRI_UNDEAD')
+    l_matr_distr = isfonc(list_func_acti, 'MATR_DISTRIBUEE')
+    l_hho = isfonc(list_func_acti, 'HHO')
+    l_undead = isfonc(list_func_acti, 'NEUM_UNDEAD') .or. isfonc(list_func_acti, 'DIRI_UNDEAD')
+    l_state_init = isfonc(list_func_acti, 'ETAT_INIT')
+    l_reuse = isfonc(list_func_acti, 'REUSE')
 !
 ! - Get algorithm parameters
 !
-    reac_iter        = ds_algopara%reac_iter
-    reac_incr        = ds_algopara%reac_incr
-    matrix_pred      = ds_algopara%matrix_pred
-    reli_meth        = ds_algopara%line_search%method
+    reac_iter = ds_algopara%reac_iter
+    reac_incr = ds_algopara%reac_incr
+    matrix_pred = ds_algopara%matrix_pred
+    reli_meth = ds_algopara%line_search%method
 !
 ! - Get solver parameters
 !
     call jeveuo(solver//'.SLVK', 'E', vk24=slvk)
-    call jeveuo(solver//'.SLVI', 'E', vi  =slvi)
+    call jeveuo(solver//'.SLVI', 'E', vi=slvi)
     metres = slvk(1)
-    lamg  = ((slvk(2).eq.'ML') .or. (slvk(2).eq.'BOOMER'))
+    lamg = ((slvk(2) .eq. 'ML') .or. (slvk(2) .eq. 'BOOMER'))
 !
 ! - Contact (DISCRETE)
 !
     if (l_cont_disc) then
-        lmodim      = cfdisl(ds_contact%sdcont_defi,'MODI_MATR_GLOB')
-        lallv       = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-        lpena       = cfdisl(ds_contact%sdcont_defi,'CONT_PENA')
-        l_cont_gcp  = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
-        l_cont_acti = cfdisl(ds_contact%sdcont_defi,'CONT_ACTI')
+        lmodim = cfdisl(ds_contact%sdcont_defi, 'MODI_MATR_GLOB')
+        lallv = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+        lpena = cfdisl(ds_contact%sdcont_defi, 'CONT_PENA')
+        l_cont_gcp = cfdisl(ds_contact%sdcont_defi, 'CONT_GCP')
+        l_cont_acti = cfdisl(ds_contact%sdcont_defi, 'CONT_ACTI')
         if (l_pilo) then
             call utmess('F', 'MECANONLINE_43')
-        endif
-        if (l_line_search .and. (.not.lallv)) then
+        end if
+        if (l_line_search .and. (.not. lallv)) then
             call utmess('A', 'MECANONLINE3_89')
-        endif
+        end if
         if (lgcpc .or. lpetsc) then
-            if (.not.(lallv.or.lpena.or.l_cont_gcp)) then
+            if (.not. (lallv .or. lpena .or. l_cont_gcp)) then
                 call utmess('F', 'MECANONLINE3_90', sk=metres)
-            endif
-            if (l_cont_gcp .and. .not.lldsp) then
+            end if
+            if (l_cont_gcp .and. .not. lldsp) then
                 call utmess('F', 'MECANONLINE3_88')
-            endif
-        endif
+            end if
+        end if
         if (reac_incr .eq. 0) then
             if (lmodim) then
                 call utmess('F', 'CONTACT_88')
-            endif
-        endif
-        if ((l_vibr_mode.or.l_buckling) .and. lmodim) then
+            end if
+        end if
+        if ((l_vibr_mode .or. l_buckling) .and. lmodim) then
             call utmess('F', 'MECANONLINE5_14')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Contact (CONTINUE)
 !
     if (l_cont_cont) then
-        if (l_pilo .and. (.not.l_xfem)) then
+        if (l_pilo .and. (.not. l_xfem)) then
             call utmess('F', 'MECANONLINE3_92')
-        endif
+        end if
         if (l_line_search) then
             call utmess('F', 'MECANONLINE3_91')
-        endif
+        end if
         if (lamg) then
             call utmess('F', 'MECANONLINE3_97', sk=slvk(2))
-        endif
+        end if
         if (lpetsc .and. lmatdi) then
             call utmess('F', 'MECANONLINE3_98')
-        endif
+        end if
         if (lammo) then
             call utmess('F', 'MECANONLINE3_93')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Contact (XFEM)
 !
@@ -194,11 +194,11 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         l_iden_rela = ds_contact%l_iden_rela
         if (l_iden_rela .and. l_mult_front) then
             call utmess('F', 'MECANONLINE3_99')
-        endif
+        end if
         if (reac_iter .ne. 1) then
             call utmess('F', 'MECANONLINE5_72')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Contact (LAC)
 !
@@ -206,17 +206,17 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         l_iden_rela = ds_contact%l_iden_rela
         if (l_iden_rela .and. l_mult_front) then
             call utmess('F', 'MECANONLINE3_99')
-        endif
+        end if
         if (l_matr_distr) then
             call utmess('F', 'CONTACT2_19')
-        endif
-        if ((lpetsc .or. lgcpc).and. .not. lldsp) then
+        end if
+        if ((lpetsc .or. lgcpc) .and. .not. lldsp) then
             call utmess('F', 'MECANONLINE3_87')
-        endif
+        end if
         if (lResiRefeRela) then
             call utmess('F', 'CONTACT2_21')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Contact: excluion CONTACT+DISTRIBUTION/MODEL AUTRE QUE CENTRALISE (SDNV105C en // issue25915)
 !
@@ -225,96 +225,96 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
             call dismoi('PARTITION', model(1:8)//'.MODELE', 'LIGREL', repk=partit)
             if ((partit .ne. ' ')) then
                 call utmess('F', 'CONTACT3_46')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! - Unilateral link
 !
     if (l_unil) then
         l_unil_pena = cfdisl(ds_contact%sdcont_defi, 'UNIL_PENA')
         if (l_unil_pena) then
-           lmodim = .true.
-           if (reac_incr .eq. 0) then
-              if (lmodim) then
-                 call utmess('F', 'CONTACT_88')
-              endif
-           endif
-        endif
+            lmodim = .true.
+            if (reac_incr .eq. 0) then
+                if (lmodim) then
+                    call utmess('F', 'CONTACT_88')
+                end if
+            end if
+        end if
         if (l_pilo) then
             call utmess('F', 'MECANONLINE3_94')
-        endif
+        end if
         if (l_line_search) then
             call utmess('A', 'MECANONLINE3_95')
-        endif
+        end if
         if (lgcpc .or. lpetsc) then
             call utmess('F', 'MECANONLINE3_96', sk=slvk(1))
-        endif
-    endif
+        end if
+    end if
 !
 ! - Dirichlet undead loads
 !
     if (l_diri_undead) then
         if (l_pilo) then
             call utmess('F', 'MECANONLINE5_42')
-        endif
+        end if
         if (l_line_search) then
             call utmess('F', 'MECANONLINE5_39')
-        endif
+        end if
         if (l_dyna) then
             call utmess('F', 'MECANONLINE5_40')
-        endif
-        if (reac_iter.ne.1) then
+        end if
+        if (reac_iter .ne. 1) then
             call utmess('F', 'MECANONLINE5_41')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Post-treatment (buckling, ...)
 !
     if (l_vibr_mode .or. l_buckling) then
         if (lgcpc .or. lpetsc) then
             call utmess('F', 'FACTOR_52', sk=slvk(1))
-        endif
+        end if
         if (leltc) then
             call utmess('F', 'MECANONLINE5_3')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Explicit solver
 !
     if (lexpl) then
         if (l_cont) then
             call utmess('F', 'MECANONLINE5_22')
-        endif
+        end if
         if (l_unil) then
             call utmess('F', 'MECANONLINE5_23')
-        endif
+        end if
         if (l_grot_gdep) then
             call utmess('A', 'MECANONLINE5_24')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Dynamic
 !
     if (l_dyna) then
         if (lResiCompRela) then
             call utmess('F', 'MECANONLINE5_53')
-        endif
+        end if
         if (l_pilo) then
             call utmess('F', 'MECANONLINE5_25')
-        endif
+        end if
         if (l_xfem) then
             call utmess('F', 'MECANONLINE5_28')
-        endif
+        end if
         if (limpex) then
             call utmess('F', 'MECANONLINE5_33')
-        endif
+        end if
         char24 = ''
         lthms = exi_thms(model, .true._1, char24, 0)
         if (lthms) then
             call utmess('F', 'MECANONLINE5_16')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Continuation methods (PILOTAGE)
 !
@@ -323,63 +323,63 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         if (l_line_search) then
             if (typilo .eq. 'DDL_IMPO') then
                 call utmess('F', 'MECANONLINE5_34')
-            endif
-        endif
-        if ((matrix_pred.eq.'DEPL_CALCULE') .or. (matrix_pred .eq.'EXTRAPOLE')) then
+            end if
+        end if
+        if ((matrix_pred .eq. 'DEPL_CALCULE') .or. (matrix_pred .eq. 'EXTRAPOLE')) then
             call utmess('F', 'MECANONLINE5_36')
-        endif
+        end if
         call dismoi('VARC_F_INST', mater, 'CHAM_MATER', repk=mfdet)
         if (mfdet .eq. 'OUI') then
             call utmess('F', 'CALCULEL2_58', nk=1, valk=mater(1:8))
-        endif
-    endif
+        end if
+    end if
     if (l_line_search) then
-        if ((reli_meth.eq.'PILOTAGE') .and. (.not.l_pilo)) then
+        if ((reli_meth .eq. 'PILOTAGE') .and. (.not. l_pilo)) then
             call utmess('F', 'MECANONLINE5_35')
-        endif
-    endif
+        end if
+    end if
 !
 ! - NEWTON_KRYLOV
 !
     if (l_newt_krylov) then
         if (l_pilo) then
             call utmess('F', 'MECANONLINE5_48')
-        endif
-        if ((.not.lgcpc) .and. (.not.lpetsc)) then
+        end if
+        if ((.not. lgcpc) .and. (.not. lpetsc)) then
             call utmess('F', 'MECANONLINE5_51')
-        endif
-    endif
+        end if
+    end if
 !
 ! - ROM
 !
     if (l_rom) then
         if (l_pilo) then
             call utmess('F', 'ROM5_69')
-        endif
+        end if
         if (l_line_search) then
             call utmess('F', 'ROM5_34')
-        endif
+        end if
         if (l_dyna) then
             call utmess('F', 'ROM5_70')
-        endif
+        end if
         if (l_cont) then
             call utmess('F', 'ROM5_71')
-        endif
-    endif
+        end if
+    end if
 !
 ! - Energy
 !
     if (l_energy) then
         if (lproj) then
             call utmess('F', 'MECANONLINE5_6')
-        endif
+        end if
         if (lmatdi) then
             call utmess('F', 'MECANONLINE5_8')
-        endif
+        end if
         if (leltc) then
             call utmess('F', 'MECANONLINE5_15')
-        endif
-    endif
+        end if
+    end if
 !
 ! --- SI ON A BESOIN DE FACTORISER SIMULTANEMENT DEUX MATRICES AVEC LE SOLVEUR MUMPS ON LUI
 !     SIGNALE AFIN QU'IL OPTIMISE AU MIEUX LA MEMOIRE POUR CHACUNES D'ELLES.
@@ -388,50 +388,47 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     if (l_mumps) then
         if (l_vibr_mode .or. l_buckling) then
             ASSERT(slvi(6) .ge. 0)
-            slvi(6)=2
-        endif
-    endif
+            slvi(6) = 2
+        end if
+    end if
 !
 ! - HHO
 !
     if (l_hho) then
         if (l_cont) then
             call utmess('F', 'MECANONLINE5_60')
-        endif
+        end if
         if (l_unil) then
             call utmess('F', 'MECANONLINE5_61')
-        endif
+        end if
         if (l_pilo) then
             call utmess('F', 'MECANONLINE5_62')
-        endif
+        end if
         if (l_line_search) then
             call utmess('F', 'MECANONLINE5_63')
-        endif
-        if (l_dyna) then
-            call utmess('F', 'MECANONLINE5_64')
-        endif
+        end if
         if (l_rom) then
             call utmess('F', 'MECANONLINE5_65')
-        endif
+        end if
         if (l_xfem) then
             call utmess('F', 'MECANONLINE5_66')
-        endif
+        end if
         if (lmacr) then
             call utmess('F', 'MECANONLINE5_67')
-        endif
+        end if
         if (l_vibr_mode .or. l_buckling) then
             call utmess('F', 'MECANONLINE5_68')
-        endif
+        end if
         if (l_undead) then
             call utmess('F', 'MECANONLINE5_69')
-        endif
+        end if
         if (l_reuse) then
             call utmess('F', 'MECANONLINE5_70')
-        endif
+        end if
         if (lResiCompRela) then
             call utmess('F', 'MECANONLINE5_73')
         end if
-    endif
+    end if
 !
     call jedema()
 !

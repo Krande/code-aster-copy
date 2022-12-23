@@ -128,7 +128,7 @@ class THER2DQ9_HHO121(Element):
     )
     elrefe = (
         ElrefeLoc(
-            MT.QU9, gauss=("RIGI=FPG9", "FPG1=FPG1", "MASS=FPG9"), mater=("RIGI", "FPG1", "MASS")
+            MT.QU9, gauss=("RIGI=FPG4", "FPG1=FPG1", "MASS=FPG9"), mater=("RIGI", "FPG1", "MASS")
         ),
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",)),
     )
@@ -248,7 +248,7 @@ class THER2DT7_HHO121(THER2DQ9_HHO121):
     nodes = (SetOfNodes("EN1", (4, 5, 6)), SetOfNodes("EN2", (1, 2, 3)), SetOfNodes("EN3", (7,)))
     elrefe = (
         ElrefeLoc(
-            MT.TR7, gauss=("RIGI=FPG6", "FPG1=FPG1", "MASS=FPG6"), mater=("RIGI", "FPG1", "MASS")
+            MT.TR7, gauss=("RIGI=FPG3", "FPG1=FPG1", "MASS=FPG6"), mater=("RIGI", "FPG1", "MASS")
         ),
         ElrefeLoc(MT.SE3, gauss=("RIGI=FPG2",)),
     )

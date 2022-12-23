@@ -318,7 +318,9 @@ class MECA3DH27_HHO222(Element):
     )
     elrefe = (
         ElrefeLoc(
-            MT.H27, gauss=("RIGI=FPG27", "FPG1=FPG1", "MTGA=FPG27"), mater=("RIGI", "FPG1", "MTGA")
+            MT.H27,
+            gauss=("RIGI=FPG27", "FPG1=FPG1", "MTGA=FPG27", "MASS=FPG27"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
         ElrefeLoc(MT.QU9, gauss=("RIGI=FPG9",)),
     )
@@ -435,6 +437,15 @@ class MECA3DH27_HHO222(Element):
         ),
         OP.INIT_VARC(
             te=99, para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO))
+        ),
+        OP.MASS_MECA(
+            te=474,
+            para_in=(
+                (SP.PGEOMER, NGEOMER),
+                (SP.PMATERC, LC.CMATERC),
+                (OP.MASS_MECA.PVARCPR, LC.ZVARCPG),
+            ),
+            para_out=((SP.PMATUUR, MMATUUR),),
         ),
         OP.MATE_ELGA(
             te=142,
@@ -634,7 +645,9 @@ class MECA3DT15_HHO222(MECA3DH27_HHO222):
     )
     elrefe = (
         ElrefeLoc(
-            MT.T15, gauss=("RIGI=FPG11", "FPG1=FPG1", "MTGA=FPG11"), mater=("RIGI", "FPG1", "MTGA")
+            MT.T15,
+            gauss=("RIGI=FPG11", "FPG1=FPG1", "MTGA=FPG11", "MASS=FPG11"),
+            mater=("RIGI", "FPG1", "MTGA", "MASS"),
         ),
         ElrefeLoc(MT.TR7, gauss=("RIGI=FPG6",)),
     )

@@ -45,7 +45,7 @@ module HHO_utils_module
 ! --------------------------------------------------------------------------------------------------
     public :: hhoCopySymPartMat, hhoPrintMat, hhoNorm2Mat, hhoProdSmatVec
     public :: hhoPrintTensor4, hhoPrintTensor4Mangle, hhoRenumMecaVec, hhoRenumMecaMat
-    public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv
+    public :: hhoGetTypeFromModel, MatScal2Vec, hhoRenumMecaVecInv, MatCellScal2Vec
     public :: SigVec2Mat, hhoGetMatrElem, CellNameL2S
     public :: hhoRenumTherVec, hhoRenumTherMat, hhoRenumTherVecInv
 !    private  ::
@@ -501,6 +501,52 @@ contains
                 mat_vec(ibeginFace:iendFace, jbeginCell:jendCell) &
                     = mat_scal(ibeginVec:iendVec, 1:cbs_comp)
             end do
+        end do
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine MatCellScal2Vec(hhoCell, hhoData, mat_scal, mat_vec)
+!
+        implicit none
+!
+        type(HHO_Cell), intent(in)  :: hhoCell
+        type(HHO_Data), intent(in)  :: hhoData
+        real(kind=8), intent(in)    :: mat_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
+        real(kind=8), intent(out)   :: mat_vec(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
+!
+! --------------------------------------------------------------------------------------------------
+!   HHO
+!
+!   Create the vectorial matrix by tensorization of the scalar matrix
+!   In hhoCell      : the current HHO Cell
+!   In hhoData      : information on HHO methods
+!   In mat_scal     : matrix for the scalar problem
+!   Out mat_vec     : matrix for the vectorial problem
+!
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: cbs_comp, cbs, fbs
+        integer :: total_dofs, idim, jbeginCell, jendCell
+! --------------------------------------------------------------------------------------------------
+!
+! -- number of dofs
+        call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
+!
+        cbs_comp = cbs/hhoCell%ndim
+!
+! -- copy the scalar matrix in the vectorial matrix
+        mat_vec = 0.d0
+!
+        do idim = 1, hhoCell%ndim
+! --------- copy volumetric part
+            jbeginCell = (idim-1)*cbs_comp+1
+            jendCell = jbeginCell+cbs_comp-1
+!
+            mat_vec(jbeginCell:jendCell, jbeginCell:jendCell) = mat_scal(1:cbs_comp, 1:cbs_comp)
         end do
 !
     end subroutine
