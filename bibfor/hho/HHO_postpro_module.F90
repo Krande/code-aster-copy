@@ -244,7 +244,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv, iret
-        character(len=24) :: disp_hho_depl, disp
+        character(len=24) :: cham_hho, cham
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -257,15 +257,35 @@ contains
 !
 ! ----- Get output fields
 !
-        call rsexch(' ', result_hho, 'DEPL', nume_store, disp, iret)
+        call rsexch(' ', result_hho, 'DEPL', nume_store, cham, iret)
         ASSERT(iret == 0)
-        call rsexch(' ', result_hho, 'HHO_DEPL', nume_store, disp_hho_depl, iret)
+        call rsexch(' ', result_hho, 'HHO_DEPL', nume_store, cham_hho, iret)
         ASSERT(iret == 100)
 !
 ! -----  Compute HHO field at nodes (saved in DEPL)
 !
-        call hhoPostDeplMecaOP(model_hho, disp, disp_hho_depl)
+        call hhoPostDeplMecaOP(model_hho, cham, cham_hho)
         call rsnoch(result_hho, 'HHO_DEPL', nume_store)
+!
+! -----  Compute HHO field at nodes (saved in VITE) - if exists
+!
+        call rsexch(' ', result_hho, 'VITE', nume_store, cham, iret)
+        if (iret == 0) then
+            call rsexch(' ', result_hho, 'HHO_VITE', nume_store, cham_hho, iret)
+            ASSERT(iret == 100)
+            call hhoPostDeplMecaOP(model_hho, cham, cham_hho)
+            call rsnoch(result_hho, 'HHO_VITE', nume_store)
+        end if
+!
+! -----  Compute HHO field at nodes (saved in ACCE) - if exists
+!
+        call rsexch(' ', result_hho, 'ACCE', nume_store, cham, iret)
+        if (iret == 0) then
+            call rsexch(' ', result_hho, 'HHO_ACCE', nume_store, cham_hho, iret)
+            ASSERT(iret == 100)
+            call hhoPostDeplMecaOP(model_hho, cham, cham_hho)
+            call rsnoch(result_hho, 'HHO_ACCE', nume_store)
+        end if
 !
         call jedema()
 !

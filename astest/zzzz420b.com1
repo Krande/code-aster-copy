@@ -26,8 +26,8 @@ timeTest1 = 0.5
 timeTest2 = 1.0
 deplTest1 = 4.030719223679e-04
 deplTest2 = 7.932785094310e-04
-viteTest1 = 1.603142330538e-03
-viteTest2 = 2.812110718427e-05
+viteTest1 = 1.598357978337e-03
+viteTest2 = 2.782125823264e-05
 
 # Tests en non-régression sur Rayleigh classique
 TEST_FONCTION(
@@ -45,7 +45,7 @@ TEST_FONCTION(
         ),
     )
 )
-"""
+
 TEST_FONCTION(
     VALEUR=(
         _F(
@@ -61,7 +61,7 @@ TEST_FONCTION(
         ),
     )
 )
-
+"""
 # Tests en non-régression sur amortissement donné
 TEST_FONCTION(
     VALEUR=(

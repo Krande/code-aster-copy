@@ -380,6 +380,7 @@ class NOM_CHAM_INTO:  # COMMUN#
             "HHO_DEPL": ((), tr("Déplacements reconstruits aux noeuds pour la modélisation HHO")),
             "TEMP": ((), tr("Température aux noeuds")),
             "VITE": ((), tr("Vitesse aux noeuds")),
+            "HHO_VITE": ((), tr("Vitesse reconstruites aux noeuds pour la modélisation HHO")),
             "CONT_NOEU": ((), tr("Statuts de contact aux noeuds")),
             "CONT_ELEM": ((), tr("Statuts de contact aux éléments (LAC)")),
             "VARI_ELGA": ((), tr("Variables internes aux points de Gauss")),

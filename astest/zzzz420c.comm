@@ -93,13 +93,13 @@ dyna1_deplDX_NodeC = RECU_FONCTION(
     NOM_CMP="DX",
 )
 
-"""
+
 dyna1_viteDX_NodeB = RECU_FONCTION(
     LIST_INST=listTimes,
     PRECISION=1.0e-4,
     RESULTAT=DYNA1,
     GROUP_NO="NodeB",
-    NOM_CHAM="VITE",
+    NOM_CHAM="HHO_VITE",
     NOM_CMP="DX",
 )
 
@@ -108,10 +108,10 @@ dyna1_viteDX_NodeC = RECU_FONCTION(
     PRECISION=1.0e-4,
     RESULTAT=DYNA1,
     GROUP_NO="NodeC",
-    NOM_CHAM="VITE",
+    NOM_CHAM="HHO_VITE",
     NOM_CMP="DX",
 )
-"""
+
 # Compute Rayleigh Damping
 rigiElem = CALC_MATR_ELEM(MODELE=model, OPTION="RIGI_MECA", CHAM_MATER=mateRayleigh)
 massElem = CALC_MATR_ELEM(MODELE=model, OPTION="MASS_MECA", CHAM_MATER=mateRayleigh)
