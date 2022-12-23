@@ -18,7 +18,7 @@
 !
 module HHO_type
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 !
@@ -66,7 +66,7 @@ implicit none
 ! ----- Coefficient stabilisation
         real(kind=8)       :: m_coeff_stab
 ! ----- member function
-        contains
+    contains
         procedure, pass    :: initialize => initialize_data
         procedure, pass    :: face_degree
         procedure, pass    :: cell_degree
@@ -92,7 +92,7 @@ implicit none
 ! ----- Nombre de noeuds
         integer                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 4 noeuds pour quad)
-        real(kind=8), dimension(3,4):: coorno = 0.d0
+        real(kind=8), dimension(3, 4):: coorno = 0.d0
 ! ----- Coordonnees du barycentre de la face
         real(kind=8), dimension(3)  :: barycenter = 0.d0
 ! ----- Diametre de la face
@@ -104,11 +104,11 @@ implicit none
 ! ----- Utilisation du repere inertiel local
         aster_logical               :: use_inertia = ASTER_TRUE
 ! ----- Axes locaux de la cellule
-        real(kind=8), dimension(3,2) :: axes = 0.d0
+        real(kind=8), dimension(3, 2) :: axes = 0.d0
 ! ----- Longueur de la boite englobante (orientee ou non) de la cellule
         real(kind=8), dimension(2)  :: length_box = 0.d0
 ! ----- member function
-        contains
+    contains
         procedure, public, pass :: print => print_face
     end type HHO_Face
 !
@@ -124,7 +124,7 @@ implicit none
 ! ----- Nombre de noeuds
         integer                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
-        real(kind=8), dimension(3,27):: coorno = 0.d0
+        real(kind=8), dimension(3, 27):: coorno = 0.d0
 ! ----- Coordonnees du barycentre de la cellule
         real(kind=8), dimension(3)  :: barycenter = 0.d0
 ! ----- Diametre de la cellule
@@ -132,7 +132,7 @@ implicit none
 ! ----- Utilisation du repere inertiel local
         aster_logical               :: use_inertia = ASTER_TRUE
 ! ----- Axes locaux de la cellule
-        real(kind=8), dimension(3,3) :: axes = 0.d0
+        real(kind=8), dimension(3, 3) :: axes = 0.d0
 ! ----- Longueur de la boite englobante (orientee ou non) de la cellule
         real(kind=8), dimension(3)  :: length_box = 0.d0
 ! ----- Volume ou Surface de la cellule
@@ -142,7 +142,7 @@ implicit none
 ! ----- Donnees sur les faces (max 6 faces pour hexa)
         type(HHO_Face), dimension(6):: faces
 ! ----- member function
-        contains
+    contains
         procedure, public, pass :: print => print_cell
     end type HHO_Cell
 !
@@ -156,10 +156,10 @@ contains
 !
 !===================================================================================================
 !
-    subroutine initialize_data(this, face_degree, cell_degree, grad_degree, l_stab, coeff, l_debug,&
-                               l_precalc, l_adapt_coef)
+    subroutine initialize_data(this, face_degree, cell_degree, grad_degree, l_stab, coeff, &
+                               l_debug, l_precalc, l_adapt_coef)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(inout)  :: this
         integer, intent(in)             :: face_degree
@@ -202,7 +202,7 @@ contains
 !
     function face_degree(this) result(degree)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         integer                     :: degree
@@ -224,7 +224,7 @@ contains
 !
     function cell_degree(this) result(degree)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         integer                     :: degree
@@ -246,7 +246,7 @@ contains
 !
     function grad_degree(this) result(degree)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         integer                     :: degree
@@ -268,7 +268,7 @@ contains
 !
     function debug_data(this) result(logic)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         logical                     :: logic
@@ -290,7 +290,7 @@ contains
 !
     function stabilize(this) result(logic)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         logical                     :: logic
@@ -312,7 +312,7 @@ contains
 !
     function precompute(this) result(logic)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         logical                     :: logic
@@ -334,7 +334,7 @@ contains
 !
     function adapt(this) result(logic)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         logical                     :: logic
@@ -356,7 +356,7 @@ contains
 !
     function coeff_stab(this) result(coeff)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
         real(kind=8)                :: coeff
@@ -377,7 +377,7 @@ contains
 !
     subroutine setCoeffStab(this, coeff)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(inout) :: this
         real(kind=8), intent(in)       :: coeff
@@ -399,7 +399,7 @@ contains
 !
     subroutine print_data(this)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Data), intent(in) :: this
 !
@@ -409,13 +409,13 @@ contains
 !   In this     : a HHo Data
 ! --------------------------------------------------------------------------------------------------
 !
-        write(6,*) "hhoData debug"
-        write(6,*) "face degree: ", this%face_degree()
-        write(6,*) "cell degree: ", this%cell_degree()
-        write(6,*) "grad degree: ", this%grad_degree()
-        write(6,*) "stab ?: ",      this%stabilize()
-        write(6,*) "coeff stab: ",  this%coeff_stab()
-        write(6,*) "end hhoData debug"
+        write (6, *) "hhoData debug"
+        write (6, *) "face degree: ", this%face_degree()
+        write (6, *) "cell degree: ", this%cell_degree()
+        write (6, *) "grad degree: ", this%grad_degree()
+        write (6, *) "stab ?: ", this%stabilize()
+        write (6, *) "coeff stab: ", this%coeff_stab()
+        write (6, *) "end hhoData debug"
 !
     end subroutine
 !
@@ -429,7 +429,7 @@ contains
 !
     subroutine print_face(this)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Face), intent(in) :: this
 !
@@ -440,23 +440,23 @@ contains
 !
         integer :: inode
 ! --------------------------------------------------------------------------------------------------
-        write(6,*) "Informations on HHO Face"
-        write(6,*) "Type maille: ", this%typema
-        write(6,*) "Dimension topo: ", this%ndim
-        write(6,*) "Number of nodes: ", this%nbnodes
+        write (6, *) "Informations on HHO Face"
+        write (6, *) "Type maille: ", this%typema
+        write (6, *) "Dimension topo: ", this%ndim
+        write (6, *) "Number of nodes: ", this%nbnodes
         do inode = 1, this%nbnodes
-            write(6,*) "    node", inode, ": ", this%coorno(1:3, inode)
+            write (6, *) "    node", inode, ": ", this%coorno(1:3, inode)
         end do
-        write(6,*) "Barycenter: ", this%barycenter
-        write(6,*) "Normal: ", this%normal
-        write(6,*) "Measure: ", this%measure
-        write(6,*) "Diameter: ", this%diameter
-        write(6,*) "Local axis: "
-        write(6,*) "    a1: ", this%axes(1:3,1)
-        if(this%ndim > 1) then
-            write(6,*) "    a2: ", this%axes(1:3,2)
+        write (6, *) "Barycenter: ", this%barycenter
+        write (6, *) "Normal: ", this%normal
+        write (6, *) "Measure: ", this%measure
+        write (6, *) "Diameter: ", this%diameter
+        write (6, *) "Local axis: "
+        write (6, *) "    a1: ", this%axes(1:3, 1)
+        if (this%ndim > 1) then
+            write (6, *) "    a2: ", this%axes(1:3, 2)
         end if
-        write(6,*) "Length box: ", this%length_box(1:this%ndim)
+        write (6, *) "Length box: ", this%length_box(1:this%ndim)
 !
     end subroutine
 !
@@ -470,7 +470,7 @@ contains
 !
     subroutine print_cell(this)
 !
-    implicit none
+        implicit none
 !
         class(HHO_Cell), intent(in) :: this
 !
@@ -481,28 +481,28 @@ contains
 !
         integer :: inode, iface
 !
-        write(6,*) "Informations on HHO Cell"
-        write(6,*) "Type maille: ", this%typema
-        write(6,*) "Dimension topo: ", this%ndim
-        write(6,*) "Number of nodes: ", this%nbnodes
+        write (6, *) "Informations on HHO Cell"
+        write (6, *) "Type maille: ", this%typema
+        write (6, *) "Dimension topo: ", this%ndim
+        write (6, *) "Number of nodes: ", this%nbnodes
         do inode = 1, this%nbnodes
-            write(6,*) "    node", inode, ": ", this%coorno(1:3, inode)
+            write (6, *) "    node", inode, ": ", this%coorno(1:3, inode)
         end do
-        write(6,*) "Barycenter: ", this%barycenter
-        write(6,*) "Measure: ", this%measure
-        write(6,*) "Diameter: ", this%diameter
-        write(6,*) "Local axis: "
-        write(6,*) "    a1: ", this%axes(1:3,1)
-        if(this%ndim > 1) then
-            write(6,*) "    a2: ", this%axes(1:3,2)
-            if(this%ndim > 2) then
-                write(6,*) "    a: ", this%axes(1:3,3)
+        write (6, *) "Barycenter: ", this%barycenter
+        write (6, *) "Measure: ", this%measure
+        write (6, *) "Diameter: ", this%diameter
+        write (6, *) "Local axis: "
+        write (6, *) "    a1: ", this%axes(1:3, 1)
+        if (this%ndim > 1) then
+            write (6, *) "    a2: ", this%axes(1:3, 2)
+            if (this%ndim > 2) then
+                write (6, *) "    a: ", this%axes(1:3, 3)
             end if
         end if
-        write(6,*) "Length box: ", this%length_box(1:this%ndim)
-        write(6,*) "Number of face: ", this%nbfaces
+        write (6, *) "Length box: ", this%length_box(1:this%ndim)
+        write (6, *) "Number of face: ", this%nbfaces
         do iface = 1, this%nbfaces
-            write(6,*) "    face", iface, ": "
+            write (6, *) "    face", iface, ": "
             call this%faces(iface)%print()
         end do
 !

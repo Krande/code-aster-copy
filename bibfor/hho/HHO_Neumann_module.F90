@@ -19,13 +19,13 @@
 !
 module HHO_Neumann_module
 !
-use HHO_quadrature_module
-use HHO_rhs_module
-use HHO_type
+    use HHO_quadrature_module
+    use HHO_rhs_module
+    use HHO_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 !
@@ -48,7 +48,7 @@ contains
 !
     subroutine hhoTherNeumForces(hhoFace, hhoData, hhoQuad, NeumValuesQP, rhs_forces)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         type(HHO_Data), intent(in)          :: hhoData
@@ -78,12 +78,12 @@ contains
 !
     subroutine hhoMecaNeumForces(hhoFace, hhoData, hhoQuad, NeumValuesQP, rhs_forces)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         type(HHO_Data), intent(in)          :: hhoData
         type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: NeumValuesQP(3,MAX_QP_FACE)
+        real(kind=8), intent(in)            :: NeumValuesQP(3, MAX_QP_FACE)
         real(kind=8), intent(out)           :: rhs_forces(MSIZE_FACE_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -108,12 +108,12 @@ contains
 !
     subroutine hhoMecaVoluForces(hhoCell, hhoData, hhoQuad, voluValuesQP, rhs_forces)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
         type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: voluValuesQP(3,MAX_QP_CELL)
+        real(kind=8), intent(in)            :: voluValuesQP(3, MAX_QP_CELL)
         real(kind=8), intent(out)           :: rhs_forces(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------

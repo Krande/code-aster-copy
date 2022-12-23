@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 module HHO_stabilization_module
 !
-use HHO_basis_module
-use HHO_massmat_module
-use HHO_quadrature_module
-use HHO_size_module
-use HHO_tracemat_module
-use HHO_type
-use HHO_utils_module
+    use HHO_basis_module
+    use HHO_massmat_module
+    use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_tracemat_module
+    use HHO_type
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -56,12 +56,12 @@ contains
 !
     subroutine hhoStabScal(hhoCell, hhoData, gradrec, stab)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: gradrec(MSIZE_CELL_SCAL,MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_SCAL,MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(in)    :: gradrec(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -93,14 +93,14 @@ contains
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
 ! -- compute cell mass matrix
-        dimMassMat = hhoBasisCell%BSSize(0, hhoData%face_degree() + 1)
-        call hhoMassMatCellScal(hhoCell, 0, hhoData%face_degree() + 1, massMat)
+        dimMassMat = hhoBasisCell%BSSize(0, hhoData%face_degree()+1)
+        call hhoMassMatCellScal(hhoCell, 0, hhoData%face_degree()+1, massMat)
 !
 ! -- Range
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromM1, itoM1)
         dimM1 = hhoBasisCell%BSSize(0, hhoData%cell_degree())
-        call hhoBasisCell%BSRange(1, hhoData%face_degree() + 1, ifromM2, itoM2)
-        colsM2 = hhoBasisCell%BSSize(1, hhoData%face_degree() + 1)
+        call hhoBasisCell%BSRange(1, hhoData%face_degree()+1, ifromM2, itoM2)
+        colsM2 = hhoBasisCell%BSSize(1, hhoData%face_degree()+1)
 !
 ! -- extract M1:
         M1 = 0.d0
@@ -113,7 +113,7 @@ contains
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
 !
-        stab  = 0.d0
+        stab = 0.d0
         proj1 = 0.d0
 !
 ! -- Build \pi_F^k (v_F - P_T^K v) equations (21) and (22)
@@ -129,31 +129,31 @@ contains
         call dposv('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, proj1, MSIZE_CELL_SCAL, info)
 !
 ! - Sucess ?
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
 ! --  Step 2: v_T - \pi_T^k p_T^k v (first term minus third term)
 ! -- Compute proj1 = proj1 + I_Cell
         do i = 1, dimM1
-            proj1(i,i) = proj1(i,i) + 1.d0
+            proj1(i, i) = proj1(i, i)+1.d0
         end do
 !
 ! Step 3: project on faces (eqn. 21)
-        offset_face = cbs + 1
+        offset_face = cbs+1
 !
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
-            invH = 1.d0 / hhoFace%diameter
+            invH = 1.d0/hhoFace%diameter
             fromFace = offset_face
-            toFace = offset_face + fbs - 1
+            toFace = offset_face+fbs-1
 !
 ! ----- Compute face mass matrix
             call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree() + 1, &
+            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, &
                                 & hhoFace, 0, hhoData%face_degree(), traceMat)
 !
 ! ---- Factorize face Mass
@@ -164,7 +164,7 @@ contains
             call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
@@ -183,15 +183,15 @@ contains
             call dpotrs('U', fbs, total_dofs, piKF, MSIZE_FACE_SCAL, proj2, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
 ! ---- Compute proj2 -= I_F
             i = 1
             do j = fromFace, toFace
-                proj2(i,j) = proj2(i,j) - 1.d0
-                i = i + 1
+                proj2(i, j) = proj2(i, j)-1.d0
+                i = i+1
             end do
 !
 ! ---- Step 3b: \pi_F^k( v_T - \pi_T^k p_T^k v )
@@ -210,12 +210,12 @@ contains
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
 ! ---- proj3 = proj3 + proj2
-            proj3(1:fbs, 1:total_dofs) = proj3(1:fbs, 1:total_dofs) + proj2(1:fbs, 1:total_dofs)
+            proj3(1:fbs, 1:total_dofs) = proj3(1:fbs, 1:total_dofs)+proj2(1:fbs, 1:total_dofs)
 !
 ! ---- Compute TMP = faceMass * proj3
             TMP = 0.d0
@@ -226,7 +226,7 @@ contains
             call dgemm('T', 'N', total_dofs, total_dofs, fbs, invH, proj3, MSIZE_FACE_SCAL, &
                         & TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_SCAL)
 !
-            offset_face = offset_face + fbs
+            offset_face = offset_face+fbs
         end do
 !
     end subroutine
@@ -237,12 +237,12 @@ contains
 !
     subroutine hhoStabVec(hhoCell, hhoData, gradrec_scal, stab)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: gradrec_scal(MSIZE_CELL_SCAL,MSIZE_TDOFS_SCAL)
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC,MSIZE_TDOFS_VEC)
+        real(kind=8), intent(in)    :: gradrec_scal(MSIZE_CELL_SCAL, MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -255,7 +255,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL,MSIZE_TDOFS_SCAL) :: stab_scal
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
 !
 ! -- compute scalar stabilization
@@ -272,12 +272,12 @@ contains
 !
     subroutine hhoStabSymVec(hhoCell, hhoData, gradrec, stab)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(in)    :: gradrec(MSIZE_CELL_VEC,MSIZE_TDOFS_VEC)
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC,MSIZE_TDOFS_VEC)
+        real(kind=8), intent(in)    :: gradrec(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -309,19 +309,19 @@ contains
 ! -- number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
-        fbs_comp = fbs / hhoCell%ndim
-        faces_dofs = total_dofs - cbs
-        faces_dofs_comp = faces_dofs / hhoCell%ndim
+        fbs_comp = fbs/hhoCell%ndim
+        faces_dofs = total_dofs-cbs
+        faces_dofs_comp = faces_dofs/hhoCell%ndim
 !
 ! -- compute cell mass matrix
-        dimMassMat = hhoBasisCell%BSSize(0, hhoData%face_degree() + 1)
-        call hhoMassMatCellScal(hhoCell, 0, hhoData%face_degree() + 1, massMat)
+        dimMassMat = hhoBasisCell%BSSize(0, hhoData%face_degree()+1)
+        call hhoMassMatCellScal(hhoCell, 0, hhoData%face_degree()+1, massMat)
 !
 ! -- Range
         call hhoBasisCell%BSRange(0, hhoData%cell_degree(), ifromM1, itoM1)
         dimM1 = hhoBasisCell%BSSize(0, hhoData%cell_degree())
-        call hhoBasisCell%BSRange(1, hhoData%face_degree() + 1, ifromM2, itoM2)
-        colsM2 = hhoBasisCell%BSSize(1, hhoData%face_degree() + 1)
+        call hhoBasisCell%BSRange(1, hhoData%face_degree()+1, ifromM2, itoM2)
+        colsM2 = hhoBasisCell%BSSize(1, hhoData%face_degree()+1)
 !
 ! -- extract M1:
         M1 = 0.d0
@@ -332,7 +332,7 @@ contains
         call dpotrf('U', dimM1, M1, MSIZE_CELL_SCAL, info)
 !
 ! -- Sucess ?
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
@@ -343,7 +343,7 @@ contains
 ! -- Verif size
         ASSERT(MSIZE_CELL_SCAL >= colsM2 .and. MSIZE_TDOFS_SCAL >= dimM1)
 !
-        stab  = 0.d0
+        stab = 0.d0
         proj1 = 0.d0
 !
 ! -- Build \pi_F^k (v_F - P_T^K v) equations (21) and (22)
@@ -353,23 +353,23 @@ contains
 !
         do idir = 1, hhoCell%ndim
 !
-            ifromGrad = (idir - 1) * colsM2 + 1
-            itoGrad = ifromGrad + colsM2 - 1
-            ifromProj = (idir - 1) * dimM1 + 1
-            itoProj = ifromProj + dimM1 - 1
+            ifromGrad = (idir-1)*colsM2+1
+            itoGrad = ifromGrad+colsM2-1
+            ifromProj = (idir-1)*dimM1+1
+            itoProj = ifromProj+dimM1-1
 !
             call dgemm('N', 'N', dimM1, total_dofs, colsM2, -1.d0, M2, MSIZE_CELL_SCAL, &
-                    & gradrec(ifromGrad:itoGrad,1:total_dofs), colsM2, 0.d0, &
-                    & proj1(ifromProj:itoProj,1:total_dofs), dimM1)
+                    & gradrec(ifromGrad:itoGrad, 1:total_dofs), colsM2, 0.d0, &
+                    & proj1(ifromProj:itoProj, 1:total_dofs), dimM1)
 !
 ! -- Solve proj1 = M1^-1 * proj1
 ! -- Verif strange bug if info neq 0 in entry
             info = 0
             call dpotrs('U', dimM1, total_dofs, M1, MSIZE_CELL_SCAL, &
-                        & proj1(ifromProj:itoProj,1:total_dofs), dimM1, info)
+                        & proj1(ifromProj:itoProj, 1:total_dofs), dimM1, info)
 !
 ! -- Sucess ?
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
@@ -377,8 +377,8 @@ contains
 !
 ! --  Step 2: v_T - \pi_T^k p_T^k v (first term minus third term)
 ! -- Compute proj1 = proj1 + I_Cell
-        do i = 1, hhoCell%ndim * dimM1
-            proj1(i,i) = proj1(i,i) + 1.d0
+        do i = 1, hhoCell%ndim*dimM1
+            proj1(i, i) = proj1(i, i)+1.d0
         end do
 !
 ! Step 3: project on faces (eqn. 21)
@@ -386,13 +386,13 @@ contains
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
-            invH = 1.d0 / hhoFace%diameter
+            invH = 1.d0/hhoFace%diameter
 !
 ! ----- Compute face mass matrix
             call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
 !
 ! ----- Compute trace mass matrix
-            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree() + 1, &
+            call hhoTraceMatScal(hhoCell, 0, hhoData%face_degree()+1, &
                                 & hhoFace, 0, hhoData%face_degree(), traceMat)
 !
 ! ---- Factorize face Mass
@@ -403,7 +403,7 @@ contains
             call dpotrf('U', fbs_comp, piKF, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
@@ -419,42 +419,43 @@ contains
                 proj2 = 0.d0
                 proj3 = 0.d0
 !
-                ifromGrad = (idir - 1) * colsM2 + 1
-                itoGrad = ifromGrad + colsM2 - 1
+                ifromGrad = (idir-1)*colsM2+1
+                itoGrad = ifromGrad+colsM2-1
 !
 ! ----  compute proj2 = MR1 * gradrec
                 call dgemm('N', 'N', fbs_comp, total_dofs, colsM2, 1.d0, MR1, MSIZE_FACE_SCAL, &
-                            gradrec(ifromGrad:itoGrad,1:total_dofs), colsM2, &
-                            0.d0, proj2, MSIZE_FACE_SCAL)
+                           gradrec(ifromGrad:itoGrad, 1:total_dofs), colsM2, &
+                           0.d0, proj2, MSIZE_FACE_SCAL)
 !
 ! ---- Solve proj2 = pikF^-1 * proj2
 ! ---- Verif strange bug if info neq 0 in entry
                 info = 0
                 call dpotrs('U', fbs_comp, total_dofs, piKF, MSIZE_FACE_SCAL, &
-                             proj2, MSIZE_FACE_SCAL, info)
+                            proj2, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-                if(info .ne. 0) then
+                if (info .ne. 0) then
                     call utmess('F', 'HHO1_4')
                 end if
 !
 ! ---- Compute proj2 -= I_F
-                fromFace = cbs + (idir - 1) * fbs_comp + (iface - 1) * fbs + 1
-                toFace = fromFace + fbs_comp - 1
+                fromFace = cbs+(idir-1)*fbs_comp+(iface-1)*fbs+1
+                toFace = fromFace+fbs_comp-1
                 i = 1
                 do j = fromFace, toFace
-                    proj2(i,j) = proj2(i,j) - 1.d0
-                    i = i + 1
+                    proj2(i, j) = proj2(i, j)-1.d0
+                    i = i+1
                 end do
 !
 ! ---- Step 3b: \pi_F^k( v_T - \pi_T^k p_T^k v )
 ! ---- Compute proj3 = MR2 * proj1
 !
-                ifromProj = (idir - 1) * dimM1 + 1
-                itoProj = ifromProj + dimM1 - 1
+                ifromProj = (idir-1)*dimM1+1
+                itoProj = ifromProj+dimM1-1
 !
                 call dgemm('N', 'N', fbs_comp, total_dofs, dimM1, 1.d0, MR2, MSIZE_FACE_SCAL, &
-                      proj1(ifromProj:itoProj,1:total_dofs), dimM1, 0.d0, proj3, MSIZE_FACE_SCAL)
+                           proj1(ifromProj:itoProj, 1:total_dofs), dimM1, &
+                           0.d0, proj3, MSIZE_FACE_SCAL)
 !
 ! ---- Solve proj3 = pikF^-1 * proj3
                 info = 0
@@ -463,22 +464,22 @@ contains
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
-                if(info .ne. 0) then
+                if (info .ne. 0) then
                     call utmess('F', 'HHO1_4')
                 end if
 !
 ! ---- proj3 = proj3 + proj2
                 proj3(1:fbs_comp, 1:total_dofs) = proj3(1:fbs_comp, 1:total_dofs) &
-                                                  + proj2(1:fbs_comp, 1:total_dofs)
+                                                  +proj2(1:fbs_comp, 1:total_dofs)
 !
 ! ---- Compute TMP = faceMass * proj3
                 TMP = 0.d0
                 call dgemm('N', 'N', fbs_comp, total_dofs, fbs_comp, 1.d0, faceMass, &
-                            MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
+                           MSIZE_FACE_SCAL, proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
                 call dgemm('T', 'N', total_dofs, total_dofs, fbs_comp, invH, proj3, &
-                            MSIZE_FACE_SCAL, TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_VEC)
+                           MSIZE_FACE_SCAL, TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_VEC)
 !
             end do
         end do
@@ -491,11 +492,11 @@ contains
 !
     subroutine hdgStabScal(hhoCell, hhoData, stab)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_SCAL,MSIZE_TDOFS_SCAL)
+        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - HDG type stabilisation 1/h_F(v_F - pi^k_F(vT))_F
@@ -523,24 +524,24 @@ contains
 ! -- number of dofs
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
-        stab  = 0.d0
+        stab = 0.d0
         proj1 = 0.d0
 !
 ! --  Step 1: v_T
 ! -- Compute proj1 =  I_Cell
         do i = 1, cbs
-            proj1(i,i) = 1.d0
+            proj1(i, i) = 1.d0
         end do
 !
 ! Step 3: project on faces (eqn. 21)
-        offset_face = cbs + 1
+        offset_face = cbs+1
 !
 ! -- Loop on the faces
         do iface = 1, hhoCell%nbfaces
             hhoFace = hhoCell%faces(iface)
-            invH = 1.d0 / hhoFace%diameter
+            invH = 1.d0/hhoFace%diameter
             fromFace = offset_face
-            toFace = offset_face + fbs - 1
+            toFace = offset_face+fbs-1
 !
 ! ----- Compute face mass matrix
             call hhoMassMatFaceScal(hhoFace, 0, hhoData%face_degree(), faceMass)
@@ -557,7 +558,7 @@ contains
             call dpotrf('U', fbs, piKF, MSIZE_FACE_SCAL, info)
 !
 ! --- Sucess ?
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
@@ -572,27 +573,27 @@ contains
 !
 ! --- -Success ?
 ! ---- Verif strange bug if info neq 0 in entry
-            if(info .ne. 0) then
+            if (info .ne. 0) then
                 call utmess('F', 'HHO1_4')
             end if
 !
 ! ---- Compute proj3 -= I_F
             i = 1
             do j = fromFace, toFace
-                proj3(i,j) = proj3(i,j) - 1.d0
-                i = i + 1
+                proj3(i, j) = proj3(i, j)-1.d0
+                i = i+1
             end do
 !
 ! ---- Compute TMP = faceMass * proj3
             TMP = 0.d0
-            call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass, MSIZE_FACE_SCAL  , &
+            call dgemm('N', 'N', fbs, total_dofs, fbs, 1.d0, faceMass, MSIZE_FACE_SCAL, &
                     & proj3, MSIZE_FACE_SCAL, 0.d0, TMP, MSIZE_FACE_SCAL)
 !
 ! ---- Compute stab += invH * proj3**T * TMP
             call dgemm('T', 'N', total_dofs, total_dofs, fbs, invH, proj3, MSIZE_FACE_SCAL, &
                     & TMP, MSIZE_FACE_SCAL, 1.d0, stab, MSIZE_TDOFS_SCAL)
 !
-            offset_face = offset_face + fbs
+            offset_face = offset_face+fbs
         end do
 !
     end subroutine
@@ -603,11 +604,11 @@ contains
 !
     subroutine hdgStabVec(hhoCell, hhoData, stab)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC,MSIZE_TDOFS_VEC)
+        real(kind=8), intent(out)   :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -619,7 +620,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8), dimension(MSIZE_TDOFS_SCAL,MSIZE_TDOFS_SCAL) :: stab_scal
+        real(kind=8), dimension(MSIZE_TDOFS_SCAL, MSIZE_TDOFS_SCAL) :: stab_scal
 ! --------------------------------------------------------------------------------------------------
 !
 ! -- compute scalar stabilization

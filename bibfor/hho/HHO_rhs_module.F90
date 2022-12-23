@@ -19,14 +19,14 @@
 !
 module HHO_rhs_module
 !
-use HHO_basis_module
-use HHO_quadrature_module
-use HHO_size_module
-use HHO_type
+    use HHO_basis_module
+    use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/daxpy.h"
@@ -54,7 +54,7 @@ contains
 !
     subroutine hhoMakeRhsFaceScal(hhoFace, hhoQuad, ValuesQP, degree, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -88,10 +88,10 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3,ipg), 0, degree, BSFEval)
+            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), 0, degree, BSFEval)
 !
 ! ---- rhs = rhs + weight * BSFEval
-            coeff = hhoQuad%weights(ipg) * ValuesQP(ipg)
+            coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
             call daxpy(size, coeff, BSFEval, 1, rhs, 1)
         end do
 !
@@ -103,11 +103,11 @@ contains
 !
     subroutine hhoMakeRhsFaceVec(hhoFace, hhoQuad, ValuesQP, degree, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3,MAX_QP_FACE)
+        real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP_FACE)
         integer, intent(in)                 :: degree
         real(kind=8), intent(out)           :: rhs(MSIZE_FACE_VEC)
 !
@@ -135,10 +135,10 @@ contains
         rhs = 0.d0
         Values = 0.d0
 !
-        do idir = 1, hhoFace%ndim + 1
-            begin = (idir - 1) * size + 1
+        do idir = 1, hhoFace%ndim+1
+            begin = (idir-1)*size+1
             do i = 1, hhoQuad%nbQuadPoints
-                Values(i) = ValuesQP(idir,i)
+                Values(i) = ValuesQP(idir, i)
             end do
             call hhoMakeRhsFaceScal(hhoFace, hhoQuad, Values, degree, rhs(begin))
         end do
@@ -151,7 +151,7 @@ contains
 !
     subroutine hhoMakeRhsCellScal(hhoCell, hhoQuad, ValuesQP, degree, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -186,10 +186,10 @@ contains
 ! -- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! ----- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3,ipg), 0, degree, BSCEval)
+            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), 0, degree, BSCEval)
 !
 ! ---- rhs = rhs + weight * BSCEval
-            coeff = hhoQuad%weights(ipg) * ValuesQP(ipg)
+            coeff = hhoQuad%weights(ipg)*ValuesQP(ipg)
             call daxpy(size, coeff, BSCEval, 1, rhs, 1)
         end do
 !
@@ -201,11 +201,11 @@ contains
 !
     subroutine hhoMakeRhsCellVec(hhoCell, hhoQuad, ValuesQP, degree, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3,MAX_QP_CELL)
+        real(kind=8), intent(in)            :: ValuesQP(3, MAX_QP_CELL)
         integer, intent(in)                 :: degree
         real(kind=8), intent(out)           :: rhs(MSIZE_CELL_VEC)
 !
@@ -233,9 +233,9 @@ contains
         Values = 0.d0
 !
         do idir = 1, hhoCell%ndim
-            begin = (idir - 1) * size + 1
+            begin = (idir-1)*size+1
             do i = 1, hhoQuad%nbQuadPoints
-                Values(i) = ValuesQP(idir,i)
+                Values(i) = ValuesQP(idir, i)
             end do
             call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs(begin))
         end do
@@ -248,11 +248,11 @@ contains
 !
     subroutine hhoMakeRhsCellMat(hhoCell, hhoQuad, ValuesQP, degree, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Quadrature), intent(in)    :: hhoQuad
-        real(kind=8), intent(in)            :: ValuesQP(3,3,MAX_QP_CELL)
+        real(kind=8), intent(in)            :: ValuesQP(3, 3, MAX_QP_CELL)
         integer, intent(in)                 :: degree
         real(kind=8), intent(out)           :: rhs(MSIZE_CELL_MAT)
 !
@@ -286,7 +286,7 @@ contains
                     Values(ipg) = ValuesQP(idir1, idir2, ipg)
                 end do
                 call hhoMakeRhsCellScal(hhoCell, hhoQuad, Values, degree, rhs(begin))
-                begin = begin + size
+                begin = begin+size
             end do
         end do
 !

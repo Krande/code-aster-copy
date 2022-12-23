@@ -18,11 +18,11 @@
 !
 module HHO_measure_module
 !
-use HHO_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "blas/ddot.h"
@@ -39,7 +39,7 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    public   :: hhoMeasureCell,  hhoMeasureFace,hhoDiameterCell, hhoDiameterFace, hho_surface_tri
+    public   :: hhoMeasureCell, hhoMeasureFace, hhoDiameterCell, hhoDiameterFace, hho_surface_tri
     public   :: hhoLengthBoundingBoxCell, hhoLengthBoundingBoxFace
     private  :: hho_vol_hexa, hho_vol_tetra, hho_surface_quad, hho_length_edge
     private  :: hho_vol_prism, hho_vol_pyram
@@ -53,7 +53,7 @@ contains
 !
     function prod_vec(v0, v1) result(v2)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), dimension(3), intent(in)  :: v0, v1
         real(kind=8), dimension(3)              :: v2
@@ -66,10 +66,10 @@ contains
 !
         v2 = 0.d0
 !
-        v2(1) = v0(2) * v1(3) - v0(3) * v1(2)
-        v2(2) = -(v0(1) * v1(3) - v0(3) * v1(1))
-        v2(3) = v0(1) * v1(2) - v0(2) * v1(1)
-    !
+        v2(1) = v0(2)*v1(3)-v0(3)*v1(2)
+        v2(2) = -(v0(1)*v1(3)-v0(3)*v1(1))
+        v2(3) = v0(1)*v1(2)-v0(2)*v1(1)
+        !
     end function
 !
 !===================================================================================================
@@ -78,9 +78,9 @@ contains
 !
     function hho_vol_hexa(nodes) result(vol)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,8), intent(in)   :: nodes
+        real(kind=8), dimension(3, 8), intent(in)   :: nodes
         real(kind=8)                               :: vol
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,24 +88,24 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4,5)  :: tets
+        integer, dimension(4, 5)  :: tets
         integer :: i, j
-        real(kind=8) :: nodestet(3,4)
+        real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the hexa in 5 tets
-        tets(1:4,1) = (/1,2,4,5/)
-        tets(1:4,2) = (/2,3,4,7/)
-        tets(1:4,3) = (/2,7,5,6/)
-        tets(1:4,4) = (/4,5,7,8/)
-        tets(1:4,5) = (/2,4,5,7/)
+        tets(1:4, 1) = (/1, 2, 4, 5/)
+        tets(1:4, 2) = (/2, 3, 4, 7/)
+        tets(1:4, 3) = (/2, 7, 5, 6/)
+        tets(1:4, 4) = (/4, 5, 7, 8/)
+        tets(1:4, 5) = (/2, 4, 5, 7/)
 !
         vol = 0.d0
-        do i =1, 5
+        do i = 1, 5
             do j = 1, 4
-                nodestet(1:3, j) = nodes(1:3, tets(j,i))
+                nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol + hho_vol_tetra(nodestet)
+            vol = vol+hho_vol_tetra(nodestet)
         end do
 !
     end function
@@ -116,9 +116,9 @@ contains
 !
     function hho_vol_prism(nodes) result(vol)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,6), intent(in)   :: nodes
+        real(kind=8), dimension(3, 6), intent(in)   :: nodes
         real(kind=8)                               :: vol
 !
 ! --------------------------------------------------------------------------------------------------
@@ -126,22 +126,22 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4,3)  :: tets
+        integer, dimension(4, 3)  :: tets
         integer :: i, j
-        real(kind=8) :: nodestet(3,4)
+        real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the hexa in 3 tets
-        tets(1:4,1) = (/1,2,3,4/)
-        tets(1:4,2) = (/2,3,4,5/)
-        tets(1:4,3) = (/3,4,5,6/)
+        tets(1:4, 1) = (/1, 2, 3, 4/)
+        tets(1:4, 2) = (/2, 3, 4, 5/)
+        tets(1:4, 3) = (/3, 4, 5, 6/)
 !
         vol = 0.d0
         do i = 1, 3
             do j = 1, 4
-                nodestet(1:3, j) = nodes(1:3, tets(j,i))
+                nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol + hho_vol_tetra(nodestet)
+            vol = vol+hho_vol_tetra(nodestet)
         end do
 !
     end function
@@ -152,9 +152,9 @@ contains
 !
     function hho_vol_pyram(nodes) result(vol)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,5), intent(in)   :: nodes
+        real(kind=8), dimension(3, 5), intent(in)   :: nodes
         real(kind=8)                               :: vol
 !
 ! --------------------------------------------------------------------------------------------------
@@ -162,21 +162,21 @@ contains
 !  Out vol         :: volume
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, dimension(4,2)  :: tets
+        integer, dimension(4, 2)  :: tets
         integer :: i, j
-        real(kind=8) :: nodestet(3,4)
+        real(kind=8) :: nodestet(3, 4)
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- split the pyramid in 2 tets
-        tets(1:4,1) = (/1,2,3,5/)
-        tets(1:4,2) = (/1,3,4,5/)
+        tets(1:4, 1) = (/1, 2, 3, 5/)
+        tets(1:4, 2) = (/1, 3, 4, 5/)
 !
         vol = 0.d0
         do i = 1, 2
             do j = 1, 4
-                nodestet(1:3, j) = nodes(1:3, tets(j,i))
+                nodestet(1:3, j) = nodes(1:3, tets(j, i))
             end do
-            vol = vol + hho_vol_tetra(nodestet)
+            vol = vol+hho_vol_tetra(nodestet)
         end do
 !
     end function
@@ -185,12 +185,12 @@ contains
 !
 !===================================================================================================
 !
-   function hho_vol_tetra(nodes) result(vol)
+    function hho_vol_tetra(nodes) result(vol)
 !
-      implicit none
+        implicit none
 !
-         real(kind=8), dimension(3,4), intent(in)    :: nodes
-         real(kind=8)                                :: vol
+        real(kind=8), dimension(3, 4), intent(in)    :: nodes
+        real(kind=8)                                :: vol
 !
 ! --------------------------------------------------------------------------------------------------
 !  In nodes        :: list of nodes
@@ -200,15 +200,15 @@ contains
         real(kind=8), dimension(3)  :: v0, v1, v2, cross
 ! --------------------------------------------------------------------------------------------------
 !
-         vol = 0.d0
-         v0(1:3) = nodes(1:3,2) - nodes(1:3,1)
-         v1(1:3) = nodes(1:3,3) - nodes(1:3,1)
-         v2(1:3) = nodes(1:3,4) - nodes(1:3,1)
+        vol = 0.d0
+        v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
+        v1(1:3) = nodes(1:3, 3)-nodes(1:3, 1)
+        v2(1:3) = nodes(1:3, 4)-nodes(1:3, 1)
 !
-        cross(1:3) = prod_vec(v1,v2)
-        vol = abs(dot_product(v0,cross) / 6.d0)
+        cross(1:3) = prod_vec(v1, v2)
+        vol = abs(dot_product(v0, cross)/6.d0)
 !
-   end function
+    end function
 !
 !===================================================================================================
 !
@@ -216,9 +216,9 @@ contains
 !
     function hho_surface_quad(nodes) result(surface)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,4), intent(in)    :: nodes
+        real(kind=8), dimension(3, 4), intent(in)    :: nodes
         real(kind=8)                                :: surface
 !
 ! --------------------------------------------------------------------------------------------------
@@ -230,23 +230,23 @@ contains
         real(kind=8) :: l1, l2, l3, l4, ld1, ld2
 !
 ! ---- edge
-        e1(1:3) = nodes(1:3,2) - nodes(1:3,1)
-        e2(1:3) = nodes(1:3,3) - nodes(1:3,2)
-        e3(1:3) = nodes(1:3,4) - nodes(1:3,3)
-        e4(1:3) = nodes(1:3,1) - nodes(1:3,4)
+        e1(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
+        e2(1:3) = nodes(1:3, 3)-nodes(1:3, 2)
+        e3(1:3) = nodes(1:3, 4)-nodes(1:3, 3)
+        e4(1:3) = nodes(1:3, 1)-nodes(1:3, 4)
 ! ---- diagonals
-        d1(1:3) = nodes(1:3,3) - nodes(1:3,1)
-        d2(1:3) = nodes(1:3,4) - nodes(1:3,2)
+        d1(1:3) = nodes(1:3, 3)-nodes(1:3, 1)
+        d2(1:3) = nodes(1:3, 4)-nodes(1:3, 2)
 !
 ! ---- lengths
-        l1 = dot_product(e1,e1)
-        l2 = dot_product(e2,e2)
-        l3 = dot_product(e3,e3)
-        l4 = dot_product(e4,e4)
-        ld1 = dot_product(d1,d1)
-        ld2 = dot_product(d2,d2)
+        l1 = dot_product(e1, e1)
+        l2 = dot_product(e2, e2)
+        l3 = dot_product(e3, e3)
+        l4 = dot_product(e4, e4)
+        ld1 = dot_product(d1, d1)
+        ld2 = dot_product(d2, d2)
 !
-        surface = sqrt(4.d0 * ld1 * ld2 - (l1 - l2 + l3 - l4)**2 ) / 4.d0
+        surface = sqrt(4.d0*ld1*ld2-(l1-l2+l3-l4)**2)/4.d0
 !
     end function
 !
@@ -256,9 +256,9 @@ contains
 !
     function hho_surface_tri(nodes) result(surface)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,3), intent(in)  :: nodes
+        real(kind=8), dimension(3, 3), intent(in)  :: nodes
         real(kind=8)                              :: surface
 !
 !---------------------------------------------------------------------------------------------------
@@ -269,11 +269,11 @@ contains
         real(kind=8), dimension(3) :: v0, v1, v2
 !
         surface = 0.d0
-        v0(1:3) = nodes(1:3,2) - nodes(1:3,1)
-        v1(1:3) = nodes(1:3,3) - nodes(1:3,1)
-        v2 = prod_vec(v0,v1)
+        v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
+        v1(1:3) = nodes(1:3, 3)-nodes(1:3, 1)
+        v2 = prod_vec(v0, v1)
 !
-        surface = norm2(v2) / 2.d0
+        surface = norm2(v2)/2.d0
 !
     end function
 !
@@ -283,9 +283,9 @@ contains
 !
     function hho_length_edge(nodes) result(length)
 !
-    implicit none
+        implicit none
 !
-        real(kind=8), dimension(3,2), intent(in)  :: nodes
+        real(kind=8), dimension(3, 2), intent(in)  :: nodes
         real(kind=8)                              :: length
 !
 ! --------------------------------------------------------------------------------------------------
@@ -296,7 +296,7 @@ contains
         real(kind=8), dimension(3)  :: v0
 ! --------------------------------------------------------------------------------------------------
 !
-        v0(1:3) = nodes(1:3,2) - nodes(1:3,1)
+        v0(1:3) = nodes(1:3, 2)-nodes(1:3, 1)
 !
         length = norm2(v0)
 !
@@ -308,7 +308,7 @@ contains
 !
     function hhoMeasureCell(cell) result(measure)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)    :: cell
         real(kind=8)                  :: measure
@@ -321,18 +321,18 @@ contains
 !
         measure = 0.d0
 !
-        if(cell%typema == 'HEXA8') then
-            measure = hho_vol_hexa(cell%coorno(1:3,1:8))
-        elseif(cell%typema == 'TETRA4') then
-            measure = hho_vol_tetra(cell%coorno(1:3,1:4))
-        elseif(cell%typema == 'PYRAM5') then
-            measure = hho_vol_pyram(cell%coorno(1:3,1:5))
-        elseif(cell%typema == 'PENTA6') then
-            measure = hho_vol_prism(cell%coorno(1:3,1:6))
-        elseif(cell%typema == 'QUAD4') then
-            measure = hho_surface_quad(cell%coorno(1:3,1:4))
-        elseif(cell%typema == 'TRIA3') then
-            measure = hho_surface_tri(cell%coorno(1:3,1:3))
+        if (cell%typema == 'HEXA8') then
+            measure = hho_vol_hexa(cell%coorno(1:3, 1:8))
+        elseif (cell%typema == 'TETRA4') then
+            measure = hho_vol_tetra(cell%coorno(1:3, 1:4))
+        elseif (cell%typema == 'PYRAM5') then
+            measure = hho_vol_pyram(cell%coorno(1:3, 1:5))
+        elseif (cell%typema == 'PENTA6') then
+            measure = hho_vol_prism(cell%coorno(1:3, 1:6))
+        elseif (cell%typema == 'QUAD4') then
+            measure = hho_surface_quad(cell%coorno(1:3, 1:4))
+        elseif (cell%typema == 'TRIA3') then
+            measure = hho_surface_tri(cell%coorno(1:3, 1:3))
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -345,7 +345,7 @@ contains
 !
     function hhoMeasureFace(face) result(measure)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)                  :: face
         real(kind=8)                                :: measure
@@ -357,12 +357,12 @@ contains
 !
         measure = 0.d0
 !
-        if(face%typema(1:5) == 'QUAD4') then
-            measure = hho_surface_quad(face%coorno(1:3,1:4))
-        elseif(face%typema(1:5) == 'TRIA3') then
-            measure = hho_surface_tri(face%coorno(1:3,1:3))
-        elseif(face%typema(1:4) == 'SEG2') then
-            measure = hho_length_edge(face%coorno(1:3,1:2))
+        if (face%typema(1:5) == 'QUAD4') then
+            measure = hho_surface_quad(face%coorno(1:3, 1:4))
+        elseif (face%typema(1:5) == 'TRIA3') then
+            measure = hho_surface_tri(face%coorno(1:3, 1:3))
+        elseif (face%typema(1:4) == 'SEG2') then
+            measure = hho_length_edge(face%coorno(1:3, 1:2))
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -375,7 +375,7 @@ contains
 !
     function hhoDiameter(coorno, nbnodes) result(diam)
 !
-    implicit none
+        implicit none
         integer, intent(in)                             :: nbnodes
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
         real(kind=8)                                    :: diam
@@ -392,9 +392,9 @@ contains
         diam = 0.d0
 !
         do inode = 1, nbnodes
-            do jnode = inode + 1, nbnodes
-                vector(1:3) = coorno(1:3, inode) - coorno(1:3, jnode)
-                diam = max(norm2(vector), diam);
+            do jnode = inode+1, nbnodes
+                vector(1:3) = coorno(1:3, inode)-coorno(1:3, jnode)
+                diam = max(norm2(vector), diam); 
             end do
         end do
 !
@@ -406,7 +406,7 @@ contains
 !
     function hhoDiameterCell(cell) result(measure)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)    :: cell
         real(kind=8)                  :: measure
@@ -419,18 +419,18 @@ contains
 !
         measure = 0.d0
 !
-        if(cell%typema == 'HEXA8') then
-            measure = hhoDiameter(cell%coorno(1:3,1:8),8)
-        elseif(cell%typema == 'TETRA4') then
-            measure = hhoDiameter(cell%coorno(1:3,1:4),4)
-        elseif(cell%typema == 'PYRAM5') then
-            measure = hhoDiameter(cell%coorno(1:3,1:5),5)
-        elseif(cell%typema == 'PENTA6') then
-            measure = hhoDiameter(cell%coorno(1:3,1:6),6)
-        elseif(cell%typema == 'QUAD4') then
-            measure = hhoDiameter(cell%coorno(1:3,1:4),4)
-        elseif(cell%typema == 'TRIA3') then
-            measure = hhoDiameter(cell%coorno(1:3,1:3),3)
+        if (cell%typema == 'HEXA8') then
+            measure = hhoDiameter(cell%coorno(1:3, 1:8), 8)
+        elseif (cell%typema == 'TETRA4') then
+            measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
+        elseif (cell%typema == 'PYRAM5') then
+            measure = hhoDiameter(cell%coorno(1:3, 1:5), 5)
+        elseif (cell%typema == 'PENTA6') then
+            measure = hhoDiameter(cell%coorno(1:3, 1:6), 6)
+        elseif (cell%typema == 'QUAD4') then
+            measure = hhoDiameter(cell%coorno(1:3, 1:4), 4)
+        elseif (cell%typema == 'TRIA3') then
+            measure = hhoDiameter(cell%coorno(1:3, 1:3), 3)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -443,7 +443,7 @@ contains
 !
     function hhoDiameterFace(face) result(measure)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)    :: face
         real(kind=8)                  :: measure
@@ -454,12 +454,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         measure = 0.d0
-        if(face%typema == 'QUAD4') then
-            measure = hhoDiameter(face%coorno(1:3,1:4),4)
-        elseif(face%typema == 'TRIA3') then
-            measure = hhoDiameter(face%coorno(1:3,1:3),3)
-        elseif(face%typema == 'SEG2') then
-            measure = hhoDiameter(face%coorno(1:3,1:2),2)
+        if (face%typema == 'QUAD4') then
+            measure = hhoDiameter(face%coorno(1:3, 1:4), 4)
+        elseif (face%typema == 'TRIA3') then
+            measure = hhoDiameter(face%coorno(1:3, 1:3), 3)
+        elseif (face%typema == 'SEG2') then
+            measure = hhoDiameter(face%coorno(1:3, 1:2), 2)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -472,7 +472,7 @@ contains
 !
     function hhoLengthBoundingBoxCell(hhocell) result(length)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)    :: hhocell
         real(kind=8), dimension(3)    :: length
@@ -482,7 +482,7 @@ contains
 !  Out length               :: length of the boundix box of the cell
 ! --------------------------------------------------------------------------------------------------
         real(kind=8), dimension(3) :: xmin, xmax, pt
-        real(kind=8) :: rotmat(3,3)
+        real(kind=8) :: rotmat(3, 3)
         integer :: inode, idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
@@ -502,7 +502,7 @@ contains
         end do
 !
         do idim = 1, ndim
-            length(idim) = abs(xmax(idim) - xmin(idim))
+            length(idim) = abs(xmax(idim)-xmin(idim))
         end do
 !
     end function
@@ -513,7 +513,7 @@ contains
 !
     function hhoLengthBoundingBoxFace(hhoFace) result(length)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)    :: hhoFace
         real(kind=8), dimension(2)    :: length
@@ -523,13 +523,13 @@ contains
 !  Out length               :: length of the boundix box of the face
 ! --------------------------------------------------------------------------------------------------
         real(kind=8) :: xmin(2), xmax(2), pt(2)
-        real(kind=8) :: rotmat(2,3)
+        real(kind=8) :: rotmat(2, 3)
         integer :: inode, idim, ndim
 ! --------------------------------------------------------------------------------------------------
         length = 1.d0
         ndim = hhoFace%ndim
 !
-        if(ndim == 1) then
+        if (ndim == 1) then
             length(1) = hhoDiameterFace(hhoFace)
         else
             rotmat = transpose(hhoFace%axes)
@@ -546,7 +546,7 @@ contains
             end do
 !
             do idim = 1, ndim
-                length(idim) = abs(xmax(idim) - xmin(idim))
+                length(idim) = abs(xmax(idim)-xmin(idim))
             end do
         end if
 !

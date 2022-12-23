@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 module HHO_stiffmat_module
 !
-use HHO_type
-use HHO_quadrature_module
-use HHO_basis_module
-use HHO_utils_module
+    use HHO_type
+    use HHO_quadrature_module
+    use HHO_basis_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dsyrk.h"
@@ -50,7 +50,7 @@ contains
     subroutine hhoStiffMatCellScal(hhoCell, min_order, max_order, stiffMat)
 !
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         integer, intent(in)        :: min_order
@@ -72,7 +72,7 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_quadrature)  :: hhoQuad
-        real(kind=8), dimension(3,MSIZE_CELL_SCAL) :: BSGradEval
+        real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSGradEval
         integer :: dimMat, ipg, ndim
 !
         ndim = hhoCell%ndim
@@ -83,12 +83,12 @@ contains
         stiffMat = 0.d0
 !
 ! ----- get quadrature: derivative polynome of degree max_order-1
-        call hhoQuad%GetQuadCell(hhoCell, 2 * (max_order-1))
+        call hhoQuad%GetQuadCell(hhoCell, 2*(max_order-1))
 !
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuad%points(1:3,ipg), &
+            call hhoBasisCell%BSEvalGrad(hhoCell, hhoQuad%points(1:3, ipg), &
                                         & min_order, max_order, BSGradEval)
 !
 ! --------  Eval stiffMat
@@ -109,7 +109,7 @@ contains
 !
     subroutine hhoSymStiffMatCellVec(hhoCell, min_order, max_order, stiffMat)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         integer, intent(in)        :: min_order
@@ -131,7 +131,7 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_quadrature)  :: hhoQuad
-        real(kind=8), dimension(6,MSIZE_CELL_VEC) :: BVGradEval
+        real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVGradEval
         integer :: dimMat, ipg
 !
 ! ----- init basis
@@ -141,12 +141,12 @@ contains
         stiffMat = 0.d0
 !
 ! ----- get quadrature: derivative polynome of degree max_order-1
-        call hhoQuad%GetQuadCell(hhoCell, 2 * (max_order-1))
+        call hhoQuad%GetQuadCell(hhoCell, 2*(max_order-1))
 !
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval basis function at the quadrature point
-            call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuad%points(1:3,ipg), &
+            call hhoBasisCell%BVEvalSymGrad(hhoCell, hhoQuad%points(1:3, ipg), &
                                             & min_order, max_order, BVGradEval)
 !
 ! --------  Eval stiffMat

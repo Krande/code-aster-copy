@@ -19,16 +19,16 @@
 !
 module HHO_postpro_module
 !
-use HHO_type
-use HHO_basis_module
-use HHO_utils_module
-use HHO_size_module
-use HHO_eval_module
-use NonLin_Datastructure_type
+    use HHO_type
+    use HHO_basis_module
+    use HHO_utils_module
+    use HHO_size_module
+    use HHO_eval_module
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
@@ -67,7 +67,7 @@ contains
 !
     subroutine hhoPostMeca(hhoCell, hhoData, nbnodes)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -87,7 +87,7 @@ contains
         integer :: total_dofs, cbs, fbs, jvect, i, ino, ndim, idim, comp_dim
         real(kind=8), dimension(MSIZE_CELL_VEC) :: sol_T
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: sol_T_dim
-        real(kind=8), dimension(3,max_comp) :: post_sol
+        real(kind=8), dimension(3, max_comp) :: post_sol
 !
         ndim = hhoCell%ndim
         sol_T = 0.d0
@@ -98,7 +98,7 @@ contains
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         ASSERT(ndim*nbnodes .le. max_comp)
-        comp_dim = cbs / ndim
+        comp_dim = cbs/ndim
 !
 ! --- We get the solution on the cell
 !
@@ -111,7 +111,7 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do idim = 1, ndim
-            sol_T_dim(1:comp_dim) = sol_T(1 + (idim-1)*comp_dim: idim * comp_dim)
+            sol_T_dim(1:comp_dim) = sol_T(1+(idim-1)*comp_dim:idim*comp_dim)
             do ino = 1, nbnodes
                 post_sol(idim, ino) = hhoEvalScalCell(hhoCell, hhoBasisCell, &
                                                     & hhoData%cell_degree(),&
@@ -126,8 +126,8 @@ contains
         i = 1
         do ino = 1, nbnodes
             do idim = 1, ndim
-                zr(jvect-1+i) = post_sol(idim,ino)
-                i = i + 1
+                zr(jvect-1+i) = post_sol(idim, ino)
+                i = i+1
             end do
         end do
 !
@@ -138,7 +138,7 @@ contains
 !
     subroutine hhoPostDeplMecaOP(model_hho, disp, disp_hho_depl)
 !
-    implicit none
+        implicit none
 !
         character(len=24), intent(in) :: model_hho
         character(len=24), intent(in) :: disp
@@ -173,15 +173,15 @@ contains
         call infniv(ifm, niv)
         if (niv .ge. 2) then
             call utmess('I', 'HHO2_5')
-        endif
+        end if
 !
 ! --- Initializations
 !
-        field_elno   = '&&FIELD_ELNO'
-        field_noeu   = '&&FIELD_NOEU'
-        celmod       = '&&FIELD_CELMOD'
-        base         = 'V'
-        option       = 'HHO_DEPL_MECA'
+        field_elno = '&&FIELD_ELNO'
+        field_noeu = '&&FIELD_NOEU'
+        celmod = '&&FIELD_CELMOD'
+        base = 'V'
+        option = 'HHO_DEPL_MECA'
         ligrel_model = model_hho(1:8)//'.MODELE'
 !
 ! --- Init fields
@@ -206,8 +206,8 @@ contains
 !
 ! --- Compute
 !
-        call calcul('S'  , option, ligrel_model, nbin  , lchin,&
-                    lpain, nbout , lchout      , lpaout, base , 'OUI')
+        call calcul('S', option, ligrel_model, nbin, lchin, &
+                    lpain, nbout, lchout, lpaout, base, 'OUI')
 !
 ! --- Convert to disp_hho_depl
 !
@@ -223,10 +223,10 @@ contains
 !
     subroutine hhoPostDeplMeca(model_hho, result_hho, nume_store)
 !
-    implicit none
+        implicit none
 !
         character(len=24), intent(in) :: model_hho
-        character(len=8),  intent(in) :: result_hho
+        character(len=8), intent(in) :: result_hho
         integer, intent(in)           :: nume_store
 !
 ! --------------------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@ contains
         call infniv(ifm, niv)
         if (niv .ge. 2) then
             call utmess('I', 'HHO2_10')
-        endif
+        end if
 !
         call jemarq()
 !
@@ -276,7 +276,7 @@ contains
 !
     subroutine hhoPostTher(hhoCell, hhoData, nbnodes)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -316,7 +316,7 @@ contains
 ! --- Compute the solution in the cell nodes
 !
         do ino = 1, nbnodes
-            post_sol(ino) = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(),&
+            post_sol(ino) = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
                                             hhoCell%coorno(1:3, ino), sol_T, cbs)
         end do
 !

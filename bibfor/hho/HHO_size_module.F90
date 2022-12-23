@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,11 @@
 !
 module HHO_size_module
 !
-use HHO_type
+    use HHO_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/binomial.h"
@@ -49,7 +49,7 @@ contains
 !
     subroutine hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
@@ -72,7 +72,7 @@ contains
 ! ---- number of dofs
         call hhoTherCellDofs(hhoCell, hhoData, cbs)
         call hhoTherFaceDofs(hhoCell%faces(1), hhoData, fbs)
-        total_dofs = cbs + hhoCell%nbfaces * fbs
+        total_dofs = cbs+hhoCell%nbfaces*fbs
 !
     end subroutine
 !
@@ -82,7 +82,7 @@ contains
 !
     subroutine hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
@@ -112,7 +112,7 @@ contains
 ! ---- number of dofs
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        gbs = ndim * binomial(hhoData%grad_degree() + ndim, hhoData%grad_degree())
+        gbs = ndim*binomial(hhoData%grad_degree()+ndim, hhoData%grad_degree())
 !
     end subroutine
 !
@@ -122,7 +122,7 @@ contains
 !
     subroutine hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
@@ -151,7 +151,7 @@ contains
 !
         call hhoMecaCellDofs(hhoCell, hhoData, cbs)
         call hhoMecaFaceDofs(hhoCell%faces(1), hhoData, fbs)
-        total_dofs = cbs + hhoCell%nbfaces * fbs
+        total_dofs = cbs+hhoCell%nbfaces*fbs
 !
     end subroutine
 !
@@ -161,7 +161,7 @@ contains
 !
     subroutine hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
@@ -188,7 +188,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         ndim = hhoCell%ndim
-        gbs_comp = binomial(hhoData%grad_degree() + ndim, hhoData%grad_degree())
+        gbs_comp = binomial(hhoData%grad_degree()+ndim, hhoData%grad_degree())
 ! ---- number of dofs
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         call hhoMecaGradDofs(hhoCell, hhoData, gbs, gbs_sym)
@@ -201,7 +201,7 @@ contains
 !
     subroutine hhoTherFaceDofs(hhoFace, hhoData, fbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)  :: hhoFace
         type(HHO_Data), intent(in)  :: hhoData
@@ -217,7 +217,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        fbs =  binomial(hhoData%face_degree() + hhoFace%ndim, hhoData%face_degree())
+        fbs = binomial(hhoData%face_degree()+hhoFace%ndim, hhoData%face_degree())
 !
     end subroutine
 !
@@ -227,7 +227,7 @@ contains
 !
     subroutine hhoMecaFaceDofs(hhoFace, hhoData, fbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)  :: hhoFace
         type(HHO_Data), intent(in)  :: hhoData
@@ -247,7 +247,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherFaceDofs(hhoFace, hhoData, fbs_ther)
-        fbs = (hhoFace%ndim + 1) * fbs_ther
+        fbs = (hhoFace%ndim+1)*fbs_ther
 !
     end subroutine
 !
@@ -257,7 +257,7 @@ contains
 !
     subroutine hhoTherCellDofs(hhoCell, hhoData, cbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -273,7 +273,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        cbs =  binomial(hhoData%cell_degree() + hhoCell%ndim, hhoData%cell_degree())
+        cbs = binomial(hhoData%cell_degree()+hhoCell%ndim, hhoData%cell_degree())
 !
     end subroutine
 !
@@ -283,7 +283,7 @@ contains
 !
     subroutine hhoMecaCellDofs(hhoCell, hhoData, cbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -303,7 +303,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherCellDofs(hhoCell, hhoData, cbs_ther)
-        cbs = hhoCell%ndim * cbs_ther
+        cbs = hhoCell%ndim*cbs_ther
 !
     end subroutine
 !
@@ -314,7 +314,7 @@ contains
 !
     subroutine hhoMecaGradDofs(hhoCell, hhoData, gbs, gbs_sym)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
@@ -336,14 +336,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         ndim = hhoCell%ndim
-        gbs_comp = binomial(hhoData%grad_degree() + ndim, hhoData%grad_degree())
+        gbs_comp = binomial(hhoData%grad_degree()+ndim, hhoData%grad_degree())
 !
-        gbs = ndim * ndim * gbs_comp
+        gbs = ndim*ndim*gbs_comp
 !
-        if(ndim == 3) then
-            gbs_sym = 6 * gbs_comp
-        else if(ndim == 2) then
-            gbs_sym = 3 * gbs_comp
+        if (ndim == 3) then
+            gbs_sym = 6*gbs_comp
+        else if (ndim == 2) then
+            gbs_sym = 3*gbs_comp
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -359,7 +359,7 @@ contains
                               cbsSlav, fbsSlav, total_fbsSlav, fbsMast, &
                               total_cont_dofs, total_face_dofs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)    :: hhoCellSlav
         type(HHO_Data), intent(in)    :: hhoDataSlav
@@ -395,9 +395,9 @@ contains
         call hhoMecaDofs(hhoCellSlav, hhoDataSlav, cbsSlav, fbsSlav, total_dofs_Slav)
         call hhoMecaFaceDofs(hhoFaceMast, hhoDataMast, fbsMast)
 !
-        total_fbsSlav   = total_dofs_Slav - cbsSlav
-        total_cont_dofs = total_dofs_Slav + fbsMast
-        total_face_dofs = total_fbsSlav + fbsMast
+        total_fbsSlav = total_dofs_Slav-cbsSlav
+        total_cont_dofs = total_dofs_Slav+fbsMast
+        total_face_dofs = total_fbsSlav+fbsMast
 !
     end subroutine
 !

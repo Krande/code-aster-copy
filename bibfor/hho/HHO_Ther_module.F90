@@ -18,20 +18,20 @@
 !
 module HHO_Ther_module
 !
-use HHO_basis_module
-use HHO_Dirichlet_module
-use HHO_eval_module
-use HHO_gradrec_module, only : hhoGradRecFullVec, hhoGradRecVec
-use HHO_quadrature_module
-use HHO_size_module
-use HHO_stabilization_module, only : hhoStabScal, hdgStabScal
-use HHO_type
-use HHO_utils_module
-use NonLin_Datastructure_type
+    use HHO_basis_module
+    use HHO_Dirichlet_module
+    use HHO_eval_module
+    use HHO_gradrec_module, only: hhoGradRecFullVec, hhoGradRecVec
+    use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_stabilization_module, only: hhoStabScal, hdgStabScal
+    use HHO_type
+    use HHO_utils_module
+    use NonLin_Datastructure_type
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/HHO_size_module.h"
@@ -71,9 +71,9 @@ contains
 !===================================================================================================
 !
     subroutine hhoLocalRigiTher(hhoCell, hhoData, hhoQuadCellRigi, gradrec, stab, &
-                                  fami, lhs, rhs)
+                                fami, lhs, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(inout)   :: hhoData
@@ -112,7 +112,7 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_VEC, MSIZE_CELL_VEC)
         real(kind=8) :: TMP(MSIZE_CELL_VEC, MSIZE_TDOFS_VEC)
-        real(kind=8) :: module_tang(3,3), G_curr(3), sig_curr(3)
+        real(kind=8) :: module_tang(3, 3), G_curr(3), sig_curr(3)
         real(kind=8) :: coorpg(3), weight, time_curr
         character(len=8) :: poum
         aster_logical :: l_rhs, l_lhs
@@ -132,12 +132,12 @@ contains
 ! --- number of dofs
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
 ! -- initialization
 !
-        if(l_lhs) lhs = 0.d0
-        if(l_rhs) rhs = 0.d0
+        if (l_lhs) lhs = 0.d0
+        if (l_rhs) rhs = 0.d0
 !
         bT = 0.d0
         AT = 0.d0
@@ -148,7 +148,7 @@ contains
 ! --- compute temp in T+
 !
         temp_curr = 0.d0
-        if(l_rhs) then
+        if (l_rhs) then
             call readVector('PTEMPER', total_dofs, temp_curr)
             call hhoRenumTherVecInv(hhoCell, hhoData, temp_curr)
         end if
@@ -156,13 +156,13 @@ contains
 !
 ! ----- compute G_curr = gradrec * temp_curr
 !
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_VEC, temp_curr, 1,&
-                    0.d0, G_curr_coeff,1)
+        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_VEC, temp_curr, 1, &
+                   0.d0, G_curr_coeff, 1)
 !
 ! ----- Loop on quadrature point
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-            coorpg(1:3) = hhoQuadCellRigi%points(1:3,ipg)
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
             weight = hhoQuadCellRigi%weights(ipg)
 !
 ! --------- Eval basis function at the quadrature point
@@ -176,37 +176,37 @@ contains
 !
 ! ------- Compute behavior
 !
-           call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, time_curr, jmate, &
-                                        G_curr, sig_curr, module_tang)
+            call hhoComputeBehaviourTher(phenom, fami, poum, ipg, hhoCell%ndim, time_curr, jmate, &
+                                         G_curr, sig_curr, module_tang)
 !
 ! ------- Compute rhs
 !
-            if(l_rhs) call hhoComputeRhsRigiTher(hhoCell, sig_curr, weight, BSCEval, gbs, bT)
+            if (l_rhs) call hhoComputeRhsRigiTher(hhoCell, sig_curr, weight, BSCEval, gbs, bT)
 !
 ! ------- Compute lhs
 !
-            if(l_lhs) call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+            if (l_lhs) call hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
         end do
 !
 ! ----- compute rhs += Gradrec**T * bT
 !
-        if(l_rhs) then
+        if (l_rhs) then
             call dgemv('T', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_VEC, &
-                        bT, 1, 1.d0, rhs, 1)
+                       bT, 1, 1.d0, rhs, 1)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
 !
-        if(l_lhs) then
+        if (l_lhs) then
             call dgemm('N', 'N', gbs, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_VEC, &
-                   gradrec, MSIZE_CELL_VEC, 0.d0, TMP, MSIZE_CELL_VEC)
+                       gradrec, MSIZE_CELL_VEC, 0.d0, TMP, MSIZE_CELL_VEC)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
             call dgemm('T', 'N', total_dofs, total_dofs, gbs, 1.d0, gradrec, MSIZE_CELL_VEC, &
-                   TMP, MSIZE_CELL_VEC, 1.d0, lhs, MSIZE_TDOFS_SCAL)
+                       TMP, MSIZE_CELL_VEC, 1.d0, lhs, MSIZE_TDOFS_SCAL)
 !
         end if
 !
@@ -214,14 +214,14 @@ contains
 !
         call hhoCalcStabCoeff(hhoData, fami, hhoQuadCellRigi%nbQuadPoints, hhoCell%ndim, time_curr)
 !
-        if(l_rhs) then
-                call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_SCAL,&
-                   temp_curr, 1, 1.d0, rhs,1)
+        if (l_rhs) then
+            call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_SCAL, &
+                       temp_curr, 1, 1.d0, rhs, 1)
         end if
 !
-        if(l_lhs) then
+        if (l_lhs) then
             do j = 1, total_dofs
-                call daxpy(total_dofs, hhoData%coeff_stab(), stab(1,j), 1, lhs(1,j), 1)
+                call daxpy(total_dofs, hhoData%coeff_stab(), stab(1, j), 1, lhs(1, j), 1)
             end do
         end if
 !
@@ -232,9 +232,9 @@ contains
 !===================================================================================================
 !
     subroutine hhoLocalMassTher(hhoCell, hhoData, hhoQuadCellMass, &
-                                  fami,  lhs, rhs)
+                                fami, lhs, rhs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(inout)   :: hhoData
@@ -285,25 +285,25 @@ contains
 ! --- number of dofs
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
-        faces_dofs = total_dofs - cbs
+        faces_dofs = total_dofs-cbs
 !
 ! -- initialization
 !
-        if(l_lhs) lhs = 0.d0
-        if(l_rhs) rhs = 0.d0
+        if (l_lhs) lhs = 0.d0
+        if (l_rhs) rhs = 0.d0
 !
         call hhoBasisCell%initialize(hhoCell)
 !
 ! --- compute temp in T+
 !
         temp_T_curr = 0.d0
-        if(l_rhs) call readVector('PTEMPER', cbs, temp_T_curr, total_dofs-cbs)
+        if (l_rhs) call readVector('PTEMPER', cbs, temp_T_curr, total_dofs-cbs)
         poum = "+"
 !
 ! ----- Loop on quadrature point
 !
         do ipg = 1, hhoQuadCellMass%nbQuadPoints
-            coorpg(1:3) = hhoQuadCellMass%points(1:3,ipg)
+            coorpg(1:3) = hhoQuadCellMass%points(1:3, ipg)
             weight = hhoQuadCellMass%weights(ipg)
 !
 ! --------- Eval basis function at the quadrature point
@@ -312,8 +312,8 @@ contains
 !
 ! --------- Eval gradient at T+
 !
-            temp_eval = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(),&
-                        coorpg, temp_T_curr, cbs)
+            temp_eval = hhoEvalScalCell(hhoCell, hhoBasisCell, hhoData%cell_degree(), &
+                                        coorpg, temp_T_curr, cbs)
 !
 ! -------- Compute behavior
 !
@@ -321,17 +321,17 @@ contains
 !
 ! -------- Compute rhs
 !
-            if(l_rhs) call hhoComputeRhsMassTher(temp_eval, cp, weight, BSCEval, cbs, rhs)
+            if (l_rhs) call hhoComputeRhsMassTher(temp_eval, cp, weight, BSCEval, cbs, rhs)
 !
 ! -------- Compute lhs
 !
-            if(l_lhs) call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs)
+            if (l_lhs) call hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs)
 !
         end do
 !
 ! ----- Copy the lower part
 !
-        if(l_lhs )call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
+        if (l_lhs) call hhoCopySymPartMat('U', lhs(1:cbs, 1:cbs))
 !
     end subroutine
 !
@@ -341,7 +341,7 @@ contains
 !
     subroutine hhoCalcOpTher(hhoCell, hhoData, gradfull, stab)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Data), intent(in) :: hhoData
@@ -368,11 +368,11 @@ contains
         call hhoGradRecFullVec(hhoCell, hhoData, gradfull)
 !
 ! ----- Compute Stabilizatiion
-        if(present(stab)) then
+        if (present(stab)) then
             if (hhoData%cell_degree() <= hhoData%face_degree()) then
                 call hhoGradRecVec(hhoCell, hhoData, gradrec_scal)
                 call hhoStabScal(hhoCell, hhoData, gradrec_scal, stab)
-            else if (hhoData%cell_degree() == (hhoData%face_degree() + 1)) then
+            else if (hhoData%cell_degree() == (hhoData%face_degree()+1)) then
                 call hdgStabScal(hhoCell, hhoData, stab)
             else
                 ASSERT(ASTER_FALSE)
@@ -387,7 +387,7 @@ contains
 !
     subroutine hhoComputeRhsRigiTher(hhoCell, stress, weight, BSCEval, gbs, bT)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         real(kind=8), intent(in)        :: stress(3)
@@ -408,18 +408,18 @@ contains
 !   Out bT          : contribution of bt
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind = 8) :: qp_stress(3)
+        real(kind=8) :: qp_stress(3)
         integer:: i, gbs_cmp, deca
 ! --------------------------------------------------------------------------------------------------
 !
-        gbs_cmp = gbs / hhoCell%ndim
-        qp_stress = weight * stress
+        gbs_cmp = gbs/hhoCell%ndim
+        qp_stress = weight*stress
 ! -------- Compute scalar_product of (stress, gphi)_T
 ! -------- (RAPPEL: the composents of the gradient are saved by rows)
         deca = 0
         do i = 1, hhoCell%ndim
             call daxpy(gbs_cmp, qp_stress(i), BSCEval, 1, bT(deca+1), 1)
-            deca = deca + gbs_cmp
+            deca = deca+gbs_cmp
         end do
 !
     end subroutine
@@ -430,7 +430,7 @@ contains
 !
     subroutine hhoComputeRhsMassTher(temp_curr, cp, weight, BSCEval, cbs, rhs)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in)        :: temp_curr, cp
         real(kind=8), intent(in)        :: weight
@@ -448,10 +448,10 @@ contains
 !   Out bT          : contribution of bt
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind = 8) :: qp_temp
+        real(kind=8) :: qp_temp
 ! --------------------------------------------------------------------------------------------------
 !
-        qp_temp = weight * cp * temp_curr
+        qp_temp = weight*cp*temp_curr
         call daxpy(cbs, qp_temp, BSCEval, 1, rhs, 1)
 !
     end subroutine
@@ -462,10 +462,10 @@ contains
 !
     subroutine hhoComputeLhsRigiTher(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
-        real(kind=8), intent(in)        :: module_tang(3,3)
+        real(kind=8), intent(in)        :: module_tang(3, 3)
         real(kind=8), intent(in)        :: weight
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in)             :: gbs
@@ -483,11 +483,11 @@ contains
 !   Out AT          : contribution of bt
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Agphi(MSIZE_CELL_VEC,3)
+        real(kind=8) :: qp_Agphi(MSIZE_CELL_VEC, 3)
         integer:: i, k, gbs_cmp, col
 ! --------------------------------------------------------------------------------------------------
 !
-        gbs_cmp = gbs / hhoCell%ndim
+        gbs_cmp = gbs/hhoCell%ndim
 ! --------- Eval (A : gphi)_T
         call hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, qp_Agphi)
 !
@@ -495,8 +495,8 @@ contains
         col = 1
         do i = 1, hhoCell%ndim
             do k = 1, gbs_cmp
-                call daxpy(gbs, BSCEval(k), qp_Agphi(:,i), 1, AT(:, col), 1)
-                col = col + 1
+                call daxpy(gbs, BSCEval(k), qp_Agphi(:, i), 1, AT(:, col), 1)
+                col = col+1
             end do
         end do
 !
@@ -508,7 +508,7 @@ contains
 !
     subroutine hhoComputeLhsMassTher(cp, weight, BSCEval, cbs, lhs)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in)        :: cp
         real(kind=8), intent(in)        :: weight
@@ -530,7 +530,7 @@ contains
         real(kind=8) :: coeff
 ! --------------------------------------------------------------------------------------------------
 !
-        coeff = cp * weight
+        coeff = cp*weight
         call dsyr('U', cbs, coeff, BSCEval, 1, lhs, MSIZE_TDOFS_SCAL)
 !
     end subroutine
@@ -541,14 +541,14 @@ contains
 !
     subroutine hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, Agphi)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         integer, intent(in)             :: gbs
-        real(kind=8), intent(in)        :: module_tang(3,3)
+        real(kind=8), intent(in)        :: module_tang(3, 3)
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(out)       :: Agphi(MSIZE_CELL_VEC,3)
+        real(kind=8), intent(out)       :: Agphi(MSIZE_CELL_VEC, 3)
 !
 ! -----------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -564,21 +564,21 @@ contains
 !   Out Agphi       : matriw of scalar product
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_module_tang(3,3), qp_mod_vec(3)
+        real(kind=8) :: qp_module_tang(3, 3), qp_mod_vec(3)
         integer :: i, row, gbs_cmp, dim
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
         dim = hhoCell%ndim
-        gbs_cmp = gbs / dim
-        qp_module_tang = weight * module_tang
+        gbs_cmp = gbs/dim
+        qp_module_tang = weight*module_tang
 !
         row = 1
         do i = 1, dim
             qp_mod_vec = qp_module_tang(:, i)
-            call dger(gbs_cmp, dim, 1.d0, BSCEval, 1, qp_mod_vec, 1,&
-                      Agphi(row:(row + gbs_cmp - 1), 1:dim), gbs_cmp)
-            row = row + gbs_cmp
+            call dger(gbs_cmp, dim, 1.d0, BSCEval, 1, qp_mod_vec, 1, &
+                      Agphi(row:(row+gbs_cmp-1), 1:dim), gbs_cmp)
+            row = row+gbs_cmp
         end do
 !
     end subroutine
@@ -589,7 +589,7 @@ contains
 !
     function LambdaMax(fami, imate, npg, ndim, time) result(coeff)
 !
-    implicit none
+        implicit none
 !
         character(len=8), intent(in)  :: fami
         integer, intent(in)           :: imate, npg, ndim
@@ -617,29 +617,29 @@ contains
         do ipg = 1, npg
             if (phenom .eq. 'THER') then
                 nomres(1) = 'LAMBDA'
-                call rcvalb(fami, ipg, spt, '+', zi(imate),&
-                            ' ', phenom, 1, 'INST', [time],&
+                call rcvalb(fami, ipg, spt, '+', zi(imate), &
+                            ' ', phenom, 1, 'INST', [time], &
                             1, nomres, valres, icodre, 1)
                 lambda = valres(1)
-                coeff = coeff + lambda
-            else if (phenom.eq.'THER_ORTH') then
+                coeff = coeff+lambda
+            else if (phenom .eq. 'THER_ORTH') then
                 ASSERT(ASTER_FALSE)
                 nomres(1) = 'LAMBDA_L'
                 nomres(2) = 'LAMBDA_T'
                 nomres(3) = 'LAMBDA_N'
-                call rcvalb(fami, ipg, spt, '+', zi(imate),&
-                            ' ', phenom, 1, 'INST', [time],&
+                call rcvalb(fami, ipg, spt, '+', zi(imate), &
+                            ' ', phenom, 1, 'INST', [time], &
                             ndim, nomres, valres, icodre, 1)
                 lambor(1) = valres(1)
                 lambor(2) = valres(2)
-                if(ndim == 3) lambor(3) = valres(3)
+                if (ndim == 3) lambor(3) = valres(3)
             else
                 call utmess('F', 'ELEMENTS2_63')
-            endif
+            end if
 
         end do
 !
-        coeff = coeff / real(npg, kind=8)
+        coeff = coeff/real(npg, kind=8)
 !
     end function
 !
@@ -649,7 +649,7 @@ contains
 !
     subroutine hhoCalcStabCoeff(hhoData, fami, nbQuadPoints, ndim, time)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Data), intent(inout) :: hhoData
         character(len=8) :: fami
@@ -667,10 +667,10 @@ contains
 !
         integer :: imate
 !
-        if(hhoData%adapt()) then
+        if (hhoData%adapt()) then
             call jevech('PMATERC', 'L', imate)
-            call hhoData%setCoeffStab( 10.d0*LambdaMax(fami, imate, nbQuadPoints, ndim, time))
-       end if
+            call hhoData%setCoeffStab(10.d0*LambdaMax(fami, imate, nbQuadPoints, ndim, time))
+        end if
 !
     end subroutine
 !
@@ -681,13 +681,13 @@ contains
     subroutine hhoComputeBehaviourTher(phenom, fami, poum, kpg, ndim, time, imate, g_curr, &
                                        sig_curr, module_tang)
 !
-    implicit none
+        implicit none
 !
         character(len=32), intent(in) :: phenom
         character(len=8), intent(in) :: fami, poum
         integer, intent(in) :: imate, ndim, kpg
         real(kind=8), intent(in) :: time, g_curr(3)
-        real(kind=8), intent(out) :: sig_curr(3), module_tang(3,3)
+        real(kind=8), intent(out) :: sig_curr(3), module_tang(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
@@ -712,36 +712,36 @@ contains
 !
         if (phenom .eq. 'THER') then
             nomres(1) = 'LAMBDA'
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'INST', [time],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'INST', [time], &
                         1, nomres, valres, icodre, 1)
             lambda = valres(1)
             aniso = ASTER_FALSE
-        else if (phenom.eq.'THER_ORTH') then
+        else if (phenom .eq. 'THER_ORTH') then
             nomres(1) = 'LAMBDA_L'
             nomres(2) = 'LAMBDA_T'
             nomres(3) = 'LAMBDA_N'
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'INST', [time],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'INST', [time], &
                         ndim, nomres, valres, icodre, 1)
             lambor(1) = valres(1)
             lambor(2) = valres(2)
-            if(ndim == 3) lambor(3) = valres(3)
+            if (ndim == 3) lambor(3) = valres(3)
             aniso = ASTER_TRUE
         else
             call utmess('F', 'ELEMENTS2_63')
-        endif
+        end if
 !
 ! --- Rotation of local axis
 !
-        if(aniso) then
+        if (aniso) then
             ASSERT(ASTER_FALSE)
         else
             do idim = 1, ndim
                 module_tang(idim, idim) = lambda
             end do
 !
-            sig_curr = - lambda * g_curr
+            sig_curr = -lambda*g_curr
         end if
     end subroutine
 !===================================================================================================
@@ -750,11 +750,11 @@ contains
 !
     subroutine hhoComputeRhoCpTher(phenom, fami, poum, kpg, time, imate, cp)
 !
-    implicit none
+        implicit none
 !
         character(len=32), intent(in) :: phenom
         character(len=8), intent(in) :: fami, poum
-        integer, intent(in) :: imate,  kpg
+        integer, intent(in) :: imate, kpg
         real(kind=8), intent(in) :: time
         real(kind=8), intent(out) :: cp
 !
@@ -774,16 +774,16 @@ contains
 ! --- Eval rho_cp
 !
         if (phenom .eq. 'THER') then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'INST', [time],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'INST', [time], &
                         1, 'RHO_CP', cp_, icod(1), 1)
         else if (phenom .eq. 'THER_ORTH') then
-            call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                        ' ', phenom, 1, 'INST', [time],&
+            call rcvalb(fami, kpg, spt, poum, zi(imate), &
+                        ' ', phenom, 1, 'INST', [time], &
                         1, 'RHO_CP', cp_, icod(1), 1)
         else
             call utmess('F', 'ELEMENTS2_63')
-        endif
+        end if
 !
         cp = cp_(1)
     end subroutine

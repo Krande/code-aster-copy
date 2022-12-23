@@ -19,14 +19,14 @@
 !
 module HHO_massmat_module
 !
-use HHO_basis_module
-use HHO_quadrature_module
-use HHO_type
-use HHO_utils_module
+    use HHO_basis_module
+    use HHO_quadrature_module
+    use HHO_type
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dsyr.h"
@@ -49,7 +49,7 @@ contains
 !
     subroutine hhoMassMatCellScal(hhoCell, min_order, max_order, massMat, mbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         integer, intent(in)        :: min_order
@@ -82,12 +82,12 @@ contains
         massMat = 0.d0
 !
 ! ----- get quadrature
-        call hhoQuad%GetQuadCell(hhoCell, 2 * max_order)
+        call hhoQuad%GetQuadCell(hhoCell, 2*max_order)
 !
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3,ipg), min_order,max_order,&
+            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), min_order, max_order,&
                               & basisScalEval)
 ! --------  Eval massMat
             call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, 1, massMat, MSIZE_CELL_SCAL)
@@ -98,7 +98,7 @@ contains
         call hhoCopySymPartMat('U', massMat(1:dimMat, 1:dimMat))
 !        call hhoPrintMat(massMat)
 !
-        if(present(mbs)) then
+        if (present(mbs)) then
             mbs = dimMat
         end if
 !
@@ -110,7 +110,7 @@ contains
 !
     subroutine hhoMassMatFaceScal(hhoFace, min_order, max_order, massMat, mbs)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in) :: hhoFace
         integer, intent(in)        :: min_order
@@ -143,12 +143,12 @@ contains
         massMat = 0.d0
 !
 ! ----- get quadrature
-        call hhoQuad%GetQuadFace(hhoFace, 2 * max_order)
+        call hhoQuad%GetQuadFace(hhoFace, 2*max_order)
 !
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval bais function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3,ipg), min_order, &
+            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), min_order, &
                                     & max_order, basisScalEval)
 ! --------  Eval massMat
             call dsyr('U', dimMat, hhoQuad%weights(ipg), basisScalEval, 1, massMat, MSIZE_FACE_SCAL)
@@ -159,7 +159,7 @@ contains
         call hhoCopySymPartMat('U', massMat(1:dimMat, 1:dimMat))
 !        call hhoPrintMat(massMat)
 !
-        if(present(mbs)) then
+        if (present(mbs)) then
             mbs = dimMat
         end if
 !

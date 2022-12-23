@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 !
 module HHO_tracemat_module
 !
-use HHO_type
-use HHO_quadrature_module
-use HHO_basis_module
-use HHO_utils_module
+    use HHO_type
+    use HHO_quadrature_module
+    use HHO_basis_module
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/dger.h"
@@ -50,7 +50,7 @@ contains
     subroutine hhoTraceMatScal(hhoCell, min_order_cell, max_order_cell, &
                                 & hhoFace, min_order_face, max_order_face, traceMat)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
         integer, intent(in)        :: min_order_cell
@@ -58,7 +58,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         integer, intent(in)        :: min_order_face
         integer, intent(in)        :: max_order_face
-        real(kind=8), intent(out)  :: traceMat(MSIZE_FACE_SCAL,MSIZE_CELL_SCAL)
+        real(kind=8), intent(out)  :: traceMat(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -92,15 +92,15 @@ contains
         traceMat = 0.d0
 !
 ! ----- get quadrature
-        call hhoQuad%GetQuadFace(hhoFace, max_order_cell + max_order_face)
+        call hhoQuad%GetQuadFace(hhoFace, max_order_cell+max_order_face)
 !
 ! ----- Loop on quadrature point
         do ipg = 1, hhoQuad%nbQuadPoints
 ! --------- Eval cell basis function at the quadrature point
-            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3,ipg), &
+            call hhoBasisCell%BSEval(hhoCell, hhoQuad%points(1:3, ipg), &
                                     & min_order_cell, max_order_cell, BSCellEval)
 ! --------- Eval face basis function at the quadrature point
-            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3,ipg), &
+            call hhoBasisFace%BSEval(hhoFace, hhoQuad%points(1:3, ipg), &
                                     & min_order_face, max_order_face, BSFaceEval)
 ! --------  Eval traceMat
             call dger(rowsMat, colsMat, hhoQuad%weights(ipg), BSFaceEval, 1, BSCellEval, 1, &

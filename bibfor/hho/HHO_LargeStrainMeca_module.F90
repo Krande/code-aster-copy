@@ -19,18 +19,18 @@
 !
 module HHO_LargeStrainMeca_module
 !
-use HHO_basis_module
-use HHO_quadrature_module
-use HHO_size_module
-use HHO_type
-use HHO_utils_module
-use HHO_eval_module
-use Behaviour_type
-use Behaviour_module
+    use HHO_basis_module
+    use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_type
+    use HHO_utils_module
+    use HHO_eval_module
+    use Behaviour_type
+    use Behaviour_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
@@ -78,7 +78,7 @@ contains
                                     & sig_prev, vi_prev, angmas, mult_comp, cplan, &
                                     & lhs, rhs, sig_curr, vi_curr, codret)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(in)      :: hhoData
@@ -96,15 +96,15 @@ contains
         real(kind=8), intent(in)        :: time_curr
         real(kind=8), intent(in)        :: depl_prev(MSIZE_TDOFS_VEC)
         real(kind=8), intent(in)        :: depl_curr(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(in)        :: sig_prev(ncomp,*)
-        real(kind=8), intent(in)        :: vi_prev(lgpg,*)
+        real(kind=8), intent(in)        :: sig_prev(ncomp, *)
+        real(kind=8), intent(in)        :: vi_prev(lgpg, *)
         real(kind=8), intent(in)        :: angmas(*)
         character(len=16), intent(in)   :: mult_comp
         aster_logical, intent(in)       :: cplan
         real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout)     :: rhs(MSIZE_TDOFS_VEC)
-        real(kind=8), intent(inout)     :: sig_curr(ncomp,*)
-        real(kind=8), intent(inout)     :: vi_curr(lgpg,*)
+        real(kind=8), intent(inout)     :: sig_curr(ncomp, *)
+        real(kind=8), intent(inout)     :: vi_curr(lgpg, *)
         integer, intent(inout)          :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -142,8 +142,8 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_prev_coeff, G_curr_coeff
-        real(kind=8) :: module_tang(3,3,3,3), G_prev(3,3), G_curr(3,3)
-        real(kind=8) :: F_prev(3,3), F_curr(3,3), Pk1_curr(3,3)
+        real(kind=8) :: module_tang(3, 3, 3, 3), G_prev(3, 3), G_curr(3, 3)
+        real(kind=8) :: F_prev(3, 3), F_curr(3, 3), Pk1_curr(3, 3)
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: AT(MSIZE_CELL_MAT, MSIZE_CELL_MAT)
         real(kind=8) :: TMP(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
@@ -158,8 +158,8 @@ contains
 ! ------ number of dofs
 !
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
-        faces_dofs = total_dofs - cbs
-        gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
+        faces_dofs = total_dofs-cbs
+        gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 !
         nbsig = nbsigm_cmp(hhoCell%ndim)
         bT = 0.d0
@@ -181,7 +181,7 @@ contains
 !
         if (cplan .and. (l_simo_miehe .or. l_green_lagr)) then
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
 ! ----- init basis
 !
@@ -189,21 +189,21 @@ contains
 !
 ! ----- compute G_prev = gradrec * depl_prev
 !
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_prev, 1,&
-                   0.d0, G_prev_coeff,1)
+        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_prev, 1, &
+                   0.d0, G_prev_coeff, 1)
 !
 ! ----- compute G_curr = gradrec * depl_curr
 !
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1,&
-                    0.d0, G_curr_coeff,1)
+        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1, &
+                   0.d0, G_curr_coeff, 1)
         !print*, "GT_utf", G_curr_coeff(1:gbs)
 !
 ! ----- Loop on quadrature point
 !
         do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-            coorpg(1:3) = hhoQuadCellRigi%points(1:3,ipg)
+            coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
             weight = hhoQuadCellRigi%weights(ipg)
-           !print*, ipg, "qp", coorpg(1:3), weight
+            !print*, ipg, "qp", coorpg(1:3), weight
 !
 ! --------- Eval basis function at the quadrature point
 !
@@ -235,16 +235,16 @@ contains
 !
 ! ------- Compute behavior
 !
-            if(l_gdeflog) then
-                call gdeflog(BEHinteg,&
+            if (l_gdeflog) then
+                call gdeflog(BEHinteg, &
                              hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg, &
                              ipg, time_prev, time_curr, angmas, mult_comp, cplan, &
                              F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
                              sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
                              Pk1_curr, module_tang, cod(ipg))
-            elseif(l_green_lagr) then
-                call greenlagr(BEHinteg,&
-                               hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg,&
+            elseif (l_green_lagr) then
+                call greenlagr(BEHinteg, &
+                               hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg, &
                                ipg, time_prev, time_curr, mult_comp, &
                                F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
                                sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
@@ -259,14 +259,14 @@ contains
 !
 ! ------- Compute rhs
 !
-            if(l_rhs) call hhoComputeRhsLarge(hhoCell, Pk1_curr, weight, BSCEval, gbs, bT)
+            if (l_rhs) call hhoComputeRhsLarge(hhoCell, Pk1_curr, weight, BSCEval, gbs, bT)
 !
 ! ------- Compute lhs
 !
-            if(l_lhs) call hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, AT)
+            if (l_lhs) call hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
-        !     print*,"vi_prev", vi_prev(1:lgpg, ipg)
-        !     print*,"vi_curr", vi_curr(1:lgpg, ipg)
+            !     print*,"vi_prev", vi_prev(1:lgpg, ipg)
+            !     print*,"vi_curr", vi_curr(1:lgpg, ipg)
             ! print*,"sig_prev", sig_prev(1:nbsig, ipg)
             ! print*,"sig_curr", sig_curr(1:nbsig, ipg)
             ! print*,"Fp"
@@ -283,28 +283,28 @@ contains
 !
 ! ----- compute rhs += Gradrec**T * bT
 !
-        if(l_rhs) then
+        if (l_rhs) then
             call dgemv('T', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                        bT, 1, 1.d0, rhs, 1)
+                       bT, 1, 1.d0, rhs, 1)
         end if
 !
 ! ----- compute lhs += gradrec**T * AT * gradrec
 ! ----- step1: TMP = AT * gradrec
 !
-        if(l_lhs) then
+        if (l_lhs) then
             call dgemm('N', 'N', gbs, total_dofs, total_dofs, 1.d0, AT, MSIZE_CELL_MAT, &
-                   gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
+                       gradrec, MSIZE_CELL_MAT, 0.d0, TMP, MSIZE_CELL_MAT)
 !
 ! ----- step2: lhs += gradrec**T * TMP
 !
             call dgemm('T', 'N', total_dofs, total_dofs, gbs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-                   TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
+                       TMP, MSIZE_CELL_MAT, 1.d0, lhs, MSIZE_TDOFS_VEC)
 !
         end if
         ! print*, "KT", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs))
         ! print*, "fT", norm2(rhs)
 !
-999 continue
+999     continue
 !
 ! - SYNTHESE DES CODES RETOURS
 !
@@ -318,7 +318,7 @@ contains
 !
     subroutine hhoComputeRhsLarge(hhoCell, stress, weight, BSCEval, gbs, bT)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         real(kind=8), intent(in)        :: stress(3, 3)
@@ -339,19 +339,19 @@ contains
 !   Out bT          : contribution of bt
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind = 8) :: qp_stress(3,3)
+        real(kind=8) :: qp_stress(3, 3)
         integer:: i, j, gbs_cmp, deca
 ! --------------------------------------------------------------------------------------------------
 !
-        gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
-        qp_stress = weight * stress
+        gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
+        qp_stress = weight*stress
 ! -------- Compute scalar_product of (stress, gphi)_T
 ! -------- (RAPPEL: the composents of the gradient are saved by rows)
         deca = 0
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
-                call daxpy(gbs_cmp, qp_stress(i,j), BSCEval, 1, bT(deca+1), 1)
-                deca = deca + gbs_cmp
+                call daxpy(gbs_cmp, qp_stress(i, j), BSCEval, 1, bT(deca+1), 1)
+                deca = deca+gbs_cmp
             end do
         end do
 !
@@ -363,10 +363,10 @@ contains
 !
     subroutine hhoComputeLhsLarge(hhoCell, module_tang, weight, BSCEval, gbs, AT)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
-        real(kind=8), intent(in)        :: module_tang(3,3,3,3)
+        real(kind=8), intent(in)        :: module_tang(3, 3, 3, 3)
         real(kind=8), intent(in)        :: weight
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         integer, intent(in)             :: gbs
@@ -384,11 +384,11 @@ contains
 !   Out AT          : contribution of bt
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT,9)
+        real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT, 9)
         integer:: deca, i, j, k, gbs_cmp, col
 ! --------------------------------------------------------------------------------------------------
 !
-        gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
+        gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
 ! --------- Eval (A : gphi)_T
         call hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, qp_Agphi)
 !
@@ -399,10 +399,10 @@ contains
         do i = 1, hhoCell%ndim
             do j = 1, hhoCell%ndim
                 do k = 1, gbs_cmp
-                    call daxpy(gbs, BSCEval(k), qp_Agphi(:,deca), 1, AT(:, col), 1)
-                    col = col + 1
+                    call daxpy(gbs, BSCEval(k), qp_Agphi(:, deca), 1, AT(:, col), 1)
+                    col = col+1
                 end do
-                deca = deca + 1
+                deca = deca+1
             end do
         end do
 !
@@ -414,10 +414,10 @@ contains
 !
     function transfo_A(ndim, A, row, col)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in)         :: ndim
-        real(kind=8), intent(in)    :: A(3,3,3,3)
+        real(kind=8), intent(in)    :: A(3, 3, 3, 3)
         integer, intent(in)         :: row
         integer, intent(in)         :: col
         real(kind=8)                :: transfo_A(9)
@@ -441,7 +441,7 @@ contains
         do i = 1, ndim
             do j = 1, ndim
                 transfo_A(ind) = A(i, j, row, col)
-                ind = ind + 1
+                ind = ind+1
             end do
         end do
 !
@@ -453,7 +453,7 @@ contains
 !
     function nbsigm_cmp(ndim)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: ndim
         integer             :: nbsigm_cmp
@@ -465,13 +465,13 @@ contains
 !   In ndim         : the current HHO Cell
 ! --------------------------------------------------------------------------------------------------
 !
-        if(ndim == 2) then
+        if (ndim == 2) then
             nbsigm_cmp = 4
-        elseif(ndim == 3) then
+        elseif (ndim == 3) then
             nbsigm_cmp = 6
         else
             ASSERT(ASTER_FALSE)
-        endif
+        end if
 !
     end function
 !
@@ -482,14 +482,14 @@ contains
 !
     subroutine hhoComputeAgphi(hhoCell, module_tang, BSCEval, gbs, weight, Agphi)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         integer, intent(in)             :: gbs
-        real(kind=8), intent(in)        :: module_tang(3,3,3,3)
+        real(kind=8), intent(in)        :: module_tang(3, 3, 3, 3)
         real(kind=8), intent(in)        :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in)        :: weight
-        real(kind=8), intent(out)       :: Agphi(MSIZE_CELL_MAT,9)
+        real(kind=8), intent(out)       :: Agphi(MSIZE_CELL_MAT, 9)
 !
 ! -----------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -505,14 +505,14 @@ contains
 !   Out Agphi       : matriw of scalar product
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: qp_module_tang(3,3,3,3), qp_mod_vec(9)
+        real(kind=8) :: qp_module_tang(3, 3, 3, 3), qp_mod_vec(9)
         integer :: i, j, row, col, gbs_cmp, dim2
 ! --------------------------------------------------------------------------------------------------
 !
         Agphi = 0.d0
-        dim2 = hhoCell%ndim * hhoCell%ndim
-        gbs_cmp = gbs / dim2
-        qp_module_tang = weight * module_tang
+        dim2 = hhoCell%ndim*hhoCell%ndim
+        gbs_cmp = gbs/dim2
+        qp_module_tang = weight*module_tang
 !
         row = 1
         col = 1
@@ -521,8 +521,8 @@ contains
 ! ------------- Extract and transform the tangent moduli
                 qp_mod_vec = transfo_A(hhoCell%ndim, qp_module_tang, i, j)
                 call dger(gbs_cmp, dim2, 1.d0, BSCEval, 1, qp_mod_vec, 1,&
-                           & Agphi(row:(row + gbs_cmp - 1), 1:dim2), gbs_cmp)
-                row = row + gbs_cmp
+                           & Agphi(row:(row+gbs_cmp-1), 1:dim2), gbs_cmp)
+                row = row+gbs_cmp
             end do
         end do
 !
@@ -534,11 +534,11 @@ contains
 !
     subroutine hhoCalculF(ndim, G, F)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in)             :: ndim
-        real(kind=8), intent(in)        :: G(3,3)
-        real(kind=8), intent(out)       :: F(3,3)
+        real(kind=8), intent(in)        :: G(3, 3)
+        real(kind=8), intent(out)       :: F(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -555,14 +555,14 @@ contains
         F = G
 !
         do idim = 1, ndim
-            F(idim,idim) = F(idim,idim) + 1.d0
+            F(idim, idim) = F(idim, idim)+1.d0
         end do
 !
 ! ---- ! be carrefull with c_plan, I don't know the result
         if (ndim == 2) then
-            F(3,1:2) = 0.d0
-            F(1:2,3) = 0.d0
-            F(3,3)   = 1.d0
+            F(3, 1:2) = 0.d0
+            F(1:2, 3) = 0.d0
+            F(3, 3) = 1.d0
         end if
 !
     end subroutine
@@ -573,11 +573,11 @@ contains
 !
     subroutine hhoCalculGreenLagrange(ndim, F, GL, GLvec)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in)             :: ndim
-        real(kind=8), intent(in)        :: F(3,3)
-        real(kind=8), intent(out), optional :: GL(3,3)
+        real(kind=8), intent(in)        :: F(3, 3)
+        real(kind=8), intent(out), optional :: GL(3, 3)
         real(kind=8), intent(out), optional :: GLvec(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -591,7 +591,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: i, j, k
-        real(kind=8) :: GL_(3,3)
+        real(kind=8) :: GL_(3, 3)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -601,38 +601,38 @@ contains
         do j = 1, 3
             do i = 1, j
                 do k = 1, 3
-                    GL_(i,j) = GL_(i,j) + F(k,i) * F(k,j)
+                    GL_(i, j) = GL_(i, j)+F(k, i)*F(k, j)
                 end do
-                GL_(i,j) = GL_(i,j) / 2.d0
-                GL_(j,i) = GL_(i,j)
+                GL_(i, j) = GL_(i, j)/2.d0
+                GL_(j, i) = GL_(i, j)
             end do
         end do
 !
         do k = 1, 3
-            GL_(k,k) = GL_(k,k) - 0.5d0
+            GL_(k, k) = GL_(k, k)-0.5d0
         end do
 !
 ! ---- ! be carrefull with c_plan, I don't know the result
         if (ndim == 2) then
-            GL_(3,1:3) = 0.d0
-            GL_(1:2,3) = 0.d0
+            GL_(3, 1:3) = 0.d0
+            GL_(1:2, 3) = 0.d0
         end if
 !
-        if(present(GL)) then
+        if (present(GL)) then
             GL = GL_
         end if
 !
 ! ---- convert GL in (XX, YY, ZZ, XY*rac2, XZ*rac2, YZ*rac2)
 !
-        if(present(GLvec)) then
-            if(ndim == 2) then
-                GLvec = (/ GL_(1,1), GL_(2,2), 0.d0, GL_(1,2)*rac2, 0.d0, 0.d0/)
-            elseif(ndim == 3) then
-                GLvec = (/ GL_(1,1), GL_(2,2), GL_(3,3), &
-                           GL_(1,2)*rac2, GL_(1,3)*rac2, GL_(2,3)*rac2/)
+        if (present(GLvec)) then
+            if (ndim == 2) then
+                GLvec = (/GL_(1, 1), GL_(2, 2), 0.d0, GL_(1, 2)*rac2, 0.d0, 0.d0/)
+            elseif (ndim == 3) then
+                GLvec = (/GL_(1, 1), GL_(2, 2), GL_(3, 3), &
+                          GL_(1, 2)*rac2, GL_(1, 3)*rac2, GL_(2, 3)*rac2/)
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
         end if
 !
     end subroutine
@@ -644,7 +644,7 @@ contains
 !
     subroutine select_behavior(behavior, l_gdeflog, l_green_lagr, l_simo_miehe)
 !
-    implicit none
+        implicit none
 !
         character(len=16), intent(in)   :: behavior(*)
         aster_logical, intent(out)      :: l_gdeflog
@@ -661,19 +661,19 @@ contains
 !   Out l_simo_miehe: use SIMO_MIEHE ?
 ! --------------------------------------------------------------------------------------------------
 !
-        l_gdeflog    = ASTER_FALSE
+        l_gdeflog = ASTER_FALSE
         l_green_lagr = ASTER_FALSE
         l_simo_miehe = ASTER_FALSE
 !
         select case (behavior(DEFO))
-            case ('GDEF_LOG')
-                l_gdeflog = ASTER_TRUE
-            case ('GREEN_LAGRANGE')
-                l_green_lagr = ASTER_TRUE
-            case ('SIMO_MIEHE')
-                l_simo_miehe = ASTER_TRUE
-            case default
-                ASSERT(ASTER_FALSE)
+        case ('GDEF_LOG')
+            l_gdeflog = ASTER_TRUE
+        case ('GREEN_LAGRANGE')
+            l_green_lagr = ASTER_TRUE
+        case ('SIMO_MIEHE')
+            l_simo_miehe = ASTER_TRUE
+        case default
+            ASSERT(ASTER_FALSE)
         end select
 !
     end subroutine
@@ -687,7 +687,7 @@ contains
                        F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
                        PK1_curr, module_tang, cod)
 !
-    implicit none
+        implicit none
 !
         type(Behaviour_Integ), intent(inout) :: BEHinteg
         integer, intent(in)             :: ndim
@@ -704,14 +704,14 @@ contains
         real(kind=8), intent(in)        :: angmas(*)
         character(len=16), intent(in)   :: mult_comp
         aster_logical, intent(in)       :: cplan
-        real(kind=8), intent(in)        :: F_prev(3,3)
-        real(kind=8), intent(in)        :: F_curr(3,3)
+        real(kind=8), intent(in)        :: F_prev(3, 3)
+        real(kind=8), intent(in)        :: F_curr(3, 3)
         real(kind=8), intent(in)        :: sig_prev_pg(2*ndim)
         real(kind=8), intent(in)        :: vi_prev_pg(lgpg)
         real(kind=8), intent(out)       :: sig_curr_pg(2*ndim)
         real(kind=8), intent(out)       :: vi_curr_pg(lgpg)
-        real(kind=8), intent(out)       :: PK1_curr(3,3)
-        real(kind=8), intent(out)       :: module_tang(3,3,3,3)
+        real(kind=8), intent(out)       :: PK1_curr(3, 3)
+        real(kind=8), intent(out)       :: module_tang(3, 3, 3, 3)
         integer, intent(out)            :: cod
 !
 ! --------------------------------------------------------------------------------------------------
@@ -744,10 +744,10 @@ contains
 !   Out cod         : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: gn(3,3), lamb(3), logl(3), epslPrev(6), epslIncr(6)
+        real(kind=8) :: gn(3, 3), lamb(3), logl(3), epslPrev(6), epslIncr(6)
         real(kind=8) :: tlogPrev(6), tlogCurr(6)
         real(kind=8) :: dtde(6, 6), PK2_prev(6), PK2_curr(6), sig(6)
-        real(kind=8) :: dpk2dc(6,6), me(3,3,3,3)
+        real(kind=8) :: dpk2dc(6, 6), me(3, 3, 3, 3)
         aster_logical :: lCorr, lMatr, lSigm, lVari
 
         lCorr = L_CORR(option)
@@ -757,22 +757,22 @@ contains
 !
 ! ----- Compute pre-processing Elog
 !
-        call prelog(ndim, lgpg, vi_prev_pg, gn,&
-                    lamb, logl, F_prev, F_curr, epslPrev, epslIncr,&
+        call prelog(ndim, lgpg, vi_prev_pg, gn, &
+                    lamb, logl, F_prev, F_curr, epslPrev, epslIncr, &
                     tlogPrev, lCorr, cod)
         if (cod .ne. 0) then
             goto 999
-        endif
+        end if
 !
 ! ----- Compute Stress and module_tangent
 !
         dtde = 0.d0
         tlogCurr = 0.d0
-        call nmcomp(BEHinteg,&
-                    fami, ipg, 1, ndim, typmod,&
-                    imate, compor, carcri, time_prev, time_curr,&
-                    6, epslPrev, epslIncr, 6, tlogPrev,&
-                    vi_prev_pg, option , angmas, &
+        call nmcomp(BEHinteg, &
+                    fami, ipg, 1, ndim, typmod, &
+                    imate, compor, carcri, time_prev, time_curr, &
+                    6, epslPrev, epslIncr, 6, tlogPrev, &
+                    vi_prev_pg, option, angmas, &
                     tlogCurr, vi_curr_pg, 36, dtde, cod, mult_comp)
 !
 ! ----- Test the code of the LDC
@@ -781,22 +781,22 @@ contains
 !
 ! ----- Compute post-processing Elog
 !
-        call poslog(lCorr, lMatr, lSigm, lVari,&
-                    tlogPrev , tlogCurr, F_prev,&
-                    lgpg, vi_curr_pg , ndim, F_curr, ipg,&
-                    dtde, sig_prev_pg, cplan, fami, imate,&
-                    time_curr, angmas, gn, lamb, logl,&
+        call poslog(lCorr, lMatr, lSigm, lVari, &
+                    tlogPrev, tlogCurr, F_prev, &
+                    lgpg, vi_curr_pg, ndim, F_curr, ipg, &
+                    dtde, sig_prev_pg, cplan, fami, imate, &
+                    time_curr, angmas, gn, lamb, logl, &
                     sig, dpk2dc, PK2_prev, PK2_curr, cod)
 !
 ! ----- Test the code of the LDC
 !
         if (cod .ne. 0) goto 999
 !
-        if(.not. lCorr) then
+        if (.not. lCorr) then
             PK2_curr = PK2_prev
         end if
 !
-        if(lSigm) then
+        if (lSigm) then
             sig_curr_pg(1:2*ndim) = sig(1:2*ndim)
         end if
 !
@@ -805,7 +805,7 @@ contains
         call pk2topk1(ndim, PK2_curr, F_curr, Pk1_curr)
 !
         module_tang = 0.d0
-        if(lMatr) then
+        if (lMatr) then
 !
 ! ----- Unpack lagrangian tangent modulus
 !
@@ -816,7 +816,7 @@ contains
             call lagmodtonommod(me, PK2_curr, F_curr, module_tang)
         end if
 !
-999 continue
+999     continue
 !
     end subroutine
 !
@@ -825,11 +825,11 @@ contains
 !===================================================================================================
 !
     subroutine greenlagr(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, lgpg, ipg, &
-                       time_prev, time_curr, mult_comp, &
-                       F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
-                       PK1_curr, module_tang, cod)
+                         time_prev, time_curr, mult_comp, &
+                         F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
+                         PK1_curr, module_tang, cod)
 !
-    implicit none
+        implicit none
 !
         type(Behaviour_Integ), intent(inout) :: BEHinteg
         integer, intent(in)             :: ndim
@@ -844,14 +844,14 @@ contains
         real(kind=8), intent(in)        :: time_prev
         real(kind=8), intent(in)        :: time_curr
         character(len=16), intent(in)   :: mult_comp
-        real(kind=8), intent(in)        :: F_prev(3,3)
-        real(kind=8), intent(in)        :: F_curr(3,3)
+        real(kind=8), intent(in)        :: F_prev(3, 3)
+        real(kind=8), intent(in)        :: F_curr(3, 3)
         real(kind=8), intent(in)        :: sig_prev_pg(2*ndim)
         real(kind=8), intent(in)        :: vi_prev_pg(lgpg)
         real(kind=8), intent(out)       :: sig_curr_pg(2*ndim)
         real(kind=8), intent(out)       :: vi_curr_pg(lgpg)
-        real(kind=8), intent(out)       :: PK1_curr(3,3)
-        real(kind=8), intent(out)       :: module_tang(3,3,3,3)
+        real(kind=8), intent(out)       :: PK1_curr(3, 3)
+        real(kind=8), intent(out)       :: module_tang(3, 3, 3, 3)
         integer, intent(out)            :: cod
 !
 ! --------------------------------------------------------------------------------------------------
@@ -882,7 +882,7 @@ contains
 !   Out cod         : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: GL_prev(6), GL_curr(6), GL_incr(6), dpk2dc(6,6), me(3,3,3,3), detF_prev
+        real(kind=8) :: GL_prev(6), GL_curr(6), GL_incr(6), dpk2dc(6, 6), me(3, 3, 3, 3), detF_prev
         real(kind=8) :: PK2_prev(6), PK2_curr(6), detF_curr, sig(6)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: angmas(1:3)
@@ -901,7 +901,7 @@ contains
         sig(1:2*ndim) = sig_prev_pg(1:2*ndim)
         call lcdetf(ndim, F_prev, detF_prev)
         call pk2sig(ndim, F_prev, detF_prev, PK2_prev, sig, -1)
-        PK2_prev(4:6) = PK2_prev(4:6) * rac2
+        PK2_prev(4:6) = PK2_prev(4:6)*rac2
 !
 ! ----- Compute behaviour
 !
@@ -915,30 +915,30 @@ contains
 !
             call hhoCalculGreenLagrange(ndim, F_prev, GLvec=GL_prev)
             call hhoCalculGreenLagrange(ndim, F_curr, GLvec=GL_curr)
-            GL_incr = GL_curr - GL_prev
+            GL_incr = GL_curr-GL_prev
 !
 ! --------- Compute behaviour
 !
-            call nmcomp(BEHinteg  , fami      , ipg       , 1      , ndim     , typmod   ,&
-                        imate     , compor    , carcri , time_prev, time_curr,&
-                        6         , GL_prev   , GL_incr, 6        , PK2_prev ,&
-                        vi_prev_pg, option    , angmas , &
-                        PK2_curr  , vi_curr_pg, 36     , dpk2dc   , cod       , mult_comp)
+            call nmcomp(BEHinteg, fami, ipg, 1, ndim, typmod, &
+                        imate, compor, carcri, time_prev, time_curr, &
+                        6, GL_prev, GL_incr, 6, PK2_prev, &
+                        vi_prev_pg, option, angmas, &
+                        PK2_curr, vi_curr_pg, 36, dpk2dc, cod, mult_comp)
         else
             ASSERT(.false.)
-        endif
+        end if
 !
 ! ----- Test the code of the LDC
 !
         if (cod .ne. 0) goto 999
 !
-        if(.not.L_CORR(option)) then
+        if (.not. L_CORR(option)) then
             PK2_curr = PK2_prev
         end if
 !
 ! ----- Compute Cauchy stress and save them
 !
-        if(L_SIGM(option)) then
+        if (L_SIGM(option)) then
             call lcdetf(ndim, F_curr, detF_curr)
             call pk2sig(ndim, F_curr, detF_curr, PK2_curr, sig_curr_pg, 1)
         end if
@@ -947,7 +947,7 @@ contains
 !
         call pk2topk1(ndim, PK2_curr, F_curr, PK1_curr)
 !
-        if(L_MATR(option)) then
+        if (L_MATR(option)) then
 !
 ! ----- Unpack lagrangian tangent modulus
             call desymt46(dpk2dc, me)
@@ -957,7 +957,7 @@ contains
             call lagmodtonommod(me, PK2_curr, F_curr, module_tang)
         end if
 !
-999 continue
+999     continue
 !
     end subroutine
 !
