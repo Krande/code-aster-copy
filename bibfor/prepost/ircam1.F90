@@ -18,11 +18,11 @@
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! aslint: disable=W1504
 !
-subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
-                  instan, numord, adsd, adsv, adsl,&
-                  adsk, partie, indcmp, ncmpve, ntlcmp,&
-                  ntncmp, ntucmp, ntproa, nbimpr, caimpi,&
-                  caimpk, typech, nomamd, nomtyp, modnum,&
+subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
+                  instan, numord, adsd, adsv, adsl, &
+                  adsk, partie, indcmp, ncmpve, ntlcmp, &
+                  ntncmp, ntucmp, ntproa, nbimpr, caimpi, &
+                  caimpk, typech, nomamd, nomtyp, modnum, &
                   nuanom, lfichUniq, nosdfu, codret)
 !
     use as_med_module, only: as_med_open
@@ -45,25 +45,25 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-integer :: nbimpr
-integer :: caimpi(10, nbimpr)
-integer :: numpt, numord
-integer :: adsd, adsv, adsl, adsk
-integer :: existc, ncmprf
-integer :: ncmpve
-integer :: typent, tygeom
-integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
-character(len=8) :: typech
-character(len=8) :: nomtyp(*)
-character(len=24) :: ntlcmp, ntncmp, ntucmp, ntproa, indcmp
-character(len=*) :: nofimd, partie
-character(len=*) :: nomamd
-character(len=*) :: caimpk(3, nbimpr)
-character(len=64) :: nochmd
-real(kind=8) :: instan
-aster_logical :: lfichUniq
-character(len=8) :: nosdfu
-integer :: codret
+    integer :: nbimpr
+    integer :: caimpi(10, nbimpr)
+    integer :: numpt, numord
+    integer :: adsd, adsv, adsl, adsk
+    integer :: existc, ncmprf
+    integer :: ncmpve
+    integer :: typent, tygeom
+    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    character(len=8) :: typech
+    character(len=8) :: nomtyp(*)
+    character(len=24) :: ntlcmp, ntncmp, ntucmp, ntproa, indcmp
+    character(len=*) :: nofimd, partie
+    character(len=*) :: nomamd
+    character(len=*) :: caimpk(3, nbimpr)
+    character(len=64) :: nochmd
+    real(kind=8) :: instan
+    aster_logical :: lfichUniq
+    character(len=8) :: nosdfu
+    integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,12 +116,12 @@ integer :: codret
 !
     character(len=6), parameter :: nompro = 'IRCAM1'
     integer :: edleaj
-    integer, parameter :: ednoeu=3
-    integer, parameter :: edmail=0
-    integer, parameter :: ednoma=4
-    integer, parameter :: typnoe=0
-    integer, parameter :: ednopg=1
-    integer, parameter :: edelst=5
+    integer, parameter :: ednoeu = 3
+    integer, parameter :: edmail = 0
+    integer, parameter :: ednoma = 4
+    integer, parameter :: typnoe = 0
+    integer, parameter :: ednopg = 1
+    integer, parameter :: edelst = 5
     character(len=8) :: saux08
     character(len=24) :: ntvale
     character(len=64) :: nomprf, nolopg, nomam2
@@ -144,9 +144,9 @@ integer :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
-    if(niv > 1) then
+    if (niv > 1) then
         call cpu_time(start_time)
-        write(ifm,*) "    ========== DEBUT DE IRCAM1 =========="
+        write (ifm, *) "    ========== DEBUT DE IRCAM1 =========="
     end if
 !
 ! 1.2. ==> NOMS DES TABLEAUX DE TRAVAIL
@@ -167,39 +167,39 @@ integer :: codret
 !====
 !
     call cpu_time(start2)
-    inquire(file=nofimd,exist=ficexi)
+    inquire (file=nofimd, exist=ficexi)
     if (ficexi) then
         edleaj = 1
-        if(lfichUniq) then
+        if (lfichUniq) then
             call as_med_open(idfimd, nofimd, edleaj, codret, .true._1)
         else
             call as_med_open(idfimd, nofimd, edleaj, codret, .false._1)
-        endif
+        end if
         if (codret .ne. 0) then
             edleaj = 3
-            if(lfichUniq) then
+            if (lfichUniq) then
                 call as_med_open(idfimd, nofimd, edleaj, codret, .true._1)
             else
                 call as_med_open(idfimd, nofimd, edleaj, codret, .false._1)
-            endif
-        endif
+            end if
+        end if
     else
         edleaj = 3
-        if(lfichUniq) then
+        if (lfichUniq) then
             call as_med_open(idfimd, nofimd, edleaj, codret, .true._1)
         else
             call as_med_open(idfimd, nofimd, edleaj, codret, .false._1)
-        endif
-    endif
+        end if
+    end if
     if (codret .ne. 0) then
-        saux08='mfiope'
+        saux08 = 'mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    end if
     call cpu_time(end2)
-    if(niv > 1) then
+    if (niv > 1) then
         call cpu_time(end_time)
-        write(ifm,*) "    ========== IRCAM1 : OUVERTURE DU FICHIER EN ", &
-            end2 - start2, "sec ============"
+        write (ifm, *) "    ========== IRCAM1 : OUVERTURE DU FICHIER EN ", &
+            end2-start2, "sec ============"
     end if
 !
 !====
@@ -208,51 +208,51 @@ integer :: codret
 !
 ! 3.1. ==> CREATION DU TABLEAUX DES COMPOSANTES
 !
-    nbpt=0
+    nbpt = 0
     AS_ALLOCATE(vk16=cname, size=ncmprf)
     AS_ALLOCATE(vk16=cunit, size=ncmprf)
     nomam2 = ' '
-    iret=0
-    call as_mfdfin(idfimd, nochmd, nomam2, nbpt, cunit(1),&
+    iret = 0
+    call as_mfdfin(idfimd, nochmd, nomam2, nbpt, cunit(1), &
                    cname(1), iret)
     if (iret .eq. 0 .and. nbpt .ne. 0 .and. nomam2 .ne. nomamd) then
         call utmess('F', 'MED_94')
-    endif
+    end if
 !
 ! 3.2. ==> CREATION DU CHAMP DANS LE FICHIER
 !
-    call ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
+    call ircmcc(idfimd, nomamd, nochmd, existc, ncmpve, &
                 ntncmp, ntucmp, codret)
 !
 !====
 ! 4. ECRITURE POUR CHAQUE IMPRESSION SELECTIONNEE
 !====
 !
-    ifin   = 0
+    ifin = 0
     retsav = 0
-    do nrimpr = 1 , nbimpr
+    do nrimpr = 1, nbimpr
         if (codret .eq. 0) then
-            nvalec = caimpi(7,nrimpr)
+            nvalec = caimpi(7, nrimpr)
             lnvalec = .false._1
-            if(lfichUniq) then
+            if (lfichUniq) then
                 lnvalec = .true._1
             else
-                if(nvalec .gt. 0) lnvalec = .true._1
-            endif
+                if (nvalec .gt. 0) lnvalec = .true._1
+            end if
             if (lnvalec) then
 !
 ! 4.1. ==> ON DOIT ECRIRE DES VALEURS CORRESPONDANTS A NVALEC SUPPORTS
 !          DU TYPE EN COURS.
 !
                 if (niv .gt. 1) then
-                    write (ifm,400)
+                    write (ifm, 400)
                     call utflsh(codret)
-                endif
+                end if
 !
-                tygeom = caimpi(9,nrimpr)
-                tymast = caimpi(8,nrimpr)
-                ideb = ifin + 1
-                ifin = ideb + nvalec - 1
+                tygeom = caimpi(9, nrimpr)
+                tymast = caimpi(8, nrimpr)
+                ideb = ifin+1
+                ifin = ideb+nvalec-1
 !
                 if (tygeom .eq. typnoe) then
                     typent = ednoeu
@@ -261,8 +261,8 @@ integer :: codret
                         typent = ednoma
                     else
                         typent = edmail
-                    endif
-                endif
+                    end if
+                end if
 !
                 if (tygeom .eq. typnoe) then
                     nbpg = 1
@@ -271,83 +271,83 @@ integer :: codret
                     nbse = 0
                     nbfi = 0
                     if (niv .gt. 1) then
-                        write (ifm,401)
-                    endif
+                        write (ifm, 401)
+                    end if
                 else
-                    nbpg = caimpi(2,nrimpr)
-                    nbsp = caimpi(3,nrimpr)
-                    nbco = caimpi(4,nrimpr)
-                    nbse = caimpi(5,nrimpr)
-                    nbfi = caimpi(6,nrimpr)
+                    nbpg = caimpi(2, nrimpr)
+                    nbsp = caimpi(3, nrimpr)
+                    nbco = caimpi(4, nrimpr)
+                    nbse = caimpi(5, nrimpr)
+                    nbfi = caimpi(6, nrimpr)
                     if (niv .gt. 1) then
-                        write (ifm,402) nomtyp(tymast), tygeom
-                    endif
-                endif
+                        write (ifm, 402) nomtyp(tymast), tygeom
+                    end if
+                end if
 !
-                nbenty = caimpi(10,nrimpr)
-                nolopg = caimpk(1,nrimpr)
-                nomprf = caimpk(2,nrimpr)
+                nbenty = caimpi(10, nrimpr)
+                nolopg = caimpk(1, nrimpr)
+                nomprf = caimpk(2, nrimpr)
 !
 ! 4.2. ==> CREATION DES TABLEAUX DE VALEURS A ECRIRE
 !
-                if (codret .eq. 0 .and. nvalec.ne.0) then
+                if (codret .eq. 0 .and. nvalec .ne. 0) then
 !
                     iaux = ncmpve*nbsp*nbpg*nvalec
                     call wkvect(ntvale, 'V V R', iaux, advale)
 !
-                    call ircmva(zi(adnucm), indcmp, ncmpve, ncmprf, nvalec,&
-                                nbpg, nbsp, adsv, adsd, adsl,&
-                                adsk, partie, tymast, modnum, nuanom,&
-                                typech, zr(advale), zi( adproa), ideb, ifin,&
+                    call ircmva(zi(adnucm), indcmp, ncmpve, ncmprf, nvalec, &
+                                nbpg, nbsp, adsv, adsd, adsl, &
+                                adsk, partie, tymast, modnum, nuanom, &
+                                typech, zr(advale), zi(adproa), ideb, ifin, &
                                 codre2)
                     if (codre2 .ne. 0) retsav = 100
 !
-                endif
+                end if
 !
 ! 4.4. ==> ECRITURE VRAIE
 !
                 if (codret .eq. 0) then
 !
                     nbrepg = ednopg
-                    if ((tygeom.ne.typnoe) .and. (nbpg*nbsp.ne.1)) then
+                    if ((tygeom .ne. typnoe) .and. (nbpg*nbsp .ne. 1)) then
                         nbrepg = nbpg
                         if (nbco .eq. 0 .and. nbse .eq. 0 .and. nbfi .eq. 0) then
                             nbrepg = nbpg*nbsp
                         else
                             typent = edelst
-                        endif
-                    endif
+                        end if
+                    end if
 !
-                    if(nvalec.ne.0) then
-                        call ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
-                                    instan, numord, zr(advale), ncmpve, nbenty,&
-                                    nbrepg, nvalec, typent, tygeom, nosdfu,&
+                    if (nvalec .ne. 0) then
+                        call ircmec(idfimd, nochmd, nomprf, nolopg, numpt, &
+                                    instan, numord, zr(advale), ncmpve, nbenty, &
+                                    nbrepg, nvalec, typent, tygeom, nosdfu, &
                                     tymast, codret)
                     else
-                        call ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
-                                    instan, numord, rbid, ncmpve, nbenty,&
-                                    nbrepg, nvalec, typent, tygeom, nosdfu,&
+                        call ircmec(idfimd, nochmd, nomprf, nolopg, numpt, &
+                                    instan, numord, rbid, ncmpve, nbenty, &
+                                    nbrepg, nvalec, typent, tygeom, nosdfu, &
                                     tymast, codret)
-                    endif
+                    end if
 !
                     call jedetr(ntvale)
 !
-                endif
+                end if
 !
-            endif
+            end if
 !
-        endif
+        end if
 !
     end do
 !
     if (niv .gt. 1) then
         call utflsh(codret)
-        write (ifm,400)
-    endif
+        write (ifm, 400)
+    end if
 !
-400 format(/,80('-'),/)
+400 format(/, 80('-'),/)
 401 format('  * VALEURS AUX NOEUDS',/)
-402 format(/,'  * VALEURS SUR LES MAILLES DE TYPE ASTER ',a,' ET MED',i4)
+402 format(/, '  * VALEURS SUR LES MAILLES DE TYPE ASTER ', a, ' ET MED', i4)
 !
 !====
 ! 5. FERMETURE DU FICHIER MED
@@ -355,10 +355,10 @@ integer :: codret
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
-        saux08='mficlo'
+        saux08 = 'mficlo'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
-    if (retsav .eq. 100) codret=100
+    end if
+    if (retsav .eq. 100) codret = 100
 !
 !====
 ! 6. LA FIN
@@ -366,9 +366,9 @@ integer :: codret
 !
     AS_DEALLOCATE(vk16=cname)
     AS_DEALLOCATE(vk16=cunit)
-    if(niv > 1) then
+    if (niv > 1) then
         call cpu_time(end_time)
-        write(ifm,*) "    ========== FIN DE IRCAM1 EN ", end_time - start_time, "sec ============"
+        write (ifm, *) "    ========== FIN DE IRCAM1 EN ", end_time-start_time, "sec ============"
     end if
 !
 end subroutine

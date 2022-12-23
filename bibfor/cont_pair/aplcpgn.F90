@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 
 !
-subroutine aplcpgn(mesh , newgeo , zone,  pair_method   , pair_tole, dist_ratio, &
-    nb_elem_mast    , list_elem_mast, nb_elem_slav    , list_elem_slav, list_node_mast, &
-    nb_node_mast , nb_pair_zone    , list_pair_zone, list_nbptit_zone, list_ptitsl_zone)
+subroutine aplcpgn(mesh, newgeo, zone, pair_method, pair_tole, dist_ratio, &
+                   nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, list_node_mast, &
+                   nb_node_mast, nb_pair_zone, list_pair_zone, list_nbptit_zone, list_ptitsl_zone)
 !
-implicit none
+    implicit none
 !
 !#include "asterfort/ap_infast.h"
 #include "asterc/r8nnem.h"
@@ -54,20 +54,20 @@ implicit none
 #include "Contact_type.h"
 !
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: newgeo
-character(len=19), intent(in) :: zone
-real(kind=8), intent(in) :: pair_tole, dist_ratio
-integer, intent(in) :: nb_elem_slav
-integer, intent(in) :: nb_elem_mast
-integer, intent(in) :: nb_node_mast
-integer, intent(in) :: list_elem_mast(nb_elem_mast)
-integer, intent(in) :: list_elem_slav(nb_elem_slav)
-integer, intent(in) :: list_node_mast(nb_node_mast)
-integer, intent(out) :: nb_pair_zone
-character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone
-character(len=19), intent(in) :: list_ptitsl_zone
-character(len=24), intent(in) :: pair_method
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: newgeo
+    character(len=19), intent(in) :: zone
+    real(kind=8), intent(in) :: pair_tole, dist_ratio
+    integer, intent(in) :: nb_elem_slav
+    integer, intent(in) :: nb_elem_mast
+    integer, intent(in) :: nb_node_mast
+    integer, intent(in) :: list_elem_mast(nb_elem_mast)
+    integer, intent(in) :: list_elem_slav(nb_elem_slav)
+    integer, intent(in) :: list_node_mast(nb_node_mast)
+    integer, intent(out) :: nb_pair_zone
+    character(len=19), intent(in) :: list_pair_zone, list_nbptit_zone
+    character(len=19), intent(in) :: list_ptitsl_zone
+    character(len=24), intent(in) :: pair_method
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,44 +93,44 @@ character(len=24), intent(in) :: pair_method
 !
 ! --------------------------------------------------------------------------------------------------
 !
-integer :: iret, vali(2)
-integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
-integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
-character(len=8) :: elem_mast_code, elem_slav_code
-character(len=8) :: elem_slav_type, elem_mast_type
-real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
-integer :: nb_pair, nb_poin_inte
-integer :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
-integer :: i_slav_neigh
-real(kind=8) :: inte_weight
-real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
-real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
-character(len=8) :: elem_slav_name, elem_name
-integer :: nb_slav_start, nb_find_mast, nb_mast_start
-integer :: elem_start, elem_nume, jtab
-integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
-integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
-aster_logical :: l_recup, debug, pair_exist
-integer, pointer :: mast_find_flag(:) => null()
-integer, pointer :: elem_slav_flag(:) => null()
-character(len=24) :: sdappa_slne, sdappa_mane
-integer, pointer :: v_sdappa_slne(:) => null()
-integer, pointer :: v_sdappa_mane(:) => null()
-integer :: list_slav_master(4)
-integer :: nb_mast_neigh, nb_slav_neigh
-integer :: inte_neigh(4)
-integer :: jv_geom, elem_type_nume
-real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
-integer, pointer :: v_mesh_typmail(:) => null()
-integer, pointer :: v_mesh_connex(:)  => null()
-integer, pointer :: v_connex_lcum(:)  => null()
-real(kind=8), pointer :: li_pt_inte_sl(:) => null()
-real(kind=8), pointer :: li_pt_inte_ma(:) => null()
-integer, pointer :: list_pair(:) => null()
-integer, pointer :: li_nb_pt_inte_sl(:) => null()
-integer, pointer :: list_find_mast(:) => null()
-integer, pointer :: elem_slav_start(:) => null()
-integer, pointer :: elem_mast_start(:) => null()
+    integer :: iret, vali(2)
+    integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
+    integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
+    character(len=8) :: elem_mast_code, elem_slav_code
+    character(len=8) :: elem_slav_type, elem_mast_type
+    real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
+    integer :: nb_pair, nb_poin_inte
+    integer :: i_mast_neigh, i_slav_start, i_mast_start, i_find_mast
+    integer :: i_slav_neigh
+    real(kind=8) :: inte_weight
+    real(kind=8) :: poin_inte_sl(SIZE_MAX_INTE_SL)
+    real(kind=8) :: poin_inte_ma(SIZE_MAX_INTE_SL)
+    character(len=8) :: elem_slav_name, elem_name
+    integer :: nb_slav_start, nb_find_mast, nb_mast_start
+    integer :: elem_start, elem_nume, jtab
+    integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
+    integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
+    aster_logical :: l_recup, debug, pair_exist
+    integer, pointer :: mast_find_flag(:) => null()
+    integer, pointer :: elem_slav_flag(:) => null()
+    character(len=24) :: sdappa_slne, sdappa_mane
+    integer, pointer :: v_sdappa_slne(:) => null()
+    integer, pointer :: v_sdappa_mane(:) => null()
+    integer :: list_slav_master(4)
+    integer :: nb_mast_neigh, nb_slav_neigh
+    integer :: inte_neigh(4)
+    integer :: jv_geom, elem_type_nume
+    real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
+    integer, pointer :: v_mesh_typmail(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
+    integer, pointer :: v_connex_lcum(:) => null()
+    real(kind=8), pointer :: li_pt_inte_sl(:) => null()
+    real(kind=8), pointer :: li_pt_inte_ma(:) => null()
+    integer, pointer :: list_pair(:) => null()
+    integer, pointer :: li_nb_pt_inte_sl(:) => null()
+    integer, pointer :: list_find_mast(:) => null()
+    integer, pointer :: elem_slav_start(:) => null()
+    integer, pointer :: elem_mast_start(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,12 +140,12 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! - some initializations
 !
-    debug                          = ASTER_FALSE
-    pair_exist                     = ASTER_TRUE
-    inte_neigh(1:4)                = 0
-    list_slav_master(1:4)          = 0
-    list_slav_weight(1:4)          = 0.d0
-    nb_pair                        = 0
+    debug = ASTER_FALSE
+    pair_exist = ASTER_TRUE
+    inte_neigh(1:4) = 0
+    list_slav_master(1:4) = 0
+    list_slav_weight(1:4) = 0.d0
+    nb_pair = 0
 
     mast_indx_maxi = maxval(list_elem_mast)
     slav_indx_maxi = maxval(list_elem_slav)
@@ -158,19 +158,19 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
-    call jeveuo(mesh//'.CONNEX', 'L', vi = v_mesh_connex)
-    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)
+    call jeveuo(mesh//'.CONNEX', 'L', vi=v_mesh_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_lcum)
 !
 ! - Objects for flags
 !
-    AS_ALLOCATE(vi=elem_slav_flag, size= slav_indx_maxi+1-slav_indx_mini)
-    AS_ALLOCATE(vi=mast_find_flag, size= mast_indx_maxi+1-mast_indx_mini)
-    AS_ALLOCATE(vr=li_pt_inte_sl, size= nb_elem_mast*nb_elem_slav*SIZE_MAX_INTE_SL)
-    AS_ALLOCATE(vr=li_pt_inte_ma, size= nb_elem_mast*nb_elem_slav*SIZE_MAX_INTE_SL)
-    AS_ALLOCATE(vi=list_pair, size= 2*nb_elem_slav*nb_elem_mast)
-    AS_ALLOCATE(vi=li_nb_pt_inte_sl, size= nb_elem_slav*nb_elem_mast)
-    AS_ALLOCATE(vi=list_find_mast, size= nb_elem_mast)
+    AS_ALLOCATE(vi=elem_slav_flag, size=slav_indx_maxi+1-slav_indx_mini)
+    AS_ALLOCATE(vi=mast_find_flag, size=mast_indx_maxi+1-mast_indx_mini)
+    AS_ALLOCATE(vr=li_pt_inte_sl, size=nb_elem_mast*nb_elem_slav*SIZE_MAX_INTE_SL)
+    AS_ALLOCATE(vr=li_pt_inte_ma, size=nb_elem_mast*nb_elem_slav*SIZE_MAX_INTE_SL)
+    AS_ALLOCATE(vi=list_pair, size=2*nb_elem_slav*nb_elem_mast)
+    AS_ALLOCATE(vi=li_nb_pt_inte_sl, size=nb_elem_slav*nb_elem_mast)
+    AS_ALLOCATE(vi=list_find_mast, size=nb_elem_mast)
     AS_ALLOCATE(vi=elem_slav_start, size=nb_elem_slav)
     AS_ALLOCATE(vi=elem_mast_start, size=nb_elem_slav)
     list_find_mast = 0
@@ -179,77 +179,77 @@ integer, pointer :: elem_mast_start(:) => null()
 !
     sdappa_mane = zone(1:8)//'.MN'
     sdappa_slne = zone(1:8)//'.SN'
-    call jeveuo(sdappa_mane, 'L', vi = v_sdappa_mane)
-    call jeveuo(sdappa_slne, 'L', vi = v_sdappa_slne)
+    call jeveuo(sdappa_mane, 'L', vi=v_sdappa_mane)
+    call jeveuo(sdappa_slne, 'L', vi=v_sdappa_slne)
 !
 ! - while loop on the existence of a pair slave-master
 !
     do while (pair_exist)
         if (pair_method == "RAPIDE") then
             ! - Search by computing the minimum distance between the barycenters
-            call ap_infast_n(mesh           , newgeo       , pair_tole, dist_ratio, nb_elem_mast  ,&
-                             list_elem_mast , nb_elem_slav , list_elem_slav ,elem_slav_flag ,&
-                             nb_mast_start, elem_mast_start, nb_slav_start  ,elem_slav_start,&
+            call ap_infast_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
+                             list_elem_mast, nb_elem_slav, list_elem_slav, elem_slav_flag, &
+                             nb_mast_start, elem_mast_start, nb_slav_start, elem_slav_start, &
                              zone, list_node_mast, nb_node_mast)
         elseif (pair_method == "ROBUSTE") then
-            call apprin_n(mesh           , newgeo       , pair_tole, dist_ratio, nb_elem_mast  ,&
-                          list_elem_mast , nb_elem_slav , list_elem_slav , elem_slav_flag ,&
-                          nb_mast_start, elem_mast_start, nb_slav_start  , elem_slav_start)
-        endif
+            call apprin_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
+                          list_elem_mast, nb_elem_slav, list_elem_slav, elem_slav_flag, &
+                          nb_mast_start, elem_mast_start, nb_slav_start, elem_slav_start)
+        end if
 
-        if (nb_slav_start==0) then
+        if (nb_slav_start == 0) then
             pair_exist = ASTER_FALSE
         end if
 
-        do while(nb_slav_start > 0)
+        do while (nb_slav_start > 0)
 !
 ! ----- Get slave element start
 !
             elem_slav_nume = elem_slav_start(1)
-            elem_slav_indx = elem_slav_nume +1 - slav_indx_mini
+            elem_slav_indx = elem_slav_nume+1-slav_indx_mini
             elem_type_nume = v_mesh_typmail(elem_slav_nume)
             call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
 !
 ! ----- Shift list of slave element start
 !
-            do i_slav_start = 1, nb_slav_start - 1
+            do i_slav_start = 1, nb_slav_start-1
                 elem_slav_start(i_slav_start) = elem_slav_start(i_slav_start+1)
             end do
-            nb_slav_start = nb_slav_start - 1
+            nb_slav_start = nb_slav_start-1
 !
 ! ----- Get informations about slave element
 !
-            call aptype(elem_slav_type  ,&
+            call aptype(elem_slav_type, &
                         elem_slav_nbnode, elem_slav_code, elem_slav_dime)
 !
 ! ----- Get coordinates of slave element
 !
-            call apcoor(v_mesh_connex , v_connex_lcum   , jv_geom       ,&
-                    elem_slav_nume, elem_slav_nbnode, elem_slav_dime,&
-                    elem_slav_coor)
+            call apcoor(v_mesh_connex, v_connex_lcum, jv_geom, &
+                        elem_slav_nume, elem_slav_nbnode, elem_slav_dime, &
+                        elem_slav_coor)
 
             if (debug) then
                 call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
-                write(*,*) "Current slave element: ", elem_slav_nume, elem_slav_name,&
-                        '(type : ', elem_slav_code, ')'
-                write(*,*) elem_slav_coor(1:3*elem_slav_nbnode)
-            endif
+                write (*, *) "Current slave element: ", elem_slav_nume, elem_slav_name, &
+                    '(type : ', elem_slav_code, ')'
+                write (*, *) elem_slav_coor(1:3*elem_slav_nbnode)
+            end if
 !
 ! ----- Number of neighbours
 !
             if (elem_slav_dime == 2) then
                 nb_slav_neigh = 2
-            elseif (elem_slav_code == 'TR3' .or.&
-                    elem_slav_code == 'TR6' .or.&
+            elseif (elem_slav_code == 'TR3' .or. &
+                    elem_slav_code == 'TR6' .or. &
                     elem_slav_code == 'TR7') then
                 nb_slav_neigh = 3
-            elseif (elem_slav_code == 'QU4' .or.&
-                    elem_slav_code == 'QU8' .or.&
+            elseif (elem_slav_code == 'QU4' .or. &
+                    elem_slav_code == 'QU8' .or. &
                     elem_slav_code == 'QU9') then
                 nb_slav_neigh = 4
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
 !
             if (debug) then
                 do i_slav_neigh = 1, nb_slav_neigh
@@ -258,18 +258,18 @@ integer, pointer :: elem_mast_start(:) => null()
                         call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
                     else
                         elem_name = 'None'
-                    endif
-                    write(*,*) "Current slave element neighbours: ", elem_name
+                    end if
+                    write (*, *) "Current slave element neighbours: ", elem_name
                 end do
-            endif
+            end if
 !
             list_slav_master(1:nb_slav_neigh) = 0
-            list_slav_weight(1:4)             = 0.d0
+            list_slav_weight(1:4) = 0.d0
 !
 ! ----- Get master element to start
 !
-            elem_start     = elem_mast_start(1)
-            mast_find_indx = elem_start + 1 - mast_indx_mini
+            elem_start = elem_mast_start(1)
+            mast_find_indx = elem_start+1-mast_indx_mini
 !
 ! ----- Shift list of master element start
 !
@@ -280,8 +280,8 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! ----- Management of list of master elements: first element to seek
 !
-            list_find_mast(1)              = elem_start
-            nb_find_mast                   = 1
+            list_find_mast(1) = elem_start
+            nb_find_mast = 1
             mast_find_flag(mast_find_indx) = 1
 !
 ! ----- Initialization list of contact pairs
@@ -290,7 +290,7 @@ integer, pointer :: elem_mast_start(:) => null()
 
 ! -----     Loop on master elements => Look for the master elements
 !
-            do while(nb_find_mast > 0)
+            do while (nb_find_mast > 0)
 !
                 inte_weight = 0.d0
                 nb_poin_inte = 0
@@ -305,9 +305,9 @@ integer, pointer :: elem_mast_start(:) => null()
 !
                 if (debug) then
                     call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_name)
-                    write(*,*) ". Current master element: ", elem_mast_nume, elem_name,&
-                    '(type : ', elem_mast_type, ')'
-                endif
+                    write (*, *) ". Current master element: ", elem_mast_nume, elem_name, &
+                        '(type : ', elem_mast_type, ')'
+                end if
 !
 ! ------------- Shift list of master elements (on supprime de la liste)
 !
@@ -318,57 +318,57 @@ integer, pointer :: elem_mast_start(:) => null()
 !
 ! --------- Get informations about master element
 !
-                call aptype(elem_mast_type  ,&
-                             elem_mast_nbnode, elem_mast_code, elem_mast_dime)
+                call aptype(elem_mast_type, &
+                            elem_mast_nbnode, elem_mast_code, elem_mast_dime)
 !
 ! --------- Get coordinates of master element
 !
-                call apcoor(v_mesh_connex , v_connex_lcum   , jv_geom       ,&
-                            elem_mast_nume, elem_mast_nbnode, elem_mast_dime,&
+                call apcoor(v_mesh_connex, v_connex_lcum, jv_geom, &
+                            elem_mast_nume, elem_mast_nbnode, elem_mast_dime, &
                             elem_mast_coor)
 !
 ! --------- Projection/intersection of elements in slave parametric space
 !
-                call prjint_ray(pair_tole      , dist_ratio, elem_slav_dime,&
-                                elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                                elem_slav_nbnode   , elem_slav_coor, elem_slav_code,&
-                                poin_inte_ma, poin_inte_sl, inte_weight, nb_poin_inte  ,&
-                                inte_neigh_ = inte_neigh, ierror_=iret)
+                call prjint_ray(pair_tole, dist_ratio, elem_slav_dime, &
+                                elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                                elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                                poin_inte_ma, poin_inte_sl, inte_weight, nb_poin_inte, &
+                                inte_neigh_=inte_neigh, ierror_=iret)
 !
                 if (iret == 2) then
                     vali(1) = elem_slav_nume
                     vali(2) = elem_mast_nume
-                    call utmess('A', 'CONTACT4_6', ni=2,vali=vali)
+                    call utmess('A', 'CONTACT4_6', ni=2, vali=vali)
 !
                     inte_weight = 0.d0
                     nb_poin_inte = 0.d0
                     go to 101
-                endif
+                end if
 
-                ASSERT(nb_poin_inte.le.8)
+                ASSERT(nb_poin_inte .le. 8)
 !
-101 continue
+101             continue
 !
 ! --------- Add element paired
 !
-                if (inte_weight > pair_tole .and. iret ==0) then
-                    nb_pair                        = nb_pair+1
+                if (inte_weight > pair_tole .and. iret == 0) then
+                    nb_pair = nb_pair+1
                     ASSERT(nb_pair .le. nb_elem_slav*nb_elem_mast)
-                    list_pair(2*(nb_pair-1)+1)             = elem_slav_nume
-                    list_pair(2*(nb_pair-1)+2)             = elem_mast_nume
-                    li_nb_pt_inte_sl(nb_pair)      = nb_poin_inte
-                    ASSERT(nb_poin_inte.le.8)
-                    li_pt_inte_sl((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
-                                 (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_sl
-                    li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
-                                 (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_ma
+                    list_pair(2*(nb_pair-1)+1) = elem_slav_nume
+                    list_pair(2*(nb_pair-1)+2) = elem_mast_nume
+                    li_nb_pt_inte_sl(nb_pair) = nb_poin_inte
+                    ASSERT(nb_poin_inte .le. 8)
+                    li_pt_inte_sl((nb_pair-1)*SIZE_MAX_INTE_SL+1: &
+                                  (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_sl
+                    li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1: &
+                                  (nb_pair-1)*SIZE_MAX_INTE_SL+SIZE_MAX_INTE_SL) = poin_inte_ma
                     !print*,"LIPTMA_APLC", li_pt_inte_ma((nb_pair-1)*SIZE_MAX_INTE_SL+1:&
-                     !            (nb_pair-1)*SIZE_MAX_INTE_SL+2)
+                    !            (nb_pair-1)*SIZE_MAX_INTE_SL+2)
                 end if
 
-                if(debug) then
-                    write(*,*) ". Contact pair: " ,  elem_slav_nume, elem_mast_nume, &
-                    " (weight: ", inte_weight, ", nb point inter: ", nb_poin_inte, ")"
+                if (debug) then
+                    write (*, *) ". Contact pair: ", elem_slav_nume, elem_mast_nume, &
+                        " (weight: ", inte_weight, ", nb point inter: ", nb_poin_inte, ")"
 
                 end if
 !
@@ -380,29 +380,29 @@ integer, pointer :: elem_mast_start(:) => null()
 !
                     if (elem_mast_code == 'SE2' .or. elem_mast_code == 'SE3') then
                         nb_mast_neigh = 2
-                        tole_weight   = 0.5
+                        tole_weight = 0.5
                     elseif (elem_mast_code == 'TR3' .or. elem_mast_code == 'TR6') then
                         nb_mast_neigh = 3
-                        tole_weight   = 0.05
-                    elseif (elem_mast_code == 'QU4' .or. elem_mast_code == 'QU8' .or.&
+                        tole_weight = 0.05
+                    elseif (elem_mast_code == 'QU4' .or. elem_mast_code == 'QU8' .or. &
                             elem_mast_code == 'QU9') then
                         nb_mast_neigh = 4
-                        tole_weight   = 0.4
+                        tole_weight = 0.4
                     else
                         ASSERT(ASTER_FALSE)
-                    endif
+                    end if
 !
 ! ------------- Prepare next master element
 !
                     do i_mast_neigh = 1, nb_mast_neigh
                         elem_mast_neigh = v_sdappa_mane((elem_mast_indx-1)*4+i_mast_neigh)
                         elem_neigh_indx = elem_mast_neigh+1-mast_indx_mini
-                        if (elem_mast_neigh .ne. 0 .and.&
-                            mast_find_flag(elem_neigh_indx) == 0 ) then
-                            list_find_mast(nb_find_mast+1)  = elem_mast_neigh
-                            nb_find_mast                    = nb_find_mast + 1
+                        if (elem_mast_neigh .ne. 0 .and. &
+                            mast_find_flag(elem_neigh_indx) == 0) then
+                            list_find_mast(nb_find_mast+1) = elem_mast_neigh
+                            nb_find_mast = nb_find_mast+1
                             mast_find_flag(elem_neigh_indx) = 1
-                        endif
+                        end if
                     end do
 !
 ! ------------- Prepare next slave element: higher weight
@@ -410,11 +410,11 @@ integer, pointer :: elem_mast_start(:) => null()
                     do i_slav_neigh = 1, nb_slav_neigh
                         elem_slav_neigh = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
                         elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
-                        if ( elem_slav_neigh .ne. 0 .and.&
-                                inte_neigh(i_slav_neigh) == 1 &
-                            .and.elem_slav_flag(elem_neigh_indx) .ne. 1 &
+                        if (elem_slav_neigh .ne. 0 .and. &
+                            inte_neigh(i_slav_neigh) == 1 &
+                            .and. elem_slav_flag(elem_neigh_indx) .ne. 1 &
                             .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
-                            weight_test=0.d0
+                            weight_test = 0.d0
                             ! IS IT NECESSARY WITH RAY_TRACING ?
                             !call testvois(jv_geom       , elem_slav_type,&
                             !                elem_mast_coor, elem_mast_code, elem_slav_nume,&
@@ -422,7 +422,7 @@ integer, pointer :: elem_mast_start(:) => null()
                             !                v_connex_lcum)
                             !if (weight_test > list_slav_weight(i_slav_neigh).and.&
                             !    weight_test > pair_tole) then
-                                list_slav_master(i_slav_neigh) = elem_mast_nume
+                            list_slav_master(i_slav_neigh) = elem_mast_nume
                             !   list_slav_weight(i_slav_neigh) = weight_test
                             !end if
                         end if
@@ -435,24 +435,24 @@ integer, pointer :: elem_mast_start(:) => null()
 ! ----- Next elements
 !
             if (debug) then
-                write(*,*)'Next elements - Nb: ',nb_slav_neigh
-            endif
+                write (*, *) 'Next elements - Nb: ', nb_slav_neigh
+            end if
             do i_slav_neigh = 1, nb_slav_neigh
                 elem_slav_neigh = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
                 elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
                 if (debug) then
-                    write(*,*)'Next elements - Current: ',i_slav_neigh,elem_slav_neigh,&
-                       list_slav_master(i_slav_neigh), elem_slav_flag(elem_neigh_indx)
+                    write (*, *) 'Next elements - Current: ', i_slav_neigh, elem_slav_neigh, &
+                        list_slav_master(i_slav_neigh), elem_slav_flag(elem_neigh_indx)
                 end if
-                if (elem_slav_neigh .ne. 0  .and.&
-                    list_slav_master(i_slav_neigh).ne. 0 .and.&
-                    elem_slav_flag(elem_neigh_indx) .ne. 1 ) then
+                if (elem_slav_neigh .ne. 0 .and. &
+                    list_slav_master(i_slav_neigh) .ne. 0 .and. &
+                    elem_slav_flag(elem_neigh_indx) .ne. 1) then
                     elem_slav_start(nb_slav_start+1) = elem_slav_neigh
-                    nb_slav_start                    = nb_slav_start+1
-                    elem_slav_flag(elem_neigh_indx)  = 1
+                    nb_slav_start = nb_slav_start+1
+                    elem_slav_flag(elem_neigh_indx) = 1
                     elem_mast_start(nb_mast_start+1) = list_slav_master(i_slav_neigh)
-                    nb_mast_start                    = nb_mast_start+1
-                endif
+                    nb_mast_start = nb_mast_start+1
+                end if
             end do
             mast_find_flag(1:mast_indx_maxi+1-mast_indx_mini) = 0
 
@@ -464,7 +464,7 @@ integer, pointer :: elem_mast_start(:) => null()
 !----- save results
 !
     nb_pair_zone = nb_pair
-    if(nb_pair_zone > 0) then
+    if (nb_pair_zone > 0) then
         call wkvect(list_pair_zone, 'G V I', 2*nb_pair_zone, jtab)
         zi(jtab-1+1:jtab-1+2*nb_pair_zone) = list_pair(1:2*nb_pair_zone)
         call wkvect(list_nbptit_zone, 'G V I', nb_pair_zone, jtab)

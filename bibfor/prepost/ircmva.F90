@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec,&
-                  nbpg, nbsp, adsv, adsd, adsl,&
-                  adsk, cplxFormatZ, tymast, modnum, nuanom,&
-                  fieldSupport, val, profas, ideb, ifin,&
+subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
+                  nbpg, nbsp, adsv, adsd, adsl, &
+                  adsk, cplxFormatZ, tymast, modnum, nuanom, &
+                  fieldSupport, val, profas, ideb, ifin, &
                   codret)
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -33,17 +33,17 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/jeveuo.h"
 !
-integer :: ncmpve, ncmprf, nvalec, nbpg, nbsp
-integer :: numcmp(ncmprf)
-integer :: adsv, adsd, adsl, adsk
-integer :: tymast, codret
-integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
-integer :: profas(*)
-integer :: ideb, ifin
-real(kind=8) :: val(ncmpve, nbsp, nbpg, nvalec)
-character(len=8), intent(in) :: fieldSupport
-character(len=*), intent(in) :: cplxFormatZ
-character(len=24), intent(in) :: indcmp
+    integer :: ncmpve, ncmprf, nvalec, nbpg, nbsp
+    integer :: numcmp(ncmprf)
+    integer :: adsv, adsd, adsl, adsk
+    integer :: tymast, codret
+    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    integer :: profas(*)
+    integer :: ideb, ifin
+    real(kind=8) :: val(ncmpve, nbsp, nbpg, nvalec)
+    character(len=8), intent(in) :: fieldSupport
+    character(len=*), intent(in) :: cplxFormatZ
+    character(len=24), intent(in) :: indcmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,9 +90,9 @@ character(len=24), intent(in) :: indcmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lprolz=.false.
-    gd=zk8(adsk-1+2)
-    codret=0
+    lprolz = .false.
+    gd = zk8(adsk-1+2)
+    codret = 0
     cplxFormat = cplxFormatZ
 !
     call dismoi('TYPE_SCA', gd, 'GRANDEUR', repk=typcha)
@@ -100,7 +100,7 @@ character(len=24), intent(in) :: indcmp
 !
     if (typcha .eq. 'R') then
         fieldScalar = 1
-    else if (typcha.eq.'C') then
+    else if (typcha .eq. 'C') then
         if (cplxFormat .eq. 'REEL') then
             fieldScalar = 2
         else if (cplxFormat .eq. 'IMAG') then
@@ -110,29 +110,30 @@ character(len=24), intent(in) :: indcmp
         else if (cplxFormat .eq. 'MODULE') then
             fieldScalar = 5
         else
-            call utmess('F','RESULT3_69')
-        endif
+            call utmess('F', 'RESULT3_69')
+        end if
     else
         valk(1) = gd
         valk(2) = 'IRCMVA'
         call utmess('F', 'DVP_3', nk=2, valk=valk)
-    endif
+    end if
 !
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 !
     call infniv(ifm, niv)
     if (niv .gt. 1) then
         call cpu_time(start)
-        write (ifm,*) '<IRCMVA> DEBUT DE CREATION DES VALEURS'
+        write (ifm, *) '<IRCMVA> DEBUT DE CREATION DES VALEURS'
     end if
 !
 ! 1.2. ==> INFORMATION
 !
     if (niv .gt. 1) then
         call utmess('I', 'MED_47')
-        write (ifm,130) nvalec, ncmpve, nbpg, nbsp, fieldSupport
-    endif
-130 format('  NVALEC =',i8,', NCMPVE =',i8,', NBPG   =',i8,', NBSP   =',i8,/,'  TYPECH =',a8)
+        write (ifm, 130) nvalec, ncmpve, nbpg, nbsp, fieldSupport
+    end if
+130 format('  NVALEC =', i8, ', NCMPVE =', i8, ', NBPG   =', i8, &
+           ', NBSP   =', i8, /, '  TYPECH =', a8)
 !
 !====
 ! 2. CREATION DU CHAMP DE VALEURS AD-HOC
@@ -156,38 +157,39 @@ character(len=24), intent(in) :: indcmp
 ! 2.1. ==> POUR LES NOEUDS : ON PREND TOUT CE QUI FRANCHIT LE FILTRE
 !
     if (tymast .eq. 0) then
-        do nrcmp = 1 , ncmpve
+        do nrcmp = 1, ncmpve
             poscmp = zi(jindcm+nrcmp-1)
-            if( poscmp.eq.0 ) cycle
+            if (poscmp .eq. 0) cycle
             adsvxx = adsv-1+numcmp(nrcmp)-ncmprf
             adslxx = adsl-1+numcmp(nrcmp)-ncmprf
             jaux = 0
             do iaux = ideb, ifin
                 ino = profas(iaux)
-                jaux = jaux + 1
+                jaux = jaux+1
                 kaux = ino*ncmprf
                 if (zl(adslxx+kaux)) then
                     if (fieldScalar .eq. 1) then
-                        val(poscmp,1,1,jaux) = zr(adsvxx+kaux)
+                        val(poscmp, 1, 1, jaux) = zr(adsvxx+kaux)
                     else if (fieldScalar .eq. 2) then
-                        val(poscmp,1,1,jaux) = dble(zc(adsvxx+kaux))
+                        val(poscmp, 1, 1, jaux) = dble(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 3) then
-                        val(poscmp,1,1,jaux) = dimag(zc(adsvxx+kaux))
+                        val(poscmp, 1, 1, jaux) = dimag(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 4) then
-                        val(poscmp,1,1,jaux) = abs(zc(adsvxx+kaux))
+                        val(poscmp, 1, 1, jaux) = abs(zc(adsvxx+kaux))
                     else if (fieldScalar .eq. 5) then
-                        val(poscmp,1,1,jaux) = atan2(dble(zc(adsvxx+kaux)),dimag(zc(adsvxx+kaux)))*&
-                                              180.d0/r8pi()
-                    endif
+                        val(poscmp, 1, 1, jaux) = atan2(dble(zc(adsvxx+kaux)), &
+                                                        dimag(zc(adsvxx+kaux))) &
+                                                  *180.d0/r8pi()
+                    end if
                 else
-                    lprolz=.true.
-                    val(poscmp,1,1,jaux) = 0.d0
-                endif
+                    lprolz = .true.
+                    val(poscmp, 1, 1, jaux) = 0.d0
+                end if
             end do
         end do
         if (lprolz) then
             codret = 100
-        endif
+        end if
     else
 !
 ! 2.2. ==> POUR LES MAILLES : ON PREND TOUT CE QUI FRANCHIT LE FILTRE
@@ -212,80 +214,86 @@ character(len=24), intent(in) :: indcmp
         if (fieldSupport(1:4) .eq. 'ELNO') then
             if (modnum(tymast) .eq. 1) then
                 logaux = .true.
-            endif
-        endif
+            end if
+        end if
 !
         if (logaux) then
             if (nbsp .gt. 1) then
-                write (ifm,130) nvalec, ncmpve, nbpg, nbsp
+                write (ifm, 130) nvalec, ncmpve, nbpg, nbsp
                 call utmess('F', 'MED_48')
-            endif
-        endif
+            end if
+        end if
 !
 ! 2.2.2. ==> TRANSFERT
 !            ON FAIT LE TEST AVANT LA BOUCLE 211. IL EST DONC FAIT
 !            AUTANT DE FOIS QUE DE COMPOSANTES A TRANSFERER. AU-DELA, CE
 !            SERAIT AUTANT DE FOIS QUE DE MAILLES, DONC COUTEUX
 !
-        do nrcmp = 1 , ncmpve
+        do nrcmp = 1, ncmpve
             poscmp = zi(jindcm+nrcmp-1)
-            if( poscmp.eq.0 ) cycle
+            if (poscmp .eq. 0) cycle
             nrcmpr = numcmp(nrcmp)
             jaux = 0
             if (logaux) then
                 nrsp = 1
                 do iaux = ideb, ifin
                     ima = profas(iaux)
-                    jaux = jaux + 1
-                    do nrpg = 1 , nbpg
+                    jaux = jaux+1
+                    do nrpg = 1, nbpg
                         call cesexi('C', adsd, adsl, ima, nrpg, nrsp, nrcmpr, kaux)
-                        if ((kaux.gt.0)) then
+                        if ((kaux .gt. 0)) then
                             if (fieldScalar .eq. 1) then
-                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= zr(adsv-1+kaux)
+                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                    zr(adsv-1+kaux)
                             else if (fieldScalar .eq. 2) then
-                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= dble(zc(adsv-1+kaux))
+                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                    dble(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 3) then
-                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= dimag(zc(adsv-1+kaux))
+                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                    dimag(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 4) then
-                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= abs(zc(adsv-1+kaux))
+                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                    abs(zc(adsv-1+kaux))
                             else if (fieldScalar .eq. 5) then
-                                val(poscmp,nrsp,nuanom(tymast,nrpg),jaux)= atan2(&
-                                    dble(zc(adsv-1+kaux)),dimag(zc(adsv-1+kaux)))*180.d0/r8pi()
-                            endif
-                        endif
+                                val(poscmp, nrsp, nuanom(tymast, nrpg), jaux) = &
+                                    atan2(dble(zc(adsv-1+kaux)), dimag(zc(adsv-1+kaux))) &
+                                    *180.d0/r8pi()
+                            end if
+                        end if
                     end do
                 end do
             else
                 do iaux = ideb, ifin
                     ima = profas(iaux)
-                    jaux = jaux + 1
-                    do nrpg = 1 , nbpg
-                        do  nrsp = 1 , nbsp
+                    jaux = jaux+1
+                    do nrpg = 1, nbpg
+                        do nrsp = 1, nbsp
                             call cesexi('C', adsd, adsl, ima, nrpg, nrsp, nrcmpr, kaux)
-                            if ((kaux.gt.0)) then
+                            if ((kaux .gt. 0)) then
                                 if (fieldScalar .eq. 1) then
-                                    val(poscmp,nrsp,nrpg,jaux)=zr(adsv-1+kaux)
+                                    val(poscmp, nrsp, nrpg, jaux) = zr(adsv-1+kaux)
                                 else if (fieldScalar .eq. 2) then
-                                    val(poscmp,nrsp,nrpg,jaux)=dble(zc(adsv-1+kaux))
+                                    val(poscmp, nrsp, nrpg, jaux) = dble(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 3) then
-                                    val(poscmp,nrsp,nrpg,jaux)=dimag(zc(adsv-1+kaux))
+                                    val(poscmp, nrsp, nrpg, jaux) = dimag(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 4) then
-                                    val(poscmp,nrsp,nrpg,jaux)=abs(zc(adsv-1+kaux))
+                                    val(poscmp, nrsp, nrpg, jaux) = abs(zc(adsv-1+kaux))
                                 else if (fieldScalar .eq. 5) then
-                                    val(poscmp,nrsp,nrpg,jaux)=atan2(&
-                                        dble(zc(adsv-1+kaux)),dimag(zc(adsv-1+kaux)))*180.d0/r8pi()
-                                endif
-                            endif
+                                    val(poscmp, nrsp, nrpg, jaux) = &
+                                        atan2(dble(zc(adsv-1+kaux)), dimag(zc(adsv-1+kaux))) &
+                                        *180.d0/r8pi()
+                                end if
+                            end if
                         end do
                     end do
                 end do
-            endif
+            end if
         end do
-    endif
+    end if
 !
     if (niv .gt. 1) then
         call cpu_time(end)
-        write (ifm,*) '<IRCMVA> FIN DE CREATION DES VALEURS EN ', end-start, " SEC"
+        write (ifm, *) '<IRCMVA> FIN DE CREATION DES VALEURS EN ', end-start, " SEC"
     end if
 !
 end subroutine

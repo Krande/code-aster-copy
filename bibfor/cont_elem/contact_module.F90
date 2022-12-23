@@ -18,12 +18,12 @@
 !
 module contact_module
 !
-use contact_type
-use contact_algebra_module
+    use contact_type
+    use contact_algebra_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
@@ -70,16 +70,16 @@ contains
 !===================================================================================================
 !
     subroutine projQpSl2Ma(geom, coor_qp_sl, proj_tole, &
-                            coor_qp_ma, gap, &
-                            tau_slav, norm_slav, tau_mast, norm_mast)
+                           coor_qp_ma, gap, &
+                           tau_slav, norm_slav, tau_mast, norm_mast)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in)  :: coor_qp_sl(2), proj_tole
         real(kind=8), intent(out) :: coor_qp_ma(2)
         real(kind=8), intent(out) :: gap
-        real(kind=8), intent(out) :: tau_slav(3,2), tau_mast(3,2)
+        real(kind=8), intent(out) :: tau_slav(3, 2), tau_mast(3, 2)
         real(kind=8), intent(out) :: norm_slav(3), norm_mast(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,9 +97,9 @@ contains
 !
 
         norm_slav = 0.d0
-        iret= 0
+        iret = 0
         iret1 = 0
-        iret2 =0
+        iret2 = 0
         norm_mast = 0.d0
         tau_slav = 0.d0
         tau_mast = 0.d0
@@ -110,7 +110,7 @@ contains
 ! ------ Compute outward slave normal (pairing configuration)
 !
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_pair, &
-                    coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3,1), tau_slav(1:3,2))
+                    coor_qp_sl(1), coor_qp_sl(2), norm_slav, tau_slav(1:3, 1), tau_slav(1:3, 2))
 !
 ! ----- Return in real slave space (pairing configuration)
 !
@@ -119,26 +119,25 @@ contains
                     coor_qp_sl_re)
 ! ----- Projection of node on master cell (master parametric space)
 
-        if(geom%elem_mast_code(1:2) == "SE") then
+        if (geom%elem_mast_code(1:2) == "SE") then
             elem_mast_line_code = "SE2"
             elem_mast_line_nbnode = 2
-        elseif(geom%elem_mast_code(1:2) == "TR") then
+        elseif (geom%elem_mast_code(1:2) == "TR") then
             elem_mast_line_code = "TR3"
             elem_mast_line_nbnode = 3
-        elseif(geom%elem_mast_code(1:2) == "QU") then
+        elseif (geom%elem_mast_code(1:2) == "QU") then
             elem_mast_line_code = "QU4"
             elem_mast_line_nbnode = 4
         else
             ASSERT(ASTER_FALSE)
         end if
 
-
 !
 ! ----- Projection on master element
         call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
                     geom%coor_mast_pair, coor_qp_sl_re, 100, proj_tole, norm_slav, &
                     ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret)
-        if(iret==1) then
+        if (iret == 1) then
 !
 ! ----- Try with linearization
 
@@ -146,7 +145,7 @@ contains
                         geom%coor_mast_pair, coor_qp_sl_re, 75, proj_tole, norm_slav, &
                         ksi_line(1), ksi_line(2), tau1_mast, tau2_mast, iret1)
 
-            call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair,&
+            call reerel(elem_mast_line_code, elem_mast_line_nbnode, 3, geom%coor_mast_pair, &
                         ksi_line, coor_qp_sl_re_aux)
 
             call mmnewd(geom%elem_mast_code, geom%nb_node_mast, geom%elem_dime, &
@@ -160,9 +159,9 @@ contains
 !
         call projInsideCell(1e-3, geom%elem_dime, geom%elem_mast_code, ksi_line, iret2)
 
-        coor_qp_ma(:)=ksi_line(:)
+        coor_qp_ma(:) = ksi_line(:)
 
-        if ( (iret .eq. 0) .and. (iret1 .eq. 0) .and. (iret2.eq.0)) then
+        if ((iret .eq. 0) .and. (iret1 .eq. 0) .and. (iret2 .eq. 0)) then
             !print*, 'mast_coor_pair', geom%coor_mast_pair(1:2,1:3)
             !print*, 'mast_coor_curr', geom%coor_mast_curr(1:2,1:3)
             !print*, 'slav_coor_pair', geom%coor_slav_pair(1:2,1:3)
@@ -171,30 +170,31 @@ contains
             !print*, "iret", iret
             !print*, "iret1", iret1
             !print*, "iret2", iret2
-        if (debug) then
-            !print*, "1", ksi_line(1)
-            !print*, "2", ksi_line(2)
-            !print*, "3", ksi_line(1)+coor_qp_ma(2)
-        endif
+            if (debug) then
+                !print*, "1", ksi_line(1)
+                !print*, "2", ksi_line(2)
+                !print*, "3", ksi_line(1)+coor_qp_ma(2)
+            end if
         end if
 !
 ! ------ Compute outward master normal (pairing configuration)
 !
         call apnorm(geom%nb_node_mast, geom%elem_mast_code, geom%elem_dime, geom%coor_mast_pair, &
-                    coor_qp_ma(1), coor_qp_ma(2), norm_mast, tau_mast(1:3,1), tau_mast(1:3,2))
+                    coor_qp_ma(1), coor_qp_ma(2), norm_mast, tau_mast(1:3, 1), tau_mast(1:3, 2))
 !
 ! ------ Check
 !
-        if(dot_product(norm_slav, norm_mast) > 0.1d0) then
+        if (dot_product(norm_slav, norm_mast) > 0.1d0) then
             if (debug) then
-                print*, "Normals have the same direction: ", dot_product(norm_slav, norm_mast)
-                print*, "Slave normal: ", norm_slav
-                print*, "Master normal: ", norm_mast
-                print*, "Distance: ", norm2(barycenter(geom%nb_node_mast, geom%coor_mast_curr) - &
-                    barycenter(geom%nb_node_slav, geom%coor_slav_curr))
-                print*, "Diameter slave / master: ", diameter(geom%nb_node_slav,&
-                         geom%coor_slav_curr),diameter(geom%nb_node_mast, geom%coor_mast_curr)
-            endif
+                print *, "Normals have the same direction: ", dot_product(norm_slav, norm_mast)
+                print *, "Slave normal: ", norm_slav
+                print *, "Master normal: ", norm_mast
+                print *, "Distance: ", norm2(barycenter(geom%nb_node_mast, geom%coor_mast_curr)- &
+                                             barycenter(geom%nb_node_slav, geom%coor_slav_curr))
+                print *, "Diameter slave / master: ", &
+                    diameter(geom%nb_node_slav, geom%coor_slav_curr), &
+                    diameter(geom%nb_node_mast, geom%coor_mast_curr)
+            end if
 
         end if
 !
@@ -225,7 +225,7 @@ contains
 !
     subroutine projQpSl2Vo(geom, coor_qp_sl, coor_qp_vo)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_sl(2)
@@ -261,7 +261,7 @@ contains
 !
     real(kind=8) function gapEval(slav_pt, mast_pt, norm_slav)
 !
-    implicit none
+        implicit none
 !
         real(kind=8), intent(in) :: slav_pt(3), mast_pt(3), norm_slav(3)
 !
@@ -281,7 +281,7 @@ contains
 !
     subroutine thresEval(param, l_cont_qp, projRmVal, thres_qp, l_fric_qp)
 !
-    implicit none
+        implicit none
 !
         type(ContactParameters), intent(in) :: param
         aster_logical, intent(in) :: l_cont_qp
@@ -299,18 +299,18 @@ contains
         l_fric_qp = ASTER_FALSE
 !
 ! ----- Define threshold for friction
-        if(param%l_fric) then
-            if(param%type_fric == FRIC_TYPE_TRES) then
+        if (param%l_fric) then
+            if (param%type_fric == FRIC_TYPE_TRES) then
                 l_fric_qp = ASTER_TRUE
                 thres_qp = param%threshold_given
-            elseif(param%type_fric == FRIC_TYPE_NONE) then
+            elseif (param%type_fric == FRIC_TYPE_NONE) then
                 l_fric_qp = ASTER_FALSE
                 thres_qp = 0.d0
             else
                 l_fric_qp = l_cont_qp
-                if(l_cont_qp) then
+                if (l_cont_qp) then
                     if (param%type_fric == FRIC_TYPE_COUL) then
-                        thres_qp = - param%threshold_given * projRmVal
+                        thres_qp = -param%threshold_given*projRmVal
                     else
                         thres_qp = THRES_STICK
                     end if
@@ -328,7 +328,7 @@ contains
 !
     function speedEval(geom, coor_qp_slav, coor_qp_mast, gap)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: coor_qp_slav(2), coor_qp_mast(2), gap
@@ -360,8 +360,8 @@ contains
         call apnorm(geom%nb_node_slav, geom%elem_slav_code, geom%elem_dime, geom%coor_slav_prev, &
                     coor_qp_slav(1), coor_qp_slav(2), norm_slav_prev)
 !
-        speedEval = -(coor_qp_sl_prev - coor_qp_ma_prev + gap * norm_slav_prev) &
-                    / (geom%time_curr - geom%time_prev)
+        speedEval = -(coor_qp_sl_prev-coor_qp_ma_prev+gap*norm_slav_prev) &
+                    /(geom%time_curr-geom%time_prev)
 !
     end function
 !
@@ -372,15 +372,15 @@ contains
     subroutine shapeFuncDisp(elem_dime, elem_nbnode, elem_code, coor_qp, &
                              shape_, dshape_, ddshape_)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: elem_dime
         integer, intent(in) :: elem_nbnode
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(2)
         real(kind=8), intent(out), optional :: shape_(9)
-        real(kind=8), intent(out), optional  :: dshape_(2,9)
-        real(kind=8), intent(out), optional  :: ddshape_(3,9)
+        real(kind=8), intent(out), optional  :: dshape_(2, 9)
+        real(kind=8), intent(out), optional  :: ddshape_(3, 9)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -388,15 +388,15 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        if(present(shape_)) then
+        if (present(shape_)) then
             call mmnonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), shape_)
         end if
 !
-        if(present(dshape_)) then
+        if (present(dshape_)) then
             call mmdonf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), dshape_)
         end if
 !
-        if(present(ddshape_)) then
+        if (present(ddshape_)) then
             call mm2onf(elem_dime, elem_nbnode, elem_code, coor_qp(1), coor_qp(2), ddshape_)
         end if
     end subroutine
@@ -406,14 +406,14 @@ contains
 !===================================================================================================
 !
     subroutine shapeFuncDispVolu(elem_code, coor_qp, &
-                             shape_, dshape_)
+                                 shape_, dshape_)
 !
-    implicit none
+        implicit none
 !
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: coor_qp(3)
         real(kind=8), intent(out), optional :: shape_(27)
-        real(kind=8), intent(out), optional  :: dshape_(3,27)
+        real(kind=8), intent(out), optional  :: dshape_(3, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -421,11 +421,11 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        if(present(shape_)) then
+        if (present(shape_)) then
             call elrfvf(elem_code, coor_qp, shape_)
         end if
 !
-        if(present(dshape_)) then
+        if (present(dshape_)) then
             call elrfdf(elem_code, coor_qp, dshape_)
         end if
 !
@@ -437,11 +437,11 @@ contains
 !
     subroutine gradFuncDispVolu(geom, dshape, gradFunc)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: dshape(3, 27)
-        real(kind=8), intent(out) :: gradFunc(3,27)
+        real(kind=8), intent(out) :: gradFunc(3, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -449,42 +449,42 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: g(3,3), h(3,3), jac
+        real(kind=8) :: g(3, 3), h(3, 3), jac
         integer :: ino, j, k
 !
         g = 0.d0
 !
         do ino = 1, geom%nb_node_volu
             do j = 1, geom%elem_dime
-                g(1,j) = g(1,j) + geom%coor_volu_init(j, ino) * dshape(1, ino)
-                g(2,j) = g(2,j) + geom%coor_volu_init(j, ino) * dshape(2, ino)
-                g(3,j) = g(3,j) + geom%coor_volu_init(j, ino) * dshape(3, ino)
+                g(1, j) = g(1, j)+geom%coor_volu_init(j, ino)*dshape(1, ino)
+                g(2, j) = g(2, j)+geom%coor_volu_init(j, ino)*dshape(2, ino)
+                g(3, j) = g(3, j)+geom%coor_volu_init(j, ino)*dshape(3, ino)
             end do
         end do
 !
-        if(geom%elem_dime == 2) g(3,3) = 1.d0
+        if (geom%elem_dime == 2) g(3, 3) = 1.d0
 !
-        h(1,1) = g(2,2) * g(3,3) - g(2,3) * g(3,2)
-        h(2,1) = g(3,1) * g(2,3) - g(2,1) * g(3,3)
-        h(3,1) = g(2,1) * g(3,2) - g(3,1) * g(2,2)
-        h(1,2) = g(1,3) * g(3,2) - g(1,2) * g(3,3)
-        h(2,2) = g(1,1) * g(3,3) - g(1,3) * g(3,1)
-        h(3,2) = g(1,2) * g(3,1) - g(3,2) * g(1,1)
-        h(1,3) = g(1,2) * g(2,3) - g(1,3) * g(2,2)
-        h(2,3) = g(2,1) * g(1,3) - g(2,3) * g(1,1)
-        h(3,3) = g(1,1) * g(2,2) - g(1,2) * g(2,1)
+        h(1, 1) = g(2, 2)*g(3, 3)-g(2, 3)*g(3, 2)
+        h(2, 1) = g(3, 1)*g(2, 3)-g(2, 1)*g(3, 3)
+        h(3, 1) = g(2, 1)*g(3, 2)-g(3, 1)*g(2, 2)
+        h(1, 2) = g(1, 3)*g(3, 2)-g(1, 2)*g(3, 3)
+        h(2, 2) = g(1, 1)*g(3, 3)-g(1, 3)*g(3, 1)
+        h(3, 2) = g(1, 2)*g(3, 1)-g(3, 2)*g(1, 1)
+        h(1, 3) = g(1, 2)*g(2, 3)-g(1, 3)*g(2, 2)
+        h(2, 3) = g(2, 1)*g(1, 3)-g(2, 3)*g(1, 1)
+        h(3, 3) = g(1, 1)*g(2, 2)-g(1, 2)*g(2, 1)
 !
-        jac = g(1,1) * h(1,1) + g(1,2) * h(2,1) + g(1,3) * h(3,1)
+        jac = g(1, 1)*h(1, 1)+g(1, 2)*h(2, 1)+g(1, 3)*h(3, 1)
 !
         gradFunc = 0.d0
 !
         do ino = 1, geom%nb_node_volu
             do j = 1, geom%elem_dime
                 do k = 1, geom%elem_dime
-                    gradFunc(j, ino) = gradFunc(j, ino) + h(j,k) * dshape(k, ino) / jac
+                    gradFunc(j, ino) = gradFunc(j, ino)+h(j, k)*dshape(k, ino)/jac
                 end do
             end do
-        enddo
+        end do
 !
     end subroutine
 !
@@ -495,7 +495,7 @@ contains
     subroutine shapeFuncLagr(elem_dime, elem_code, coor_qp, &
                              shape_)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
@@ -512,16 +512,16 @@ contains
         integer :: elem_nbnode_lagr
         real(kind=8) :: ff(9)
 !
-        if(elem_code == "SE2") then
+        if (elem_code == "SE2") then
             elem_code_lagr = "SE2"
             elem_nbnode_lagr = 2
-        elseif(elem_code == "SE3") then
-                elem_code_lagr = "SE3"
-                elem_nbnode_lagr = 3
-        elseif(elem_code(1:2) == "TR") then
+        elseif (elem_code == "SE3") then
+            elem_code_lagr = "SE3"
+            elem_nbnode_lagr = 3
+        elseif (elem_code(1:2) == "TR") then
             elem_code_lagr = "TR3"
             elem_nbnode_lagr = 3
-        elseif(elem_code(1:2) == "QU") then
+        elseif (elem_code(1:2) == "QU") then
             elem_code_lagr = "QU4"
             elem_nbnode_lagr = 4
         else
@@ -529,7 +529,7 @@ contains
         end if
 !
         call mmnonf(elem_dime, elem_nbnode_lagr, elem_code_lagr, &
-                        coor_qp(1), coor_qp(2), ff)
+                    coor_qp(1), coor_qp(2), ff)
         shape_(1:4) = ff(1:4)
     end subroutine
 !
@@ -539,7 +539,7 @@ contains
 !
     real(kind=8) function evalPoly(nb_node, shape, coeff_node)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: nb_node
         real(kind=8), intent(in) :: coeff_node(*)
@@ -554,8 +554,8 @@ contains
         integer :: i_node
 !
         evalPoly = 0.d0
-        do i_node= 1, nb_node
-            evalPoly = evalPoly + coeff_node(i_node) * shape(i_node)
+        do i_node = 1, nb_node
+            evalPoly = evalPoly+coeff_node(i_node)*shape(i_node)
         end do
 !
     end function
@@ -566,7 +566,7 @@ contains
 !
     real(kind=8) function diameter(nb_node, nodes_coor)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: nb_node
         real(kind=8), intent(in) :: nodes_coor(3, 9)
@@ -581,9 +581,9 @@ contains
         real(kind=8) :: length
 !
         diameter = 0.d0
-        do i_node_i= 1, nb_node
-            do i_node_j= i_node_i + 1, nb_node
-                length = norm2(nodes_coor(1:3, i_node_i) - nodes_coor(1:3, i_node_j))
+        do i_node_i = 1, nb_node
+            do i_node_j = i_node_i+1, nb_node
+                length = norm2(nodes_coor(1:3, i_node_i)-nodes_coor(1:3, i_node_j))
                 diameter = max(diameter, length)
             end do
         end do
@@ -596,7 +596,7 @@ contains
 !
     subroutine testLagrC(geom, func_lagr, mu_c)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_lagr(4)
@@ -617,9 +617,9 @@ contains
 !
         do i_node = 1, geom%nb_lagr_c
             ASSERT(geom%indi_lagc(i_node) > 0)
-            index = index + geom%elem_dime
+            index = index+geom%elem_dime
             mu_c(index+1) = func_lagr(i_node)
-            index = index + geom%indi_lagc(i_node)
+            index = index+geom%indi_lagc(i_node)
         end do
 !
     end subroutine
@@ -630,7 +630,7 @@ contains
 !
     subroutine testLagrF(geom, func_lagr, mu_f)
 !
-    implicit none
+        implicit none
 !
         type(ContactGeom), intent(in) :: geom
         real(kind=8), intent(in) :: func_lagr(4)
@@ -651,12 +651,12 @@ contains
 !
         do i_node = 1, geom%nb_lagr_c
             ASSERT(geom%indi_lagc(i_node) > 0)
-            index = index + geom%elem_dime
+            index = index+geom%elem_dime
             mu_f(index+2, 1) = func_lagr(i_node)
-            if(geom%elem_dime == 3) then
+            if (geom%elem_dime == 3) then
                 mu_f(index+3, 2) = func_lagr(i_node)
             end if
-            index = index + geom%indi_lagc(i_node)
+            index = index+geom%indi_lagc(i_node)
         end do
 !
     end subroutine
@@ -667,10 +667,10 @@ contains
 !
     function barycenter(nb_nodes, coor_nodes)
 !
-    implicit none
+        implicit none
 !
         integer, intent(in) :: nb_nodes
-        real(kind=8), intent(in) :: coor_nodes(3,nb_nodes)
+        real(kind=8), intent(in) :: coor_nodes(3, nb_nodes)
         real(kind=8)  :: barycenter(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -684,10 +684,10 @@ contains
         barycenter = 0.d0
 !
         do i_node = 1, nb_nodes
-            barycenter = barycenter + coor_nodes(:, i_node)
+            barycenter = barycenter+coor_nodes(:, i_node)
         end do
 !
-        barycenter = barycenter / real(nb_nodes, kind=8)
+        barycenter = barycenter/real(nb_nodes, kind=8)
 !
     end function
 !

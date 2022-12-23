@@ -16,20 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apelem_getvertex_n(elem_dime, elem_code,&
+subroutine apelem_getvertex_n(elem_dime, elem_code, &
                               para_coor, nb_vertex, para_code)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmnewt.h"
 !
-integer, intent(in) :: elem_dime
-character(len=8), intent(in) :: elem_code
-real(kind=8), intent(out) :: para_coor(elem_dime-1,4)
-integer, intent(out) :: nb_vertex
-character(len=8), intent(out) :: para_code
+    integer, intent(in) :: elem_dime
+    character(len=8), intent(in) :: elem_code
+    real(kind=8), intent(out) :: para_coor(elem_dime-1, 4)
+    integer, intent(out) :: nb_vertex
+    character(len=8), intent(out) :: para_code
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,35 +49,35 @@ character(len=8), intent(out) :: para_code
 !
     para_coor = 0.d0
 !
-    if (elem_code .eq. 'SE2' .or.&
+    if (elem_code .eq. 'SE2' .or. &
         elem_code .eq. 'SE3') then
-        para_coor(1,1) = -1.d0
-        para_coor(1,2) =  1.d0
-        nb_vertex      = 2
-        para_code      = 'SE2'
-    elseif (elem_code .eq. 'TR3' .or.&
+        para_coor(1, 1) = -1.d0
+        para_coor(1, 2) = 1.d0
+        nb_vertex = 2
+        para_code = 'SE2'
+    elseif (elem_code .eq. 'TR3' .or. &
             elem_code .eq. 'TR6') then
-        para_coor(1,1) = 0.d0
-        para_coor(2,1) = 0.d0
-        para_coor(1,2) = 1.d0
-        para_coor(2,2) = 0.d0
-        para_coor(1,3) = 0.d0
-        para_coor(2,3) = 1.d0
-        nb_vertex      = 3
-        para_code      = 'TR3'
-    else if (elem_code .eq. 'QU4' .or.&
-             elem_code .eq. 'QU8' .or.&
+        para_coor(1, 1) = 0.d0
+        para_coor(2, 1) = 0.d0
+        para_coor(1, 2) = 1.d0
+        para_coor(2, 2) = 0.d0
+        para_coor(1, 3) = 0.d0
+        para_coor(2, 3) = 1.d0
+        nb_vertex = 3
+        para_code = 'TR3'
+    else if (elem_code .eq. 'QU4' .or. &
+             elem_code .eq. 'QU8' .or. &
              elem_code .eq. 'QU9') then
-        para_coor(1,1) = -1.d0
-        para_coor(2,1) = -1.d0
-        para_coor(1,2) = 1.d0
-        para_coor(2,2) = -1.d0
-        para_coor(1,3) = 1.d0
-        para_coor(2,3) = 1.d0
-        para_coor(1,4) = -1.d0
-        para_coor(2,4) = 1.d0
-        nb_vertex      = 4
-        para_code      = 'QU4'
+        para_coor(1, 1) = -1.d0
+        para_coor(2, 1) = -1.d0
+        para_coor(1, 2) = 1.d0
+        para_coor(2, 2) = -1.d0
+        para_coor(1, 3) = 1.d0
+        para_coor(2, 3) = 1.d0
+        para_coor(1, 4) = -1.d0
+        para_coor(2, 4) = 1.d0
+        nb_vertex = 4
+        para_code = 'QU4'
     else
         ASSERT(ASTER_FALSE)
     end if

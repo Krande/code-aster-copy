@@ -19,16 +19,16 @@
 !
 module HHO_L2proj_module
 !
-use HHO_rhs_module
-use HHO_massmat_module
-use HHO_quadrature_module
-use HHO_type
-use HHO_size_module
-use HHO_eval_module
+    use HHO_rhs_module
+    use HHO_massmat_module
+    use HHO_quadrature_module
+    use HHO_type
+    use HHO_size_module
+    use HHO_eval_module
 !
-implicit none
+    implicit none
 !
-private
+    private
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
@@ -54,7 +54,7 @@ contains
 !
     subroutine hhoL2ProjFaceScal(hhoFace, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -79,7 +79,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
-        if(2 * degree > hhoQuad%order) then
+        if (2*degree > hhoQuad%order) then
             call utmess('F', 'HHO1_12')
         end if
 !
@@ -97,7 +97,7 @@ contains
 !
 ! ---- Sucess ?
 !
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
@@ -109,7 +109,7 @@ contains
 !
     subroutine hhoL2ProjFaceVec(hhoFace, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -135,7 +135,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
-        if(2 * degree > hhoQuad%order) then
+        if (2*degree > hhoQuad%order) then
             call utmess('F', 'HHO1_12')
         end if
 !
@@ -149,11 +149,11 @@ contains
 !
 ! ---- Solve the system
 !
-        call dposv('U', mbs, hhoFace%ndim + 1, faceMass, MSIZE_FACE_SCAL, coeff_L2Proj, mbs, info)
+        call dposv('U', mbs, hhoFace%ndim+1, faceMass, MSIZE_FACE_SCAL, coeff_L2Proj, mbs, info)
 !
 ! ---- Sucess ?
 !
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
@@ -165,7 +165,7 @@ contains
 !
     subroutine hhoL2ProjCellScal(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -190,7 +190,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
-        if(2 * degree > hhoQuad%order) then
+        if (2*degree > hhoQuad%order) then
             call utmess('F', 'HHO1_12')
         end if
 !
@@ -208,7 +208,7 @@ contains
 !
 ! ---- Sucess ?
 !
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
@@ -220,7 +220,7 @@ contains
 !
     subroutine hhoL2ProjCellVec(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -246,7 +246,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
-        if(2 * degree > hhoQuad%order) then
+        if (2*degree > hhoQuad%order) then
             call utmess('F', 'HHO1_12')
         end if
 !
@@ -264,7 +264,7 @@ contains
 !
 ! ---- Sucess ?
 !
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
@@ -276,7 +276,7 @@ contains
 !
     subroutine hhoL2ProjCellMat(hhoCell, hhoQuad, FuncValuesQP, degree, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Quadrature), intent(in)    :: hhoQuad
@@ -302,7 +302,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         info = 0
-        if(2 * degree > hhoQuad%order) then
+        if (2*degree > hhoQuad%order) then
             call utmess('F', 'HHO1_12')
         end if
 !
@@ -316,12 +316,12 @@ contains
 !
 ! ---- Solve the system
 !
-        ndim2 = hhoCell%ndim * hhoCell%ndim
+        ndim2 = hhoCell%ndim*hhoCell%ndim
         call dposv('U', mbs, ndim2, cellMass, MSIZE_CELL_SCAL, coeff_L2Proj, mbs, info)
 !
 ! ---- Sucess ?
 !
-        if(info .ne. 0) then
+        if (info .ne. 0) then
             call utmess('F', 'HHO1_4')
         end if
 !
@@ -333,7 +333,7 @@ contains
 !
     subroutine hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
@@ -369,12 +369,12 @@ contains
 !
         if (hhoCell%ndim == 3) then
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
             nompar(nbpara) = 'INST'
             valpar(nbpara) = time
         else if (hhoCell%ndim == 2) then
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
             nompar(nbpara) = 'INST'
             valpar(nbpara) = time
             nompar(4) = 'XXXXXXXX'
@@ -391,32 +391,32 @@ contains
 !
 ! ----- get quadrature
 !
-            call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 1)
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
 !
-            call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar,&
-                                valpar, hhoCell%ndim, FuncValuesFaceQP)
+            call hhoFuncFScalEvalQp(hhoQuadFace, func, nbpara, nompar, &
+                                    valpar, hhoCell%ndim, FuncValuesFaceQP)
 !
 !
 ! -------------- Compute L2 projection
 !
             call hhoL2ProjFaceScal(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
-                                  coeff_L2Proj(ind))
-            ind = ind + fbs
+                                   coeff_L2Proj(ind))
+            ind = ind+fbs
         end do
 !
 ! --- On cell
 !
-        call hhoQuadCell%GetQuadCell(hhoCell, 2 * hhoData%cell_degree() + 1)
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
 !
-        call hhoFuncFScalEvalQp(hhoQuadCell, func, nbpara, nompar,&
+        call hhoFuncFScalEvalQp(hhoQuadCell, func, nbpara, nompar, &
                                 valpar, hhoCell%ndim, FuncValuesCellQP)
 !
         call hhoL2ProjCellScal(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
-                                  coeff_L2Proj(ind))
+                               coeff_L2Proj(ind))
 !
     end subroutine
 !
@@ -426,7 +426,7 @@ contains
 !
     subroutine hhoL2ProjVec(hhoCell, hhoData, func, time, coeff_L2Proj)
 !
-    implicit none
+        implicit none
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
@@ -462,12 +462,12 @@ contains
 !
         if (hhoCell%ndim == 3) then
             nbpara = 4
-            nompar(1:3) = (/ 'X', 'Y', 'Z' /)
+            nompar(1:3) = (/'X', 'Y', 'Z'/)
             nompar(nbpara) = 'INST'
             valpar(nbpara) = time
         else if (hhoCell%ndim == 2) then
             nbpara = 3
-            nompar(1:2) = (/ 'X', 'Y' /)
+            nompar(1:2) = (/'X', 'Y'/)
             nompar(nbpara) = 'INST'
             valpar(nbpara) = time
             nompar(4) = 'XXXXXXXX'
@@ -484,35 +484,35 @@ contains
 !
 ! ----- get quadrature
 !
-            call hhoQuadFace%GetQuadFace(hhoface, 2 * hhoData%face_degree() + 1)
+            call hhoQuadFace%GetQuadFace(hhoface, 2*hhoData%face_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
 !
             do idim = 1, hhoCell%ndim
-                call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar,&
-                                valpar, hhoCell%ndim, FuncValuesFaceQP(idim,1:MAX_QP_FACE))
+                call hhoFuncFScalEvalQp(hhoQuadFace, func(idim), nbpara, nompar, &
+                                        valpar, hhoCell%ndim, FuncValuesFaceQP(idim, 1:MAX_QP_FACE))
             end do
 !
 ! -------------- Compute L2 projection
 !
             call hhoL2ProjFaceVec(hhoFace, hhoQuadFace, FuncValuesFaceQP, hhoData%face_degree(), &
                                   coeff_L2Proj(ind))
-            ind = ind + fbs
+            ind = ind+fbs
         end do
 !
 ! --- On cell
 !
-        call hhoQuadCell%GetQuadCell(hhoCell, 2 * hhoData%cell_degree() + 1)
+        call hhoQuadCell%GetQuadCell(hhoCell, 2*hhoData%cell_degree()+1)
 !
 ! -------------- Value of the function at the quadrature point
 !
         do idim = 1, hhoCell%ndim
-            call hhoFuncFScalEvalQp(hhoQuadCell, func(idim), nbpara, nompar,&
-                                valpar, hhoCell%ndim, FuncValuesCellQP(idim,1:MAX_QP_CELL))
+            call hhoFuncFScalEvalQp(hhoQuadCell, func(idim), nbpara, nompar, &
+                                    valpar, hhoCell%ndim, FuncValuesCellQP(idim, 1:MAX_QP_CELL))
         end do
 !
         call hhoL2ProjCellVec(hhoCell, hhoQuadCell, FuncValuesCellQP, hhoData%cell_degree(), &
-                                  coeff_L2Proj(ind))
+                              coeff_L2Proj(ind))
 !
     end subroutine
 !

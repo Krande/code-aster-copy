@@ -1,5 +1,6 @@
-AlwaysBreakTemplateDeclarations: Yes
 BasedOnStyle: LLVM
+---
+AlwaysBreakTemplateDeclarations: Yes
 BreakConstructorInitializers : BeforeColon
 ColumnLimit: 100
 ConstructorInitializerAllOnOneLineOrOnePerLine: true

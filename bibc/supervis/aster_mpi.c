@@ -1007,8 +1007,8 @@ void DEFPPPPPP( ASMPI_ALLGATHERV_R, asmpi_allgatherv_r, ASTERDOUBLE *sendbuf,
 }
 
 void DEFSPSPPP( ASMPI_ALLGATHERV_CHAR16, asmpi_allgatherv_char16, char *sendbuf, STRING_SIZE sbuff,
-                 ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
-                 ASTERINTEGER4 *displs, MPI_Fint *comm ) {
+                ASTERINTEGER4 *sendcnt, char *recvbuf, STRING_SIZE rbuff, ASTERINTEGER4 *recvcnt,
+                ASTERINTEGER4 *displs, MPI_Fint *comm ) {
     MPI_Comm mpicom;
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c( *comm );

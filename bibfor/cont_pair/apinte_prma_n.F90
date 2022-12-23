@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apinte_prma_n(proj_tole       , elem_dime     , &
-                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                       proj_coor       , nb_node_proj, iret)
+subroutine apinte_prma_n(proj_tole, elem_dime, &
+                         elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                         elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                         proj_coor, nb_node_proj, iret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
@@ -29,15 +29,15 @@ implicit none
 #include "asterfort/gapGetParamCoor.h"
 #include "asterfort/mmnewd.h"
 !
-real(kind=8), intent(in) :: proj_tole
-integer, intent(in) :: elem_dime
-integer, intent(in) :: elem_mast_nbnode
-real(kind=8), intent(in) :: elem_mast_coor(3,9)
-integer, intent(in) :: elem_slav_nbnode
-real(kind=8), intent(in) :: elem_slav_coor(3,9)
-character(len=8), intent(in) :: elem_mast_code, elem_slav_code
-real(kind=8), intent(out) :: proj_coor(elem_dime-1,9)
-integer, intent(out) :: iret, nb_node_proj
+    real(kind=8), intent(in) :: proj_tole
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: elem_mast_nbnode
+    real(kind=8), intent(in) :: elem_mast_coor(3, 9)
+    integer, intent(in) :: elem_slav_nbnode
+    real(kind=8), intent(in) :: elem_slav_coor(3, 9)
+    character(len=8), intent(in) :: elem_mast_code, elem_slav_code
+    real(kind=8), intent(out) :: proj_coor(elem_dime-1, 9)
+    integer, intent(out) :: iret, nb_node_proj
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ integer, intent(out) :: iret, nb_node_proj
     aster_logical, parameter :: debug = ASTER_FALSE
     integer :: i_node, i_dime, elem_mast_line_nbnode
     real(kind=8) :: nosl_coor(3), ksi1_line, ksi2_line
-    real(kind=8) :: ksi1, ksi2, tau1(3), tau2(3), para_coor(2,9)
+    real(kind=8) :: ksi1, ksi2, tau1(3), tau2(3), para_coor(2, 9)
     real(kind=8) :: norm_slav(3)
     character(len=8) :: elem_mast_line_code
 
@@ -69,29 +69,29 @@ integer, intent(out) :: iret, nb_node_proj
 ! --------------------------------------------------------------------------------------------------
 !
     if (debug) then
-        write(*,*) ".. Project slaves nodes in master element parametric space"
-    endif
-    ASSERT(elem_slav_nbnode <= size(proj_coor,2))
+        write (*, *) ".. Project slaves nodes in master element parametric space"
+    end if
+    ASSERT(elem_slav_nbnode <= size(proj_coor, 2))
     proj_coor = 0.d0
 !
 ! --- Projection only vertex of slave cell
 !
     nb_node_proj = elem_slav_nbnode
-    if(elem_slav_code == "SE3") then
+    if (elem_slav_code == "SE3") then
         nb_node_proj = 2
-    elseif(elem_slav_code == "QU8" .or. elem_slav_code == "QU9") then
+    elseif (elem_slav_code == "QU8" .or. elem_slav_code == "QU9") then
         nb_node_proj = 4
-    elseif(elem_slav_code == "TR6" .or. elem_slav_code == "TR7") then
+    elseif (elem_slav_code == "TR6" .or. elem_slav_code == "TR7") then
         nb_node_proj = 3
     end if
 
-    if(elem_mast_code(1:2) == "SE") then
+    if (elem_mast_code(1:2) == "SE") then
         elem_mast_line_code = "SE2"
         elem_mast_line_nbnode = 2
-    elseif(elem_mast_code(1:2) == "TR") then
+    elseif (elem_mast_code(1:2) == "TR") then
         elem_mast_line_code = "TR3"
         elem_mast_line_nbnode = 3
-    elseif(elem_mast_code(1:2) == "QU") then
+    elseif (elem_mast_code(1:2) == "QU") then
         elem_mast_line_code = "QU4"
         elem_mast_line_nbnode = 4
     else
@@ -115,31 +115,31 @@ integer, intent(out) :: iret, nb_node_proj
                     para_coor(1, i_node), para_coor(2, i_node), norm_slav)
 !
 ! ----- Projection on master element
-        call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime,&
-                    elem_mast_coor, nosl_coor       , 75       ,&
-                    proj_tole     , norm_slav            ,&
-                    ksi1          , ksi2     ,&
-                    tau1          , tau2            , iret          )
-        if(iret==1) then
+        call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime, &
+                    elem_mast_coor, nosl_coor, 75, &
+                    proj_tole, norm_slav, &
+                    ksi1, ksi2, &
+                    tau1, tau2, iret)
+        if (iret == 1) then
 !
 ! ----- Try with linearization
             if (debug) then
-                write(*,*) "... Error in projection: try with linear cell"
-            endif
+                write (*, *) "... Error in projection: try with linear cell"
+            end if
 
-            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, elem_dime,&
-                        elem_mast_coor, nosl_coor       , 75       ,&
-                        proj_tole     , norm_slav            ,&
-                        ksi1_line     , ksi2_line    ,&
-                        tau1          , tau2            , iret          )
-            call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime,&
-                        elem_mast_coor, nosl_coor       , 75       ,&
-                        proj_tole     , norm_slav            ,&
-                        ksi1          , ksi2     ,&
-                        tau1          , tau2            , iret, &
-                        ksi1_init=ksi1_line, ksi2_init= ksi2_line         )
+            call mmnewd(elem_mast_line_code, elem_mast_line_nbnode, elem_dime, &
+                        elem_mast_coor, nosl_coor, 75, &
+                        proj_tole, norm_slav, &
+                        ksi1_line, ksi2_line, &
+                        tau1, tau2, iret)
+            call mmnewd(elem_mast_code, elem_mast_nbnode, elem_dime, &
+                        elem_mast_coor, nosl_coor, 75, &
+                        proj_tole, norm_slav, &
+                        ksi1, ksi2, &
+                        tau1, tau2, iret, &
+                        ksi1_init=ksi1_line, ksi2_init=ksi2_line)
 !
-            if(iret == 1) then
+            if (iret == 1) then
                 proj_coor = 0.d0
                 nb_node_proj = 0
                 iret = 2
@@ -154,10 +154,10 @@ integer, intent(out) :: iret, nb_node_proj
         end if
 
 !
-        if(debug) then
-            print*, "ES REF: ", para_coor(1:2, i_node)
-            print*, "NORM: ", norm_slav
-            print*, "PROJ: ", proj_coor(1:2, i_node)
+        if (debug) then
+            print *, "ES REF: ", para_coor(1:2, i_node)
+            print *, "NORM: ", norm_slav
+            print *, "PROJ: ", proj_coor(1:2, i_node)
         end if
     end do
 !

@@ -54,7 +54,7 @@ subroutine op0181()
     if (nval .eq. 0) then
 !        --- CAS D'UN CONCEPT SD_DYNA_GENE ENTRANT (BASE GENE)
         call getvid(' ', 'RESU_GENE', scal=resin, nbret=nval)
-    endif
+    end if
     call getvtx(' ', 'METHODE', scal=method, nbret=nval)
     call getvtx(' ', 'SYMETRIE', scal=symetr, nbret=nval)
 !        --- ACCELERATION MPI (EFFECTIVE QUE SI MPI_NBCPU>1)
@@ -64,11 +64,11 @@ subroutine op0181()
 !
 !     --- EVALUATION DU SENS DE LA FFT
     call gettco(resin, typres)
-    if ((typres(1:10).eq.'DYNA_HARMO') .or. (typres(1:9).eq.'HARM_GENE')) then
+    if ((typres(1:10) .eq. 'DYNA_HARMO') .or. (typres(1:9) .eq. 'HARM_GENE')) then
         nsens = -1
     else
         nsens = 1
-    endif
+    end if
 !
 !     --- RECUPERER LA LISTE DES CHAMPS RENSEIGNEE
     call getvtx(' ', 'NOM_CHAM', nbval=3, vect=grand0, nbret=ngran0)
@@ -78,58 +78,58 @@ subroutine op0181()
         grand0(1) = 'DEPL'
         grand0(2) = 'VITE'
         grand0(3) = 'ACCE'
-    endif
+    end if
 !     --- POUR LES CAS HARMONIQUES, IL FAUT VERIFIER QUE
 !         LES CHAMPS A RESTITUER EXISTENT REELEMENT DANS
 !         LA SD_RESULTANT ENTRANTE
     ngrand = 0
 !               12345678901.
     bl11pt = '           .'
-    do igrand=1,ngran0
-    cham = grand0(igrand)
-    if (typres(1:9) .eq. 'HARM_GENE') then
+    do igrand = 1, ngran0
+        cham = grand0(igrand)
+        if (typres(1:9) .eq. 'HARM_GENE') then
 !
-        call jeexin(resin(1:8)//bl11pt//cham, iret)
-        if (iret .ne. 0) then
-            grand(ngrand+1)=cham
-            ngrand = ngrand + 1
-        endif
+            call jeexin(resin(1:8)//bl11pt//cham, iret)
+            if (iret .ne. 0) then
+                grand(ngrand+1) = cham
+                ngrand = ngrand+1
+            end if
 !
-    else if (typres(1:10).eq.'DYNA_HARMO') then
+        else if (typres(1:10) .eq. 'DYNA_HARMO') then
 !
-        call rsexch(' ', resin(1:8), cham, 1, k19bid,&
-                    iret)
-        if (iret .eq. 0) then
-            grand(ngrand+1)=cham
-            ngrand = ngrand + 1
-        endif
+            call rsexch(' ', resin(1:8), cham, 1, k19bid, &
+                        iret)
+            if (iret .eq. 0) then
+                grand(ngrand+1) = cham
+                ngrand = ngrand+1
+            end if
 !
-    else
+        else
 !       --- CAS DES SD TRANSITOIRES => LES 3 CHAMPS EXISTENT
 !
-        grand(ngrand+1)=cham
-        ngrand = ngrand + 1
-    endif
-    enddo
+            grand(ngrand+1) = cham
+            ngrand = ngrand+1
+        end if
+    end do
 !
 !     --- SI AUCUN CHAMP DEMANDE NE PEUT ETRE TRAITE => ERREUR
     if (ngrand .eq. 0) then
         call utmess('F', 'ALGORITH17_28')
-    endif
+    end if
 !
     vectot = '&&OP0181.VECTOT'
 !
 !     --- BOUCLE SUR LES CHAMPS A CALCULER
     do i = 1, ngrand
 !        --- CALCUL DES FFT DES CHAMPS
-        call prefft(resin, method, symetr, nsens, grand(i),&
+        call prefft(resin, method, symetr, nsens, grand(i), &
                     vectot, nbva, kmpi, ier, npuis)
 !
 !     --- ECRITURE DES RESULTATS
 !
-        call ecresu(resin, vectot, nbva, grand(i), resou,&
+        call ecresu(resin, vectot, nbva, grand(i), resou, &
                     ier)
-    enddo
+    end do
 !
     call jedema()
 end subroutine

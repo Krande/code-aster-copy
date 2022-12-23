@@ -598,7 +598,7 @@ class ConstantFieldOnCells : public DataField {
     };
 
     bool build( bool force = false ) {
-        if( _listOfMeshCells->empty() || force ) {
+        if ( _listOfMeshCells->empty() || force ) {
             _listOfMeshCells->build();
             return true;
         }

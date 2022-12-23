@@ -19,12 +19,12 @@
 !
 subroutine op0167()
 !
-use mesh_module, only : checkInclude, createNameOfCell,&
-                        getCellOptionForName, getNodeOptionForName
-use SolidShell_Mesh_module, only : orieHexa9
-use crea_maillage_module
+    use mesh_module, only: checkInclude, createNameOfCell, &
+                           getCellOptionForName, getNodeOptionForName
+    use SolidShell_Mesh_module, only: orieHexa9
+    use crea_maillage_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -162,13 +162,13 @@ implicit none
 !
 ! - Initializations
 !
-    nbNodeCrea           = 0
-    nbCellCrea           = 0
-    nbCellAddPoi1        = 0
+    nbNodeCrea = 0
+    nbCellCrea = 0
+    nbCellAddPoi1 = 0
     nbGrCellFromCreaCell = 0
     nbGrCellFromCreaPoi1 = 0
-    nbGrCellIn           = 0
-    nbGrNodeIn           = 0
+    nbGrCellIn = 0
+    nbGrNodeIn = 0
 !
 ! - Check Includes
 !
@@ -196,27 +196,27 @@ implicit none
 ! - Main datastructure
 !
     call getres(meshOut, kbi1, kbi2)
-    call getvid(' ', 'MAILLAGE', scal = meshIn, nbret = nbMeshIn)
+    call getvid(' ', 'MAILLAGE', scal=meshIn, nbret=nbMeshIn)
     if (nbMeshIn .ne. 0) then
-        call jeveuo(meshIn//'.DIME', 'L', vi = meshDimeIn)
-        nbNodeIn   = meshDimeIn(1)
-        nbCellIn   = meshDimeIn(3)
+        call jeveuo(meshIn//'.DIME', 'L', vi=meshDimeIn)
+        nbNodeIn = meshDimeIn(1)
+        nbCellIn = meshDimeIn(3)
         call jeexin(meshIn//'.GROUPEMA', iret)
         if (iret .ne. 0) then
             call jelira(meshIn//'.GROUPEMA', 'NOMUTI', nbGrCellIn)
-        endif
+        end if
         call jeexin(meshIn//'.GROUPENO', iret)
         if (iret .ne. 0) then
             call jelira(meshIn//'.GROUPENO', 'NOMUTI', nbGrNodeIn)
-        endif
-        call jeveuo(meshIn//'.TYPMAIL', 'L', vi = meshTypmailIn)
-    endif
+        end if
+        call jeveuo(meshIn//'.TYPMAIL', 'L', vi=meshTypmailIn)
+    end if
 !
 ! - MAILLAGE is required except for GEOM_FIBRE and ECLA_PG
 !
     if (nbMeshIn .eq. 0 .and. nbGeomFibre .eq. 0 .and. nbOccEclaPg .eq. 0) then
         call utmess('F', 'MESH1_15')
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -233,17 +233,17 @@ implicit none
         call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=0, nbret=nbField)
         if (nbField .lt. 0) then
             nbField = -nbField
-            AS_ALLOCATE(vk16 = listField, size = nbField)
+            AS_ALLOCATE(vk16=listField, size=nbField)
             call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=nbField, vect=listField)
         else
-            AS_ALLOCATE(vk16 = listField, size = 1)
-        endif
+            AS_ALLOCATE(vk16=listField, size=1)
+        end if
         call exlima(keywfact, 1, 'V', model, ligrel)
-        call eclpgm(meshOut, model  , k19void  , ligrel, shrink,&
-                    lonmin , nbField, listField)
-        AS_DEALLOCATE(vk16 = listField)
+        call eclpgm(meshOut, model, k19void, ligrel, shrink, &
+                    lonmin, nbField, listField)
+        AS_DEALLOCATE(vk16=listField)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -255,7 +255,7 @@ implicit none
         call jeveuo(geofi//'.GFMA', 'L', jvGeofi)
         call copisd('MAILLAGE', 'G', zk8(jvGeofi), meshOut)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -269,7 +269,7 @@ implicit none
         end if
         call cmcrea(meshIn, meshOut, nbOccCreaFiss)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -282,22 +282,22 @@ implicit none
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
-        endif
+        end if
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_8')
-        endif
+        end if
         keywfact = 'LINE_QUAD'
         call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
         call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNodeNume)
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
         if (nbCell .ne. nbCellIn) then
             call utmess('A', 'MESH1_4', sk=keywfact)
-        endif
-        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        end if
+        call jeveuo(jvCellNume, 'L', vi=listCellNume)
         call cmlqlq(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -306,43 +306,43 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     do k = 1, 2
-        if (k .eq. 1) keywfact='HEXA20_27'
-        if (k .eq. 2) keywfact='PENTA15_18'
+        if (k .eq. 1) keywfact = 'HEXA20_27'
+        if (k .eq. 2) keywfact = 'PENTA15_18'
         call getfac(keywfact, nbOcc)
         if (nbOcc .gt. 0) then
 !
-            lpb=.false.
+            lpb = .false.
             if (keywfact .eq. 'HEXA20_27') then
                 call dismoi('EXI_PENTA15', meshIn, 'MAILLAGE', repk=answer)
-                if (answer .eq. 'OUI') lpb=.true.
+                if (answer .eq. 'OUI') lpb = .true.
                 call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=answer)
-                if (answer .eq. 'OUI') lpb=.true.
-            else if (keywfact.eq.'PENTA15_18') then
+                if (answer .eq. 'OUI') lpb = .true.
+            else if (keywfact .eq. 'PENTA15_18') then
                 call dismoi('EXI_HEXA20', meshIn, 'MAILLAGE', repk=answer)
-                if (answer .eq. 'OUI') lpb=.true.
+                if (answer .eq. 'OUI') lpb = .true.
                 call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=answer)
-                if (answer .eq. 'OUI') lpb=.true.
-            endif
+                if (answer .eq. 'OUI') lpb = .true.
+            end if
             if (lpb) then
                 call utmess('A', 'MESH1_11', sk=keywfact)
-            endif
+            end if
 !
             call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
             call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNodeNume)
 !
             call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
-            call jeveuo(jvCellNume, 'L', vi = listCellNume)
+            call jeveuo(jvCellNume, 'L', vi=listCellNume)
             if (nbCell .ne. nbCellIn) then
                 call utmess('A', 'MESH1_4', sk=keywfact)
-            endif
+            end if
 !
             if (keywfact .eq. 'HEXA20_27') then
                 call cm2027(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
-            else if (keywfact.eq.'PENTA15_18') then
+            else if (keywfact .eq. 'PENTA15_18') then
                 call cm1518(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
-            endif
+            end if
             goto 350
-        endif
+        end if
     end do
 !
 ! --------------------------------------------------------------------------------------------------
@@ -356,11 +356,11 @@ implicit none
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
-        endif
+        end if
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_8')
-        endif
+        end if
         keywfact = 'COQUE_SOLIDE'
 
 !------ Orient HEXA9
@@ -381,9 +381,9 @@ implicit none
 
 ! --------- Get parameters
             call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
-            call jeveuo(jvCellNume, 'L', vi = listCellNume)
-            call getvtx(keywfact, 'PREF_NOEUD', iocc = iocc, scal = prefNodeName)
-            call getvis(keywfact, 'PREF_NUME' , iocc = iocc, scal = prefNodeNume)
+            call jeveuo(jvCellNume, 'L', vi=listCellNume)
+            call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, scal=prefNodeName)
+            call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefNodeNume)
 
 ! --------- Convert cells
             call meshSolidShell%convert_cells(nbCell, listCellNume, prefNodeName, prefNodeNume)
@@ -396,7 +396,7 @@ implicit none
         call meshSolidShell%clean()
 
         goto 350
-    endif
+    end if
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -410,20 +410,20 @@ implicit none
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
-        endif
+        end if
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_8')
-        endif
+        end if
         keywfact = 'QUAD_LINE'
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
         if (nbCell .ne. nbCellIn) then
             call utmess('A', 'MESH1_4', sk=keywfact)
-        endif
-        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        end if
+        call jeveuo(jvCellNume, 'L', vi=listCellNume)
         call cmqlql(meshIn, meshOut, nbCell, listCellNume)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -436,22 +436,22 @@ implicit none
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
-        endif
+        end if
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_8')
-        endif
+        end if
         keywfact = 'MODI_HHO'
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
         if (nbCell .ne. nbCellIn) then
             call utmess('A', 'MESH1_4', sk=keywfact)
-        endif
-        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        end if
+        call jeveuo(jvCellNume, 'L', vi=listCellNume)
         call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
         prefNodeNume = 1
         call cmhho(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -464,20 +464,20 @@ implicit none
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
-        endif
+        end if
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_8')
-        endif
+        end if
         keywfact = 'RAFFINEMENT'
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
         if (nbCell .ne. nbCellIn) then
             call utmess('F', 'MESH1_4', sk=keywfact)
-        endif
+        end if
         call getvis(keywfact, 'NIVEAU', iocc=1, scal=level)
         call cmraff(meshIn, meshOut, level, info)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -494,30 +494,30 @@ implicit none
         do iocc = 1, nbOccModiMaille
             call getvtx(keywfact, 'OPTION', iocc=iocc, scal=option)
             if (option .eq. 'QUAD_TRIA3') then
-                iqtr         = iqtr + 1
+                iqtr = iqtr+1
                 iOccQuadTria = iocc
-            endif
+            end if
         end do
         if (iqtr .gt. 1) then
             call utmess('F', 'MESH1_9')
-        endif
+        end if
         if (iqtr .eq. 1) then
             call dismoi('EXI_TRIA6', meshIn, 'MAILLAGE', repk=answer)
             if (answer .eq. 'OUI') then
                 call utmess('A', 'MESH1_10')
-            endif
+            end if
             call getvtx(keywfact, 'PREF_MAILLE', iocc=iOccQuadTria, scal=prefCellName)
             call getvis(keywfact, 'PREF_NUME', iocc=iOccQuadTria, scal=prefCellNume)
             call getelem(meshIn, keywfact, iOccQuadTria, 'F', jvCellNume, nbCell)
             if (nbCell .ne. nbCellIn) then
                 call utmess('A', 'MESH1_4', sk=keywfact)
-            endif
-            call jeveuo(jvCellNume, 'L', vi = listCellNume)
-            call cmqutr('G', meshIn, meshOut, nbCell, listCellNume,&
+            end if
+            call jeveuo(jvCellNume, 'L', vi=listCellNume)
+            call cmqutr('G', meshIn, meshOut, nbCell, listCellNume, &
                         prefCellName, prefCellNume)
             goto 350
-        endif
-    endif
+        end if
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -539,13 +539,13 @@ implicit none
         if (plan .eq. 'MOY') then
             trans = 'INF'
             call getvtx(keywfact, 'TRANSLATION', iocc=1, scal=trans)
-        endif
+        end if
         call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
-        call jeveuo(jvCellNume, 'L', vi = listCellNume)
-        call cmcovo(meshIn, meshOut, nbCell, listCellNume, prefNodeName,&
+        call jeveuo(jvCellNume, 'L', vi=listCellNume)
+        call cmcovo(meshIn, meshOut, nbCell, listCellNume, prefNodeName, &
                     prefCellName, prefNume, epais, plan, trans)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -557,10 +557,10 @@ implicit none
         if (isParallelMesh(meshIn)) then
             call utmess('F', 'MESH1_22')
         end if
-        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut// '.CRMA', 'G', 0, [0])
+        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut//'.CRMA', 'G', 0, [0])
         call chckma(meshOut, 1.0d-03)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -572,10 +572,10 @@ implicit none
     nbCellModi = 0
     if (nbOccModiMaille .ne. 0) then
         keywfact = 'MODI_MAILLE'
-        AS_ALLOCATE(vi = modiCellNume, size = nbCellIn)
-        AS_ALLOCATE(vi = modiCellType, size = nbCellIn)
-        AS_ALLOCATE(vk8 = creaNodeName, size = nbCellIn)
-        AS_ALLOCATE(vi  = creaNodeNume, size = nbCellIn)
+        AS_ALLOCATE(vi=modiCellNume, size=nbCellIn)
+        AS_ALLOCATE(vi=modiCellType, size=nbCellIn)
+        AS_ALLOCATE(vk8=creaNodeName, size=nbCellIn)
+        AS_ALLOCATE(vi=creaNodeNume, size=nbCellIn)
 
         iad = 1
         do iocc = 1, nbOccModiMaille
@@ -589,16 +589,16 @@ implicit none
                 cellTypeToModify = MT_SEG3
             else
                 ASSERT(ASTER_FALSE)
-            endif
+            end if
 
 ! --------- Get options from user for name of new nodes
-            call getNodeOptionForName(keywfact     , iocc,&
-                                      lPrefNodeName, lPrefNodeNume,&
-                                      prefNodeName , prefNodeNume)
+            call getNodeOptionForName(keywfact, iocc, &
+                                      lPrefNodeName, lPrefNodeNume, &
+                                      prefNodeName, prefNodeNume)
 
 ! --------- Get list of cells to modify
             call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
-            call jeveuo(jvCellNume, 'L', vi = listCellNume)
+            call jeveuo(jvCellNume, 'L', vi=listCellNume)
 
 ! --------- Count number of cells to modify
             nbCellType = 0
@@ -606,8 +606,8 @@ implicit none
                 cellNumeIn = listCellNume(iCell)
                 cellTypeIn = meshTypmailIn(cellNumeIn)
                 if (cellTypeIn .eq. cellTypeToModify) then
-                    nbCellType  = nbCellType + 1
-                endif
+                    nbCellType = nbCellType+1
+                end if
             end do
             ASSERT(nbCellType .le. nbCell)
 
@@ -618,9 +618,9 @@ implicit none
 
 ! ------------- This type has to been modified => one node added, one cell modify
                 if (cellTypeIn .eq. cellTypeToModify) then
-                    nbCellModi  = nbCellModi + 1
+                    nbCellModi = nbCellModi+1
 
-                    do iCellModi = iad, iad + nbCellType - 1
+                    do iCellModi = iad, iad+nbCellType-1
                         ASSERT(iCellModi .le. nbCellIn)
                         creaNodeName(iCellModi) = prefNodeName
                     end do
@@ -632,25 +632,25 @@ implicit none
                     ASSERT(nbCellModi .le. nbCellIn)
                     modiCellNume(nbCellModi) = cellNumeIn
                     modiCellType(nbCellModi) = cellTypeIn
-                endif
+                end if
             end do
 
-            iad = iad + nbCellType
+            iad = iad+nbCellType
             call jedetr(jvCellNume)
 
 ! --------- No cells of this type to modify
             if (nbCellType .le. 0) then
                 call utmess('A', 'MESH2_4', sk=option)
-            endif
+            end if
         end do
 !
         if (nbCellModi .eq. 0) then
             call utmess('A', 'MESH2_5')
-        endif
+        end if
 
 ! ----- Each modified cell add ONE node
         nbNodeCrea = nbCellModi
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -664,27 +664,27 @@ implicit none
             call utmess('F', 'MESH1_22')
         end if
         keywfact = 'CREA_MAILLE'
-        call wkvect(crgrnu, 'V V I', nbCellIn, vi = creaCellNume)
-        call wkvect(crgrno, 'V V K8', nbCellIn, vk8 = creaCellName)
+        call wkvect(crgrnu, 'V V I', nbCellIn, vi=creaCellNume)
+        call wkvect(crgrno, 'V V K8', nbCellIn, vk8=creaCellName)
         listCreaLength = nbCellIn
-        nbCellCrea     = 0
-        AS_ALLOCATE(vi = creaCellOccNb, size = nbOccCreaMaille)
-        AS_ALLOCATE(vk24 = creaCellOccGrName, size = nbOccCreaMaille)
+        nbCellCrea = 0
+        AS_ALLOCATE(vi=creaCellOccNb, size=nbOccCreaMaille)
+        AS_ALLOCATE(vk24=creaCellOccGrName, size=nbOccCreaMaille)
 
         do iocc = 1, nbOccCreaMaille
 ! --------- Get options from user for name of new cells
-            call getCellOptionForName(keywfact     , iocc,&
-                                      lPrefCellName, lPrefCellNume,&
-                                      prefCellName , prefCellNume)
+            call getCellOptionForName(keywfact, iocc, &
+                                      lPrefCellName, lPrefCellNume, &
+                                      prefCellName, prefCellNume)
 
 ! --------- Get list of cells
             call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
-            call jeveuo(jvCellNume, 'L', vi = listCellNume)
+            call jeveuo(jvCellNume, 'L', vi=listCellNume)
 
 ! --------- Name of group of cells
-            call getvtx(keywfact, 'NOM', iocc=iocc, scal=grCellName, nbret = n1)
+            call getvtx(keywfact, 'NOM', iocc=iocc, scal=grCellName, nbret=n1)
             ASSERT(n1 .eq. 1)
-            creaCellOccNb(iocc)     = nbCell
+            creaCellOccNb(iocc) = nbCell
             creaCellOccGrName(iocc) = grCellName
 
             do iCell = 1, nbCell
@@ -694,27 +694,27 @@ implicit none
 
 ! ------------- Create name for new cell
                 cellNameOut = cellNameIn
-                call createNameOfCell(cellNameOut  ,&
-                                      lPrefCellName, lPrefCellNume,&
-                                      prefCellName , prefCellNume)
+                call createNameOfCell(cellNameOut, &
+                                      lPrefCellName, lPrefCellNume, &
+                                      prefCellName, prefCellNume)
 
 ! ------------- Check if name of cell exist
                 call jenonu(jexnom(meshIn//'.NOMMAI', cellNameOut), cellNumeOut)
                 if (cellNumeOut .ne. 0) then
-                    call utmess('F', 'MESH2_2', sk = cellNameOut)
-                endif
+                    call utmess('F', 'MESH2_2', sk=cellNameOut)
+                end if
 
 ! ------------- A new cell
-                nbCellCrea = nbCellCrea + 1
+                nbCellCrea = nbCellCrea+1
 
 ! ------------- Extend size of objects
                 if (nbCellCrea .gt. listCreaLength) then
                     call juveca(crgrno, 2*nbCellCrea)
                     call juveca(crgrnu, 2*nbCellCrea)
-                    call jeveuo(crgrnu, 'E', vi = creaCellNume)
-                    call jeveuo(crgrno, 'E', vk8 = creaCellName)
+                    call jeveuo(crgrnu, 'E', vi=creaCellNume)
+                    call jeveuo(crgrno, 'E', vk8=creaCellName)
                     call jelira(crgrno, 'LONMAX', listCreaLength)
-                endif
+                end if
 
 ! ------------- Save name and index of new cell
                 creaCellNume(nbCellCrea) = cellNumeIn
@@ -723,7 +723,7 @@ implicit none
             end do
             call jedetr(jvCellNume)
         end do
-    endif
+    end if
 !
 ! - Each CREA_MAILLE create a group of cells
 !
@@ -735,34 +735,34 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbCellAddPoi1        = 0
+    nbCellAddPoi1 = 0
     nbGrCellFromCreaPoi1 = 0
-    cellShift            = 0
+    cellShift = 0
     if (nbOccCreaPoi1 .ne. 0) then
         keywfact = 'CREA_POI1'
-        AS_ALLOCATE(vi = creaGrPoi1NbCell, size = nbOccCreaPoi1)
-        AS_ALLOCATE(vk24 = creaGrPoi1GrName, size = nbOccCreaPoi1)
-        AS_ALLOCATE(vk8 = creaGrPoi1CellName, size = nbOccCreaPoi1*nbNodeIn)
-        AS_ALLOCATE(vl = creaPoi1Flag, size = nbNodeIn)
-        AS_ALLOCATE(vk8 = creaPoi1Name, size = nbNodeIn)
+        AS_ALLOCATE(vi=creaGrPoi1NbCell, size=nbOccCreaPoi1)
+        AS_ALLOCATE(vk24=creaGrPoi1GrName, size=nbOccCreaPoi1)
+        AS_ALLOCATE(vk8=creaGrPoi1CellName, size=nbOccCreaPoi1*nbNodeIn)
+        AS_ALLOCATE(vl=creaPoi1Flag, size=nbNodeIn)
+        AS_ALLOCATE(vk8=creaPoi1Name, size=nbNodeIn)
         do iocc = 1, nbOccCreaPoi1
 
 ! --------- Get list of nodes to create POI1
             call getnode(meshIn, keywfact, iocc, 'F', jvNodeNume, nbNode)
-            call jeveuo(jvNodeNume, 'L', vi = listNodeNume)
+            call jeveuo(jvNodeNume, 'L', vi=listNodeNume)
             do iNode = 1, nbNode
                 nodeNumeIn = listNodeNume(iNode)
                 if (.not. creaPoi1Flag(nodeNumeIn)) then
                     creaPoi1Flag(nodeNumeIn) = ASTER_TRUE
-                endif
+                end if
             end do
 
 ! --------- Get list of nodes to create GROUP_MA for POI1
             call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
-                call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, scal = grCellName)
+                call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, scal=grCellName)
                 creaGrPoi1GrName(iOcc) = grCellName
-                nbGrCellFromCreaPoi1   = nbGrCellFromCreaPoi1 + 1
+                nbGrCellFromCreaPoi1 = nbGrCellFromCreaPoi1+1
                 creaGrPoi1NbCell(iOcc) = nbNode
                 do iNode = 1, nbNode
                     nodeNumeIn = listNodeNume(iNode)
@@ -770,8 +770,8 @@ implicit none
                     cellNameOut = nodeNameIn
                     creaGrPoi1CellName(cellShift+iNode) = cellNameOut
                 end do
-                cellShift = cellShift + nbNode
-            endif
+                cellShift = cellShift+nbNode
+            end if
             call jedetr(jvNodeNume)
         end do
 ! ----- Prepare objects for POI1 to add
@@ -780,19 +780,19 @@ implicit none
             if (.not. creaPoi1Flag(nodeNumeIn)) then
                 cycle
             else
-                nbCellAddPoi1 = nbCellAddPoi1 + 1
-            endif
+                nbCellAddPoi1 = nbCellAddPoi1+1
+            end if
             call jenuno(jexnum(meshIn//'.NOMNOE', iNode), nodeNameIn)
             cellNameIn = nodeNameIn
             call jenonu(jexnom(meshIn//'.NOMMAI', cellNameIn), cellNumeIn)
             if (cellNumeIn .eq. 0) then
                 creaPoi1Name(nbCellAddPoi1) = cellNameIn
             else
-                call utmess('F', 'MESH1_14', sk = cellNameIn)
-            endif
+                call utmess('F', 'MESH1_14', sk=cellNameIn)
+            end if
         end do
-        AS_DEALLOCATE(vl = creaPoi1Flag)
-    endif
+        AS_DEALLOCATE(vl=creaPoi1Flag)
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -800,14 +800,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jedupo(meshIn//'.DIME'           , 'G', meshOut//'.DIME'           , ASTER_FALSE)
+    call jedupo(meshIn//'.DIME', 'G', meshOut//'.DIME', ASTER_FALSE)
     call jedupo(meshIn//'.COORDO    .DESC', 'G', meshOut//'.COORDO    .DESC', ASTER_FALSE)
     call jedupo(meshIn//'.COORDO    .REFE', 'G', meshOut//'.COORDO    .REFE', ASTER_FALSE)
-    call jedupo(meshIn//'.NOMACR'         , 'G', meshOut//'.NOMACR'         , ASTER_FALSE)
-    call jedupo(meshIn//'.PARA_R'         , 'G', meshOut//'.PARA_R'         , ASTER_FALSE)
-    call jedupo(meshIn//'.SUPMAIL'        , 'G', meshOut//'.SUPMAIL'        , ASTER_FALSE)
-    call jedupo(meshIn//'.TYPL'           , 'G', meshOut//'.TYPL'           , ASTER_FALSE)
-    call jedupo(meshIn//'.ABSC_CURV'      , 'G', meshOut//'.ABSC_CURV'      , ASTER_FALSE)
+    call jedupo(meshIn//'.NOMACR', 'G', meshOut//'.NOMACR', ASTER_FALSE)
+    call jedupo(meshIn//'.PARA_R', 'G', meshOut//'.PARA_R', ASTER_FALSE)
+    call jedupo(meshIn//'.SUPMAIL', 'G', meshOut//'.SUPMAIL', ASTER_FALSE)
+    call jedupo(meshIn//'.TYPL', 'G', meshOut//'.TYPL', ASTER_FALSE)
+    call jedupo(meshIn//'.ABSC_CURV', 'G', meshOut//'.ABSC_CURV', ASTER_FALSE)
     call jedupo(meshIn//'.NOMACR', 'G', meshOut//'.NOMACR', ASTER_FALSE)
     call jedupo(meshIn//'.PARA_R', 'G', meshOut//'.PARA_R', ASTER_FALSE)
     call jedupo(meshIn//'.SUPMAIL', 'G', meshOut//'.SUPMAIL', ASTER_FALSE)
@@ -816,12 +816,12 @@ implicit none
 
 ! - New sizes
 
-    nbNodeOut   = nbNodeIn + nbNodeCrea
-    nbCellOut   = nbCellIn + nbCellCrea + nbCellAddPoi1
-    nbGrCellOut = nbGrCellIn + nbGrCellFromCreaCell + nbGrCellFromCreaPoi1
+    nbNodeOut = nbNodeIn+nbNodeCrea
+    nbCellOut = nbCellIn+nbCellCrea+nbCellAddPoi1
+    nbGrCellOut = nbGrCellIn+nbGrCellFromCreaCell+nbGrCellFromCreaPoi1
     nbGrNodeOut = nbGrNodeIn
     call jedupo(meshIn//'.DIME', 'G', meshOut//'.DIME', ASTER_FALSE)
-    call jeveuo(meshOut//'.DIME', 'E', vi = meshDimeOut)
+    call jeveuo(meshOut//'.DIME', 'E', vi=meshDimeOut)
     meshDimeOut(1) = nbNodeOut
     meshDimeOut(3) = nbCellOut
 
@@ -843,36 +843,36 @@ implicit none
         do iNode = nbNodeIn+1, nbNodeOut
             call codent(creaNodeNume(iNode-nbNodeIn), 'G', knume)
             if (creaNodeName(iNode-nbNodeIn) .eq. creaNodeName(iNode-nbNodeIn+1)) then
-                creaNodeNume(iNode-nbNodeIn+1) = creaNodeNume(iNode-nbNodeIn) + 1
-            endif
+                creaNodeNume(iNode-nbNodeIn+1) = creaNodeNume(iNode-nbNodeIn)+1
+            end if
             prefNodeName = creaNodeName(iNode-nbNodeIn)
-            if (lxlgut(knume) + lxlgut(prefNodeName) .gt. 8) then
+            if (lxlgut(knume)+lxlgut(prefNodeName) .gt. 8) then
                 call utmess('F', 'MESH2_1')
-            endif
+            end if
             nodeNameOut = prefNodeName(1:lxlgut(prefNodeName))//knume
             call jeexin(jexnom(meshOut//'.NOMNOE', nodeNameOut), nodeNumeOut)
             if (nodeNumeOut .eq. 0) then
                 call jecroc(jexnom(meshOut//'.NOMNOE', nodeNameOut))
             else
-                call utmess('F', 'MESH2_3', sk = nodeNameOut)
-            endif
+                call utmess('F', 'MESH2_3', sk=nodeNameOut)
+            end if
         end do
-    endif
+    end if
 
 ! - Coordinates of nodes
     call jedupo(meshIn//'.COORDO    .DESC', 'G', meshOut//'.COORDO    .DESC', ASTER_FALSE)
     call jedupo(meshIn//'.COORDO    .REFE', 'G', meshOut//'.COORDO    .REFE', ASTER_FALSE)
-    call jeveuo(meshOut//'.COORDO    .REFE', 'E', vk24 = meshRefeOut)
+    call jeveuo(meshOut//'.COORDO    .REFE', 'E', vk24=meshRefeOut)
     meshRefeOut(1) = meshOut
     if (nbNodeOut .eq. nbNodeIn) then
         call jedupo(meshIn//'.COORDO    .VALE', 'G', meshOut//'.COORDO    .VALE', ASTER_FALSE)
     else
-        call jeveuo(meshIn//'.COORDO    .VALE', 'L', vr = meshValeIn)
-        call wkvect(meshOut//'.COORDO    .VALE', 'G V R8', 3*nbNodeOut, vr = meshValeOut)
+        call jeveuo(meshIn//'.COORDO    .VALE', 'L', vr=meshValeIn)
+        call wkvect(meshOut//'.COORDO    .VALE', 'G V R8', 3*nbNodeOut, vr=meshValeOut)
         meshValeOut(1:3*nbNodeIn) = meshValeIn(1:3*nbNodeIn)
         call jelira(meshIn//'.COORDO    .VALE', 'DOCU', cval=cdim)
         call jeecra(meshOut//'.COORDO    .VALE', 'DOCU', cval=cdim)
-    endif
+    end if
 !
 ! ==================================================================================================
 !
@@ -884,9 +884,9 @@ implicit none
 ! - Create cells
     call jecreo(meshOut//'.NOMMAI', 'G N K8')
     call jeecra(meshOut//'.NOMMAI', 'NOMMAX', nbCellOut, ' ')
-    call wkvect(meshOut//'.TYPMAIL', 'G V I', nbCellOut, vi = meshTypmailOut)
+    call wkvect(meshOut//'.TYPMAIL', 'G V I', nbCellOut, vi=meshTypmailOut)
     call jecrec(meshOut//'.CONNEX', 'G V I', 'NU', 'CONTIG', 'VARIABLE', nbCellOut)
-    call jeecra(meshOut//'.CONNEX','NUTIOC',nbCellOut)
+    call jeecra(meshOut//'.CONNEX', 'NUTIOC', nbCellOut)
 
 ! - Object to save parameters of cells
     AS_ALLOCATE(vi=nbNodeByCellOut, size=nbCellOut)
@@ -895,7 +895,7 @@ implicit none
 
 ! - Copy previous cells
     connexLength = 0
-    cellShift    = 0
+    cellShift = 0
     do iCell = 1, nbCellIn
 
 ! ----- Copy name of cell
@@ -914,32 +914,32 @@ implicit none
         nbNodeInCellOut = nbNodeInCellIn
         do iNode = 1, nbNodeCrea
             if (iCell .eq. modiCellNume(iNode)) then
-                nbNodeInCellOut = nbNodeInCellIn + 1
+                nbNodeInCellOut = nbNodeInCellIn+1
                 goto 160
-            endif
+            end if
         end do
 160     continue
-        connexLength = connexLength + nbNodeInCellOut
+        connexLength = connexLength+nbNodeInCellOut
 
 ! ----- Save new parameters of cell
         nbNodeByCellOut(iCell) = nbNodeInCellOut
-        connexAdr(iCell)       = jvConnexIn
-        allCellNume(iCell)     = cellNumeOut
+        connexAdr(iCell) = jvConnexIn
+        allCellNume(iCell) = cellNumeOut
     end do
-    cellShift = cellShift + nbCellIn
+    cellShift = cellShift+nbCellIn
 
 ! - Create cell from "CREA_MAILLE"
     do iCell = 1, nbCellCrea
         cellNameOut = creaCellName(iCell)
-        cellNumeIn  = creaCellNume(iCell)
+        cellNumeIn = creaCellNume(iCell)
 
 ! ----- Create name of new cell
         call jeexin(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
         if (cellNumeOut .eq. 0) then
             call jecroc(jexnom(meshOut//'.NOMMAI', cellNameOut))
         else
-            call utmess('F', 'MESH2_2', sk = cellNameOut)
-        endif
+            call utmess('F', 'MESH2_2', sk=cellNameOut)
+        end if
         call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
 
 ! ----- Copy type of new cell
@@ -948,43 +948,43 @@ implicit none
 ! ----- Get connexity of old cell
         call jelira(jexnum(meshIn//'.CONNEX', cellNumeIn), 'LONMAX', nbNodeInCellIn)
         call jeveuo(jexnum(meshIn//'.CONNEX', cellNumeIn), 'L', jvConnexIn)
-        connexLength    = connexLength + nbNodeInCellIn
+        connexLength = connexLength+nbNodeInCellIn
         nbNodeInCellOut = nbNodeInCellIn
 
 ! ----- Save new parameters of cell
         nbNodeByCellOut(cellShift+iCell) = nbNodeInCellOut
-        connexAdr(cellShift+iCell)       = jvConnexIn
-        allCellNume(cellShift+iCell)     = cellNumeOut
+        connexAdr(cellShift+iCell) = jvConnexIn
+        allCellNume(cellShift+iCell) = cellNumeOut
 
     end do
 
 ! - Set new connexity of cells
-    connexLength = connexLength + nbCellAddPoi1
+    connexLength = connexLength+nbCellAddPoi1
     call jeecra(meshOut//'.CONNEX', 'LONT', connexLength)
 
 ! - Copy connexity from previous cells
     cellShift = 0
     do iCell = 1, nbCellIn
         nbNodeInCellOut = nbNodeByCellOut(cellShift+iCell)
-        jvConnexIn      = connexAdr(cellShift+iCell)
-        cellNumeOut     = allCellNume(cellShift+iCell)
+        jvConnexIn = connexAdr(cellShift+iCell)
+        cellNumeOut = allCellNume(cellShift+iCell)
         call jeecra(jexnum(meshOut//'.CONNEX', cellNumeOut), 'LONMAX', nbNodeInCellOut)
         call jeveuo(jexnum(meshOut//'.CONNEX', cellNumeOut), 'E', jvConnexOut)
         do iNode = 1, nbNodeInCellOut
-            zi(jvConnexOut - 1 + iNode) = zi(jvConnexIn - 1 + iNode)
+            zi(jvConnexOut-1+iNode) = zi(jvConnexIn-1+iNode)
         end do
     end do
-    cellShift = cellShift + nbCellIn
+    cellShift = cellShift+nbCellIn
 
 ! - Create connexity for CREA_MAILLE
     do iCell = 1, nbCellCrea
         nbNodeInCellOut = nbNodeByCellOut(cellShift+iCell)
-        jvConnexIn      = connexAdr(cellShift+iCell)
-        cellNumeOut     = allCellNume(cellShift+iCell)
+        jvConnexIn = connexAdr(cellShift+iCell)
+        cellNumeOut = allCellNume(cellShift+iCell)
         call jeecra(jexnum(meshOut//'.CONNEX', cellNumeOut), 'LONMAX', nbNodeInCellOut)
         call jeveuo(jexnum(meshOut//'.CONNEX', cellNumeOut), 'E', jvConnexOut)
         do iNode = 1, nbNodeInCellOut
-            zi(jvConnexOut - 1 + iNode) = zi(jvConnexIn - 1 + iNode)
+            zi(jvConnexOut-1+iNode) = zi(jvConnexIn-1+iNode)
         end do
     end do
 
@@ -998,8 +998,8 @@ implicit none
         if (cellNumeOut .eq. 0) then
             call jecroc(jexnom(meshOut//'.NOMMAI', cellNameOut))
         else
-            call utmess('F', 'MESH2_2', sk = cellNameOut)
-        endif
+            call utmess('F', 'MESH2_2', sk=cellNameOut)
+        end if
         call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellNumeOut)
 
 ! ----- Set type of cell
@@ -1028,9 +1028,9 @@ implicit none
     if (nbGrCellOut .ne. 0) then
         call jecreo(meshOut//'.PTRNOMMAI', 'G N K24')
         call jeecra(meshOut//'.PTRNOMMAI', 'NOMMAX', nbGrCellOut, ' ')
-        call jecrec(meshOut//'.GROUPEMA', 'G V I', 'NO '//meshOut//'.PTRNOMMAI',&
-                   'DISPERSE', 'VARIABLE', nbGrCellOut)
-    endif
+        call jecrec(meshOut//'.GROUPEMA', 'G V I', 'NO '//meshOut//'.PTRNOMMAI', &
+                    'DISPERSE', 'VARIABLE', nbGrCellOut)
+    end if
 
 ! - Copy previous groups of cells
     if (nbGrCellOut .ne. 0) then
@@ -1038,7 +1038,7 @@ implicit none
 
 ! --------- Get group from input mesh
             call jenuno(jexnum(meshIn//'.GROUPEMA', iGrCell), grCellName)
-            call jeveuo(jexnum(meshIn//'.GROUPEMA', iGrCell), 'L', vi = cellInGrIn)
+            call jeveuo(jexnum(meshIn//'.GROUPEMA', iGrCell), 'L', vi=cellInGrIn)
             call jelira(jexnum(meshIn//'.GROUPEMA', iGrCell), 'LONMAX', nbCellInGrIn)
             call jelira(jexnum(meshIn//'.GROUPEMA', iGrCell), 'LONUTI', nbCellInGrIn)
 
@@ -1049,15 +1049,15 @@ implicit none
             nbCellInGrOut = nbCellInGrIn
             call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONMAX', max(nbCellInGrOut, 1))
             call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONUTI', nbCellInGrOut)
-            call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi = cellInGrOut)
+            call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
             cellInGrOut(1:nbCellInGrOut) = cellInGrIn(1:nbCellInGrIn)
         end do
-    endif
+    end if
 
 ! - Create new groups of cells for CREA_MAILLE
     cellShift = 0
     do iOcc = 1, nbOccCreaMaille
-        grCellName    = creaCellOccGrName(iOcc)
+        grCellName = creaCellOccGrName(iOcc)
         nbCellInGrOut = creaCellOccNb(iOcc)
 
 ! ----- Create name of group in repertory
@@ -1065,25 +1065,25 @@ implicit none
         if (iret .eq. 0) then
             call jecroc(jexnom(meshOut//'.GROUPEMA', grCellName))
         else
-            call utmess('F', 'MESH1_20', sk = grCellName)
-        endif
+            call utmess('F', 'MESH1_20', sk=grCellName)
+        end if
 
 ! ----- Create group in output mesh
         call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONMAX', max(nbCellInGrOut, 1))
         call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONUTI', nbCellInGrOut)
-        call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi = cellInGrOut)
+        call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
         do iCell = 1, nbCellInGrOut
             cellNameOut = creaCellName(iCell+cellShift)
             call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellInGrOut(iCell))
         end do
-        cellShift = cellShift + nbCellInGrOut
+        cellShift = cellShift+nbCellInGrOut
     end do
     ASSERT(cellShift .eq. nbCellCrea)
 
 ! - Create new groups of cells for CREA_POI1
     cellShift = 0
     do iOcc = 1, nbOccCreaPoi1
-        grCellName    = creaGrPoi1GrName(iOcc)
+        grCellName = creaGrPoi1GrName(iOcc)
         nbCellInGrOut = creaGrPoi1NbCell(iOcc)
         if (grCellName .ne. ' ') then
 
@@ -1092,19 +1092,19 @@ implicit none
             if (iret .eq. 0) then
                 call jecroc(jexnom(meshOut//'.GROUPEMA', grCellName))
             else
-                call utmess('F', 'MESH1_20', sk = grCellName)
-            endif
+                call utmess('F', 'MESH1_20', sk=grCellName)
+            end if
 
 ! --------- Create group in output mesh
             call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONMAX', max(nbCellInGrOut, 1))
             call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONUTI', nbCellInGrOut)
-            call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi = cellInGrOut)
+            call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi=cellInGrOut)
             do iCell = 1, nbCellInGrOut
                 cellNameOut = creaGrPoi1CellName(iCell+cellShift)
                 call jenonu(jexnom(meshOut//'.NOMMAI', cellNameOut), cellInGrOut(iCell))
             end do
-            cellShift = cellShift + nbCellInGrOut
-        endif
+            cellShift = cellShift+nbCellInGrOut
+        end if
     end do
 !
 ! ==================================================================================================
@@ -1116,12 +1116,12 @@ implicit none
     if (nbGrNodeOut .ne. 0) then
         call jecreo(meshOut//'.PTRNOMNOE', 'G N K24')
         call jeecra(meshOut//'.PTRNOMNOE', 'NOMMAX', nbGrNodeOut, ' ')
-        call jecrec(meshOut//'.GROUPENO', 'G V I', 'NO '//meshOut//'.PTRNOMNOE',&
+        call jecrec(meshOut//'.GROUPENO', 'G V I', 'NO '//meshOut//'.PTRNOMNOE', &
                     'DISPERSE', 'VARIABLE', nbGrNodeOut)
         do iGrNode = 1, nbGrNodeIn
 ! --------- Get group from input mesh
             call jenuno(jexnum(meshIn//'.GROUPENO', iGrNode), grNodeName)
-            call jeveuo(jexnum(meshIn//'.GROUPENO', iGrNode), 'L', vi = nodeInGrIn)
+            call jeveuo(jexnum(meshIn//'.GROUPENO', iGrNode), 'L', vi=nodeInGrIn)
             call jelira(jexnum(meshIn//'.GROUPENO', iGrNode), 'LONUTI', nbNodeInGrIn)
 
 ! --------- Create group in output mesh
@@ -1131,16 +1131,16 @@ implicit none
             call jecroc(jexnom(meshOut//'.GROUPENO', grNodeName))
             call jeecra(jexnom(meshOut//'.GROUPENO', grNodeName), 'LONMAX', max(nbNodeInGrOut, 1))
             call jeecra(jexnom(meshOut//'.GROUPENO', grNodeName), 'LONUTI', nbNodeInGrOut)
-            call jeveuo(jexnom(meshOut//'.GROUPENO', grNodeName), 'E', vi = nodeInGrOut)
+            call jeveuo(jexnom(meshOut//'.GROUPENO', grNodeName), 'E', vi=nodeInGrOut)
             nodeInGrOut(1:nbNodeInGrOut) = nodeInGrIn(1:nbNodeInGrIn)
         end do
-    endif
+    end if
 !
 ! - Add new nodes from modified cells
 !
     if (nbCellModi .ne. 0) then
         call cmmoma(meshOut, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1149,10 +1149,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccDecoupeLac .gt. 0) then
-        ASSERT(nbOccDecoupeLac.eq.1)
+        ASSERT(nbOccDecoupeLac .eq. 1)
         call cm_dclac(meshIn, meshOut)
         goto 350
-    endif
+    end if
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1172,14 +1172,14 @@ implicit none
             call getvtx(keywfact, 'NOM_ORIG', iocc=1, scal=nomori)
             if (nomori .eq. 'CDG') then
                 call chcoma(table, meshOut)
-            else if (nomori.eq.'TORSION') then
+            else if (nomori .eq. 'TORSION') then
                 call chcomb(table, meshOut)
             else
                 ASSERT(ASTER_FALSE)
-            endif
-        endif
+            end if
+        end if
         goto 350
-    endif
+    end if
 !
 350 continue
 
@@ -1193,16 +1193,16 @@ implicit none
     call infoma(meshOut)
 
 ! - Clean
-    AS_DEALLOCATE(vi = modiCellNume)
-    AS_DEALLOCATE(vi = modiCellType)
-    AS_DEALLOCATE(vk8 = creaNodeName)
-    AS_DEALLOCATE(vi = creaNodeNume)
-    AS_DEALLOCATE(vi = creaCellOccNb)
-    AS_DEALLOCATE(vk24 = creaCellOccGrName)
-    AS_DEALLOCATE(vi = creaGrPoi1NbCell)
-    AS_DEALLOCATE(vk24 = creaGrPoi1GrName)
-    AS_DEALLOCATE(vk8 = creaGrPoi1CellName)
-    AS_DEALLOCATE(vk8 = creaPoi1Name)
+    AS_DEALLOCATE(vi=modiCellNume)
+    AS_DEALLOCATE(vi=modiCellType)
+    AS_DEALLOCATE(vk8=creaNodeName)
+    AS_DEALLOCATE(vi=creaNodeNume)
+    AS_DEALLOCATE(vi=creaCellOccNb)
+    AS_DEALLOCATE(vk24=creaCellOccGrName)
+    AS_DEALLOCATE(vi=creaGrPoi1NbCell)
+    AS_DEALLOCATE(vk24=creaGrPoi1GrName)
+    AS_DEALLOCATE(vk8=creaGrPoi1CellName)
+    AS_DEALLOCATE(vk8=creaPoi1Name)
 !
     call jedema()
 !

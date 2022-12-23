@@ -22,55 +22,41 @@
 import code_aster
 from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"))
 
-MESH=LIRE_MAILLAGE(FORMAT='MED',)
+MESH = LIRE_MAILLAGE(FORMAT="MED")
 
-MESH=MODI_MAILLAGE(reuse =MESH,
-                   MAILLAGE=MESH,
-                   ORIE_PEAU=(_F(GROUP_MA_PEAU='Master',),
-                                 _F(GROUP_MA_PEAU='Slave',),),)
+MESH = MODI_MAILLAGE(
+    reuse=MESH, MAILLAGE=MESH, ORIE_PEAU=(_F(GROUP_MA_PEAU="Master"), _F(GROUP_MA_PEAU="Slave"))
+)
 
-MAT_pi=DEFI_MATERIAU(ELAS=_F(E=210000.0,
-                             NU=0.3,),)
+MAT_pi = DEFI_MATERIAU(ELAS=_F(E=210000.0, NU=0.3))
 
-MAT_sh=DEFI_MATERIAU(ELAS=_F(E=70000.0,
-                             NU=0.3,),)
+MAT_sh = DEFI_MATERIAU(ELAS=_F(E=70000.0, NU=0.3))
 
-FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                         1.0,1.0,
-                         ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
+FONC = DEFI_FONCTION(
+    NOM_PARA="INST", VALE=(0.0, 0.0, 1.0, 1.0), PROL_DROITE="EXCLU", PROL_GAUCHE="EXCLU"
+)
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),)
+L_INST = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1))
 
-LINST=DEFI_LIST_INST(METHODE='MANUEL',
-                     DEFI_LIST=_F(LIST_INST=L_INST,),
-                     ECHEC=_F(SUBD_PAS=4,
-                              SUBD_NIVEAU=3,),)
+LINST = DEFI_LIST_INST(
+    METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=L_INST), ECHEC=_F(SUBD_PAS=4, SUBD_NIVEAU=3)
+)
 
-MO=AFFE_MODELE(MAILLAGE=MESH,
-               AFFE=_F(GROUP_MA=('Sheet','Pin',),
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),)
+MO = AFFE_MODELE(
+    MAILLAGE=MESH, AFFE=_F(GROUP_MA=("Sheet", "Pin"), PHENOMENE="MECANIQUE", MODELISATION="D_PLAN")
+)
 
-MA=AFFE_MATERIAU(MAILLAGE=MESH,
-                 AFFE=(_F(GROUP_MA='Sheet',
-                          MATER=MAT_sh,),
-                       _F(GROUP_MA='Pin',
-                          MATER=MAT_pi,),),)
+MA = AFFE_MATERIAU(
+    MAILLAGE=MESH, AFFE=(_F(GROUP_MA="Sheet", MATER=MAT_sh), _F(GROUP_MA="Pin", MATER=MAT_pi))
+)
 
-CL=AFFE_CHAR_CINE(MODELE=MO,
-                  MECA_IMPO=(_F(GROUP_MA='Encast',
-                                DX=0.0,
-                                DY=0.0,),
-                             _F(GROUP_MA='Axe',
-                                DY=0.0,),),)
+CL = AFFE_CHAR_CINE(
+    MODELE=MO, MECA_IMPO=(_F(GROUP_MA="Encast", DX=0.0, DY=0.0), _F(GROUP_MA="Axe", DY=0.0))
+)
 
-CH=AFFE_CHAR_MECA(MODELE=MO,
-                  FORCE_NODALE=_F(GROUP_NO='F',
-                                  FX=10000.0,),)
+CH = AFFE_CHAR_MECA(MODELE=MO, FORCE_NODALE=_F(GROUP_NO="F", FX=10000.0))
 """
 CON=DEFI_CONTACT(MODELE=MO,
                 FORMULATION    = 'CONTINUE',
@@ -100,103 +86,112 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),)
 
 """
-CON=DEFI_CONT(MODELE=MO,
-                ZONE=_F(GROUP_MA_MAIT='Master',
-                        GROUP_MA_ESCL='Slave',
-                        CONTACT_INIT='INTERPENETRE',
-                        ),)
+CON = DEFI_CONT(
+    MODELE=MO, ZONE=_F(GROUP_MA_MAIT="Master", GROUP_MA_ESCL="Slave", CONTACT_INIT="INTERPENETRE")
+)
 
-RESU=MECA_NON_LINE(MODELE=MO,
-                   CHAM_MATER=MA,
-                   EXCIT=(_F(CHARGE=CL,),
-                          _F(CHARGE=CH,
-                             FONC_MULT=FONC,),),
-                   #CONTACT=CON,
-                    CONTACT=_F(DEFINITION=CON,
-                                ALGO_RESO_GEOM="NEWTON"),
-                   COMPORTEMENT=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=LINST,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  ),
-                   SOLVEUR=_F(),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),)
+RESU = MECA_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=MA,
+    EXCIT=(_F(CHARGE=CL), _F(CHARGE=CH, FONC_MULT=FONC)),
+    # CONTACT=CON,
+    CONTACT=_F(DEFINITION=CON, ALGO_RESO_GEOM="NEWTON"),
+    COMPORTEMENT=_F(RELATION="ELAS"),
+    INCREMENT=_F(LIST_INST=LINST),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=50),
+    SOLVEUR=_F(),
+    NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=1),
+)
 
 # test avec defi_contact sans frottement
 
-MESH=DEFI_GROUP(reuse =MESH,
-                MAILLAGE=MESH,
-                CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
-                                  NOM='Cont_M',
-                                  GROUP_MA='Master',
-                                  GROUP_NO_ORIG='Si',),
-                               _F(OPTION='NOEUD_ORDO',
-                                  NOM='Cont_S',
-                                  GROUP_MA='Slave',
-                                  GROUP_NO_ORIG='Pi',),),)
+MESH = DEFI_GROUP(
+    reuse=MESH,
+    MAILLAGE=MESH,
+    CREA_GROUP_NO=(
+        _F(OPTION="NOEUD_ORDO", NOM="Cont_M", GROUP_MA="Master", GROUP_NO_ORIG="Si"),
+        _F(OPTION="NOEUD_ORDO", NOM="Cont_S", GROUP_MA="Slave", GROUP_NO_ORIG="Pi"),
+    ),
+)
 
-RELE_M=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                INTITULE='DeplX_M',
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                INST=1.0,
-                                GROUP_NO='Cont_M',
-                                NOM_CMP='DX',),
-                             _F(OPERATION='EXTRACTION',
-                                INTITULE='DeplY_M',
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                INST=1.0,
-                                GROUP_NO='Cont_M',
-                                NOM_CMP='DY',),),)
+RELE_M = POST_RELEVE_T(
+    ACTION=(
+        _F(
+            OPERATION="EXTRACTION",
+            INTITULE="DeplX_M",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            INST=1.0,
+            GROUP_NO="Cont_M",
+            NOM_CMP="DX",
+        ),
+        _F(
+            OPERATION="EXTRACTION",
+            INTITULE="DeplY_M",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            INST=1.0,
+            GROUP_NO="Cont_M",
+            NOM_CMP="DY",
+        ),
+    )
+)
 
-#print(RELE_M.EXTR_TABLE())
+# print(RELE_M.EXTR_TABLE())
 
-RELE_S=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
-                                INTITULE='DeplX_S',
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                INST=1.0,
-                                GROUP_NO='Cont_S',
-                                NOM_CMP='DX',),
-                             _F(OPERATION='EXTRACTION',
-                                INTITULE='DeplY_S',
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                INST=1.0,
-                                GROUP_NO='Cont_S',
-                                NOM_CMP='DY',),),)
+RELE_S = POST_RELEVE_T(
+    ACTION=(
+        _F(
+            OPERATION="EXTRACTION",
+            INTITULE="DeplX_S",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            INST=1.0,
+            GROUP_NO="Cont_S",
+            NOM_CMP="DX",
+        ),
+        _F(
+            OPERATION="EXTRACTION",
+            INTITULE="DeplY_S",
+            RESULTAT=RESU,
+            NOM_CHAM="DEPL",
+            INST=1.0,
+            GROUP_NO="Cont_S",
+            NOM_CMP="DY",
+        ),
+    )
+)
 
 # print(RELE_S.EXTR_TABLE())
 
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=7.40573E-1,
-    VALE_CALC=7.54844E-1,
+    VALE_REFE=7.40573e-1,
+    VALE_CALC=7.54844e-1,
     NOM_PARA="DX",
     TABLE=RELE_M,
-    TYPE_TEST = "MAX",
-    PRECISION = 0.02,
+    TYPE_TEST="MAX",
+    PRECISION=0.02,
 )
 
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=9.18286E-2,
+    VALE_REFE=9.18286e-2,
     VALE_CALC=0.092782519649,  # 9.27840E-2,
     NOM_PARA="DY",
     TABLE=RELE_M,
-    TYPE_TEST = "MAX",
-    PRECISION = 0.02,
+    TYPE_TEST="MAX",
+    PRECISION=0.02,
 )
 
 TEST_TABLE(
     REFERENCE="AUTRE_ASTER",
-    VALE_REFE=7.62576E-1,
-    VALE_CALC=7.79275E-1,
+    VALE_REFE=7.62576e-1,
+    VALE_CALC=7.79275e-1,
     NOM_PARA="DX",
     TABLE=RELE_S,
-    TYPE_TEST = "MAX",
-    PRECISION = 0.03,
+    TYPE_TEST="MAX",
+    PRECISION=0.03,
 )
 
 

@@ -16,11 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine apprin_n(mesh          , newgeo        , pair_tole, dist_ratio  ,nb_elem_mast  ,&
-                    list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_slav_flag,&
-                    nb_mast_start , elem_mast_start,nb_slav_start ,elem_slav_start)
+subroutine apprin_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
+                    list_elem_mast, nb_elem_slav, list_elem_slav, elem_slav_flag, &
+                    nb_mast_start, elem_mast_start, nb_slav_start, elem_slav_start)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,18 +32,18 @@ implicit none
 #include "asterfort/aptype.h"
 #include "asterfort/prjint_ray.h"
 !
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: newgeo
-real(kind=8), intent(in) :: pair_tole, dist_ratio
-integer, intent(in) :: nb_elem_mast
-integer, intent(in) :: list_elem_mast(nb_elem_mast)
-integer, intent(in) :: nb_elem_slav
-integer, intent(in) :: list_elem_slav(nb_elem_slav)
-integer, pointer :: elem_slav_flag(:)
-integer, intent(out) :: nb_mast_start
-integer, intent(out) :: elem_mast_start(nb_elem_slav)
-integer, intent(out) :: nb_slav_start
-integer, intent(out) :: elem_slav_start(nb_elem_slav)
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: newgeo
+    real(kind=8), intent(in) :: pair_tole, dist_ratio
+    integer, intent(in) :: nb_elem_mast
+    integer, intent(in) :: list_elem_mast(nb_elem_mast)
+    integer, intent(in) :: nb_elem_slav
+    integer, intent(in) :: list_elem_slav(nb_elem_slav)
+    integer, pointer :: elem_slav_flag(:)
+    integer, intent(out) :: nb_mast_start
+    integer, intent(out) :: elem_mast_start(nb_elem_slav)
+    integer, intent(out) :: nb_slav_start
+    integer, intent(out) :: elem_slav_start(nb_elem_slav)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,30 +87,30 @@ integer, intent(out) :: elem_slav_start(nb_elem_slav)
     real(kind=8) :: poin_inte_es(32), poin_inte_ma(32), inte_weight
     integer, pointer :: v_mesh_typmail(:) => null()
     aster_logical :: debug
-    integer, pointer :: v_mesh_connex(:)  => null()
-    integer, pointer :: v_connex_lcum(:)  => null()
+    integer, pointer :: v_mesh_connex(:) => null()
+    integer, pointer :: v_connex_lcum(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    debug              = ASTER_FALSE
-    mast_indx_mini     = minval(list_elem_mast)
-    slav_indx_mini     = minval(list_elem_slav)
-    nb_mast_start      = 0
-    nb_slav_start      = 0
+    debug = ASTER_FALSE
+    mast_indx_mini = minval(list_elem_mast)
+    slav_indx_mini = minval(list_elem_slav)
+    nb_mast_start = 0
+    nb_slav_start = 0
     elem_slav_start(:) = 0
     elem_mast_start(:) = 0
 !
 ! - Access to mesh
 !
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
-    call jeveuo(mesh//'.CONNEX', 'L', vi = v_mesh_connex)
-    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=v_mesh_typmail)
+    call jeveuo(mesh//'.CONNEX', 'L', vi=v_mesh_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi=v_connex_lcum)
 !
 ! - Access to updated geometry
 !
     call jeveuo(newgeo(1:19)//'.VALE', 'L', jv_geom)
     if (debug) then
-        write(*,*)"Find start elements"
+        write (*, *) "Find start elements"
     end if
 !
 ! - Loop on slave elements
@@ -120,47 +120,47 @@ integer, intent(out) :: elem_slav_start(nb_elem_slav)
 ! ----- Current slave element
 !
         elem_slav_nume = list_elem_slav(i_elem_slav)
-        elem_slav_indx = elem_slav_nume + 1 - slav_indx_mini
+        elem_slav_indx = elem_slav_nume+1-slav_indx_mini
         elem_type_nume = v_mesh_typmail(elem_slav_nume)
         if (debug) then
             call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
-            write(*,*) "Slave element", i_elem_slav, elem_slav_nume, elem_slav_name
+            write (*, *) "Slave element", i_elem_slav, elem_slav_nume, elem_slav_name
         end if
 !
 ! ----- Already tracked ?
 !
-        if (elem_slav_flag(elem_slav_indx) .eq. 0 ) then
+        if (elem_slav_flag(elem_slav_indx) .eq. 0) then
             if (debug) then
-                write(*,*) "Slave element not yet tracked"
-            endif
+                write (*, *) "Slave element not yet tracked"
+            end if
 !
 ! --------- Get informations about slave element
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
-            call aptype(elem_slav_type  ,&
+            call aptype(elem_slav_type, &
                         elem_slav_nbnode, elem_slav_code, elem_slav_dime)
 !
 ! --------- Get coordinates of slave element
 !
-            call apcoor(v_mesh_connex , v_connex_lcum   , jv_geom       ,&
-                        elem_slav_nume, elem_slav_nbnode, elem_slav_dime,&
+            call apcoor(v_mesh_connex, v_connex_lcum, jv_geom, &
+                        elem_slav_nume, elem_slav_nbnode, elem_slav_dime, &
                         elem_slav_coor)
 !
 ! --------- Cut slave element in linearized sub-elements (SEG2 or TRIA3)
 !
             if (elem_slav_code .eq. "TR6") then
-                elin_slav_code   = "TR3"
+                elin_slav_code = "TR3"
                 elin_slav_nbnode = 3
-            elseif(elem_slav_code .eq. "QU8" .or. elem_slav_code .eq. "QU9") then
-                elin_slav_code   = "QU4"
+            elseif (elem_slav_code .eq. "QU8" .or. elem_slav_code .eq. "QU9") then
+                elin_slav_code = "QU4"
                 elin_slav_nbnode = 4
-            elseif(elem_slav_code .eq. "SE3") then
-                elin_slav_code   = "SE2"
+            elseif (elem_slav_code .eq. "SE3") then
+                elin_slav_code = "SE2"
                 elin_slav_nbnode = 2
             else
-                elin_slav_code   = elem_slav_code
+                elin_slav_code = elem_slav_code
                 elin_slav_nbnode = elem_slav_nbnode
-            endif
+            end if
 !
 ! --------- Loop on master elements
 !
@@ -169,84 +169,84 @@ integer, intent(out) :: elem_slav_start(nb_elem_slav)
 ! ------------- Current master element
 !
                 elem_mast_nume = list_elem_mast(i_elem_mast)
-                elem_mast_indx = elem_mast_nume + 1 - mast_indx_mini
+                elem_mast_indx = elem_mast_nume+1-mast_indx_mini
                 elem_type_nume = v_mesh_typmail(elem_mast_nume)
                 if (debug) then
                     call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
-                    write(*,*) "Master element", i_elem_mast, elem_mast_nume, elem_mast_name
+                    write (*, *) "Master element", i_elem_mast, elem_mast_nume, elem_mast_name
                 end if
 !
 ! ------------- Already tracked ?
 !
                 if (ASTER_TRUE) then
                     if (debug) then
-                        write(*,*) "Master element not yet tracked"
-                    endif
+                        write (*, *) "Master element not yet tracked"
+                    end if
 !
 ! ----------------- Get informations about master element
 !
                     call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
-                    call aptype(elem_mast_type  ,&
+                    call aptype(elem_mast_type, &
                                 elem_mast_nbnode, elem_mast_code, elem_mast_dime)
 !
 ! ----------------- Get coordinates of master element
 !
-                    call apcoor(v_mesh_connex , v_connex_lcum   , jv_geom       ,&
-                                elem_mast_nume, elem_mast_nbnode, elem_mast_dime,&
+                    call apcoor(v_mesh_connex, v_connex_lcum, jv_geom, &
+                                elem_mast_nume, elem_mast_nbnode, elem_mast_dime, &
                                 elem_mast_coor)
 !
 ! ----------------- Cut master element in linearized sub-elements (SEG2 or TRIA3)
 !
                     if (elem_mast_code .eq. "TR6") then
-                        elin_mast_code   = "TR3"
+                        elin_mast_code = "TR3"
                         elin_mast_nbnode = 3
-                    elseif(elem_mast_code .eq. "QU8" .or. elem_mast_code .eq. "QU9") then
-                        elin_mast_code   = "QU4"
+                    elseif (elem_mast_code .eq. "QU8" .or. elem_mast_code .eq. "QU9") then
+                        elin_mast_code = "QU4"
                         elin_mast_nbnode = 4
-                    elseif(elem_mast_code .eq. "SE3") then
-                        elin_mast_code   = "SE2"
+                    elseif (elem_mast_code .eq. "SE3") then
+                        elin_mast_code = "SE2"
                         elin_mast_nbnode = 2
                     else
-                        elin_mast_code   = elem_mast_code
+                        elin_mast_code = elem_mast_code
                         elin_mast_nbnode = elem_mast_nbnode
-                    endif
+                    end if
 !
 ! ----------------- Projection/intersection of elements in slave parametric space
 !
-                    call prjint_ray(pair_tole, dist_ratio     , elem_mast_dime,&
-                                    elin_mast_nbnode, elem_mast_coor, elin_mast_code,&
-                                    elin_slav_nbnode, elem_slav_coor, elin_slav_code,&
-                                    poin_inte_ma,poin_inte_es      , inte_weight,&
+                    call prjint_ray(pair_tole, dist_ratio, elem_mast_dime, &
+                                    elin_mast_nbnode, elem_mast_coor, elin_mast_code, &
+                                    elin_slav_nbnode, elem_slav_coor, elin_slav_code, &
+                                    poin_inte_ma, poin_inte_es, inte_weight, &
                                     nb_poin_inte)
 
 !
 ! ----------------- Set start elements
 !
                     if (inte_weight .gt. 100*pair_tole) then
-                        elem_mast_start(1)             = elem_mast_nume
-                        nb_mast_start                  = 1
-                        elem_slav_start(1)             = elem_slav_nume
-                        nb_slav_start                  = 1
+                        elem_mast_start(1) = elem_mast_nume
+                        nb_mast_start = 1
+                        elem_slav_start(1) = elem_slav_nume
+                        nb_slav_start = 1
                         elem_slav_flag(elem_slav_indx) = 1
                         call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
                         call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
                         if (debug) then
-                            write(*,*)"Depart trouvé(M/S): ",elem_mast_name,elem_slav_name
-                        endif
+                            write (*, *) "Depart trouvé(M/S): ", elem_mast_name, elem_slav_name
+                        end if
                         goto 100
                     end if
                 else
                     if (debug) then
-                        write(*,*) "Master element not yet tracked"
-                    endif
-                endif
+                        write (*, *) "Master element not yet tracked"
+                    end if
+                end if
             end do
-            elem_slav_flag(elem_slav_indx)= 2
+            elem_slav_flag(elem_slav_indx) = 2
         else
             if (debug) then
-                write(*,*) "Slave element already tracked"
-            endif
-        endif
+                write (*, *) "Slave element already tracked"
+            end if
+        end if
     end do
 100 continue
 !

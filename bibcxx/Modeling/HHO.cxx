@@ -127,12 +127,12 @@ FieldOnNodesRealPtr HHO::projectOnHHOSpace( const std::vector< GenericFunctionPt
     ConstantFieldOnZone a( mesh );
 
     if ( dimMesh == 2 ) {
-        ConstantFieldValues< JeveuxChar8 > b( { "Z1", "Z2" },
-                                              { fct[0]->getName(), fct[1]->getName() } );
+        ConstantFieldValues< JeveuxChar8 > b( {"Z1", "Z2"},
+                                              {fct[0]->getName(), fct[1]->getName()} );
         funcField->setValueOnZone( a, b );
     } else {
         ConstantFieldValues< JeveuxChar8 > b(
-            { "Z1", "Z2", "Z3" }, { fct[0]->getName(), fct[1]->getName(), fct[2]->getName() } );
+            {"Z1", "Z2", "Z3"}, {fct[0]->getName(), fct[1]->getName(), fct[2]->getName()} );
         funcField->setValueOnZone( a, b );
     }
 

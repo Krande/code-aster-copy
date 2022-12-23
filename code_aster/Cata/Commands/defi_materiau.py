@@ -2009,7 +2009,7 @@ DEFI_MATERIAU = MACRO(
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
         EKFL=SIMP(statut="o", typ="R"),
-#       NRJM doit être donné en J
+        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),
@@ -2058,7 +2058,7 @@ DEFI_MATERIAU = MACRO(
         XFLU=SIMP(statut="o", typ="R"),
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
-#       NRJM doit être donné en J
+        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),
@@ -2095,7 +2095,7 @@ DEFI_MATERIAU = MACRO(
         XFLU=SIMP(statut="o", typ="R"),
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
-#       NRJM doit être donné en J
+        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),
@@ -2156,7 +2156,7 @@ DEFI_MATERIAU = MACRO(
         XFLU=SIMP(statut="o", typ="R"),
         TAUK=SIMP(statut="o", typ="R"),
         TAUM=SIMP(statut="o", typ="R"),
-#       NRJM doit être donné en J
+        #       NRJM doit être donné en J
         NRJM=SIMP(statut="o", typ="R", val_min=1.0),
         DT80=SIMP(statut="o", typ="R"),
         BSHR=SIMP(statut="f", typ="R", defaut=0.0),

@@ -205,7 +205,7 @@ Returns the mapping from the local to the global number of the DOFs.
 
 Returns:
     int: global number of the DOF.
-        )")
+        )" )
         // ---------------------------------------------------------------------
         .def( "globalToLocalRow", &ParallelDOFNumbering::globalToLocalRow,
               R"(

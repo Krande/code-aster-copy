@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine apelem_inside_n(pair_tole   , elem_dime, elem_code, &
-                           nb_poin_coor, poin_coor,&
-                           nb_poin_inte, poin_inte, inte_neigh,&
+subroutine apelem_inside_n(pair_tole, elem_dime, elem_code, &
+                           nb_poin_coor, poin_coor, &
+                           nb_poin_inte, poin_inte, inte_neigh, &
                            poin_coor_ori, poin_inte_ori)
 !
-implicit none
+    implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/projInsideCell.h"
@@ -31,11 +31,11 @@ implicit none
     integer, intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     integer, intent(in) :: nb_poin_coor
-    real(kind=8), intent(in) :: poin_coor(elem_dime-1,4)
-    real(kind=8), intent(in) :: poin_coor_ori(elem_dime-1,4)
+    real(kind=8), intent(in) :: poin_coor(elem_dime-1, 4)
+    real(kind=8), intent(in) :: poin_coor_ori(elem_dime-1, 4)
     integer, intent(inout) :: nb_poin_inte
-    real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
-    real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1,16)
+    real(kind=8), intent(inout) :: poin_inte(elem_dime-1, 16)
+    real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1, 16)
     integer, intent(inout) :: inte_neigh(4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,28 +68,28 @@ implicit none
     if (elem_dime .eq. 2) then
         do i_node = 1, nb_poin_coor
             call projInsideCell(pair_tole, elem_dime, elem_code, poin_coor(1, i_node), iret)
-            if ( iret == 0) then
+            if (iret == 0) then
                 nb_poin_inte = nb_poin_inte+1
-                ASSERT(nb_poin_inte.le.16)
-                poin_inte(1,nb_poin_inte) = poin_coor(1, i_node)
-                poin_inte_ori(1,nb_poin_inte) = poin_coor_ori(1, i_node)
-                inte_neigh(i_node)=1
-            endif
+                ASSERT(nb_poin_inte .le. 16)
+                poin_inte(1, nb_poin_inte) = poin_coor(1, i_node)
+                poin_inte_ori(1, nb_poin_inte) = poin_coor_ori(1, i_node)
+                inte_neigh(i_node) = 1
+            end if
         end do
     elseif (elem_dime .eq. 3) then
         do i_node = 1, nb_poin_coor
             call projInsideCell(pair_tole, elem_dime, elem_code, poin_coor(1:2, i_node), iret)
-            if(iret == 0 ) then
+            if (iret == 0) then
                 nb_poin_inte = nb_poin_inte+1
-                ASSERT(nb_poin_inte.le.16)
-                poin_inte(1:2,nb_poin_inte) = poin_coor(1:2, i_node)
-                poin_inte_ori(1:2,nb_poin_inte) = poin_coor_ori(1:2, i_node)
+                ASSERT(nb_poin_inte .le. 16)
+                poin_inte(1:2, nb_poin_inte) = poin_coor(1:2, i_node)
+                poin_inte_ori(1:2, nb_poin_inte) = poin_coor_ori(1:2, i_node)
                 !print*, 'nbptinte', nb_poin_inte
                 !print*, "inte1_1_true", poin_inte(1:2,nb_poin_inte)
-               ! print*, "inte1_1", poin_inte_ori(1:2,nb_poin_inte)
-                inte_neigh(i_node)=1
-                inte_neigh(prev(i_node))=1
-            endif
+                ! print*, "inte1_1", poin_inte_ori(1:2,nb_poin_inte)
+                inte_neigh(i_node) = 1
+                inte_neigh(prev(i_node)) = 1
+            end if
         end do
     else
         ASSERT(.false.)

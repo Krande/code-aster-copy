@@ -17,13 +17,13 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504
 !
-subroutine ircame(ifi, nochmd, chanom, typech, modele,&
-                  nbcmp, nomcmp, etiqcp, partie, numpt,&
-                  instan, numord, adsk, adsd, adsc,&
-                  adsv, adsl, nbenec, lienec, sdcarm,&
+subroutine ircame(ifi, nochmd, chanom, typech, modele, &
+                  nbcmp, nomcmp, etiqcp, partie, numpt, &
+                  instan, numord, adsk, adsd, adsc, &
+                  adsv, adsl, nbenec, lienec, sdcarm, &
                   carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -67,20 +67,20 @@ implicit none
 #include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_allgatherv_char16.h"
 !
-character(len=8) :: typech, modele, sdcarm, carael
-character(len=19) :: chanom
-character(len=64) :: nochmd
-character(len=*) :: nomcmp(*), partie, etiqcp
-integer :: nbcmp, numpt, numord, ifi
-integer :: adsk, adsd, adsc, adsv, adsl
-integer :: nbenec
-integer :: lienec(*)
-integer :: typent, tygeom
-real(kind=8) :: instan
-character(len=16), intent(in) :: field_type
-integer, intent(inout) :: nbCmpDyna
-aster_logical :: lfichUniq
-integer :: codret
+    character(len=8) :: typech, modele, sdcarm, carael
+    character(len=19) :: chanom
+    character(len=64) :: nochmd
+    character(len=*) :: nomcmp(*), partie, etiqcp
+    integer :: nbcmp, numpt, numord, ifi
+    integer :: adsk, adsd, adsc, adsv, adsl
+    integer :: nbenec
+    integer :: lienec(*)
+    integer :: typent, tygeom
+    real(kind=8) :: instan
+    character(len=16), intent(in) :: field_type
+    integer, intent(inout) :: nbCmpDyna
+    aster_logical :: lfichUniq
+    integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -114,7 +114,7 @@ integer :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRCAME'
-    integer, parameter :: ednoeu=3, edmail=0, ednoma=4, typnoe=0
+    integer, parameter :: ednoeu = 3, edmail = 0, ednoma = 4, typnoe = 0
     character(len=1)   :: saux01
     character(len=8)   :: saux08, nomaas, nomtyp(MT_NTYMAX), nom_sd_fu
     character(len=16)  :: formar
@@ -174,13 +174,13 @@ integer :: codret
         nofimd = 'fort.'//saux08
     else
         nofimd = kfic(1:200)
-    endif
+    end if
 !
     if (nivinf .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DU CHAMP MED ', typech(1:4), ' :'
-        write (ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd
-    endif
+        write (ifm, *) '<', nompro, '> DEBUT ECRITURE DU CHAMP MED ', typech(1:4), ' :'
+        write (ifm, *) '<', nompro, '> NOM DU FICHIER MED : ', nofimd
+    end if
 !   1.4. ==> LES NOMBRES CARACTERISTIQUES
     nbvato = zi(adsd)
     ncmprf = zi(adsd+1)
@@ -197,62 +197,62 @@ integer :: codret
     ifimed = 0
     call mdexma(nofimd, ifimed, nomamd, iaux, existm, jaux, codret)
 !   2.4. ==> SI LE MAILLAGE EST ABSENT, ON L'ECRIT
-    if (.not.existm) then
+    if (.not. existm) then
         saux08 = 'MED     '
         lgaux = .false.
-        formar=' '
-        if(lfichUniq) then
-            if (.not.isParallelMesh(nomaas)) then
+        formar = ' '
+        if (lfichUniq) then
+            if (.not. isParallelMesh(nomaas)) then
                 call utmess('F', 'MED3_5')
-            endif
+            end if
             nom_sd_fu = '&&IRMHD2'
             call jedetc('V', nom_sd_fu, 1)
             call iremed_filtre(nomaas, nom_sd_fu, 'V', ASTER_TRUE)
-        endif
-        call irmail(saux08, ifi, iaux, nomaas, lgaux, modele, nivinf, formar, lfichUniq,&
+        end if
+        call irmail(saux08, ifi, iaux, nomaas, lgaux, modele, nivinf, formar, lfichUniq, &
                     nom_sd_fu)
     else
-        if(lfichUniq) then
-            if (.not.isParallelMesh(nomaas)) then
+        if (lfichUniq) then
+            if (.not. isParallelMesh(nomaas)) then
                 call utmess('F', 'MED3_5')
-            endif
+            end if
             nom_sd_fu = '&&IRMHD2'
             call jeveuo(nom_sd_fu//'.NOMA', "L", vk8=v_ma)
             ASSERT(v_ma(1) == nomaas)
             ! call jeexin(nom_sd_fu//'.NOMA', codret)
-            if(codret.eq.0) then
+            if (codret .eq. 0) then
                 !call iremed_filtre(nomaas, nom_sd_fu, 'V', ASTER_TRUE)
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
 ! 3. PREPARATION DU CHAMP A ECRIRE
 !   3.1. ==> NUMEROS, NOMS ET UNITES DES COMPOSANTES A ECRIRE
-    if(nbCmp>0) then
-        AS_ALLOCATE(vk8 = cmpUserName, size = nbcmp)
+    if (nbCmp > 0) then
+        AS_ALLOCATE(vk8=cmpUserName, size=nbcmp)
 !
         do iCmp = 1, nbCmp
             cmpUserName(iCmp) = nomcmp(iCmp)
         end do
     end if
 !
-    AS_ALLOCATE(vk8 = cmpCataName, size = ncmprf)
+    AS_ALLOCATE(vk8=cmpCataName, size=ncmprf)
     do iCmp = 1, ncmprf
         cmpCataName(iCmp) = zk8(adsc-1+iCmp)
     end do
-    call utlicm(zk8(adsk+1),&
-                nbcmp     , cmpUserName,&
-                ncmprf    , cmpCataName,&
-                ncmpve    , ntlcmp     ,&
-                ntncmp    , ntucmp)
-    AS_DEALLOCATE(vk8 = cmpUserName)
-    AS_DEALLOCATE(vk8 = cmpCataName)
+    call utlicm(zk8(adsk+1), &
+                nbcmp, cmpUserName, &
+                ncmprf, cmpCataName, &
+                ncmpve, ntlcmp, &
+                ntncmp, ntucmp)
+    AS_DEALLOCATE(vk8=cmpUserName)
+    AS_DEALLOCATE(vk8=cmpCataName)
     if (ncmpve .gt. 200) then
         call utmess('A', 'MED_99', sk=nochmd)
         goto 999
-    endif
+    end if
     indcmp = '&&IRCAME.CMPINDIR'
-    if( lfichUniq ) then
+    if (lfichUniq) then
         call jeveuo(ntncmp, 'L', jnocm1)
         call jeveuo(ntucmp, 'L', jnocm2)
         call jecreo('&&IRCAME.CMPLOC', 'V N K16')
@@ -260,16 +260,16 @@ integer :: codret
         cmpt = 0
         do icmp1 = 1, ncmpve
             call jecroc(jexnom('&&IRCAME.CMPLOC', zk16(jnocm1+icmp1-1)))
-        enddo
+        end do
         one4 = to_mpi_int(1)
-        call dismoi('NOM_GD', chanom, 'CHAMP', repk = nomgd)
-        if( nomgd.eq.'VARI_R' ) then
+        call dismoi('NOM_GD', chanom, 'CHAMP', repk=nomgd)
+        if (nomgd .eq. 'VARI_R') then
             vnbcmp(1) = ncmpve
             call asmpi_comm_vect('MPI_MAX', 'I', 1, vi=vnbcmp)
             nbcmpmax = vnbcmp(1)
         else
-            call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi = nbcmpmax)
-        endif
+            call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmpmax)
+        end if
         call asmpi_comm('GET', world)
         call asmpi_info(rank=mrank, size=mnbproc)
         rang = to_aster_int(mrank)
@@ -282,14 +282,14 @@ integer :: codret
         call asmpi_allgather_i([ncmpve], one4, zi(jtest), one4, world)
         nb_cmp_tot = 0
         do iproc = 0, nbproc-1
-            nb_cmp_tot = nb_cmp_tot + zi(jtest+iproc)
+            nb_cmp_tot = nb_cmp_tot+zi(jtest+iproc)
             v_count(iproc+1) = to_mpi_int(zi(jtest+iproc))
             v_displ(iproc+2) = to_mpi_int(nb_cmp_tot)
-        enddo
+        end do
         do icmp1 = 1, ncmpve
             zk16(jnocmp+icmp1-1) = zk16(jnocm1+icmp1-1)
             zk16(jnocm3+icmp1-1) = zk16(jnocm2+icmp1-1)
-        enddo
+        end do
         call wkvect('&&IRCAME.NOMFAG', 'V V K16', nb_cmp_tot, vk16=v_nomcmp)
         call wkvect('&&IRCAME.NOMFA2', 'V V K16', nb_cmp_tot, vk16=v_nomcm2)
         call jedetr(ntncmp)
@@ -305,17 +305,17 @@ integer :: codret
         cmpt = 0
         do icmp1 = 1, nb_cmp_tot
             call jenonu(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)), numcmp)
-            if( numcmp.eq.0 ) then
+            if (numcmp .eq. 0) then
                 call jecroc(jexnom('&&IRCAME.PTRNOM', v_nomcmp(icmp1)))
-                cmpt = cmpt + 1
+                cmpt = cmpt+1
                 zk16(jnocm1+cmpt-1) = v_nomcmp(icmp1)
                 zk16(jnocm2+cmpt-1) = v_nomcm2(icmp1)
                 call jenonu(jexnom('&&IRCAME.CMPLOC', v_nomcmp(icmp1)), numcmp)
-                if( numcmp.ne.0 ) then
+                if (numcmp .ne. 0) then
                     zi(jindir+icmp1-1) = cmpt
-                endif
-            endif
-        enddo
+                end if
+            end if
+        end do
         call jedetr('&&IRCAME.TEST')
         call jedetr('&&IRCAME.COUNT')
         call jedetr('&&IRCAME.DISPL')
@@ -332,35 +332,35 @@ integer :: codret
         call wkvect(indcmp, 'V V I', ncmpve, jindir)
         do icmp1 = 1, ncmpve
             zi(jindir+icmp1-1) = icmp1
-        enddo
+        end do
         ncmpvl = ncmpve
-    endif
+    end if
 !   ON REMPLACE LES NOMS DES COMPOSANTES
     if (etiqcp .ne. ' ') then
         call jeveuo(ntncmp, 'L', jnocm1)
         call jeveuo(etiqcp, 'L', jnocm2)
         call jelira(etiqcp, 'LONMAX', nbcmp2)
-        nbcmp2=nbcmp2/2
+        nbcmp2 = nbcmp2/2
         do icmp1 = 1, ncmpve
             do icmp2 = 1, nbcmp2
                 if (zk16(jnocm1+icmp1-1) .eq. zk16(jnocm2+2*(icmp2-1))) then
                     zk16(jnocm1+icmp1-1) = zk16(jnocm2+2*icmp2-1)
                     goto 10
-                endif
-            enddo
- 10         continue
-        enddo
-    endif
+                end if
+            end do
+10          continue
+        end do
+    end if
 !   3.2. ==> RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLESDANS CATALOGUE
 !            RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 !            VERIF COHERENCE AVEC LE CATALOGUE
-    call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+    call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd, &
                 modnum, nuanom, numnoa)
 !   3.3. ==> DEFINITIONS DES IMPRESSIONS ET CREATION DES PROFILS EVENTUELS
-    call ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
-                ncmprf, ncmpvl, ntlcmp, nbvato, nbenec,&
-                lienec, adsd, adsl, nomaas, modele,&
-                typgeo, nomtyp, ntproa, chanom, sdcarm,&
+    call ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
+                ncmprf, ncmpvl, ntlcmp, nbvato, nbenec, &
+                lienec, adsd, adsl, nomaas, modele, &
+                typgeo, nomtyp, ntproa, chanom, sdcarm, &
                 field_type, nom_sd_fu)
 
 ! - Get number of components
@@ -369,32 +369,32 @@ integer :: codret
             nbCmpDyna = ncmpve
         else
             if (nbCmpDyna .gt. ncmpve) then
-                call utmess('F', 'MED_31', sk = field_type)
-            endif
-        endif
-    endif
+                call utmess('F', 'MED_31', sk=field_type)
+            end if
+        end if
+    end if
 !
-    if ( nbimpr.gt.0 ) then
+    if (nbimpr .gt. 0) then
         call jeveuo(ncaimi, 'L', adcaii)
         call jeveuo(ncaimk, 'L', adcaik)
 !       3.4. ==> CARACTERISATION DES SUPPORTS QUAND CE NE SONT PAS DES NOEUDS
         if (typech(1:4) .eq. 'ELGA' .or. typech(1:4) .eq. 'ELEM') then
             if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
 !
-                if(nom_sd_fu.ne.' ') call utmess('F', 'MED3_3')
+                if (nom_sd_fu .ne. ' ') call utmess('F', 'MED3_3')
 !
-                call irelst(nofimd, chanom, nochmd,     typech,       nomaas,&
+                call irelst(nofimd, chanom, nochmd, typech, nomaas, &
                             nomamd, nbimpr, zi(adcaii), zk80(adcaik), sdcarm, carael)
-            endif
-            call irmpga(nofimd, chanom,     nochmd,       typech, nomtyp,&
-                        nbimpr, zi(adcaii), zk80(adcaik), modnum, nuanom,&
-                        sdcarm, lfichUniq,  codret)
-        endif
+            end if
+            call irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
+                        nbimpr, zi(adcaii), zk80(adcaik), modnum, nuanom, &
+                        sdcarm, lfichUniq, codret)
+        end if
 !
 !       Reperage du champ : existe-t-il deja ?
 !       on doit parcourir toutes les impressions possibles pour ce champ
         existc = 0
-        do nrimpr = 1 , nbimpr
+        do nrimpr = 1, nbimpr
             if (codret .eq. 0) then
                 tygeom = zi(adcaii+10*nrimpr-2)
                 if (tygeom .eq. typnoe) then
@@ -404,41 +404,41 @@ integer :: codret
                         typent = ednoma
                     else
                         typent = edmail
-                    endif
-                endif
+                    end if
+                end if
                 nvalec = zi(adcaii+10*nrimpr-4)
                 call jedetr(nmcmfi)
                 ifimed = 0
-                call mdexch(nofimd, ifimed, nochmd, numpt, numord,&
-                            ncmpve, ntncmp, nvalec, typent, tygeom,&
-                            jaux, nbcmfi, nmcmfi, nbval, nbprof,&
+                call mdexch(nofimd, ifimed, nochmd, numpt, numord, &
+                            ncmpve, ntncmp, nvalec, typent, tygeom, &
+                            jaux, nbcmfi, nmcmfi, nbval, nbprof, &
                             codret)
-                existc = max ( existc, jaux )
-            endif
-        enddo
+                existc = max(existc, jaux)
+            end if
+        end do
 !
 !       ECRITURE SI C'EST POSSIBLE
-        if ( existc.le.2 ) then
-            call ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
-                        instan, numord, adsd, adsv, adsl,&
-                        adsk, partie, indcmp, ncmpve, ntlcmp,&
-                        ntncmp, ntucmp, ntproa, nbimpr, zi(adcaii),&
-                        zk80(adcaik), typech, nomamd, nomtyp, modnum,&
+        if (existc .le. 2) then
+            call ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
+                        instan, numord, adsd, adsv, adsl, &
+                        adsk, partie, indcmp, ncmpve, ntlcmp, &
+                        ntncmp, ntucmp, ntproa, nbimpr, zi(adcaii), &
+                        zk80(adcaik), typech, nomamd, nomtyp, modnum, &
                         numnoa, lfichUniq, nom_sd_fu, codret)
         else
             call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
-        endif
+        end if
     else
         call utmess('A', 'MED_82', sk=nochmd)
-    endif
+    end if
 !
 999 continue
     if (nivinf .gt. 1) then
         call cpu_time(end_time)
-        write (ifm,*) '<',nompro,'> FIN ECRITURE DU CHAMP MED EN ', &
+        write (ifm, *) '<', nompro, '> FIN ECRITURE DU CHAMP MED EN ', &
             end_time-start_time, "sec."
-        write (ifm,*) ' '
-    endif
+        write (ifm, *) ' '
+    end if
 !
     call jedetr('&&'//nompro//'.LISTE_N0MCMP   ')
     call jedetr('&&'//nompro//'.NOMCMP         ')

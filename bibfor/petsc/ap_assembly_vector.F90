@@ -21,9 +21,9 @@ subroutine ap_assembly_vector(chno)
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-use aster_petsc_module
-use petsc_data_module
-use saddle_point_module, only : convert_rhs_to_saddle_point
+    use aster_petsc_module
+    use petsc_data_module
+    use saddle_point_module, only: convert_rhs_to_saddle_point
 
     implicit none
 
@@ -82,20 +82,20 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 !----------------------------------------------------------------
     call jemarq()
 !
-    cn19=chno
-    typsd='****'
+    cn19 = chno
+    typsd = '****'
     step = 1
     dbg = .false. .and. nstep == step
-    nstep = nstep + 1
+    nstep = nstep+1
 
-    call dismoi('PROF_CHNO',cn19,'CHAM_NO', repk=pfchno)
-    ASSERT(pfchno(15:19).eq.'.NUME')
-    numddl=pfchno(1:14)
+    call dismoi('PROF_CHNO', cn19, 'CHAM_NO', repk=pfchno)
+    ASSERT(pfchno(15:19) .eq. '.NUME')
+    numddl = pfchno(1:14)
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=nommai)
     call gettco(nommai(1:8), typsd)
-    if( typsd.ne.'MAILLAGE_P' ) then
+    if (typsd .ne. 'MAILLAGE_P') then
         goto 999
-    endif
+    end if
     call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
     call jeveuo(numddl//'.NUME.PDDL', 'L', vi=pddl)
     call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
@@ -103,10 +103,10 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     nloc = zi(jnequ)
     nglo = zi(jnequ+1)
 !
-    if(dbg) then
-        print*, "DEBUG IN AS_ASSEMBLY_VECTOR"
+    if (dbg) then
+        print *, "DEBUG IN AS_ASSEMBLY_VECTOR"
         call jeexin(numddl//'.NUME.NULS', iret)
-        if(iret == 0) then
+        if (iret == 0) then
             call crnustd(numddl)
         end if
         call jeveuo(numddl//'.NUME.NULS', 'L', vi=v_nuls)
@@ -120,33 +120,33 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !   Nombre de ddls m'appartenant (pour PETSc)
-    ndprop = count( pddl(1:nloc) == rang )
+    ndprop = count(pddl(1:nloc) == rang)
 !
     call PetscInitialized(done, ierr)
-    ASSERT(ierr.eq.0)
-    if( .not.done ) then
+    ASSERT(ierr .eq. 0)
+    if (.not. done) then
         call ap_on_off('ON', " ")
-    endif
+    end if
     call VecCreate(mpicomm, assembly, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecSetSizes(assembly, to_petsc_int(ndprop), to_petsc_int(nglo), ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecSetType(assembly, VECMPI, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 #if ASTER_PETSC_INT_SIZE == 4
-    AS_ALLOCATE( vi4=ig_petsc_c, size=nloc )
+    AS_ALLOCATE(vi4=ig_petsc_c, size=nloc)
 #else
-    AS_ALLOCATE( vi=ig_petsc_c, size=nloc )
+    AS_ALLOCATE(vi=ig_petsc_c, size=nloc)
 #endif
-    AS_ALLOCATE( vr=val, size=nloc )
+    AS_ALLOCATE(vr=val, size=nloc)
     nval = 0
     do iloc = 1, nloc
-        if(dbg) then
-            nuno  = v_deeg(2*(iloc-1) + 1)
-            nucmp = v_deeg(2*(iloc-1) + 2)
+        if (dbg) then
+            nuno = v_deeg(2*(iloc-1)+1)
+            nucmp = v_deeg(2*(iloc-1)+2)
 !           numéro noeud global, num comp du noeud, nume eq std, rhs, nume eq glob
-            write(701+rang,*) nuno, nucmp, v_nuls(iloc), zr(jvale+iloc-1)
+            write (701+rang, *) nuno, nucmp, v_nuls(iloc), zr(jvale+iloc-1)
 
         end if
         !if( pddl(iloc) .eq. rang ) then
@@ -155,45 +155,45 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         val(nval) = zr(jvale+iloc-1)
         !endif
     end do
-    if(dbg) flush(701+rang)
+    if (dbg) flush (701+rang)
 !
     call VecSetValues(assembly, to_petsc_int(nval), ig_petsc_c, val, ADD_VALUES, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecAssemblyBegin(assembly, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     call VecAssemblyEnd(assembly, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
     call VecGetOwnershipRange(assembly, low, high, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
     call VecGetArray(assembly, xx, xidx, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
     do iloc = 1, nloc
-        if( pddl(iloc) .eq. rang ) then
+        if (pddl(iloc) .eq. rang) then
             numglo = zi(jnulg-1+iloc)
             zr(jvale-1+iloc) = xx(xidx+numglo-low+1)
-        endif
-        if(dbg) then
-            nuno  = v_deeg(2*(iloc-1) + 1)
-            nucmp = v_deeg(2*(iloc-1) + 2)
+        end if
+        if (dbg) then
+            nuno = v_deeg(2*(iloc-1)+1)
+            nucmp = v_deeg(2*(iloc-1)+2)
 !           numéro noeud global, num comp du noeud, nume eq std, rhs, nume eq glob
-            write(801+rang,*) nuno, nucmp, v_nuls(iloc), zr(jvale-1+iloc)
+            write (801+rang, *) nuno, nucmp, v_nuls(iloc), zr(jvale-1+iloc)
 
         end if
-    enddo
-    if(dbg) flush(801+rang)
+    end do
+    if (dbg) flush (801+rang)
 !
     call VecRestoreArray(assembly, xx, xidx, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 #if ASTER_PETSC_INT_SIZE == 4
-    AS_DEALLOCATE( vi4=ig_petsc_c )
+    AS_DEALLOCATE(vi4=ig_petsc_c)
 #else
-    AS_DEALLOCATE( vi=ig_petsc_c )
+    AS_DEALLOCATE(vi=ig_petsc_c)
 #endif
     AS_DEALLOCATE(vr=val)
     call VecDestroy(assembly, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr .eq. 0)
 !
 999 continue
     call jedema()

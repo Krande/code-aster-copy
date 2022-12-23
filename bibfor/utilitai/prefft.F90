@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine prefft(resin, method, symetr, nsens, grand,&
+subroutine prefft(resin, method, symetr, nsens, grand, &
                   vectot, nbva, kmpi, ier, npuis)
     implicit none
 #include "jeveux.h"
@@ -89,35 +89,35 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     call jemarq()
 ! INIT
     call infniv(ifm, niv)
-    rzero=0.D0
-    czero=dcmplx(0.D0,0.D0)
+    rzero = 0.D0
+    czero = dcmplx(0.D0, 0.D0)
 ! MODE DEBUG
     if (niv .ge. 2) then
-        dbg_ob=.true.
+        dbg_ob = .true.
     else
-        dbg_ob=.false.
-    endif
+        dbg_ob = .false.
+    end if
 ! MODE DISTRIBUE OU NON
-    ldist=.false.
+    ldist = .false.
     if (kmpi(1:3) .eq. 'OUI') then
-        ldist=.true.
-    else if (kmpi(1:3).eq.'NON') then
-        ldist=.false.
+        ldist = .true.
+    else if (kmpi(1:3) .eq. 'NON') then
+        ldist = .false.
     else
 ! valeur aberrante
         ASSERT(.false.)
-    endif
+    end if
     if (dbg_ob) then
-        write(ifm,*)'valeur kmpi/ldist=',kmpi,ldist
-    endif
+        write (ifm, *) 'valeur kmpi/ldist=', kmpi, ldist
+    end if
 ! CHOIX DE LA MKL
-    lmkl=.true.
-    lmkl=.false.
+    lmkl = .true.
+    lmkl = .false.
     if (lmkl) then
-        k3='MKL'
+        k3 = 'MKL'
     else
-        k3='AST'
-    endif
+        k3 = 'AST'
+    end if
 ! PREPARATION DEU VECTEUR DE DISTRIBUTION MPI DES CALCULS "IDDL"
 ! SI LDIST=.TRUE.
 !   KDIST(1...NEQ), KDIST(I)=RANG DU PROC MPI CONCERNE PAR LE IEME DDL
@@ -129,17 +129,17 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     call asmpi_comm('GET', mpicou)
     if (mpicow .ne. mpicou) then
         ASSERT(.False.)
-    endif
+    end if
     call asmpi_info(mpicou, mrang, mnbproc)
     rang = to_aster_int(mrang)
     nbproc = to_aster_int(mnbproc)
 ! GARDES-FOUS
-    ASSERT((rang.ge.0).and.(rang.le.(nbproc-1)))
-    ASSERT(nbproc.ge.1)
-    if (ldist .and. (nbproc.eq.1)) then
-        ldist=.false.
-        if (dbg_ob) write(ifm,*)'<PREFFT> CALCUL SEQUENTIEL, LDIST FORCE A .FALSE.'
-    endif
+    ASSERT((rang .ge. 0) .and. (rang .le. (nbproc-1)))
+    ASSERT(nbproc .ge. 1)
+    if (ldist .and. (nbproc .eq. 1)) then
+        ldist = .false.
+        if (dbg_ob) write (ifm, *) '<PREFFT> CALCUL SEQUENTIEL, LDIST FORCE A .FALSE.'
+    end if
 !     ------------------------------------------------------------------
 !      pour ne pas invalider NPARA
     grande = grand
@@ -147,14 +147,14 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !
     call gettco(resin, typres)
     call jelira(resin//'.ORDR', 'LONUTI', nbordr)
-    call rsorac(resin, 'LONUTI', 0, r8b, k8b,&
-                c16b, r8b, k8b, tord, 1,&
+    call rsorac(resin, 'LONUTI', 0, r8b, k8b, &
+                c16b, r8b, k8b, tord, 1, &
                 ibid)
-    nbordr=tord(1)
-    knume='KNUME'
+    nbordr = tord(1)
+    knume = 'KNUME'
     call wkvect(knume, 'V V I', nbordr, jordr)
-    call rsorac(resin, 'TOUT_ORDRE', 0, r8b, k8b,&
-                c16b, r8b, k8b, zi(jordr), nbordr,&
+    call rsorac(resin, 'TOUT_ORDRE', 0, r8b, k8b, &
+                c16b, r8b, k8b, zi(jordr), nbordr, &
                 ibid)
     call jeveuo(knume, 'L', lordr)
 !
@@ -163,17 +163,17 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     nomfon = '&&PREFFT.FON_AV'
     if (nsens .eq. 1) then
         call wkvect(nomfon, 'V V R', 2*nbordr, lvar)
-    else if (nsens.eq.-1) then
+    else if (nsens .eq. -1) then
         call wkvect(nomfon, 'V V R', 3*nbordr, lvar)
-    endif
-    lfon = lvar + nbordr
+    end if
+    lfon = lvar+nbordr
 !
 !    Creation vecteurs pour economiser appels rsexch si DYNA_TRANS/HARMO
-    kcham= '&&PREFFT.KCHAM'
+    kcham = '&&PREFFT.KCHAM'
     call wkvect(kcham, 'V V K24', nbordr, lcham)
 !
     if (typres(6:9) .ne. 'GENE') then
-        call rsexch('F', resin, grande, 1, chdep,&
+        call rsexch('F', resin, grande, 1, chdep, &
                     iret)
         call jeveuo(chdep//'.VALE', 'L', lval)
 !     --- NOMBRE D'EQUATIONS : NEQ
@@ -183,63 +183,63 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         call jeveuo(resin//'.'//grande, 'L', lval)
         chdep2 = resin//'.'//grande
         call jelira(chdep2, 'LONMAX', neq)
-        neq = neq / nbordr
+        neq = neq/nbordr
         call jeveuo(resin//'.DISC', 'L', lacce)
 !      --- LACCE : ACCES A LA LISTE D'INSTANTS/FREQUENCES
-    endif
+    end if
 !
 ! CREATION DU VECTEUR KDIST
-    ndist=neq
-    ndist1=ndist-1
+    ndist = neq
+    ndist1 = ndist-1
 ! POUR DIAGNOSTIC DEBUG
     if (dbg_ob) then
-        write(ifm,*)'<PREFFT> NEQ/NBPROC/RANG/LDIST=',neq,nbproc,rang,ldist
-        write(ifm,*)'<PREFFT> TYPRES=',typres
-    endif
+        write (ifm, *) '<PREFFT> NEQ/NBPROC/RANG/LDIST=', neq, nbproc, rang, ldist
+        write (ifm, *) '<PREFFT> TYPRES=', typres
+    end if
 !
 ! GARDE-FOU: AU MOINS UN CALCUL FFT (BOUCLE IDDL=2,NEQ) PAR MPI
     if (ndist1 .lt. nbproc) then
-        ldist=.false.
-        if (dbg_ob) write(ifm,*)'<PREFFT> CALCUL TROP PETIT, LDIST FORCE A .FALSE.'
-    endif
-    kdist='&&PREFFT.VEC_DIST_MPI'
+        ldist = .false.
+        if (dbg_ob) write (ifm, *) '<PREFFT> CALCUL TROP PETIT, LDIST FORCE A .FALSE.'
+    end if
+    kdist = '&&PREFFT.VEC_DIST_MPI'
     call wkvect(kdist, 'V V I', ndist, jkdist)
     if (ldist) then
 ! LES PROC MPI SE DISTRIBUENT LES DDLS; RELIQUAT AU DERNIER
 ! DESEQUILIBRAGE DE CHARGE AU PIRE EN nbproc NEGLIGEABLE PAR RAPPORT A
 ! LA CHARGE (neq-1)/nbproc
 ! TOUS LES PROC MPI FONT LE PREMIER DDL
-        zi(jkdist)=rang
-        nbloc=ndist1/nbproc
-        impi=0
-        iaux=0
+        zi(jkdist) = rang
+        nbloc = ndist1/nbproc
+        impi = 0
+        iaux = 0
         do i = 1, ndist1
-            iaux=iaux+1
-            zi(jkdist+i)=impi
-            if ((iaux==nbloc) .and. (impi<(nbproc-1))) then
-                iaux=0
-                impi=impi+1
-            endif
-        enddo
+            iaux = iaux+1
+            zi(jkdist+i) = impi
+            if ((iaux == nbloc) .and. (impi < (nbproc-1))) then
+                iaux = 0
+                impi = impi+1
+            end if
+        end do
     else
 ! TOUS LES PROC MPI FONT TOUS LES DDLS
         call vecint(ndist, rang, zi(jkdist))
-    endif
+    end if
 ! POUR DIAGNOSTIC DEBUG
     if (dbg_ob) then
-        write(ifm,*)'<PREFFT> NDIST/NBPROC/NBLOC=',ndist,nbproc,nbloc
+        write (ifm, *) '<PREFFT> NDIST/NBPROC/NBLOC=', ndist, nbproc, nbloc
         do j = 0, nbproc-1
-            minj=ndist+1
-            maxj=0
+            minj = ndist+1
+            maxj = 0
             do i = 1, ndist1
                 if (zi(jkdist+i) .eq. j) then
-                    if ((i+1) .lt. minj) minj=i+1
-                    if ((i+1) .gt. maxj) maxj=i+1
-                endif
-            enddo
-            write(ifm,*)'RANG/IMIN_KDIST/IMAX_KDIST',j,minj,maxj
-        enddo
-    endif
+                    if ((i+1) .lt. minj) minj = i+1
+                    if ((i+1) .gt. maxj) maxj = i+1
+                end if
+            end do
+            write (ifm, *) 'RANG/IMIN_KDIST/IMAX_KDIST', j, minj, maxj
+        end do
+    end if
 !
 ! INIT
     iddl = 1
@@ -247,19 +247,19 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
     sym = symetr
 !
 ! PREPARATION POUR SPDFFT
-    nbva=nbordr
+    nbva = nbordr
     n = 1
-  2 continue
+2   continue
     nbpts = 2**n
     if (nbpts .lt. nbva) then
-        n = n + 1
+        n = n+1
         goto 2
-    endif
+    end if
 !     Methode de prise en compte du signal :
 !     -TRONCATURE : on tronque au 2**N inferieur le plus proche de NBVA
 !     -PROL_ZERO : on prolonge le signal avec des zero pour aller
 !                   au 2**N le plus proche superieur a NBVA
-    if ((method.eq.'TRONCATURE') .and. (nbpts.ne.nbva)) then
+    if ((method .eq. 'TRONCATURE') .and. (nbpts .ne. nbva)) then
         nbpts = 2**(n-1)
         nbpts1 = nbpts
         nbpts2 = 2*nbpts
@@ -267,24 +267,24 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         nbpts = 2**(n+npuis)
         nbpts1 = nbva
         nbpts2 = nbpts
-    endif
+    end if
     if (sym .eq. 'NON') then
         if (nsens .eq. 1) then
             nbpts2 = (nbpts/2)
-        else if (nsens.eq.-1) then
+        else if (nsens .eq. -1) then
             nbpts2 = (2*nbpts)
-        endif
-    endif
-    nomwor='&&PREFFT.TRAVAIL'
+        end if
+    end if
+    nomwor = '&&PREFFT.TRAVAIL'
     fonout = '&&PREFFT.FCTFFT'
     if (nsens .eq. 1) then
         call wkvect(nomwor, 'V V C', nbpts, ltra)
         call wkvect(fonout, 'V V C', 2*nbpts2, nout)
-    else if (nsens.eq.-1) then
+    else if (nsens .eq. -1) then
         call wkvect(nomwor, 'V V C', nbpts2+1, ltra)
         call wkvect(fonout, 'V V R', 2*nbpts2, nout)
-    endif
-    nbvout=nbpts2
+    end if
+    nbvout = nbpts2
 !
     if (nsens .eq. 1) then
 !     --- DE TEMPOREL EN FREQUENTIEL : TRAN_GENE EN HARM_GENE
@@ -296,10 +296,10 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !        --- CAS OU ON DISPOSE D'UNE DYNA_TRANS:
             do iordr = 0, nbordr-1
 !           --- BOUCLE SUR LES NUMEROS D'ORDRE (INSTANTS ARCHIVES)
-                call rsexch('F', resin, grande, zi(jordr+iordr), cham19,&
+                call rsexch('F', resin, grande, zi(jordr+iordr), cham19, &
                             iret)
-                zk24(lcham+iordr)=cham19
-                call rsadpa(resin, 'L', 1, 'INST', zi(jordr+iordr),&
+                zk24(lcham+iordr) = cham19
+                call rsadpa(resin, 'L', 1, 'INST', zi(jordr+iordr), &
                             0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
 !              --- REMPLIR LE VECTEUR ABSCISSES DE LA FONCTION PREFFT
@@ -308,7 +308,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !              --- REMPLIR LE VECTEUR ORDONNES DE LA FONCTION PREFFT
 !                  AVEC LE CHAMP RECUPERE
                 zr(lfon+ii) = zr(lvale+iddl-1)
-                ii = ii + 1
+                ii = ii+1
                 call jelibe(cham19//'.VALE')
             end do
         else
@@ -316,13 +316,13 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !              --- REMPLIR L'ABSCISSE DE LA FONCTION PREFFT
             call dcopy(nbordr, zr(lacce), 1, zr(lvar), 1)
             call dcopy(nbordr, zr(lval+iddl-1), neq, zr(lfon), 1)
-        endif
+        end if
 !
 !
 ! TOUS LES PROCESSUS MPI FONT LE CALCUL
 !
 !        --- CALCUL DE LA FFT DE LA FONCTION PREFFT DEFINIE PRECEDEMNT
-        call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+        call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                     nbpts, nout, nbpts2, sym)
 !
 !        --- VERIFICATIONS AVANT CREATION DE LA VECTEUR DES FFT FINAL
@@ -330,12 +330,12 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         if (iret .ne. 0) call jedetr(vectot)
 !
 !        --- CREATION DU VECTEUR DES FFTS
-        nbout=(neq+1)*nbvout
+        nbout = (neq+1)*nbvout
         call wkvect(vectot, 'V V C', nbout, npara)
         call vecinc(nbout, czero, zc(npara))
 !
 !        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
-        lfon2 = nout + nbvout
+        lfon2 = nout+nbvout
         call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
 !
 !        --- BOUCLE DES FFTS SUR LES AUTRES DDL'S
@@ -350,32 +350,33 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
                     ii = 0
 !              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
                     do iordr = 0, nbordr-1
-                        cham19=zk24(lcham+iordr)(1:19)
+                        cham19 = zk24(lcham+iordr) (1:19)
                         call jeveuo(cham19//'.VALE', 'L', lvale)
                         zr(lfon+ii) = zr(lvale+iddl-1)
-                        ii = ii + 1
+                        ii = ii+1
                         call jelibe(cham19//'.VALE')
                     end do
 !              --- CALCUL DES FFT
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                                 nbpts, nout, nbpts2, sym)
 !              --- SAUVEGARDE DES RESULTATS DANS VECTOT
-                    lfon2 = nout + nbvout
+                    lfon2 = nout+nbvout
                     call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
-                endif
+                end if
             end do
 !
 ! COMMUNICATION DES RESULTATS
             if (ldist) then
 ! POUR DIAGNOSTIC DEBUG
                 if (dbg_ob) then
-                    write(ifm,*)'<PREFFT> DYNA_TRANS NSENS=1'
-                    write(ifm,*)'<PREFFT> !! COM MPI_ALLREDUCE C DE TAILLE=',(neq-1)*nbvout,' !!'
-                endif
+                    write (ifm, *) '<PREFFT> DYNA_TRANS NSENS=1'
+                    write (ifm, *) '<PREFFT> !! COM MPI_ALLREDUCE C DE TAILLE=', &
+                        (neq-1)*nbvout, ' !!'
+                end if
 ! ON COMMUNIQUE PAS LE PREMIER (FFT FAIT PAR TOUS) ET PAS LE DERNIER (LISTE DES INSTANTS
 ! CONNUES DE TOUS CF. BOUCLE 40)
                 call asmpi_comm_vect('MPI_SUM', 'C', nbval=(neq-1)*nbvout, vc=zc(npara+nbvout))
-            endif
+            end if
         else
 !        --- CAS D'UNE TRAN_GENE A L'ENTREE
 !           --- BOUCLE SUR LES DDL'S 2 A NEQ
@@ -386,31 +387,32 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
                     call dcopy(nbordr, zr(lval+iddl-1), neq, zr(lfon), 1)
 !              --- CALCUL DES FFT
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                                 nbpts, nout, nbpts2, sym)
 !              --- SAUVEGARDE DES RESULTATS DANS VECTOT
-                    lfon2 = nout + nbvout
+                    lfon2 = nout+nbvout
                     call zcopy(nbvout, zc(lfon2), 1, zc(npara+(iddl-1)*nbvout), 1)
-                endif
+                end if
             end do
 !
 ! COMMUNICATION DES RESULTATS
             if (ldist) then
 ! POUR DIAGNOSTIC DEBUG
                 if (dbg_ob) then
-                    write(ifm,*)'<PREFFT> TRAN_GENE NSENS=1'
-                    write(ifm,*)'<PREFFT> !! COM MPI_ALLREDUCE C DE TAILLE=',(neq-1)*nbvout,' !!'
-                endif
+                    write (ifm, *) '<PREFFT> TRAN_GENE NSENS=1'
+                    write (ifm, *) '<PREFFT> !! COM MPI_ALLREDUCE C DE TAILLE=', &
+                        (neq-1)*nbvout, ' !!'
+                end if
 ! ON COMMUNIQUE PAS LE PREMIER (FFT FAIT PAR TOUS) ET PAS LE DERNIER (LISTE DES INSTANTS
 ! CONNUES DE TOUS CF. BOUCLE 40)
                 call asmpi_comm_vect('MPI_SUM', 'C', nbval=(neq-1)*nbvout, vc=zc(npara+nbvout))
-            endif
-        endif
+            end if
+        end if
 !
 !        --- STOCKAGE DES INSTANTS A LA FIN DANS VECTOT
         call zcopy(nbvout, zc(nout), 1, zc(npara+neq*nbvout), 1)
 !
-    else if (nsens.eq.-1) then
+    else if (nsens .eq. -1) then
 !     --- DE FREQUENTIEL EN TEMPOREL : HARM_GENE EN TRAN_GENE
 !         OU BIEN DYNA_HARMO EN DYNA_TRANS
 !
@@ -422,17 +424,17 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
             do iordr = 1, nbordr
 !             --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
 !             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES
-                call rsexch('F', resin, grande, zi(jordr+iordr-1), cham19,&
+                call rsexch('F', resin, grande, zi(jordr+iordr-1), cham19, &
                             iret)
-                zk24(lcham+iordr-1)=cham19
-                call rsadpa(resin, 'L', 1, 'FREQ', zi(jordr+iordr-1),&
+                zk24(lcham+iordr-1) = cham19
+                call rsadpa(resin, 'L', 1, 'FREQ', zi(jordr+iordr-1), &
                             0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
                 zr(lvar+iordr-1) = zr(lacce)
                 zr(lfon+ii) = dble(zc(lvale+iddl-1))
-                ii = ii + 1
+                ii = ii+1
                 zr(lfon+ii) = dimag(zc(lvale+iddl-1))
-                ii = ii + 1
+                ii = ii+1
                 call jelibe(cham19//'.VALE')
             end do
         else
@@ -442,20 +444,20 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES
                 zr(lvar+iordr) = zr(lacce+iordr)
                 zr(lfon+ii) = dble(zc(lval+iddl-1+(neq*iordr)))
-                ii = ii + 1
+                ii = ii+1
                 zr(lfon+ii) = dimag(zc(lval+iddl-1+(neq*iordr)))
-                ii = ii + 1
+                ii = ii+1
             end do
-        endif
+        end if
 ! BIZARRE
         if (abs(zr(lfon+ii-1)) .lt. ((1.d-6)*abs(zr(lfon+ii-2)))) then
             zr(lfon+ii-1) = 0.d0
-        endif
+        end if
 !
 ! TOUS LES PROCESSUS MPI FONT LE CALCUL
 !
 !        --- CALCUL DU PREMIER FFT INVERSE SUR LA FONCTION CALCULEE
-        call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+        call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                     nbpts, nout, nbpts2, sym)
 !
 !        --- VERIFICATIONS AVANT CREATION DE LA VECTEUR DES FFT FINAL
@@ -463,12 +465,12 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
         if (iret .ne. 0) call jedetr(vectot)
 !
 !        --- CREATION DU VECTEUR DES FFTS
-        nbout=(neq+1)*nbvout
+        nbout = (neq+1)*nbvout
         call wkvect(vectot, 'V V R', nbout, npara)
 ! INITIALISATION DE LA MATRICE DES RESULTATS
         call vecini(nbout, rzero, zr(npara))
 !        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
-        lfon2 = nout + nbvout
+        lfon2 = nout+nbvout
         call dcopy(nbvout, zr(lfon2), 1, zr(npara+(iddl-1)*nbvout), 1)
 !
 !        --- BOUCLE DES FFTS INVERSES SUR LES AUTRES DDL'S
@@ -481,34 +483,35 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
                 if (zi(jkdist+iddl-1) .eq. rang) then
                     ii = 0
                     do iordr = 1, nbordr
-                        cham19=zk24(lcham+iordr-1)(1:19)
+                        cham19 = zk24(lcham+iordr-1) (1:19)
                         call jeveuo(cham19//'.VALE', 'L', lvale)
                         zr(lfon+ii) = dble(zc(lvale+iddl-1))
-                        ii = ii + 1
+                        ii = ii+1
                         zr(lfon+ii) = dimag(zc(lvale+iddl-1))
-                        ii = ii + 1
+                        ii = ii+1
                         call jelibe(cham19//'.VALE')
                     end do
 !             --- CALCUL DES FFT'S INVERSES
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                                 nbpts, nout, nbpts2, sym)
 !             --- SAUVEGARDE DES RESULTATS DANS VECTOT
-                    lfon2 = nout + nbvout
+                    lfon2 = nout+nbvout
                     call dcopy(nbvout, zr(lfon2), 1, zr(npara+(iddl-1)*nbvout), 1)
-                endif
+                end if
             end do
 !
 ! COMMUNICATION DES RESULTATS
             if (ldist) then
 ! POUR DIAGNOSTIC DEBUG
                 if (dbg_ob) then
-                    write(ifm,*)'<PREFFT> DYNA_HARMO NSENS=-1'
-                    write(ifm,*)'<PREFFT> !! COM MPI_ALLREDUCE R DE TAILLE=',(neq-1)*nbvout,' !!'
-                endif
+                    write (ifm, *) '<PREFFT> DYNA_HARMO NSENS=-1'
+                    write (ifm, *) '<PREFFT> !! COM MPI_ALLREDUCE R DE TAILLE=', &
+                        (neq-1)*nbvout, ' !!'
+                end if
 ! ON COMMUNIQUE PAS LE PREMIER (FFT FAIT PAR TOUS) ET PAS LE DERNIER (LISTE DES INSTANTS
 ! CONNUES DE TOUS CF. BOUCLE 400)
                 call asmpi_comm_vect('MPI_SUM', 'R', nbval=(neq-1)*nbvout, vr=zr(npara+nbvout))
-            endif
+            end if
         else
             do iddl = 2, neq
 ! ON LIMITE LE CALCUL FFT AUX IDDL DE LA RESPONSABILITE DU PROCESSUS MPI
@@ -517,35 +520,36 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
                     do iordr = 0, nbordr-1
 !               --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
                         zr(lfon+ii) = dble(zc(lval+iddl-1+(neq*iordr)))
-                        ii = ii + 1
+                        ii = ii+1
                         zr(lfon+ii) = dimag(zc(lval+iddl-1+(neq*iordr)))
-                        ii = ii + 1
+                        ii = ii+1
                     end do
 !             --- CALCUL DES FFT'S INVERSES
-                    call spdfft(lvar, nbva, nsens, ltra, nbpts1,&
+                    call spdfft(lvar, nbva, nsens, ltra, nbpts1, &
                                 nbpts, nout, nbpts2, sym)
 !             --- SAUVEGARDE DES RESULTATS DANS VECTOT
-                    lfon2 = nout + nbvout
+                    lfon2 = nout+nbvout
                     call dcopy(nbvout, zr(lfon2), 1, zr(npara+(iddl-1)*nbvout), 1)
-                endif
+                end if
             end do
 !
 ! COMMUNICATION DES RESULTATS
             if (ldist) then
 ! POUR DIAGNOSTIC DEBUG
                 if (dbg_ob) then
-                    write(ifm,*)'<PREFFT> HARM_GENE NSENS=-1'
-                    write(ifm,*)'<PREFFT> !! COM MPI_ALLREDUCE R DE TAILLE=',(neq-1)*nbvout,' !!'
-                endif
+                    write (ifm, *) '<PREFFT> HARM_GENE NSENS=-1'
+                    write (ifm, *) '<PREFFT> !! COM MPI_ALLREDUCE R DE TAILLE=', &
+                        (neq-1)*nbvout, ' !!'
+                end if
 ! ON COMMUNIQUE PAS LE PREMIER (FFT FAIT PAR TOUS) ET PAS LE DERNIER (LISTE DES INSTANTS
 ! CONNUES DE TOUS CF. BOUCLE 400)
                 call asmpi_comm_vect('MPI_SUM', 'R', nbval=(neq-1)*nbvout, vr=zr(npara+nbvout))
-            endif
-        endif
+            end if
+        end if
 ! On stocke les instants a la fin
 !
         call dcopy(nbvout, zr(nout), 1, zr(npara+neq*nbvout), 1)
-    endif
+    end if
     if (typres(6:9) .ne. 'GENE') call jelibe(cham19//'.VALE')
 !
     nbva = nbvout

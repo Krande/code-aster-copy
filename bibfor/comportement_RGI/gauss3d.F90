@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine gauss3d(n, a, x, b, ngf,&
+subroutine gauss3d(n, a, x, b, ngf, &
                    err1, ipzero)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
@@ -40,7 +40,7 @@ subroutine gauss3d(n, a, x, b, ngf,&
     integer, dimension(2) :: vali
     real(kind=8) :: aa(22, 22), bb(22)
 !
-    pmax=0.d0
+    pmax = 0.d0
     err1 = 0
 !
 !
@@ -50,9 +50,9 @@ subroutine gauss3d(n, a, x, b, ngf,&
 !    plastiques dans fluendo3d
     do i = 1, n
         do j = 1, n
-            aa(i,j)=a(i,j)
+            aa(i, j) = a(i, j)
         end do
-        bb(i)=b(i)
+        bb(i) = b(i)
     end do
 !------------------------------------------------
 !
@@ -62,45 +62,45 @@ subroutine gauss3d(n, a, x, b, ngf,&
         vali(1) = n
         vali(2) = ngf
         call utmess('E', 'COMPOR3_35', ni=2, vali=vali)
-        err1=1
+        err1 = 1
         go to 999
     end if
 !
 !    precision pivot nul
-    epsilon1=r8prem()
+    epsilon1 = r8prem()
 !
     do i = 1, n
-        a(i,n+1)=b(i)
+        a(i, n+1) = b(i)
     end do
 !
     do i = 1, n
 !      recherche du pivot dmax1
-        pmax=0.d0
-        ipmax=i
+        pmax = 0.d0
+        ipmax = i
         do j = i, n
-            if (dabs(a(j,i)) .gt. pmax) then
-                pmax=dabs(a(j,i))
-                ipmax=j
+            if (dabs(a(j, i)) .gt. pmax) then
+                pmax = dabs(a(j, i))
+                ipmax = j
             end if
         end do
         if (pmax .lt. epsilon1) then
 !         test pivot nul
-            call utmess('E', 'COMPOR3_36', ni=1, vali=vali, nr=1,&
+            call utmess('E', 'COMPOR3_36', ni=1, vali=vali, nr=1, &
                         valr=valr)
-            ipzero(i)=1
-            ipmax=i
-            err1=1
+            ipzero(i) = 1
+            ipmax = i
+            err1 = 1
         else
-            err1=0
-            ipzero(i)=0
+            err1 = 0
+            ipzero(i) = 0
         end if
 !
 !     intervertion des lignes si necessaire
         if (ipmax .ne. i) then
             do j = 1, n+1
-                aux=a(i,j)
-                a(i,j)=a(ipmax,j)
-                a(ipmax,j)=aux
+                aux = a(i, j)
+                a(i, j) = a(ipmax, j)
+                a(ipmax, j) = aux
             end do
         end if
 !
@@ -108,13 +108,13 @@ subroutine gauss3d(n, a, x, b, ngf,&
 !      calcul ligne i utile si pmax ne 1, si non on fait rien et on mettra l inconnue a zero
 !      lors de la resolution
             do j = i+1, n+1
-                a(i,j)=a(i,j)/a(i,i)
+                a(i, j) = a(i, j)/a(i, i)
             end do
 !
 !      calcul des autres lignes
             do k = (i+1), n
                 do j = (i+1), (n+1)
-                    a(k,j)=a(k,j)-a(k,i)*a(i,j)
+                    a(k, j) = a(k, j)-a(k, i)*a(i, j)
                 end do
             end do
         end if
@@ -124,30 +124,30 @@ subroutine gauss3d(n, a, x, b, ngf,&
 !
 !    sortie des inconnues
     if (ipzero(n) .ne. 1) then
-        x(n)=a(n,n+1)
+        x(n) = a(n, n+1)
     else
-        x(n)=0.d0
+        x(n) = 0.d0
     end if
 !
     do i = (n-1), 1, -1
         if (ipzero(i) .ne. 1) then
-            s=a(i,n+1)
+            s = a(i, n+1)
             do j = i+1, n
-                s=s-a(i,j)*x(j)
+                s = s-a(i, j)*x(j)
             end do
-            a(i,n+1)=s
-            x(i)=s
+            a(i, n+1) = s
+            x(i) = s
         else
-            x(i)=0.d0
+            x(i) = 0.d0
         end if
     end do
 !
 !------recuperation de la matrice initiale---------
     do i = 1, n
         do j = 1, n
-            a(i,j)=aa(i,j)
+            a(i, j) = aa(i, j)
         end do
-        b(i)=bb(i)
+        b(i) = bb(i)
     end do
 !--------------------------------------------------
 999 continue

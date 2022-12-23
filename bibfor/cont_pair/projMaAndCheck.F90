@@ -16,14 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine projMaAndCheck(proj_tole, dist_ratio       , elem_dime     , &
-                          elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                          elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                          proj_coor       , nb_node_proj, iret)
+subroutine projMaAndCheck(proj_tole, dist_ratio, elem_dime, &
+                          elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                          elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                          proj_coor, nb_node_proj, iret)
 !
-use contact_module
+    use contact_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -32,15 +32,15 @@ implicit none
 #include "asterfort/apinte_prma_n.h"
 #include "asterc/r8prem.h"
 !
-real(kind=8), intent(in) :: proj_tole, dist_ratio
-integer, intent(in) :: elem_dime
-integer, intent(in) :: elem_mast_nbnode
-real(kind=8), intent(in) :: elem_mast_coor(3,9)
-integer, intent(in) :: elem_slav_nbnode
-real(kind=8), intent(in) :: elem_slav_coor(3,9)
-character(len=8), intent(in) :: elem_mast_code, elem_slav_code
-real(kind=8), intent(out) :: proj_coor(elem_dime-1,9)
-integer, intent(out) :: iret, nb_node_proj
+    real(kind=8), intent(in) :: proj_tole, dist_ratio
+    integer, intent(in) :: elem_dime
+    integer, intent(in) :: elem_mast_nbnode
+    real(kind=8), intent(in) :: elem_mast_coor(3, 9)
+    integer, intent(in) :: elem_slav_nbnode
+    real(kind=8), intent(in) :: elem_slav_coor(3, 9)
+    character(len=8), intent(in) :: elem_mast_code, elem_slav_code
+    real(kind=8), intent(out) :: proj_coor(elem_dime-1, 9)
+    integer, intent(out) :: iret, nb_node_proj
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,28 +74,28 @@ integer, intent(out) :: iret, nb_node_proj
 !
 ! - Compute norms at barycenter
 !
-    call apinte_norm(elem_dime       , &
-                     elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                     elem_slav_coor  , elem_slav_code,&
-                     mast_norm       , slav_norm)
+    call apinte_norm(elem_dime, &
+                     elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                     elem_slav_coor, elem_slav_code, &
+                     mast_norm, slav_norm)
 !
 ! - Linear normal are orthonormal - exit
 !
-    ps = mast_norm(1) * slav_norm(1) + mast_norm(2) * slav_norm(2) + mast_norm(3) * slav_norm(3)
-    if(abs(ps) <= proj_tole) then
+    ps = mast_norm(1)*slav_norm(1)+mast_norm(2)*slav_norm(2)+mast_norm(3)*slav_norm(3)
+    if (abs(ps) <= proj_tole) then
         iret = 1
         go to 99
     end if
 !
 ! - If distance between barycenter is to high -> exit
 !
-    if(dist_ratio > 0) then
+    if (dist_ratio > 0) then
         hf_ma = diameter(elem_mast_nbnode, elem_mast_coor)
         bar_ma = barycenter(elem_mast_nbnode, elem_mast_coor)
         hf_sl = diameter(elem_slav_nbnode, elem_slav_coor)
         bar_sl = barycenter(elem_slav_nbnode, elem_slav_coor)
-    !
-        if(norm2(bar_ma-bar_sl) >= 2 * dist_ratio * max(hf_ma, hf_sl)) then
+        !
+        if (norm2(bar_ma-bar_sl) >= 2*dist_ratio*max(hf_ma, hf_sl)) then
             iret = 1
             go to 99
         end if
@@ -103,24 +103,24 @@ integer, intent(out) :: iret, nb_node_proj
 !
 ! - Project slave nodes in master cell parametric space using raytracing
 !
-    call apinte_prma_n(proj_tole       , elem_dime     , &
-                       elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                       elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
-                       proj_coor       , nb_node_proj  , iret)
+    call apinte_prma_n(proj_tole, elem_dime, &
+                       elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                       elem_slav_nbnode, elem_slav_coor, elem_slav_code, &
+                       proj_coor, nb_node_proj, iret)
 !
 ! - Check if intersection is void or not
 !
-    call apinte_chck2(proj_tole       , elem_dime     , &
-                      nb_node_proj    , elem_slav_coor, &
-                      elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
-                      mast_norm       , slav_norm,&
-                      proj_coor       , l_inter)
+    call apinte_chck2(proj_tole, elem_dime, &
+                      nb_node_proj, elem_slav_coor, &
+                      elem_mast_nbnode, elem_mast_coor, elem_mast_code, &
+                      mast_norm, slav_norm, &
+                      proj_coor, l_inter)
     if (.not. l_inter) then
-        print*,'problemo'
+        print *, 'problemo'
         iret = 1
         goto 99
-    endif
+    end if
 !
-99 continue
+99  continue
 !
 end subroutine

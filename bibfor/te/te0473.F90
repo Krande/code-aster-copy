@@ -18,12 +18,12 @@
 !
 subroutine te0473(option, nomte)
 !
-use HHO_type
-use HHO_size_module
-use HHO_init_module, only : hhoInfoInitCell
-use HHO_L2proj_module
+    use HHO_type
+    use HHO_size_module
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_L2proj_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
@@ -58,14 +58,14 @@ implicit none
     call jevech("PINSTPR", "L", jvale)
     time = zr(jvale)
 !
-    if(option == "HHO_PROJ_THER") then
+    if (option == "HHO_PROJ_THER") then
 !
         func = zk8(jfunc)
         call hhoL2ProjScal(hhoCell, hhoData, func, time, coeff_L2Proj)
 !
         call hhoTherDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
         call writeVector("PTEMP_R", total_dofs, coeff_L2Proj)
-    elseif(option == "HHO_PROJ_MECA") then
+    elseif (option == "HHO_PROJ_MECA") then
         call hhoL2ProjVec(hhoCell, hhoData, zk8(jfunc), time, coeff_L2Proj)
 
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)

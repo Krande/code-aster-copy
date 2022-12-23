@@ -16,40 +16,39 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine couplagf3d(a,b,ngf,kveve66,kmm66,&
-                      kmve66,kvem66,bve6,bm6)
+subroutine couplagf3d(a, b, ngf, kveve66, kmm66, &
+                      kmve66, kvem66, bve6, bm6)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !      construction de la mattrice de couplage
 !      entre le fluage de kelvin et le fluage de maxwell
 
 !   ************************************************************************
-implicit none
+    implicit none
 
-    integer ngf,i,j
-    real(kind=8) :: a(ngf,ngf+1),b(ngf)
-    real(kind=8) :: kveve66(6,6),kmm66(6,6),kmve66(6,6),kvem66(6,6)
-    real(kind=8) :: bve6(6),bm6(6)
-
+    integer ngf, i, j
+    real(kind=8) :: a(ngf, ngf+1), b(ngf)
+    real(kind=8) :: kveve66(6, 6), kmm66(6, 6), kmve66(6, 6), kvem66(6, 6)
+    real(kind=8) :: bve6(6), bm6(6)
 
 !   remise a zero de la matrice de couplage globale
-    a(:,:)=0.d0
-    b(:)=0.d0
+    a(:, :) = 0.d0
+    b(:) = 0.d0
 
 !    remplssage des termes de couplage fluage->fluage
 !    a=  |kveve kvem |
 !        |kmve  kmm  |
-    do i=1,6
-        do j=1,6
+    do i = 1, 6
+        do j = 1, 6
 !           cas des deux matrices de couplage directe
-            a(i,j)=kveve66(i,j)
-            a(i+6,j+6)=kmm66(i,j)
+            a(i, j) = kveve66(i, j)
+            a(i+6, j+6) = kmm66(i, j)
 !           matrices de couplage indirecte
-            a(i+6,j)=kmve66(i,j)
-            a(i,j+6)=kvem66(i,j)
+            a(i+6, j) = kmve66(i, j)
+            a(i, j+6) = kvem66(i, j)
         end do
 !       second membres
-        b(i)=bve6(i)
-        b(i+6)=bm6(i)
+        b(i) = bve6(i)
+        b(i+6) = bm6(i)
     end do
 end subroutine
