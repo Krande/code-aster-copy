@@ -104,15 +104,13 @@ mySolver = code_aster.MumpsSolver()
 mySolver.factorize(lhs)
 solution = mySolver.solve(rhs, diriBCs)
 
-test.assertAlmostEqual(
-    (solution.norm("NORM_2") - 28.677774021490347) / 28.677774021490347, 0.0, delta=5e-5
-)
+sol_ref = 28.67843514759691
+test.assertAlmostEqual((solution.norm("NORM_2") - sol_ref) / sol_ref, 0.0, delta=5e-5)
 
 # project HHO solution
 hho_field = hho.projectOnLagrangeSpace(solution)
-test.assertAlmostEqual(
-    (hho_field.norm("NORM_2") - 32.19785504937473) / 32.19785504937473, 0.0, delta=1e-6
-)
+hho_ref = 32.197725321514774
+test.assertAlmostEqual((hho_field.norm("NORM_2") - hho_ref) / hho_ref, 0.0, delta=1e-6)
 
 # save result
 hho_field.printMedFile("hhoField.med")

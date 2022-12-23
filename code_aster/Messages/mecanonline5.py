@@ -378,7 +378,6 @@ A cause des erreurs précédentes, le code s'arrête.
         """ Il n'est pas possible actuellement de calculer des modes de flambement (CRIT_FLAMB) ou des modes vibratoires (MODE_VIBR) si on utilise la formulation HHO."""
     ),
     69: _("""La formulation HHO est incompatible avec les chargements suiveurs."""),
-    70: _("""La formulation HHO est incompatible avec reuse"""),
     72: _("""La modélisation XFEM implique la réactualisation de la matrice REAC_ITER=1."""),
     73: _(
         """L'option RESI_COMP_RELA n'est pas disponible pour les méthodes HHO. Il faut utiliser un autre critère de convergence."""

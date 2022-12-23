@@ -422,9 +422,6 @@ subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna, &
         if (l_undead) then
             call utmess('F', 'MECANONLINE5_69')
         end if
-        if (l_reuse) then
-            call utmess('F', 'MECANONLINE5_70')
-        end if
         if (lResiCompRela) then
             call utmess('F', 'MECANONLINE5_73')
         end if
