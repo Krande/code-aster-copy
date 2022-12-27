@@ -37,14 +37,14 @@ if nbproc == 1:
     nbNodes = [778]
     nbCells = [647]
 elif nbproc == 2:
-    nbNodes = [454, 498]
-    nbCells = [350, 388]
+    nbNodes = [498, 454]
+    nbCells = [388, 350]
 elif nbproc == 3:
-    nbNodes = [340, 446, 344]
-    nbCells = [263, 305, 266]
+    nbNodes = [355, 418, 344]
+    nbCells = [274, 288, 266]
 elif nbproc == 4:
-    nbNodes = [307, 314, 328, 364]
-    nbCells = [213, 222, 236, 253]
+    nbNodes = [371, 318, 314, 310]
+    nbCells = [262, 225, 225, 209]
 
 test.assertEqual(pMesh.getDimension(), 3)
 test.assertEqual(pMesh.getNumberOfNodes(), nbNodes[rank])

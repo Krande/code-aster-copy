@@ -57,7 +57,7 @@ print("cMesh2", flush=True)
 cMesh2 = ConnectionMesh(pMesh, [], ["PIPEFISS"])
 test.assertEqual(cMesh2.getDimension(), 3)
 test.assertEqual(cMesh2.getNumberOfNodes(), 23731)
-test.assertEqual(cMesh2.getNumberOfCells(), 9936)
+test.assertEqual(cMesh2.getNumberOfCells(), 9940)
 test.assertSequenceEqual(sorted(cMesh2.getGroupsOfCells()), ["PIPEFISS"])
 test.assertSequenceEqual(sorted(cMesh2.getGroupsOfNodes()), [])
 test.assertTrue(cMesh2.hasGroupOfCells("PIPEFISS"))
@@ -90,7 +90,7 @@ test.assertEqual(cMesh5.getNumberOfNodes(), 426)
 test.assertEqual(cMesh5.getNumberOfCells(), 192)
 test.assertSequenceEqual(sorted(cMesh5.getGroupsOfCells()), ["bords"])
 test.assertSequenceEqual(
-    sorted(cMesh5.getCells("bords")), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 152, 153, 154, 155]
+    sorted(cMesh5.getCells("bords")), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 )
 
 
@@ -105,7 +105,7 @@ test.assertSequenceEqual(
     sorted(cMesh6.getGroupsOfCells()), sorted(["bas", "haut", "bords", "affVols"])
 )
 test.assertEqual(sum(list(cMesh6.getNodesGlobalNumbering())), 192089986)
-test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 53032075)
+test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 53083589)
 
 
 # Test model

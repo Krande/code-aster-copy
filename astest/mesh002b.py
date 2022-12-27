@@ -35,14 +35,14 @@ rank = MPI.ASTER_COMM_WORLD.Get_rank()
 nbproc = MPI.ASTER_COMM_WORLD.Get_size()
 
 if nbproc == 2:
-    nbNodes = [112, 118]
-    nbCells = [104, 56]
+    nbNodes = [118, 112]
+    nbCells = [56, 104]
 elif nbproc == 3:
-    nbNodes = [72, 90, 100]
-    nbCells = [56, 65, 53]
+    nbNodes = [72, 103, 80]
+    nbCells = [56, 49, 67]
 elif nbproc == 4:
-    nbNodes = [73, 69, 85, 67]
-    nbCells = [78, 38, 32, 32]
+    nbNodes = [61, 85, 60, 76]
+    nbCells = [31, 32, 37, 78]
 
 test.assertEqual(pMesh.getDimension(), 2)
 test.assertEqual(pMesh.getNumberOfNodes(), nbNodes[rank])

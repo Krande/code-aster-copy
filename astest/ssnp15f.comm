@@ -132,7 +132,7 @@ L_INST2 = DEFI_LIST_REEL(
 # gestion manuelle avec event-driven
 
 DEFLIST2 = DEFI_LIST_INST(
-    METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=L_INST2), ECHEC=_F(SUBD_NIVEAU=15)
+    METHODE="MANUEL", DEFI_LIST=_F(LIST_INST=L_INST2), ECHEC=_F(SUBD_NIVEAU=25)
 )
 
 U2 = STAT_NON_LINE(
@@ -163,7 +163,7 @@ U3 = STAT_NON_LINE(
     INCREMENT=_F(LIST_INST=DEFLIST2),
     NEWTON=_F(MATRICE="TANGENTE", REAC_ITER=2),
     RECH_LINEAIRE=_F(RHO_MAX=150),
-    CONVERGENCE=_F(ITER_GLOB_MAXI=15),
+    CONVERGENCE=_F(ITER_GLOB_MAXI=25),
     SOLVEUR=_F(POSTTRAITEMENTS="FORCE"),
 )
 
@@ -296,6 +296,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U,
             NOM_CHAM="EPSI_ELNO",
@@ -308,6 +309,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U,
             NOM_CHAM="EPSI_ELNO",
@@ -320,6 +322,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             POINT=1,
             RESULTAT=U,
@@ -332,6 +335,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             POINT=1,
             RESULTAT=U,
@@ -344,6 +348,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U,
             NOM_CHAM="VARI_ELNO",
@@ -449,6 +454,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U2,
             NOM_CHAM="EPSI_ELNO",
@@ -461,6 +467,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U2,
             NOM_CHAM="EPSI_ELNO",
@@ -473,6 +480,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             POINT=1,
             RESULTAT=U2,
@@ -485,6 +493,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             POINT=1,
             RESULTAT=U2,
@@ -497,6 +506,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U2,
             NOM_CHAM="VARI_ELNO",
@@ -602,6 +612,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U3,
             NOM_CHAM="EPSI_ELNO",
@@ -614,6 +625,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U3,
             NOM_CHAM="EPSI_ELNO",
@@ -626,6 +638,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             POINT=1,
             RESULTAT=U3,
@@ -638,6 +651,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             POINT=1,
             RESULTAT=U3,
@@ -650,6 +664,7 @@ TEST_RESU(
         ),
         _F(
             INST=2.0,
+            TOLE_MACHINE=(1.0e-6, 1.0e-8),
             REFERENCE="AUTRE_ASTER",
             RESULTAT=U3,
             NOM_CHAM="VARI_ELNO",

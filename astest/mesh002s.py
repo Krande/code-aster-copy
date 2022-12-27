@@ -42,6 +42,7 @@ else:
 # list of meshes with error
 failure = [
     # for mesh002s
+    "forma02b.mmed",
     "sdll06a.mmed",
     # for mesh002t
     "ssls134a.med",
@@ -117,7 +118,7 @@ for mesh_file in meshes:
 
 list_nb_mesh = {2: 524, 3: 495, 4: 487}
 list_nb_mesh_conv = {2: 523, 3: 490, 4: 486}
-list_nb_conv_error = {2: 21, 3: 8, 4: 14}
+list_nb_conv_error = {2: 21, 3: 8, 4: 13}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)

@@ -32,9 +32,9 @@ print(mesh.getCoordinates().getValues())
 
 nb_nodes_lin = [6, 6]
 nb_cells = [7, 7]
-nodes_rank_lin = [[0, 0, 0, 1, 0, 1], [1, 1, 0, 1, 0, 1]]
-cells_rank = [[0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 0, 1, 0, 1]]
-nodes_nume = [[0, 1, 4, 5, 6, 7], [2, 3, 4, 5, 6, 7]]
+nodes_rank_lin = [[0, 0, 1, 0, 1, 0], [1, 1, 1, 0, 1, 0]]
+cells_rank = [[0, 0, 0, 0, 0, 0, 0], [1, 1, 0, 1, 0, 1, 0]]
+nodes_nume = [[2, 3, 4, 5, 6, 7], [0, 1, 4, 5, 6, 7]]
 test.assertEqual(nb_nodes_lin[rank], mesh.getNumberOfNodes())
 test.assertEqual(nb_cells[rank], mesh.getNumberOfCells())
 test.assertSequenceEqual(nodes_rank_lin[rank], mesh.getNodesRank())
@@ -43,10 +43,10 @@ test.assertSequenceEqual(nodes_nume[rank], mesh.getNodes(localNumbering=False))
 
 mesh_quad = CREA_MAILLAGE(MAILLAGE=mesh, LINE_QUAD=_F(TOUT="OUI"))
 nb_nodes_quad = [13, 13]
-nodes_rank_quad = [[0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1], [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1]]
+nodes_rank_quad = [[0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0], [1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0]]
 nodes_nume_quad = [
-    [0, 1, 2, 12, 3, 13, 4, 5, 6, 7, 8, 9, 17],
-    [10, 11, 2, 12, 3, 13, 6, 14, 15, 8, 16, 9, 17],
+    [0, 1, 12, 2, 13, 3, 4, 5, 6, 7, 8, 17, 9],
+    [10, 11, 12, 2, 13, 3, 14, 15, 4, 16, 7, 17, 9],
 ]
 test.assertEqual(nb_nodes_quad[rank], mesh_quad.getNumberOfNodes())
 test.assertEqual(nb_cells[rank], mesh_quad.getNumberOfCells())
@@ -63,7 +63,7 @@ test.assertTrue(mesh_lin.isParallel())
 test.assertEqual(mesh_lin.getDimension(), 2)
 test.assertSequenceEqual(nodes_rank_lin[rank], mesh_lin.getNodesRank())
 test.assertSequenceEqual(cells_rank[rank], mesh_lin.getCellsRank())
-nodes_nume_lin = [[0, 1, 2, 6, 3, 7], [4, 5, 2, 6, 3, 7]]
+nodes_nume_lin = [[0, 1, 6, 2, 7, 3], [4, 5, 6, 2, 7, 3]]
 test.assertSequenceEqual(nodes_nume_lin[rank], mesh_lin.getNodes(localNumbering=False))
 
 test.printSummary()

@@ -72,10 +72,11 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(CFG.storage.has_param("FC"))
         self.assertTrue(CFG.storage.has_param("FCFLAGS"))
         self.assertTrue(CFG.storage.has_param("exectool"))
-        size = 14
         self.assertTrue(CFG.storage.has_param("mpiexec"))
         self.assertTrue(CFG.storage.has_param("mpi_get_rank"))
-        self.assertEqual(len(CFG.storage), size)
+        size = 14
+        # may contain user parameters
+        self.assertGreaterEqual(len(CFG.storage), size)
 
     def test_filter(self):
         cfg = Config("nofile")

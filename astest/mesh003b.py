@@ -86,7 +86,7 @@ test.assertSequenceEqual(
 )
 test.assertSequenceEqual(
     sorted(cMesh3.getNodesLocalNumbering()),
-    [1, 2, 6, 7, 8, 13, 18, 36, 41, 42, 45, 52, 57, 58, 59, 110, 119, 121],
+    [1, 2, 6, 8, 9, 12, 17, 41, 41, 47, 47, 48, 52, 53, 54, 126, 137, 139],
 )
 
 
@@ -157,8 +157,8 @@ test.assertEqual(cMesh10.getNumberOfNodes(), 66)
 test.assertEqual(cMesh10.getNumberOfCells(), 24)
 test.assertSequenceEqual(sorted(cMesh10.getGroupsOfCells()), ["DROITE", "GAUCHE"])
 test.assertEqual(len(cMesh10.getCells()), 24)
-test.assertSequenceEqual(sorted(cMesh10.getCells("GAUCHE")), [12, 13, 14, 15, 16])
-test.assertSequenceEqual(sorted(cMesh10.getCells("DROITE")), [0, 1, 2, 3, 4])
+test.assertSequenceEqual(sorted(cMesh10.getCells("GAUCHE")), [0, 1, 2, 3, 4])
+test.assertSequenceEqual(sorted(cMesh10.getCells("DROITE")), [12, 13, 14, 15, 16])
 
 
 # Test ConnectionMesh - a part mesh

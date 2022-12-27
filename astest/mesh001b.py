@@ -480,16 +480,16 @@ new_mesh = mesh.refine(2)
 
 # test mesh builder
 test.assertEqual(
-    code_aster.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(), [116, 123, 126][rank]
+    code_aster.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(), [114, 115, 120][rank]
 )
 test.assertEqual(
-    code_aster.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [2014, 1956, 1971][rank]
+    code_aster.ParallelMesh.buildCube(refine=4).getNumberOfNodes(), [2014, 1983, 1944][rank]
 )
 test.assertEqual(
-    code_aster.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [4143, 4387, 4421][rank]
+    code_aster.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(), [4089, 4388, 4458][rank]
 )
 test.assertEqual(
-    code_aster.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [5202, 5593, 5168][rank]
+    code_aster.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(), [5202, 5559, 5202][rank]
 )
 
 test.printSummary()

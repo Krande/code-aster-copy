@@ -82,7 +82,7 @@ test.assertSequenceEqual(
     cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135]
 )
 test.assertSequenceEqual(
-    sorted(cMesh3.getNodesLocalNumbering()), [1, 2, 11, 12, 13, 18, 18, 25, 33, 45, 66]
+    sorted(cMesh3.getNodesLocalNumbering()), [1, 4, 10, 10, 11, 16, 24, 25, 33, 55, 66]
 )
 
 # Test ConnectionMesh - a part mesh
@@ -181,7 +181,7 @@ cMesh13 = ConnectionMesh(pMesh, ["N0", "N1", "N2", "N3"], ["ALL_SEG", "BAS", "HA
 test.assertEqual(cMesh13.getParallelMesh().getName(), pMesh.getName())
 test.assertEqual(cMesh13.getDimension(), 3)
 test.assertEqual(cMesh13.getNumberOfNodes(), 174)
-test.assertEqual(cMesh13.getNumberOfCells(), 710)
+test.assertEqual(cMesh13.getNumberOfCells(), 708)
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfNodes()), ["N0", "N1", "N2"])
 test.assertSequenceEqual(sorted(cMesh13.getGroupsOfCells()), ["ALL_SEG", "BAS", "HAUT", "SUD"])
 

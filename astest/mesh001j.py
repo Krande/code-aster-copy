@@ -32,9 +32,9 @@ print(mesh.getCoordinates().getValues())
 
 nb_nodes_lin = [6, 6]
 nb_cells = [7, 7]
-nodes_rank_lin = [[0, 0, 0, 1, 0, 1], [1, 1, 0, 1, 0, 1]]
-cells_rank = [[0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 0, 1, 0, 1]]
-nodes_nume = [[0, 1, 4, 5, 6, 7], [2, 3, 4, 5, 6, 7]]
+nodes_rank_lin = [[0, 0, 1, 0, 1, 0], [1, 1, 1, 0, 1, 0]]
+cells_rank = [[0, 0, 0, 0, 0, 0, 0], [1, 1, 0, 1, 0, 1, 0]]
+nodes_nume = [[2, 3, 4, 5, 6, 7], [0, 1, 4, 5, 6, 7]]
 test.assertEqual(nb_nodes_lin[rank], mesh.getNumberOfNodes())
 test.assertEqual(nb_cells[rank], mesh.getNumberOfCells())
 test.assertSequenceEqual(nodes_rank_lin[rank], mesh.getNodesRank())
@@ -45,16 +45,16 @@ mesh_raf = CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI"))
 nb_nodes_raf = [15, 12]
 nb_cells_raf = [18, 14]
 nodes_rank_raf = [
-    [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-    [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+    [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0],
 ]
 nodes_nume_raf = [
-    [0, 1, 2, 14, 3, 15, 4, 5, 6, 7, 8, 9, 10, 19, 11],
-    [12, 13, 14, 15, 6, 16, 17, 8, 18, 19, 11, 20],
+    [0, 1, 14, 2, 15, 3, 4, 5, 6, 7, 8, 19, 9, 10, 11],
+    [12, 13, 14, 15, 16, 17, 4, 18, 7, 19, 20, 10],
 ]
 cells_rank_raf = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1],
+    [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0],
 ]
 test.assertEqual(nb_nodes_raf[rank], mesh_raf.getNumberOfNodes())
 test.assertEqual(nb_cells_raf[rank], mesh_raf.getNumberOfCells())
