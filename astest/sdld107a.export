@@ -7,4 +7,4 @@ P testlist submit ci verification sequential
 
 F comm sdld107a.comm D 1
 F mail sdld107a.mail D 20
-F mail sdld107a.msup D 21
+F mail sdld107a.21 D 21
