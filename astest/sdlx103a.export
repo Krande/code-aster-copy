@@ -7,5 +7,5 @@ P testlist verification sequential
 
 F comm sdlx103a.comm D 1
 F datg sdlx103a.datg D 16
-F mmed sdlx103a.mail D 20
-F libr sdlx103a.23 D 23
+F mail sdlx103a.mail D 20
+F mail sdlx103a.23 D 23

@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz341b.comm D 1
-F mmed zzzz341b.mail D 20
+F mail zzzz341b.mail D 20

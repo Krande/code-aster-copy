@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnv160c.comm D 1
-F mail sdnd102a.22 D 20
+F mail ssnv160c.mail D 20

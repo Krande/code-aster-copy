@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssna114a.comm D 1
-F mmed ssna116a.mail D 20
+F mail ssna116a.mail D 20

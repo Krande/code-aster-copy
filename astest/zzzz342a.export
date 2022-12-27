@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz342a.comm D 1
-F mmed zzzz342a.mail D 20
+F mail zzzz342a.mail D 20

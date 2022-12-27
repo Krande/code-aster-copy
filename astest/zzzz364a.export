@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm zzzz364a.comm D 1
-F mail zzzz364a.mgib D 19
-F mail zzzz364a.17 D 17
-F mail zzzz364a.16 D 16
-F mail zzzz364a.datg D 14
+F libr zzzz364a.mgib D 19
+F libr zzzz364a.17 D 17
+F libr zzzz364a.16 D 16
+F libr zzzz364a.datg D 14

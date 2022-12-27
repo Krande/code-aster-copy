@@ -7,5 +7,5 @@ P testlist submit ci verification sequential
 
 F comm ssll107g.comm D 1
 F mmed ssll107g.mmed D 20
-F libr ssll107g.38 D 38
-F libr ssll107g.39 D 39
+F mail ssll107g.38 D 38
+F mail ssll107g.39 D 39

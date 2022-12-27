@@ -6,4 +6,3 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm comp002a.comm D 1
-F mail comp001h.mail D 20
