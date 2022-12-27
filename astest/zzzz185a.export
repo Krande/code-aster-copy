@@ -7,5 +7,5 @@ P testlist submit ci verification sequential
 
 F comm zzzz185a.comm D 1
 F datg zzzz185a.datg D 16
-F libr zzzz185a.19 D 19
-F libr zzzz185a.21 D 21
+F mmed zzzz185a.19 D 19
+F mmed zzzz185a.21 D 21

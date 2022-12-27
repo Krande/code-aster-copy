@@ -7,4 +7,4 @@ P testlist ci verification sequential
 
 F comm zzzz282a.comm D 1
 F mmed zzzz282a.mmed D 20
-F libr zzzz282a.41 D 41
+F mmed zzzz282a.41 D 41

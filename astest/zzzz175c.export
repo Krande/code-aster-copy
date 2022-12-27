@@ -8,5 +8,5 @@ P testlist verification sequential
 F comm zzzz175c.comm D 1
 F datg zzzz175c.datg D 16
 F mmed zzzz175c.mmed D 20
-F libr zzzz175c.19 D 19
+F mmed zzzz175c.19 D 19
 F comm zzzz175c.com1 D 1

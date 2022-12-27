@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm zzzz509a.comm D 1
-F mail zzzz509a.mmed D 20
+F mmed zzzz509a.mmed D 20

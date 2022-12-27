@@ -7,4 +7,4 @@ P testlist ci verification sequential
 
 F comm zzzz259a.comm D 1
 F mmed zzzz259a.mmed D 20
-F libr zzzz259a.19 D 19
+F mmed zzzz259a.19 D 19

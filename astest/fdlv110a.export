@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm fdlv110a.comm D 1
-F libr fdlv110a.19 D 19
-F libr fdlv110a.20 D 20
-F libr fdlv110a.21 D 21
+F mmed fdlv110a.19 D 19
+F mmed fdlv110a.20 D 20
+F mmed fdlv110a.21 D 21

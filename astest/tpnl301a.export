@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm tpnl301a.comm D 1
-F libr tpnl301a.20 D 20
+F mmed tpnl301a.20 D 20

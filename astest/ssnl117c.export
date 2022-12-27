@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnl117c.comm D 1
-F mail ssnl117c.mmed D 20
+F mmed ssnl117c.mmed D 20

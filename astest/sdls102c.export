@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdls102c.comm D 1
-F libr sdls102c.mmed D 20
-F libr sdls102c.25 D 25
+F mmed sdls102c.mmed D 20
+F mmed sdls102c.25 D 25
 F libr sdls102c.26 D 26
 

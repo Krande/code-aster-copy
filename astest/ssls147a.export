@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm ssls147a.comm D 1
-F libr ssls147a.mmed D 20
-F libr ssls147a.25 D 25
+F mmed ssls147a.mmed D 20
+F mmed ssls147a.25 D 25
 F libr ssls147a.26 D 26
 

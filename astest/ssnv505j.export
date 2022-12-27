@@ -7,4 +7,4 @@ P testlist verification sequential
 
 F comm ssnv505j.comm D 1
 F mmed ssnv505j.mmed D 20
-F libr ssnv505j.21 D 21
+F mmed ssnv505j.21 D 21

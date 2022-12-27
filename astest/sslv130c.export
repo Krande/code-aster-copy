@@ -7,5 +7,5 @@ P testlist ci verification sequential
 
 F comm sslv130c.comm D 1
 F mmed sslv130c.mmed D 20
-F libr sslv130c.21 D 21
-F libr sslv130c.22 D 22
+F mmed sslv130c.21 D 21
+F mmed sslv130c.22 D 22

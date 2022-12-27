@@ -7,4 +7,4 @@ P testlist ci verification sequential
 
 F comm ssnv142e.comm D 1
 F mail ssnv142b.mail D 20
-F libr ssnv142c.18 D 18
+F mmed ssnv142c.18 D 18

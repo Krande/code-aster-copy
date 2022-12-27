@@ -7,4 +7,4 @@ P testlist verification sequential
 
 F comm sslv320c.comm D 1
 F mmed sslv320a.mmed D 20
-F libr sslv320c.41 D 41
+F mmed sslv320c.41 D 41

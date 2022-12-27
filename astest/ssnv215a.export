@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnv215a.comm D 1
-F mail ssnv214a.med D 20
+F mmed ssnv214a.med D 20

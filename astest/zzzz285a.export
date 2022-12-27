@@ -7,5 +7,5 @@ P testlist ci verification sequential
 
 F comm zzzz285a.comm D 1
 F datg zzzz285a.datg D 16
-F libr zzzz285a.19 D 19
-F libr zzzz285a.21 D 21
+F mmed zzzz285a.19 D 19
+F mmed zzzz285a.21 D 21

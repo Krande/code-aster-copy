@@ -8,4 +8,4 @@ P testlist ci verification sequential
 F comm ssnl501e.comm D 1
 F mail ssnl501e.mail D 20
 F datg ssnl501e.datg D 16
-F libr ssnl501e.21 D 21
+F mmed ssnl501e.21 D 21

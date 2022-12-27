@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm sdll148b.comm D 1
-F libr sdll148a.20 D 20
+F mmed sdll148a.20 D 20

@@ -8,4 +8,4 @@ P testlist verification sequential
 F comm ssnp158a.comm D 1
 F datg ssnp158a.datg D 16
 F mmed ssnp158a.mmed D 20
-F libr ssnp158a.21 D 21
+F mmed ssnp158a.21 D 21

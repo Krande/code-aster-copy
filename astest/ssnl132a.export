@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnl132a.comm D 1
-F mail ssnl132a.med D 20
+F mmed ssnl132a.med D 20

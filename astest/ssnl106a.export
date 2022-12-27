@@ -7,5 +7,5 @@ P testlist ci verification sequential
 
 F comm ssnl106a.comm D 1
 F mail ssnl106a.mail D 20
-F libr ssnl106a.21 D 21
-F libr ssnl106a.22 D 22
+F mmed ssnl106a.21 D 21
+F mmed ssnl106a.22 D 22

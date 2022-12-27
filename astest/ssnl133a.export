@@ -7,4 +7,4 @@ P testlist verification sequential
 
 F comm ssnl133a.comm D 1
 F datg ssnl133a.datg D 16
-F libr ssnl133a.17 D 17
+F mmed ssnl133a.17 D 17

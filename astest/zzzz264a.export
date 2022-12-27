@@ -8,4 +8,4 @@ P testlist verification sequential
 F comm zzzz264a.comm D 1
 F datg zzzz264a.datg D 16
 F mmed zzzz264a.mmed D 20
-F libr zzzz264a.80 D 80
+F mmed zzzz264a.80 D 80

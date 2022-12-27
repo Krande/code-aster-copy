@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm ssls104b.comm D 1
-F libr ssls104b.19 D 19
-F libr ssls104b.23 D 23
+F mmed ssls104b.19 D 19
+F mmed ssls104b.23 D 23

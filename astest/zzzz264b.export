@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz264b.comm D 1
-F libr zzzz264b.80 D 80
+F mmed zzzz264b.80 D 80
