@@ -127,6 +127,7 @@ subroutine crtype()
     model_prev = ' '
     fieldMate_prev = ' '
     caraElem_prev = ' '
+    answer = ' '
     lLireResu = ASTER_FALSE
 !
     call getres(resultName, type, oper)
@@ -759,7 +760,7 @@ subroutine crtype()
 ! - Non-linear behaviour management
 !
     if (resultType .eq. 'EVOL_NOLI') then
-        call getvtx(' ', 'ALARME', scal=answer, nbret=n1)
+        call getvtx(' ', 'VERI_VARI', scal=answer, nbret=n1)
         lAlarm = answer .eq. 'OUI'
         call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lAlarm)
     end if
