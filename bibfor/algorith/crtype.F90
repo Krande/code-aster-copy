@@ -83,7 +83,7 @@ subroutine crtype()
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
     integer :: nbordr1, nbordr2, ier1, nb_model, nb_fieldMate, nb_caraElem
 !
-    parameter  (mxpara=10)
+    parameter(mxpara=10)
 !
     aster_logical :: lncas, lfonc, lcopy, lReuse, lLireResu
 !
@@ -113,24 +113,24 @@ subroutine crtype()
     character(len=8) :: answer
     aster_logical :: lAlarm
 !
-    data linst,listr8,lcpt/'&&CRTYPE_LINST','&&CRTYPE_LISR8',&
+    data linst, listr8, lcpt/'&&CRTYPE_LINST', '&&CRTYPE_LISR8',&
      &     '&&CPT_CRTYPE'/
 ! --- ------------------------------------------------------------------
     call jemarq()
 !
     blan8 = ' '
     list_load = ' '
-    nboini=10
-    nb_model=0
-    nb_fieldMate=0
-    nb_caraElem=0
-    model_prev=' '
-    fieldMate_prev=' '
-    caraElem_prev=' '
+    nboini = 10
+    nb_model = 0
+    nb_fieldMate = 0
+    nb_caraElem = 0
+    model_prev = ' '
+    fieldMate_prev = ' '
+    caraElem_prev = ' '
     lLireResu = ASTER_FALSE
 !
     call getres(resultName, type, oper)
-    resu19=resultName
+    resu19 = resultName
     call getfac('AFFE', nbfac)
     call getvtx(' ', 'NOM_CHAM', scal=fieldType, nbret=n1)
     call getvtx(' ', 'TYPE_RESU', scal=resultType, nbret=n1)
@@ -138,15 +138,15 @@ subroutine crtype()
 ! - Reuse mode
 !
     lReuse = ASTER_FALSE
-    if (getexm(' ','RESULTAT') .eq. 1) then
-        call getvid(' ', 'RESULTAT', scal = resultNameReuse, nbret = nocc)
+    if (getexm(' ', 'RESULTAT') .eq. 1) then
+        call getvid(' ', 'RESULTAT', scal=resultNameReuse, nbret=nocc)
         if (nocc .ne. 0) then
             lReuse = ASTER_TRUE
             if (resultName .ne. resultNameReuse) then
                 call utmess('F', 'SUPERVIS2_79', sk='RESULTAT')
-            endif
-        endif
-    endif
+            end if
+        end if
+    end if
 !
     call jeexin(resultName//'           .DESC', iret)
     if (iret .eq. 0) call rscrsd('G', resultName, resultType, nboini)
@@ -154,10 +154,10 @@ subroutine crtype()
     call jelira(resultName//'           .ORDR', 'LONUTI', nbordr1)
 !
     lncas = .false.
-    if (resultType .eq. 'MULT_ELAS' .or. resultType .eq. 'FOURIER_ELAS' .or. resultType .eq.&
+    if (resultType .eq. 'MULT_ELAS' .or. resultType .eq. 'FOURIER_ELAS' .or. resultType .eq. &
         'FOURIER_THER' .or. resultType .eq. 'MODE_MECA' .or. resultType .eq. 'MODE_MECA_C') then
         lncas = .true.
-    endif
+    end if
 !
     numini = -1
     icompt = -1
@@ -172,28 +172,28 @@ subroutine crtype()
 !   (y compris la chaine ' ' )
 !   si on en trouve au moins 2 différents, l'appel final à lrcomm se fera avec ' '
 !
-        if (model .ne. ' ' .and. model .ne. model_prev) nb_model=nb_model+1
-        model_prev=model
+        if (model .ne. ' ' .and. model .ne. model_prev) nb_model = nb_model+1
+        model_prev = model
         fieldMate = blan8
         call getvid('AFFE', 'CHAM_MATER', iocc=iocc, scal=fieldMate, nbret=n1)
-        if (fieldMate .ne. ' ' .and. fieldMate .ne. fieldMate_prev) nb_fieldMate=nb_fieldMate+1
-        fieldMate_prev=fieldMate
+        if (fieldMate .ne. ' ' .and. fieldMate .ne. fieldMate_prev) nb_fieldMate = nb_fieldMate+1
+        fieldMate_prev = fieldMate
         caraElem = blan8
         call getvid('AFFE', 'CARA_ELEM', iocc=iocc, scal=caraElem, nbret=n1)
-        if (caraElem .ne. ' ' .and. caraElem .ne. caraElem_prev) nb_caraElem=nb_caraElem+1
-        caraElem_prev=caraElem
+        if (caraElem .ne. ' ' .and. caraElem .ne. caraElem_prev) nb_caraElem = nb_caraElem+1
+        caraElem_prev = caraElem
 !        -- POUR STOCKER INFO_CHARGE DANS LE PARAMETRE EXCIT :
         call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .lt. 0) then
-            nb_load=-n1
-            noojb ='12345678'//'.1234'//'.EXCIT.INFC'
+            nb_load = -n1
+            noojb = '12345678'//'.1234'//'.EXCIT.INFC'
             call gnomsd(' ', noojb, 10, 13)
             list_load = noojb(1:19)
 !           ON CREE LA SD_INFO_CHARGE
             call lisccr('MECA', list_load, nb_load, 'G')
             call jeveuo(list_load//'.LCHA', 'E', vk24=lcha)
             call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nb_load, vect=lcha)
-        endif
+        end if
 !
         call getvid('AFFE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
         champs(iocc) = champ(1:8)
@@ -201,18 +201,18 @@ subroutine crtype()
         if (model .ne. ' ') then
             call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma2)
             if (noma .ne. noma2) then
-                valkk(1)=noma
-                valkk(2)=noma2
+                valkk(1) = noma
+                valkk(2) = noma2
                 call utmess('F', 'ALGORITH2_1', nk=2, valk=valkk)
-            endif
-        endif
+            end if
+        end if
         call dismoi('NOM_GD', champ, 'CHAMP', repk=nogdsi)
         if (resultType .eq. 'EVOL_CHAR' .and. nogdsi .eq. 'NEUT_R') then
-            valkk(1)=champ
-            valkk(2)='NEUT_R'
-            valkk(3)='EVOL_CHAR'
+            valkk(1) = champ
+            valkk(2) = 'NEUT_R'
+            valkk(3) = 'EVOL_CHAR'
             call utmess('F', 'ALGORITH2_80', nk=3, valk=valkk)
-        endif
+        end if
 !
         call dismoi('TYPE_SUPERVIS', champ, 'CHAMP', repk=k24)
         call jeveuo(noma//'.COORDO    .VALE', 'L', vr=coor)
@@ -224,20 +224,20 @@ subroutine crtype()
             if (k24(i-1:i) .eq. '_F') then
                 if (k24(1:7) .ne. 'CHAM_NO') then
                     call utmess('F', 'ALGORITH2_45', sk=k24)
-                endif
+                end if
                 lfonc = .true.
                 typegd = k24(i-5:i-2)//'_R'
-            else if (k24(i-1:i).eq.'_R') then
+            else if (k24(i-1:i) .eq. '_R') then
                 typegd = k24(i-5:i)
-            else if (k24(i-1:i).eq.'_C') then
+            else if (k24(i-1:i) .eq. '_C') then
                 typegd = k24(i-5:i)
             else
                 call utmess('F', 'ALGORITH2_46', sk=k24)
-            endif
+            end if
             goto 20
- 10         continue
+10          continue
         end do
- 20     continue
+20      continue
 !
         if (k24(1:7) .eq. 'CHAM_NO') then
 !           -- on cherche a economiser les prof_chno (partage si possible)
@@ -246,40 +246,40 @@ subroutine crtype()
                 noojb = '12345678.PRCHN00000.PRNO'
                 call gnomsd(' ', noojb, 15, 19)
                 profch = noojb(1:19)
-                lcopy=.true.
+                lcopy = .true.
 !               -- si le numero du prof_chno est > 0, on regarde si le numero precedent convient:
-                read (profch(15:19),'(I5)') nuprev
+                read (profch(15:19), '(I5)') nuprev
                 if (nuprev .gt. 0) then
-                    nuprev=nuprev-1
-                    profprev=profch
+                    nuprev = nuprev-1
+                    profprev = profch
                     call codent(nuprev, 'D0', profprev(15:19))
                     call exisd('PROF_CHNO', profprev, iexi)
                     if (iexi .gt. 0) then
-                        if (idensd('PROF_CHNO',profprev,pchn1)) then
-                            profch=profprev
-                            lcopy=.false.
-                        endif
-                    endif
-                endif
+                        if (idensd('PROF_CHNO', profprev, pchn1)) then
+                            profch = profprev
+                            lcopy = .false.
+                        end if
+                    end if
+                end if
 !
                 if (lcopy) then
                     call copisd('PROF_CHNO', 'G', pchn1, profch)
-                endif
+                end if
             else
                 call dismoi('PROF_CHNO', champ, 'CHAM_NO', repk=pchn1)
-                if (.not.idensd('PROF_CHNO',profch,pchn1)) then
+                if (.not. idensd('PROF_CHNO', profch, pchn1)) then
                     noojb = '12345678.PRCHN00000.PRNO'
                     call gnomsd(' ', noojb, 15, 19)
                     profch = noojb(1:19)
                     call copisd('PROF_CHNO', 'G', pchn1, profch)
-                endif
-            endif
-        endif
+                end if
+            end if
+        end if
 !
 !        MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
         if (lncas) then
-            call rsorac(resultName, 'LONUTI', 0, rbid, k8b,&
-                        cbid, rbid, k8b, tnum, 1,&
+            call rsorac(resultName, 'LONUTI', 0, rbid, k8b, &
+                        cbid, rbid, k8b, tnum, 1, &
                         nbtrou)
             numini = tnum(1)
             j = 0
@@ -287,47 +287,47 @@ subroutine crtype()
                 call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
                 if (n0 .ne. 0) then
                     do i = 1, numini
-                        call rsadpa(resultName, 'L', 1, 'NUME_MODE', i,&
+                        call rsadpa(resultName, 'L', 1, 'NUME_MODE', i, &
                                     0, sjv=jnmo, styp=k8b)
                         nmode = zi(jnmo)
                         if (nmode .eq. nume) then
                             numini = nume
-                            j = j + 1
-                        endif
+                            j = j+1
+                        end if
                     end do
-                endif
+                end if
             else if (resultType .eq. 'MULT_ELAS') then
                 call getvtx('AFFE', 'NOM_CAS', iocc=iocc, scal=acces, nbret=n0)
                 if (n0 .gt. 0) then
-                    call rsorac(resultName, 'NOM_CAS', ibid, rbid, acces,&
-                                cbid, 1.d0, 'ABSOLU', tnum, 1,&
+                    call rsorac(resultName, 'NOM_CAS', ibid, rbid, acces, &
+                                cbid, 1.d0, 'ABSOLU', tnum, 1, &
                                 nbr)
                     if (nbr .ne. 0) then
                         numini = tnum(1)
-                        j = j + 1
-                    endif
-                endif
-            endif
+                        j = j+1
+                    end if
+                end if
+            end if
 !           not found
             if (j .eq. 0) then
-                numini = numini + 1
-            endif
+                numini = numini+1
+            end if
             !
-            call rsexch(' ', resultName, fieldType, numini, nomch,&
+            call rsexch(' ', resultName, fieldType, numini, nomch, &
                         iret)
             if (iret .eq. 0) then
                 valkk(1) = champ(1:8)
                 valii(1) = numini
                 call utmess('A', 'ALGORITH12_74', sk=valkk(1), si=valii(1))
-            else if (iret.eq.110) then
+            else if (iret .eq. 110) then
                 call rsagsd(resultName, 0)
-                call rsexch(' ', resultName, fieldType, numini, nomch,&
+                call rsexch(' ', resultName, fieldType, numini, nomch, &
                             iret)
-            else if (iret.eq.100) then
+            else if (iret .eq. 100) then
 !              ON NE FAIT RIEN
             else
                 call utmess('F', 'ALGORITH2_47', sk=fieldType)
-            endif
+            end if
 !
             call copisd('CHAMP_GD', 'G', champ, nomch)
             if (k24(1:7) .eq. 'CHAM_NO') then
@@ -336,90 +336,90 @@ subroutine crtype()
                     call detrsd('PROF_CHNO', pchn1)
                     call jeveuo(nomch//'.REFE', 'E', jrefe)
                     zk24(jrefe+1) = profch
-                endif
-            endif
+                end if
+            end if
 !
             call rsnoch(resultName, fieldType, numini)
-            call rssepa(resultName, numini, model, fieldMate, caraElem,&
+            call rssepa(resultName, numini, model, fieldMate, caraElem, &
                         list_load)
 !
             call getvtx('AFFE', 'NOM_CAS', iocc=iocc, scal=acces, nbret=n0)
             if (n0 .ne. 0) then
-                call rsadpa(resultName, 'E', 1, 'NOM_CAS', numini,&
+                call rsadpa(resultName, 'E', 1, 'NOM_CAS', numini, &
                             0, sjv=iad, styp=k8b)
                 zk16(iad) = acces
-            endif
+            end if
 !
             call getvis('AFFE', 'NUME_MODE', iocc=iocc, scal=nume, nbret=n0)
             if (n0 .ne. 0) then
-                call rsadpa(resultName, 'E', 1, 'NUME_MODE', numini,&
+                call rsadpa(resultName, 'E', 1, 'NUME_MODE', numini, &
                             0, sjv=iad, styp=k8b)
                 zi(iad) = nume
-            endif
+            end if
 !
             call getvtx('AFFE', 'TYPE_MODE', iocc=iocc, scal=typmod, nbret=n0)
             if (n0 .ne. 0) then
-                call rsadpa(resultName, 'E', 1, 'TYPE_MODE', numini,&
+                call rsadpa(resultName, 'E', 1, 'TYPE_MODE', numini, &
                             0, sjv=iad, styp=k8b)
                 zk8(iad) = typmod
-            endif
+            end if
 !
             call getvr8('AFFE', 'FREQ', iocc=iocc, scal=freq, nbret=n0)
             if (n0 .ne. 0) then
-                call rsadpa(resultName, 'E', 1, 'FREQ', numini,&
+                call rsadpa(resultName, 'E', 1, 'FREQ', numini, &
                             0, sjv=iad, styp=k8b)
                 zr(iad) = freq
 !               HERE ONE IS IN THE CASE 'MODE_MECA' or 'MODE_MECA_C'
 !               SO IF A FREQUENCY IS GIVEN, ONE CONSIDER THAT THE GIVEN CHAM_GD
 !               IS A MODAL SHAPE
 !               (IN OPPOSITION WITH A STATIC DEFORMED SHAPE)
-                call rsadpa(resultName, 'E', 1, 'TYPE_DEFO', numini,&
+                call rsadpa(resultName, 'E', 1, 'TYPE_DEFO', numini, &
                             0, sjv=iad, styp=k8b)
                 zk16(iad) = 'PROPRE'
-            endif
+            end if
 !           pour COMB_SISM_MODAL/MODE_CORR
             call getvtx('AFFE', 'AXE', iocc=iocc, scal=axe, nbret=n0)
             if (n0 .ne. 0) then
-                call rsadpa(resultName, 'E', 1, 'NOEUD_CMP', numini,&
+                call rsadpa(resultName, 'E', 1, 'NOEUD_CMP', numini, &
                             0, sjv=iad, styp=k8b)
-                if (axe(1:1).eq.'X')then
+                if (axe(1:1) .eq. 'X') then
                     zk16(iad) = 'ACCE    X       '
                     coef(1) = 1.d0
                     coef(2) = 0.d0
                     coef(3) = 0.d0
-                else if (axe(1:1).eq.'Y')then
+                else if (axe(1:1) .eq. 'Y') then
                     zk16(iad) = 'ACCE    Y       '
                     coef(1) = 0.d0
                     coef(2) = 1.d0
                     coef(3) = 0.d0
-                else if (axe(1:1).eq.'Z')then
+                else if (axe(1:1) .eq. 'Z') then
                     zk16(iad) = 'ACCE    Z       '
                     coef(1) = 0.d0
                     coef(2) = 0.d0
                     coef(3) = 1.d0
-                endif
-                call rsadpa(resultName, 'E', 1, 'COEF_X', numini,&
+                end if
+                call rsadpa(resultName, 'E', 1, 'COEF_X', numini, &
                             0, sjv=iad, styp=k8b)
                 zr(iad) = coef(1)
-                call rsadpa(resultName, 'E', 1, 'COEF_Y', numini,&
+                call rsadpa(resultName, 'E', 1, 'COEF_Y', numini, &
                             0, sjv=iad, styp=k8b)
                 zr(iad) = coef(2)
-                call rsadpa(resultName, 'E', 1, 'COEF_Z', numini,&
+                call rsadpa(resultName, 'E', 1, 'COEF_Z', numini, &
                             0, sjv=iad, styp=k8b)
                 zr(iad) = coef(3)
-                call rsadpa(resultName, 'E', 1, 'TYPE_DEFO', numini,&
+                call rsadpa(resultName, 'E', 1, 'TYPE_DEFO', numini, &
                             0, sjv=iad, styp=k8b)
                 zk16(iad) = 'ACCE_IMPO'
-            endif
+            end if
 !
             call getvr8('AFFE', 'AMOR_REDUIT', iocc=iocc, scal=amor_red, nbret=n0)
             if (n0 .ne. 0) then
-                call rsadpa(resultName, 'E', 1, 'AMOR_REDUIT', numini,&
+                call rsadpa(resultName, 'E', 1, 'AMOR_REDUIT', numini, &
                             0, sjv=iad, styp=k8b)
                 zr(iad) = amor_red
-            endif
+            end if
             goto 80
-        endif
+        end if
 !
 !        MOT CLE INST/FREQ PRESENT :
         nis = 0
@@ -430,41 +430,41 @@ subroutine crtype()
         if (nis .ne. 0) then
             typabs = 'INST'
             nbinst = -nis
-        endif
+        end if
         if (nfr .ne. 0) then
             typabs = 'FREQ'
             nbinst = -nfr
-        endif
+        end if
 !
-        if ((nis.ne.0) .or. (nfr.ne.0)) then
+        if ((nis .ne. 0) .or. (nfr .ne. 0)) then
             call wkvect(lcpt, 'V V I', nbinst, jcpt)
             call wkvect(linst, 'V V R', nbinst, jinst)
-            call getvr8('AFFE', typabs, iocc=iocc, nbval=nbinst, vect=zr(jinst),&
+            call getvr8('AFFE', typabs, iocc=iocc, nbval=nbinst, vect=zr(jinst), &
                         nbret=n1)
             call getvr8('AFFE', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
             call getvtx('AFFE', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
-            call rsorac(resultName, 'LONUTI', 0, rbid, k8b,&
-                        cbid, rbid, k8b, nbv, 1,&
+            call rsorac(resultName, 'LONUTI', 0, rbid, k8b, &
+                        cbid, rbid, k8b, nbv, 1, &
                         ibid)
 !
             ivmx = rsmxno(resultName)
             do k = 1, nbinst
                 if (nbv(1) .gt. 0) then
-                    call rsorac(resultName, typabs, ibid, zr(jinst+k-1), k8b,&
-                                cbid, prec, criter, tnum, 1,&
+                    call rsorac(resultName, typabs, ibid, zr(jinst+k-1), k8b, &
+                                cbid, prec, criter, tnum, 1, &
                                 nbr)
-                    nume=tnum(1)
+                    nume = tnum(1)
                 else
                     nbr = 0
-                endif
+                end if
                 if (nbr .lt. 0) then
                     call utmess('F', 'ALGORITH2_48')
-                else if (nbr.eq.0) then
-                    zi(jcpt+k-1) = ivmx + 1
-                    ivmx = ivmx + 1
+                else if (nbr .eq. 0) then
+                    zi(jcpt+k-1) = ivmx+1
+                    ivmx = ivmx+1
                 else
                     zi(jcpt+k-1) = nume
-                endif
+                end if
             end do
         else
 !           MOT CLE LIST_INST/LIST_FREQ PRESENT :
@@ -474,10 +474,10 @@ subroutine crtype()
             call getvid('AFFE', 'LIST_FREQ', iocc=iocc, scal=listr8, nbret=n4)
             if (n1 .ne. 0) then
                 typabs = 'INST'
-            endif
+            end if
             if (n4 .ne. 0) then
                 typabs = 'FREQ'
-            endif
+            end if
 !
             call getvr8('AFFE', 'PRECISION', iocc=iocc, scal=prec, nbret=ibid)
             call getvtx('AFFE', 'CRITERE', iocc=iocc, scal=criter, nbret=ibid)
@@ -492,22 +492,22 @@ subroutine crtype()
             if (n2 .ne. 0 .and. n3 .ne. 0) then
                 if (numfin .lt. numini) then
                     call utmess('F', 'ALGORITH2_49')
-                endif
-                nbinst = numfin - numini + 1
+                end if
+                nbinst = numfin-numini+1
 !
-            else if (n2.ne.0) then
-                nbinst = nbval - numini + 1
-            else if (n3.ne.0) then
+            else if (n2 .ne. 0) then
+                nbinst = nbval-numini+1
+            else if (n3 .ne. 0) then
                 nbinst = numfin
             else
                 nbinst = nbval
-            endif
-            nbinst = min(nbinst,nbval)
+            end if
+            nbinst = min(nbinst, nbval)
 !
             call wkvect(linst, 'V V R', nbinst, jinst)
             call jeveuo(listr8//'.VALE', 'L', vr=val)
-            call rsorac(resultName, 'LONUTI', 0, rbid, k8b,&
-                        cbid, rbid, k8b, nbv, 1,&
+            call rsorac(resultName, 'LONUTI', 0, rbid, k8b, &
+                        cbid, rbid, k8b, nbv, 1, &
                         ibid)
             call wkvect(lcpt, 'V V I', nbinst, jcpt)
             ivmx = rsmxno(resultName)
@@ -515,27 +515,27 @@ subroutine crtype()
             do k = 1, nbval
                 if (k .lt. numini) goto 40
                 if (k .gt. numfin) goto 40
-                j = j + 1
+                j = j+1
                 zr(jinst-1+j) = val(k)
                 if (nbv(1) .gt. 0) then
-                    call rsorac(resultName, typabs, ibid, val(k), k8b,&
-                                cbid, prec, criter, tnum, 1,&
+                    call rsorac(resultName, typabs, ibid, val(k), k8b, &
+                                cbid, prec, criter, tnum, 1, &
                                 nbr)
-                    nume=tnum(1)
+                    nume = tnum(1)
                 else
                     nbr = 0
-                endif
+                end if
                 if (nbr .lt. 0) then
                     call utmess('F', 'ALGORITH2_48')
-                else if (nbr.eq.0) then
-                    zi(jcpt+j-1) = ivmx + 1
-                    ivmx = ivmx + 1
+                else if (nbr .eq. 0) then
+                    zi(jcpt+j-1) = ivmx+1
+                    ivmx = ivmx+1
                 else
                     zi(jcpt+j-1) = nume
-                endif
- 40             continue
+                end if
+40              continue
             end do
-        endif
+        end if
 !
 !        DANS LE CAS DES FONCTIONS, LA PROGRAMMATION N'EST VALABLE QUE
 !        SI POUR LES GRANDEURS XXXX_F ET YYYY_R :
@@ -550,14 +550,14 @@ subroutine crtype()
                     valkk(1) = fieldType(1:4)
                     valkk(2) = nogdsi(1:4)
                     call utmess('F', 'CALCULEL2_79', nk=2, valk=valkk)
-                endif
-            endif
+                end if
+            end if
 !           DANS TOUS LES AUTRES CAS, MEME GRANDEUR XXXX = YYYY
             if (typegd(1:4) .ne. nogdsi(1:4)) then
                 valkk(1) = typegd(1:4)
                 valkk(2) = nogdsi(1:4)
                 call utmess('F', 'CALCULEL2_90', nk=2, valk=valkk)
-            endif
+            end if
 !           NOMBRE D'ENTIER CODE
             call dismoi('NB_EC', typegd, 'GRANDEUR', repi=nbecd)
             call dismoi('NB_EC', nogdsi, 'GRANDEUR', repi=nbeci)
@@ -566,15 +566,15 @@ subroutine crtype()
                 valkk(2) = nogdsi
                 valii(1) = nbecd
                 valii(2) = nbeci
-                call utmess('F', 'CALCULEL2_80', nk=2, valk=valkk, ni=2,&
+                call utmess('F', 'CALCULEL2_80', nk=2, valk=valkk, ni=2, &
                             vali=valii)
-            endif
+            end if
 !           NOM DES COMPOSANTES DU MEME RANG IDENTIQUE
-            kjexn = jexnom('&CATA.GD.NOMCMP',typegd)
+            kjexn = jexnom('&CATA.GD.NOMCMP', typegd)
             call jeveuo(kjexn, 'L', icmpd)
             call jelira(kjexn, 'LONMAX', nbcmpd)
 !
-            kjexn = jexnom('&CATA.GD.NOMCMP',nogdsi)
+            kjexn = jexnom('&CATA.GD.NOMCMP', nogdsi)
             call jeveuo(kjexn, 'L', icmpi)
             call jelira(kjexn, 'LONMAX', nbcmpi)
             do j = 1, nbcmpi
@@ -584,32 +584,32 @@ subroutine crtype()
                     valkk(3) = zk8(icmpd+j-1)
                     valkk(4) = zk8(icmpi+j-1)
                     call utmess('F', 'CALCULEL2_5', nk=4, valk=valkk)
-                endif
+                end if
             end do
-        endif
+        end if
 !
         do j = 1, nbinst
             if (j .ge. 2) call jemarq()
             call jerecu('V')
             icompt = zi(jcpt+j-1)
             tps = zr(jinst+j-1)
-            call rsexch(' ', resultName, fieldType, icompt, nomch,&
+            call rsexch(' ', resultName, fieldType, icompt, nomch, &
                         iret)
             if (iret .eq. 0) then
-                call rsadpa(resultName, 'L', 1, typabs, icompt,&
+                call rsadpa(resultName, 'L', 1, typabs, icompt, &
                             0, sjv=iad, styp=k8b)
                 valkk(1) = fieldType
                 valkk(2) = champ(1:8)
                 valrr(1) = zr(iad)
                 valrr(2) = tps
                 valrr(3) = prec
-                call utmess('A', 'ALGORITH11_87', nk=2, valk=valkk, nr=3,&
+                call utmess('A', 'ALGORITH11_87', nk=2, valk=valkk, nr=3, &
                             valr=valrr)
-            else if (iret.eq.110) then
+            else if (iret .eq. 110) then
                 call rsagsd(resultName, 0)
-                call rsexch(' ', resultName, fieldType, icompt, nomch,&
+                call rsexch(' ', resultName, fieldType, icompt, nomch, &
                             iret)
-            endif
+            end if
 !
             if (k24(1:7) .eq. 'CHAM_NO') then
                 o1 = champ//'.DESC'
@@ -628,13 +628,13 @@ subroutine crtype()
                 zk24(jrefe+1) = profch
             else
                 call copisd('CHAMP_GD', 'G', champ, nomch)
-            endif
+            end if
 !
             if (lfonc) then
                 call jelira(champ//'.VALE', 'LONMAX', lg)
                 call jeveuo(champ//'.VALE', 'L', vk8=vnomf)
                 call jeveuo(champ//'.REFE', 'L', jrefe)
-                call jeveuo(zk24(jrefe+1)(1:19)//'.DEEQ', 'L', vi=deeq)
+                call jeveuo(zk24(jrefe+1) (1:19)//'.DEEQ', 'L', vi=deeq)
 !
                 call jeveuo(nomch//'.DESC', 'E', vi=desc)
                 call jenonu(jexnom('&CATA.GD.NOMGD', typegd), igd)
@@ -647,57 +647,56 @@ subroutine crtype()
                     nomf = vnomf(l)
                     if (nomf .eq. ' ') goto 60
                     call jeveuo(nomf//'           .PROL', 'L', vk24=prol)
-                    call fonbpa(nomf, prol, k16b, mxpara, nbpf,&
+                    call fonbpa(nomf, prol, k16b, mxpara, nbpf, &
                                 nomp)
-                    ino = deeq(1+2* (l-1))
+                    ino = deeq(1+2*(l-1))
                     if (ino .eq. 0) goto 60
                     do ip = 1, nbpf
                         if (nomp(ip) .eq. 'INST') then
                             valpu(ip) = tps
-                        else if (nomp(ip).eq.'X') then
-                            valpu(ip) = coor(3* (ino-1)+1)
-                        else if (nomp(ip).eq.'Y') then
-                            valpu(ip) = coor(3* (ino-1)+2)
-                        else if (nomp(ip).eq.'Z') then
-                            valpu(ip) = coor(3* (ino-1)+3)
+                        else if (nomp(ip) .eq. 'X') then
+                            valpu(ip) = coor(3*(ino-1)+1)
+                        else if (nomp(ip) .eq. 'Y') then
+                            valpu(ip) = coor(3*(ino-1)+2)
+                        else if (nomp(ip) .eq. 'Z') then
+                            valpu(ip) = coor(3*(ino-1)+3)
                         else
                             call utmess('F', 'ALGORITH2_50')
-                        endif
+                        end if
                     end do
-                    call fointe('F', nomf, nbpf, nomp, valpu,&
+                    call fointe('F', nomf, nbpf, nomp, valpu, &
                                 zr(jc+l-1), ier)
- 60                 continue
+60                  continue
                 end do
-            endif
+            end if
 !
             call rsnoch(resultName, fieldType, icompt)
-            call rsadpa(resultName, 'E', 1, typabs, icompt,&
+            call rsadpa(resultName, 'E', 1, typabs, icompt, &
                         0, sjv=iad, styp=k8b)
             zr(iad) = tps
-            call rssepa(resultName, icompt, model, fieldMate, caraElem,&
+            call rssepa(resultName, icompt, model, fieldMate, caraElem, &
                         list_load)
             if (j .ge. 2) call jedema()
 !
         end do
         call jedetr(linst)
         call jedetr(lcpt)
- 80     continue
+80      continue
     end do
-
 
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
     call jelira(resultName//'           .ORDR', 'LONUTI', nbordr2)
-    if (nbordr2.gt.nbordr1) then
+    if (nbordr2 .gt. nbordr1) then
 
-        if (     resultType(1:9)  .eq. 'MODE_MECA' &
-            .or. resultType(1:10) .eq. 'DYNA_HARMO'&
+        if (resultType(1:9) .eq. 'MODE_MECA' &
+            .or. resultType(1:10) .eq. 'DYNA_HARMO' &
             .or. resultType(1:10) .eq. 'DYNA_TRANS') then
 
             matric(1) = ' '
             matric(2) = ' '
             matric(3) = ' '
-            numedd    = ' '
+            numedd = ' '
             call getvid(' ', 'MATR_RIGI', scal=matr, nbret=n1)
             if (n1 .eq. 1) then
                 call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
@@ -706,56 +705,56 @@ subroutine crtype()
                 call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
                 if (n1 .eq. 1) then
                     call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
-                endif
-            endif
+                end if
+            end if
             call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
             if (n1 .eq. 1) then
                 matric(2) = matr
-            endif
+            end if
 !           If no numbering information could be found, try to retrieve the
 !           information from the fields composing the sd_resultat
             if (numedd .eq. ' ') then
                 call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
-                call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C',&
+                call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C', &
                             ier=ier)
                 if (ier .eq. 0) then
                     call refdaj('F', resu19, (nbordr2-nbordr1), profch, 'DYNAMIQUE', matric, ier)
-                endif
+                end if
             else
-                call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE',&
+                call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE', &
                             matric, ier)
 !
 !               compare numedd and profchno of all the new fields added (only DEPL)
 !
-                do j = nbordr1+1,nbordr2-nbordr1
-                   call rsexch(' ',resu19,'DEPL', j, nomch, ier1)
-                   if ( ier1 .eq. 0 ) then
-                     call dismoi('PROF_CHNO', nomch, 'CHAMP', repk=profch,&
-                                  arret='C',ier=ier)
-                     if ( ier .eq. 0 ) then
-                       if (.not.idensd('PROF_CHNO',numedd(1:14)//'.NUME',profch)) then
-                          valkk(1)=numedd
-                          valkk(2)=profch
-                          call utmess('A','ALGORITH2_51',nk=2,valk=valkk)
-                       endif
-                     endif
-                   endif
+                do j = nbordr1+1, nbordr2-nbordr1
+                    call rsexch(' ', resu19, 'DEPL', j, nomch, ier1)
+                    if (ier1 .eq. 0) then
+                        call dismoi('PROF_CHNO', nomch, 'CHAMP', repk=profch, &
+                                    arret='C', ier=ier)
+                        if (ier .eq. 0) then
+                            if (.not. idensd('PROF_CHNO', numedd(1:14)//'.NUME', profch)) then
+                                valkk(1) = numedd
+                                valkk(2) = profch
+                                call utmess('A', 'ALGORITH2_51', nk=2, valk=valkk)
+                            end if
+                        end if
+                    end if
                 end do
-            endif
+            end if
         end if
-    endif
+    end if
 !
-    if (resultType .eq. 'EVOL_NOLI' .or. resultType .eq. 'EVOL_ELAS' .or.&
+    if (resultType .eq. 'EVOL_NOLI' .or. resultType .eq. 'EVOL_ELAS' .or. &
         resultType .eq. 'EVOL_THER') then
-          if (nb_model .gt. 1) model = ' '
-          if (nb_fieldMate .gt. 1) fieldMate = ' '
-          if (nb_caraElem .gt. 1) caraElem = ' '
+        if (nb_model .gt. 1) model = ' '
+        if (nb_fieldMate .gt. 1) fieldMate = ' '
+        if (nb_caraElem .gt. 1) caraElem = ' '
 ! ----- Get loads
         call resuGetLoads(resultType, listLoad)
 ! ----- Save standard parameters in results datastructure
-        call resuSaveParameters(resultName, resultType,&
-                                model     , caraElem  , fieldMate, listLoad)
-    endif
+        call resuSaveParameters(resultName, resultType, &
+                                model, caraElem, fieldMate, listLoad)
+    end if
 !
 ! - Non-linear behaviour management
 !
@@ -763,7 +762,7 @@ subroutine crtype()
         call getvtx(' ', 'ALARME', scal=answer, nbret=n1)
         lAlarm = answer .eq. 'OUI'
         call lrcomm(lReuse, resultName, model, caraElem, fieldMate, lLireResu, lAlarm)
-    endif
+    end if
 !
     AS_DEALLOCATE(vk8=champs)
     call jedema()
