@@ -33,8 +33,9 @@ def build_pylibaster(filename):
         else:
             print("not exported:", name, obj)
 
+    lines = [i.rstrip() for i in "\n".join(blocks).splitlines()]
     with open(filename, "w") as flib:
-        flib.write("\n".join(blocks))
+        flib.write("\n".join(lines))
     print("output written:", filename)
 
 
