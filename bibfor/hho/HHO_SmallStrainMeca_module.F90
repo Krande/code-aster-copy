@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -326,7 +326,7 @@ contains
 !
 ! --------- Compute behaviour
 !
-            call dmatmc(fami, zi(imate), time_curr, '+', ipg, 1, angmas, coorpg, nb_sig, dsidep)
+            call dmatmc(fami, imate, time_curr, '+', ipg, 1, angmas, coorpg, nb_sig, dsidep)
 !
             call hhoComputeLhsSmall(hhoCell, dsidep, weight, BSCEval, gbs_sym, gbs_cmp, AT)
         end do

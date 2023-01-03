@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@
 ! --- Maximum number of total dofs for a HHO function (dim=3,  and order=2 for a face)
 ! --- Max size for a hexahedron:   6 (nb faces) * 6 (face dofs)
 #define MSIZE_FDOFS_SCAL 36
-! --- Maximum number of total dofs for a HHO function (dim=3, order=3 for a cell
+! --- Maximum number of total dofs for a HHO function (dim=3, order=2 for a cell
 ! --- and order=2 for a face)
-! --- Max size for a hexahedron:  20 (cell dofs) + 6 (nb faces) * 6 (face dofs)
-#define MSIZE_TDOFS_SCAL 56
+! --- Max size for a hexahedron:  10 (cell dofs) + 6 (nb faces) * 6 (face dofs)
+#define MSIZE_TDOFS_SCAL 46
 !
 ! --- vector function
 ! --- Maximum number of componants for vector cell function (order=3 and dim=3)
@@ -49,10 +49,18 @@
 ! --- Maximum number of total dofs for vector faces (dim=3,  and order=2 for a face)
 ! --- Max size for a hexahedron:   6 (nb faces) * 6 (face dofs)
 #define MSIZE_FDOFS_VEC 108
-! --- Maximum number of total dofs for a HHO function (dim=3, order=3 for a cell
+! --- Maximum number of total dofs for a HHO function (dim=3, order=2 for a cell
 ! --- and order=2 for a face)
-! --- Max size for a hexahedron:  60 (cell dofs) + 6 (nb faces) * 18 (face dofs)
-#define MSIZE_TDOFS_VEC 168
+! --- Max size for a hexahedron:  30 (cell dofs) + 6 (nb faces) * 18 (face dofs)
+#define MSIZE_TDOFS_VEC 138
+
+! --- Maximum number of total dofs for a HHO function (dim=3, order=2 for a cell
+! --- and order=2 for a face)
+! --- DEPL : Max size for a hexahedron:  30 (cell dofs) + 6 (nb faces) * 18 (face dofs)
+! --- VARI : Max size for a hexahedron:  10 (cell dofs) + 6 (nb faces) * 6 (face dofs)
+! --- LAGR : Max size for a hexahedron:  10 (cell dofs)
+#define MSIZE_TDOFS_MIX 194
+
 !
 ! --- matrix function
 ! --- Maximum number of componants for matrix cell function (order=3 and dim=3)

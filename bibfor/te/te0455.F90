@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ subroutine te0455(nomopt, nomte)
 !
     use Behaviour_module, only: behaviourOption
     use HHO_type
+    use HHO_compor_module
     use HHO_utils_module
     use HHO_size_module
     use HHO_quadrature_module
@@ -39,10 +40,12 @@ subroutine te0455(nomopt, nomte)
 #include "asterfort/writeVector.h"
 #include "asterfort/writeMatrix.h"
 #include "jeveux.h"
+#include "blas/dscal.h"
+#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO
-!  Mechanics - rigidity and residual
+!  Mechanics - STAT_NON_LINE
 !
 ! In  option           : name of option to compute
 ! In  nomte            : type of finite element
@@ -51,19 +54,19 @@ subroutine te0455(nomopt, nomte)
 !
 ! --- Local variables
 !
-    type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs
-    integer :: jmatt, icompo, npg
-    integer :: codret, jcret, jgrad, jstab, icarcr
-    aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
-    character(len=4), parameter :: fami = 'RIGI'
-    character(len=8) :: typmod(2)
-    character(len=16) :: defo_comp, type_comp
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
+    type(HHO_Meca_State) :: hhoMecaState
+    type(HHO_Quadrature) :: hhoQuadCellRigi
+    type(HHO_Compor_State) :: hhoCS
+!
+    integer :: cbs, fbs, total_dofs
+    integer :: jmatt, npg
+    integer :: jcret, jgrad, jstab
+    aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
+    character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC)
-    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)   :: gradfull
-    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)  :: lhs, stab
+    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)  :: lhs
 !
 ! --- Get HHO informations
 !
@@ -93,49 +96,21 @@ subroutine te0455(nomopt, nomte)
 !
 ! --- Type of finite element
 !
-    select case (hhoCell%ndim)
-    case (3)
-        typmod(1) = '3D'
-    case (2)
-        if (lteatt('AXIS', 'OUI')) then
-            ASSERT(ASTER_FALSE)
-            typmod(1) = 'AXIS'
-        else if (lteatt('C_PLAN', 'OUI')) then
-            ASSERT(ASTER_FALSE)
-            typmod(1) = 'C_PLAN'
-        else if (lteatt('D_PLAN', 'OUI')) then
-            typmod(1) = 'D_PLAN'
-        else
-            ASSERT(ASTER_FALSE)
-        end if
-    case default
-        ASSERT(ASTER_FALSE)
-    end select
-    typmod(2) = 'HHO'
+    call hhoCS%initialize(fami, nomopt, hhoCell%ndim, hhoCell%barycenter)
+    call hhoMecaState%initialize(hhoCell, hhoData, hhoCS)
 !
     if (nomopt .ne. "RIGI_MECA") then
 !
-! --- Get input fields
-!
-        call jevech('PCOMPOR', 'L', icompo)
-!
-! --- Properties of behaviour
-!
-        defo_comp = zk16(icompo-1+DEFO)
-        type_comp = zk16(icompo-1+INCRELAS)
-!
 ! --- Large strains ?
 !
-        l_largestrains = isLargeStrain(defo_comp)
+        l_largestrains = hhoCS%l_largestrain
 !
-        call behaviourOption(nomopt, zk16(icompo), lMatr, lVect, lVari, lSigm, codret)
+        call behaviourOption(nomopt, hhoCS%compor, lMatr, lVect, lVari, lSigm, hhoCS%codret)
     else
         l_largestrains = ASTER_FALSE
         lMatr = ASTER_TRUE
         lSigm = ASTER_FALSE
         lVect = ASTER_FALSE
-        codret = 0
-        icompo = 1
     end if
 !
 ! --- Compute Operators
@@ -145,22 +120,21 @@ subroutine te0455(nomopt, nomte)
         call jevech('PCHHOST', 'L', jstab)
 !
         call hhoReloadPreCalcMeca(hhoCell, hhoData, l_largestrains, zr(jgrad), zr(jstab), &
-                                  gradfull, stab)
+                                  hhoMecaState%grad, hhoMecaState%stab)
     else
-        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradfull, stab)
+        call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, hhoMecaState%stab)
     end if
 !
 ! --- Compute local contribution
 !
-    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, gradfull, stab, &
-                                & fami, typmod, zk16(icompo), nomopt, &
-                                & l_largestrains, lhs, rhs, codret)
+    call hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
+                             hhoCS, lhs, rhs)
 !
 ! --- Save return code
 !
     if (lSigm) then
         call jevech('PCODRET', 'E', jcret)
-        zi(jcret) = codret
+        zi(jcret) = hhoCS%codret
     end if
 !
 ! --- Save rhs
@@ -174,8 +148,7 @@ subroutine te0455(nomopt, nomte)
 !
     if (lMatr) then
         if (nomopt .ne. "RIGI_MECA") then
-            call jevech('PCARCRI', 'L', icarcr)
-            call nmtstm(zr(icarcr), jmatt, matsym)
+            call nmtstm(hhoCS%carcri, jmatt, matsym)
         else
             matsym = ASTER_TRUE
         end if

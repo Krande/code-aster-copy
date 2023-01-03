@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,14 +18,15 @@
 
 subroutine te0460(nomopt, nomte)
 !
-use HHO_type
-use HHO_size_module
-use HHO_stabilization_module, only : hhoStabScal, hdgStabScal
-use HHO_gradrec_module, only : hhoGradRecVec, hhoGradRecFullVec
-use HHO_Meca_module, only : hhoCalcOpMeca, isLargeStrain
-use HHO_init_module, only : hhoInfoInitCell
+    use HHO_type
+    use HHO_size_module
+    use HHO_stabilization_module, only: hhoStabScal, hdgStabScal
+    use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullVec
+    use HHO_Meca_module, only: hhoCalcOpMeca
+    use HHO_compor_module, only: isLargeStrain
+    use HHO_init_module, only: hhoInfoInitCell
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
@@ -72,7 +73,7 @@ implicit none
     call jevech('PCOMPOR', 'L', jcompo)
     l_largestrains = isLargeStrain(zk16(jcompo-1+DEFO))
 !
-    if(hhoCell%ndim == 2) then
+    if (hhoCell%ndim == 2) then
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
 !
 ! ---- if ndim = 2, we save the full operator
@@ -83,32 +84,32 @@ implicit none
 !
 ! ----- Save
 !
-        if(l_largestrains) then
+        if (l_largestrains) then
             gbs2 = gbs
         else
             gbs2 = gbs_sym
-        endif
+        end if
 !
 ! -- Copy the results
 !
         do j = 1, total_dofs
-            call dcopy(gbs2, gradfull(1,j), 1, zr(jgrad + (j-1) * gbs2), 1)
+            call dcopy(gbs2, gradfull(1, j), 1, zr(jgrad+(j-1)*gbs2), 1)
         end do
 !
-    elseif(hhoCell%ndim == 3) then
+    elseif (hhoCell%ndim == 3) then
 !
 ! ---- if ndim = 3, we save the scalar operator for large_strain (not for small strains)
 ! ---- because the matrix are too big to be save
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
 !
-        if(l_largestrains) then
+        if (l_largestrains) then
 ! ----- Compute vectoriel Gradient reconstruction
             call hhoGradRecFullVec(hhoCell, hhoData, gradfullvec)
 !
 ! -- Copy the results
             do j = 1, total_dofs
-                call dcopy(gbs2, gradfullvec(1,j), 1, zr(jgrad + (j-1) * gbs2), 1)
+                call dcopy(gbs2, gradfullvec(1, j), 1, zr(jgrad+(j-1)*gbs2), 1)
             end do
         end if
 !
@@ -121,7 +122,7 @@ implicit none
     if (hhoData%cell_degree() <= hhoData%face_degree()) then
         call hhoGradRecVec(hhoCell, hhoData, gradrec_scal)
         call hhoStabScal(hhoCell, hhoData, gradrec_scal, stabvec)
-    else if (hhoData%cell_degree() == (hhoData%face_degree() + 1)) then
+    else if (hhoData%cell_degree() == (hhoData%face_degree()+1)) then
         call hdgStabScal(hhoCell, hhoData, stabvec)
     else
         ASSERT(ASTER_FALSE)
@@ -129,7 +130,7 @@ implicit none
 !
     call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs2)
     do j = 1, total_dofs
-        call dcopy(total_dofs, stabvec(1,j), 1, zr(jstab + (j-1) * total_dofs), 1)
+        call dcopy(total_dofs, stabvec(1, j), 1, zr(jstab+(j-1)*total_dofs), 1)
     end do
 !
 end subroutine

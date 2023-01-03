@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
     character(len=*), intent(in) :: cel
     integer, optional :: jadr
 
-    aster_logical,           pointer, optional :: vl(:)
+    aster_logical,     pointer, optional :: vl(:)
     integer,           pointer, optional :: vi(:)
     integer(kind=4),   pointer, optional :: vi4(:)
     real(kind=8),      pointer, optional :: vr(:)

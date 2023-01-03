@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,18 +18,19 @@
 
 subroutine te0450(nomopt, nomte)
 !
-use HHO_basis_module
-use HHO_eval_module
-use HHO_init_module, only : hhoInfoInitCell
-use HHO_LargeStrainMeca_module, only : hhoComputeRhsLarge, hhoCalculF
-use HHO_Meca_module
-use HHO_quadrature_module
-use HHO_size_module
-use HHO_SmallStrainMeca_module, only : hhoComputeRhsSmall, tranfoMatToSym
-use HHO_type
-use HHO_utils_module
+    use HHO_basis_module
+    use HHO_compor_module
+    use HHO_eval_module
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_LargeStrainMeca_module, only: hhoComputeRhsLarge, hhoCalculF
+    use HHO_Meca_module
+    use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_SmallStrainMeca_module, only: hhoComputeRhsSmall, tranfoMatToSym
+    use HHO_type
+    use HHO_utils_module
 !
-implicit none
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -62,22 +63,20 @@ implicit none
 !
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs, gbs, gbs_sym
-    integer :: icompo, npg, gbs_curr, gbs_cmp
-    integer :: codret, ipg, ncomp, icontm
-    aster_logical :: l_largestrains
-    character(len=4) :: fami
-    character(len=8) :: typmod(2)
-    character(len=16) :: defo_comp, type_comp
+    type(HHO_Compor_State) :: hhoCS
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    real(kind=8) :: Cauchy_curr(6), PK1_curr(3,3), G_curr(3,3), F_curr(3,3)
+    type(HHO_Meca_State) :: hhoMecaState
+!
+    integer :: cbs, fbs, total_dofs, gbs, gbs_sym
+    integer :: npg, gbs_curr, gbs_cmp
+    integer :: ipg, ncomp
+    aster_logical :: l_largestrains
+    character(len=4) :: fami
+    real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC), coorpg(3), weight
     real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
-    real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr
     real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_curr_coeff
-    real(kind=8), dimension(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)   :: gradrec
-    real(kind=8), dimension(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)  :: stab
 !
 ! --- Get HHO informations
 !
@@ -88,68 +87,37 @@ implicit none
     Cauchy_curr = 0.d0
     bT = 0.d0
     rhs = 0.d0
-    codret = 0
     fami = 'RIGI'
     call elrefe_info(fami=fami, npg=npg)
 !
 ! --- Number of dofs
     call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs, gbs_sym)
-    gbs_cmp = gbs / (hhoCell%ndim * hhoCell%ndim)
+    gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
     ASSERT(cbs <= MSIZE_CELL_VEC)
     ASSERT(fbs <= MSIZE_FACE_VEC)
     ASSERT(total_dofs <= MSIZE_TDOFS_VEC)
 !
-    ASSERT(nomopt.eq.'FORC_NODA')
+    ASSERT(nomopt .eq. 'FORC_NODA')
 !
 ! --- Initialize quadrature for the rigidity
     call hhoQuadCellRigi%initCell(hhoCell, npg)
 !
 ! --- Type of finite element
 !
-    select case (hhoCell%ndim)
-        case(3)
-            typmod(1) = '3D'
-        case (2)
-            if (lteatt('AXIS','OUI')) then
-                ASSERT(ASTER_FALSE)
-                typmod(1) = 'AXIS'
-            else if (lteatt('C_PLAN','OUI')) then
-                ASSERT(ASTER_FALSE)
-                typmod(1) = 'C_PLAN'
-            else if (lteatt('D_PLAN','OUI')) then
-                typmod(1) = 'D_PLAN'
-            else
-                ASSERT(ASTER_FALSE)
-            endif
-        case default
-            ASSERT(ASTER_FALSE)
-    end select
-    typmod(2) = 'HHO'
-!
-! --- Get input fields
-!
-    call jevech('PCOMPOR', 'L', icompo)
-    call jevech('PCONTMR', 'L', icontm)
+    call hhoCS%initialize(fami, nomopt, hhoCell%ndim, hhoCell%barycenter)
+    call hhoMecaState%initialize(hhoCell, hhoData, hhoCS)
 !
 ! --- Properties of behaviour
 !
-    defo_comp = zk16(icompo-1+DEFO)
-    type_comp = zk16(icompo-1+INCRELAS)
-    ncomp = nbsigm()
+    ncomp = hhoCS%nbsigm
 !
 ! --- Large strains ?
 !
-    l_largestrains = isLargeStrain(defo_comp)
+    l_largestrains = hhoCS%l_largestrain
 !
 ! --- Compute Operators
 !
-    call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, gradrec, stab)
-!
-! --- get displacement
-!
-    depl_curr = 0.d0
-    call readVector('PDEPLMR', total_dofs, depl_curr)
-    call hhoRenumMecaVecInv(hhoCell, hhoData, depl_curr)
+    call hhoCalcOpMeca(hhoCell, hhoData, l_largestrains, hhoMecaState%grad, hhoMecaState%stab)
 !
 ! ----- init basis
 !
@@ -157,9 +125,9 @@ implicit none
 !
 ! --- Compute local contribution
 !
-    if(l_largestrains) then
-        call dgemv('N', gbs, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, depl_curr, 1,&
-                    0.d0, G_curr_coeff, 1)
+    if (l_largestrains) then
+        call dgemv('N', gbs, total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+                   hhoMecaState%depl_curr, 1, 0.d0, G_curr_coeff, 1)
         gbs_curr = gbs
     else
         gbs_curr = gbs_sym
@@ -168,12 +136,12 @@ implicit none
 ! ----- Loop on quadrature point
 !
     do ipg = 1, hhoQuadCellRigi%nbQuadPoints
-        coorpg(1:3) = hhoQuadCellRigi%points(1:3,ipg)
+        coorpg(1:3) = hhoQuadCellRigi%points(1:3, ipg)
         weight = hhoQuadCellRigi%weights(ipg)
 !
 ! -------- tranform sigm in symmetric form
 !
-        Cauchy_curr(1:ncomp) = zr(icontm-1+(ipg-1)*ncomp+1:icontm-1+ipg*ncomp)
+        Cauchy_curr(1:ncomp) = hhoCS%sig_prev((ipg-1)*ncomp+1:ipg*ncomp)
 !
 ! --------- Eval basis function at the quadrature point
 !
@@ -182,9 +150,9 @@ implicit none
 ! --------- Eval gradient at T- and T+
 !
 !
-        if(l_largestrains) then
+        if (l_largestrains) then
             G_curr = hhoEvalMatCell(hhoCell, hhoBasisCell, hhoData%grad_degree(), &
-                                coorpg(1:3), G_curr_coeff, gbs)
+                                    coorpg(1:3), G_curr_coeff, gbs)
 !
 ! --------- Eval gradient of the deformation at T- and T+
 !
@@ -199,15 +167,15 @@ implicit none
         end if
     end do
 !
-    call dgemv('T', gbs_curr, total_dofs, 1.d0, gradrec, MSIZE_CELL_MAT, &
-        bT, 1, 1.d0, rhs, 1)
+    call dgemv('T', gbs_curr, total_dofs, 1.d0, hhoMecaState%grad, MSIZE_CELL_MAT, &
+               bT, 1, 1.d0, rhs, 1)
 !
 ! --- add stabilization
 !
-    call hhoCalcStabCoeff(hhoData, fami, 0.d0, hhoQuadCellRigi)
+    call hhoCalcStabCoeff(hhoData, hhoCS%fami, 0.d0, hhoQuadCellRigi)
 !
-    call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC,&
-              depl_curr, 1, 1.d0, rhs, 1)
+    call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
+               hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
 !
 ! --- Save rhs
 !

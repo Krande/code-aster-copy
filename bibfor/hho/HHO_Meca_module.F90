@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,17 @@
 module HHO_Meca_module
 !
     use NonLin_Datastructure_type
-    use HHO_type
+    use HHO_compor_module
     use HHO_Dirichlet_module
-    use NonLin_Datastructure_type
-    use HHO_size_module
     use HHO_LargeStrainMeca_module
-    use HHO_SmallStrainMeca_module
     use HHO_quadrature_module
+    use HHO_size_module
+    use HHO_SmallStrainMeca_module
+    use HHO_stabilization_module, only: hhoStabVec, hdgStabVec, hhoStabSymVec
+    use HHO_type
     use HHO_utils_module
     use HHO_basis_module
-    use HHO_stabilization_module, only: hhoStabVec, hdgStabVec, hhoStabSymVec
+    use NonLin_Datastructure_type
     use HHO_gradrec_module, only: hhoGradRecVec, hhoGradRecFullMat, hhoGradRecSymFullMat, &
                                  & hhoGradRecSymMat, hhoGradRecFullMatFromVec
 !
@@ -36,24 +37,21 @@ module HHO_Meca_module
 !
     private
 #include "asterf_types.h"
-#include "asterfort/Behaviour_type.h"
-#include "asterfort/HHO_size_module.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
+#include "asterfort/HHO_size_module.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inical.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jevech.h"
 #include "asterfort/megeom.h"
-#include "asterfort/nbsigm.h"
 #include "asterfort/nmtime.h"
-#include "asterfort/ortrep.h"
-#include "asterfort/rcangm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/readVector.h"
@@ -74,9 +72,32 @@ module HHO_Meca_module
 ! --------------------------------------------------------------------------------------------------
 !
 !
+    public :: HHO_Meca_State
     public :: hhoMecaInit, hhoPreCalcMeca, hhoLocalContribMeca, hhoCalcStabCoeff
-    public :: hhoCalcOpMeca, isLargeStrain, hhoReloadPreCalcMeca
+    public :: hhoCalcOpMeca, hhoReloadPreCalcMeca
     public :: YoungModulus, hhoLocalMassMeca
+!
+! --------------------------------------------------------------------------------------------------
+!
+    type HHO_Meca_State
+!
+        aster_logical      :: l_debug = ASTER_FALSE
+! ----- Time : prev, curr, incr
+        real(kind=8) :: time_prev = 0.d0
+        real(kind=8) :: time_curr = 0.d0
+        real(kind=8) :: time_incr = 0.d0
+! ----- Displacement
+        real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_prev = 0.d0
+        real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_curr = 0.d0
+        real(kind=8), dimension(MSIZE_TDOFS_VEC) :: depl_incr = 0.d0
+! ----- Gradient reconstruction and stabilisation
+        real(kind=8) :: grad(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
+        real(kind=8) :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
+! ----- member function
+    contains
+        procedure, pass :: initialize => initialize_meca
+!
+    end type HHO_Meca_State
 !
 contains
 !
@@ -109,7 +130,6 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ifm, niv
-        aster_logical :: l_load_cine
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,10 +137,6 @@ contains
         if (niv .ge. 2) then
             call utmess('I', 'HHO2_8')
         end if
-!
-! --- Initializations
-!
-        l_load_cine = isfonc(list_func_acti, 'DIRI_CINE')
 !
 ! --- Prepare fields for algorithm
 !
@@ -131,7 +147,7 @@ contains
 !
         hhoField%fieldCineFunc = '&&HHOMEC.CINEFUNC'
         hhoField%fieldCineVale = '&&HHOMEC.CINEVALE'
-        if (l_load_cine) then
+        if (isfonc(list_func_acti, 'DIRI_CINE')) then
             call hhoDiriFuncPrepare(model, list_load, hhoField)
         end if
 !
@@ -309,25 +325,18 @@ contains
 !
 !===================================================================================================
 !
-    subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, stab, &
-                                   fami, typmod, compor, option, l_largestrain, &
-                                   lhs, rhs, codret)
+    subroutine hhoLocalContribMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState, &
+                                   hhoCS, lhs, rhs)
 !
         implicit none
 !
         type(HHO_Cell), intent(in)      :: hhoCell
         type(HHO_Data), intent(inout)   :: hhoData
         type(HHO_Quadrature), intent(in):: hhoQuadCellRigi
-        real(kind=8), intent(in)        :: gradrec(MSIZE_CELL_MAT, MSIZE_TDOFS_VEC)
-        real(kind=8), intent(in)        :: stab(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
-        character(len=*), intent(in)    :: fami
-        character(len=8), intent(in)    :: typmod(*)
-        character(len=16), intent(in)   :: compor(*)
-        character(len=16), intent(in)   :: option
-        aster_logical, intent(in)       :: l_largestrain
+        type(HHO_Meca_State), intent(in) :: hhoMecaState
+        type(HHO_Compor_State), intent(inout) :: hhoCS
         real(kind=8), intent(out)       :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8), intent(out)       :: rhs(MSIZE_TDOFS_VEC)
-        integer, intent(out)            :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -336,169 +345,86 @@ contains
 !   In hhoCell      : the current HHO Cell
 !   In hhoData       : information on HHO methods
 !   In hhoQuadCellRigi : quadrature rules from the rigidity family
-!   In gradrec      : local gradient reconstruction
-!   In stab         : local stabilisation
-!   In fami         : familly of quadrature points (of hhoQuadCellRigi)
-!   In typmod       : type of modelization
-!   In compor       : type of behavior
-!   In option       : option of computations
-!   In largestrain  : large strain ?
+!   In hhoMecaState : mechanical state
+!   IO hhoCS        : behaviour
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
-!   Out codret      : info of the LDC integration
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical :: axi, cplan, l_rigi_meca
-        integer:: cbs, fbs, total_dofs, j, faces_dofs
-        integer :: imate, jmate, lgpg, iret, jtab(7), icarcr, iinstm, iinstp, icontm, ivarim
-        integer :: icontp, ivarip, jv_mult_comp
-        character(len=16) :: mult_comp
-        real(kind=8), dimension(MSIZE_TDOFS_VEC) :: deplm, deplp, deplincr
-        real(kind=8) :: angl_naut(7), time_curr, time_prev
+        aster_logical ::  l_rigi_meca
+        integer:: cbs, fbs, total_dofs, j
 !
 ! --- Verif compor
 !
-        axi = typmod(1) .eq. 'AXIS'
-        cplan = typmod(1) .eq. 'C_PLAN'
-        l_rigi_meca = (option == "RIGI_MECA")
+        l_rigi_meca = (hhoCS%option == "RIGI_MECA")
 !
-        if (axi .or. cplan) then
+        if (hhoCS%axis .or. hhoCS%c_plan) then
             ASSERT(ASTER_FALSE)
-        end if
-!
-        time_curr = 0.d0
-        time_prev = 0.d0
-!
-! --- Get input fields
-!
-        call jevech('PMATERC', 'L', jmate)
-        if (.not. l_rigi_meca) then
-            call jevech('PCARCRI', 'L', icarcr)
-            call jevech('PINSTMR', 'L', iinstm)
-            call jevech('PINSTPR', 'L', iinstp)
-            call jevech('PCONTMR', 'L', icontm)
-            call jevech('PVARIMR', 'L', ivarim)
-            call jevech('PMULCOM', 'L', jv_mult_comp)
-
-            time_curr = zr(iinstp)
-            time_prev = zr(iinstm)
-
-            call tecach('OOO', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-            ASSERT(iret .eq. 0)
-            lgpg = max(jtab(6), 1)*jtab(7)
-            imate = zi(jmate-1+1)
-            mult_comp = zk16(jv_mult_comp-1+1)
-!
-! --- Get orientation
-!
-            call rcangm(hhoCell%ndim, hhoCell%barycenter, angl_naut)
-        else
-            ASSERT(.not. l_largestrain)
-            imate = jmate
-            icarcr = 0
-            icontm = 0
-            ivarim = 0
-            lgpg = 0
-            call tecach('ONO', 'PTEMPSR', 'L', iret, iad=iinstp)
-            if (iinstp .ne. 0) then
-                time_curr = zr(iinstp)
-            end if
-!
-! --- Get orientation
-!
-            call ortrep(hhoCell%ndim, hhoCell%barycenter, angl_naut)
-        end if
-!
-        if (L_SIGM(option)) then
-            call jevech('PCONTPR', 'E', icontp)
-        else
-            icontp = 1
-        end if
-!
-        if (L_VARI(option)) then
-            call jevech('PVARIPR', 'E', ivarip)
-        else
-            ivarip = 1
         end if
 !
 ! --- number of dofs
 !
         call hhoMecaDofs(hhoCell, hhoData, cbs, fbs, total_dofs)
-        faces_dofs = total_dofs-cbs
 !
 ! -- initialization
 !
         lhs = 0.d0
         rhs = 0.d0
-        deplm = 0.d0
-        deplincr = 0.d0
-        deplp = 0.d0
 !
-        if (.not. l_rigi_meca) then
-!
-! --- get displacement in T-
-!
-            call readVector('PDEPLMR', total_dofs, deplm)
-            call hhoRenumMecaVecInv(hhoCell, hhoData, deplm)
-!
-! --- get increment displacement beetween T- and T+
-!
-            call readVector('PDEPLPR', total_dofs, deplincr)
-            call hhoRenumMecaVecInv(hhoCell, hhoData, deplincr)
-!
-! --- compute displacement in T+
-!
-            call dcopy(total_dofs, deplm, 1, deplp, 1)
-            call daxpy(total_dofs, 1.d0, deplincr, 1, deplp, 1)
-        end if
-!
-        if (l_largestrain) then
+        if (hhoCS%l_largestrain) then
 !
 ! --- large strains and use gradient
 !
-            call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                      fami, typmod, imate, compor, option, zr(icarcr), lgpg, &
-                                      nbsigm(), time_prev, time_curr, deplm, deplp, &
-                                      zr(icontm), zr(ivarim), angl_naut, mult_comp, &
-                                      cplan, lhs, rhs, zr(icontp), zr(ivarip), codret)
+            call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
+                                      hhoCS%fami, hhoCS%typmod, hhoCS%imater, &
+                                      hhoCS%compor, hhoCS%option, hhoCS%carcri, hhoCS%lgpg, &
+                                      hhoCS%nbsigm, hhoMecaState%time_prev, &
+                                      hhoMecaState%time_curr, &
+                                      hhoMecaState%depl_prev, hhoMecaState%depl_curr, &
+                                      hhoCS%sig_prev, hhoCS%vari_prev, &
+                                      hhoCS%angl_naut, hhoCS%mult_comp, hhoCS%c_plan, &
+                                      lhs, rhs, hhoCS%sig_curr, hhoCS%vari_curr, hhoCS%codret)
         else
 !
 ! --- small strains and use symmetric gradient
 !
             if (l_rigi_meca) then
-                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, fami, &
-                                     imate, option, time_curr, angl_naut, lhs)
-                codret = 0
+                call hhoMatrElasMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
+                                     hhoCS%fami, hhoCS%imater, hhoCS%option, &
+                                     hhoMecaState%time_curr, hhoCS%angl_naut, lhs)
+                hhoCS%codret = 0
             else
-                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
-                                          fami, typmod, imate, compor, option, zr(icarcr), lgpg, &
-                                          nbsigm(), time_prev, time_curr, deplm, deplincr, &
-                                          zr(icontm), zr(ivarim), angl_naut, mult_comp, &
-                                          lhs, rhs, zr(icontp), zr(ivarip), codret)
+                call hhoSmallStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, hhoMecaState%grad, &
+                                          hhoCS%fami, hhoCS%typmod, hhoCS%imater, &
+                                          hhoCS%compor, hhoCS%option, hhoCS%carcri, hhoCS%lgpg, &
+                                          hhoCS%nbsigm, hhoMecaState%time_prev, &
+                                          hhoMecaState%time_curr, &
+                                          hhoMecaState%depl_prev, hhoMecaState%depl_incr, &
+                                          hhoCS%sig_prev, hhoCS%vari_prev, &
+                                          hhoCS%angl_naut, hhoCS%mult_comp, &
+                                          lhs, rhs, hhoCS%sig_curr, hhoCS%vari_curr, hhoCS%codret)
             end if
         end if
 !
 ! --- test integration of the behavior
 !
-        if (codret .ne. 0) goto 999
+        if (hhoCS%codret .ne. 0) goto 999
 !
 ! --- add stabilization
 !
-        call hhoCalcStabCoeff(hhoData, fami, time_curr, hhoQuadCellRigi)
+        call hhoCalcStabCoeff(hhoData, hhoCS%fami, hhoMecaState%time_curr, hhoQuadCellRigi)
 !
-        if (L_VECT(option)) then
-            call dsymv('U', total_dofs, hhoData%coeff_stab(), stab, MSIZE_TDOFS_VEC, &
-                       deplp, 1, 1.d0, rhs, 1)
+        if (L_VECT(hhoCS%option)) then
+            call dsymv('U', total_dofs, hhoData%coeff_stab(), hhoMecaState%stab, MSIZE_TDOFS_VEC, &
+                       hhoMecaState%depl_curr, 1, 1.d0, rhs, 1)
         end if
 !
-        if (L_MATR(option)) then
+        if (L_MATR(hhoCS%option)) then
             do j = 1, total_dofs
-                call daxpy(total_dofs, hhoData%coeff_stab(), stab(1, j), 1, lhs(1, j), 1)
+                call daxpy(total_dofs, hhoData%coeff_stab(), hhoMecaState%stab(1, j), 1, &
+                           lhs(1, j), 1)
             end do
         end if
-
-        !  print*, "lhs", hhoNorm2Mat(lhs(1:total_dofs,1:total_dofs)), hhoData%coeff_stab()
-        ! print*, "rhs", norm2(rhs)
 !
 999     continue
 !
@@ -563,39 +489,6 @@ contains
         end if
 !
     end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
-    function isLargeStrain(defo_comp) result(bool)
-!
-        implicit none
-!
-        character(len=16), intent(in) :: defo_comp
-        aster_logical :: bool
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   To know if the model is in large deformations
-!   In defo_comp : type of deformation
-! --------------------------------------------------------------------------------------------------
-!
-        bool = ASTER_FALSE
-!
-        if (defo_comp(1:5) .eq. 'PETIT') then
-            bool = ASTER_FALSE
-        elseif (defo_comp .eq. 'GDEF_LOG') then
-            bool = ASTER_TRUE
-        elseif (defo_comp .eq. 'SIMO_MIEHE') then
-            bool = ASTER_TRUE
-        elseif (defo_comp .eq. 'GREEN_LAGRANGE') then
-            bool = ASTER_TRUE
-        else
-            ASSERT(ASTER_FALSE)
-        end if
-!
-    end function
 !
 !===================================================================================================
 !
@@ -666,6 +559,93 @@ contains
             call jevech('PMATERC', 'L', jmate)
             imate = zi(jmate-1+1)
             call hhoData%setCoeffStab(10.d0*YoungModulus(fami, imate, time, hhoQuad))
+        end if
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine initialize_meca(this, hhoCell, hhoData, hhoComporState)
+!
+        implicit none
+!
+        class(HHO_Meca_State), intent(inout)  :: this
+        type(HHO_Cell), intent(in)      :: hhoCell
+        type(HHO_Data), intent(inout)   :: hhoData
+        type(HHO_Compor_State), intent(in) :: hhoComporState
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  initialize HHO_MECA_STATE
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iinstm, iinstp, iret, num_tot, num_mk
+        integer :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
+        integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+        real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
+!
+        if (hhoComporState%option .ne. "RIGI_MECA" .and. &
+            hhoComporState%option .ne. "FORC_NODA") then
+            call jevech('PINSTMR', 'L', iinstm)
+            call jevech('PINSTPR', 'L', iinstp)
+            this%time_curr = zr(iinstp)
+            this%time_prev = zr(iinstm)
+            this%time_incr = this%time_curr-this%time_prev
+!
+            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+
+            if (hhoComporState%typmod(2) == "HHO") then
+!
+! --- get displacement in T-
+!
+                call readVector('PDEPLMR', mk_total_dofs, this%depl_prev)
+                call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_prev)
+!
+! --- get increment displacement beetween T- and T+
+!
+                call readVector('PDEPLPR', mk_total_dofs, this%depl_incr)
+                call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_incr)
+            else
+                call hhoTherDofs(hhoCell, hhoData, gv_cbs, gv_fbs, gv_total_dofs)
+                total_dofs = mk_total_dofs+gv_total_dofs+gv_cbs
+                call readVector('PDEPLMR', total_dofs, tmp_prev)
+                call readVector('PDEPLPR', total_dofs, tmp_incr)
+!
+                num_tot = 0
+                num_mk = 0
+                do iFace = 1, hhoCell%nbfaces
+                    do iDof = 1, mk_fbs
+                        num_tot = num_tot+1
+                        num_mk = num_mk+1
+                        this%depl_prev(mk_cbs+num_mk) = tmp_prev(num_tot)
+                        this%depl_incr(mk_cbs+num_mk) = tmp_incr(num_tot)
+                    end do
+                    num_tot = num_tot+gv_fbs
+                end do
+                do iDof = 1, mk_cbs
+                    num_tot = num_tot+1
+                    this%depl_prev(iDof) = tmp_prev(num_tot)
+                    this%depl_incr(iDof) = tmp_incr(num_tot)
+                end do
+            end if
+!
+! --- compute displacement in T+
+!
+            call dcopy(mk_total_dofs, this%depl_prev, 1, this%depl_curr, 1)
+            call daxpy(mk_total_dofs, 1.d0, this%depl_incr, 1, this%depl_curr, 1)
+        elseif (hhoComporState%option == "RIGI_MECA") then
+            call tecach('ONO', 'PTEMPSR', 'L', iret, iad=iinstp)
+            if (iinstp .ne. 0) then
+                this%time_curr = zr(iinstp)
+            end if
+        elseif (hhoComporState%option == "FORC_NODA") then
+            call hhoMecaDofs(hhoCell, hhoData, mk_cbs, mk_fbs, mk_total_dofs)
+            call readVector('PDEPLMR', mk_total_dofs, this%depl_curr)
+            call hhoRenumMecaVecInv(hhoCell, hhoData, this%depl_curr)
+        else
+            ASSERT(ASTER_FALSE)
         end if
 !
     end subroutine
