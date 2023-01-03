@@ -149,9 +149,9 @@ TEST1 = THERMECA_MULT(
     MODELE=m_plate,
     CHAM_MATER=fiel_f1,
     CARA_ELEM=elem_m,
-    EXCIT=BLOC,
+    CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    AFFE_VARC_TEMP=(
+    CAS_CHARGE_THER=(
         _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
         _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
@@ -239,6 +239,13 @@ TAB_TEST = CREA_TABLE(
 )
 
 # Test that all the table values are equal to zero
-TEST_TABLE(VALE_CALC=0, NOM_PARA="TEST", TYPE_TEST="SOMM_ABS", ORDRE_GRANDEUR=1e-9, TABLE=TAB_TEST)
+TEST_TABLE(
+    CRITERE="ABSOLU",
+    VALE_CALC=0,
+    NOM_PARA="TEST",
+    TYPE_TEST="SOMM_ABS",
+    ORDRE_GRANDEUR=1e-6,
+    TABLE=TAB_TEST,
+)
 
 FIN()

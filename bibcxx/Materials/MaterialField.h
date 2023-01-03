@@ -139,8 +139,7 @@ class MaterialField : public DataStructure {
         : MaterialField( ResultNaming::getNewResultName(), mesh ) {};
 
     /** @brief Copy Constructor */
-    MaterialField( const MaterialField &other )
-        : MaterialField( other.getName(), other.getMesh() ) {};
+    MaterialField( const MaterialField &other );
 
     /** @brief Constructor */
     MaterialField( const std::string &, const BaseMeshPtr & );

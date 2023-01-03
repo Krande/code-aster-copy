@@ -113,9 +113,9 @@ CRT2 = CREA_RESU(
 TEST1 = THERMECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f1,
-    EXCIT=BLOC,
+    CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    AFFE_VARC_TEMP=(
+    CAS_CHARGE_THER=(
         _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
         _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
@@ -182,9 +182,9 @@ REF1_fc2 = CREA_CHAMP(
 TEST2 = THERMECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f2,
-    EXCIT=BLOC,
+    CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    AFFE_VARC_TEMP=(
+    CAS_CHARGE_THER=(
         _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
         _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
@@ -254,9 +254,9 @@ REF2_fc2 = CREA_CHAMP(
 TEST3 = THERMECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f3,
-    EXCIT=BLOC,
+    CHAR_MECA_GLOBAL=BLOC,
     LIST_INST=times,
-    AFFE_VARC_TEMP=(
+    CAS_CHARGE_THER=(
         _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
         _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
@@ -321,8 +321,8 @@ REF3_fc2 = CREA_CHAMP(
 TEST4 = THERMECA_MULT(
     MODELE=m_cube,
     CHAM_MATER=fiel_f1,
-    EXCIT=BLOC,
-    AFFE_VARC_TEMP=(
+    CHAR_MECA_GLOBAL=BLOC,
+    CAS_CHARGE_THER=(
         _F(EVOL=CRT1, NOM_CAS="CAS_1", VALE_REF=0.0),
         _F(EVOL=CRT2, NOM_CAS="CAS_2", VALE_REF=0.0),
     ),
@@ -347,6 +347,114 @@ TEST4_fc2 = CREA_CHAMP(
     TYPE_CHAM="NOEU_DEPL_R",
 )
 
+# ---------------------------------------------------------------------------------------------------
+# FIFTH TEST: compatibility with evol_ther_dict (CALC_THER_MULT)
+# THERMECA_MULT chained with CALC_THER_MULT
+
+# -----CALC_THER_MULT
+# Thermal model
+mod_th = AFFE_MODELE(
+    AFFE=(_F(TOUT="OUI", MODELISATION="3D", PHENOMENE="THERMIQUE"),), MAILLAGE=cube
+)
+# Materials
+LAMBDA = DEFI_CONSTANTE(VALE=0.003)
+RHOCP = DEFI_CONSTANTE(VALE=1e-05)
+mat = DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBDA, RHO_CP=RHOCP))
+# Material field
+fiel1 = AFFE_MATERIAU(AFFE=_F(MATER=(mat,), TOUT="OUI"), MODELE=mod_th)
+# Common thermal loading
+CL = AFFE_CHAR_THER(MODELE=mod_th, TEMP_IMPO=_F(GROUP_MA=("SBOT",), TEMP=0))
+# CALC_THER_MULT
+calc_ther_mult = CALC_THER_MULT(
+    MODELE=mod_th,
+    CHAM_MATER=fiel1,
+    CHAR_THER_GLOBAL=CL,
+    LIST_INST=times,
+    PARM_THETA=1,
+    CAS_CHARGE=(
+        _F(
+            TYPE_CHARGE="CHOC_UNIT",
+            COEF_H=1e-3,
+            DUREE_CHOC=0.001,
+            GROUP_MA=("SY0"),
+            NOM_CAS="CAS_1",
+        ),
+        _F(
+            TYPE_CHARGE="CHOC_UNIT",
+            COEF_H=1e-2,
+            DUREE_CHOC=0.009,
+            GROUP_MA=("SY1"),
+            NOM_CAS="CAS_2",
+        ),
+    ),
+)
+
+# import pdb
+# pdb.set_trace()
+
+extr_51 = EXTR_CONCEPT(NOM="CAS_1", DICT=calc_ther_mult)
+extr_52 = EXTR_CONCEPT(NOM="CAS_2", DICT=calc_ther_mult)
+
+# -----
+fiel_f51 = AFFE_MATERIAU(
+    AFFE=_F(MATER=(mat_m1,), TOUT="OUI"),
+    AFFE_VARC=_F(EVOL=extr_51, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+
+fiel_f52 = AFFE_MATERIAU(
+    AFFE=_F(MATER=(mat_m1,), TOUT="OUI"),
+    AFFE_VARC=_F(EVOL=extr_52, NOM_VARC="TEMP", VALE_REF=0.0),
+    MODELE=m_cube,
+)
+
+REF5_C1 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f51,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
+)
+
+REF5_C2 = STAT_NON_LINE(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f52,
+    EXCIT=(_F(CHARGE=BLOC),),
+    INCREMENT=_F(LIST_INST=times),
+    CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-5, ITER_GLOB_MAXI=80),
+)
+
+TEST5 = THERMECA_MULT(
+    MODELE=m_cube,
+    CHAM_MATER=fiel_f1,
+    CHAR_MECA_GLOBAL=BLOC,
+    CAS_CHARGE_THER=(_F(EVOL=calc_ther_mult, VALE_REF=0.0),),
+)
+
+# Verification process
+# Test on NUME_ORDRE 1 on case 1
+TEST5_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST5["CAS_1"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF5_fc1 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF5_C1, TYPE_CHAM="NOEU_DEPL_R"
+)
+
+# Test on NUME_ORDRE 1 on case 2
+TEST5_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL",
+    NUME_ORDRE=1,
+    OPERATION="EXTR",
+    RESULTAT=TEST5["CAS_2"],
+    TYPE_CHAM="NOEU_DEPL_R",
+)
+REF5_fc2 = CREA_CHAMP(
+    NOM_CHAM="DEPL", NUME_ORDRE=1, OPERATION="EXTR", RESULTAT=REF5_C2, TYPE_CHAM="NOEU_DEPL_R"
+)
 
 # ---------------------------------------------------------------------------------------------------
 # TEST_TABLE
@@ -365,6 +473,8 @@ TAB_TEST = CREA_TABLE(
             (TEST3_fc2 - TEST2_fc2).norm("NORM_2"),
             (TEST4_fc1 - REF1_fc1).norm("NORM_2"),
             (TEST4_fc2 - REF1_fc2).norm("NORM_2"),
+            (TEST5_fc2 - REF5_fc2).norm("NORM_2"),
+            (TEST5_fc2 - REF5_fc2).norm("NORM_2"),
         ),
         PARA="TEST",
     )

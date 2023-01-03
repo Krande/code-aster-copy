@@ -25,7 +25,7 @@ from ..Language.Syntax import *
 THERMECA_MULT = MACRO(
     nom="THERMECA_MULT",
     op=OPS("code_aster.MacroCommands.thermeca_mult_ops.thermeca_mult_ops"),
-    sd_prod=evol_noli,
+    sd_prod=evol_noli_dict,
     fr=tr("Obtenir les résultats thermo-mécaniques à partir de champs thermiques"),
     reentrant="n",
     #  Modèle mécanique:
@@ -33,18 +33,20 @@ THERMECA_MULT = MACRO(
     MODELE=SIMP(statut="o", typ=modele_sdaster),
     CHAM_MATER=SIMP(statut="o", typ=cham_mater),
     CARA_ELEM=SIMP(statut="f", typ=cara_elem),
-    EXCIT=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
+    CHAR_MECA_GLOBAL=SIMP(statut="o", typ=(char_meca, char_cine_meca)),
     # liste d'instants:
     #  ----------------------------------------------
     LIST_INST=SIMP(statut="f", typ=(listr8_sdaster, list_inst)),
-    # => Facultatif sinon on récupère les instants du champ en question
     #  affectation des variables de commande :
     #  --------------------------------------------------
-    AFFE_VARC_TEMP=FACT(
+    #
+    CAS_CHARGE_THER=FACT(
         statut="o",
         max="**",
-        EVOL=SIMP(statut="o", typ=(evol_sdaster)),
-        NOM_CAS=SIMP(statut="o", typ="TXM"),
+        EVOL=SIMP(statut="o", typ=(evol_ther, evol_ther_dict)),
+        b_evol_ther=BLOC(
+            condition="""is_type("EVOL") == evol_ther""", NOM_CAS=SIMP(statut="o", typ="TXM")
+        ),
         VALE_REF=SIMP(statut="f", typ="R", defaut=0.0),
     ),
     CONVERGENCE=C_CONVERGENCE(),

@@ -31,9 +31,7 @@ def get_list_inst(champ):
     sortie : liste contenant les instants
     """
 
-    liste_instant = [
-        champ.getTimeValue(champ.getIndexes()[i]) for i in range(len(champ.getIndexes()))
-    ]
+    liste_instant = [champ.getTimeValue(index) for index in champ.getIndexes()]
 
     return liste_instant
 
@@ -49,9 +47,9 @@ def thermeca_mult_ops(self, **args):
     MODELE = args.get("MODELE")
     CARA_ELEM = args.get("CARA_ELEM")
     CHAM_MATER = args.get("CHAM_MATER")
-    EXCIT = args.get("EXCIT")
+    CHAR_MECA_GLOBAL = args.get("CHAR_MECA_GLOBAL")
     # Récupération champs thermiques pour modification du champ mater meca
-    AFFE_VARC_TEMP = args.get("AFFE_VARC_TEMP")
+    CAS_CHARGE_THER = args.get("CAS_CHARGE_THER")
     # Calcul thermomecanique
     LIST_INST = args.get("LIST_INST")
     CONVERGENCE = args.get("CONVERGENCE")
@@ -60,37 +58,55 @@ def thermeca_mult_ops(self, **args):
     #        PREPARATION OF MATERIALFIELDS
     # ------------------------------------------------
 
-    nb_varc_ther = len(AFFE_VARC_TEMP)
+    nb_varc_ther = len(CAS_CHARGE_THER)
 
     # Creation of a new MaterialField for each case by copy of intial MaterialField
 
     material = [None] * nb_varc_ther
+    dict_mater_cas = {}
+    dict_evol = {}
 
     for j in range(nb_varc_ther):
-        dfkw = {}
-        dfkw["VALE_REF"] = AFFE_VARC_TEMP[j]["VALE_REF"]
-        dfkw["EVOL"] = AFFE_VARC_TEMP[j]["EVOL"]
-        dfkw["NOM_VARC"] = "TEMP"
-        material[j] = MaterialWithAddedExternalStateVariable(CHAM_MATER, dfkw, MODELE.getMesh())
-        material[j].build()
+        if CAS_CHARGE_THER[j]["EVOL"].getType() == "EVOL_THER":
+            dfkw = {}
+            dfkw["VALE_REF"] = CAS_CHARGE_THER[j]["VALE_REF"]
+            dfkw["EVOL"] = CAS_CHARGE_THER[j]["EVOL"]
+            dfkw["NOM_VARC"] = "TEMP"
+            dict_mater_cas[CAS_CHARGE_THER[j]["NOM_CAS"]] = MaterialWithAddedExternalStateVariable(
+                CHAM_MATER, dfkw, MODELE.getMesh()
+            )
+            dict_mater_cas[CAS_CHARGE_THER[j]["NOM_CAS"]].build()
+            dict_evol[CAS_CHARGE_THER[j]["NOM_CAS"]] = CAS_CHARGE_THER[j]["EVOL"]
+
+        if CAS_CHARGE_THER[j]["EVOL"].getType() == "EVOL_THER_DICT":
+            for nom_cas in CAS_CHARGE_THER[j]["EVOL"].keys():
+                dfkw = {}
+                dfkw["VALE_REF"] = CAS_CHARGE_THER[j]["VALE_REF"]
+                dfkw["EVOL"] = CAS_CHARGE_THER[j]["EVOL"][nom_cas]
+                dfkw["NOM_VARC"] = "TEMP"
+                dict_mater_cas[nom_cas] = MaterialWithAddedExternalStateVariable(
+                    CHAM_MATER, dfkw, MODELE.getMesh()
+                )
+                dict_mater_cas[nom_cas].build()
+                dict_evol[nom_cas] = CAS_CHARGE_THER[j]["EVOL"][nom_cas]
 
     # ------------------------------------------------
     #        CALCULS
     # ------------------------------------------------
 
-    thermeca_dict = NonLinearResultDict("ther_dict")
+    thermeca_dict = NonLinearResultDict("thermeca_dict")
 
-    for i in range(nb_varc_ther):
+    for nom_cas in dict_mater_cas.keys():
         if LIST_INST is None:
-            LIST_INST2 = DEFI_LIST_INST(DEFI_LIST=_F(VALE=get_list_inst(AFFE_VARC_TEMP[i]["EVOL"])))
+            LIST_INST2 = DEFI_LIST_INST(DEFI_LIST=_F(VALE=get_list_inst(dict_evol[nom_cas])))
         else:
             LIST_INST2 = LIST_INST
 
-        thermeca_dict[AFFE_VARC_TEMP[i]["NOM_CAS"]] = STAT_NON_LINE(
+        thermeca_dict[nom_cas] = STAT_NON_LINE(
             MODELE=MODELE,
-            CHAM_MATER=material[i],
+            CHAM_MATER=dict_mater_cas[nom_cas],
             CARA_ELEM=CARA_ELEM,
-            EXCIT=(_F(CHARGE=EXCIT),),
+            EXCIT=(_F(CHARGE=CHAR_MECA_GLOBAL),),
             INCREMENT=_F(LIST_INST=LIST_INST2),
             CONVERGENCE=CONVERGENCE,
         )
