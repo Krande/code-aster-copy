@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -183,16 +183,26 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
     integer, parameter :: nbFieldUtil = 40
     character(len=16), parameter :: fieldUtil(nbFieldUtil) = (/ &
-                   'UT01_ELGA       ', 'UT01_ELNO       ', 'UT01_ELEM       ', 'UT01_NOEU       ', &
-                   'UT02_ELGA       ', 'UT02_ELNO       ', 'UT02_ELEM       ', 'UT02_NOEU       ', &
-                   'UT03_ELGA       ', 'UT03_ELNO       ', 'UT03_ELEM       ', 'UT03_NOEU       ', &
-                   'UT04_ELGA       ', 'UT04_ELNO       ', 'UT04_ELEM       ', 'UT04_NOEU       ', &
-                   'UT05_ELGA       ', 'UT05_ELNO       ', 'UT05_ELEM       ', 'UT05_NOEU       ', &
-                   'UT06_ELGA       ', 'UT06_ELNO       ', 'UT06_ELEM       ', 'UT06_NOEU       ', &
-                   'UT07_ELGA       ', 'UT07_ELNO       ', 'UT07_ELEM       ', 'UT07_NOEU       ', &
-                   'UT08_ELGA       ', 'UT08_ELNO       ', 'UT08_ELEM       ', 'UT08_NOEU       ', &
-                   'UT09_ELGA       ', 'UT09_ELNO       ', 'UT09_ELEM       ', 'UT09_NOEU       ', &
-                    'UT10_ELGA       ', 'UT10_ELNO       ', 'UT10_ELEM       ', 'UT10_NOEU       '/)
+                                    'UT01_ELGA       ', 'UT01_ELNO       ', &
+                                    'UT01_ELEM       ', 'UT01_NOEU       ', &
+                                    'UT02_ELGA       ', 'UT02_ELNO       ', &
+                                    'UT02_ELEM       ', 'UT02_NOEU       ', &
+                                    'UT03_ELGA       ', 'UT03_ELNO       ', &
+                                    'UT03_ELEM       ', 'UT03_NOEU       ', &
+                                    'UT04_ELGA       ', 'UT04_ELNO       ', &
+                                    'UT04_ELEM       ', 'UT04_NOEU       ', &
+                                    'UT05_ELGA       ', 'UT05_ELNO       ', &
+                                    'UT05_ELEM       ', 'UT05_NOEU       ', &
+                                    'UT06_ELGA       ', 'UT06_ELNO       ', &
+                                    'UT06_ELEM       ', 'UT06_NOEU       ', &
+                                    'UT07_ELGA       ', 'UT07_ELNO       ', &
+                                    'UT07_ELEM       ', 'UT07_NOEU       ', &
+                                    'UT08_ELGA       ', 'UT08_ELNO       ', &
+                                    'UT08_ELEM       ', 'UT08_NOEU       ', &
+                                    'UT09_ELGA       ', 'UT09_ELNO       ', &
+                                    'UT09_ELEM       ', 'UT09_NOEU       ', &
+                                    'UT10_ELGA       ', 'UT10_ELNO       ', &
+                                    'UT10_ELEM       ', 'UT10_NOEU       '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !

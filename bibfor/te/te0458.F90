@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 
 subroutine te0458(nomopt, nomte)
 !
-use HHO_type
-use HHO_size_module, only : hhoMecaDofs
-use HHO_init_module, only : hhoInfoInitCell
-use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDiriOffset
+    use HHO_type
+    use HHO_size_module, only: hhoMecaDofs
+    use HHO_init_module, only: hhoInfoInitCell
+    use HHO_Dirichlet_module, only: hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDiriOffset
 !
     implicit none
 !
@@ -46,9 +46,9 @@ use HHO_Dirichlet_module, only : hhoDiriReadNameFunc, hhoDiriMecaProjFunc, hhoDi
     type(HHO_Cell) :: hhoCell
     real(kind=8) :: rhs_cine(MSIZE_TDOFS_VEC)
     integer :: j_func, j_time, cbs, fbs, total_dofs
-    character(len=8) :: nomfunct(3,MAX_FACE+1)
+    character(len=8) :: nomfunct(3, MAX_FACE+1)
 !
-    ASSERT(nomopt.eq.'HHO_CINE_F_MECA')
+    ASSERT(nomopt .eq. 'HHO_CINE_F_MECA')
 !
 ! --- Retrieve HHO informations
 !

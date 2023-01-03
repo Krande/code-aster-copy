@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 subroutine lrvema(nomail, mfich, nochmd)
 !
-use as_med_module, only: as_med_open
-implicit none
+    use as_med_module, only: as_med_open
+    implicit none
 !
 #include "asterf_types.h"
 #include "asterf_med.h"
@@ -43,9 +43,9 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-integer :: mfich
-character(len=8) :: nomail
-character(len=64) :: nochmd
+    integer :: mfich
+    character(len=8) :: nomail
+    character(len=64) :: nochmd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ character(len=64) :: nochmd
     med_idt :: idfimd
     integer :: i, j, iaux, jnbty2
     integer :: vali(2), lnomam
-    integer, parameter :: edlect=0,edconn=1,edmail=0,ednoda=0
+    integer, parameter :: edlect = 0, edconn = 1, edmail = 0, ednoda = 0
     character(len=1) :: k1b
     character(len=8) :: saux08
     character(len=64) :: nomamd
@@ -76,63 +76,63 @@ character(len=64) :: nochmd
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     integer, pointer :: typmail(:) => null()
-    character(len=8), parameter :: nomast(MT_NTYMAX) = (/'POI1    ','SEG2    ','SEG22   ',&
-                                                         'SEG3    ','SEG33   ','SEG4    ',&
-                                                         'TRIA3   ','TRIA33  ','TRIA6   ',&
-                                                         'TRIA66  ','TRIA7   ','QUAD4   ',&
-                                                         'QUAD44  ','QUAD8   ','QUAD88  ',&
-                                                         'QUAD9   ','QUAD99  ','TETRA4  ',&
-                                                         'TETRA10 ','PENTA6  ','PENTA15 ',&
-                                                         'PENTA18 ','PYRAM5  ','PYRAM13 ',&
-                                                         'HEXA8   ','HEXA20  ','HEXA27  ',&
-                                                         'TETRA15 ','PENTA21 ','PYRAM19 ',&
-                                                         'TR3QU4  ','QU4TR3  ','TR6TR3  ',&
-                                                         'TR3TR6  ','TR6QU4  ','QU4TR6  ',&
-                                                         'TR6QU8  ','QU8TR6  ','TR6QU9  ',&
-                                                         'QU9TR6  ','QU8TR3  ','TR3QU8  ',&
-                                                         'QU8QU4  ','QU4QU8  ','QU8QU9  ',&
-                                                         'QU9QU8  ','QU9QU4  ','QU4QU9  ',&
-                                                         'QU9TR3  ','TR3QU9  ','SEG32   ',&
-                                                         'SEG23   ','QU4QU4  ','TR3TR3  ',&
-                                                         'HE8HE8  ','PE6PE6  ','TE4TE4  ',&
-                                                         'QU8QU8  ','TR6TR6  ','SE2TR3  ',&
-                                                         'SE2TR6  ','SE2QU4  ','SE2QU8  ',&
-                                                         'SE2QU9  ','SE3TR3  ','SE3TR6  ',&
-                                                         'SE3QU4  ','SE3QU8  ','SE3QU9  ',&
-                                                         'H20H20  ','P15P15  ','T10T10  ',&
-                                                         'HEXA9   ','PENTA7  ','TR3SE2  ',&
-                                                         'TR3SE3  ','TR6SE2  ','TR6SE3  ',&
-                                                         'QU4SE2  ','QU4SE3  ','QU8SE2  ',&
-                                                         'QU8SE3  ','QU9SE2  ','QU9SE3  ' /)
-    integer, parameter :: nummed(MT_NTYMAX) = (/                                        &
-                            MED_POINT1       , MED_SEG2         , MED_UNDEF_GEOTYPE,&
-                            MED_SEG3         , MED_UNDEF_GEOTYPE, MED_SEG4         ,&
-                            MED_TRIA3        , MED_UNDEF_GEOTYPE, MED_TRIA6        ,&
-                            MED_UNDEF_GEOTYPE, MED_TRIA7        , MED_QUAD4        ,&
-                            MED_UNDEF_GEOTYPE, MED_QUAD8        , MED_UNDEF_GEOTYPE,&
-                            MED_QUAD9        , MED_UNDEF_GEOTYPE, MED_TETRA4       ,&
-                            MED_TETRA10      , MED_PENTA6       , MED_PENTA15      ,&
-                            MED_PENTA18      , MED_PYRA5        , MED_PYRA13       ,&
-                            MED_HEXA8        , MED_HEXA20       , MED_HEXA27       ,&
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
-                            MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE /)
+    character(len=8), parameter :: nomast(MT_NTYMAX) = (/'POI1    ', 'SEG2    ', 'SEG22   ', &
+                                                         'SEG3    ', 'SEG33   ', 'SEG4    ', &
+                                                         'TRIA3   ', 'TRIA33  ', 'TRIA6   ', &
+                                                         'TRIA66  ', 'TRIA7   ', 'QUAD4   ', &
+                                                         'QUAD44  ', 'QUAD8   ', 'QUAD88  ', &
+                                                         'QUAD9   ', 'QUAD99  ', 'TETRA4  ', &
+                                                         'TETRA10 ', 'PENTA6  ', 'PENTA15 ', &
+                                                         'PENTA18 ', 'PYRAM5  ', 'PYRAM13 ', &
+                                                         'HEXA8   ', 'HEXA20  ', 'HEXA27  ', &
+                                                         'TETRA15 ', 'PENTA21 ', 'PYRAM19 ', &
+                                                         'TR3QU4  ', 'QU4TR3  ', 'TR6TR3  ', &
+                                                         'TR3TR6  ', 'TR6QU4  ', 'QU4TR6  ', &
+                                                         'TR6QU8  ', 'QU8TR6  ', 'TR6QU9  ', &
+                                                         'QU9TR6  ', 'QU8TR3  ', 'TR3QU8  ', &
+                                                         'QU8QU4  ', 'QU4QU8  ', 'QU8QU9  ', &
+                                                         'QU9QU8  ', 'QU9QU4  ', 'QU4QU9  ', &
+                                                         'QU9TR3  ', 'TR3QU9  ', 'SEG32   ', &
+                                                         'SEG23   ', 'QU4QU4  ', 'TR3TR3  ', &
+                                                         'HE8HE8  ', 'PE6PE6  ', 'TE4TE4  ', &
+                                                         'QU8QU8  ', 'TR6TR6  ', 'SE2TR3  ', &
+                                                         'SE2TR6  ', 'SE2QU4  ', 'SE2QU8  ', &
+                                                         'SE2QU9  ', 'SE3TR3  ', 'SE3TR6  ', &
+                                                         'SE3QU4  ', 'SE3QU8  ', 'SE3QU9  ', &
+                                                         'H20H20  ', 'P15P15  ', 'T10T10  ', &
+                                                         'HEXA9   ', 'PENTA7  ', 'TR3SE2  ', &
+                                                         'TR3SE3  ', 'TR6SE2  ', 'TR6SE3  ', &
+                                                         'QU4SE2  ', 'QU4SE3  ', 'QU8SE2  ', &
+                                                         'QU8SE3  ', 'QU9SE2  ', 'QU9SE3  '/)
+    integer, parameter :: nummed(MT_NTYMAX) = (/ &
+                          MED_POINT1, MED_SEG2, MED_UNDEF_GEOTYPE, &
+                          MED_SEG3, MED_UNDEF_GEOTYPE, MED_SEG4, &
+                          MED_TRIA3, MED_UNDEF_GEOTYPE, MED_TRIA6, &
+                          MED_UNDEF_GEOTYPE, MED_TRIA7, MED_QUAD4, &
+                          MED_UNDEF_GEOTYPE, MED_QUAD8, MED_UNDEF_GEOTYPE, &
+                          MED_QUAD9, MED_UNDEF_GEOTYPE, MED_TETRA4, &
+                          MED_TETRA10, MED_PENTA6, MED_PENTA15, &
+                          MED_PENTA18, MED_PYRA5, MED_PYRA13, &
+                          MED_HEXA8, MED_HEXA20, MED_HEXA27, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                          MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -150,79 +150,79 @@ character(len=64) :: nochmd
         nofimd = 'fort.'//saux08
     else
         nofimd = kfic(1:200)
-    endif
+    end if
 !
-    nomamd=' '
+    nomamd = ' '
     call as_med_open(idfimd, nofimd, edlect, iaux)
     if (iaux .ne. 0) then
         lnomam = lxlgut(saux08)
         call utmess('F', 'MED_78', sk=saux08(1:lnomam))
-    endif
+    end if
 !
     call as_mfdncn(idfimd, nochmd, ncmp, codret)
     if (codret .ne. 0) then
         call utmess('F', 'MED_32', sk=nochmd)
-    endif
+    end if
     AS_ALLOCATE(vk16=cname, size=ncmp)
     AS_ALLOCATE(vk16=cunit, size=ncmp)
 !
-    call as_mfdfin(idfimd, nochmd, nomamd, nbtv, cunit(1),&
+    call as_mfdfin(idfimd, nochmd, nomamd, nbtv, cunit(1), &
                    cname(1), codret)
 !
     call wkvect('&&LRVERIMO_NBETYP1', 'V V I', MT_NTYMAX, jnbtyp)
     call wkvect('&&LRVERIMO_NBETYP2', 'V V I', MT_NTYMAX, jnbty2)
     do i = 1, MT_NTYMAX
-        zi(jnbtyp+i-1)=0
+        zi(jnbtyp+i-1) = 0
         if (nummed(i) .ne. 0) then
-            call as_mmhnme(idfimd, nomamd, edconn, edmail, nummed(i),&
+            call as_mmhnme(idfimd, nomamd, edconn, edmail, nummed(i), &
                            ednoda, nmatyp, iret)
-            zi(jnbtyp+i-1)=nmatyp
-        endif
+            zi(jnbtyp+i-1) = nmatyp
+        end if
     end do
 !
     call as_mficlo(idfimd, iret)
     call dismoi('NB_MA_MAILLA', nomail, 'MAILLAGE', repi=nbma)
     call wkvect('&&LRVERIMO_NBMA_TYP', 'V V I', nbma, jmatyp)
     do i = 1, nbma
-        zi(jmatyp+i-1)=0
+        zi(jmatyp+i-1) = 0
     end do
 !
     call jeveuo(nomail//'.TYPMAIL', 'L', vi=typmail)
     do i = 1, nbma
-        zi(jmatyp+i-1)=nummed(typmail(i))
+        zi(jmatyp+i-1) = nummed(typmail(i))
     end do
 !
     do i = 1, MT_NTYMAX
-        nbtym=0
-        zi(jnbty2+i-1)=nbtym
+        nbtym = 0
+        zi(jnbty2+i-1) = nbtym
         if (nummed(i) .ne. 0) then
             do j = 1, nbma
                 if (zi(jmatyp+j-1) .eq. nummed(i)) then
-                    nbtym=nbtym+1
-                endif
+                    nbtym = nbtym+1
+                end if
             end do
-        endif
-        zi(jnbty2+i-1)=nbtym
+        end if
+        zi(jnbty2+i-1) = nbtym
     end do
 !
-    lfirst=.true.
+    lfirst = .true.
     do i = 1, MT_NTYMAX
         if (nummed(i) .ne. 0) then
             if (zi(jnbtyp+i-1) .ne. zi(jnbty2+i-1) .and. lfirst) then
-                lfirst=.false.
+                lfirst = .false.
                 call utmess('F+', 'MED_54')
                 if (zi(jnbtyp+i-1) .lt. zi(jnbty2+i-1)) then
-                    vali(1)=zi(jnbtyp+i-1)
-                    vali(2)=zi(jnbty2+i-1)
+                    vali(1) = zi(jnbtyp+i-1)
+                    vali(2) = zi(jnbty2+i-1)
                     call utmess('F', 'MED_59', sk=nomast(i), ni=2, vali=vali)
                 else
-                    vali(1)=zi(jnbtyp+i-1)
-                    vali(2)=zi(jnbty2+i-1)
+                    vali(1) = zi(jnbtyp+i-1)
+                    vali(2) = zi(jnbty2+i-1)
                     call utmess('F', 'MED_61', sk=nomast(i), ni=2, vali=vali)
-                endif
+                end if
 !
-            endif
-        endif
+            end if
+        end if
     end do
 !
     call jedetr('&&LRVERIMO_NBETYP1')
