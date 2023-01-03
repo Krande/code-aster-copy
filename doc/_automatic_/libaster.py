@@ -9484,11 +9484,11 @@ class Result(DataStructure):
     def addFieldOnNodesDescription(self, arg0):
         pass
 
-    def allocate(self, nb_rank):
+    def allocate(self, nb_index):
         """Allocate result
 
         Arguments:
-            nb_rank (int):  number of rank to allocate
+            nb_index (int):  number of index to allocate
         """
 
     def build(self, feds= [], fnds= []):
@@ -9544,23 +9544,23 @@ class Result(DataStructure):
             list[ElementaryCharacteristics]: list of ElementaryCharacteristics.
         """
 
-    def getConstantFieldOnCellsChar16(self, name, rank):
+    def getConstantFieldOnCellsChar16(self, name, index):
         """Get a ConstantFieldOnCellsChar16 from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'COMPORTEMENT', ...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             ConstantFieldOnCellsChar16: field to get
         """
 
-    def getConstantFieldOnCellsReal(self, name, rank):
+    def getConstantFieldOnCellsReal(self, name, index):
         """Get a ConstantFieldOnCellsReal from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             ConstantFieldOnCellsReal: field to get
@@ -9583,13 +9583,13 @@ class Result(DataStructure):
     def getElementaryCharacteristics(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getElementaryCharacteristics(self: libaster.Result, rank: int) -> libaster.ElementaryCharacteristics
+        1. getElementaryCharacteristics(self: libaster.Result, index: int) -> libaster.ElementaryCharacteristics
 
 
-        Get elementary characterictics at the specfied rank
+        Get elementary characterictics at the specfied index
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             ElementaryCharacteristics: a pointer to elementary characterictics.
@@ -9598,45 +9598,45 @@ class Result(DataStructure):
         2. getElementaryCharacteristics(self: libaster.Result) -> libaster.ElementaryCharacteristics
         """
 
-    def getFieldOnCellsComplex(self, name, rank):
+    def getFieldOnCellsComplex(self, name, index):
         """Get a FieldOnCellsComplex from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             FieldOnCellsComplex: field to get
         """
 
-    def getFieldOnCellsLong(self, name, rank):
+    def getFieldOnCellsLong(self, name, index):
         """Get a FieldOnCellsLong from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             FieldOnCellsLong: field to get
         """
 
-    def getFieldOnCellsReal(self, name, rank):
+    def getFieldOnCellsReal(self, name, index):
         """Get a FieldOnCellsReal from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             FieldOnCellsReal: field to get
         """
 
-    def getFieldOnNodesComplex(self, name, rank):
+    def getFieldOnNodesComplex(self, name, index):
         """Get a FieldOnNodesComplex from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             FieldOnNodesComplex: field to get
@@ -9649,12 +9649,12 @@ class Result(DataStructure):
             list[FieldOnNodesDescription]: list of field's description
         """
 
-    def getFieldOnNodesReal(self, name, rank):
+    def getFieldOnNodesReal(self, name, index):
         """Get a FieldOnNodesReal from result.
 
         Arguments:
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
         Returns:
             FieldOnNodesReal: field to get
@@ -9724,17 +9724,17 @@ class Result(DataStructure):
         """
 
     def getIndexes(self):
-        """Return the list of ranks used to store fields
+        """Return the list of indexs used to store fields
 
         Returns:
-            list[int]: List of ranks used to store fields.
+            list[int]: List of indexs used to store fields.
         """
 
-    def getListOfLoads(self, rank):
-        """Get list of loads on the specified rank
+    def getListOfLoads(self, index):
+        """Get list of loads on the specified index
 
         Arguments:
-            rank (int): rank to get
+            index (int): index to get
 
         Returns:
             ListOfLoads: a pointer to list of loads.
@@ -9743,13 +9743,13 @@ class Result(DataStructure):
     def getMaterialField(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getMaterialField(self: libaster.Result, rank: int) -> libaster.MaterialField
+        1. getMaterialField(self: libaster.Result, index: int) -> libaster.MaterialField
 
 
-        Return the material field for the given rank.
+        Return the material field for the given index.
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             MaterialField: Material field.
@@ -9775,13 +9775,13 @@ class Result(DataStructure):
     def getModel(self, *args, **kwargs):
         """Overloaded function.
 
-        1. getModel(self: libaster.Result, rank: int) -> libaster.Model
+        1. getModel(self: libaster.Result, index: int) -> libaster.Model
 
 
-        Return the model for the given rank.
+        Return the model for the given index.
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             Model: Model object.
@@ -9798,10 +9798,10 @@ class Result(DataStructure):
         """
 
     def getNumberOfIndexes(self):
-        """Get the number of rank stored in the result
+        """Get the number of index stored in the result
 
         Returns:
-            int: number of rank stored.
+            int: number of index stored.
         """
 
     def getTable(self, identifier):
@@ -9814,11 +9814,11 @@ class Result(DataStructure):
             Table: Table stored with the given identifier.
         """
 
-    def getTimeValue(self, rank):
-        """Get time at the specified rank
+    def getTimeValue(self, index):
+        """Get time at the specified index
 
         Arguments:
-            rank (int):  rank where to save time value
+            index (int):  index where to save time value
 
         Returns
             float: time value
@@ -9827,13 +9827,13 @@ class Result(DataStructure):
     def hasElementaryCharacteristics(self, *args, **kwargs):
         """Overloaded function.
 
-        1. hasElementaryCharacteristics(self: libaster.Result, rank: int) -> bool
+        1. hasElementaryCharacteristics(self: libaster.Result, index: int) -> bool
 
 
-        Test if a elementary characterictics is used at the specfied rank
+        Test if a elementary characterictics is used at the specfied index
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             bool: *True* if at least one elementary characterictics used else *False*.
@@ -9845,13 +9845,13 @@ class Result(DataStructure):
     def hasListOfLoads(self, *args, **kwargs):
         """Overloaded function.
 
-        1. hasListOfLoads(self: libaster.Result, rank: int) -> bool
+        1. hasListOfLoads(self: libaster.Result, index: int) -> bool
 
 
-        Test if a list of loads is used at the specfied rank
+        Test if a list of loads is used at the specfied index
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             bool: *True* if at least one list of loads is used else *False*.
@@ -9860,21 +9860,21 @@ class Result(DataStructure):
         2. hasListOfLoads(self: libaster.Result) -> bool
         """
 
-    def hasMaterialField(self, rank):
-        """Test if a material field is used at the specfied rank
+    def hasMaterialField(self, index):
+        """Test if a material field is used at the specfied index
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             bool: *True* if at a material field used else *False*.
         """
 
-    def hasModel(self, rank):
-        """Test if a model is used at the specfied rank
+    def hasModel(self, index):
+        """Test if a model is used at the specfied index
 
         Arguments:
-            rank (int): rank
+            index (int): index
 
         Returns:
             bool: *True* if at a model used else *False*.
@@ -9910,26 +9910,26 @@ class Result(DataStructure):
         1. setElementaryCharacteristics(self: libaster.Result, cara_elem: libaster.ElementaryCharacteristics) -> None
 
 
-        Set elementary characterictics on all ranks
+        Set elementary characterictics on all indexs
 
         Arguments:
             cara_elem (ElementaryCharacteristics): elementary characterictics to set.
 
 
-        2. setElementaryCharacteristics(self: libaster.Result, cara_elem: libaster.ElementaryCharacteristics, rank: int) -> None
+        2. setElementaryCharacteristics(self: libaster.Result, cara_elem: libaster.ElementaryCharacteristics, index: int) -> None
 
 
-        Set elementary characterictics on the specified rank
+        Set elementary characterictics on the specified index
 
         Arguments:
             cara_elem (ElementaryCharacteristics): elementary characterictics to set.
-            rank (int): rank to set
+            index (int): index to set
         """
 
     def setField(self, *args, **kwargs):
         """Overloaded function.
 
-        1. setField(self: libaster.Result, field: libaster.FieldOnNodesReal, name: str, rank: int) -> None
+        1. setField(self: libaster.Result, field: libaster.FieldOnNodesReal, name: str, index: int) -> None
 
 
         Set a real FieldOnNodes to result.
@@ -9937,10 +9937,10 @@ class Result(DataStructure):
         Arguments:
             field (FieldOnNodesReal): field to set
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
 
-        2. setField(self: libaster.Result, field: libaster.FieldOnNodesComplex, name: str, rank: int) -> None
+        2. setField(self: libaster.Result, field: libaster.FieldOnNodesComplex, name: str, index: int) -> None
 
 
         Set a complex FieldOnNodes to result.
@@ -9948,10 +9948,10 @@ class Result(DataStructure):
         Arguments:
             field (FieldOnNodesComplex): field to set
             name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
 
-        3. setField(self: libaster.Result, field: libaster.FieldOnCellsReal, name: str, rank: int) -> None
+        3. setField(self: libaster.Result, field: libaster.FieldOnCellsReal, name: str, index: int) -> None
 
 
         Set a real FieldOnCells to result
@@ -9959,10 +9959,10 @@ class Result(DataStructure):
         Arguments:
             field (FieldOnCellsReal): field to set
             name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
 
-        4. setField(self: libaster.Result, field: libaster.FieldOnCellsComplex, name: str, rank: int) -> None
+        4. setField(self: libaster.Result, field: libaster.FieldOnCellsComplex, name: str, index: int) -> None
 
 
         Set a complex FieldOnCells to result
@@ -9970,10 +9970,10 @@ class Result(DataStructure):
         Arguments:
             field (FieldOnCellsComplex): field to set
             name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
 
-        5. setField(self: libaster.Result, field: libaster.FieldOnCellsLong, name: str, rank: int) -> None
+        5. setField(self: libaster.Result, field: libaster.FieldOnCellsLong, name: str, index: int) -> None
 
 
         Set a long FieldOnCells to result
@@ -9981,10 +9981,10 @@ class Result(DataStructure):
         Arguments:
             field (FieldOnCellsLong): field to set
             name (str): symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
 
-        6. setField(self: libaster.Result, field: libaster.ConstantFieldOnCellsChar16, name: str, rank: int) -> None
+        6. setField(self: libaster.Result, field: libaster.ConstantFieldOnCellsChar16, name: str, index: int) -> None
 
 
         Set a ConstantFieldOnCellsChar16 to result
@@ -9992,10 +9992,10 @@ class Result(DataStructure):
         Arguments:
             field (ConstantFieldOnCellsChar16): field to set
             name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
-            rank (int): rank to set the field
+            index (int): index to set the field
 
 
-        7. setField(self: libaster.Result, field: libaster.ConstantFieldOnCellsReal, name: str, rank: int) -> None
+        7. setField(self: libaster.Result, field: libaster.ConstantFieldOnCellsReal, name: str, index: int) -> None
 
 
         Set a ConstantFieldOnCellsReal to result
@@ -10003,15 +10003,15 @@ class Result(DataStructure):
         Arguments:
             field (ConstantFieldOnCellsReal): field to set
             name (str): symbolic name of the field in the result (ex: 'COMPOR', ...)
-            rank (int): rank to set the field
+            index (int): index to set the field
         """
 
-    def setListOfLoads(self, load, rank):
-        """Set list of loads on the specified rank
+    def setListOfLoads(self, load, index):
+        """Set list of loads on the specified index
 
         Arguments:
             load (ListOfLoads): list of loads to set.
-            rank (int): rank to set
+            index (int): index to set
         """
 
     def setMaterialField(self, *args, **kwargs):
@@ -10020,20 +10020,20 @@ class Result(DataStructure):
         1. setMaterialField(self: libaster.Result, mater: libaster.MaterialField) -> None
 
 
-        Set material field on all ranks
+        Set material field on all indexs
 
         Arguments:
             mater (MaterialField): material field to set.
 
 
-        2. setMaterialField(self: libaster.Result, mater: libaster.MaterialField, rank: int) -> None
+        2. setMaterialField(self: libaster.Result, mater: libaster.MaterialField, index: int) -> None
 
 
-        Set material field on the specified rank
+        Set material field on the specified index
 
         Arguments:
             mater (MaterialField): material field to set.
-            rank (int): rank to set
+            index (int): index to set
         """
 
     def setMesh(self, mesh):
@@ -10049,37 +10049,37 @@ class Result(DataStructure):
         1. setModel(self: libaster.Result, model: libaster.Model) -> None
 
 
-        Set model on all ranks
+        Set model on all indexs
 
         Arguments:
             model (Model): model to set.
 
 
-        2. setModel(self: libaster.Result, model: libaster.Model, rank: int) -> None
+        2. setModel(self: libaster.Result, model: libaster.Model, index: int) -> None
 
 
-        Set model on the specified rank
+        Set model on the specified index
 
         Arguments:
             model (Model): model to set
-            rank (int): rank to set
+            index (int): index to set
         """
 
-    def setParameterValue(self, para_name, value, rank):
-        """Add theta at the specified rank
+    def setParameterValue(self, para_name, value, index):
+        """Add theta at the specified index
 
         Arguments:
             name (float): parameter name to store
             value (float): parameter value to store
-            rank (int):  rank where to save time value
+            index (int):  index where to save time value
         """
 
-    def setTimeValue(self, time, rank):
-        """Add time at the specified rank
+    def setTimeValue(self, time, index):
+        """Add time at the specified index
 
         Arguments:
             time (float): time value to save
-            rank (int):  rank where to save time value
+            index (int):  index where to save time value
         """
 
 # class TransientResult in libaster
