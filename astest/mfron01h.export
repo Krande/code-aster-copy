@@ -7,5 +7,5 @@ P testlist ci verification sequential
 
 F comm mfron01h.comm D 1
 F mail mfron01h.mail D 20
-F libr  Plasticity.mfront   D 38
-F libr  SimoMieheVmis.mfront   D 39
+F libr Plasticity.mfront D 38
+F libr SimoMieheVmis.mfront D 39

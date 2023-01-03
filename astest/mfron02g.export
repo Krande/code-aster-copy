@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm mfron02g.comm D 1
-F libr  DruckerPrager.mfront   D 38
+F libr DruckerPrager.mfront D 38

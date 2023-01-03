@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification parallel
 
 F comm zzzz506t.py D 1
-F mmed zzzz413b.med  D 20
+F mmed zzzz413b.med D 20

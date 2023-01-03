@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification parallel
 
 F comm zzzz144c.comm D 1
-R nom  zzzz144b D 0
+R nom zzzz144b D 0

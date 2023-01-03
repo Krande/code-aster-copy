@@ -7,5 +7,5 @@ P testlist ci verification sequential
 
 F comm zzzz100d.comm D 1
 F libr zzzz100d.18 D 18
-F nom  zzzz100d.py D 0
-F nom  zzzz100b.py D 0
+F nom zzzz100d.py D 0
+F nom zzzz100b.py D 0

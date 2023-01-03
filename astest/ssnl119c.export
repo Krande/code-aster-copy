@@ -7,4 +7,4 @@ P testlist submit ci verification sequential
 
 F comm ssnl119c.comm D 1
 F mmed ssnl119b.mmed D 20
-F nom  ssnl119b.py   D 0
+F nom ssnl119b.py D 0

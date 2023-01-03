@@ -8,5 +8,5 @@ P testlist ci verification sequential
 F comm sdnd121a.comm D 1
 F comm sdnd121a.com1 D 1
 F mail sdnd121a.mail D 20
-F nom  sdnd121a.py   D 0
+F nom sdnd121a.py D 0
 

@@ -8,4 +8,4 @@ P testlist ci verification sequential
 F comm ssnl112a.comm D 1
 F mail ssnl112a.mail D 20
 F libr ssnl112a.38 D 38
-F libr Plasticity.mfront   D 40
+F libr Plasticity.mfront D 40

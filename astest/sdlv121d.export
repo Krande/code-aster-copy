@@ -7,4 +7,4 @@ P testlist ci verification sequential
 
 F comm sdlv121d.comm D 1
 F mail sdlv121d.mail D 20
-F nom  sdlv121a.py D 0
+F nom sdlv121a.py D 0

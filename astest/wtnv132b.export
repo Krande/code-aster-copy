@@ -8,4 +8,4 @@ P testlist ci verification sequential
 F comm wtnv132b.comm D 1
 F comm wtnv132b.com1 D 1
 F mmed wtnv132b.mmed D 20
-F nom  wdnp101a.py D 0
+F nom wdnp101a.py D 0

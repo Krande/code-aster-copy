@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification parallel
 
 F comm zzzz506r.py D 1
-F mmed zzzz506r.mmed D  20
+F mmed zzzz506r.mmed D 20

@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz100b.comm D 1
-F nom  zzzz100b.py D 0
+F nom zzzz100b.py D 0

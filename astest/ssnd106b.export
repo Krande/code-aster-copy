@@ -7,4 +7,4 @@ P testlist ci verification sequential
 
 F comm ssnd106b.comm D 1
 F mail ssnd106b.mail D 20
-F nom  ssnd106b.py   D 0
+F nom ssnd106b.py D 0
