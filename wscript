@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ def options(self):
                 '  LIBPATH_x, LIB_x, INCLUDES_x, PYPATH_x : paths for component "x" for libs, '
                 "includes, python modules",
                 "  CONFIG_PARAMETERS_name=value: extra configuration parameters "
-                "(for config.json)",
+                "(for config.yaml/json)",
                 "  WAFBUILD_ENV   : environment file to be included in runtime " "environment file",
                 "  PREFIX         : default installation prefix to be used, "
                 "if no --prefix option is given.",

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,22 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import json
 import os
 import os.path as osp
+import platform
 import tempfile
 from configparser import ConfigParser
+from fnmatch import fnmatchcase
 from glob import glob
 from subprocess import Popen
 
 from waflib import Errors, Logs, TaskGen
 
-
-def _read_config(env, prefs, key):
-    """Read a value in the config file and add it in `env` and `prefs`."""
-    cfg = ConfigParser()
-    cfg.read(osp.join(os.environ["HOME"], ".hgrc"))
-
-    value = cfg.get("aster", key, fallback="")
-    dkey = "PREFS_{}".format(key.upper())
-    env[dkey] = value
-    if value:
-        prefs[key] = value
+try:
+    import yaml
+except ImportError:
+    yaml = None
 
 
 def options(self):
@@ -56,8 +52,7 @@ def options(self):
         default=None,
         metavar="DIR",
         help="directory to store the output files. A default "
-        "value can be stored in ~/.hgrc under the section "
-        '"aster"',
+        "value can be stored in `~/.config/aster/config.yaml`",
     )
     group.add_option(
         "--exectool",
@@ -79,10 +74,40 @@ def options(self):
 
 def configure(self):
     """Store developer preferences"""
-    self.start_msg("Reading build preferences from ~/.hgrc")
     prefs = {}
-    _read_config(self.env, prefs, "outputdir")
-    self.end_msg(prefs)
+    key = "outputdir"
+
+    fcfg = osp.join(os.environ["HOME"], ".config", "aster", "config.yaml")
+    self.start_msg("Reading user prefs from %s" % fcfg)
+    if not osp.isfile(fcfg) or not yaml:
+        self.end_msg("not found")
+        fcfg = osp.splitext(fcfg)[0] + ".json"
+        self.start_msg("Reading user prefs from %s" % fcfg)
+    if osp.isfile(fcfg):
+        with open(fcfg, "rb") as fobj:
+            if osp.splitext(fcfg)[-1] == ".yaml":
+                content = yaml.load(fobj, Loader=yaml.Loader)
+            else:
+                content = json.load(fobj)
+        params = _filter(content, "server", "name", platform.node())
+        params.update(_filter(content, "version", "path", self.env["PREFIX"]))
+        value = params.get(key, "")
+    else:
+        self.end_msg("not found")
+        fcfg = osp.join(os.environ["HOME"], ".hgrc")
+        self.start_msg("Reading user prefs from %s" % fcfg)
+        if osp.isfile(fcfg):
+            cfg = ConfigParser()
+            cfg.read(fcfg)
+            value = cfg.get("aster", key, fallback="")
+        else:
+            self.end_msg("not found")
+
+    dkey = "PREFS_{}".format(key.upper())
+    self.env[dkey] = value
+    if value:
+        prefs[key] = value
+    self.end_msg(repr(prefs))
 
 
 @TaskGen.feature("test")
@@ -147,3 +172,32 @@ def runtest(self):
         func("`- exit %s" % retcode)
     if status != 0:
         raise Errors.WafError("testcase failed")
+
+
+# function extracted from run_aster/config.py
+def _filter(content, section, filter_key, filter_value):
+    """Filter content by keeping sections that match the filter.
+
+    Arguments:
+        content (dict): file content with optional "server" and
+            "version" list.
+
+    Returns:
+        dict: Version parameters for the current server and version.
+    """
+    params = {}
+    candidates = content.get(section, [])
+    if not isinstance(candidates, list):
+        candidates = [candidates]
+    for cfg in candidates:
+        if not isinstance(cfg, dict):
+            print("warning: dict expected for %r, not: %s", section, cfg)
+            continue
+        if not fnmatchcase(filter_value, cfg.get(filter_key, "")):
+            continue
+        config = cfg.get("config", {})
+        if not isinstance(config, dict):
+            print("warning: dict expected for 'config', not: %s", config)
+            continue
+        params.update(config)
+    return params

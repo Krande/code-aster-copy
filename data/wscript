@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 """
 Build some data files (dest: share/aster)
 
-- 'config.json': needed by run_aster.
+- 'config.yaml': needed by run_aster (or '.json').
 - 'config.txt': needed by as_run (for MACR_RECAL).
 - 'create_install_script': script to use a containerized version.
 - 'CTestTestfile.cmake': used to run testcases with 'ctest'.
 - 'execute_codeaster': used as executable for a containerized version.
-- 'external_programs.js': definition of external programs called from code_aster.
+- 'external_programs.yaml': definition of external programs called from code_aster (or '.json').
 - 'post_install': update some paths after moving the installed files.
 - 'profile.sh': environment script.
 - 'run_aster': script that executes code_aster.
@@ -41,6 +41,12 @@ import re
 import sys
 from glob import glob
 from itertools import chain
+
+try:
+    import yaml
+except ImportError:
+    # should not be used, type set by CFG_EXT
+    pass
 
 from waflib import Configure, Errors, Logs, Utils
 
@@ -196,14 +202,16 @@ def configure_data(self):
 
 
 def build(self):
+    ext = self.env["CFG_EXT"]
+    assert ext in ("yaml", "json"), ext
     # src/srcbin distinction exists for exec mode (644 vs 755)
     src = [
         "CTestTestfile.cmake.tmpl",
-        "external_programs.js.tmpl",
-        "config.json.tmpl",
+        "external_programs.yaml.tmpl",
+        "config.yaml.tmpl",
         "profile.sh.tmpl",
     ]
-    tgt = ["CTestTestfile.cmake", "external_programs.js", "config.json", "profile.sh"]
+    tgt = ["CTestTestfile.cmake", f"external_programs.{ext}", f"config.{ext}", "profile.sh"]
     if self.env.legacy:
         src.append("config.txt.tmpl")
         tgt.append("config.txt")
@@ -214,8 +222,8 @@ def build(self):
     except:
         Logs.error("ASTER_ENVIRON not found. Please run 'waf configure...'")
         raise Errors.BuildError
-    dict_conv["PROGRAMS_JSON"] = dict_to_json(self.env["EXTERNAL_PROGRAMS"])
-    dict_conv["CONFIG_JSON"] = dict_to_json(self.env["CONFIG_PARAMETERS"])
+    dict_conv["PROGRAMS_YAML"] = to_cfg(ext, self.env["EXTERNAL_PROGRAMS"])
+    dict_conv["CONFIG_YAML"] = to_cfg(ext, self.env["CONFIG_PARAMETERS"])
     change_tests(dict_conv, self.env.install_tests)
     self(
         features="subst",
@@ -344,9 +352,14 @@ def env2dict(self, src):
     return dico
 
 
-def dict_to_json(dict_values):
-    """Format a dict of values to JSON."""
-    return json.dumps(dict_values, sort_keys=True, indent=4, separators=(",", ": "))
+def to_cfg(ext, dict_values):
+    """Format a dict of values to YAML or JSON."""
+    if ext == "json":
+        return json.dumps(dict_values, sort_keys=True, indent=4, separators=(",", ": "))
+
+    import yaml
+
+    return yaml.dump(dict_values, default_flow_style=False)
 
 
 CTEST_DEF = """
@@ -425,7 +438,8 @@ def change_tests(dico, install_tests):
 def check_config(self):
     # Check for configuration parameters of the version
     cfg = {}
-    self.start_msg("Set parameters for 'config.json'")
+    ext = self.env["CFG_EXT"]
+    self.start_msg(f"Set parameters for 'config.{ext}'")
     tmpdir = "/tmp"
     if os.environ.get("ASTER_TMPDIR"):
         tmpdir = os.environ["ASTER_TMPDIR"]

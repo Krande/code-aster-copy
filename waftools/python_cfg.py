@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,11 @@ def check_python(self):
         for lang in ("CFLAGS", "CXXFLAGS"):
             for feat in ("PYEMBED", "PYEXT"):
                 self.env[lang + "_" + feat] = []
+    try:
+        self.check_python_module("yaml")
+        self.env["CFG_EXT"] = "yaml"
+    except Errors.ConfigurationError:
+        self.env["CFG_EXT"] = "json"
 
 
 @Configure.conf

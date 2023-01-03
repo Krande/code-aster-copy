@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@
 The :py:class:`Config` object gives access to the configuration parameters
 of the installed version.
 These parameters are usually set during the ``waf configure`` step and are
-stored in a JSON file.
+stored in a YAML file (or JSON for compatibility).
 
 The configuration file is installed in
-``<installation-prefix>/share/aster/config.json``.
+``<installation-prefix>/share/aster/config.yaml``.
 It contains *version parameters*.
 
 The list of the supported *version parameters* are (with their type):
@@ -48,6 +48,7 @@ The list of the supported *version parameters* are (with their type):
     FC: str                 - fortran compiler
     FCFLAGS: list[str]      - flags for fortran compiler
     exectool: dict[str]     - command lines for execution wrappers
+    outputdir: str     - output directory for ``waf test`` and derivated
 
 All these parameters are set during the *configure* step of the installation.
 
@@ -66,56 +67,42 @@ They can be set during the *configure* step using environment variables named
 .. _Python Format String Syntax: https://docs.python.org/3/library/string.html#formatstrings
 
 These *version parameters* can be overridden by a user file:
-``$HOME/.config/aster/config.json``.
+``$HOME/.config/aster/config.yaml``.
 
 The user can override these parameters depending on the *server name* and/or the
 *version* using filters. A *server* is defined by its *name*, a *version* by
 its *path*.
 
 Parameters are read from the installation directory
-(``share/aster/config.json``), then, from the user file (from ``.config/aster``
+(``share/aster/config.yaml``), then, from the user file (from ``.config/aster``
 directory), per-server configurations are read in the order they are listed
 and finally, the per-version configurations are evaluated.
 
-Example of ``$HOME/.config/aster/config.json`` (for this example only ``tmpdir``
+Example of ``$HOME/.config/aster/config.yaml`` (for this example only ``tmpdir``
 is set in different cases):
 
-.. code-block:: json
+.. code-block:: yaml
 
-    {
-        "server": [
-            {
-                "name": "*",
-                "config": {
-                    "tmpdir": "/tmp_for_all_servers"
-                },
-                "name": "eocn*",
-                "config": {
-                    "tmpdir": "/tmp_for_eocn_nodes"
-                }
-            }
-        ],
-        "version": [
-            {
-                "path": "*/install/14*",
-                "config": {
-                    "tmpdir": "/tmp_for_v14"
-                }
-            },
-            {
-                "path": "*/dev/codeaster/install/*",
-                "config": {
-                    "tmpdir": "/tmp_for_development_version"
-                }
-            }
-        ]
-    }
+    server:
+      - name: eocn*
+        config:
+          tmpdir: /tmp_for_eocn_nodes
+
+    version:
+      - path: '*/install/14*'
+        config:
+          tmpdir: /tmp_for_v14
+
+      - path: '*/dev/codeaster/install/*'
+        config:
+          tmpdir: /tmp_for_development_version
+
 
 What is the value for ``tmpdir`` on a cluster node named ``eocn123`` running
 the version installed in the ``/projets/aster/install/14.4/mpi``?
 
 - First, ``tmpdir`` is read from
-  ``/projets/aster/install/14.4/mpi/share/aster/config.json``.
+  ``/projets/aster/install/14.4/mpi/share/aster/config.yaml``.
 
 - Does ``eocn123`` match ``"*"``? Yes, so use ``/tmp_for_all_servers``.
 
@@ -130,29 +117,23 @@ the version installed in the ``/projets/aster/install/14.4/mpi``?
 - Finally, the working directory will be created in ``/tmp_for_v14``.
 
 Each block ``config`` can override one or more parameter already defined in
-``config.json``.
+``config.yaml``.
 
 An *execution wrapper* is a tool, for example a debugger or *valgrind*, that
 can preceed the executed command line.
-Example of ``$HOME/.config/aster/config.json``:
+Example of ``$HOME/.config/aster/config.yaml``:
 
-.. code-block:: json
+.. code-block:: yaml
 
-    {
-        "server" : [
-            {
-                "name": "*",
-                "config": {
-                    "exectool": {
-                        "valgrind": "valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes"
-                    }
-                }
-            }
-        ]
-    }
+    server:
+      - name: '*'
+        config:
+          exectool:
+            valgrind: valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes
 
-This ``valgrind`` is actually defined by default in the configuration file of the
-installed version and it is callable with ``run_aster --valgrind ...`.
+
+This ``valgrind`` command line is actually defined by default in the configuration
+file of the installed version and it is callable with ``run_aster --valgrind ...`.
 Another one is also defined by default to wrap *gdb* execution:
 ``run_aster --gdb ...``.
 """
@@ -163,11 +144,14 @@ import os.path as osp
 import platform
 from fnmatch import fnmatchcase
 
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
 from .logger import logger
 from .settings import AbstractParameter, Store
 from .utils import RUNASTER_ROOT
-
-USERCFG = osp.join(os.getenv("HOME", ""), ".config", "aster", "config.json")
 
 # all parameters must be set by `data/wscript - check_config()`
 VERSION_PARAMS = {
@@ -185,6 +169,7 @@ VERSION_PARAMS = {
     "FC": "str",
     "FCFLAGS": "list[str]",
     "exectool": "dict[str]",
+    "outputdir": "str",
 }
 
 
@@ -201,11 +186,17 @@ class Config:
     """Configuration parameters.
 
     Arguments:
-        configjs (str): File name of the configuration file.
+        mainfcfg (str): File name of the configuration file.
     """
 
-    def __init__(self, configjs):
-        self._mainjs = configjs
+    usercfg = osp.join(os.getenv("HOME", ""), ".config", "aster", "config.yaml")
+
+    def __init__(self, mainfcfg):
+        if not osp.exists(mainfcfg) or not yaml:
+            jcfg = osp.splitext(mainfcfg)[0] + ".json"
+            if osp.exists(jcfg):
+                mainfcfg = jcfg
+        self._mainfcfg = mainfcfg
         self._storage = ConfigurationStore()
 
     @property
@@ -218,26 +209,39 @@ class Config:
 
     def load(self):
         """Load the configuration file."""
-        self.load_one(self._mainjs, main=True)
-        os.makedirs(osp.dirname(USERCFG), exist_ok=True)
-        self.load_one(USERCFG)
+        self.load_one(self._mainfcfg, main=True)
+        usercfg = Config.usercfg
+        os.makedirs(osp.dirname(usercfg), exist_ok=True)
+        if not osp.exists(usercfg) or not yaml:
+            jcfg = osp.splitext(usercfg)[0] + ".json"
+            if osp.exists(jcfg):
+                Config.usercfg = usercfg = jcfg
+        self.load_one(usercfg)
 
-    def load_one(self, jsfile, main=False):
-        """Load `jsfile`.
+    def load_one(self, cfgfile, main=False):
+        """Load `cfgfile`.
 
         Arguments:
-            jsfile (str): File name of the configuration file.
+            cfgfile (str): File name of the configuration file.
             main (bool): *True* for the configuration file installed for this
                 version, *False* for user configuration file.
         """
-        logger.debug("reading configuration file %s", jsfile)
+        ext = osp.splitext(cfgfile)[-1]
+        assert ext in (".yaml", ".json"), "'.yaml'/'.json' expected for the configuration file."
+        logger.debug("reading configuration file %s", cfgfile)
         try:
-            with open(jsfile, "rb") as jsfile:
-                content = json.load(jsfile)
+            with open(cfgfile, "rb") as fcfg:
+                if ext == ".yaml":
+                    assert (
+                        yaml
+                    ), f"yaml not available, can not use {cfgfile}, please convert it into '.json' instead"
+                    content = yaml.load(fcfg.read(), Loader=yaml.Loader)
+                elif ext == ".json":
+                    content = json.load(fcfg)
         except FileNotFoundError:
             if main:
-                logger.error("file not found: %s", jsfile)
-            logger.debug("file not found: %s", jsfile)
+                logger.error("file not found: %s", cfgfile)
+            logger.debug("file not found: %s", cfgfile)
             return
         self.import_dict(content, with_sections=not main)
 
@@ -245,7 +249,7 @@ class Config:
         """Set the configuration parameters from a dict.
 
         Arguments:
-            content (dict): JSON file content
+            content (dict): file content
             with_sections (bool): *True* if it contains 'server' and/or
                 'version' subsections, *False* if it directly contains the
                 version parameters.
@@ -263,7 +267,7 @@ class Config:
         """Filter content by keeping sections that match the filter.
 
         Arguments:
-            content (dict): JSON file content with optional "server" and
+            content (dict): file content with optional "server" and
                 "version" list.
 
         Returns:
@@ -300,4 +304,4 @@ class Config:
         return self.storage.get(key, default)
 
 
-CFG = Config(osp.join(RUNASTER_ROOT, "share", "aster", "config.json"))
+CFG = Config(osp.join(RUNASTER_ROOT, "share", "aster", "config.yaml"))

@@ -42,7 +42,13 @@ import sys
 import warnings
 from argparse import SUPPRESS, Action, ArgumentParser
 
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
 import libaster
+
 from run_aster.export import Export
 
 from .as_timer import Timer
@@ -584,10 +590,15 @@ def get_program_path(program):
     """
     if getattr(get_program_path, "_cache", None) is None:
         prog_cfg = {}
-        fname = osp.join(os.environ["ASTER_DATADIR"], "external_programs.js")
+        fname = osp.join(os.environ["ASTER_DATADIR"], "external_programs.yaml")
+        if not osp.isfile(fname) or not yaml:
+            fname = osp.splitext(fname)[0] + ".json"
         if osp.isfile(fname):
-            with open(fname, "rb") as fjs:
-                prog_cfg = json.load(fjs)
+            with open(fname, "rb") as fcfg:
+                if osp.splitext(fname)[-1] == ".yaml":
+                    prog_cfg = yaml.load(fcfg)
+                else:
+                    prog_cfg = json.load(fcfg)
         get_program_path._cache = prog_cfg
 
     programs = get_program_path._cache
