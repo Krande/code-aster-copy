@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois at edf.fr
+from math import exp, log
 
 DEBUT(CODE=_F(NIV_PUB_WEB="INTERNET"), DEBUG=_F(SDVERI="OUI"), IGNORE_ALARM="UTILITAI3_37")
 
@@ -282,7 +282,12 @@ E3 = DEFI_NAPPE(
     DEFI_FONCTION=(_F(VALE=(1.0, 8.0, 2.0, 7.0)), _F(VALE=(1.0, 7.0, 2.0, 10.0))),
 )
 
-E4 = CALC_FONCTION(ENVELOPPE=_F(FONCTION=(E1, E2, E3)))
+E4 = CALC_FONCTION(
+    ENVELOPPE=_F(FONCTION=(E1, E2, E3)),
+    INTERPOL_FONC="LIN",
+    PROL_DROITE_FONC="EXCLU",
+    PROL_GAUCHE_FONC="EXCLU",
+)
 
 TEST_FONCTION(
     VALEUR=_F(
@@ -349,6 +354,62 @@ TEST_FONCTION(
         FONCTION=E4,
     )
 )
+
+# check "*_FONC" keywords
+comb1 = CALC_FONCTION(
+    COMB=(_F(FONCTION=E2, COEF=1.0), _F(FONCTION=E3, COEF=1.0)),
+    INTERPOL_FONC="LOG",
+    PROL_GAUCHE_FONC="CONSTANT",
+    PROL_DROITE_FONC="LINEAIRE",
+)
+
+# check PROL_GAUCHE_FONC="CONSTANT"
+TEST_FONCTION(
+    VALEUR=_F(
+        VALE_CALC=12.0,
+        VALE_REFE=12.0,
+        VALE_PARA=(111.0, -9999.0),
+        REFERENCE="ANALYTIQUE",
+        NOM_PARA=("INST", "X"),
+        FONCTION=comb1,
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=_F(
+        VALE_CALC=12.0,
+        VALE_REFE=12.0,
+        VALE_PARA=(111.0, 1.0),
+        REFERENCE="ANALYTIQUE",
+        NOM_PARA=("INST", "X"),
+        FONCTION=comb1,
+    )
+)
+
+TEST_FONCTION(
+    VALEUR=_F(
+        VALE_CALC=16.0,
+        VALE_REFE=16.0,
+        VALE_PARA=(111.0, 2.0),
+        REFERENCE="ANALYTIQUE",
+        NOM_PARA=("INST", "X"),
+        FONCTION=comb1,
+    )
+)
+
+# check PROL_DROITE_FONC="LINEAIRE" + INTERPOL_FONC=("LOG", "LOG")
+ref = exp(log(12.0) + ((log(16.0) - log(12.0)) / (log(2.0) - log(1.0)) * (log(4.0) - log(1.0))))
+TEST_FONCTION(
+    VALEUR=_F(
+        VALE_CALC=ref,
+        VALE_REFE=ref,
+        VALE_PARA=(111.0, 4.0),
+        REFERENCE="ANALYTIQUE",
+        NOM_PARA=("INST", "X"),
+        FONCTION=comb1,
+    )
+)
+
 # ========================================================================
 #     CAS NAPPE. MOYENNE
 # ========================================================================
