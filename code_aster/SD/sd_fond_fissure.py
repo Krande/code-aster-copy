@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,10 @@ class sd_fond_fissure(AsBase):
     LTNO = Facultatif(sd_cham_no())
     #   Champ aux noeuds contenant les coordonnées des noeuds projetés sur le fond de fissure ainsi que les bases locales pour tous les noeuds du maillage.
     BASLOC = Facultatif(sd_cham_no())
+    #   Vecteur de réels contenant les coordonnées des vecteurs de la base locale pour chaque noeud du fond de fissure.
+    BASNOF = AsVR()
+    #   Vecteur de réels contenant les coordonnées des noeuds du fond de fissure.
+    COORFOND = AsVR()
 
     def check_config(self, checker):
         info = self.INFO.get_stripped()

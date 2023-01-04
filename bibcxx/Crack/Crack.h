@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -88,6 +88,9 @@ class Crack : public DataStructure {
     /** @brief Objet Jeveux '.ABSFON' : Vecteur de réels contenant
      la valeur des abscisses curvilignes des noeuds du fond de fissure. */
     JeveuxVectorReal _absfon;
+    /** @brief Objet Jeveux '.COORFOND' : Vecteur de réels contenant
+     les coordonnées des noeuds du fond de fissure. */
+    JeveuxVectorReal _coorfond;
 
   public:
     /**
@@ -105,6 +108,8 @@ class Crack : public DataStructure {
     std::string getCrackTipCellsType();
     std::string getUpperLipGroupName();
     std::string getLowerLipGroupName();
+    const JeveuxVectorReal getCrackFrontBasis();
+    const JeveuxVectorReal getCrackFrontPosition();
 };
 
 /**

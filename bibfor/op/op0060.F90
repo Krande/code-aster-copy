@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,11 +80,11 @@ subroutine op0060()
 !      -----------------------------------
 !
     call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbocc)
-    ASSERT(.not.isParallelMesh(noma))
+    ASSERT(.not. isParallelMesh(noma))
 !
 ! ---  RECUPERATION DE LA CONNECTIVITE INVERSE
 !
-    cnxinv='&&'//nompro//'.CNXINV'
+    cnxinv = '&&'//nompro//'.CNXINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
 !
 !
@@ -100,15 +100,15 @@ subroutine op0060()
             call getvtx('FOND_FISS', 'TYPE_FOND', iocc=iocc, scal=typfon, nbret=n1)
         else
             typfon = 'OUVERT'
-        endif
+        end if
 !
 !       DANS LE CAS D'UN FOND FERME, ON INTERDIT LES MCS NOEUD ET GROUP_NO
         if (typfon .eq. 'FERME') then
             call getvtx('FOND_FISS', 'GROUP_NO', iocc=iocc, nbval=0, nbret=n1)
             if (n1 .ne. 0) then
                 call utmess('F', 'RUPTURE0_98')
-            endif
-        endif
+            end if
+        end if
 !
 !     ---------------------------------------------------------------
 !     VERIFICATION DE L'EXISTANCE DES ENTITES DU MAILLAGE RENSEIGNEES
@@ -125,30 +125,30 @@ subroutine op0060()
             entit(4) = '.GROUPENO'
             motcl(4) = 'GROUP_NO_EXTR'
             ndonn = 4
-        else if (typfon.eq.'FERME') then
+        else if (typfon .eq. 'FERME') then
             entit(4) = '.GROUPEMA'
             motcl(4) = 'GROUP_MA_ORIG'
             ndonn = 4
         else
             ASSERT(.FALSE.)
-        endif
+        end if
         do idonn = 1, ndonn
             call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=0, nbret=n1)
             n1 = -n1
             if (n1 .gt. 0) then
                 call wkvect('&&'//nompro//'.'//motcl(idonn), 'V V K24', n1, iadr1)
-                call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=n1, vect=zk24(iadr1),&
+                call getvtx('FOND_FISS', motcl(idonn), iocc=iocc, nbval=n1, vect=zk24(iadr1), &
                             nbret=n2)
                 do idon = 1, n1
-                    entnom = zk24(iadr1-1 + idon)
+                    entnom = zk24(iadr1-1+idon)
                     call jenonu(jexnom(noma//entit(idonn), entnom), ibid)
                     if (ibid .eq. 0) then
                         valk(1) = entnom
                         valk(2) = motcl(idonn)
                         call utmess('F', 'RUPTURE0_7', nk=2, valk=valk)
-                    endif
+                    end if
                 end do
-            endif
+            end if
         end do
 !
 !
@@ -167,8 +167,8 @@ subroutine op0060()
                 call fonnoe2(resu, noma, nompro, nbnoff, typmp)
             else
                 call utmess('F', 'RUPTURE1_9')
-            endif
-        endif
+            end if
+        end if
 !
 !        SI LE MOT CLE FACTEUR EST GROUP_MA (cas 3D)
 !        ----------------------------------------
@@ -178,12 +178,12 @@ subroutine op0060()
             call jeveuo(noma//'.DIME', 'L', iret1)
 !!          LE MOT-CLE GROUP_MA EST UNIQUEMENT AUTORISE EN DIMENSION 3
             if (zi(iret1-1+6) .eq. 3) then
-                call fonmai2(resu, noma, typfon, iocc, nbnoff,&
+                call fonmai2(resu, noma, typfon, iocc, nbnoff, &
                              typm)
             else
                 call utmess('F', 'RUPTURE1_8')
-            endif
-        endif
+            end if
+        end if
 !
 !
 !       DESTRUCTION DES VECTEURS DE TRAVAIL
@@ -215,7 +215,7 @@ subroutine op0060()
         nvenor = -nvenor
         call wkvect(resu//'.NORMALE', 'G V R8', 3, jnorm)
         call getvr8(' ', 'NORMALE', nbval=3, vect=zr(jnorm), nbret=nvenor)
-    endif
+    end if
 !   OBJET CONTENANT LA BASE LOCALE EN CHAQUE NOEUD DU FOND DE FISSURE
 !   OBJET QUI N'EXISTE QUE DANS DEFI_FOND_FISS
     basnof = resu//'.BASNOF'
@@ -236,15 +236,15 @@ subroutine op0060()
         fonoeu = resu//'.FOND.NOEU'
         call jeveuo(fonoeu, 'L', ifonoe)
         if (typfon .eq. 'FERME') then
-            ASSERT(zk8(ifonoe+1-1).eq.zk8(ifonoe+nbnoff-1))
-        endif
+            ASSERT(zk8(ifonoe+1-1) .eq. zk8(ifonoe+nbnoff-1))
+        end if
     else
         ASSERT(.FALSE.)
-    endif
+    end if
 !
 !   CALCUL DE L'ABSCISSE CURVILIGNE ET DES COORDONNES DES NOEUDS DU FOND
     absfon = resu//'.ABSFON'
-    coorfond = '&&OP0060.COORFOND'
+    coorfond = resu//'.COORFOND'
 !
     call fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 !
@@ -261,10 +261,10 @@ subroutine op0060()
         basloc = resu//'.BASLOC'
         lnno = resu//'.LNNO'
         ltno = resu//'.LTNO'
-        call fonbas2(noma, basnof, typm, fonoeu, coorfond,&
-                     nbnoff, absfon, basloc, abscur, lnno,&
+        call fonbas2(noma, basnof, typm, fonoeu, coorfond, &
+                     nbnoff, absfon, basloc, abscur, lnno, &
                      ltno)
-    endif
+    end if
 !
 !     ---------------------------------------------------------------
 !     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE
@@ -277,8 +277,8 @@ subroutine op0060()
         if (irets .ne. 0) then
 !
             call fonnof2(resu, noma, typfon, nbnoff, basnof)
-        endif
-    endif
+        end if
+    end if
 !
 !     ---------------------------------------------------------------
 !     STOCKAGE D'INFOS UTILES DANS LA SD EN SORTIE
@@ -288,7 +288,7 @@ subroutine op0060()
 !     4- NOM DU MAILLAGE
 !     5- TYPE DE MAILLE EN FOND DE FISSURE (SEG2 ou SEG3)
 !     6- NOM DU GROUPE DE MAILLE POUR LA LEVRE SUP
-!     7- NOM DU GROUPE DE MAILLE POUR LA LEVRE INF      
+!     7- NOM DU GROUPE DE MAILLE POUR LA LEVRE INF
 !     ---------------------------------------------------------------
 !
     call foninf2(resu, typm, typfon, noma)
@@ -299,7 +299,7 @@ subroutine op0060()
 !
     if (niv .eq. 2) then
         call fonimp(resu)
-    endif
+    end if
 !
     call jedetr('&&OP0060.COORFOND')
 !

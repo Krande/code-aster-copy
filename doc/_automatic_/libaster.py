@@ -8778,6 +8778,20 @@ class Crack(DataStructure):
         2. __init__(self: libaster.Crack, arg0: str) -> None
         """
 
+    def getCrackFrontBasis(self):
+        """Return the crack front basis
+
+        Returns:
+            list[float]: the crack front basis
+        """
+
+    def getCrackFrontPosition(self):
+        """Return the crack front Position
+
+        Returns:
+            list[float]: the crack front Position
+        """
+
     def getCrackTipCellsType(self):
         pass
 

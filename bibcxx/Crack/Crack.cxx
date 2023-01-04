@@ -3,7 +3,7 @@
  * @brief Implementation de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -44,6 +44,7 @@ Crack::Crack( const std::string name )
       _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
       _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ),
       _basNof( JeveuxVectorReal( getName() + ".BASNOF" ) ),
+      _coorfond( JeveuxVectorReal( getName() + ".COORFOND" ) ),
       _absfon( JeveuxVectorReal( getName() + ".ABSFON" ) ) {
     _ltno->setDescription(
         std::make_shared< FieldOnNodesDescription >( getName() + ".LTNO.PRCHN" ) );
@@ -52,7 +53,11 @@ Crack::Crack( const std::string name )
         std::make_shared< FieldOnNodesDescription >( getName() + ".BASL.PRCHN" ) );
 };
 
-void Crack::updateValuePointers() { _info->updateValuePointer(); }
+void Crack::updateValuePointers() {
+    _info->updateValuePointer();
+    _basNof->updateValuePointer();
+    _coorfond->updateValuePointer();
+}
 
 std::string Crack::getCrackTipCellsType() {
     this->updateValuePointers();
@@ -68,3 +73,13 @@ std::string Crack::getLowerLipGroupName() {
     this->updateValuePointers();
     return trim( ( *_info )[6].toString() );
 }
+
+const JeveuxVectorReal Crack::getCrackFrontBasis() {
+    this->updateValuePointers();
+    return _basNof;
+};
+
+const JeveuxVectorReal Crack::getCrackFrontPosition() {
+    this->updateValuePointers();
+    return _coorfond;
+};
