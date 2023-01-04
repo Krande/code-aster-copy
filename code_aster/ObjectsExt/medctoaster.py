@@ -244,6 +244,8 @@ class MEDCouplingMeshHelper:
         _info_grp(self.groupsOfCells, "cells")
         _info_grp(self.groupsOfNodes, "nodes")
         print(f"+ domains: {self.domains}")
+        for key, jts in self._djoints.items():
+            print(f"+ joints: {key}, size {len(jts)}: {jts[:10]}...")
         print(f"+ number of joints: {len(self._djoints) // 2}", flush=True)
 
     def parse(self):
@@ -345,15 +347,10 @@ class MEDCouplingMeshHelper:
                 self._groups_of_nodes.setdefault(group, [])
                 self._groups_of_nodes[group].extend(group_nodes.toNumPyArray())
 
-    def extract_joints(self, _testrank=None):
+    def extract_joints(self):
         """Extract informations about joints between domains."""
         # _testrank is reserved for testcases, only with one process
         rank = MPI.ASTER_COMM_WORLD.Get_rank()
-        size = MPI.ASTER_COMM_WORLD.Get_size()
-        if _testrank:
-            assert size == 1, "_testrank is a developer feature, only with one process"
-            rank = _testrank
-
         self._nodesOwner = np.ones(self._mesh.getNumberOfNodes(), int) * rank
         domains = set()
         self._djoints = {}
@@ -372,7 +369,7 @@ class MEDCouplingMeshHelper:
                 key = ("R" if d_in == rank else "E") + f"{remote:x}"
                 assert joint.getNumberOfSteps() == 1, "unexpected value"
                 assert joint[0].getNumberOfCorrespondences() == 1, "unexpected value"
-                values = joint[0][0].getCorrespondence().toNumPyArray()
+                values = joint[0][0].getCorrespondence().toNumPyArray().ravel()
                 self._djoints[key] = values.tolist()
                 if d_in == rank:
                     values.shape = (len(values) // 2, 2)

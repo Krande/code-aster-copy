@@ -118,7 +118,7 @@ for mesh_file in meshes:
 
 list_nb_mesh = {2: 522, 3: 495, 4: 487}
 list_nb_mesh_conv = {2: 520, 3: 490, 4: 486}
-list_nb_conv_error = {2: 21, 3: 8, 4: 13}
+list_nb_conv_error = {2: 22, 3: 9, 4: 13}
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)

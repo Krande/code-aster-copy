@@ -49,7 +49,7 @@ keywords = dict(
         # le maillage y a été enregistré. Par défaut, on va le chercher sous le
         # nom du concept à créer.
         NOM_MED=SIMP(statut="f", typ="TXM", fr=tr("Nom du maillage dans le fichier MED.")),
-        INFO_MED=SIMP(statut="f", typ="I", defaut=1, into=(0, 1, 2, 3)),
+        INFO_MED=SIMP(statut="f", typ="I", defaut=0, into=(0, 1)),
         PARTITIONNEUR=SIMP(
             statut="f",
             typ="TXM",

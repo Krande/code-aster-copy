@@ -75,10 +75,11 @@ class ExtendedParallelMesh:
         if not partitioned:
             splitted = MEDPartitioner(filename)
             splitted.partitionMesh(verbose & 3)
-            splitted.writeMesh()
-            filename = splitted.writedFilename()
-
-        mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
+            data = splitted.getPartition()
+            umesh = data.getMeshes()[0]
+            mesh_builder.buildFromMedCouplingMesh(self, umesh, verbose)
+        else:
+            mesh_builder.buildFromMedFile(self, filename, meshname, verbose)
 
     def checkConsistency(self, filename):
         """Check that the partitioned mesh is consistent, i.e. that all nodes,
